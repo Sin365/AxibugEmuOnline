@@ -1,0 +1,81 @@
+syntax = "proto3";
+package AxibugProtobuf;
+option optimize_for = SPEED;
+
+enum CommandID
+{
+    CMD_DEFAUL = 0;//缺省不使用
+	
+	CMD_LOGIN = 2001;  //自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
+	
+	CMD_CHATMSG = 4001;  //广播信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
+	
+	CMD_Screen = 5001;  //画面同步 | 同步广播 对应 Protobuf_Screnn_Frame
+}
+
+enum ErrorCode
+{
+    ERROR_DEFAUL = 0;//缺省不使用
+	ERROR_OK = 1;   //成功
+}
+
+enum LoginType
+{
+    BaseDefault = 0;//缺省不使用
+}
+
+enum DeviceType
+{
+    DeviceType_Default = 0;//缺省不使用
+	PC = 1;
+	Android = 2;
+	IOS = 3;
+	PSV = 4;
+}
+
+enum LoginResultStatus
+{
+    LoginResultStatus_BaseDefault = 0;//缺省不使用
+	OK = 1;
+	AccountErr = 2;
+}
+
+//聊天 上行
+message Protobuf_ChatMsg
+{
+	string ChatMsg = 1;//消息
+}
+
+//聊天 下行
+message Protobuf_ChatMsg_RESP
+{
+	string NickName = 1;//昵称
+	string ChatMsg = 2;//消息
+	int64 Date = 3;//时间
+}
+
+
+//登录数据上行
+message Protobuf_Login
+{
+	LoginType loginType = 1;//登录操作类型 [0]皓月通行证 [3] 皓月BF3 [4] 皓月BF4
+	DeviceType deviceType = 2;//设备类型 [0]PC [1]AndroidPad预留 [3]IPad预留
+	string Account = 3;//用户名
+	string Password = 4;//密码
+}
+
+//登录数据下行
+message Protobuf_Login_RESP
+{
+	string Token = 1;//登录凭据 （本次登录之后，所有业务请求凭据，需要存储在内存中）
+	string LastLoginDate = 2;//上次登录时间（只用于呈现的字符串，若界面需求需要）
+	string RegDate = 3;//注册时间（只用于呈现的字符串，若界面需求需要）
+	LoginResultStatus Status = 4;//账号状态 （预留） [1]正常[0]被禁封
+	int64 UID = 5;
+}
+
+message Protobuf_Screnn_Frame
+{
+	int32 FrameID = 1;//帧编号
+    bytes RawBitmap = 2;//渲染层画面
+}
