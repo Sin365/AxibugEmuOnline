@@ -125,7 +125,7 @@ namespace AxibugEmuOnline.Client.UNES
 
                 //RawBitmap[_bufferPos] = _palette[ReadByte(0x3F00 + ((F.BusAddress & 0x3F00) == 0x3F00 ? F.BusAddress & 0x001F : 0)) & 0x3F];
                 byte pIdx = (byte)(ReadByte(0x3F00 + ((F.BusAddress & 0x3F00) == 0x3F00 ? F.BusAddress & 0x001F : 0)) & 0x3F);
-                //RawBitmap[_bufferPos] = _palette[pIdx];
+                RawBitmap[_bufferPos] = _palette[pIdx];
                 RawBitmap_paletteIdxCache[_bufferPos] = pIdx;
                 return;
             }
@@ -138,7 +138,7 @@ namespace AxibugEmuOnline.Client.UNES
                 _priority[_bufferPos] = paletteEntry;
                 //RawBitmap[_bufferPos] = _palette[ReadByte(0x3F00u + paletteEntry) & 0x3F];
                 byte pIdx = (byte)(ReadByte(0x3F00u + paletteEntry) & 0x3F);
-                //RawBitmap[_bufferPos] = _palette[pIdx];
+                RawBitmap[_bufferPos] = _palette[pIdx];
                 RawBitmap_paletteIdxCache[_bufferPos] = pIdx;
             }
         }
