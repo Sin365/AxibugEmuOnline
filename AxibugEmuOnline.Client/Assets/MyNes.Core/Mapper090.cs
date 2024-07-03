@@ -26,25 +26,25 @@ namespace MyNes.Core
 
     	private bool flag_s;
 
-    	private int irqCounter = 0;
+    	private int irqCounter;
 
-    	private bool IrqEnable = false;
+    	private bool IrqEnable;
 
-    	private bool irqCountDownMode = false;
+    	private bool irqCountDownMode;
 
-    	private bool irqCountUpMode = false;
+    	private bool irqCountUpMode;
 
-    	private bool irqFunkyMode = false;
+    	private bool irqFunkyMode;
 
-    	private bool irqPrescalerSize = false;
+    	private bool irqPrescalerSize;
 
-    	private int irqSource = 0;
+    	private int irqSource;
 
-    	private int irqPrescaler = 0;
+    	private int irqPrescaler;
 
-    	private int irqPrescalerXOR = 0;
+    	private int irqPrescalerXOR;
 
-    	private byte irqFunkyModeReg = 0;
+    	private byte irqFunkyModeReg;
 
     	private byte Dipswitch;
 

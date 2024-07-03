@@ -12,7 +12,7 @@ namespace MyNes.Core
 
     	internal bool Outputable;
 
-    	private bool mode = false;
+    	private bool mode;
 
     	private byte volume;
 

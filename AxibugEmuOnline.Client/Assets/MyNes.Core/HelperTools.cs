@@ -88,8 +88,7 @@ namespace MyNes.Core
     	{
     		if (File.Exists(FilePath))
     		{
-    			FileInfo fileInfo = new FileInfo(FilePath);
-    			return fileInfo.Length;
+    			return new FileInfo(FilePath).Length;
     		}
     		return 0L;
     	}
@@ -117,10 +116,8 @@ namespace MyNes.Core
     			stream.Read(buffer, 0, (int)stream.Length);
     			stream.Close();
     			string text = "";
-    			Crc32 crc = new Crc32();
-    			byte[] array = crc.ComputeHash(buffer);
-    			byte[] array2 = array;
-    			foreach (byte b in array2)
+    			byte[] array = new Crc32().ComputeHash(buffer);
+    			foreach (byte b in array)
     			{
     				text += b.ToString("x2").ToLower();
     			}
@@ -139,10 +136,8 @@ namespace MyNes.Core
     			stream.Read(buffer, 0, (int)(stream.Length - bytesToSkip));
     			stream.Close();
     			string text = "";
-    			Crc32 crc = new Crc32();
-    			byte[] array = crc.ComputeHash(buffer);
-    			byte[] array2 = array;
-    			foreach (byte b in array2)
+    			byte[] array = new Crc32().ComputeHash(buffer);
+    			foreach (byte b in array)
     			{
     				text += b.ToString("x2").ToLower();
     			}
@@ -157,10 +152,8 @@ namespace MyNes.Core
     		{
     			byte[] buffer = GetBuffer(filePath);
     			string text = "";
-    			SHA1Managed sHA1Managed = new SHA1Managed();
-    			byte[] array = sHA1Managed.ComputeHash(buffer);
-    			byte[] array2 = array;
-    			foreach (byte b in array2)
+    			byte[] array = new SHA1Managed().ComputeHash(buffer);
+    			foreach (byte b in array)
     			{
     				text += b.ToString("x2").ToLower();
     			}

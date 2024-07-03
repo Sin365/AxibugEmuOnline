@@ -10,15 +10,15 @@ namespace MyNes.Core
 
     	private Stream STR;
 
-    	private bool _IsRecording = false;
+    	private bool _IsRecording;
 
-    	private int SIZE = 0;
+    	private int SIZE;
 
-    	private int NoOfSamples = 0;
+    	private int NoOfSamples;
 
-    	private int _Time = 0;
+    	private int _Time;
 
-    	private int TimeSamples = 0;
+    	private int TimeSamples;
 
     	private short channels;
 

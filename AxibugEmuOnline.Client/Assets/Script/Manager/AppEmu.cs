@@ -92,6 +92,7 @@ namespace AxibugEmuOnline.Client.Manager
                             sevenZipExtractor.ExtractFiles(text2, fileNames);
                             text = text2 + formFilesList.SelectedRom;
                         }
+                        
                         NesEmu.LoadGame(text, out success);
                         break;
                     }

@@ -54,7 +54,7 @@ namespace ComponentAce.Compression.Libs.zlib
 
     	internal int[] tree;
 
-    	internal int tree_index = 0;
+    	internal int tree_index;
 
     	internal int need;
 
@@ -509,7 +509,6 @@ namespace ComponentAce.Compression.Libs.zlib
     								num8 += array[(num9 + num8) * 3 + 2];
     								num8 += num2 & inflate_mask[num10];
     								num10 = array[(num9 + num8) * 3];
-    								bool flag = true;
     								continue;
     							}
     							z.msg = "invalid distance code";
@@ -611,7 +610,6 @@ namespace ComponentAce.Compression.Libs.zlib
     							num5--;
     							break;
     						}
-    						bool flag2 = true;
     						continue;
     					}
     					if (((uint)num10 & 0x20u) != 0)

@@ -5,9 +5,9 @@ namespace MyNes.Core
     [BoardInfo("Caltron 6-in-1", 41)]
     internal class Mapper041 : Board
     {
-    	private bool enableReg = false;
+    	private bool enableReg;
 
-    	private int vromReg = 0;
+    	private int vromReg;
 
     	internal override void HardReset()
     	{

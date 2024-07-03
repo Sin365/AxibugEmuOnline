@@ -25,10 +25,8 @@ namespace MyNes.Core
     		byte[] buffer = new byte[fileStream.Length - 16];
     		fileStream.Read(buffer, 0, (int)(fileStream.Length - 16));
     		base.SHA1 = "";
-    		SHA1Managed sHA1Managed = new SHA1Managed();
-    		byte[] array2 = sHA1Managed.ComputeHash(buffer);
-    		byte[] array3 = array2;
-    		foreach (byte b in array3)
+    		byte[] array2 = new SHA1Managed().ComputeHash(buffer);
+    		foreach (byte b in array2)
     		{
     			base.SHA1 += b.ToString("x2").ToLower();
     		}

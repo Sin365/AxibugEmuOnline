@@ -6,9 +6,9 @@ namespace MyNes.Core
     [HassIssues]
     internal class Mapper060 : Board
     {
-    	private int latch = 0;
+    	private int latch;
 
-    	private byte menu = 0;
+    	private byte menu;
 
     	internal override string Issues => MNInterfaceLanguage.IssueMapper60;
 

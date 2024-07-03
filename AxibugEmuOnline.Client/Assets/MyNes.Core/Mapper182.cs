@@ -53,21 +53,32 @@ namespace MyNes.Core
 
     	internal override void WritePRG(ref ushort address, ref byte data)
     	{
-    		switch (address & 0xE001)
+    		int num = address & 0xE001;
+    		if (num <= 40961)
     		{
-    		case 32769:
-    			if (NMT_DEFAULT_MIRROR != Mirroring.Full)
+    			if (num <= 32769)
     			{
-    				Switch01KNMTFromMirroring(((data & 1) == 1) ? Mirroring.Horz : Mirroring.Vert);
+    				if (num != 32768 && num == 32769 && NMT_DEFAULT_MIRROR != Mirroring.Full)
+    				{
+    					Switch01KNMTFromMirroring(((data & 1) == 1) ? Mirroring.Horz : Mirroring.Vert);
+    				}
     			}
-    			break;
-    		case 40960:
-    			address_8001 = data & 7;
-    			flag_c = (data & 0x80) != 0;
-    			flag_p = (data & 0x40) != 0;
-    			SetupCHR();
-    			SetupPRG();
-    			break;
+    			else if (num != 40960)
+    			{
+    				_ = 40961;
+    			}
+    			else
+    			{
+    				address_8001 = data & 7;
+    				flag_c = (data & 0x80) != 0;
+    				flag_p = (data & 0x40) != 0;
+    				SetupCHR();
+    				SetupPRG();
+    			}
+    			return;
+    		}
+    		switch (num)
+    		{
     		case 49152:
     			switch (address_8001)
     			{

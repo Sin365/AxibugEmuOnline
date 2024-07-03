@@ -173,8 +173,10 @@ namespace ComponentAce.Compression.Libs.zlib
     		}
     		if (pending != 0)
     		{
-    			if (dstate.pending_buf.Length <= dstate.pending_out || next_out.Length <= next_out_index || dstate.pending_buf.Length < dstate.pending_out + pending || next_out.Length < next_out_index + pending)
+    			if (dstate.pending_buf.Length > dstate.pending_out && next_out.Length > next_out_index && dstate.pending_buf.Length >= dstate.pending_out + pending)
     			{
+    				_ = next_out.Length;
+    				_ = next_out_index + pending;
     			}
     			Array.Copy(dstate.pending_buf, dstate.pending_out, next_out, next_out_index, pending);
     			next_out_index += pending;

@@ -43,8 +43,7 @@ namespace MyNes.Core
     			return;
     		}
     		IsSavingState = true;
-    		Stream output = new MemoryStream();
-    		BinaryWriter bin = new BinaryWriter(output);
+    		BinaryWriter bin = new BinaryWriter(new MemoryStream());
     		bin.Write(Encoding.ASCII.GetBytes("MNS"));
     		bin.Write((byte)7);
     		for (int i = 0; i < NesEmu.SHA1.Length; i += 2)
@@ -55,13 +54,13 @@ namespace MyNes.Core
     		NesEmu.WriteStateData(ref bin);
     		byte[] outData = new byte[0];
     		ZlipWrapper.CompressData(((MemoryStream)bin.BaseStream).GetBuffer(), out outData);
-    		Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
-    		stream.Write(outData, 0, outData.Length);
+    		FileStream fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+    		fileStream.Write(outData, 0, outData.Length);
     		MyNesMain.VideoProvider.TakeSnapshotAs(fileName.Replace(".mns", ".jpg"), ".jpg");
     		bin.Flush();
     		bin.Close();
-    		stream.Flush();
-    		stream.Close();
+    		fileStream.Flush();
+    		fileStream.Close();
     		IsSavingState = false;
     		Tracer.WriteInformation("State saved at slot " + Slot);
     		MyNesMain.VideoProvider.WriteInfoNotification(MNInterfaceLanguage.Message_Info1 + " " + Slot, instant: false);
@@ -74,8 +73,7 @@ namespace MyNes.Core
     			StateFolder = Path.Combine(MyNesMain.WorkingFolder, "States");
     		}
     		Directory.CreateDirectory(StateFolder);
-    		string fileName = Path.Combine(StateFolder, Path.GetFileNameWithoutExtension(NesEmu.CurrentFilePath)) + "_" + Slot + ".mns";
-    		SaveState(fileName, saveImage: false);
+    		SaveState(Path.Combine(StateFolder, Path.GetFileNameWithoutExtension(NesEmu.CurrentFilePath)) + "_" + Slot + ".mns", saveImage: false);
     	}
 
     	public static void SaveState()
@@ -121,11 +119,11 @@ namespace MyNes.Core
     			return;
     		}
     		IsLoadingState = true;
-    		Stream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-    		byte[] array = new byte[stream.Length];
+    		FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+    		byte[] array = new byte[fileStream.Length];
     		byte[] outData = new byte[0];
-    		stream.Read(array, 0, array.Length);
-    		stream.Close();
+    		fileStream.Read(array, 0, array.Length);
+    		fileStream.Close();
     		ZlipWrapper.DecompressData(array, out outData);
     		BinaryReader bin = new BinaryReader(new MemoryStream(outData));
     		byte[] array2 = new byte[3];
@@ -172,8 +170,7 @@ namespace MyNes.Core
     			StateFolder = Path.Combine(MyNesMain.WorkingFolder, "States");
     		}
     		Directory.CreateDirectory(StateFolder);
-    		string fileName = Path.Combine(StateFolder, Path.GetFileNameWithoutExtension(NesEmu.CurrentFilePath)) + "_" + Slot + ".mns";
-    		LoadState(fileName);
+    		LoadState(Path.Combine(StateFolder, Path.GetFileNameWithoutExtension(NesEmu.CurrentFilePath)) + "_" + Slot + ".mns");
     	}
 
     	public static string GetStateFile(int slot)

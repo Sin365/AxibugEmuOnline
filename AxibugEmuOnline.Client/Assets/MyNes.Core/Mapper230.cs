@@ -4,7 +4,7 @@ namespace MyNes.Core
     [HassIssues]
     internal class Mapper230 : Board
     {
-    	private bool contraMode = false;
+    	private bool contraMode;
 
     	internal override string Issues => MNInterfaceLanguage.IssueMapper230;
 

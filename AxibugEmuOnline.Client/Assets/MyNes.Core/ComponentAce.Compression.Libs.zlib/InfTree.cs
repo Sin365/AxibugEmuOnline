@@ -398,7 +398,11 @@ namespace ComponentAce.Compression.Libs.zlib
     				}
     			}
     		}
-    		return (num5 != 0 && num4 != 1) ? (-5) : 0;
+    		if (num5 == 0 || num4 == 1)
+    		{
+    			return 0;
+    		}
+    		return -5;
     	}
 
     	internal static int inflate_trees_bits(int[] c, int[] bb, int[] tb, int[] hp, ZStream z)

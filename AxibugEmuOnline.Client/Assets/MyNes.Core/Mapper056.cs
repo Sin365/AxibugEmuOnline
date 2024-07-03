@@ -3,15 +3,15 @@ namespace MyNes.Core
     [BoardInfo("Pirate SMB3", 56)]
     internal class Mapper056 : Board
     {
-    	private int irqCounter = 0;
+    	private int irqCounter;
 
-    	private int irqLatch = 0;
+    	private int irqLatch;
 
-    	private bool irqEnabled = false;
+    	private bool irqEnabled;
 
-    	private int irqControl = 0;
+    	private int irqControl;
 
-    	private int switchControl = 0;
+    	private int switchControl;
 
     	internal override string Issues => MNInterfaceLanguage.IssueMapper56;
 

@@ -51,8 +51,7 @@ namespace MyNes.Core
     		VideoProviders = new List<IVideoProvider>();
     		AudioProviders = new List<IAudioProvider>();
     		string[] files = Directory.GetFiles(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]), "*", SearchOption.AllDirectories);
-    		string[] array = files;
-    		foreach (string text in array)
+    		foreach (string text in files)
     		{
     			try
     			{
@@ -67,8 +66,7 @@ namespace MyNes.Core
     					continue;
     				}
     				Type[] types = assembly.GetTypes();
-    				Type[] array2 = types;
-    				foreach (Type type in array2)
+    				foreach (Type type in types)
     				{
     					if (type.IsSubclassOf(typeof(Board)) && !type.IsAbstract)
     					{

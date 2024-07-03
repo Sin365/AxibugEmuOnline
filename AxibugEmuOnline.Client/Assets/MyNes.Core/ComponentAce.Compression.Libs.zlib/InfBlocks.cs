@@ -420,9 +420,8 @@ namespace ComponentAce.Compression.Libs.zlib
     						write = num4;
     						return inflate_flush(z, r);
     					}
-    					if (tb[0] == -1)
-    					{
-    					}
+    					_ = tb[0];
+    					_ = -1;
     					num6 = hufts[(tb[0] + (num3 & inflate_mask[num6])) * 3 + 1];
     					int num7 = hufts[(tb[0] + (num3 & inflate_mask[num6])) * 3 + 2];
     					if (num7 < 16)
@@ -599,7 +598,11 @@ namespace ComponentAce.Compression.Libs.zlib
 
     	internal int sync_point()
     	{
-    		return (mode == 1) ? 1 : 0;
+    		if (mode != 1)
+    		{
+    			return 0;
+    		}
+    		return 1;
     	}
 
     	internal int inflate_flush(ZStream z, int r)

@@ -5,11 +5,11 @@ namespace MyNes.Core
     [BoardInfo("Mario Baby", 42)]
     internal class Mapper042 : Board
     {
-    	private int SRAM_PRG_Page = 0;
+    	private int SRAM_PRG_Page;
 
-    	private bool irqEnable = false;
+    	private bool irqEnable;
 
-    	private int irqCounter = 0;
+    	private int irqCounter;
 
     	internal override void HardReset()
     	{

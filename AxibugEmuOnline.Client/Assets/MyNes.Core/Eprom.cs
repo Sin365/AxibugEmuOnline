@@ -25,23 +25,23 @@ namespace MyNes.Core
 
     	private byte[] data;
 
-    	private EpromMode mode = EpromMode.Data;
+    	private EpromMode mode;
 
-    	private EpromMode nextmode = EpromMode.Data;
+    	private EpromMode nextmode;
 
-    	private EpromDevice device = EpromDevice.X24C01;
+    	private EpromDevice device;
 
     	private bool psda;
 
     	private bool pscl;
 
-    	private int output = 0;
+    	private int output;
 
-    	private int cbit = 0;
+    	private int cbit;
 
-    	private int caddress = 0;
+    	private int caddress;
 
-    	private int cdata = 0;
+    	private int cdata;
 
     	private bool isRead;
 

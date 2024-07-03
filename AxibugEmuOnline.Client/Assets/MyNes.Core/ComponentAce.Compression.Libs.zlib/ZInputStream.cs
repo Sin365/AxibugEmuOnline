@@ -16,9 +16,9 @@ namespace ComponentAce.Compression.Libs.zlib
 
     	protected bool compress;
 
-    	internal Stream in_Renamed = null;
+    	internal Stream in_Renamed;
 
-    	internal bool nomoreinput = false;
+    	internal bool nomoreinput;
 
     	public virtual int FlushMode
     	{

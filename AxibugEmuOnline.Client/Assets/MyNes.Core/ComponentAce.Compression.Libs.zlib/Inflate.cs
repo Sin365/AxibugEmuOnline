@@ -250,7 +250,7 @@ namespace ComponentAce.Compression.Libs.zlib
     				case -3:
     					z.istate.mode = 13;
     					z.istate.marker = 0;
-    					goto end_IL_004b;
+    					goto end_IL_0031;
     				case 0:
     					num = f;
     					break;
@@ -327,7 +327,7 @@ namespace ComponentAce.Compression.Libs.zlib
     				{
     					return -2;
     				}
-    				end_IL_004b:
+    				end_IL_0031:
     				break;
     			}
     		}

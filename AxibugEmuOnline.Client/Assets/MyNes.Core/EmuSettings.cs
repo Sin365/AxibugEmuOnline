@@ -10,9 +10,9 @@ namespace MyNes.Core
 
     	public string SnapsFormat = ".png";
 
-    	public bool SnapsReplace = false;
+    	public bool SnapsReplace;
 
-    	public int RegionSetting = 0;
+    	public int RegionSetting;
 
     	public string StateFolder = "States";
 
