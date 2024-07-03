@@ -39,7 +39,7 @@ namespace MyNes.Core
 
     	internal byte Read5010()
     	{
-    		byte result = (byte)((irqTrip & PCMIRQenable) ? 128u : 0u);
+    		byte result = (byte)((irqTrip & PCMIRQenable) ? 128 : 0);
     		irqTrip = false;
     		NesEmu.IRQFlags &= -9;
     		return result;

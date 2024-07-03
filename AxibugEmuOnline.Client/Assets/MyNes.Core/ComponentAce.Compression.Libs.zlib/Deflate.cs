@@ -333,7 +333,15 @@ namespace ComponentAce.Compression.Libs.zlib
 
     	internal static bool smaller(short[] tree, int n, int m, byte[] depth)
     	{
-    		return tree[n * 2] < tree[m * 2] || (tree[n * 2] == tree[m * 2] && depth[n] <= depth[m]);
+    		if (tree[n * 2] >= tree[m * 2])
+    		{
+    			if (tree[n * 2] == tree[m * 2])
+    			{
+    				return depth[n] <= depth[m];
+    			}
+    			return false;
+    		}
+    		return true;
     	}
 
     	internal void scan_tree(short[] tree, int max_code)
@@ -738,9 +746,17 @@ namespace ComponentAce.Compression.Libs.zlib
     		flush_block_only(flush == 4);
     		if (strm.avail_out == 0)
     		{
-    			return (flush == 4) ? 2 : 0;
+    			if (flush != 4)
+    			{
+    				return 0;
+    			}
+    			return 2;
     		}
-    		return (flush != 4) ? 1 : 3;
+    		if (flush != 4)
+    		{
+    			return 1;
+    		}
+    		return 3;
     	}
 
     	internal void _tr_stored_block(int buf, int stored_len, bool eof)
@@ -928,7 +944,11 @@ namespace ComponentAce.Compression.Libs.zlib
     			}
     			return 0;
     		}
-    		return (flush != 4) ? 1 : 3;
+    		if (flush != 4)
+    		{
+    			return 1;
+    		}
+    		return 3;
     	}
 
     	internal int deflate_slow(int flush)
@@ -1032,7 +1052,11 @@ namespace ComponentAce.Compression.Libs.zlib
     			}
     			return 0;
     		}
-    		return (flush != 4) ? 1 : 3;
+    		if (flush != 4)
+    		{
+    			return 1;
+    		}
+    		return 3;
     	}
 
     	internal int longest_match(int cur_match)
@@ -1167,7 +1191,11 @@ namespace ComponentAce.Compression.Libs.zlib
     		head = null;
     		prev = null;
     		window = null;
-    		return (status == 113) ? (-3) : 0;
+    		if (status != 113)
+    		{
+    			return 0;
+    		}
+    		return -3;
     	}
 
     	internal int deflateParams(ZStream strm, int _level, int _strategy)
@@ -1181,7 +1209,7 @@ namespace ComponentAce.Compression.Libs.zlib
     		{
     			return -2;
     		}
-    		if (config_table[level].func != config_table[_level].func && strm.total_in != 0)
+    		if (config_table[level].func != config_table[_level].func && strm.total_in != 0L)
     		{
     			result = strm.deflate(1);
     		}
@@ -1309,16 +1337,16 @@ namespace ComponentAce.Compression.Libs.zlib
     			{
     				status = 666;
     			}
-    			if (num4 == 0 || num4 == 2)
+    			switch (num4)
     			{
+    			case 0:
+    			case 2:
     				if (strm.avail_out == 0)
     				{
     					last_flush = -1;
     				}
     				return 0;
-    			}
-    			if (num4 == 1)
-    			{
+    			case 1:
     				if (flush == 1)
     				{
     					_tr_align();
@@ -1340,6 +1368,7 @@ namespace ComponentAce.Compression.Libs.zlib
     					last_flush = -1;
     					return 0;
     				}
+    				break;
     			}
     		}
     		if (flush != 4)
@@ -1354,7 +1383,11 @@ namespace ComponentAce.Compression.Libs.zlib
     		putShortMSB((int)(strm.adler & 0xFFFF));
     		strm.flush_pending();
     		noheader = -1;
-    		return (pending == 0) ? 1 : 0;
+    		if (pending == 0)
+    		{
+    			return 1;
+    		}
+    		return 0;
     	}
 
     	static Deflate()

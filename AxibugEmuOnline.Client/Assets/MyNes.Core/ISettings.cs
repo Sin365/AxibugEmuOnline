@@ -115,7 +115,11 @@ namespace MyNes.Core
     		}
     		if (field.FieldType == typeof(bool))
     		{
-    			return ((bool)value) ? "1" : "0";
+    			if (!(bool)value)
+    			{
+    				return "0";
+    			}
+    			return "1";
     		}
     		if (field.FieldType == typeof(int))
     		{

@@ -8,7 +8,7 @@ namespace MyNes.Core
 
     	internal byte Volume;
 
-    	private int dutyStep = 0;
+    	private int dutyStep;
 
     	private int freqTimer;
 

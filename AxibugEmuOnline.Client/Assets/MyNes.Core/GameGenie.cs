@@ -138,8 +138,7 @@ namespace MyNes.Core
     		int num5 = 0;
     		int num6 = 0;
     		int num7 = 0;
-    		int num8 = 0;
-    		num8 = (code >> 7) & 1;
+    		int num8 = (code >> 7) & 1;
     		num7 = (code >> 2) & 1;
     		num6 = (code >> 1) & 1;
     		num5 = code & 1;

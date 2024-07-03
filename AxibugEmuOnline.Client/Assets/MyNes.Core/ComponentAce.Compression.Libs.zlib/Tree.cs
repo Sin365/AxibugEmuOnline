@@ -166,7 +166,11 @@ namespace ComponentAce.Compression.Libs.zlib
 
     	internal static int d_code(int dist)
     	{
-    		return (dist < 256) ? _dist_code[dist] : _dist_code[256 + SupportClass.URShift(dist, 7)];
+    		if (dist >= 256)
+    		{
+    			return _dist_code[256 + SupportClass.URShift(dist, 7)];
+    		}
+    		return _dist_code[dist];
     	}
 
     	internal void gen_bitlen(Deflate s)

@@ -5,7 +5,7 @@ namespace MyNes.Core
     [BoardInfo("11-in-1", 51)]
     internal class Mapper051 : Board
     {
-    	private int bank = 0;
+    	private int bank;
 
     	private int mode = 1;
 

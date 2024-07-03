@@ -283,11 +283,7 @@ namespace MyNes.Core
 
     	private static bool audio_playback_dac_initialized;
 
-    	public static double cpu_speed;
-
-    	public static double cpu_clock_per_frame;
-
-    	internal static double apu_target_samples_count_per_frame;
+    	public static int cpu_speed;
 
     	private static short[] audio_samples;
 
@@ -507,6 +503,8 @@ namespace MyNes.Core
 
     	private static int[] ppu_screen_pixels;
 
+    	private static int[] ppu_palette;
+
     	private static int ppu_clock_h;
 
     	internal static ushort ppu_clock_v;
@@ -561,7 +559,7 @@ namespace MyNes.Core
 
     	private static bool ppu_reg_2001_show_sprites;
 
-    	private static bool ppu_reg_2001_grayscale;
+    	private static int ppu_reg_2001_grayscale;
 
     	private static int ppu_reg_2001_emphasis;
 
@@ -651,40 +649,6 @@ namespace MyNes.Core
 
     	private static bool ppu_sprite0_should_hit;
 
-    	private static int ppu_palette_temp__val;
-
-    	private static int ppu_color_temp__level;
-
-    	private static int ppu_color_temp__red;
-
-    	private static int ppu_color_temp__blue;
-
-    	private static int ppu_color_temp__green;
-
-    	private static bool ppu_color_temp__e_red;
-
-    	private static bool ppu_color_temp__e_blue;
-
-    	private static bool ppu_color_temp__e_green;
-
-    	private static byte[] ppu_color_temp_blue__sequence = new byte[16]
-    	{
-    		7, 7, 6, 5, 4, 3, 2, 1, 2, 3,
-    		4, 5, 6, 0, 0, 0
-    	};
-
-    	private static byte[] ppu_color_temp_red___sequence = new byte[16]
-    	{
-    		7, 1, 2, 3, 4, 5, 6, 7, 6, 5,
-    		4, 3, 2, 0, 0, 0
-    	};
-
-    	private static byte[] ppu_color_temp_green_sequence = new byte[16]
-    	{
-    		7, 0, 0, 0, 1, 2, 3, 4, 5, 6,
-    		7, 6, 5, 0, 0, 0
-    	};
-
     	private static int ppu_temp_comparator;
 
     	public static bool ON;
@@ -730,10 +694,6 @@ namespace MyNes.Core
     	private static bool render_audio_is_playing;
 
     	public static EmuRegion Region;
-
-    	internal static Action EmuClockComponents;
-
-    	internal static int pal_add_cycle = 0;
 
     	private static int SystemIndex;
 
@@ -1742,22 +1702,19 @@ namespace MyNes.Core
     		switch (Region)
     		{
     		case EmuRegion.NTSC:
-    			cpu_speed = 1789773.0;
-    			cpu_clock_per_frame = 29780.5;
+    			cpu_speed = 1789773;
     			apu_ferq_f = 14914;
     			apu_ferq_e = 3728;
     			apu_ferq_l = 7456;
     			break;
     		case EmuRegion.PALB:
-    			cpu_speed = 1662607.0;
-    			cpu_clock_per_frame = 33247.5;
+    			cpu_speed = 1662607;
     			apu_ferq_f = 14914;
     			apu_ferq_e = 3728;
     			apu_ferq_l = 7456;
     			break;
     		case EmuRegion.DENDY:
-    			cpu_speed = 1773448.0;
-    			cpu_clock_per_frame = 35464.0;
+    			cpu_speed = 1773448;
     			apu_ferq_f = 14914;
     			apu_ferq_e = 3728;
     			apu_ferq_l = 7456;
@@ -2082,9 +2039,7 @@ namespace MyNes.Core
 
     	private static void CalculateAudioPlaybackValues()
     	{
-    		apu_target_samples_count_per_frame = (double)MyNesMain.RendererSettings.Audio_Frequency / emu_time_target_fps;
-    		audio_timer_ratio = cpu_clock_per_frame / apu_target_samples_count_per_frame;
-    		cpu_speed = audio_timer_ratio * (double)MyNesMain.RendererSettings.Audio_Frequency;
+    		audio_timer_ratio = (double)cpu_speed / (double)MyNesMain.RendererSettings.Audio_Frequency;
     		audio_playback_peek_limit = MyNesMain.RendererSettings.Audio_InternalPeekLimit;
     		audio_samples_count = MyNesMain.RendererSettings.Audio_InternalSamplesCount;
     		audio_playback_amplitude = MyNesMain.RendererSettings.Audio_PlaybackAmplitude;
@@ -2097,16 +2052,12 @@ namespace MyNes.Core
     		Tracer.WriteLine("AUDIO: timer ratio = " + audio_timer_ratio);
     		Tracer.WriteLine("AUDIO: internal samples count = " + audio_samples_count);
     		Tracer.WriteLine("AUDIO: amplitude = " + audio_playback_amplitude);
-    		double num = 0.0;
     		if (MyNesMain.RendererSettings.Audio_EnableFilters)
     		{
     			apu_update_playback_func = APUUpdatePlaybackWithFilters;
-    			num = cpu_speed / 14000.0;
-    			audio_low_pass_filter_14K = new SoundLowPassFilter(SoundLowPassFilter.GetK(num, 14000.0));
-    			num = cpu_speed / 90.0;
-    			audio_high_pass_filter_90 = new SoundHighPassFilter(SoundHighPassFilter.GetK(num, 90.0));
-    			num = cpu_speed / 440.0;
-    			audio_high_pass_filter_440 = new SoundHighPassFilter(SoundHighPassFilter.GetK(num, 440.0));
+    			audio_low_pass_filter_14K = new SoundLowPassFilter(SoundLowPassFilter.GetK((double)cpu_speed / 14000.0, 14000.0));
+    			audio_high_pass_filter_90 = new SoundHighPassFilter(SoundHighPassFilter.GetK((double)cpu_speed / 90.0, 90.0));
+    			audio_high_pass_filter_440 = new SoundHighPassFilter(SoundHighPassFilter.GetK((double)cpu_speed / 440.0, 440.0));
     		}
     		else
     		{
@@ -3766,11 +3717,11 @@ namespace MyNes.Core
     		SRAMFileName = Path.Combine(MyNesMain.EmuSettings.SRAMFolder, Path.GetFileNameWithoutExtension(CurrentFilePath) + ".srm");
     		if (File.Exists(SRAMFileName))
     		{
-    			Stream stream = new FileStream(SRAMFileName, FileMode.Open, FileAccess.Read);
-    			byte[] array = new byte[stream.Length];
-    			stream.Read(array, 0, array.Length);
-    			stream.Flush();
-    			stream.Close();
+    			FileStream fileStream = new FileStream(SRAMFileName, FileMode.Open, FileAccess.Read);
+    			byte[] array = new byte[fileStream.Length];
+    			fileStream.Read(array, 0, array.Length);
+    			fileStream.Flush();
+    			fileStream.Close();
     			byte[] outData = new byte[0];
     			ZlipWrapper.DecompressData(array, out outData);
     			mem_board.LoadSRAM(outData);
@@ -3894,10 +3845,10 @@ namespace MyNes.Core
     			Tracer.WriteLine("Saving SRAM ...");
     			byte[] outData = new byte[0];
     			ZlipWrapper.CompressData(mem_board.GetSRAMBuffer(), out outData);
-    			Stream stream = new FileStream(SRAMFileName, FileMode.Create, FileAccess.Write);
-    			stream.Write(outData, 0, outData.Length);
-    			stream.Flush();
-    			stream.Close();
+    			FileStream fileStream = new FileStream(SRAMFileName, FileMode.Create, FileAccess.Write);
+    			fileStream.Write(outData, 0, outData.Length);
+    			fileStream.Flush();
+    			fileStream.Close();
     			Tracer.WriteLine("SRAM saved successfully.");
     		}
     	}
@@ -4029,6 +3980,11 @@ namespace MyNes.Core
     		inputStrobe = bin.ReadInt32();
     	}
 
+    	public static void SetupPalette(int[] pal)
+    	{
+    		ppu_palette = pal;
+    	}
+
     	private static void PPUInitialize()
     	{
     		ppu_reg_update_func = new Action[8] { PPUOnRegister2000, PPUOnRegister2001, PPUOnRegister2002, PPUOnRegister2003, PPUOnRegister2004, PPUOnRegister2005, PPUOnRegister2006, PPUOnRegister2007 };
@@ -4066,11 +4022,12 @@ namespace MyNes.Core
     		ppu_bkg_pixels = new int[512];
     		ppu_spr_pixels = new int[512];
     		ppu_screen_pixels = new int[61440];
+    		ppu_palette = NTSCPaletteGenerator.GeneratePalette();
     	}
 
     	private static void PPUHardReset()
     	{
-    		ppu_reg_2001_grayscale = false;
+    		ppu_reg_2001_grayscale = 243;
     		switch (Region)
     		{
     		case EmuRegion.NTSC:
@@ -4124,7 +4081,7 @@ namespace MyNes.Core
     		ppu_reg_2001_show_sprites_in_leftmost_8_pixels_of_screen = false;
     		ppu_reg_2001_show_background = false;
     		ppu_reg_2001_show_sprites = false;
-    		ppu_reg_2001_grayscale = false;
+    		ppu_reg_2001_grayscale = 63;
     		ppu_reg_2001_emphasis = 0;
     		ppu_reg_2002_SpriteOverflow = false;
     		ppu_reg_2002_Sprite0Hit = false;
@@ -4147,12 +4104,13 @@ namespace MyNes.Core
     			if (ppu_clock_v == ppu_clock_vblank_end)
     			{
     				ppu_clock_v = 0;
+    				ppu_frame_finished = true;
     			}
     			else
     			{
     				ppu_clock_v++;
     			}
-    			ppu_clock_h = 0;
+    			ppu_clock_h -= 341;
     		}
     		if (ppu_reg_access_happened)
     		{
@@ -4179,7 +4137,6 @@ namespace MyNes.Core
     			if (ppu_clock_h == 1)
     			{
     				ppu_reg_2002_VblankStartedFlag = true;
-    				ppu_frame_finished = true;
     			}
     			PPU_NMI_Current = ppu_reg_2002_VblankStartedFlag & ppu_reg_2000_VBI;
     		}
@@ -4255,9 +4212,27 @@ namespace MyNes.Core
     				RenderPixel();
     			}
     		}
-    		else if (ppu_clock_v < 240)
+    		else
     		{
-    			ppu_screen_pixels[ppu_clock_h - 1 + ppu_clock_v * 256] = MakeRGBColor(ppu_vram_addr);
+    			if (ppu_clock_v >= 240)
+    			{
+    				return;
+    			}
+    			if ((ppu_vram_addr & 0x3F00) == 16128)
+    			{
+    				if ((ppu_vram_addr & 3) == 0)
+    				{
+    					ppu_screen_pixels[ppu_clock_h - 1 + ppu_clock_v * 256] = ppu_palette[(ppu_palette_bank[ppu_vram_addr & 0xC] & ppu_reg_2001_grayscale) | ppu_reg_2001_emphasis];
+    				}
+    				else
+    				{
+    					ppu_screen_pixels[ppu_clock_h - 1 + ppu_clock_v * 256] = ppu_palette[(ppu_palette_bank[ppu_vram_addr & 0x1F] & ppu_reg_2001_grayscale) | ppu_reg_2001_emphasis];
+    				}
+    			}
+    			else
+    			{
+    				ppu_screen_pixels[ppu_clock_h - 1 + ppu_clock_v * 256] = ppu_palette[(ppu_palette_bank[0] & ppu_reg_2001_grayscale) | ppu_reg_2001_emphasis];
+    			}
     		}
     	}
 
@@ -4660,51 +4635,14 @@ namespace MyNes.Core
     		{
     			ppu_reg_2002_Sprite0Hit = true;
     		}
-    		ppu_screen_pixels[ppu_render_x + ppu_render_y] = MakeRGBColor(ppu_current_pixel);
-    	}
-
-    	private static int MakeRGBColor(int pixel)
-    	{
-    		pixel = ((pixel < 16128) ? 15 : ((((uint)ppu_current_pixel & 3u) != 0) ? ppu_palette_bank[pixel & 0x1F] : ppu_palette_bank[pixel & 0xC]));
-    		ppu_palette_temp__val = pixel & 0xF;
-    		ppu_color_temp__level = (pixel & 0x30) << 2;
-    		if (ppu_reg_2001_grayscale)
+    		if ((ppu_current_pixel & 3) == 0)
     		{
-    			ppu_palette_temp__val = 0;
-    		}
-    		ppu_color_temp__blue = (ppu_color_temp_blue__sequence[ppu_palette_temp__val] << 3) | ppu_color_temp__level;
-    		ppu_color_temp__red = (ppu_color_temp_red___sequence[ppu_palette_temp__val] << 3) | ppu_color_temp__level;
-    		ppu_color_temp__green = (ppu_color_temp_green_sequence[ppu_palette_temp__val] << 3) | ppu_color_temp__level;
-    		if (SystemIndex == 0)
-    		{
-    			ppu_color_temp__e_red = (ppu_reg_2001_emphasis & 1) != 0;
+    			ppu_screen_pixels[ppu_render_x + ppu_render_y] = ppu_palette[(ppu_palette_bank[ppu_current_pixel & 0xC] & ppu_reg_2001_grayscale) | ppu_reg_2001_emphasis];
     		}
     		else
     		{
-    			ppu_color_temp__e_green = (ppu_reg_2001_emphasis & 1) != 0;
+    			ppu_screen_pixels[ppu_render_x + ppu_render_y] = ppu_palette[(ppu_palette_bank[ppu_current_pixel & 0x1F] & ppu_reg_2001_grayscale) | ppu_reg_2001_emphasis];
     		}
-    		if (SystemIndex == 0)
-    		{
-    			ppu_color_temp__e_green = (ppu_reg_2001_emphasis & 2) != 0;
-    		}
-    		else
-    		{
-    			ppu_color_temp__e_red = (ppu_reg_2001_emphasis & 2) != 0;
-    		}
-    		ppu_color_temp__e_blue = (ppu_reg_2001_emphasis & 4) != 0;
-    		if (ppu_color_temp__e_blue)
-    		{
-    			ppu_color_temp__blue |= 7;
-    		}
-    		if (ppu_color_temp__e_red)
-    		{
-    			ppu_color_temp__red |= 7;
-    		}
-    		if (ppu_color_temp__e_green)
-    		{
-    			ppu_color_temp__green |= 7;
-    		}
-    		return (ppu_color_temp__red << 16) | (ppu_color_temp__green << 8) | ppu_color_temp__blue;
     	}
 
     	private static void PPUIORead(ref ushort addr, out byte value)
@@ -4781,8 +4719,8 @@ namespace MyNes.Core
     			ppu_reg_2001_show_sprites_in_leftmost_8_pixels_of_screen = (ppu_reg_io_db & 4) != 0;
     			ppu_reg_2001_show_background = (ppu_reg_io_db & 8) != 0;
     			ppu_reg_2001_show_sprites = (ppu_reg_io_db & 0x10) != 0;
-    			ppu_reg_2001_grayscale = (ppu_reg_io_db & 1) != 0;
-    			ppu_reg_2001_emphasis = (ppu_reg_io_db & 0xE0) >> 5;
+    			ppu_reg_2001_grayscale = ((((uint)ppu_reg_io_db & (true ? 1u : 0u)) != 0) ? 48 : 63);
+    			ppu_reg_2001_emphasis = (ppu_reg_io_db & 0xE0) << 1;
     		}
     	}
 
@@ -4978,12 +4916,20 @@ namespace MyNes.Core
 
     	internal static bool IsRenderingOn()
     	{
-    		return ppu_reg_2001_show_background || ppu_reg_2001_show_sprites;
+    		if (!ppu_reg_2001_show_background)
+    		{
+    			return ppu_reg_2001_show_sprites;
+    		}
+    		return true;
     	}
 
     	internal static bool IsInRender()
     	{
-    		return ppu_clock_v < 240 || ppu_clock_v == ppu_clock_vblank_end;
+    		if (ppu_clock_v >= 240)
+    		{
+    			return ppu_clock_v == ppu_clock_vblank_end;
+    		}
+    		return true;
     	}
 
     	private static void PPUWriteState(ref BinaryWriter bin)
@@ -5012,7 +4958,7 @@ namespace MyNes.Core
     		bin.Write(ppu_reg_2001_show_sprites_in_leftmost_8_pixels_of_screen);
     		bin.Write(ppu_reg_2001_show_background);
     		bin.Write(ppu_reg_2001_show_sprites);
-    		bin.Write(ppu_reg_2001_grayscale ? 1 : 0);
+    		bin.Write(ppu_reg_2001_grayscale);
     		bin.Write(ppu_reg_2001_emphasis);
     		bin.Write(ppu_reg_2002_SpriteOverflow);
     		bin.Write(ppu_reg_2002_Sprite0Hit);
@@ -5084,7 +5030,7 @@ namespace MyNes.Core
     		ppu_reg_2001_show_sprites_in_leftmost_8_pixels_of_screen = bin.ReadBoolean();
     		ppu_reg_2001_show_background = bin.ReadBoolean();
     		ppu_reg_2001_show_sprites = bin.ReadBoolean();
-    		ppu_reg_2001_grayscale = bin.ReadInt32() == 1;
+    		ppu_reg_2001_grayscale = bin.ReadInt32();
     		ppu_reg_2001_emphasis = bin.ReadInt32();
     		ppu_reg_2002_SpriteOverflow = bin.ReadBoolean();
     		ppu_reg_2002_Sprite0Hit = bin.ReadBoolean();
@@ -5133,8 +5079,7 @@ namespace MyNes.Core
     	internal static void CheckGame(string fileName, out bool valid)
     	{
     		string text = Path.GetExtension(fileName).ToLower();
-    		string text2 = text;
-    		if (text2 == ".nes")
+    		if (text != null && text == ".nes")
     		{
     			Tracer.WriteLine("Checking INES header ...");
     			INes nes = new INes();
@@ -5170,7 +5115,6 @@ namespace MyNes.Core
     		{
     			Tracer.WriteWarning("Nes Cart database file cannot be located at " + text);
     		}
-    		EmuClockComponents = EmuClockComponentsNTSC;
     		FrameLimiterEnabled = true;
     		CPUInitialize();
     		PPUInitialize();
@@ -5195,7 +5139,7 @@ namespace MyNes.Core
     		Tracer.WriteError("Faild to initialize the renderers methods. Please use the method 'SetupRenderingMethods' to initialize the renderers methods before you can run the emulation.");
     	}
 
-    	public static void LoadGame(string fileName, out bool success)
+    	public static void LoadGame(string fileName, out bool success, bool useThread)
     	{
     		if (!render_initialized)
     		{
@@ -5205,8 +5149,7 @@ namespace MyNes.Core
     			return;
     		}
     		string text = Path.GetExtension(fileName).ToLower();
-    		string text2 = text;
-    		if (text2 == ".nes")
+    		if (text != null && text == ".nes")
     		{
     			Tracer.WriteLine("Checking INES header ...");
     			INes nes = new INes();
@@ -5220,22 +5163,22 @@ namespace MyNes.Core
     					ShutDown();
     				}
     				Tracer.WriteLine("INES header is valid, loading game ...");
-    				MEMInitialize(nes);
     				ApplyRegionSetting();
+    				MEMInitialize(nes);
     				ApplyAudioSettings();
     				ApplyFrameSkipSettings();
+    				ApplyPaletteSetting();
     				PORTSInitialize();
     				hardReset();
     				Tracer.WriteLine("EMU is ready.");
     				success = true;
-    				emu_frame_clocking_mode = !MyNesMain.RendererSettings.UseEmuThread;
+    				emu_frame_clocking_mode = !useThread;
     				ON = true;
     				PAUSED = false;
-    				isPaused = false;
-    				FrameLimiterEnabled = true;
-    				if (MyNesMain.RendererSettings.UseEmuThread)
+    				if (useThread)
     				{
     					Tracer.WriteLine("Running in a thread ... using custom frame limiter.");
+    					FrameLimiterEnabled = true;
     					mainThread = new Thread(EmuClock);
     					mainThread.Start();
     				}
@@ -5346,107 +5289,20 @@ namespace MyNes.Core
     		NesEmu.EmuShutdown?.Invoke(null, new EventArgs());
     	}
 
-    	public static void EMUClockFrame()
+    	internal static void EMUClockFrame()
     	{
-    		if (PAUSED)
-    		{
-    			render_audio_get_is_playing(out render_audio_is_playing);
-    			if (render_audio_is_playing)
-    			{
-    				render_audio_toggle_pause(paused: true);
-    			}
-    			shortucts.Update();
-    			switch (emu_request_mode)
-    			{
-    			case RequestMode.HardReset:
-    				hardReset();
-    				PAUSED = false;
-    				emu_request_mode = RequestMode.None;
-    				break;
-    			case RequestMode.SoftReset:
-    				softReset();
-    				PAUSED = false;
-    				emu_request_mode = RequestMode.None;
-    				break;
-    			case RequestMode.SaveState:
-    				StateHandler.SaveState();
-    				PAUSED = false;
-    				emu_request_mode = RequestMode.None;
-    				break;
-    			case RequestMode.LoadState:
-    				StateHandler.LoadState();
-    				PAUSED = false;
-    				emu_request_mode = RequestMode.None;
-    				break;
-    			case RequestMode.TakeSnapshot:
-    				MyNesMain.VideoProvider.TakeSnapshot();
-    				PAUSED = false;
-    				emu_request_mode = RequestMode.None;
-    				break;
-    			}
-    			isPaused = true;
-    			return;
-    		}
     		emu_frame_done = false;
-    		while (!ppu_frame_finished && ON)
+    		while (!emu_frame_done && ON)
     		{
-    			CPUClock();
-    		}
-    		if (!FrameSkipEnabled)
-    		{
-    			render_video(ref ppu_screen_pixels);
-    		}
-    		else
-    		{
-    			FrameSkipCounter++;
-    			if (FrameSkipCounter >= FrameSkipInterval)
+    			if (!PAUSED)
     			{
-    				render_video(ref ppu_screen_pixels);
-    				FrameSkipCounter = 0;
+    				CPUClock();
+    			}
+    			else
+    			{
+    				Thread.Sleep(100);
     			}
     		}
-    		isPaused = false;
-    		ppu_frame_finished = false;
-    		emu_frame_done = true;
-    		joypad1.Update();
-    		joypad2.Update();
-    		if (IsFourPlayers)
-    		{
-    			joypad3.Update();
-    			joypad4.Update();
-    		}
-    		shortucts.Update();
-    		if (SoundEnabled)
-    		{
-    			render_audio_get_is_playing(out render_audio_is_playing);
-    			if (!render_audio_is_playing)
-    			{
-    				render_audio_toggle_pause(paused: false);
-    			}
-    			render_audio(ref audio_samples, ref audio_samples_added);
-    			audio_w_pos = 0;
-    			audio_samples_added = 0;
-    			audio_timer = 0.0;
-    		}
-    		fps_time_token = GetTime() - fps_time_start;
-    		fps_time_last = GetTime();
-    		fps_time_frame_time = fps_time_last - fps_time_start;
-    		fps_time_start = GetTime();
-    	}
-
-    	public static void EMUClockSamples(int samples_required, out int audio_added_samples)
-    	{
-    		int num = audio_samples_added;
-    		while (samples_required > 0 && audio_w_pos < audio_samples_count)
-    		{
-    			CPUClock();
-    			if (audio_samples_added - num >= 1)
-    			{
-    				samples_required--;
-    			}
-    			num = audio_samples_added;
-    		}
-    		audio_added_samples = audio_samples_added;
     	}
 
     	private static void EmuClock()
@@ -5501,29 +5357,12 @@ namespace MyNes.Core
     		}
     	}
 
-    	internal static void EmuClockComponentsNTSC()
+    	internal static void EmuClockComponents()
     	{
     		PPUClock();
     		PollInterruptStatus();
     		PPUClock();
     		PPUClock();
-    		APUClock();
-    		DMAClock();
-    		mem_board.OnCPUClock();
-    	}
-
-    	internal static void EmuClockComponentsPALB()
-    	{
-    		PPUClock();
-    		PollInterruptStatus();
-    		PPUClock();
-    		PPUClock();
-    		pal_add_cycle++;
-    		if (pal_add_cycle == 5)
-    		{
-    			pal_add_cycle = 0;
-    			PPUClock();
-    		}
     		APUClock();
     		DMAClock();
     		mem_board.OnCPUClock();
@@ -5611,68 +5450,103 @@ namespace MyNes.Core
     		fps_time_period = period;
     	}
 
-    	public static void GetTargetFPS(out double fps)
-    	{
-    		fps = emu_time_target_fps;
-    	}
-
     	public static void ApplyRegionSetting()
     	{
     		switch ((RegionSetting)MyNesMain.EmuSettings.RegionSetting)
     		{
     		case RegionSetting.AUTO:
-    		{
     			Tracer.WriteLine("REGION = AUTO");
     			Region = EmuRegion.NTSC;
-    			EmuClockComponents = EmuClockComponentsNTSC;
-    			bool flag = false;
-    			if (mem_board != null && mem_board.IsGameFoundOnDB)
-    			{
-    				Tracer.WriteLine("REGION SELECTION IS FROM DATABASE !!");
-    				if (mem_board.GameCartInfo.System.ToUpper().Contains("PAL"))
-    				{
-    					Region = EmuRegion.PALB;
-    					EmuClockComponents = EmuClockComponentsPALB;
-    					flag = true;
-    				}
-    				else if (mem_board.GameCartInfo.System.ToUpper().Contains("DENDY"))
-    				{
-    					Region = EmuRegion.DENDY;
-    					EmuClockComponents = EmuClockComponentsNTSC;
-    					flag = true;
-    				}
-    				else
-    				{
-    					Region = EmuRegion.NTSC;
-    					EmuClockComponents = EmuClockComponentsNTSC;
-    					flag = true;
-    				}
-    			}
-    			if (!flag && CurrentFilePath.Contains("(E)"))
+    			if (CurrentFilePath.Contains("(E)"))
     			{
     				Region = EmuRegion.PALB;
-    				EmuClockComponents = EmuClockComponentsPALB;
     			}
     			Tracer.WriteLine("REGION SELECTED: " + Region);
     			break;
-    		}
     		case RegionSetting.ForceNTSC:
     			Tracer.WriteLine("REGION: FORCE NTSC");
     			Region = EmuRegion.NTSC;
-    			EmuClockComponents = EmuClockComponentsNTSC;
     			break;
     		case RegionSetting.ForcePALB:
     			Tracer.WriteLine("REGION: FORCE PALB");
     			Region = EmuRegion.PALB;
-    			EmuClockComponents = EmuClockComponentsPALB;
     			break;
     		case RegionSetting.ForceDENDY:
     			Tracer.WriteLine("REGION: FORCE DENDY");
     			Region = EmuRegion.DENDY;
-    			EmuClockComponents = EmuClockComponentsNTSC;
     			break;
     		}
     		SystemIndex = (int)Region;
+    	}
+
+    	public static void ApplyPaletteSetting()
+    	{
+    		Tracer.WriteLine("Loading palette generators values from settings...");
+    		NTSCPaletteGenerator.brightness = MyNesMain.RendererSettings.Palette_NTSC_brightness;
+    		NTSCPaletteGenerator.contrast = MyNesMain.RendererSettings.Palette_NTSC_contrast;
+    		NTSCPaletteGenerator.gamma = MyNesMain.RendererSettings.Palette_NTSC_gamma;
+    		NTSCPaletteGenerator.hue_tweak = MyNesMain.RendererSettings.Palette_NTSC_hue_tweak;
+    		NTSCPaletteGenerator.saturation = MyNesMain.RendererSettings.Palette_NTSC_saturation;
+    		PALBPaletteGenerator.brightness = MyNesMain.RendererSettings.Palette_PALB_brightness;
+    		PALBPaletteGenerator.contrast = MyNesMain.RendererSettings.Palette_PALB_contrast;
+    		PALBPaletteGenerator.gamma = MyNesMain.RendererSettings.Palette_PALB_gamma;
+    		PALBPaletteGenerator.hue_tweak = MyNesMain.RendererSettings.Palette_PALB_hue_tweak;
+    		PALBPaletteGenerator.saturation = MyNesMain.RendererSettings.Palette_PALB_saturation;
+    		Tracer.WriteLine("Setting up palette ....");
+    		switch ((PaletteSelectSetting)MyNesMain.RendererSettings.Palette_PaletteSetting)
+    		{
+    		case PaletteSelectSetting.AUTO:
+    			Tracer.WriteLine("Palette set to auto detect depending on region.");
+    			switch (Region)
+    			{
+    			case EmuRegion.NTSC:
+    				SetupPalette(NTSCPaletteGenerator.GeneratePalette());
+    				Tracer.WriteLine("Region is NTSC, Palette set from NTSC generator.");
+    				break;
+    			case EmuRegion.PALB:
+    			case EmuRegion.DENDY:
+    				SetupPalette(PALBPaletteGenerator.GeneratePalette());
+    				Tracer.WriteLine("Region is PALB/DENDY, Palette set from PALB generator.");
+    				break;
+    			}
+    			break;
+    		case PaletteSelectSetting.ForceNTSC:
+    			Tracer.WriteLine("Palette set to always use NTSC palette generator.");
+    			SetupPalette(NTSCPaletteGenerator.GeneratePalette());
+    			Tracer.WriteLine("Palette set from NTSC generator.");
+    			break;
+    		case PaletteSelectSetting.ForcePALB:
+    			Tracer.WriteLine("Palette set to always use PALB palette generator.");
+    			SetupPalette(NTSCPaletteGenerator.GeneratePalette());
+    			Tracer.WriteLine("Palette set from PALB generator.");
+    			break;
+    		case PaletteSelectSetting.File:
+    		{
+    			Tracer.WriteLine("Palette set to load from file.");
+    			string fullPath = Path.GetFullPath(MyNesMain.RendererSettings.Palette_CurrentPaletteFilePath);
+    			if (File.Exists(fullPath))
+    			{
+    				PaletteFileWrapper.LoadFile(fullPath, out var palette);
+    				SetupPalette(palette);
+    				Tracer.WriteLine("Palette set from file: " + fullPath);
+    				break;
+    			}
+    			Tracer.WriteError("Palette file: " + fullPath + " is not exist. Setting up palette from generators.");
+    			switch (Region)
+    			{
+    			case EmuRegion.NTSC:
+    				SetupPalette(NTSCPaletteGenerator.GeneratePalette());
+    				Tracer.WriteLine("Region is NTSC, Palette set from NTSC generator.");
+    				break;
+    			case EmuRegion.PALB:
+    			case EmuRegion.DENDY:
+    				SetupPalette(PALBPaletteGenerator.GeneratePalette());
+    				Tracer.WriteLine("Region is PALB/DENDY, Palette set from PALB generator.");
+    				break;
+    			}
+    			break;
+    		}
+    		}
     	}
 
     	internal static void WriteStateData(ref BinaryWriter bin)

@@ -82,7 +82,9 @@ namespace MyNes.Core
 
     	private MMC5Pcm snd_3;
 
-    	private double[][][][][] mix_table;
+    	private double[] audio_pulse_table;
+
+    	private double[] audio_tnd_table;
 
     	internal override string Issues => MNInterfaceLanguage.IssueMapper5;
 
@@ -92,46 +94,29 @@ namespace MyNes.Core
     		snd_1 = new MMC5Sqr();
     		snd_2 = new MMC5Sqr();
     		snd_3 = new MMC5Pcm();
-    		mix_table = new double[16][][][][];
-    		for (int i = 0; i < 16; i++)
+    		audio_pulse_table = new double[32];
+    		for (int i = 0; i < 32; i++)
     		{
-    			mix_table[i] = new double[16][][][];
-    			for (int j = 0; j < 16; j++)
-    			{
-    				mix_table[i][j] = new double[16][][];
-    				for (int k = 0; k < 16; k++)
-    				{
-    					mix_table[i][j][k] = new double[16][];
-    					for (int l = 0; l < 16; l++)
-    					{
-    						mix_table[i][j][k][l] = new double[256];
-    						for (int m = 0; m < 256; m++)
-    						{
-    							double num = 95.88 / (8128.0 / (double)(i + j) + 100.0);
-    							double num2 = 159.79 / (1.0 / ((double)k / 8227.0 + (double)l / 12241.0 + (double)m / 22638.0) + 100.0);
-    							mix_table[i][j][k][l][m] = num + num2;
-    						}
-    					}
-    				}
-    			}
+    			audio_pulse_table[i] = 95.52 / (8128.0 / (double)i + 100.0);
+    		}
+    		audio_tnd_table = new double[204];
+    		for (int j = 0; j < 204; j++)
+    		{
+    			audio_tnd_table[j] = 163.67 / (24329.0 / (double)j + 100.0);
     		}
     	}
 
     	internal override void HardReset()
     	{
     		base.HardReset();
-    		string text = SHA1.ToUpper();
-    		string text2 = text;
-    		if (!(text2 == "37267833C984F176DB4B0BC9D45DABA0FFF45304"))
+    		switch (SHA1.ToUpper())
     		{
-    			if (text2 == "800AEFE756E85A0A78CCB4DAE68EBBA5DF24BF41")
-    			{
-    				useSRAMmirroring = true;
-    			}
-    		}
-    		else
-    		{
+    		case "37267833C984F176DB4B0BC9D45DABA0FFF45304":
     			useSRAMmirroring = true;
+    			break;
+    		case "800AEFE756E85A0A78CCB4DAE68EBBA5DF24BF41":
+    			useSRAMmirroring = true;
+    			break;
     		}
     		Console.WriteLine("MMC5: using PRG RAM mirroring = " + useSRAMmirroring);
     		CHROffset_spr = new int[8];
@@ -273,8 +258,7 @@ namespace MyNes.Core
     		case 20758:
     		{
     			int num = prg_mode;
-    			int num2 = num;
-    			if ((uint)(num2 - 2) <= 1u)
+    			if ((uint)(num - 2) <= 1u)
     			{
     				Toggle08KPRG_RAM((value & 0x80) == 0, PRGArea.AreaC000);
     				Switch08KPRG(value & 0x7F, PRGArea.AreaC000);
@@ -531,9 +515,7 @@ namespace MyNes.Core
     			{
     				split_doit = split_watch_tile >= split_tile;
     			}
-    			if (!split_doit)
-    			{
-    			}
+    			_ = split_doit;
     		}
     		if (ExRAM_mode == 1)
     		{
@@ -571,9 +553,7 @@ namespace MyNes.Core
 
     	internal override void ReadNMT(ref ushort address, out byte data)
     	{
-    		if (split_doit)
-    		{
-    		}
+    		_ = split_doit;
     		if (ExRAM_mode == 1)
     		{
     			if ((address & 0x3FF) <= 959)
@@ -756,7 +736,7 @@ namespace MyNes.Core
 
     	internal override double APUGetSample()
     	{
-    		return mix_table[snd_1.output][snd_2.output][0][0][snd_3.output];
+    		return audio_pulse_table[snd_1.output + snd_2.output] + audio_tnd_table[snd_3.output];
     	}
 
     	internal override void APUApplyChannelsSettings()

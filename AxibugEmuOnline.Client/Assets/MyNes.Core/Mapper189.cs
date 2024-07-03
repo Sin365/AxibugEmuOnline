@@ -68,8 +68,7 @@ namespace MyNes.Core
     		case 32769:
     		{
     			int num = address_8001;
-    			int num2 = num;
-    			if ((uint)num2 <= 5u)
+    			if ((uint)num <= 5u)
     			{
     				chr_reg[address_8001] = data;
     				SetupCHR();

@@ -10,9 +10,9 @@ namespace MyNes.Core
 
     	private byte[] reg = new byte[4];
 
-    	private byte shift = 0;
+    	private byte shift;
 
-    	private byte buffer = 0;
+    	private byte buffer;
 
     	private bool flag_p;
 
