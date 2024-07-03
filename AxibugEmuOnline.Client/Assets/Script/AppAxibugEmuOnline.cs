@@ -17,7 +17,8 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppLogin login;
         public static AppChat chat;
         public static UserDataManager user;
-        public static AppGame game;
+        public static AppNetGame netgame;
+        public static AppEmu emu;
 
         public static void Init()
         {
@@ -27,7 +28,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             login = new AppLogin();
             chat = new AppChat();
             user = new UserDataManager();
-            game = new AppGame();
+            emu = new AppEmu();
+            netgame = new AppNetGame();
         }
 
         public static bool Connect(string IP, int port)
