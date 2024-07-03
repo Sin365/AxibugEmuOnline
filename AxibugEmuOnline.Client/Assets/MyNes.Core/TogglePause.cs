@@ -1,4 +1,3 @@
-namespace MyNes.Core
-{
-    internal delegate void TogglePause(bool paused);
-}
+namespace MyNes.Core;
+
+internal delegate void TogglePause(bool paused);

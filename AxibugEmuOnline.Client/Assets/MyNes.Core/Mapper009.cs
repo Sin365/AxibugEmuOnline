@@ -1,7 +1,6 @@
-namespace MyNes.Core
+namespace MyNes.Core;
+
+[BoardInfo("MMC2", 9)]
+internal class Mapper009 : MMC2
 {
-    [BoardInfo("MMC2", 9)]
-    internal class Mapper009 : MMC2
-    {
-    }
 }

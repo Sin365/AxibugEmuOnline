@@ -1,10 +1,9 @@
-namespace MyNes.Core
+namespace MyNes.Core;
+
+internal enum NTArea : byte
 {
-    internal enum NTArea : byte
-    {
-    	Area2000NT0,
-    	Area2400NT1,
-    	Area2800NT2,
-    	Area2C00NT3
-    }
+	Area2000NT0,
+	Area2400NT1,
+	Area2800NT2,
+	Area2C00NT3
 }
