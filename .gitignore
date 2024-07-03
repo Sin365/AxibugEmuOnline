@@ -1,0 +1,5 @@
+/AxibugEmuOnline.Client/*.vsconfig
+/AxibugEmuOnline.Client/Library/
+/AxibugEmuOnline.Client/Temp/
+/AxibugEmuOnline.Client/.vs/
+/AxibugEmuOnline.Client/*.csproj
