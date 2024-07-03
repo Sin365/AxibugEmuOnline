@@ -1,9 +1,10 @@
-namespace MyNes.Core;
-
-public enum PaletteSelectSetting
+namespace MyNes.Core
 {
-	AUTO,
-	ForceNTSC,
-	ForcePALB,
-	File
+    public enum PaletteSelectSetting
+    {
+    	AUTO,
+    	ForceNTSC,
+    	ForcePALB,
+    	File
+    }
 }

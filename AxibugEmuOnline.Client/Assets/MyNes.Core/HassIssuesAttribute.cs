@@ -1,7 +1,8 @@
 using System;
 
-namespace MyNes.Core;
-
-internal class HassIssuesAttribute : Attribute
+namespace MyNes.Core
 {
+    internal class HassIssuesAttribute : Attribute
+    {
+    }
 }

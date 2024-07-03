@@ -1,9 +1,10 @@
-namespace MyNes.Core;
-
-public enum RegionSetting
+namespace MyNes.Core
 {
-	AUTO,
-	ForceNTSC,
-	ForcePALB,
-	ForceDENDY
+    public enum RegionSetting
+    {
+    	AUTO,
+    	ForceNTSC,
+    	ForcePALB,
+    	ForceDENDY
+    }
 }

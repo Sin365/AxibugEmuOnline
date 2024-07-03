@@ -1,8 +1,9 @@
-namespace MyNes.Core;
-
-internal class BlankJoypad : IJoypadConnecter
+namespace MyNes.Core
 {
-	public override void Update()
-	{
-	}
+    internal class BlankJoypad : IJoypadConnecter
+    {
+    	public override void Update()
+    	{
+    	}
+    }
 }
