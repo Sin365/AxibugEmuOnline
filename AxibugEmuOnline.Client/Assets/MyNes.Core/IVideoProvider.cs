@@ -1,40 +1,41 @@
-namespace MyNes.Core;
-
-public interface IVideoProvider
+namespace MyNes.Core
 {
-	string Name { get; }
+    public interface IVideoProvider
+    {
+    	string Name { get; }
 
-	string ID { get; }
+    	string ID { get; }
 
-	void WriteErrorNotification(string message, bool instant);
+    	void WriteErrorNotification(string message, bool instant);
 
-	void WriteInfoNotification(string message, bool instant);
+    	void WriteInfoNotification(string message, bool instant);
 
-	void WriteWarningNotification(string message, bool instant);
+    	void WriteWarningNotification(string message, bool instant);
 
-	void TakeSnapshotAs(string path, string format);
+    	void TakeSnapshotAs(string path, string format);
 
-	void TakeSnapshot();
+    	void TakeSnapshot();
 
-	void Initialize();
+    	void Initialize();
 
-	void ShutDown();
+    	void ShutDown();
 
-	void SignalToggle(bool started);
+    	void SignalToggle(bool started);
 
-	void SubmitFrame(ref int[] buffer);
+    	void SubmitFrame(ref int[] buffer);
 
-	void ResizeBegin();
+    	void ResizeBegin();
 
-	void ResizeEnd();
+    	void ResizeEnd();
 
-	void ApplyRegionChanges();
+    	void ApplyRegionChanges();
 
-	void Resume();
+    	void Resume();
 
-	void ToggleAspectRatio(bool keep_aspect);
+    	void ToggleAspectRatio(bool keep_aspect);
 
-	void ToggleFPS(bool show_fps);
+    	void ToggleFPS(bool show_fps);
 
-	void ApplyFilter();
+    	void ApplyFilter();
+    }
 }

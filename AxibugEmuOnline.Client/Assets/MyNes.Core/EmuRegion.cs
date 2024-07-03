@@ -1,8 +1,9 @@
-namespace MyNes.Core;
-
-public enum EmuRegion
+namespace MyNes.Core
 {
-	NTSC,
-	PALB,
-	DENDY
+    public enum EmuRegion
+    {
+    	NTSC,
+    	PALB,
+    	DENDY
+    }
 }

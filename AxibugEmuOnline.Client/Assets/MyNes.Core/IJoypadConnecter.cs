@@ -1,17 +1,18 @@
-namespace MyNes.Core;
-
-public abstract class IJoypadConnecter
+namespace MyNes.Core
 {
-	protected byte DATA;
+    public abstract class IJoypadConnecter
+    {
+    	protected byte DATA;
 
-	public abstract void Update();
+    	public abstract void Update();
 
-	public virtual void Destroy()
-	{
-	}
+    	public virtual void Destroy()
+    	{
+    	}
 
-	public virtual byte GetData()
-	{
-		return DATA;
-	}
+    	public virtual byte GetData()
+    	{
+    		return DATA;
+    	}
+    }
 }

@@ -1,9 +1,10 @@
-namespace MyNes.Core;
-
-public enum TracerStatus
+namespace MyNes.Core
 {
-	Normal,
-	Error,
-	Warning,
-	Infromation
+    public enum TracerStatus
+    {
+    	Normal,
+    	Error,
+    	Warning,
+    	Infromation
+    }
 }
