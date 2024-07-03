@@ -1,29 +1,26 @@
-namespace MyNes.Core
+namespace MyNes.Core;
+
+internal struct BankInfo
 {
+	public bool IsRAM;
 
+	public bool Enabled;
 
-    internal struct BankInfo
-    {
-        public bool IsRAM;
+	public bool Writable;
 
-        public bool Enabled;
+	public bool IsBattery;
 
-        public bool Writable;
+	public string ID;
 
-        public bool IsBattery;
+	public byte[] DATA;
 
-        public string ID;
-
-        public byte[] DATA;
-
-        public BankInfo(string ID, bool IsRAM, bool Writable, bool Enabled, bool IsBattery, byte[] DATA)
-        {
-            this.ID = ID;
-            this.IsRAM = IsRAM;
-            this.Writable = Writable;
-            this.Enabled = Enabled;
-            this.DATA = DATA;
-            this.IsBattery = IsBattery;
-        }
-    }
+	public BankInfo(string ID, bool IsRAM, bool Writable, bool Enabled, bool IsBattery, byte[] DATA)
+	{
+		this.ID = ID;
+		this.IsRAM = IsRAM;
+		this.Writable = Writable;
+		this.Enabled = Enabled;
+		this.DATA = DATA;
+		this.IsBattery = IsBattery;
+	}
 }

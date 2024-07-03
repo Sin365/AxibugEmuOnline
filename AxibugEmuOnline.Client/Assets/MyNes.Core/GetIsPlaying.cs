@@ -1,4 +1,3 @@
-namespace MyNes.Core
-{
-    internal delegate void GetIsPlaying(out bool playing);
-}
+namespace MyNes.Core;
+
+internal delegate void GetIsPlaying(out bool playing);

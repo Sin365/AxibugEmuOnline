@@ -1,7 +1,6 @@
-namespace MyNes.Core
+namespace MyNes.Core;
+
+public interface IShortcutsHandler
 {
-    public interface IShortcutsHandler
-    {
-    	void Update();
-    }
+	void Update();
 }

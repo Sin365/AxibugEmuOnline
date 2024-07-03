@@ -1,29 +1,28 @@
-namespace MyNes.Core
+namespace MyNes.Core;
+
+public interface IAudioProvider
 {
-    public interface IAudioProvider
-    {
-    	string Name { get; }
+	string Name { get; }
 
-    	string ID { get; }
+	string ID { get; }
 
-    	bool AllowBufferChange { get; }
+	bool AllowBufferChange { get; }
 
-    	bool AllowFrequencyChange { get; }
+	bool AllowFrequencyChange { get; }
 
-    	void SubmitSamples(ref short[] buffer, ref int samples_added);
+	void SubmitSamples(ref short[] buffer, ref int samples_added);
 
-    	void TogglePause(bool paused);
+	void TogglePause(bool paused);
 
-    	void GetIsPlaying(out bool playing);
+	void GetIsPlaying(out bool playing);
 
-    	void Initialize();
+	void Initialize();
 
-    	void ShutDown();
+	void ShutDown();
 
-    	void Reset();
+	void Reset();
 
-    	void SignalToggle(bool started);
+	void SignalToggle(bool started);
 
-    	void SetVolume(int Vol);
-    }
+	void SetVolume(int Vol);
 }

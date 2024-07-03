@@ -1,16 +1,15 @@
 using System.IO;
 
-namespace ComponentAce.Compression.Libs.zlib
-{
-    public class ZStreamException : IOException
-    {
-    	public ZStreamException()
-    	{
-    	}
+namespace ComponentAce.Compression.Libs.zlib;
 
-    	public ZStreamException(string s)
-    		: base(s)
-    	{
-    	}
-    }
+public class ZStreamException : IOException
+{
+	public ZStreamException()
+	{
+	}
+
+	public ZStreamException(string s)
+		: base(s)
+	{
+	}
 }

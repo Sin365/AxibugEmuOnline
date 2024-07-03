@@ -1,10 +1,8 @@
-namespace MyNes.Core
-{
+namespace MyNes.Core;
 
-    internal class BlankShortuctsHandler : IShortcutsHandler
-    {
-        public void Update()
-        {
-        }
-    }
+internal class BlankShortuctsHandler : IShortcutsHandler
+{
+	public void Update()
+	{
+	}
 }

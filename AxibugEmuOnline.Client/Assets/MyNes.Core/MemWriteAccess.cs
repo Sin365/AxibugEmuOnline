@@ -1,4 +1,3 @@
-namespace MyNes.Core
-{
-    internal delegate void MemWriteAccess(ref ushort addr, ref byte value);
-}
+namespace MyNes.Core;
+
+internal delegate void MemWriteAccess(ref ushort addr, ref byte value);
