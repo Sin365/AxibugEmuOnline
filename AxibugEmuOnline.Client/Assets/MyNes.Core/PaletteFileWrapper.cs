@@ -5,9 +5,9 @@ namespace MyNes.Core
 {
     public class PaletteFileWrapper
     {
-    	public static bool LoadFile(string file, out int[] palette)
+    	public static bool LoadFile(Stream fileStream, out int[] palette)
     	{
-    		Stream stream = new FileStream(file, FileMode.Open, FileAccess.Read);
+            Stream stream = fileStream;
     		if (stream.Length == 192 || stream.Length == 1536)
     		{
     			int[] array = new int[512];
