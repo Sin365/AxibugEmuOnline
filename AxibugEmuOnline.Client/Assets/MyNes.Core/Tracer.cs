@@ -23,13 +23,24 @@ namespace MyNes.Core
         public static void WriteLine(string message, TracerStatus status)
         {
             Tracer.EventRaised?.Invoke(null, new TracerEventArgs(message, status));
-            Debug.Log(message);
+            switch (status)
+            {
+                case TracerStatus.Error: Debug.LogError(message); break;
+                case TracerStatus.Infromation:
+                case TracerStatus.Normal:
+                    Debug.Log(message);
+                    break;
+                case TracerStatus.Warning:
+                    Debug.LogWarning(message);
+                    break;
+            }
+
         }
 
         public static void WriteLine(string message, string category, TracerStatus status)
         {
             Tracer.EventRaised?.Invoke(null, new TracerEventArgs($"{category}: {message}", status));
-            Debug.Log($"{category}:{message}");
+            WriteLine($"{category}:{message}", status);
         }
 
         public static void WriteError(string message)
