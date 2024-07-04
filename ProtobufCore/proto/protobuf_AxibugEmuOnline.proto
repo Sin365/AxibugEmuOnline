@@ -8,9 +8,21 @@ enum CommandID
 	
 	CMD_LOGIN = 2001;  //自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
 	
-	CMD_CHATMSG = 4001;  //广播信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
+	CMD_CHATMSG = 4001;  //广播聊天信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
 	
-	CMD_Screen = 5001;  //画面同步 | 同步广播 对应 Protobuf_Screnn_Frame
+	//房间相关
+	CMD_Room_List = 5001;  //房间列表 上行 | 下行 对应 Protobuf_Room_List | Protobuf_Room_List_RESP
+	
+	CMD_Room_List_Update = 5002;  //房间列表更新 对应 Protobuf_Room_Update_RESP
+	
+	CMD_Room_Create = 5003;  //房间列表创建 对应 Protobuf_Room_Create
+	
+	CMD_Room_Leave = 5004;  //房间列表离开 对应 Protobuf_Room_Leave
+	
+	CMD_Room_Join = 5005;  //房间列表加入 对应 Protobuf_Room_Join
+	
+	//画面同步相关
+	CMD_Screen = 6001;  //画面同步 | 同步广播 对应 Protobuf_Screnn_Frame
 }
 
 enum ErrorCode
@@ -32,6 +44,22 @@ enum DeviceType
 	IOS = 3;
 	PSV = 4;
 }
+
+enum RoomPlayerState
+{
+    None = 0;//缺省
+	OnlyP1 = 1;   //仅P1
+	OnlyP2 = 2;   //仅P2
+	BothOnline = 3;   //玩家都在
+}
+
+enum RoomGameState
+{
+    None = 0;//缺省
+	InGame = 1;//游戏中
+	Pause = 2;//暂停
+}
+
 
 enum LoginResultStatus
 {
@@ -74,8 +102,38 @@ message Protobuf_Login_RESP
 	int64 UID = 5;
 }
 
+
+message Protobuf_Room_List
+{
+	
+}
+
+message Protobuf_Room_List_RESP
+{
+	repeated Protobuf_Room_MiniInfo RoomMiniInfoList = 1;//房间列表
+}
+
+message Protobuf_Room_MiniInfo
+{
+	int32 RoomID = 1;//房间ID
+	int32 GameID = 2;//游戏ID
+	RoomPlayerState PlayerState = 3;//玩家加入状态
+	RoomGameState GameState = 4;//游戏状态
+	int32 ObsUserCount = 5;//观战用户数量
+	int64 Player1_UID = 6;//玩家1 UID
+	string Player1_NickName = 7;//玩家1 昵称
+	int64 Player2_UID = 8;//玩家2 UID
+	string Player2_NickName = 9;//玩家2 昵称
+}
+
+message Protobuf_Room_Update_RESP
+{
+	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//房间信息
+}
+
 message Protobuf_Screnn_Frame
 {
-	int32 FrameID = 1;//帧编号
-    bytes RawBitmap = 2;//渲染层画面
+	int32 RoomID = 1;//房间ID
+	int32 FrameID = 2;//帧编号
+    bytes RawBitmap = 3;//渲染层画面
 }
