@@ -12,10 +12,11 @@ namespace AxibugEmuOnline.Client
 
         public string ID => nameof(UguiVideoProvider).GetHashCode().ToString();
 
-        private int[] m_texRawBuffer = new int[256 * 240];
+        private Color[] m_texRawBuffer = new Color[256 * 240];
         private Texture2D m_rawBufferWarper = new Texture2D(256, 240);
         private RawImage m_image;
         private RenderTexture m_drawRT;
+        private Color temp = Color.white;
 
         public void Initialize()
         {
@@ -23,20 +24,21 @@ namespace AxibugEmuOnline.Client
             m_image.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_UNorm);
         }
 
-        public Color GetColor(uint value)
+        public void GetColor(uint value, ref Color res)
         {
             var r = 0xFF0000 & value;
             r >>= 16;
             var b = 0xFF & value;
             var g = 0xFF00 & value;
             g >>= 8;
-            var color = new Color(r / 255f, g / 255f, b / 255f);
-            return color;
+            res.r = r / 255f;
+            res.g = g / 255f;
+            res.b = b / 255f;
         }
 
         public void Update()
         {
-            var colors = m_texRawBuffer.Select(w => GetColor((uint)w)).ToArray();
+            var colors = m_texRawBuffer;
             m_rawBufferWarper.SetPixels(colors);
             m_rawBufferWarper.Apply();
             Graphics.Blit(m_rawBufferWarper, m_image.texture as RenderTexture);
@@ -76,7 +78,11 @@ namespace AxibugEmuOnline.Client
 
         public void SubmitFrame(ref int[] buffer)
         {
-            Array.Copy(buffer, m_texRawBuffer, m_texRawBuffer.Length);
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                GetColor((uint)buffer[i], ref temp);
+                m_texRawBuffer[i] = temp;
+            }
         }
 
         public void ResizeBegin()
