@@ -167,8 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac8cd27a180bf3e489b2ca27c821bffe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AS: {fileID: 1379369699}
   DrawImage: {fileID: 730321751}
-  DO: {fileID: 1379369700}
+  DO: {fileID: 0}
   Fps: {fileID: 1680039028}
 --- !u!1 &708549044
 GameObject:
@@ -610,7 +611,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1379369698}
   - component: {fileID: 1379369699}
-  - component: {fileID: 1379369700}
   m_Layer: 5
   m_Name: Audio
   m_TagString: Untagged
@@ -733,19 +733,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1379369700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1379369697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f25db9f5a7339c34f94e6e978be38c82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Gain: 0.05
 --- !u!1 &1680039027
 GameObject:
   m_ObjectHideFlags: 0

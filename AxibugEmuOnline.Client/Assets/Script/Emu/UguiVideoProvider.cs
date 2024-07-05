@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
             return color;
         }
 
-        public void Draw()
+        public void Update()
         {
             var colors = m_texRawBuffer.Select(w => GetColor((uint)w)).ToArray();
             m_rawBufferWarper.SetPixels(colors);

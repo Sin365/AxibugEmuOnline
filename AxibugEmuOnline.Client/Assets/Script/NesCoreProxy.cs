@@ -10,6 +10,7 @@ namespace AxibugEmuOnline.Client
     {
         public static NesCoreProxy Instance { get; private set; }
 
+        public AudioSource AS;
         public RawImage DrawImage;
         public DefaultAudioOutput DO;
         public Text Fps;
