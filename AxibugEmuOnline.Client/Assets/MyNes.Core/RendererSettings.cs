@@ -96,8 +96,6 @@ namespace MyNes.Core
 
     	public int Palette_PaletteSetting;
 
-    	public string Palette_CurrentPaletteFilePath = "default_ntsc.pal";
-
     	public float Palette_NTSC_brightness = 1.075f;
 
     	public float Palette_NTSC_contrast = 1.016f;
@@ -121,16 +119,6 @@ namespace MyNes.Core
     	public RendererSettings(string path)
     		: base(path)
     	{
-    	}
-
-    	public override void LoadSettings()
-    	{
-    		base.LoadSettings();
-    		if (Palette_CurrentPaletteFilePath == "default_ntsc.pal" || Palette_CurrentPaletteFilePath == "" || !File.Exists(Palette_CurrentPaletteFilePath))
-    		{
-    			Palette_CurrentPaletteFilePath = Path.Combine(MyNesMain.AppPath, "Palettes");
-    			Palette_CurrentPaletteFilePath = Path.Combine(Palette_CurrentPaletteFilePath, "default_ntsc.pal");
-    		}
     	}
     }
 }

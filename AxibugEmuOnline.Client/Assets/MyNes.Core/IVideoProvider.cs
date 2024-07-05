@@ -37,5 +37,7 @@ namespace MyNes.Core
     	void ToggleFPS(bool show_fps);
 
     	void ApplyFilter();
+
+        void Update();
     }
 }

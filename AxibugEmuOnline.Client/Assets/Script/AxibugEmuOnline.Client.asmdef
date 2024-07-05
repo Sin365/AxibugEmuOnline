@@ -1,6 +1,6 @@
 {
     "name": "AxibugEmuOnline.Client",
-    "rootNamespace": "",
+    "rootNamespace": "AxibugEmuOnline.Client",
     "references": [
         "GUID:0c194730510bd1b4fad0398ccfe4235b"
     ],
