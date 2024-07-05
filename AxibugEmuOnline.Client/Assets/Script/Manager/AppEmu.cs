@@ -1,4 +1,5 @@
-﻿using MyNes.Core;
+﻿using MyNes;
+using MyNes.Core;
 using System.IO;
 using UnityEngine;
 
@@ -6,15 +7,15 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppEmu : IFileManager
     {
-        public UguiVideoProvider UguiVideo { get; private set; }
-        public AudioProvider Audio { get; private set; }
+        public IVideoProvider UguiVideo { get; private set; }
+        public IAudioProvider Audio { get; private set; }
 
         public void Init()
         {
             MyNesMain.Initialize(this);
             NesEmu.LoadGame("E:/rzg4.nes", out var successed, true);
-            UguiVideo = MyNesMain.VideoProvider as UguiVideoProvider;
-            Audio = MyNesMain.AudioProvider as AudioProvider;
+            UguiVideo = MyNesMain.VideoProvider;
+            Audio = MyNesMain.AudioProvider;
 
             var fps_nes_missle = 1.0 / 59.0;
             NesEmu.SetFramePeriod(ref fps_nes_missle);
@@ -22,7 +23,8 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void Update()
         {
-            UguiVideo.Draw();
+            UguiVideo.Update();
+            Audio.Update();
 
             double t = Time.deltaTime;
             NesEmu.SetFramePeriod(ref t);
