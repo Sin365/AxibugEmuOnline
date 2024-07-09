@@ -111,7 +111,7 @@ namespace AxibugEmuOnline.Server.Event
                     }
                     catch (Exception e)
                     {
-                        ServerManager.g_Log.Error(e.Message);
+                        AppSrv.g_Log.Error(e.Message);
                     }
                 }
             }
@@ -130,7 +130,7 @@ namespace AxibugEmuOnline.Server.Event
                     }
                     catch (Exception e)
                     {
-                        ServerManager.g_Log.Error(e.Message);
+                        AppSrv.g_Log.Error(e.Message);
                     }
                 }
             }
@@ -149,7 +149,7 @@ namespace AxibugEmuOnline.Server.Event
                     }
                     catch (Exception e)
                     {
-                        ServerManager.g_Log.Error(e.Message);
+                        AppSrv.g_Log.Error(e.Message);
                     }
                 }
             }
@@ -168,7 +168,7 @@ namespace AxibugEmuOnline.Server.Event
                     }
                     catch (Exception e)
                     {
-                        ServerManager.g_Log.Error(e.Message + ", method name : " + callback.Method);
+                        AppSrv.g_Log.Error(e.Message + ", method name : " + callback.Method);
                     }
                 }
             }
@@ -188,7 +188,7 @@ namespace AxibugEmuOnline.Server.Event
                     }
                     catch (Exception e)
                     {
-                        ServerManager.g_Log.Error(e.Message);
+                        AppSrv.g_Log.Error(e.Message);
                     }
                 }
             }

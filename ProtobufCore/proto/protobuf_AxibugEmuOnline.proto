@@ -10,18 +10,21 @@ enum CommandID
 	
 	CMD_CHATMSG = 4001;  //广播聊天信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
 	
-	//房间相关
+	//房间列表相关
 	CMD_Room_List = 5001;  //房间列表 上行 | 下行 对应 Protobuf_Room_List | Protobuf_Room_List_RESP
 	
-	CMD_Room_List_Update = 5002;  //房间列表更新 对应 Protobuf_Room_Update_RESP
+	CMD_Room_List_Update = 5002;  //房间单个房间信息更新 对应 Protobuf_Room_Update_RESP
 	
-	CMD_Room_Create = 5003;  //房间列表创建 对应 Protobuf_Room_Create
+	//房间内相关
+	CMD_Room_Create = 5101;  //房间列表创建 对应 Protobuf_Room_Create | Protobuf_Room_Create_RESP
 	
-	CMD_Room_Leave = 5004;  //房间列表离开 对应 Protobuf_Room_Leave
+	CMD_Room_Join = 5105;  //房间列表加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP
 	
-	CMD_Room_Join = 5005;  //房间列表加入 对应 Protobuf_Room_Join
+	CMD_Room_Leave = 5106;  //房间列表离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
 	
-	//画面同步相关
+	CMD_Room_MyRoom_State_Changed = 5110;  //我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change;
+	
+	//游戏同步
 	CMD_Screen = 6001;  //画面同步 | 同步广播 对应 Protobuf_Screnn_Frame
 }
 
@@ -29,6 +32,9 @@ enum ErrorCode
 {
     ERROR_DEFAUL = 0;//缺省不使用
 	ERROR_OK = 1;   //成功
+	
+	ERROR_ROOM_NOT_FOUND = 10;//房间不存在
+	ERROR_ROOM_SLOT_READLY_HAD_PLAYER=11;//加入目标位置已经有人
 }
 
 enum LoginType
@@ -47,7 +53,7 @@ enum DeviceType
 
 enum RoomPlayerState
 {
-    None = 0;//缺省
+    None_PlayerState = 0;//缺省
 	OnlyP1 = 1;   //仅P1
 	OnlyP2 = 2;   //仅P2
 	BothOnline = 3;   //玩家都在
@@ -55,7 +61,7 @@ enum RoomPlayerState
 
 enum RoomGameState
 {
-    None = 0;//缺省
+    None_GameState = 0;//缺省
 	InGame = 1;//游戏中
 	Pause = 2;//暂停
 }
@@ -116,19 +122,21 @@ message Protobuf_Room_List_RESP
 message Protobuf_Room_MiniInfo
 {
 	int32 RoomID = 1;//房间ID
-	int32 GameID = 2;//游戏ID
-	RoomPlayerState PlayerState = 3;//玩家加入状态
-	RoomGameState GameState = 4;//游戏状态
-	int32 ObsUserCount = 5;//观战用户数量
-	int64 Player1_UID = 6;//玩家1 UID
-	string Player1_NickName = 7;//玩家1 昵称
-	int64 Player2_UID = 8;//玩家2 UID
-	string Player2_NickName = 9;//玩家2 昵称
+	int32 GameRomID = 2;//游戏ID
+	string GameRomHash = 3;
+	RoomPlayerState PlayerState = 4;//玩家加入状态
+	RoomGameState GameState = 5;//游戏状态
+	int32 ObsUserCount = 6;//观战用户数量
+	int64 Player1_UID = 7;//玩家1 UID
+	string Player1_NickName = 8;//玩家1 昵称
+	int64 Player2_UID = 9;//玩家2 UID
+	string Player2_NickName = 10;//玩家2 昵称
 }
 
 message Protobuf_Room_Update_RESP
 {
-	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//房间信息
+	int32 UpdateType = 1;//[0] 更新或新增 [1] 删除
+	Protobuf_Room_MiniInfo RoomMiniInfo = 2;//房间信息
 }
 
 message Protobuf_Screnn_Frame
@@ -136,4 +144,41 @@ message Protobuf_Screnn_Frame
 	int32 RoomID = 1;//房间ID
 	int32 FrameID = 2;//帧编号
     bytes RawBitmap = 3;//渲染层画面
+}
+
+message Protobuf_Room_Create
+{
+	int32 GameRomID = 1;
+	string GameRomHash = 2;
+}
+
+message Protobuf_Room_Create_RESP
+{
+	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//房间信息
+}
+
+message Protobuf_Room_Join
+{
+	int32 RoomID = 1;//房间ID
+	int32 PlayerNum = 2;//玩家编号 [0]1号玩家 [1]2号玩家
+}
+
+message Protobuf_Room_Join_RESP
+{
+	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//房间信息
+}
+
+message Protobuf_Room_Leave
+{
+	int32 RoomID = 1;//离开的房间ID
+}
+
+message Protobuf_Room_Leave_RESP
+{
+	int32 RoomID = 1;//离开的房间ID
+}
+
+message Protobuf_Room_MyRoom_State_Change
+{
+	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//更新房间信息
 }

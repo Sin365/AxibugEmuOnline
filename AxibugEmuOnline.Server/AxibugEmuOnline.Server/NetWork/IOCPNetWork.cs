@@ -32,7 +32,7 @@ namespace AxibugEmuOnline.Server.NetWork
 
         public void DataCallBack(Socket sk, int CMDID, byte[] data)
         {
-            //ServerManager.g_Log.Debug("收到消息 CMDID =>" + CMDID + " 数据长度=>" + data.Length);
+            //AppSrv.g_Log.Debug("收到消息 CMDID =>" + CMDID + " 数据长度=>" + data.Length);
             try
             {
                 //抛出网络数据
@@ -51,12 +51,12 @@ namespace AxibugEmuOnline.Server.NetWork
         public void OnDisconnect(AsyncUserToken token)
         {
             Console.WriteLine("断开连接");
-            ServerManager.g_ClientMgr.SetClientOfflineForSocket(token.Socket);
+            AppSrv.g_ClientMgr.SetClientOfflineForSocket(token.Socket);
         }
 
         public void OnShowNetLog(string msg)
         {
-            ServerManager.g_Log.Debug(msg);
+            AppSrv.g_Log.Debug(msg);
         }
 
     }

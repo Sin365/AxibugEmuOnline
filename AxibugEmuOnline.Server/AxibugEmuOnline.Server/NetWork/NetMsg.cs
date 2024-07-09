@@ -68,7 +68,7 @@ namespace AxibugEmuOnline.Server.NetWork
                     }
                     catch (Exception e)
                     {
-                        ServerManager.g_Log.Error(e.Message);
+                        AppSrv.g_Log.Error(e.Message);
                     }
                 }
             }

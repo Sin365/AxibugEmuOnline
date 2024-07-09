@@ -7,7 +7,7 @@
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Title = Title;
-            ServerManager.InitServer(10492);
+            AppSrv.InitServer(10492);
             while (true) 
             {
                 Console.ReadLine();

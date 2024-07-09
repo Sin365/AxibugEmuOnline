@@ -7,6 +7,7 @@ namespace AxibugEmuOnline.Server.Manager
     public class ClientInfo
     {
         public long UID { get; set; }
+        public string NickName { get; set; }
         public string Account { get; set; }
         public Socket _socket { get; set; }
         public bool IsOffline { get; set; } = false;
@@ -125,13 +126,13 @@ namespace AxibugEmuOnline.Server.Manager
 
                 ClientList.Remove(client);
             }
-        } 
+        }
 
         /// <summary>
         /// 清理连接
         /// </summary>
         /// <param name="client"></param>
-        public bool GetClientByUID(long uid,out ClientInfo client)
+        public bool GetClientByUID(long uid, out ClientInfo client, bool bNeedOnline = false)
         {
             lock (ClientList)
             {
@@ -142,6 +143,10 @@ namespace AxibugEmuOnline.Server.Manager
                 }
 
                 client = _DictUIDClient[uid];
+
+
+                if (bNeedOnline && client.IsOffline)
+                    return false;
                 return true;
             }
         }
@@ -209,14 +214,14 @@ namespace AxibugEmuOnline.Server.Manager
                 if(SkipUID > -1 && _toclientlist[i].UID == SkipUID)
                     continue;
 
-                ServerManager.g_SocketMgr.SendToSocket(_toclientlist[i]._socket, CMDID, ERRCODE, data);
+                AppSrv.g_SocketMgr.SendToSocket(_toclientlist[i]._socket, CMDID, ERRCODE, data);
             }
         }
 
         public void ClientSend(Socket _socket, int CMDID, int ERRCODE, byte[] data)
         {
             //Console.WriteLine("发送数据 CMDID->"+ CMDID);
-            ServerManager.g_SocketMgr.SendToSocket(_socket, CMDID, ERRCODE, data);
+            AppSrv.g_SocketMgr.SendToSocket(_socket, CMDID, ERRCODE, data);
         }
 
         /// <summary>
@@ -230,7 +235,7 @@ namespace AxibugEmuOnline.Server.Manager
         {
             if (_c == null || _c.IsOffline)
                 return;
-            ServerManager.g_SocketMgr.SendToSocket(_c._socket, CMDID, ERRCODE, data);
+            AppSrv.g_SocketMgr.SendToSocket(_c._socket, CMDID, ERRCODE, data);
         }
 
         public int GetOnlineClient()
