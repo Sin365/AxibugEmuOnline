@@ -5,13 +5,14 @@ using System.Net;
 namespace AxibugEmuOnline.Server
 {
 
-    public static class ServerManager
+    public static class AppSrv
     {
         public static ClientManager g_ClientMgr;
         public static LogManager g_Log;
         public static LoginManager g_Login;
         public static ChatManager g_Chat;
         public static IOCPNetWork g_SocketMgr;
+        public static RoomManager g_Room;
         public static GameManager g_Game;
 
         public static void InitServer(int port)
@@ -23,6 +24,7 @@ namespace AxibugEmuOnline.Server
             g_Chat = new ChatManager();
             //g_SocketMgr = new IOCPNetWork(1024, 1024);
             g_SocketMgr = new IOCPNetWork(1024, 4096);
+            g_Room = new RoomManager();
             g_Game = new GameManager();
 
             g_SocketMgr.Init();
