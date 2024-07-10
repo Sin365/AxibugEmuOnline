@@ -7,27 +7,10 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppEmu : IFileManager
     {
-        public IVideoProvider UguiVideo { get; private set; }
-        public IAudioProvider Audio { get; private set; }
-
-        public void Init()
+        public void Init(IVideoProvider videoCom,IAudioProvider audioCom)
         {
-            MyNesMain.Initialize(this);
-            NesEmu.LoadGame("E:/rzg4.nes", out var successed, true);
-            UguiVideo = MyNesMain.VideoProvider;
-            Audio = MyNesMain.AudioProvider;
-
-            var fps_nes_missle = 1.0 / 59.0;
-            NesEmu.SetFramePeriod(ref fps_nes_missle);
-        }
-
-        public void Update()
-        {
-            UguiVideo.Update();
-            Audio.Update();
-
-            double t = Time.deltaTime;
-            NesEmu.SetFramePeriod(ref t);
+            MyNesMain.Initialize(this, videoCom, audioCom);
+            NesEmu.LoadGame("E:/kirby.nes", out var successed, true);
         }
 
         public void Dispose()

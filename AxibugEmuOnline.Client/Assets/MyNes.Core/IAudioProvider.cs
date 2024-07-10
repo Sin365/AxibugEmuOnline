@@ -25,7 +25,5 @@ namespace MyNes.Core
     	void SignalToggle(bool started);
 
     	void SetVolume(int Vol);
-
-        void Update();
     }
 }

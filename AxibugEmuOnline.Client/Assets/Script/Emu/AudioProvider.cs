@@ -1,17 +1,11 @@
 using MyNes.Core;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
 using System.Threading;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class AudioProvider : IAudioProvider
+    public class AudioProvider : MonoBehaviour, IAudioProvider
     {
         public string Name => nameof(AudioProvider);
 
@@ -22,47 +16,53 @@ namespace AxibugEmuOnline.Client
         public bool AllowFrequencyChange => true;
 
         private bool m_isPlaying;
+
+        [SerializeField]
         private AudioSource m_as;
-        private int samples_added;
 
 
-        private Queue<float> _buffer = new Queue<float>();
+        private Queue<short> _buffer = new Queue<short>();
 
         public void Initialize()
         {
-            m_as = NesCoreProxy.Instance.AS;
-            m_as.clip = AudioClip.Create("nes wav", 48000 * 2, 1, 48000, true, OnAudioFilterRead);
-            m_as.loop = true;
-            m_as.playOnAwake = false;
-            m_as.spatialBlend = 0f;
+            var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
 
+            dummy.SetData(new float[] { 1 }, 0);
+            m_as.clip = dummy; //just to let unity play the audiosource
+            m_as.loop = true;
+            m_as.spatialBlend = 1;
             m_as.Play();
         }
 
-        public void Update() { }
-
-
-        private void OnAudioFilterRead(float[] data)
+        void OnAudioFilterRead(float[] data, int channels)
         {
-            lock (_buffer)
+            while (_buffer.Count >= data.Length / 2)
             {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    data[i] = _buffer.Count > 0 ? _buffer.Dequeue() : 0;
-                }
+                //Thread.Sleep(10);
+                break;
             }
+
+            int step = channels;
+            for (int i = 0; i < data.Length; i += step)
+            {
+                var rawData = _buffer.Count > 0 ? _buffer.Dequeue() : 0;
+                var rawFloat = rawData / 124f;
+                data[i] = rawFloat;
+                for (int fill = 1; fill < step; fill++)
+                    data[i + fill] = rawFloat;
+            }
+
         }
 
+        int EmuAudioTimeSample = 0;
         public void SubmitSamples(ref short[] buffer, ref int samples_a)
         {
-            lock (_buffer)
+            EmuAudioTimeSample += samples_a;
+            for (int i = 0; i < samples_a; i++)
             {
-                foreach (var a in buffer.Take(samples_a).ToArray())
-                {
-                    var floatData = (float)a / 124;
-                    _buffer.Enqueue(floatData);
-                }
+                _buffer.Enqueue(buffer[i]);
             }
+
         }
 
         public void TogglePause(bool paused)

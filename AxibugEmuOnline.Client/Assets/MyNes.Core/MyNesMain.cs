@@ -21,7 +21,7 @@ namespace MyNes.Core
 
         public static WaveRecorder WaveRecorder { get; private set; }
 
-        public static void Initialize(IFileManager fileManager)
+        public static void Initialize(IFileManager fileManager, IVideoProvider videoProvider, IAudioProvider audioProvider)
         {
             Tracer.WriteLine("Initializing My Nes Core ....");
             FileManager = fileManager;
@@ -42,6 +42,8 @@ namespace MyNes.Core
                 .GetAssemblies()
                 .SelectMany(ass => ass.GetTypes());
 
+            VideoProvider = videoProvider;
+            AudioProvider = audioProvider;
             foreach (var type in allTypes)
             {
                 if (type.IsSubclassOf(typeof(Board)) && !type.IsAbstract)
@@ -49,18 +51,6 @@ namespace MyNes.Core
                     Board board = Activator.CreateInstance(type) as Board;
                     Boards.Add(board);
                     Tracer.WriteLine("Board added: " + board.Name + " [ Mapper " + board.MapperNumber + "]");
-                }
-                else if (VideoProvider == null && typeof(IVideoProvider).IsAssignableFrom(type) && !type.IsAbstract)
-                {
-                    IVideoProvider videoProvider = Activator.CreateInstance(type) as IVideoProvider;
-                    VideoProvider = videoProvider;
-                    Tracer.WriteLine("Video provider setuped: " + videoProvider.Name + " [" + videoProvider.ID + "]");
-                }
-                else if (typeof(IAudioProvider).IsAssignableFrom(type) && !type.IsAbstract)
-                {
-                    IAudioProvider audioProvider = Activator.CreateInstance(type) as IAudioProvider;
-                    AudioProvider = audioProvider;
-                    Tracer.WriteLine("Audio provider setuped: " + audioProvider.Name + " [" + audioProvider.ID + "]");
                 }
             }
 
