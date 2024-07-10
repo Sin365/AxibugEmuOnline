@@ -34,22 +34,18 @@ namespace AxibugEmuOnline.Client
             m_as.Play();
         }
 
+        float lastData = 0;
         void OnAudioFilterRead(float[] data, int channels)
         {
-            while (_buffer.Count >= data.Length / 2)
-            {
-                //Thread.Sleep(10);
-                break;
-            }
-
             int step = channels;
             for (int i = 0; i < data.Length; i += step)
             {
-                var rawData = _buffer.Count > 0 ? _buffer.Dequeue() : 0;
-                var rawFloat = rawData / 124f;
+                var rawFloat = _buffer.Count > 0 ? (_buffer.Dequeue() / 124f) : lastData;
                 data[i] = rawFloat;
                 for (int fill = 1; fill < step; fill++)
                     data[i + fill] = rawFloat;
+
+                lastData = rawFloat;
             }
 
         }
