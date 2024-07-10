@@ -1,26 +1,30 @@
 using MyNes.Core;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace AxibugEmuOnline.Client
 {
-    public class UguiVideoProvider : IVideoProvider
+    public class UguiVideoProvider : MonoBehaviour, IVideoProvider
     {
         public string Name => "Unity UI Video";
 
         public string ID => nameof(UguiVideoProvider).GetHashCode().ToString();
 
         private Color[] m_texRawBuffer = new Color[256 * 240];
-        private Texture2D m_rawBufferWarper = new Texture2D(256, 240);
+        private Texture2D m_rawBufferWarper;
+        [SerializeField]
         private RawImage m_image;
         private RenderTexture m_drawRT;
         private Color temp = Color.white;
 
         public void Initialize()
         {
-            m_image = NesCoreProxy.Instance.DrawImage;
+            m_rawBufferWarper = new Texture2D(256, 240);
             m_image.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_UNorm);
         }
 
