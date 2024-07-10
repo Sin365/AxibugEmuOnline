@@ -10,22 +10,15 @@ namespace AxibugEmuOnline.Client
     {
         public static NesCoreProxy Instance { get; private set; }
 
-        public AudioSource AS;
-        public RawImage DrawImage;
-        public DefaultAudioOutput DO;
-        public Text Fps;
+        public UguiVideoProvider VideoCom;
+        public AudioProvider AudioCom;
 
         private AppEmu m_appEnum = new AppEmu();
 
         private void Start()
         {
             Instance = this;
-            m_appEnum.Init();
-        }
-
-        private void Update()
-        {
-            m_appEnum.Update();
+            m_appEnum.Init(VideoCom, AudioCom);
         }
 
         private void OnDestroy()
