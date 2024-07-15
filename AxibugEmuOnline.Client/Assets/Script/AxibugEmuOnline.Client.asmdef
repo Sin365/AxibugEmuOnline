@@ -1,0 +1,16 @@
+{
+    "name": "AxibugEmuOnline.Client",
+    "rootNamespace": "AxibugEmuOnline.Client",
+    "references": [
+        "GUID:0c194730510bd1b4fad0398ccfe4235b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
