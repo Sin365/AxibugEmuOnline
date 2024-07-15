@@ -1,0 +1,9 @@
+/AxibugEmuOnline.Client/*.vsconfig
+/AxibugEmuOnline.Client/Library/
+/AxibugEmuOnline.Client/Temp/
+/AxibugEmuOnline.Client/.vs/
+/AxibugEmuOnline.Client/*.csproj
+/AxibugEmuOnline.Client/*.sln
+/AxibugEmuOnline.Client/*.sln
+/AxibugEmuOnline.Client/ProjectSettings/Packages/
+/AxibugEmuOnline.Web/config.cfg

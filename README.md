@@ -52,11 +52,13 @@ PS:场景中，UNES Test的Inspector勾选Player1作为玩家1，不勾选作为
 
 ###模拟器内核
 
-模拟器内核采用 Emulator.NES  https://github.com/Xyene/Emulator.NES
+~~模拟器内核采用 Emulator.NES  https://github.com/Xyene/Emulator.NES~~
 
-这是一个单机的 NES模拟器C#实现，我在此基础上做修改
+~~这是一个单机的 NES模拟器C#实现，我在此基础上做修改~~
 
-做帧缓，颜色查找下标缓存，做同步，加上网络库，并实现服务端。达到如上效果。
+~~做帧缓，颜色查找下标缓存，做同步，加上网络库，并实现服务端。达到如上效果。~~
+
+随后，我们选择了更为全面的MyNes作为Nes模拟器核心，以此做二次开发和魔改。并实现自己的服务端和客户端联机逻辑
 
 
 
