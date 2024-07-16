@@ -7,10 +7,15 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppEmu : IFileManager
     {
-        public void Init(IVideoProvider videoCom,IAudioProvider audioCom)
+        public void Init(IVideoProvider videoCom, IAudioProvider audioCom)
         {
             MyNesMain.Initialize(this, videoCom, audioCom);
-            NesEmu.LoadGame("E:/kirby.nes", out var successed, true);
+            NesEmu.LoadGame("kirby.nes", out var successed, true);
+        }
+
+        public void ExecuteFrameLogic()
+        {
+            //NesEmu.ExecuteOneFrame();
         }
 
         public void Dispose()
@@ -35,6 +40,13 @@ namespace AxibugEmuOnline.Client.Manager
         public string GetWorkingFolderPath()
         {
             return $"{Application.persistentDataPath}/MyNes";
+        }
+
+        public Stream OpenRomFile(string path)
+        {
+            var ta = Resources.Load<TextAsset>($"Roms/{path}");
+            MemoryStream ms = new MemoryStream(ta.bytes);
+            return ms;
         }
     }
 }

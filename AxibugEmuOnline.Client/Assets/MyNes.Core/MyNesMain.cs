@@ -218,5 +218,6 @@ namespace MyNes.Core
         string GetWorkingFolderPath();
         public Stream OpenDatabaseFile();
         public Stream OpenPaletteFile();
+        public Stream OpenRomFile(string path);
     }
 }
