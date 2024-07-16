@@ -42,6 +42,7 @@ namespace AxibugEmuOnline.Client
         void OnAudioFilterRead(float[] data, int channels)
         {
             int step = channels;
+
             for (int i = 0; i < data.Length; i += step)
             {
                 var rawFloat = _buffer.Count <= 0 ? lastData : _buffer.Dequeue() / 124f;
@@ -61,6 +62,11 @@ namespace AxibugEmuOnline.Client
             lastElapsed = current;
 
             FPS = 1d / delta.TotalSeconds;
+
+            if (_buffer.Count > 2048)
+            {
+                _buffer.Clear();
+            }
 
             for (int i = 0; i < samples_a; i++)
             {

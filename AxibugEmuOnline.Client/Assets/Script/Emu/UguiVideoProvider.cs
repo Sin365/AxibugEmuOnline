@@ -29,7 +29,7 @@ namespace AxibugEmuOnline.Client
         public void Initialize()
         {
             m_rawBufferWarper = new Texture2D(256, 240);
-            m_drawCanvas.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_UNorm);
+            //m_drawCanvas.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_SRGB);
         }        
 
         public void GetColor(uint value, ref Color res)
