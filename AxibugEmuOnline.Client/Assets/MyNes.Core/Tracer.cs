@@ -28,10 +28,10 @@ namespace MyNes.Core
                 case TracerStatus.Error: Debug.LogError(message); break;
                 case TracerStatus.Infromation:
                 case TracerStatus.Normal:
-                    //Debug.Log(message);
+                    Debug.Log(message);
                     break;
                 case TracerStatus.Warning:
-                    //Debug.LogWarning(message);
+                    Debug.LogWarning(message);
                     break;
             }
 
