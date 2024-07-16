@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace MyNes.Core
 {
@@ -217,5 +218,6 @@ namespace MyNes.Core
         string GetWorkingFolderPath();
         public Stream OpenDatabaseFile();
         public Stream OpenPaletteFile();
+        public Stream OpenRomFile(string path);
     }
 }

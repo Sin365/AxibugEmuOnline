@@ -11,13 +11,13 @@ namespace MyNes.Core
         public static void WriteLine(string message)
         {
             Tracer.EventRaised?.Invoke(null, new TracerEventArgs(message, TracerStatus.Normal));
-            Debug.Log(message);
+            //Debug.Log(message);
         }
 
         public static void WriteLine(string message, string category)
         {
             Tracer.EventRaised?.Invoke(null, new TracerEventArgs($"{category}: {message}", TracerStatus.Normal));
-            Debug.Log(message);
+            //Debug.Log(message);
         }
 
         public static void WriteLine(string message, TracerStatus status)
@@ -28,10 +28,10 @@ namespace MyNes.Core
                 case TracerStatus.Error: Debug.LogError(message); break;
                 case TracerStatus.Infromation:
                 case TracerStatus.Normal:
-                    Debug.Log(message);
+                    //Debug.Log(message);
                     break;
                 case TracerStatus.Warning:
-                    Debug.LogWarning(message);
+                    //Debug.LogWarning(message);
                     break;
             }
 
