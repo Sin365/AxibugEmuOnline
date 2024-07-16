@@ -5141,47 +5141,39 @@ namespace MyNes.Core
                 success = false;
                 return;
             }
-            string text = Path.GetExtension(fileName).ToLower();
-            if (text != null && text == ".nes")
+            Tracer.WriteLine("Checking INES header ...");
+            INes nes = new INes();
+            nes.Load(fileName, loadDumps: true);
+            if (nes.IsValid)
             {
-                Tracer.WriteLine("Checking INES header ...");
-                INes nes = new INes();
-                nes.Load(fileName, loadDumps: true);
-                if (nes.IsValid)
+                emu_request_mode = RequestMode.None;
+                CurrentFilePath = fileName;
+                if (ON)
                 {
-                    emu_request_mode = RequestMode.None;
-                    CurrentFilePath = fileName;
-                    if (ON)
-                    {
-                        ShutDown();
-                    }
-                    Tracer.WriteLine("INES header is valid, loading game ...");
-                    ApplyRegionSetting();
-                    MEMInitialize(nes);
-                    ApplyAudioSettings();
-                    ApplyFrameSkipSettings();
-                    ApplyPaletteSetting();
-                    PORTSInitialize();
-                    hardReset();
-                    Tracer.WriteLine("EMU is ready.");
-                    success = true;
-                    emu_frame_clocking_mode = !useThread;
-                    ON = true;
-                    PAUSED = false;
-                    if (useThread)
-                    {
-                        Tracer.WriteLine("Running in a thread ... using custom frame limiter.");
-                        FrameLimiterEnabled = true;
-                        mainThread = new Thread(EmuClock);
-                        mainThread.Start();
-                    }
-                    MyNesMain.VideoProvider.SignalToggle(started: true);
-                    MyNesMain.AudioProvider.SignalToggle(started: true);
+                    ShutDown();
                 }
-                else
+                Tracer.WriteLine("INES header is valid, loading game ...");
+                ApplyRegionSetting();
+                MEMInitialize(nes);
+                ApplyAudioSettings();
+                ApplyFrameSkipSettings();
+                ApplyPaletteSetting();
+                PORTSInitialize();
+                hardReset();
+                Tracer.WriteLine("EMU is ready.");
+                success = true;
+                emu_frame_clocking_mode = !useThread;
+                ON = true;
+                PAUSED = false;
+                if (useThread)
                 {
-                    success = false;
+                    Tracer.WriteLine("Running in a thread ... using custom frame limiter.");
+                    FrameLimiterEnabled = true;
+                    mainThread = new Thread(EmuClock);
+                    mainThread.Start();
                 }
+                MyNesMain.VideoProvider.SignalToggle(started: true);
+                MyNesMain.AudioProvider.SignalToggle(started: true);
             }
             else
             {
@@ -5296,6 +5288,16 @@ namespace MyNes.Core
                     Thread.Sleep(100);
                 }
             }
+        }
+
+        public static void ExecuteOneFrame()
+        {
+            while (!ppu_frame_finished)
+            {
+                CPUClock();
+            }
+
+            FrameFinished();
         }
 
         private static void EmuClock()
