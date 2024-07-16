@@ -1,5 +1,7 @@
 using MyNes.Core;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using UnityEngine;
 
@@ -20,8 +22,10 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         private AudioSource m_as;
 
+        private Stopwatch sw = Stopwatch.StartNew();
+        private Queue<short> _buffer = new Queue<short>(2048);
 
-        private Queue<short> _buffer = new Queue<short>();
+        public double FPS { get; private set; }
 
         public void Initialize()
         {
@@ -40,25 +44,28 @@ namespace AxibugEmuOnline.Client
             int step = channels;
             for (int i = 0; i < data.Length; i += step)
             {
-                var rawFloat = _buffer.Count > 0 ? (_buffer.Dequeue() / 124f) : lastData;
+                var rawFloat = _buffer.Count <= 0 ? lastData : _buffer.Dequeue() / 124f;
                 data[i] = rawFloat;
                 for (int fill = 1; fill < step; fill++)
                     data[i + fill] = rawFloat;
 
                 lastData = rawFloat;
             }
-
         }
 
-        int EmuAudioTimeSample = 0;
+        private TimeSpan lastElapsed;
         public void SubmitSamples(ref short[] buffer, ref int samples_a)
         {
-            EmuAudioTimeSample += samples_a;
+            var current = sw.Elapsed;
+            var delta = current - lastElapsed;
+            lastElapsed = current;
+
+            FPS = 1d / delta.TotalSeconds;
+
             for (int i = 0; i < samples_a; i++)
             {
                 _buffer.Enqueue(buffer[i]);
             }
-
         }
 
         public void TogglePause(bool paused)

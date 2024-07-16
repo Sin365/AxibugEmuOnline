@@ -15,18 +15,22 @@ namespace AxibugEmuOnline.Client
 
         public string ID => nameof(UguiVideoProvider).GetHashCode().ToString();
 
+        [SerializeField]
+        private RawImage m_drawCanvas;
+        [SerializeField]
+        private Text m_fpsText;
+
         private Color[] m_texRawBuffer = new Color[256 * 240];
         private Texture2D m_rawBufferWarper;
-        [SerializeField]
-        private RawImage m_image;
         private RenderTexture m_drawRT;
         private Color temp = Color.white;
+
 
         public void Initialize()
         {
             m_rawBufferWarper = new Texture2D(256, 240);
-            m_image.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_UNorm);
-        }
+            m_drawCanvas.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_UNorm);
+        }        
 
         public void GetColor(uint value, ref Color res)
         {
@@ -45,7 +49,9 @@ namespace AxibugEmuOnline.Client
             var colors = m_texRawBuffer;
             m_rawBufferWarper.SetPixels(colors);
             m_rawBufferWarper.Apply();
-            Graphics.Blit(m_rawBufferWarper, m_image.texture as RenderTexture);
+            Graphics.Blit(m_rawBufferWarper, m_drawCanvas.texture as RenderTexture);
+
+            m_fpsText.text = $"Audio:{NesCoreProxy.Instance.AudioCom.FPS}";
         }
 
         public void WriteErrorNotification(string message, bool instant)
