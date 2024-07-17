@@ -44,14 +44,14 @@ namespace AxibugEmuOnline.Client
             res.b = b / 255f;
         }
 
-        public void Update()
+        public void Update() 
         {
             var colors = m_texRawBuffer;
             m_rawBufferWarper.SetPixels(colors);
             m_rawBufferWarper.Apply();
             Graphics.Blit(m_rawBufferWarper, m_drawCanvas.texture as RenderTexture);
 
-            m_fpsText.text = $"Audio:{NesCoreProxy.Instance.AudioCom.FPS}";
+            m_fpsText.text = $"fps:{NesCoreProxy.Instance.AudioCom.FPS}";
         }
 
         public void WriteErrorNotification(string message, bool instant)

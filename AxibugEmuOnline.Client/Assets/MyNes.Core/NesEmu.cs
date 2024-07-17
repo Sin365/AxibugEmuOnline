@@ -5169,6 +5169,7 @@ namespace MyNes.Core
                 {
                     Tracer.WriteLine("Running in a thread ... using custom frame limiter.");
                     FrameLimiterEnabled = true;
+                    currentFrame = 0;
                     mainThread = new Thread(EmuClock);
                     mainThread.Start();
                 }
@@ -5263,9 +5264,6 @@ namespace MyNes.Core
             if (mainThread != null)
             {
                 Tracer.WriteLine("Aborting thread ..");
-                while (mainThread.IsAlive)
-                {
-                }
                 mainThread.Abort();
                 mainThread = null;
             }
@@ -5274,43 +5272,29 @@ namespace MyNes.Core
             NesEmu.EmuShutdown?.Invoke(null, new EventArgs());
         }
 
-        internal static void EMUClockFrame()
-        {
-            emu_frame_done = false;
-            while (!emu_frame_done && ON)
-            {
-                if (!PAUSED)
-                {
-                    CPUClock();
-                }
-                else
-                {
-                    Thread.Sleep(100);
-                }
-            }
-        }
-
-        public static void ExecuteOneFrame()
-        {
-            while (!ppu_frame_finished)
-            {
-                CPUClock();
-            }
-
-            FrameFinished();
-        }
-
+        private static Stopwatch sw = new Stopwatch();
+        private static double fixTime;
+        public static int currentFrame;
         private static void EmuClock()
         {
             while (ON)
             {
                 if (!PAUSED)
                 {
-                    CPUClock();
-                    if (ppu_frame_finished)
+                    var waitTime = GetTime() + fps_time_period + fixTime;
+
+                    while (!ppu_frame_finished)
+                        CPUClock();
+
+                    FrameFinished();
+
+                    fixTime = waitTime - GetTime();
+                    while (fixTime > 0)
                     {
-                        FrameFinished();
-                    }
+                        fixTime = waitTime - GetTime();
+                    };
+
+
                     continue;
                 }
                 render_audio_get_is_playing(out render_audio_is_playing);
@@ -5408,24 +5392,6 @@ namespace MyNes.Core
                 audio_timer = 0.0;
             }
             fps_time_token = GetTime() - fps_time_start;
-            if (FrameLimiterEnabled)
-            {
-                if (fps_time_token > 0.0)
-                {
-                    fps_time_dead = fps_time_period - fps_time_token;
-                    if (fps_time_dead > 0.0)
-                    {
-                        Thread.Sleep((int)Math.Floor(fps_time_dead * 1000.0));
-                        fps_time_dead = GetTime() - fps_time_start;
-                        while (fps_time_period - fps_time_dead > 0.0)
-                        {
-                            fps_time_dead = GetTime() - fps_time_start;
-                        }
-                    }
-                }
-                fps_time_last = GetTime();
-                fps_time_frame_time = fps_time_last - fps_time_start;
-            }
             fps_time_start = GetTime();
         }
 
@@ -5443,6 +5409,11 @@ namespace MyNes.Core
         public static void SetFramePeriod(ref double period)
         {
             fps_time_period = period;
+        }
+
+        public static void RevertFramePeriod()
+        {
+            fps_time_period = 1 / emu_time_target_fps;
         }
 
         public static void ApplyRegionSetting()

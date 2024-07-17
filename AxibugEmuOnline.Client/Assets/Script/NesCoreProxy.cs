@@ -21,11 +21,6 @@ namespace AxibugEmuOnline.Client
             m_appEnum.Init(VideoCom, AudioCom);
         }
 
-        private void Update()
-        {
-            m_appEnum.ExecuteFrameLogic();
-        }
-
         private void OnDestroy()
         {
             Instance = null;
