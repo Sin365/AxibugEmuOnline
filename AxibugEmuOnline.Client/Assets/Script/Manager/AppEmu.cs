@@ -10,12 +10,8 @@ namespace AxibugEmuOnline.Client.Manager
         public void Init(IVideoProvider videoCom, IAudioProvider audioCom)
         {
             MyNesMain.Initialize(this, videoCom, audioCom);
-            NesEmu.LoadGame("kirby.nes", out var successed, true);
-        }
 
-        public void ExecuteFrameLogic()
-        {
-            //NesEmu.ExecuteOneFrame();
+            NesEmu.LoadGame("tortoise4.nes", out var successed, true);
         }
 
         public void Dispose()

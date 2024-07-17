@@ -23,7 +23,7 @@ namespace AxibugEmuOnline.Client
         private AudioSource m_as;
 
         private Stopwatch sw = Stopwatch.StartNew();
-        private Queue<short> _buffer = new Queue<short>(2048);
+        private RingBuffer<short> _buffer = new RingBuffer<short>(4096);
 
         public double FPS { get; private set; }
 
@@ -43,9 +43,27 @@ namespace AxibugEmuOnline.Client
         {
             int step = channels;
 
+            var bufferCount = _buffer.Available();
+            if (bufferCount < 4096)
+            {
+                double fps = 1 / 61d;
+                NesEmu.SetFramePeriod(ref fps);
+            }
+            else if (bufferCount > 8124)
+            {
+                double fps = 1 / 59d;
+                NesEmu.SetFramePeriod(ref fps);
+            }
+            else
+            {
+                NesEmu.RevertFramePeriod();
+            }
             for (int i = 0; i < data.Length; i += step)
             {
-                var rawFloat = _buffer.Count <= 0 ? lastData : _buffer.Dequeue() / 124f;
+                float rawFloat = lastData;
+                if (_buffer.TryRead(out short rawData))
+                    rawFloat = rawData / 124f;
+
                 data[i] = rawFloat;
                 for (int fill = 1; fill < step; fill++)
                     data[i + fill] = rawFloat;
@@ -63,14 +81,9 @@ namespace AxibugEmuOnline.Client
 
             FPS = 1d / delta.TotalSeconds;
 
-            if (_buffer.Count > 2048)
-            {
-                _buffer.Clear();
-            }
-
             for (int i = 0; i < samples_a; i++)
             {
-                _buffer.Enqueue(buffer[i]);
+                _buffer.Write(buffer[i]);
             }
         }
 
