@@ -8,8 +8,6 @@ namespace AxibugEmuOnline.Client
 {
     public class NesCoreProxy : MonoBehaviour
     {
-        public static NesCoreProxy Instance { get; private set; }
-
         public UguiVideoProvider VideoCom;
         public AudioProvider AudioCom;
 
@@ -17,18 +15,11 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
-            Instance = this;
             m_appEnum.Init(VideoCom, AudioCom);
-        }
-
-        private void Update()
-        {
-            m_appEnum.ExecuteFrameLogic();
         }
 
         private void OnDestroy()
         {
-            Instance = null;
             m_appEnum.Dispose();
         }
     }

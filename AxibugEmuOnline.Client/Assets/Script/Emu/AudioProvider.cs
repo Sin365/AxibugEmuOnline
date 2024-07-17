@@ -18,12 +18,14 @@ namespace AxibugEmuOnline.Client
         public bool AllowFrequencyChange => true;
 
         private bool m_isPlaying;
-
+        private bool m_started;
+        [SerializeField]
+        private NesCoreProxy m_coreProxy;
         [SerializeField]
         private AudioSource m_as;
 
         private Stopwatch sw = Stopwatch.StartNew();
-        private Queue<short> _buffer = new Queue<short>(2048);
+        private RingBuffer<short> _buffer = new RingBuffer<short>(4096);
 
         public double FPS { get; private set; }
 
@@ -41,11 +43,29 @@ namespace AxibugEmuOnline.Client
         float lastData = 0;
         void OnAudioFilterRead(float[] data, int channels)
         {
+            if (!m_started) return;
+
             int step = channels;
 
+            var bufferCount = _buffer.Available();
+            if (bufferCount < 4096)
+            {
+                NesEmu.SetFramePeriod(ref fps_nes_missle);
+            }
+            else if (bufferCount > 8124)
+            {
+                NesEmu.SetFramePeriod(ref fps_pl_faster);
+            }
+            else
+            {
+                NesEmu.RevertFramePeriod();
+            }
             for (int i = 0; i < data.Length; i += step)
             {
-                var rawFloat = _buffer.Count <= 0 ? lastData : _buffer.Dequeue() / 124f;
+                float rawFloat = lastData;
+                if (_buffer.TryRead(out short rawData))
+                    rawFloat = rawData / 124f;
+
                 data[i] = rawFloat;
                 for (int fill = 1; fill < step; fill++)
                     data[i + fill] = rawFloat;
@@ -55,6 +75,9 @@ namespace AxibugEmuOnline.Client
         }
 
         private TimeSpan lastElapsed;
+        private double fps_nes_missle;
+        private double fps_pl_faster;
+
         public void SubmitSamples(ref short[] buffer, ref int samples_a)
         {
             var current = sw.Elapsed;
@@ -63,14 +86,9 @@ namespace AxibugEmuOnline.Client
 
             FPS = 1d / delta.TotalSeconds;
 
-            if (_buffer.Count > 2048)
-            {
-                _buffer.Clear();
-            }
-
             for (int i = 0; i < samples_a; i++)
             {
-                _buffer.Enqueue(buffer[i]);
+                _buffer.Write(buffer[i]);
             }
         }
 
@@ -84,8 +102,6 @@ namespace AxibugEmuOnline.Client
             playing = m_isPlaying;
         }
 
-
-
         public void ShutDown()
         {
         }
@@ -96,6 +112,23 @@ namespace AxibugEmuOnline.Client
 
         public void SignalToggle(bool started)
         {
+            if (started)
+            {
+                switch (NesEmu.Region)
+                {
+                    case EmuRegion.NTSC:
+                        fps_nes_missle = 1 / 60.5d;
+                        fps_pl_faster = 1 / 59.5d;
+                        break;
+                    case EmuRegion.PALB:
+                    case EmuRegion.DENDY:
+                        fps_nes_missle = 0.0125;
+                        fps_pl_faster = 0.02;
+                        break;
+                }
+
+            }
+            m_started = started;
         }
 
         public void SetVolume(int Vol)
