@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client
         public bool AllowFrequencyChange => true;
 
         private bool m_isPlaying;
-
+        private bool m_started;
         [SerializeField]
         private NesCoreProxy m_coreProxy;
         [SerializeField]
@@ -43,18 +43,18 @@ namespace AxibugEmuOnline.Client
         float lastData = 0;
         void OnAudioFilterRead(float[] data, int channels)
         {
+            if (!m_started) return;
+
             int step = channels;
 
             var bufferCount = _buffer.Available();
             if (bufferCount < 4096)
             {
-                double fps = 1 / 61d;
-                NesEmu.SetFramePeriod(ref fps);
+                NesEmu.SetFramePeriod(ref fps_nes_missle);
             }
             else if (bufferCount > 8124)
             {
-                double fps = 1 / 59d;
-                NesEmu.SetFramePeriod(ref fps);
+                NesEmu.SetFramePeriod(ref fps_pl_faster);
             }
             else
             {
@@ -75,6 +75,9 @@ namespace AxibugEmuOnline.Client
         }
 
         private TimeSpan lastElapsed;
+        private double fps_nes_missle;
+        private double fps_pl_faster;
+
         public void SubmitSamples(ref short[] buffer, ref int samples_a)
         {
             var current = sw.Elapsed;
@@ -99,8 +102,6 @@ namespace AxibugEmuOnline.Client
             playing = m_isPlaying;
         }
 
-
-
         public void ShutDown()
         {
         }
@@ -111,6 +112,23 @@ namespace AxibugEmuOnline.Client
 
         public void SignalToggle(bool started)
         {
+            if (started)
+            {
+                switch (NesEmu.Region)
+                {
+                    case EmuRegion.NTSC:
+                        fps_nes_missle = 1 / 60.5d;
+                        fps_pl_faster = 1 / 59.5d;
+                        break;
+                    case EmuRegion.PALB:
+                    case EmuRegion.DENDY:
+                        fps_nes_missle = 0.0125;
+                        fps_pl_faster = 0.02;
+                        break;
+                }
+
+            }
+            m_started = started;
         }
 
         public void SetVolume(int Vol)

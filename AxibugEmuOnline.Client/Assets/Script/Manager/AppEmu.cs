@@ -11,7 +11,7 @@ namespace AxibugEmuOnline.Client.Manager
         {
             MyNesMain.Initialize(this, videoCom, audioCom);
 
-            NesEmu.LoadGame("tortoise4.nes", out var successed, true);
+            NesEmu.LoadGame("kirby.nes", out var successed, true);
         }
 
         public void Dispose()
