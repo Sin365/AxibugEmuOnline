@@ -11,10 +11,13 @@ namespace AxibugEmuOnline.Client
 {
     public class UguiVideoProvider : MonoBehaviour, IVideoProvider
     {
+
         public string Name => "Unity UI Video";
 
         public string ID => nameof(UguiVideoProvider).GetHashCode().ToString();
 
+        [SerializeField]
+        private NesCoreProxy m_coreProxy;
         [SerializeField]
         private RawImage m_drawCanvas;
         [SerializeField]
@@ -30,7 +33,7 @@ namespace AxibugEmuOnline.Client
         {
             m_rawBufferWarper = new Texture2D(256, 240);
             //m_drawCanvas.texture = RenderTexture.GetTemporary(256, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_SRGB);
-        }        
+        }
 
         public void GetColor(uint value, ref Color res)
         {
@@ -44,14 +47,14 @@ namespace AxibugEmuOnline.Client
             res.b = b / 255f;
         }
 
-        public void Update() 
+        public void Update()
         {
             var colors = m_texRawBuffer;
             m_rawBufferWarper.SetPixels(colors);
             m_rawBufferWarper.Apply();
             Graphics.Blit(m_rawBufferWarper, m_drawCanvas.texture as RenderTexture);
 
-            m_fpsText.text = $"fps:{NesCoreProxy.Instance.AudioCom.FPS}";
+            m_fpsText.text = $"fps:{m_coreProxy.AudioCom.FPS:00.00}";
         }
 
         public void WriteErrorNotification(string message, bool instant)
