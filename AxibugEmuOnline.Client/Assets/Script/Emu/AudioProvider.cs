@@ -20,6 +20,8 @@ namespace AxibugEmuOnline.Client
         private bool m_isPlaying;
 
         [SerializeField]
+        private NesCoreProxy m_coreProxy;
+        [SerializeField]
         private AudioSource m_as;
 
         private Stopwatch sw = Stopwatch.StartNew();
