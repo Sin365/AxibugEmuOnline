@@ -133,7 +133,7 @@ namespace MyNes.Core
 
         private static bool nos_ignore_reload;
 
-        private static byte[][] sq_duty_cycle_sequences = new byte[4][]
+        private static readonly byte[][] sq_duty_cycle_sequences = new byte[4][]
         {
             new byte[8] { 0, 0, 0, 0, 0, 0, 0, 1 },
             new byte[8] { 0, 0, 0, 0, 0, 0, 1, 1 },
@@ -141,7 +141,7 @@ namespace MyNes.Core
             new byte[8] { 1, 1, 1, 1, 1, 1, 0, 0 }
         };
 
-        private static byte[] sq_duration_table = new byte[32]
+        private static readonly byte[] sq_duration_table = new byte[32]
         {
             10, 254, 20, 2, 40, 4, 80, 6, 160, 8,
             60, 10, 14, 12, 26, 14, 12, 16, 24, 18,
@@ -195,7 +195,7 @@ namespace MyNes.Core
 
         private static bool sq1_ignore_reload;
 
-        private static byte[] trl_step_seq = new byte[32]
+        private static readonly byte[] trl_step_seq = new byte[32]
         {
             15, 14, 13, 12, 11, 10, 9, 8, 7, 6,
             5, 4, 3, 2, 1, 0, 0, 1, 2, 3,
@@ -246,8 +246,6 @@ namespace MyNes.Core
         private static bool apu_irq_enabled;
 
         private static bool apu_irq_flag;
-
-        private static bool apu_irq_do_it;
 
         internal static bool apu_irq_delta_occur;
 
@@ -312,8 +310,6 @@ namespace MyNes.Core
         private static SoundHighPassFilter audio_high_pass_filter_90;
 
         private static SoundHighPassFilter audio_high_pass_filter_440;
-
-        private static SoundDCBlockerFilter audio_dc_blocker_filter;
 
         private static bool audio_sq1_outputable;
 
@@ -455,7 +451,7 @@ namespace MyNes.Core
 
         public static bool IsFourPlayers;
 
-        private static byte[] reverseLookup = new byte[256]
+        private static readonly byte[] reverseLookup = new byte[256]
         {
             0, 128, 64, 192, 32, 160, 96, 224, 16, 144,
             80, 208, 48, 176, 112, 240, 8, 136, 72, 200,
@@ -1645,7 +1641,6 @@ namespace MyNes.Core
             audio_low_pass_filter_14K = new SoundLowPassFilter(0.00815686);
             audio_high_pass_filter_90 = new SoundHighPassFilter(0.999835);
             audio_high_pass_filter_440 = new SoundHighPassFilter(0.996039);
-            audio_dc_blocker_filter = new SoundDCBlockerFilter(0.995);
             apu_update_playback_func = APUUpdatePlaybackWithFilters;
         }
 
