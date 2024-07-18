@@ -18,6 +18,8 @@ namespace AxibugEmuOnline.Client
         private void Start()
         {
             m_appEnum.Init(VideoCom, AudioCom, InputManager);
+
+            m_appEnum.LoadGame("kirby.nes");
         }
 
         private void OnDestroy()
