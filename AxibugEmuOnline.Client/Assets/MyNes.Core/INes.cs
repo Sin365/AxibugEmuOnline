@@ -13,7 +13,7 @@ namespace MyNes.Core
 
         public override void Load(string fileName, bool loadDumps)
         {
-            var fileStream = MyNesMain.FileManager.OpenRomFile(fileName);
+            var fileStream = MyNesMain.Supporter.OpenRomFile(fileName);
             if (fileStream.Length < 16)
             {
                 fileStream.Close();
