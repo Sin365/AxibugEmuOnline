@@ -1,16 +1,24 @@
-﻿using MyNes;
+﻿using AxibugEmuOnline.Client.Input;
 using MyNes.Core;
 using System.IO;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
 {
-    public class AppEmu : IFileManager
+    public class AppEmu : IExternalSupporter
     {
-        public void Init(IVideoProvider videoCom, IAudioProvider audioCom)
-        {
-            MyNesMain.Initialize(this, videoCom, audioCom);
+        private InputManager m_inputMgr;
 
+        public void Init(IVideoProvider videoCom, IAudioProvider audioCom, InputManager inputManager)
+        {
+            m_inputMgr = inputManager;
+
+            MyNesMain.Initialize(this, videoCom, audioCom);
+            NesEmu.SetupControllers(
+                new NesJoyController(EnumJoyIndex.P1),
+                new NesJoyController(EnumJoyIndex.P2),
+                new NesJoyController(EnumJoyIndex.P3),
+                new NesJoyController(EnumJoyIndex.P4));
             NesEmu.LoadGame("kirby.nes", out var successed, true);
         }
 
@@ -43,6 +51,11 @@ namespace AxibugEmuOnline.Client.Manager
             var ta = Resources.Load<TextAsset>($"Roms/{path}");
             MemoryStream ms = new MemoryStream(ta.bytes);
             return ms;
+        }
+
+        public bool IsKeyPressing(EnumJoyIndex index, EnumKeyKind key)
+        {
+            return m_inputMgr.IsKeyPress(index, key);
         }
     }
 }

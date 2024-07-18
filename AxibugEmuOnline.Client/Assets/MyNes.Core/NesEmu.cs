@@ -453,8 +453,6 @@ namespace MyNes.Core
 
         private static IJoypadConnecter joypad4;
 
-        private static IShortcutsHandler shortucts;
-
         public static bool IsFourPlayers;
 
         private static byte[] reverseLookup = new byte[256]
@@ -663,23 +661,9 @@ namespace MyNes.Core
 
         private static Thread mainThread;
 
-        private static double fps_time_last;
-
-        private static double fps_time_start;
-
-        private static double fps_time_token;
-
-        private static double fps_time_dead;
-
         private static double fps_time_period;
 
-        private static double fps_time_frame_time;
-
         private static double emu_time_target_fps = 60.0;
-
-        private static bool emu_frame_clocking_mode;
-
-        private static bool emu_frame_done;
 
         private static bool render_initialized;
 
@@ -3887,15 +3871,6 @@ namespace MyNes.Core
             {
                 joypad4 = new BlankJoypad();
             }
-            if (shortucts == null)
-            {
-                shortucts = new BlankShortuctsHandler();
-            }
-        }
-
-        public static void SetupShortcutsHandler(IShortcutsHandler hh)
-        {
-            shortucts = hh;
         }
 
         public static void SetupControllers(IJoypadConnecter joy1, IJoypadConnecter joy2, IJoypadConnecter joy3, IJoypadConnecter joy4)
@@ -5162,7 +5137,6 @@ namespace MyNes.Core
                 hardReset();
                 Tracer.WriteLine("EMU is ready.");
                 success = true;
-                emu_frame_clocking_mode = !useThread;
                 ON = true;
                 PAUSED = false;
                 if (useThread)
@@ -5274,7 +5248,7 @@ namespace MyNes.Core
 
         private static Stopwatch sw = new Stopwatch();
         private static double fixTime;
-        public static int currentFrame;
+        public static ulong currentFrame;
         private static void EmuClock()
         {
             while (ON)
@@ -5294,6 +5268,7 @@ namespace MyNes.Core
                         fixTime = waitTime - GetTime();
                     };
 
+                    currentFrame++;
 
                     continue;
                 }
@@ -5303,7 +5278,6 @@ namespace MyNes.Core
                     render_audio_toggle_pause(paused: true);
                 }
                 Thread.Sleep(100);
-                shortucts.Update();
                 switch (emu_request_mode)
                 {
                     case RequestMode.HardReset:
@@ -5370,7 +5344,6 @@ namespace MyNes.Core
             }
             isPaused = false;
             ppu_frame_finished = false;
-            emu_frame_done = true;
             joypad1.Update();
             joypad2.Update();
             if (IsFourPlayers)
@@ -5378,7 +5351,6 @@ namespace MyNes.Core
                 joypad3.Update();
                 joypad4.Update();
             }
-            shortucts.Update();
             if (SoundEnabled)
             {
                 render_audio_get_is_playing(out render_audio_is_playing);
@@ -5391,8 +5363,6 @@ namespace MyNes.Core
                 audio_samples_added = 0;
                 audio_timer = 0.0;
             }
-            fps_time_token = GetTime() - fps_time_start;
-            fps_time_start = GetTime();
         }
 
         private static double GetTime()
@@ -5400,11 +5370,6 @@ namespace MyNes.Core
             return (double)Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
         }
 
-        public static void GetSpeedValues(out double frame_time, out double immediate_frame_time)
-        {
-            frame_time = fps_time_token;
-            immediate_frame_time = fps_time_frame_time;
-        }
 
         public static void SetFramePeriod(ref double period)
         {
@@ -5490,7 +5455,7 @@ namespace MyNes.Core
                     {
                         Tracer.WriteLine("Palette set to load from file.");
 
-                        var paletteFileStream = MyNesMain.FileManager.OpenPaletteFile();
+                        var paletteFileStream = MyNesMain.Supporter.OpenPaletteFile();
                         if (paletteFileStream != null)
                         {
                             PaletteFileWrapper.LoadFile(paletteFileStream, out var palette);
