@@ -19,7 +19,13 @@ namespace AxibugEmuOnline.Client.Manager
                 new NesJoyController(EnumJoyIndex.P2),
                 new NesJoyController(EnumJoyIndex.P3),
                 new NesJoyController(EnumJoyIndex.P4));
-            NesEmu.LoadGame("kirby.nes", out var successed, true);
+
+        }
+
+        public bool LoadGame(string romName)
+        {
+            NesEmu.LoadGame(romName, out var successed, true);
+            return successed;
         }
 
         public void Dispose()
