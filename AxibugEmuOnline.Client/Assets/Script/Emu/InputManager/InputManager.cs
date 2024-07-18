@@ -7,24 +7,17 @@ namespace AxibugEmuOnline.Client.Input
 {
     public class InputManager : MonoBehaviour
     {
-        private KeyMapper m_p1Mapper = new KeyMapper();
-        private KeyMapper m_p2Mapper = new KeyMapper();
-        private KeyMapper m_p3Mapper = new KeyMapper();
-        private KeyMapper m_p4Mapper = new KeyMapper();
+        private KeyMapper m_p1Mapper = new LocalKeyMapper();
+        private KeyMapper m_p2Mapper = new NetKeyMapper();
+        private KeyMapper m_p3Mapper = new NetKeyMapper();
+        private KeyMapper m_p4Mapper = new NetKeyMapper();
 
         private void Awake()
         {
-            m_p1Mapper.SetKeyMapper(KeyCode.W, EnumKeyKind.Up);
-            m_p1Mapper.SetKeyMapper(KeyCode.S, EnumKeyKind.Down);
-            m_p1Mapper.SetKeyMapper(KeyCode.A, EnumKeyKind.Left);
-            m_p1Mapper.SetKeyMapper(KeyCode.D, EnumKeyKind.Right);
-            m_p1Mapper.SetKeyMapper(KeyCode.V, EnumKeyKind.Select);
-            m_p1Mapper.SetKeyMapper(KeyCode.B, EnumKeyKind.Start);
-            m_p1Mapper.SetKeyMapper(KeyCode.J, EnumKeyKind.B);
-            m_p1Mapper.SetKeyMapper(KeyCode.K, EnumKeyKind.A);
-            m_p1Mapper.SetKeyMapper(KeyCode.U, EnumKeyKind.TurboB);
-            m_p1Mapper.SetKeyMapper(KeyCode.I, EnumKeyKind.TurboA);
-            m_p1Mapper.SetComplete();
+            m_p1Mapper.Init();
+            m_p2Mapper.Init();
+            m_p3Mapper.Init();
+            m_p4Mapper.Init();
         }
 
         private void Update()

@@ -6,7 +6,7 @@ namespace AxibugEmuOnline.Client
     public class NesJoyController : IJoypadConnecter
     {
         private EnumJoyIndex m_joyIndex;
-
+        private bool turbo;
 
         public NesJoyController(EnumJoyIndex joyIndex)
         {
@@ -14,6 +14,7 @@ namespace AxibugEmuOnline.Client
         }
         public override void Update()
         {
+            turbo = !turbo;
             DATA = 0;
             var state = MyNesMain.Supporter;
             if (state.IsKeyPressing(m_joyIndex, EnumKeyKind.A))
@@ -21,6 +22,14 @@ namespace AxibugEmuOnline.Client
                 DATA |= 1;
             }
             if (state.IsKeyPressing(m_joyIndex, EnumKeyKind.B))
+            {
+                DATA |= 2;
+            }
+            if (state.IsKeyPressing(m_joyIndex, EnumKeyKind.TurboA) && turbo)
+            {
+                DATA |= 1;
+            }
+            if (state.IsKeyPressing(m_joyIndex, EnumKeyKind.TurboB) && turbo)
             {
                 DATA |= 2;
             }
