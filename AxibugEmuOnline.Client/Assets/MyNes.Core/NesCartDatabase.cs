@@ -28,7 +28,7 @@ namespace MyNes.Core
             Ready = false;
             _databaseRoms.Clear();
 
-            var stream = MyNesMain.FileManager.OpenDatabaseFile();
+            var stream = MyNesMain.Supporter.OpenDatabaseFile();
             XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
             xmlReaderSettings.DtdProcessing = DtdProcessing.Ignore;
             xmlReaderSettings.IgnoreWhitespace = true;
