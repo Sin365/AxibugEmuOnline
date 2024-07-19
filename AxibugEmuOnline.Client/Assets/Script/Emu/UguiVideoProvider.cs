@@ -22,12 +22,15 @@ namespace AxibugEmuOnline.Client
         private RawImage m_drawCanvas;
         [SerializeField]
         private Text m_fpsText;
+        [SerializeField]
+        private Text m_nofity;
 
         private Color[] m_texRawBuffer = new Color[256 * 240];
         private Texture2D m_rawBufferWarper;
         private RenderTexture m_drawRT;
         private Color temp = Color.white;
 
+        private bool toggleOn;
 
         public void Initialize()
         {
@@ -48,26 +51,35 @@ namespace AxibugEmuOnline.Client
 
         public void Update()
         {
-            var colors = m_texRawBuffer;
-            m_rawBufferWarper.SetPixels(colors);
-            m_rawBufferWarper.Apply();
-            Graphics.Blit(m_rawBufferWarper, m_drawCanvas.texture as RenderTexture);
+            if (toggleOn)
+            {
+                if (!m_drawCanvas.enabled) m_drawCanvas.enabled = true;
+                var colors = m_texRawBuffer;
+                m_rawBufferWarper.SetPixels(colors);
+                m_rawBufferWarper.Apply();
+                Graphics.Blit(m_rawBufferWarper, m_drawCanvas.texture as RenderTexture);
 
-            m_fpsText.text = $"fps:{m_coreProxy.AudioCom.FPS:00.00}";
+                m_fpsText.text = $"fps:{m_coreProxy.AudioCom.FPS:00.00}";
+            }
+            else
+            {
+                if (m_drawCanvas.enabled) m_drawCanvas.enabled = false;
+            }
         }
 
         public void WriteErrorNotification(string message, bool instant)
         {
-
+            m_nofity.text = message;
         }
 
         public void WriteInfoNotification(string message, bool instant)
         {
-
+            m_nofity.text = message;
         }
 
         public void WriteWarningNotification(string message, bool instant)
         {
+            m_nofity.text = message;
         }
 
         public void TakeSnapshotAs(string path, string format)
@@ -86,6 +98,7 @@ namespace AxibugEmuOnline.Client
 
         public void SignalToggle(bool started)
         {
+            toggleOn = started;
         }
 
         public void SubmitFrame(ref int[] buffer)
