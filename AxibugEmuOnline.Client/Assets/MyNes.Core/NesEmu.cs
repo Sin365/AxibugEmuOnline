@@ -133,7 +133,7 @@ namespace MyNes.Core
 
         private static bool nos_ignore_reload;
 
-        private static byte[][] sq_duty_cycle_sequences = new byte[4][]
+        private static readonly byte[][] sq_duty_cycle_sequences = new byte[4][]
         {
             new byte[8] { 0, 0, 0, 0, 0, 0, 0, 1 },
             new byte[8] { 0, 0, 0, 0, 0, 0, 1, 1 },
@@ -141,7 +141,7 @@ namespace MyNes.Core
             new byte[8] { 1, 1, 1, 1, 1, 1, 0, 0 }
         };
 
-        private static byte[] sq_duration_table = new byte[32]
+        private static readonly byte[] sq_duration_table = new byte[32]
         {
             10, 254, 20, 2, 40, 4, 80, 6, 160, 8,
             60, 10, 14, 12, 26, 14, 12, 16, 24, 18,
@@ -195,7 +195,7 @@ namespace MyNes.Core
 
         private static bool sq1_ignore_reload;
 
-        private static byte[] trl_step_seq = new byte[32]
+        private static readonly byte[] trl_step_seq = new byte[32]
         {
             15, 14, 13, 12, 11, 10, 9, 8, 7, 6,
             5, 4, 3, 2, 1, 0, 0, 1, 2, 3,
@@ -246,8 +246,6 @@ namespace MyNes.Core
         private static bool apu_irq_enabled;
 
         private static bool apu_irq_flag;
-
-        private static bool apu_irq_do_it;
 
         internal static bool apu_irq_delta_occur;
 
@@ -312,8 +310,6 @@ namespace MyNes.Core
         private static SoundHighPassFilter audio_high_pass_filter_90;
 
         private static SoundHighPassFilter audio_high_pass_filter_440;
-
-        private static SoundDCBlockerFilter audio_dc_blocker_filter;
 
         private static bool audio_sq1_outputable;
 
@@ -453,11 +449,9 @@ namespace MyNes.Core
 
         private static IJoypadConnecter joypad4;
 
-        private static IShortcutsHandler shortucts;
-
         public static bool IsFourPlayers;
 
-        private static byte[] reverseLookup = new byte[256]
+        private static readonly byte[] reverseLookup = new byte[256]
         {
             0, 128, 64, 192, 32, 160, 96, 224, 16, 144,
             80, 208, 48, 176, 112, 240, 8, 136, 72, 200,
@@ -663,23 +657,9 @@ namespace MyNes.Core
 
         private static Thread mainThread;
 
-        private static double fps_time_last;
-
-        private static double fps_time_start;
-
-        private static double fps_time_token;
-
-        private static double fps_time_dead;
-
         private static double fps_time_period;
 
-        private static double fps_time_frame_time;
-
         private static double emu_time_target_fps = 60.0;
-
-        private static bool emu_frame_clocking_mode;
-
-        private static bool emu_frame_done;
 
         private static bool render_initialized;
 
@@ -1661,7 +1641,6 @@ namespace MyNes.Core
             audio_low_pass_filter_14K = new SoundLowPassFilter(0.00815686);
             audio_high_pass_filter_90 = new SoundHighPassFilter(0.999835);
             audio_high_pass_filter_440 = new SoundHighPassFilter(0.996039);
-            audio_dc_blocker_filter = new SoundDCBlockerFilter(0.995);
             apu_update_playback_func = APUUpdatePlaybackWithFilters;
         }
 
@@ -3887,15 +3866,6 @@ namespace MyNes.Core
             {
                 joypad4 = new BlankJoypad();
             }
-            if (shortucts == null)
-            {
-                shortucts = new BlankShortuctsHandler();
-            }
-        }
-
-        public static void SetupShortcutsHandler(IShortcutsHandler hh)
-        {
-            shortucts = hh;
         }
 
         public static void SetupControllers(IJoypadConnecter joy1, IJoypadConnecter joy2, IJoypadConnecter joy3, IJoypadConnecter joy4)
@@ -5162,7 +5132,6 @@ namespace MyNes.Core
                 hardReset();
                 Tracer.WriteLine("EMU is ready.");
                 success = true;
-                emu_frame_clocking_mode = !useThread;
                 ON = true;
                 PAUSED = false;
                 if (useThread)
@@ -5274,7 +5243,7 @@ namespace MyNes.Core
 
         private static Stopwatch sw = new Stopwatch();
         private static double fixTime;
-        public static int currentFrame;
+        public static ulong currentFrame;
         private static void EmuClock()
         {
             while (ON)
@@ -5294,6 +5263,7 @@ namespace MyNes.Core
                         fixTime = waitTime - GetTime();
                     };
 
+                    currentFrame++;
 
                     continue;
                 }
@@ -5303,7 +5273,6 @@ namespace MyNes.Core
                     render_audio_toggle_pause(paused: true);
                 }
                 Thread.Sleep(100);
-                shortucts.Update();
                 switch (emu_request_mode)
                 {
                     case RequestMode.HardReset:
@@ -5370,7 +5339,6 @@ namespace MyNes.Core
             }
             isPaused = false;
             ppu_frame_finished = false;
-            emu_frame_done = true;
             joypad1.Update();
             joypad2.Update();
             if (IsFourPlayers)
@@ -5378,7 +5346,6 @@ namespace MyNes.Core
                 joypad3.Update();
                 joypad4.Update();
             }
-            shortucts.Update();
             if (SoundEnabled)
             {
                 render_audio_get_is_playing(out render_audio_is_playing);
@@ -5391,8 +5358,6 @@ namespace MyNes.Core
                 audio_samples_added = 0;
                 audio_timer = 0.0;
             }
-            fps_time_token = GetTime() - fps_time_start;
-            fps_time_start = GetTime();
         }
 
         private static double GetTime()
@@ -5400,11 +5365,6 @@ namespace MyNes.Core
             return (double)Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
         }
 
-        public static void GetSpeedValues(out double frame_time, out double immediate_frame_time)
-        {
-            frame_time = fps_time_token;
-            immediate_frame_time = fps_time_frame_time;
-        }
 
         public static void SetFramePeriod(ref double period)
         {
@@ -5490,7 +5450,7 @@ namespace MyNes.Core
                     {
                         Tracer.WriteLine("Palette set to load from file.");
 
-                        var paletteFileStream = MyNesMain.FileManager.OpenPaletteFile();
+                        var paletteFileStream = MyNesMain.Supporter.OpenPaletteFile();
                         if (paletteFileStream != null)
                         {
                             PaletteFileWrapper.LoadFile(paletteFileStream, out var palette);

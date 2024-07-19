@@ -9,7 +9,7 @@ namespace MyNes.Core
     {
         public static EmuSettings EmuSettings { get; private set; }
         public static RendererSettings RendererSettings { get; private set; }
-        public static IFileManager FileManager { get; private set; }
+        public static IExternalSupporter Supporter { get; private set; }
         public static string WorkingFolder { get; private set; }
 
         internal static List<Board> Boards { get; private set; }
@@ -20,10 +20,10 @@ namespace MyNes.Core
 
         public static WaveRecorder WaveRecorder { get; private set; }
 
-        public static void Initialize(IFileManager fileManager, IVideoProvider videoProvider, IAudioProvider audioProvider)
+        public static void Initialize(IExternalSupporter fileManager, IVideoProvider videoProvider, IAudioProvider audioProvider)
         {
             Tracer.WriteLine("Initializing My Nes Core ....");
-            FileManager = fileManager;
+            Supporter = fileManager;
             WorkingFolder = fileManager.GetWorkingFolderPath();
             Tracer.WriteLine("Loading emu settings ...");
             EmuSettings = new EmuSettings(Path.Combine(WorkingFolder, "emusettings.ini"));
@@ -211,11 +211,5 @@ namespace MyNes.Core
             }
         }
     }
-    public interface IFileManager
-    {
-        string GetWorkingFolderPath();
-        public Stream OpenDatabaseFile();
-        public Stream OpenPaletteFile();
-        public Stream OpenRomFile(string path);
-    }
+
 }
