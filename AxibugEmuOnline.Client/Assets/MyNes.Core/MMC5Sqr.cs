@@ -1,7 +1,11 @@
 using System.IO;
+using Unity.IL2CPP.CompilerServices;
 
 namespace MyNes.Core
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     internal class MMC5Sqr
     {
     	private byte[][] duty_cycle_sequences = new byte[4][]
