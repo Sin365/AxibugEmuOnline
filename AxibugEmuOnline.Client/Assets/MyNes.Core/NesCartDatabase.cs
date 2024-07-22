@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Unity.IL2CPP.CompilerServices;
 
 namespace MyNes.Core
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class NesCartDatabase
     {
         private static List<NesCartDatabaseGameInfo> _databaseRoms = new List<NesCartDatabaseGameInfo>();

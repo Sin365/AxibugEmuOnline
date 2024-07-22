@@ -1,7 +1,9 @@
 {
     "name": "MyNes.Core",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:1c66728ad60364b82bf095d383b87458"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

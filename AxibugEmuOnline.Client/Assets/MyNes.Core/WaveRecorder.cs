@@ -1,9 +1,13 @@
 using System;
 using System.IO;
 using System.Text;
+using Unity.IL2CPP.CompilerServices;
 
 namespace MyNes.Core
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class WaveRecorder
     {
     	private string _fileName;

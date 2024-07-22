@@ -1,3 +1,4 @@
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,9 +6,15 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml;
+using Unity.IL2CPP.CompilerServices;
+using Option = Unity.IL2CPP.CompilerServices.Option;
+
 
 namespace MyNes.Core
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class NesEmu
     {
         [StructLayout(LayoutKind.Explicit)]
@@ -4063,6 +4070,9 @@ namespace MyNes.Core
             ppu_clock_v = 0;
         }
 
+        [Il2CppSetOption(Option.NullChecks, false)]
+        [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+        [Il2CppSetOption(Option.DivideByZeroChecks, false)]
         private static void PPUClock()
         {
             mem_board.OnPPUClock();
