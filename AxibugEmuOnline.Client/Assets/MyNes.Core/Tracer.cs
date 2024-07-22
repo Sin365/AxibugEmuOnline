@@ -1,9 +1,13 @@
 #define TRACE
 using System;
+using Unity.IL2CPP.CompilerServices;
 using UnityEngine;
 
 namespace MyNes.Core
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public sealed class Tracer
     {
         public static event EventHandler<TracerEventArgs> EventRaised;

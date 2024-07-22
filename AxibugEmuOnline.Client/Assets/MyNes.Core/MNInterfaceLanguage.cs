@@ -1,5 +1,10 @@
+using Unity.IL2CPP.CompilerServices;
+
 namespace MyNes.Core
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class MNInterfaceLanguage
     {
     	public static string Message_RomInfoCanBeOnlyShown = "Rom info can be shown only when emulation is on (i.e. game is loaded)";
