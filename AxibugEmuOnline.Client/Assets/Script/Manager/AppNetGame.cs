@@ -3,7 +3,6 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using Google.Protobuf;
-using MyNes.Core;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -18,7 +17,6 @@ namespace AxibugEmuOnline.Client.Manager
         public AppNetGame()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdScreen, OnScreen);
-            _palette = NTSCPaletteGenerator.GeneratePalette();
         }
 
         Protobuf_Screnn_Frame _Protobuf_Screnn_Frame = new Protobuf_Screnn_Frame();
