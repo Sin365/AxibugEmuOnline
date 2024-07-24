@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Codice.CM.Client.Differences;
+using System;
 using System.IO;
 using System.Linq;
 using VirtualNes.Core.Debug;
@@ -8,6 +9,7 @@ namespace VirtualNes.Core
     public class ROM
     {
         protected NESHEADER header;
+        protected NSFHEADER nsfheader;
         protected string path;
         protected string name;
         protected string fullpath;
@@ -21,8 +23,12 @@ namespace VirtualNes.Core
         protected byte[] lpDisk;
         protected ulong crc;
         protected ulong crcall;
+        protected ulong crcvrom;
         protected int mapper;
         protected int diskno;
+        protected ulong fdsmakerID;
+        protected ulong fdsgameID;
+
         public ROM(string fname)
         {
             Stream fp = null;
@@ -46,7 +52,7 @@ namespace VirtualNes.Core
 
             try
             {
-                fp = Supporter.OpenFile(fname);
+                fp = Supporter.OpenRom(fname);
                 if (fp == null)
                 {
                     throw new System.Exception($"Open Rom Failed:[{fname}]");
@@ -69,7 +75,7 @@ namespace VirtualNes.Core
                     throw new Exception($"rom file is not valid:[{fname}]");
 
                 ulong PRGoffset, CHRoffset;
-                long PRGsize, CHRsize;
+                long PRGsize = 0, CHRsize = 0;
 
                 var romType = header.GetRomType();
                 if (romType == EnumRomType.NES)
@@ -87,7 +93,6 @@ namespace VirtualNes.Core
 
                     if (PRGsize <= 0 || (PRGsize + CHRsize) > FileSize)
                     {
-                        // NES僿僢僟偑堎忢偱偡
                         throw new Exception($"Invalid NesHeader:[{fname}]");
                     }
 
@@ -164,7 +169,7 @@ namespace VirtualNes.Core
                     lpPRG[3] = 0x1A;
                     lpPRG[4] = (byte)diskno;
 
-                    fp = Supporter.OpenFile("DISKSYS.ROM");
+                    fp = Supporter.OpenFile_DISKSYS();
                     if (fp == null)
                     {
                         throw new Exception($"Not found DISKSYS.ROM for [{fname}]");
@@ -183,13 +188,97 @@ namespace VirtualNes.Core
                     lpDiskBios = new byte[8 * 1024];
                     if (bios[0] == 'N' && bios[1] == 'E' && bios[2] == 'S' && bios[3] == 0x1A)
                     {
+                        Array.Copy(bios, 0x6010, lpDiskBios, 0, lpDiskBios.Length);
+                    }
+                    else
+                    {
+                        Array.Copy(bios, lpDiskBios, lpDiskBios.Length);
+                    }
+                    bios = null;
+                }
+                else if (romType == EnumRomType.NSF)
+                {
+                    bNSF = true;
+                    header = NESHEADER.GetDefault();
 
+                    nsfheader = NSFHEADER.GetDefault();
+
+                    PRGsize = FileSize - NSFHEADER.SizeOf();
+                    Debuger.Log($"PRGSIZE:{PRGsize}");
+                    PRGsize = (PRGsize + 0x0FFF) & ~0x0FFF;
+                    Debuger.Log($"PRGSIZE:{PRGsize}");
+
+                    lpPRG = new byte[PRGsize];
+                    Array.Copy(temp, NSFHEADER.SizeOf(), lpPRG, 0, FileSize - NSFHEADER.SizeOf());
+
+                    NSF_PAGE_SIZE = (int)(PRGsize >> 12);
+                    Debuger.Log($"PAGESIZE:{NSF_PAGE_SIZE}");
+                }
+                else
+                {
+                    throw new Exception($"Unsupport format:[{fname}]");
+                }
+
+                Supporter.GetFilePathInfo(fname, out fullpath, out path);
+
+                if (!bNSF)
+                {
+                    mapper = (header.control1 >> 4) | (header.control2 & 0xF0);
+                    crc = crcall = crcvrom = 0;
+
+                    if (mapper != 20)
+                    {
+                        Span<byte> sTemp = temp;
+                        if (IsTRAINER())
+                        {
+                            crcall = CRC.CrcRev((int)(512 + PRGsize + CHRsize), sTemp.Slice(NESHEADER.SizeOf()));
+                            crc = CRC.CrcRev((int)(512 + PRGsize), sTemp);
+                            if (CHRsize > 0)
+                                crcvrom = CRC.CrcRev((int)CHRsize, sTemp.Slice((int)(PRGsize + 512 + NESHEADER.SizeOf())));
+                        }
+                        else
+                        {
+                            crcall = CRC.CrcRev((int)(PRGsize + CHRsize), sTemp.Slice(NESHEADER.SizeOf()));
+                            crc = CRC.CrcRev((int)(PRGsize), sTemp.Slice(NESHEADER.SizeOf()));
+                            if (CHRsize > 0)
+                                crcvrom = CRC.CrcRev((int)CHRsize, sTemp.Slice((int)(PRGsize + NESHEADER.SizeOf())));
+                        }
+
+                        FileNameCheck(fname);
+
+                        RomPatch.DoPatch(ref crc, ref lpPRG, ref lpCHR, ref mapper, ref header);
+
+                        fdsmakerID = fdsgameID = 0;
+                    }
+                    else //mapper==20
+                    {
+                        crc = crcall = crcvrom = 0;
+
+                        fdsmakerID = lpPRG[0x1F];
+                        fdsgameID = (ulong)((lpPRG[0x20] << 24) | (lpPRG[0x21] << 16) | (lpPRG[0x22] << 8) | (lpPRG[0x23] << 0));
                     }
                 }
-            }
-            catch
-            {
+                else //NSF
+                {
+                    mapper = 0x0100;    // Private mapper
+                    crc = crcall = crcvrom = 0;
+                    fdsmakerID = fdsgameID = 0;
+                }
 
+                temp = null;
+            }
+            catch (Exception ex)
+            {
+                fp?.Dispose();
+                temp = null;
+                bios = null;
+                lpPRG = null;
+                lpCHR = null;
+                lpTrainer = null;
+                lpDiskBios = null;
+                lpDisk = null;
+
+                throw ex;
             }
         }
 
@@ -197,98 +286,16 @@ namespace VirtualNes.Core
         {
             return (header.control1 & (byte)EnumRomControlByte1.ROM_TRAINER) > 0;
         }
-    }
 
-    public enum EnumRomControlByte1 : byte
-    {
-        ROM_VMIRROR = 0x01,
-        ROM_SAVERAM = 0x02,
-        ROM_TRAINER = 0x04,
-        ROM_4SCREEN = 0x08,
-    }
-
-    public enum EnumRomType
-    {
-        InValid,
-        NES,
-        /// <summary> Nintendo Disk System </summary>
-        FDS,
-        NSF
-    }
-
-    public struct NESHEADER
-    {
-        public byte[] ID;
-        public byte PRG_PAGE_SIZE;
-        public byte CHR_PAGE_SIZE;
-        public byte control1;
-        public byte control2;
-        public byte[] reserved;
-
-        public bool CheckValid()
+        protected void FileNameCheck(string fname)
         {
-            return GetRomType() != EnumRomType.InValid;
-        }
-
-        public static int SizeOf()
-        {
-            return 16;
-        }
-
-        public EnumRomType GetRomType()
-        {
-            if (ID[0] == 'N' && ID[1] == 'E' && ID[2] == 'S' && ID[3] == 0x1A)
-                return EnumRomType.NES;
-            if (ID[0] == 'F' && ID[1] == 'D' && ID[2] == 'S' && ID[3] == 0x1A)
-                return EnumRomType.FDS;
-            if (ID[0] == 'N' && ID[1] == 'E' && ID[2] == 'S' && ID[3] == 'M')
-                return EnumRomType.NSF;
-
-            return EnumRomType.InValid;
-        }
-
-        public static NESHEADER GetDefault()
-        {
-            var res = new NESHEADER();
-            res.ID = new byte[4];
-            res.reserved = new byte[8];
-            return res;
-        }
-
-        public static NESHEADER Read(Span<byte> data)
-        {
-            var res = new NESHEADER();
-            res.ID = data.Slice(0, 4).ToArray();
-            res.PRG_PAGE_SIZE = data[4];
-            res.CHR_PAGE_SIZE = data[5];
-            res.control1 = data[6];
-            res.control2 = data[7];
-            res.reserved = data.Slice(8, 8).ToArray();
-
-            return res;
-        }
-
-        public byte[] DataToBytes()
-        {
-            byte[] res = new byte[16];
-            res[0] = ID[0];
-            res[1] = ID[1];
-            res[2] = ID[2];
-            res[3] = ID[3];
-            res[4] = PRG_PAGE_SIZE;
-            res[5] = CHR_PAGE_SIZE;
-            res[6] = control1;
-            res[7] = control2;
-            res[8] = reserved[0];
-            res[9] = reserved[1];
-            res[10] = reserved[2];
-            res[11] = reserved[3];
-            res[12] = reserved[4];
-            res[13] = reserved[5];
-            res[14] = reserved[6];
-            res[15] = reserved[7];
-
-            return res;
+            if (fname.Contains("(E)"))
+            {
+                bPAL = true;
+                return;
+            }
         }
     }
+
+
 }

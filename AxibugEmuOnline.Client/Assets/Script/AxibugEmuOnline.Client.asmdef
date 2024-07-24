@@ -2,7 +2,7 @@
     "name": "AxibugEmuOnline.Client",
     "rootNamespace": "AxibugEmuOnline.Client",
     "references": [
-        "GUID:0c194730510bd1b4fad0398ccfe4235b"
+        "GUID:390a2c4058e5c304a87e8be70c84d80b"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

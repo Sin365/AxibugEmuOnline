@@ -94,7 +94,6 @@ namespace VirtualNes.Core
                 pad = new PAD(this);
 
                 Debuger.Log("Loading ROM Image...");
-
                 rom = new ROM(fname);
             }
             catch (Exception ex)

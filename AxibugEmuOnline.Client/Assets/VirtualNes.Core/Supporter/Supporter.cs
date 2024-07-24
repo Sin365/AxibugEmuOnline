@@ -13,14 +13,27 @@ namespace VirtualNes.Core
             s_support = supporter;
         }
 
-        public static Stream OpenFile(string fname)
+        public static Stream OpenRom(string fname)
         {
-            return s_support.OpenFile(fname);
+            return s_support.OpenRom(fname);
         }
+
+        public static void GetFilePathInfo(string fname, out string fullPath, out string directPath)
+        {
+            s_support.GetRomPathInfo(fname, out fullPath, out directPath);
+        }
+
+        public static Stream OpenFile_DISKSYS()
+        {
+            return s_support.OpenFile_DISKSYS();
+        }
+
     }
 
     public interface ISupporterImpl
     {
-        Stream OpenFile(string fname);
+        Stream OpenRom(string fname);
+        void GetRomPathInfo(string fname, out string fullPath, out string directPath);
+        Stream OpenFile_DISKSYS();
     }
 }

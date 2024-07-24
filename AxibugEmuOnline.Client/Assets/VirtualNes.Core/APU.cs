@@ -19,6 +19,8 @@ namespace VirtualNes.Core
 
         public APU(NES parent)
         {
+            @internal = new APU_INTERNAL();
+
             exsound_select = 0;
 
             nes = parent;
