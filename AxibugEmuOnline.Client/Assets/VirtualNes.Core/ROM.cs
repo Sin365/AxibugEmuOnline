@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using VirtualNes.Core.Debug;
+using static UnityEditor.PlayerSettings;
 
 namespace VirtualNes.Core
 {
@@ -282,9 +283,28 @@ namespace VirtualNes.Core
             }
         }
 
+        public void Dispose()
+        {
+            lpPRG = null;
+            lpCHR = null;
+            lpTrainer = null;
+            lpDiskBios = null;
+            lpDisk = null;
+        }
+
         public bool IsTRAINER()
         {
             return (header.control1 & (byte)EnumRomControlByte1.ROM_TRAINER) > 0;
+        }
+
+        public bool IsNSF()
+        {
+            return bNSF;
+        }
+
+        public bool IsSAVERAM()
+        {
+            return (header.control1 & (byte)EnumRomControlByte1.ROM_SAVERAM) > 0;
         }
 
         protected void FileNameCheck(string fname)
@@ -294,6 +314,41 @@ namespace VirtualNes.Core
                 bPAL = true;
                 return;
             }
+        }
+
+        internal string GetRomName()
+        {
+            return name;
+        }
+
+        internal int GetMapperNo()
+        {
+            return mapper;
+        }
+
+        internal byte[] GetPROM()
+        {
+            return lpPRG;
+        }
+
+        internal byte[] GetDISK()
+        {
+            return lpDisk;
+        }
+
+        internal int GetDiskNo()
+        {
+            return diskno;
+        }
+
+        internal ulong GetGameID()
+        {
+            return fdsgameID;
+        }
+
+        internal ulong GetMakerID()
+        {
+            return fdsmakerID;
         }
     }
 

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace VirtualNes.Core
 {
-    public class Mapper
+    public abstract class Mapper
     {
+        internal virtual void Clock(int cycles) { }
     }
 }

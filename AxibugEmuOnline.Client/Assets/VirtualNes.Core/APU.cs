@@ -8,7 +8,7 @@ namespace VirtualNes.Core
     {
         private NES nes;
         private byte exsound_select;
-        private APU_INTERNAL @internal;
+        private APU_INTERNAL @internal = new APU_INTERNAL();
         private int last_data;
         private int last_diff;
         protected short[] m_SoundBuffer = new short[256];
@@ -19,8 +19,6 @@ namespace VirtualNes.Core
 
         public APU(NES parent)
         {
-            @internal = new APU_INTERNAL();
-
             exsound_select = 0;
 
             nes = parent;
@@ -35,6 +33,15 @@ namespace VirtualNes.Core
 
             for (int i = 0; i < m_bMute.Length; i++)
                 m_bMute[i] = true;
+        }
+
+        public void Dispose()
+        {
+        }
+
+        internal void SyncDPCM(int cycles)
+        {
+            @internal.Sync(cycles);
         }
     }
 
