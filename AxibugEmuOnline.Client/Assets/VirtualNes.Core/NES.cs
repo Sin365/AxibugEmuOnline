@@ -487,6 +487,111 @@ namespace VirtualNes.Core
 
             return ret;
         }
-    }
 
+        internal void Write(ushort addr, byte data)
+        {
+            switch (addr >> 13)
+            {
+                case 0x00:  // $0000-$1FFF
+                    MMU.RAM[addr & 0x07FF] = data;
+                    break;
+                case 0x01:  // $2000-$3FFF
+                    if (!rom.IsNSF())
+                    {
+                        ppu.Write((ushort)(addr & 0xE007), data);
+                    }
+                    break;
+                case 0x02:  // $4000-$5FFF
+                    if (addr < 0x4100)
+                    {
+                        WriteReg(addr, data);
+                    }
+                    else
+                    {
+                        mapper->WriteLow(addr, data);
+                    }
+                    break;
+                case 0x03:  // $6000-$7FFF
+                    mapper->WriteLow(addr, data);
+                    break;
+                case 0x04:  // $8000-$9FFF
+                case 0x05:  // $A000-$BFFF
+                case 0x06:  // $C000-$DFFF
+                case 0x07:  // $E000-$FFFF
+                    mapper->Write(addr, data);
+
+                    GenieCodeProcess();
+                    break;
+            }
+        }
+
+        private void WriteReg(ushort addr, byte data)
+        {
+            switch (addr & 0xFF)
+            {
+                case 0x00:
+                case 0x01:
+                case 0x02:
+                case 0x03:
+                case 0x04:
+                case 0x05:
+                case 0x06:
+                case 0x07:
+                case 0x08:
+                case 0x09:
+                case 0x0A:
+                case 0x0B:
+                case 0x0C:
+                case 0x0D:
+                case 0x0E:
+                case 0x0F:
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13:
+                case 0x15:
+                    apu.Write(addr, data);
+                    MMU.CPUREG[addr & 0xFF] = data;
+                    break;
+                case 0x14:
+                    ppu.DMA(data);
+                    cpu.DMA(514); // DMA Pending cycle
+                    MMU.CPUREG[addr & 0xFF] = data;
+                    break;
+                case 0x16:
+                    mapper.ExWrite(addr, data);    // For VS-Unisystem
+                    pad.Write(addr, data);
+                    CPUREG[addr & 0xFF] = data;
+                    m_TapeIn = data;
+                    break;
+                case 0x17:
+                    CPUREG[addr & 0xFF] = data;
+                    pad->Write(addr, data);
+                    apu->Write(addr, data);
+                    break;
+                // VirtuaNES固有ポート
+                case 0x18:
+                    apu->Write(addr, data);
+                    break;
+                default:
+                    mapper->ExWrite(addr, data);
+                    break;
+            }
+        }
+
+        internal bool GetVideoMode()
+        {
+            return bVideoMode;
+        }
+
+        internal void SetFrameIRQmode(bool bMode)
+        {
+            bFrameIRQ = bMode;
+        }
+
+        internal bool GetFrameIRQmode()
+        {
+            return bFrameIRQ;
+        }
+    }
 }

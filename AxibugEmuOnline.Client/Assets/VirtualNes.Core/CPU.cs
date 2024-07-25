@@ -1,13 +1,14 @@
 ﻿#undef DPCM_SYNCCLOCK
 
-using Codice.CM.Client.Differences;
 using System;
-using System.Runtime.CompilerServices;
+using UnityEngine.UI;
 
 namespace VirtualNes.Core
 {
     public class CPU
     {
+        private static int nmicount;
+
         // 6502 status flags
         public const byte C_FLAG = 0x01;        // 1: Carry
         public const byte Z_FLAG = 0x02;    // 1: Zero
@@ -42,7 +43,7 @@ namespace VirtualNes.Core
         private int DMA_cycles;
         private Mapper mapper;
         private APU apu;
-        private R6502 R;
+        private R6502 R = new R6502();
         private byte[] ZN_Table = new byte[256];
 
         public CPU(NES parent)
@@ -97,18 +98,18 @@ namespace VirtualNes.Core
                 nmi_request = irq_request = 0;
                 opcode = OP6502(R.PC++);
 
-                if (R.Int_Pending != 0)
+                if (R.INT_pending != 0)
                 {
-                    if ((R.Int_Pending & NMI_FLAG) != 0)
+                    if ((R.INT_pending & NMI_FLAG) != 0)
                     {
                         nmi_request = 0xFF;
                         byte temp = unchecked((byte)(~NMI_FLAG));
-                        R.Int_Pending &= temp;
+                        R.INT_pending &= temp;
                     }
-                    else if ((R.Int_Pending & IRQ_MASK) != 0)
+                    else if ((R.INT_pending & IRQ_MASK) != 0)
                     {
                         byte temp = unchecked((byte)(~IRQ_TRIGGER2));
-                        R.Int_Pending &= temp;
+                        R.INT_pending &= temp;
                         if (
                             ((R.P & I_FLAG) == 0)
                             &&
@@ -117,7 +118,7 @@ namespace VirtualNes.Core
                         {
                             irq_request = 0xFF;
                             temp = unchecked((byte)(~IRQ_TRIGGER));
-                            R.Int_Pending &= temp;
+                            R.INT_pending &= temp;
                         }
                     }
                 }
@@ -125,23 +126,80 @@ namespace VirtualNes.Core
                 switch (opcode)
                 {
                     case 0x69:
-                        MR_IM(ref DT, ref R); ADC(ref WT, ref DT, ref R);
+                        MR_IM(ref DT); ADC(ref WT, ref DT);
                         ADD_CYCLE(2, ref exec_cycles);
                         break;
                     case 0x65:
-                        MR_ZP(ref EA, ref DT, ref R); ADC(ref WT, ref DT, ref R);
+                        MR_ZP(ref EA, ref DT); ADC(ref WT, ref DT);
                         ADD_CYCLE(3, ref exec_cycles);
                         break;
                     case 0x75:
-                        MR_ZX(ref DT, ref EA, ref R); ADC(ref WT, ref DT, ref R);
+                        MR_ZX(ref DT, ref EA); ADC(ref WT, ref DT);
                         ADD_CYCLE(4, ref exec_cycles);
                         break;
                     case 0x6D:
-                        MR_AB(ref EA, ref DT, ref R);ADC(ref WT, ref DT, ref R);
+                        MR_AB(ref EA, ref DT); ADC(ref WT, ref DT);
                         ADD_CYCLE(4, ref exec_cycles);
                         break;
                     case 0x7D:
-                        
+                        MR_AX(ref ET, ref EA, ref DT); ADC(ref WT, ref DT); CHECK_EA(ref EA, ref ET, ref exec_cycles);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0x79:
+                        MR_AY(ref ET, ref EA, ref DT); ADC(ref WT, ref DT); CHECK_EA(ref EA, ref ET, ref exec_cycles);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0x61:
+                        MR_IX(ref DT, ref EA); ADC(ref WT, ref DT);
+                        ADD_CYCLE(6, ref exec_cycles);
+                        break;
+                    case 0x71:
+                        MR_IY(ref DT, ref ET, ref EA); ADC(ref WT, ref DT); CHECK_EA(ref EA, ref ET, ref exec_cycles);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0xE9:
+                        MR_IM(ref DT); SBC(ref WT, ref DT);
+                        ADD_CYCLE(2, ref exec_cycles);
+                        break;
+                    case 0xE5:
+                        MR_ZP(ref EA, ref DT); SBC(ref WT, ref DT);
+                        ADD_CYCLE(3, ref exec_cycles);
+                        break;
+                    case 0xF5:
+                        MR_ZX(ref DT, ref EA); SBC(ref WT, ref DT);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0xED:
+                        MR_AB(ref EA, ref DT); SBC(ref WT, ref DT);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0xFD:
+                        MR_AX(ref ET, ref EA, ref DT); SBC(ref WT, ref DT); CHECK_EA(ref EA, ref ET, ref exec_cycles);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0xF9: // SBC $????,Y
+                        MR_AY(ref ET, ref EA, ref DT); SBC(ref WT, ref DT); CHECK_EA(ref EA, ref ET, ref exec_cycles);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0xE1: // SBC ($??,X)
+                        MR_IX(ref DT, ref EA); SBC(ref WT, ref DT);
+                        ADD_CYCLE(6, ref exec_cycles);
+                        break;
+                    case 0xF1: // SBC ($??),Y
+                        MR_IY(ref DT, ref ET, ref EA); SBC(ref WT, ref DT); CHECK_EA(ref EA, ref ET, ref exec_cycles);
+                        ADD_CYCLE(5, ref exec_cycles);
+                        break;
+                    case 0xC6: // DEC $??
+                        MR_ZP(ref EA, ref DT); DEC(ref DT); MW_ZP(EA, DT);
+                        ADD_CYCLE(5, ref exec_cycles);
+                        break;
+                    case 0xD6: // DEC $??,X
+                        MR_ZX(ref DT, ref EA); DEC(ref DT); MW_ZP(EA, DT);
+                        ADD_CYCLE(6, ref exec_cycles);
+                        break;
+                    case 0xCE: // DEC $????
+                        MR_AB(ref EA, ref DT); DEC(ref DT); MW_EA(EA, DT);
+                        ADD_CYCLE(6, ref exec_cycles);
                         break;
                 }
             }
@@ -151,8 +209,6 @@ namespace VirtualNes.Core
 #endif
             return TOTAL_cycles - OLD_cycles;
         }
-
-
 
         internal void SetClockProcess(bool bEnable)
         {
@@ -193,33 +249,41 @@ namespace VirtualNes.Core
             return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
         }
 
-        private void MR_IM(ref byte DT, ref R6502 R)
+        private void MR_IM(ref byte DT)
         {
             DT = OP6502(R.PC++);
         }
 
-        private void MR_ZP(ref ushort EA, ref byte DT, ref R6502 R)
+        private void MR_ZP(ref ushort EA, ref byte DT)
         {
             EA = OP6502(R.PC++);
-            DT = ZPRD(ref EA);
+            DT = ZPRD(EA);
         }
 
-        private byte ZPRD(ref ushort A)
+        private byte ZPRD(ushort A)
         {
             return MMU.RAM[A];
         }
 
-        private void ADC(ref ushort WT, ref byte DT, ref R6502 R)
+        private ushort ZPRDW(int A)
         {
-            WT = (ushort)(R.A + DT + (R.P & C_FLAG));
-            TST_FLAG(WT > 0xFF, C_FLAG, ref R);
-            var temp = ((~(R.A ^ DT)) & (R.A ^ WT) & 0x80);
-            TST_FLAG(temp != 0, V_FLAG, ref R);
-            R.A = (byte)WT;
-            SET_ZN_FLAG(R.A, ref R);
+            ushort ram1 = MMU.RAM[A];
+            ushort ram2 = MMU.RAM[A + 1];
+            ram2 <<= 8;
+            return (ushort)(ram1 + ram2);
         }
 
-        private void TST_FLAG(bool F, byte V, ref R6502 R)
+        private void ADC(ref ushort WT, ref byte DT)
+        {
+            WT = (ushort)(R.A + DT + (R.P & C_FLAG));
+            TST_FLAG(WT > 0xFF, C_FLAG);
+            var temp = ((~(R.A ^ DT)) & (R.A ^ WT) & 0x80);
+            TST_FLAG(temp != 0, V_FLAG);
+            R.A = (byte)WT;
+            SET_ZN_FLAG(R.A);
+        }
+
+        private void TST_FLAG(bool F, byte V)
         {
             byte temp = (byte)~V;
             R.P &= temp;
@@ -227,7 +291,7 @@ namespace VirtualNes.Core
             if (F) R.P |= V;
         }
 
-        private void SET_ZN_FLAG(byte A, ref R6502 R)
+        private void SET_ZN_FLAG(byte A)
         {
             byte temp = unchecked((byte)(~(Z_FLAG | N_FLAG)));
             R.P &= temp;
@@ -239,24 +303,126 @@ namespace VirtualNes.Core
             exec_cycles += V;
         }
 
-        private void MR_ZX(ref byte DT, ref ushort EA, ref R6502 R)
+        private void MR_ZX(ref byte DT, ref ushort EA)
         {
             DT = OP6502(R.PC++);
             EA = (ushort)(DT + R.X);
-            DT = ZPRD(ref EA);
+            DT = ZPRD(EA);
         }
 
-        private void MR_AB(ref ushort EA, ref byte DT, ref R6502 R)
+        private void MR_AB(ref ushort EA, ref byte DT)
         {
             EA = OP6502W(R.PC);
             R.PC += 2;
             DT = RD6502(EA);
         }
 
+        private void MR_AX(ref ushort ET, ref ushort EA, ref byte DT)
+        {
+            ET = OP6502W(R.PC);
+            R.PC += 2;
+            EA = (byte)(ET + R.X);
+            DT = RD6502(EA);
+        }
+
+        private void CHECK_EA(ref ushort EA, ref ushort ET, ref int exec_cycles)
+        {
+            if ((ET & 0xFF00) != (EA & 0xFF00)) ADD_CYCLE(1, ref exec_cycles);
+        }
+
+        private void MR_AY(ref ushort ET, ref ushort EA, ref byte DT)
+        {
+            ET = OP6502W(R.PC);
+            R.PC += 2;
+            EA = (ushort)(ET + R.Y);
+            DT = RD6502(EA);
+        }
+
+        private void MR_IX(ref byte DT, ref ushort EA)
+        {
+            DT = OP6502(R.PC++);
+            EA = ZPRDW(DT + R.X);
+            DT = RD6502(EA);
+        }
+
+        private void MR_IY(ref byte DT, ref ushort ET, ref ushort EA)
+        {
+            DT = OP6502(R.PC++);
+            ET = ZPRDW(DT);
+            EA = (ushort)(ET + R.Y);
+            DT = RD6502(EA);
+        }
+
+        private void SBC(ref ushort WT, ref byte DT)
+        {
+            WT = (ushort)(R.A - DT - (~R.P & C_FLAG));
+            bool f = ((R.A ^ DT) & (R.A ^ WT) & (0x80)) != 0;
+            TST_FLAG(f, V_FLAG);
+            TST_FLAG(WT < 0x100, C_FLAG);
+            R.A = (byte)WT;
+            SET_ZN_FLAG(R.A);
+        }
+
+        private void DEC(ref byte DT)
+        {
+            DT--;
+            SET_ZN_FLAG(DT);
+        }
+
+        private void MW_ZP(ushort EA, byte DT)
+        {
+            ZPWR(EA, DT);
+        }
+
+        private void ZPWR(ushort a, byte v)
+        {
+            MMU.RAM[a] = v;
+        }
+
+        private void MW_EA(ushort EA, byte DT)
+        {
+            WR6502(EA, DT);
+        }
+
         internal void ClrIRQ(byte mask)
         {
             byte temp = (byte)~mask;
-            R.Int_Pending &= temp;
+            R.INT_pending &= temp;
+        }
+
+        internal void WR6502(ushort addr, byte data)
+        {
+            if (addr < 0x2000)
+            {
+                // RAM (Mirror $0800, $1000, $1800)
+                MMU.RAM[addr & 0x07FF] = data;
+            }
+            else
+            {
+                // Others
+                nes.Write(addr, data);
+            }
+        }
+
+        internal void NMI()
+        {
+            R.INT_pending |= NMI_FLAG;
+            nmicount = 0;
+        }
+
+        internal void SetIRQ(byte mask)
+        {
+            R.INT_pending |= mask;
+        }
+
+        internal int GetTotalCycles()
+        {
+            return TOTAL_cycles;
+        }
+
+        internal void DMA(int cycles)
+        {
+            DMA_cycles += cycles;
         }
     }
 
@@ -292,7 +458,7 @@ namespace VirtualNes.Core
         IRQ_VECTOR = 0xFFFE
     }
 
-    public struct R6502
+    public class R6502
     {
         public ushort PC;
         public byte A;
@@ -301,6 +467,6 @@ namespace VirtualNes.Core
         public byte Y;
         public byte S;
 
-        public byte Int_Pending;
+        public byte INT_pending;
     }
 }
