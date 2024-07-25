@@ -350,6 +350,11 @@ namespace VirtualNes.Core
         {
             return fdsmakerID;
         }
+
+        internal bool IsVSUNISYSTEM()
+        {
+            return (header.control2 & (byte)EnumRomControlByte2.ROM_VSUNISYSTEM) != 0;
+        }
     }
 
 

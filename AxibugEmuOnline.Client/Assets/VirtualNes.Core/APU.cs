@@ -15,7 +15,7 @@ namespace VirtualNes.Core
         protected int[] lowpass_filter = new int[4];
         protected QUEUE queue;
         protected QUEUE exqueue;
-        protected bool[] m_bMute = new bool[16];        
+        protected bool[] m_bMute = new bool[16];
 
         public APU(NES parent)
         {
@@ -42,6 +42,11 @@ namespace VirtualNes.Core
         internal void SyncDPCM(int cycles)
         {
             @internal.Sync(cycles);
+        }
+
+        internal byte Read(ushort addr)
+        {
+            return @internal.SyncRead(addr);
         }
     }
 
