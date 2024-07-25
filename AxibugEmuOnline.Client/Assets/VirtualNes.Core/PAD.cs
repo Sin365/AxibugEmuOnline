@@ -1,4 +1,6 @@
-﻿namespace VirtualNes.Core
+﻿using System;
+
+namespace VirtualNes.Core
 {
     public class PAD
     {
@@ -31,6 +33,10 @@
 
             padbitsync[0] = padbitsync[1] = padbitsync[2] = padbitsync[3] = 0;
             micbitsync = 0;
+        }
+
+        public void Dispose()
+        {
         }
     }
 

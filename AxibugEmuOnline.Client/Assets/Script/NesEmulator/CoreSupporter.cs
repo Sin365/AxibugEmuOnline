@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using UnityEngine;
 using VirtualNes.Core;
 
@@ -44,6 +45,22 @@ namespace AxibugEmuOnline.Client
         public Stream OpenFile_DISKSYS()
         {
             return File.Open($"{Application.streamingAssetsPath}/Disksys.rom", FileMode.Open, FileAccess.Read);
+        }
+
+        public void SaveSRAMToFile(byte[] sramContent, string romName)
+        {
+            string sramDirectoryPath = $"{Application.persistentDataPath}/sav";
+            Directory.CreateDirectory(sramDirectoryPath);
+            romName = Path.GetFileNameWithoutExtension(romName);
+            File.WriteAllBytes($"{sramDirectoryPath}/{romName}.sav", sramContent);
+        }
+
+        public void SaveDISKToFile(byte[] diskFileContent, string romName)
+        {
+            string diskFileDirectoryPath = $"{Application.persistentDataPath}/dsv";
+            Directory.CreateDirectory(diskFileDirectoryPath);
+            romName = Path.GetFileNameWithoutExtension(romName);
+            File.WriteAllBytes($"{diskFileDirectoryPath}/{romName}.dsv", diskFileContent);
         }
     }
 }
