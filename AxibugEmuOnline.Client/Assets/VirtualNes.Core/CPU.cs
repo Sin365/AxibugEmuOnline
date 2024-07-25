@@ -136,6 +136,13 @@ namespace VirtualNes.Core
                         MR_ZX(ref DT, ref EA, ref R); ADC(ref WT, ref DT, ref R);
                         ADD_CYCLE(4, ref exec_cycles);
                         break;
+                    case 0x6D:
+                        MR_AB(ref EA, ref DT, ref R);ADC(ref WT, ref DT, ref R);
+                        ADD_CYCLE(4, ref exec_cycles);
+                        break;
+                    case 0x7D:
+                        
+                        break;
                 }
             }
         _execute_exit:
@@ -157,26 +164,51 @@ namespace VirtualNes.Core
             return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ushort OP6502W(ushort addr)
+        {
+            var bytePage = MMU.CPU_MEM_BANK[addr >> 13];
+
+            return BitConverter.ToUInt16(bytePage, addr & 0x1FFF);
+        }
+
+        internal byte RD6502(ushort addr)
+        {
+            if (addr < 0x2000)
+            {
+                // RAM (Mirror $0800, $1000, $1800)
+                return MMU.RAM[addr & 0x07FF];
+            }
+            else if (addr < 0x8000)
+            {
+                // Others
+                return nes.Read(addr);
+            }
+            else
+            {
+                // Dummy access
+                mapper.Read(addr, MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF]);
+            }
+
+            // Quick bank read
+            return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
+        }
+
         private void MR_IM(ref byte DT, ref R6502 R)
         {
             DT = OP6502(R.PC++);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void MR_ZP(ref ushort EA, ref byte DT, ref R6502 R)
         {
             EA = OP6502(R.PC++);
             DT = ZPRD(ref EA);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte ZPRD(ref ushort A)
         {
             return MMU.RAM[A];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ADC(ref ushort WT, ref byte DT, ref R6502 R)
         {
             WT = (ushort)(R.A + DT + (R.P & C_FLAG));
@@ -187,7 +219,6 @@ namespace VirtualNes.Core
             SET_ZN_FLAG(R.A, ref R);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void TST_FLAG(bool F, byte V, ref R6502 R)
         {
             byte temp = (byte)~V;
@@ -196,7 +227,6 @@ namespace VirtualNes.Core
             if (F) R.P |= V;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void SET_ZN_FLAG(byte A, ref R6502 R)
         {
             byte temp = unchecked((byte)(~(Z_FLAG | N_FLAG)));
@@ -204,18 +234,29 @@ namespace VirtualNes.Core
             R.P |= ZN_Table[A];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ADD_CYCLE(int V, ref int exec_cycles)
         {
             exec_cycles += V;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void MR_ZX(ref byte DT, ref ushort EA, ref R6502 R)
         {
             DT = OP6502(R.PC++);
             EA = (ushort)(DT + R.X);
             DT = ZPRD(ref EA);
+        }
+
+        private void MR_AB(ref ushort EA, ref byte DT, ref R6502 R)
+        {
+            EA = OP6502W(R.PC);
+            R.PC += 2;
+            DT = RD6502(EA);
+        }
+
+        internal void ClrIRQ(byte mask)
+        {
+            byte temp = (byte)~mask;
+            R.Int_Pending &= temp;
         }
     }
 

@@ -358,6 +358,135 @@ namespace VirtualNes.Core
         {
             //todo : 实现Tape (目测是记录玩家操作再Play,优先级很低)
         }
+
+        internal byte Read(ushort addr)
+        {
+            switch (addr >> 13)
+            {
+                case 0x00:  // $0000-$1FFF
+                    return MMU.RAM[addr & 0x07FF];
+                case 0x01:  // $2000-$3FFF
+                    return ppu.Read((ushort)(addr & 0xE007));
+                case 0x02:  // $4000-$5FFF
+                    if (addr < 0x4100)
+                    {
+                        return ReadReg(addr);
+                    }
+                    else
+                    {
+                        return mapper.ReadLow(addr);
+                    }
+                case 0x03:  // $6000-$7FFF
+                    return mapper.ReadLow(addr);
+                case 0x04:  // $8000-$9FFF
+                case 0x05:  // $A000-$BFFF
+                case 0x06:  // $C000-$DFFF
+                case 0x07:  // $E000-$FFFF
+                    return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
+            }
+
+            return 0x00;	// Warning梊杊
+        }
+
+        private byte ReadReg(ushort addr)
+        {
+            switch (addr & 0xFF)
+            {
+                case 0x00:
+                case 0x01:
+                case 0x02:
+                case 0x03:
+                case 0x04:
+                case 0x05:
+                case 0x06:
+                case 0x07:
+                case 0x08:
+                case 0x09:
+                case 0x0A:
+                case 0x0B:
+                case 0x0C:
+                case 0x0D:
+                case 0x0E:
+                case 0x0F:
+                case 0x10:
+                case 0x11:
+                case 0x12:
+                case 0x13:
+                    return apu.Read(addr);
+                case 0x15:
+                    return apu.Read(addr);
+                case 0x14:
+                    return (byte)(addr & 0xFF);
+                case 0x16:
+                    if (rom.IsVSUNISYSTEM())
+                    {
+                        return pad.Read(addr);
+                    }
+                    else
+                    {
+                        return (byte)(pad.Read(addr) | 0x40 | m_TapeOut);
+                    }
+                case 0x17:
+                    if (rom.IsVSUNISYSTEM())
+                    {
+                        return pad.Read(addr);
+                    }
+                    else
+                    {
+                        return (byte)(pad.Read(addr) | apu.Read(addr));
+                    }
+                default:
+                    return mapper.ExRead(addr);
+            }
+        }
+
+        internal byte Barcode2()
+        {
+            byte ret = 0x00;
+
+            if (!m_bBarcode2 || m_Barcode2seq < 0)
+                return ret;
+
+            switch (m_Barcode2seq)
+            {
+                case 0:
+                    m_Barcode2seq++;
+                    m_Barcode2ptr = 0;
+                    ret = 0x04;     // d3
+                    break;
+
+                case 1:
+                    m_Barcode2seq++;
+                    m_Barcode2bit = m_Barcode2data[m_Barcode2ptr];
+                    m_Barcode2cnt = 0;
+                    ret = 0x04;     // d3
+                    break;
+
+                case 2:
+                    ret = (byte)((m_Barcode2bit & 0x01) != 0 ? 0x00 : 0x04); // Bit rev.
+                    m_Barcode2bit >>= 1;
+                    if (++m_Barcode2cnt > 7)
+                    {
+                        m_Barcode2seq++;
+                    }
+                    break;
+                case 3:
+                    if (++m_Barcode2ptr > 19)
+                    {
+                        m_bBarcode2 = false;
+                        m_Barcode2seq = -1;
+                    }
+                    else
+                    {
+                        m_Barcode2seq = 1;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return ret;
+        }
     }
 
 }

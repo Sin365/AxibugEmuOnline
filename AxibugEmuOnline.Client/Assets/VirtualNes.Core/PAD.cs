@@ -4,18 +4,21 @@ namespace VirtualNes.Core
 {
     public class PAD
     {
-        protected NES nes;
-        protected int excontroller_select;
-        protected EXPAD expad;
-        protected bool bStrobe;
-        protected bool bSwapButton;
-        protected bool bSwapPlayer;
-        protected bool bZapperMode;
-        protected VSType nVSSwapType;
-        protected byte[] padbit = new byte[4];
-        protected byte micbit;
-        protected byte[] padbitsync = new byte[4];
-        protected byte micbitsync;
+        private NES nes;
+        private int excontroller_select;
+        private EXPAD expad;
+        private bool bStrobe;
+        private bool bSwapButton;
+        private bool bSwapPlayer;
+        private bool bZapperMode;
+        private VSType nVSSwapType;
+        private byte[] padbit = new byte[4];
+        private byte micbit;
+        private byte[] padbitsync = new byte[4];
+        private byte micbitsync;
+        private bool bBarcodeWorld;
+
+        public uint pad1bit, pad2bit, pad3bit, pad4bit;
 
         public PAD(NES parent)
         {
@@ -35,9 +38,47 @@ namespace VirtualNes.Core
             micbitsync = 0;
         }
 
-        public void Dispose()
+        internal byte Read(ushort addr)
         {
+            byte data = 0x00;
+
+            if (addr == 0x4016)
+            {
+                data = (byte)(pad1bit & 1);
+                pad1bit >>= 1;
+                data |= (byte)(((pad3bit & 1)) << 1);
+                pad3bit >>= 1;
+                // Mic
+                if (!nes.rom.IsVSUNISYSTEM())
+                {
+                    data |= micbitsync;
+                }
+                if (expad != null)
+                {
+                    data |= expad.Read4016();
+                }
+            }
+            if (addr == 0x4017)
+            {
+                data = (byte)(pad2bit & 1);
+                pad2bit >>= 1;
+                data |= (byte)((pad4bit & 1) << 1);
+                pad4bit >>= 1;
+
+                if (expad != null)
+                {
+                    data |= expad.Read4017();
+                }
+
+                if (bBarcodeWorld)
+                {
+                    data |= nes.Barcode2();
+                }
+            }
+
+            return data;
         }
+        public void Dispose() { }
     }
 
     public enum VSType
