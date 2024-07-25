@@ -10,7 +10,8 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
-            StartGame("Kirby.nes");
+
+            //StartGame("Kirby.nes");
         }
 
         public void StartGame(string romName)

@@ -40,6 +40,25 @@ namespace VirtualNes
         public static byte PPU7_Temp;                                   // $2007 read buffer
         public static ushort loopy_t;                                   // same as $2005/$2006
         public static ushort loopy_v;                                   // same as $2005/$2006
-        public static ushort loopy_x;		                            // tile x offset
+        public static ushort loopy_x;                                   // tile x offset
+
+        // 儊儌儕僞僀僾
+        // For PROM (CPU)
+        public const byte BANKTYPE_ROM = 0x00;
+        public const byte BANKTYPE_RAM = 0xFF;
+        public const byte BANKTYPE_DRAM = 0x01;
+        public const byte BANKTYPE_MAPPER = 0x80;
+        // For VROM/VRAM=/CRAM (PPU)           
+        public const byte BANKTYPE_VROM = 0x00;
+        public const byte BANKTYPE_CRAM = 0x01;
+        public const byte BANKTYPE_VRAM = 0x80;
+
+        // 儈儔乕僞僀僾                        
+        public const byte VRAM_HMIRROR = 0x00;     // Horizontal
+        public const byte VRAM_VMIRROR = 0x01;     // Virtical
+        public const byte VRAM_MIRROR4 = 0x02;     // All screen
+        public const byte VRAM_MIRROR4L = 0x03;     // PA10 L屌掕 $2000-$23FF偺儈儔乕
+        public const byte VRAM_MIRROR4H = 0x04;     // PA10 H屌掕 $2400-$27FF偺儈儔乕
+
     }
 }
