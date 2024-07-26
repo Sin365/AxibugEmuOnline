@@ -1,7 +1,5 @@
-﻿using Codice.CM.Client.Differences;
-using System;
+﻿using System;
 using System.IO;
-using System.Linq;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
@@ -21,13 +19,13 @@ namespace VirtualNes.Core
         protected byte[] lpTrainer;
         protected byte[] lpDiskBios;
         protected byte[] lpDisk;
-        protected ulong crc;
-        protected ulong crcall;
-        protected ulong crcvrom;
+        protected uint crc;
+        protected uint crcall;
+        protected uint crcvrom;
         protected int mapper;
         protected int diskno;
-        protected ulong fdsmakerID;
-        protected ulong fdsgameID;
+        protected uint fdsmakerID;
+        protected uint fdsgameID;
 
         public ROM(string fname)
         {
@@ -255,7 +253,7 @@ namespace VirtualNes.Core
                         crc = crcall = crcvrom = 0;
 
                         fdsmakerID = lpPRG[0x1F];
-                        fdsgameID = (ulong)((lpPRG[0x20] << 24) | (lpPRG[0x21] << 16) | (lpPRG[0x22] << 8) | (lpPRG[0x23] << 0));
+                        fdsgameID = (uint)((lpPRG[0x20] << 24) | (lpPRG[0x21] << 16) | (lpPRG[0x22] << 8) | (lpPRG[0x23] << 0));
                     }
                 }
                 else //NSF
@@ -282,9 +280,32 @@ namespace VirtualNes.Core
             }
         }
 
+        public void Dispose()
+        {
+            lpPRG = null;
+            lpCHR = null;
+            lpTrainer = null;
+            lpDiskBios = null;
+            lpDisk = null;
+        }
+
         public bool IsTRAINER()
         {
             return (header.control1 & (byte)EnumRomControlByte1.ROM_TRAINER) > 0;
+        }
+
+        public bool IsNSF()
+        {
+            return bNSF;
+        }
+        public bool IsPAL()
+        {
+            return bPAL;
+        }
+
+        public bool IsSAVERAM()
+        {
+            return (header.control1 & (byte)EnumRomControlByte1.ROM_SAVERAM) > 0;
         }
 
         protected void FileNameCheck(string fname)
@@ -294,6 +315,86 @@ namespace VirtualNes.Core
                 bPAL = true;
                 return;
             }
+        }
+
+        internal string GetRomName()
+        {
+            return name;
+        }
+
+        internal int GetMapperNo()
+        {
+            return mapper;
+        }
+
+        internal byte[] GetPROM()
+        {
+            return lpPRG;
+        }
+
+        internal byte[] GetVROM()
+        {
+            return lpCHR;
+        }
+
+        internal byte[] GetDISK()
+        {
+            return lpDisk;
+        }
+
+        internal int GetDiskNo()
+        {
+            return diskno;
+        }
+
+        internal ulong GetGameID()
+        {
+            return fdsgameID;
+        }
+
+        internal ulong GetMakerID()
+        {
+            return fdsmakerID;
+        }
+
+        internal bool IsVSUNISYSTEM()
+        {
+            return (header.control2 & (byte)EnumRomControlByte2.ROM_VSUNISYSTEM) != 0;
+        }
+
+        internal uint GetPROM_CRC()
+        {
+            return crc;
+        }
+
+        internal byte GetPROM_SIZE()
+        {
+            return header.PRG_PAGE_SIZE;
+        }
+
+        internal byte GetVROM_SIZE()
+        {
+            return header.CHR_PAGE_SIZE;
+        }
+
+        internal bool Is4SCREEN()
+        {
+            return (header.control1 & (byte)EnumRomControlByte1.ROM_4SCREEN) != 0;
+        }
+
+        internal bool IsVMIRROR()
+        {
+            return (header.control1 & (byte)EnumRomControlByte1.ROM_VMIRROR) != 0;
+        }
+
+        internal byte[] GetTRAINER()
+        {
+            return lpTrainer;
+        }
+
+        internal NSFHEADER GetNsfHeader()
+        {
+            return nsfheader;
         }
     }
 
