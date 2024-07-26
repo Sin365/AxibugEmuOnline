@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public abstract class APU_INTERFACE
     {
+        public const float APU_CLOCK = 1789772.5f;
+
+        public virtual void Dispose() { }
+
         public abstract void Reset(float fClock, int nRate);
         public abstract void Setup(float fClock, int nRate);
         public abstract void Write(ushort addr, byte data);
@@ -24,5 +22,15 @@ namespace VirtualNes.Core
         public virtual int GetStateSize() { return 0; }
         public virtual void SaveState(byte[] p) { }
         public virtual void LoadState(byte[] p) { }
+
+        public static int INT2FIX(int x)
+        {
+            return x << 16;
+        }
+
+        public static int FIX2INT(int x)
+        {
+            return x >> 16;
+        }
     }
 }
