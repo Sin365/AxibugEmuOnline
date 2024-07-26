@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace VirtualNes.Core
 {
     public class EXPAD
@@ -23,7 +18,7 @@ namespace VirtualNes.Core
         public virtual void Write4016(byte data) { }
         public virtual void Write4017(byte data) { }
         public virtual void Sync() { }
-        public virtual void SetSyncData(int type,int data) { }
+        public virtual void SetSyncData(int type, int data) { }
         public virtual int GetSyncData(int type) { return 0x00; }
     }
 }

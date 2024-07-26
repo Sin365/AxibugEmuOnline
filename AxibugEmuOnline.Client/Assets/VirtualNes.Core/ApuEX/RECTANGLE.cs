@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VirtualNes.Core
 {
@@ -47,5 +43,43 @@ namespace VirtualNes.Core
         public byte sync_holdnote;
         public byte dummy2;
         public int sync_len_count;
+
+        public void ZeroMemory()
+        {
+            Array.Clear(reg, 0, reg.Length);
+            enable = 0;
+            holdnote = 0;
+            volume = 0;
+            complement = 0;
+
+            phaseacc = 0;
+            freq = 0;
+            freqlimit = 0;
+            adder = 0;
+            duty = 0;
+            len_count = 0;
+
+            nowvolume = 0;
+
+            env_fixed = 0;
+            env_decay = 0;
+            env_count = 0;
+            dummy0 = 0;
+            env_vol = 0;
+
+            swp_on = 0;
+            swp_inc = 0;
+            swp_shift = 0;
+            swp_decay = 0;
+            swp_count = 0;
+            Array.Clear(dummy1, 0, dummy1.Length);
+
+            Array.Clear(sync_reg, 0, sync_reg.Length);
+            sync_output_enable = 0;
+            sync_enable = 0;
+            sync_holdnote = 0;
+            dummy2 = 0;
+            sync_len_count = 0;
+        }
     }
 }

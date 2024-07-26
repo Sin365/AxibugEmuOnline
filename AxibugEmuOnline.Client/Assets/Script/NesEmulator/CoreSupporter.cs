@@ -62,5 +62,7 @@ namespace AxibugEmuOnline.Client
             romName = Path.GetFileNameWithoutExtension(romName);
             File.WriteAllBytes($"{diskFileDirectoryPath}/{romName}.dsv", diskFileContent);
         }
+
+        public EmulatorConfig Config { get; private set; } = new EmulatorConfig();
     }
 }

@@ -1,4 +1,3 @@
-using Codice.CM.Client.Differences;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,10 +17,14 @@ namespace VirtualNes.Core
         public NesConfig nescfg;
 
         private List<CHEATCODE> m_CheatCode = new List<CHEATCODE>();
+        private List<GENIECODE> m_GenieCode = new List<GENIECODE>();
         private bool m_bDiskThrottle;
         private int m_CommandRequest;
         private int m_nSnapNo;
         private bool m_bNsfPlaying;
+        private bool m_bNsfInit;
+        private int m_nNsfSongNo;
+        private int m_nNsfSongMode;
         private bool m_bMoviePlay;
         private bool m_bMovieRec;
         private Stream m_fpMovie;
@@ -96,7 +99,7 @@ namespace VirtualNes.Core
 
             bVideoMode = false;
 
-            nescfg = NesConfig.GetNTSC();
+            nescfg = NesConfig.NESCONFIG_NTSC;
 
             CheatInitial();
 
@@ -203,18 +206,203 @@ namespace VirtualNes.Core
             SaveDISK();
             SaveTurboFile();
 
-            //todo : 实现
+            // RAM Clear
+            MemoryUtility.ZEROMEMORY(MMU.RAM, (uint)MMU.RAM.Length);
+            if (rom.GetPROM_CRC() == 0x29401686)
+            {	// Minna no Taabou no Nakayoshi Dai Sakusen(J)
+                MemoryUtility.memset(MMU.RAM, 0xFF, (uint)MMU.RAM.Length);
+            }
+
+            // RAM set
+            if (!rom.IsSAVERAM() && rom.GetMapperNo() != 20)
+            {
+                MemoryUtility.memset(MMU.WRAM, 0xFF, (uint)MMU.WRAM.Length);
+            }
+
+            MemoryUtility.ZEROMEMORY(MMU.CRAM, (uint)MMU.CRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.VRAM, (uint)MMU.VRAM.Length);
+
+            MemoryUtility.ZEROMEMORY(MMU.SPRAM, (uint)MMU.SPRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.BGPAL, (uint)MMU.BGPAL.Length);
+            MemoryUtility.ZEROMEMORY(MMU.SPPAL, (uint)MMU.SPPAL.Length);
+
+            MemoryUtility.ZEROMEMORY(MMU.CPUREG, (uint)MMU.CPUREG.Length);
+            MemoryUtility.ZEROMEMORY(MMU.PPUREG, (uint)MMU.PPUREG.Length);
+
+            m_bDiskThrottle = false;
+
+            SetRenderMethod(EnumRenderMethod.PRE_RENDER);
+
+            if (rom.IsPAL())
+            {
+                SetVideoMode(true);
+            }
+
+            MMU.PROM = rom.GetPROM();
+            MMU.VROM = rom.GetVROM();
+
+            MMU.PROM_8K_SIZE = rom.GetPROM_SIZE() * 2;
+            MMU.PROM_16K_SIZE = rom.GetPROM_SIZE();
+            MMU.PROM_32K_SIZE = rom.GetPROM_SIZE() / 2;
+
+            MMU.VROM_1K_SIZE = rom.GetVROM_SIZE() * 8;
+            MMU.VROM_2K_SIZE = rom.GetVROM_SIZE() * 4;
+            MMU.VROM_4K_SIZE = rom.GetVROM_SIZE() * 2;
+            MMU.VROM_8K_SIZE = rom.GetVROM_SIZE();
+
+            // 僨僼僅儖僩僶儞僋
+            if (MMU.VROM_8K_SIZE != 0)
+            {
+                MMU.SetVROM_8K_Bank(0);
+            }
+            else
+            {
+                MMU.SetCRAM_8K_Bank(0);
+            }
+
+            // 儈儔乕
+            if (rom.Is4SCREEN())
+            {
+                MMU.SetVRAM_Mirror(MMU.VRAM_MIRROR4);
+            }
+            else if (rom.IsVMIRROR())
+            {
+                MMU.SetVRAM_Mirror(MMU.VRAM_VMIRROR);
+            }
+            else
+            {
+                MMU.SetVRAM_Mirror(MMU.VRAM_HMIRROR);
+            }
+
+            apu.SelectExSound(0);
+
+            ppu.Reset();
+            mapper.Reset();
+
+            // Trainer
+            if (rom.IsTRAINER())
+            {
+                Array.Copy(rom.GetTRAINER(), 0, MMU.WRAM, 0x1000, 512);
+            }
+
+            pad.Reset();
+            cpu.Reset();
+            apu.Reset();
+
+            if (rom.IsNSF())
+            {
+                mapper.Reset();
+            }
+
+            base_cycles = emul_cycles = 0;
+        }
+
+        internal void SetVideoMode(bool bMode)
+        {
+            bVideoMode = bMode;
+            if (!bVideoMode)
+            {
+                nescfg = NesConfig.NESCONFIG_NTSC;
+            }
+            else
+            {
+                nescfg = NesConfig.NESCONFIG_PAL;
+            }
+            apu.SoundSetup();
+        }
+
+        public void SetRenderMethod(EnumRenderMethod type)
+        {
+            RenderMethod = type;
         }
 
         internal void SoftReset()
         {
-            //todo : 实现
+            pad.Reset();
+            cpu.Reset();
+            apu.Reset();
+
+            if (rom.IsNSF())
+            {
+                mapper.Reset();
+            }
+
+            m_bDiskThrottle = false;
+
+            base_cycles = emul_cycles = 0;
         }
 
         internal void EmulateNSF()
         {
-            //todo : 实现NSF模拟
-            throw new NotImplementedException("EmulateNSF");
+            R6502 reg = null;
+
+            ppu.Reset();
+            mapper.VSync();
+
+            //DEBUGOUT( "Frame\n" );
+
+            if (m_bNsfPlaying)
+            {
+                if (m_bNsfInit)
+                {
+                    MemoryUtility.ZEROMEMORY(MMU.RAM, (uint)MMU.RAM.Length);
+                    if ((rom.GetNsfHeader().ExtraChipSelect & 0x04) == 0)
+                    {
+                        MemoryUtility.ZEROMEMORY(MMU.RAM, 0x2000);
+                    }
+
+                    apu.Reset();
+                    apu.Write(0x4015, 0x0F);
+                    apu.Write(0x4017, 0xC0);
+                    apu.ExWrite(0x4080, 0x80); // FDS Volume 0
+                    apu.ExWrite(0x408A, 0xE8); // FDS Envelope Speed
+
+                    cpu.GetContext(ref reg);
+                    reg.PC = 0x4710;    // Init Address
+                    reg.A = (byte)m_nNsfSongNo;
+                    reg.X = (byte)m_nNsfSongMode;
+                    reg.Y = 0;
+                    reg.S = 0xFF;
+                    reg.P = CPU.Z_FLAG | CPU.R_FLAG | CPU.I_FLAG;
+
+                    // 埨慡懳嶔傪寭偹偰偁偊偰儖乕僾偵(1昩暘)
+                    for (int i = 0; i < nescfg.TotalScanlines * 60; i++)
+                    {
+                        EmulationCPU(nescfg.ScanlineCycles);
+                        cpu.GetContext(ref reg);
+
+                        // 柍尷儖乕僾偵擖偭偨偙偲傪妋擣偟偨傜敳偗傞
+                        if (reg.PC == 0x4700)
+                        {
+                            break;
+                        }
+                    }
+
+                    m_bNsfInit = false;
+                }
+
+                cpu.GetContext(ref reg);
+                // 柍尷儖乕僾偵擖偭偰偄偨傜嵞愝掕偡傞
+                if (reg.PC == 0x4700)
+                {
+                    reg.PC = 0x4720;    // Play Address
+                    reg.A = 0;
+                    reg.S = 0xFF;
+                }
+
+                for (int i = 0; i < nescfg.TotalScanlines; i++)
+                {
+                    EmulationCPU(nescfg.ScanlineCycles);
+                }
+            }
+            else
+            {
+                cpu.GetContext(ref reg);
+                reg.PC = 0x4700;    // 柍尷儖乕僾
+                reg.S = 0xFF;
+
+                EmulationCPU(nescfg.ScanlineCycles * nescfg.TotalScanlines);
+            }
         }
 
         internal void CheatCodeProcess()
@@ -239,7 +427,7 @@ namespace VirtualNes.Core
 
             for (i = 0; i < SAVERAM_SIZE; i++)
             {
-                if (MMU.WARM[i] != 0x00)
+                if (MMU.WRAM[i] != 0x00)
                     break;
             }
 
@@ -249,7 +437,7 @@ namespace VirtualNes.Core
 
                 Debuger.Log($"Saving SAVERAM...[{romName}]");
 
-                Supporter.SaveSRAMToFile(MMU.WARM, romName);
+                Supporter.SaveSRAMToFile(MMU.WRAM, romName);
             }
         }
 
@@ -382,7 +570,7 @@ namespace VirtualNes.Core
                 case 0x05:  // $A000-$BFFF
                 case 0x06:  // $C000-$DFFF
                 case 0x07:  // $E000-$FFFF
-                    return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
+                    return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
             }
 
             return 0x00;	// Warning梊杊
@@ -508,20 +696,44 @@ namespace VirtualNes.Core
                     }
                     else
                     {
-                        mapper->WriteLow(addr, data);
+                        mapper.WriteLow(addr, data);
                     }
                     break;
                 case 0x03:  // $6000-$7FFF
-                    mapper->WriteLow(addr, data);
+                    mapper.WriteLow(addr, data);
                     break;
                 case 0x04:  // $8000-$9FFF
                 case 0x05:  // $A000-$BFFF
                 case 0x06:  // $C000-$DFFF
                 case 0x07:  // $E000-$FFFF
-                    mapper->Write(addr, data);
+                    mapper.Write(addr, data);
 
                     GenieCodeProcess();
                     break;
+            }
+        }
+
+        private void GenieCodeProcess()
+        {
+            ushort addr;
+
+            for (int i = 0; i < m_GenieCode.Count; i++)
+            {
+                addr = m_GenieCode[i].address;
+                if ((addr & 0x8000) != 0)
+                {
+                    // 8character codes
+                    if (MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] == m_GenieCode[i].cmp)
+                    {
+                        MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] = m_GenieCode[i].data;
+                    }
+                }
+                else
+                {
+                    // 6character codes
+                    addr |= 0x8000;
+                    MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] = m_GenieCode[i].data;
+                }
             }
         }
 
@@ -561,20 +773,20 @@ namespace VirtualNes.Core
                 case 0x16:
                     mapper.ExWrite(addr, data);    // For VS-Unisystem
                     pad.Write(addr, data);
-                    CPUREG[addr & 0xFF] = data;
+                    MMU.CPUREG[addr & 0xFF] = data;
                     m_TapeIn = data;
                     break;
                 case 0x17:
-                    CPUREG[addr & 0xFF] = data;
-                    pad->Write(addr, data);
-                    apu->Write(addr, data);
+                    MMU.CPUREG[addr & 0xFF] = data;
+                    pad.Write(addr, data);
+                    apu.Write(addr, data);
                     break;
                 // VirtuaNES屌桳億乕僩
                 case 0x18:
-                    apu->Write(addr, data);
+                    apu.Write(addr, data);
                     break;
                 default:
-                    mapper->ExWrite(addr, data);
+                    mapper.ExWrite(addr, data);
                     break;
             }
         }

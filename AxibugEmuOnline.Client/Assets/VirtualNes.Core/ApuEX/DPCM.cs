@@ -1,11 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public class DPCM
     {

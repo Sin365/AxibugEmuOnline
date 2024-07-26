@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace VirtualNes.Core
 {
@@ -27,7 +24,7 @@ namespace VirtualNes.Core
         NSF
     }
 
-    public struct NSFHEADER
+    public class NSFHEADER
     {
         byte[] ID;
         byte Version;
@@ -43,7 +40,7 @@ namespace VirtualNes.Core
         byte[] BankSwitch;
         ushort SpeedPAL;
         byte NTSC_PALbits;
-        byte ExtraChipSelect;
+        public byte ExtraChipSelect;
         byte[] Expansion;		// must be 0
 
 
@@ -65,7 +62,7 @@ namespace VirtualNes.Core
         }
     }
 
-    public struct NESHEADER
+    public class NESHEADER
     {
         public byte[] ID;
         public byte PRG_PAGE_SIZE;

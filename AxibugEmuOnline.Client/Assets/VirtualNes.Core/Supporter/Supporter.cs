@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
 namespace VirtualNes.Core
 {
@@ -37,6 +34,8 @@ namespace VirtualNes.Core
         {
             s_support.SaveDISKToFile(diskFileContent, romName);
         }
+
+        public static EmulatorConfig Config => s_support.Config;
     }
 
     public interface ISupporterImpl
@@ -46,5 +45,6 @@ namespace VirtualNes.Core
         Stream OpenFile_DISKSYS();
         void SaveSRAMToFile(byte[] sramContent, string romName);
         void SaveDISKToFile(byte[] diskFileContent, string romName);
+        EmulatorConfig Config { get; }
     }
 }

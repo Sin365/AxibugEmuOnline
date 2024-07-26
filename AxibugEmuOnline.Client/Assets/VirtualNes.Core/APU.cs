@@ -10,6 +10,12 @@ namespace VirtualNes.Core
         private NES nes;
         private byte exsound_select;
         private APU_INTERNAL @internal = new APU_INTERNAL();
+        private APU_VRC6 vrc6 = new APU_VRC6();
+        private APU_VRC7 vrc7 = new APU_VRC7();
+        private APU_MMC5 mmc5 = new APU_MMC5();
+        private APU_FDS fds = new APU_FDS();
+        private APU_N106 n106 = new APU_N106();
+        private APU_FME7 fme7 = new APU_FME7();
         private int last_data;
         private int last_diff;
         protected short[] m_SoundBuffer = new short[256];
@@ -17,6 +23,7 @@ namespace VirtualNes.Core
         protected QUEUE queue = new QUEUE();
         protected QUEUE exqueue = new QUEUE();
         protected bool[] m_bMute = new bool[16];
+        protected double elapsed_time;
 
         public APU(NES parent)
         {
@@ -89,6 +96,81 @@ namespace VirtualNes.Core
                 return true;
             }
             return false;
+        }
+
+        public void SoundSetup()
+        {
+            float fClock = nes.nescfg.CpuClock;
+            int nRate = Supporter.Config.sound.nRate;
+
+            @internal.Setup(fClock, nRate);
+            vrc6.Setup(fClock, nRate);
+            vrc7.Setup(fClock, nRate);
+            mmc5.Setup(fClock, nRate);
+            fds.Setup(fClock, nRate);
+            n106.Setup(fClock, nRate);
+            fme7.Setup(fClock, nRate);
+        }
+
+        internal void SelectExSound(byte data)
+        {
+            exsound_select = data;
+        }
+
+        internal void Reset()
+        {
+            queue = new QUEUE();
+            exqueue = new QUEUE();
+
+            elapsed_time = 0;
+
+            float fClock = nes.nescfg.CpuClock;
+            int nRate = Supporter.Config.sound.nRate;
+
+            @internal.Reset(fClock, nRate);
+            vrc6.Reset(fClock, nRate);
+            vrc7.Reset(fClock, nRate);
+            mmc5.Reset(fClock, nRate);
+            fds.Reset(fClock, nRate);
+            n106.Reset(fClock, nRate);
+            fme7.Reset(fClock, nRate);
+
+            SoundSetup();
+        }
+
+        internal void ExWrite(ushort addr, byte data)
+        {
+            SetExQueue(nes.cpu.GetTotalCycles(), addr, data);
+
+            if ((exsound_select & 0x04) != 0)
+            {
+                if (addr >= 0x4040 && addr < 0x4100)
+                {
+                    fds.SyncWrite(addr, data);
+                }
+            }
+
+            if ((exsound_select & 0x08) != 0)
+            {
+                if (addr >= 0x5000 && addr <= 0x5015)
+                {
+                    mmc5.SyncWrite(addr, data);
+                }
+            }
+        }
+
+        private void SetExQueue(int writetime, ushort addr, byte data)
+        {
+            exqueue.data[exqueue.wrptr].time = writetime;
+            exqueue.data[exqueue.wrptr].addr = addr;
+            exqueue.data[exqueue.wrptr].data = data;
+            exqueue.wrptr++;
+            var temp = QUEUE_LENGTH - 1;
+            exqueue.wrptr = (int)(exqueue.wrptr & temp);
+            if (exqueue.wrptr == exqueue.rdptr)
+            {
+                Debuger.LogError("exqueue overflow.");
+            }
         }
     }
 

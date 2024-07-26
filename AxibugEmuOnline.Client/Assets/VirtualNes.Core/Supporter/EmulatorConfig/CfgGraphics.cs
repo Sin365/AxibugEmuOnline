@@ -1,6 +1,6 @@
 ﻿namespace VirtualNes.Core
 {
-    public class CHEATCODE
+    public class CfgGraphics
     {
     }
 }
