@@ -95,15 +95,26 @@ namespace VirtualNes.Core
         public const byte SP_COLOR_BIT = 0x03;
 
         private NES nes;
+
+        private bool bExtLatch; // For MMC5
+        private bool bChrLatch; // For MMC2/MMC4
+        private bool bExtNameTable; // For Super Monkey no Dai Bouken
+        private bool bExtMono;	// For Final Fantasy
+
+        private ushort loopy_y;
+        private ushort loopy_shift;
+
         private byte[] lpScreen;
+        /// <summary> 作为lpScreen数组的索引 </summary>
+        private int lpScanline;
+        private int ScanlineNo;
         private byte[] lpColormode;
+
         private bool bVSMode;
         private int nVSColorMap;
         private byte VSSecurityData;
         private byte[] Bit2Rev = new byte[256];
-        private int ScanlineNo;
-        /// <summary> 作为lpScreen数组的索引 </summary>
-        private int lpScanline;
+
 
         public PPU(NES nes)
         {
@@ -128,9 +139,7 @@ namespace VirtualNes.Core
             }
         }
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
 
         internal byte Read(ushort addr)
         {
@@ -178,7 +187,7 @@ namespace VirtualNes.Core
                         }
                         addr &= 0xEFFF;
                     }
-                    MMU.PPU7_Temp = MMU.PPU_MEM_BANK[addr >> 10][addr & 0x03FF];
+                    MMU.PPU7_Temp = MMU.PPU_MEM_BANK[addr >> 10].Span[addr & 0x03FF];
                     break;
             }
 
@@ -314,7 +323,7 @@ namespace VirtualNes.Core
                     }
                     if (MMU.PPU_MEM_TYPE[vaddr >> 10] != MMU.BANKTYPE_VROM)
                     {
-                        MMU.PPU_MEM_BANK[vaddr >> 10][vaddr & 0x03FF] = data;
+                        MMU.PPU_MEM_BANK[vaddr >> 10].Span[vaddr & 0x03FF] = data;
                     }
                     break;
             }
@@ -328,6 +337,30 @@ namespace VirtualNes.Core
             {
                 MMU.SPRAM[i] = nes.Read((ushort)(addr + i));
             }
+        }
+
+        internal void Reset()
+        {
+            bExtLatch = false;
+            bChrLatch = false;
+            bExtNameTable = false;
+            bExtMono = false;
+
+            MMU.PPUREG[0] = MMU.PPUREG[1] = 0;
+
+            MMU.PPU56Toggle = 0;
+
+            MMU.PPU7_Temp = 0xFF;   // VS Excitebike偱偍偐偟偔側傞($2006傪撉傒偵峴偔僶僌偑偁傞)
+                                    //	PPU7_Temp = 0;
+
+            MMU.loopy_v = MMU.loopy_t = 0;
+            MMU.loopy_x = loopy_y = 0;
+            loopy_shift = 0;
+
+            if (lpScreen != null)
+                MemoryUtility.memset(lpScreen, 0x3F, (int)(Screen.SCREEN_WIDTH) * (int)(Screen.SCREEN_HEIGHT));
+            if (lpColormode != null)
+                MemoryUtility.memset(lpColormode, 0, (int)(Screen.SCREEN_HEIGHT));
         }
 
         private enum Screen

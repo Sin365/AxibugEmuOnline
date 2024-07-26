@@ -1,9 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace VirtualNes.Core
 {
@@ -30,7 +25,7 @@ namespace VirtualNes.Core
             // $6000-$7FFF WRAM
             if (addr >= 0x6000 && addr <= 0x7FFF)
             {
-                return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
+                return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
             }
 
             return (byte)(addr >> 8);
@@ -39,7 +34,7 @@ namespace VirtualNes.Core
         {
             if (addr >= 0x6000 && addr <= 0x7FFF)
             {
-                MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF] = data;
+                MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] = data;
             }
         }
 

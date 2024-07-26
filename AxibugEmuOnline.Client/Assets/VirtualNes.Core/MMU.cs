@@ -1,26 +1,22 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace VirtualNes
 {
     public static class MMU
     {
         // CPU 儊儌儕僶儞僋
-        public static byte[][] CPU_MEM_BANK = new byte[8][];            // 8K扨埵
-
+        public static Memory<byte>[] CPU_MEM_BANK = new Memory<byte>[8];            // 8K扨埵
+        public static byte[] CPU_MEM_TYPE = new byte[8];
+        public static int[] CPU_MEM_PAGE = new int[8];	                    // 僗僥乕僩僙乕僽梡
         // PPU 儊儌儕僶儞僋
-        public static byte[][] PPU_MEM_BANK = new byte[12][];           // 1K扨埵
+        public static Memory<byte>[] PPU_MEM_BANK = new Memory<byte>[12];           // 1K扨埵
         public static byte[] PPU_MEM_TYPE = new byte[12];
         public static int[] PPU_MEM_PAGE = new int[12];                 // 僗僥乕僩僙乕僽梡
         public static byte[] CRAM_USED = new byte[16];		            // 僗僥乕僩僙乕僽梡
 
         // NES儊儌儕
         public static byte[] RAM = new byte[8 * 1024];		            // NES撪憻RAM
-        public static byte[] WARM = new byte[128 * 1024];               // 儚乕僋/僶僢僋傾僢僾RAM
+        public static byte[] WRAM = new byte[128 * 1024];               // 儚乕僋/僶僢僋傾僢僾RAM
         public static byte[] DRAM = new byte[40 * 1024];                // 僨傿僗僋僔僗僥儉RAM
         public static byte[] XRAM = new byte[8 * 1024];                 // 僟儈乕僶儞僋
         public static byte[] ERAM = new byte[32 * 1024];                // 奼挘婡婍梡RAM
@@ -42,6 +38,17 @@ namespace VirtualNes
         public static ushort loopy_v;                                   // same as $2005/$2006
         public static ushort loopy_x;                                   // tile x offset
 
+        // ROM僨乕僞億僀儞僞
+        public static byte[] PROM;        // PROM ptr
+        public static byte[] VROM;      // VROM ptr
+
+        // For dis...
+        public static byte PROM_ACCESS;
+
+        // ROM 僶儞僋僒僀僘
+        public static int PROM_8K_SIZE, PROM_16K_SIZE, PROM_32K_SIZE;
+        public static int VROM_1K_SIZE, VROM_2K_SIZE, VROM_4K_SIZE, VROM_8K_SIZE;
+
         // 儊儌儕僞僀僾
         // For PROM (CPU)
         public const byte BANKTYPE_ROM = 0x00;
@@ -60,5 +67,170 @@ namespace VirtualNes
         public const byte VRAM_MIRROR4L = 0x03;     // PA10 L屌掕 $2000-$23FF偺儈儔乕
         public const byte VRAM_MIRROR4H = 0x04;     // PA10 H屌掕 $2400-$27FF偺儈儔乕
 
+        internal static void SetPROM_Bank(byte page, Memory<byte> ptr, byte type)
+        {
+            CPU_MEM_BANK[page] = ptr;
+            CPU_MEM_TYPE[page] = type;
+            CPU_MEM_PAGE[page] = 0;
+        }
+
+        internal static void SetPROM_8K_Bank(byte page, int bank)
+        {
+            bank %= PROM_8K_SIZE;
+            CPU_MEM_BANK[page] = new Memory<byte>(MMU.PROM, 0x2000 * bank, MMU.PROM.Length - 0x2000 * bank);
+            CPU_MEM_TYPE[page] = BANKTYPE_ROM;
+            CPU_MEM_PAGE[page] = bank;
+        }
+
+        internal static void SetPROM_16K_Bank(byte page, int bank)
+        {
+            SetPROM_8K_Bank((byte)(page + 0), bank * 2 + 0);
+            SetPROM_8K_Bank((byte)(page + 1), bank * 2 + 1);
+        }
+
+        internal static void SetPROM_32K_Bank(int bank)
+        {
+            SetPROM_8K_Bank(4, bank * 4 + 0);
+            SetPROM_8K_Bank(5, bank * 4 + 1);
+            SetPROM_8K_Bank(6, bank * 4 + 2);
+            SetPROM_8K_Bank(7, bank * 4 + 3);
+        }
+
+        internal static void SetPROM_32K_Bank(int bank0, int bank1, int bank2, int bank3)
+        {
+            SetPROM_8K_Bank(4, bank0);
+            SetPROM_8K_Bank(5, bank1);
+            SetPROM_8K_Bank(6, bank2);
+            SetPROM_8K_Bank(7, bank3);
+        }
+
+        // PPU VROM bank
+        internal static void SetVROM_Bank(byte page, Memory<byte> ptr, byte type)
+        {
+            PPU_MEM_BANK[page] = ptr;
+            PPU_MEM_TYPE[page] = type;
+            PPU_MEM_PAGE[page] = 0;
+        }
+
+        internal static void SetVROM_1K_Bank(byte page, int bank)
+        {
+            bank %= VROM_1K_SIZE;
+            PPU_MEM_BANK[page] = new Memory<byte>(VROM, 0x0400 * bank, VROM.Length - (0x0400 * bank));
+            PPU_MEM_TYPE[page] = BANKTYPE_VROM;
+            PPU_MEM_PAGE[page] = bank;
+        }
+
+        internal static void SetVROM_2K_Bank(byte page, int bank)
+        {
+            SetVROM_1K_Bank((byte)(page + 0), bank * 2 + 0);
+            SetVROM_1K_Bank((byte)(page + 1), bank * 2 + 1);
+        }
+
+        internal static void SetVROM_4K_Bank(byte page, int bank)
+        {
+            SetVROM_1K_Bank((byte)(page + 0), bank * 4 + 0);
+            SetVROM_1K_Bank((byte)(page + 1), bank * 4 + 1);
+            SetVROM_1K_Bank((byte)(page + 2), bank * 4 + 2);
+            SetVROM_1K_Bank((byte)(page + 3), bank * 4 + 3);
+        }
+
+        internal static void SetVROM_8K_Bank(int bank)
+        {
+            for (byte i = 0; i < 8; i++)
+            {
+                SetVROM_1K_Bank(i, bank * 8 + i);
+            }
+        }
+
+        internal static void SetVROM_8K_Bank(int bank0, int bank1, int bank2, int bank3,
+             int bank4, int bank5, int bank6, int bank7)
+        {
+            SetVROM_1K_Bank(0, bank0);
+            SetVROM_1K_Bank(1, bank1);
+            SetVROM_1K_Bank(2, bank2);
+            SetVROM_1K_Bank(3, bank3);
+            SetVROM_1K_Bank(4, bank4);
+            SetVROM_1K_Bank(5, bank5);
+            SetVROM_1K_Bank(6, bank6);
+            SetVROM_1K_Bank(7, bank7);
+        }
+
+        internal static void SetCRAM_1K_Bank(byte page, int bank)
+        {
+            bank &= 0x1F;
+            PPU_MEM_BANK[page] = new Memory<byte>(MMU.CRAM, 0x0400 * bank, MMU.CRAM.Length - 0x0400 * bank);
+            PPU_MEM_TYPE[page] = BANKTYPE_CRAM;
+            PPU_MEM_PAGE[page] = bank;
+
+            CRAM_USED[bank >> 2] = 0xFF;	// CRAM巊梡僼儔僌
+        }
+
+        internal static void SetCRAM_2K_Bank(byte page, int bank)
+        {
+            SetCRAM_1K_Bank((byte)(page + 0), bank * 2 + 0);
+            SetCRAM_1K_Bank((byte)(page + 1), bank * 2 + 1);
+        }
+
+        internal static void SetCRAM_4K_Bank(byte page, int bank)
+        {
+            SetCRAM_1K_Bank((byte)(page + 0), bank * 4 + 0);
+            SetCRAM_1K_Bank((byte)(page + 1), bank * 4 + 1);
+            SetCRAM_1K_Bank((byte)(page + 2), bank * 4 + 2);
+            SetCRAM_1K_Bank((byte)(page + 3), bank * 4 + 3);
+        }
+
+        internal static void SetCRAM_8K_Bank(int bank)
+        {
+            for (byte i = 0; i < 8; i++)
+            {
+                SetCRAM_1K_Bank(i, bank * 8 + 1);
+            }
+        }
+
+        internal static void SetVRAM_1K_Bank(byte page, int bank)
+        {
+            bank &= 3;
+            PPU_MEM_BANK[page] = new Memory<byte>(VRAM, 0x0400 * bank, VRAM.Length - 0x0400 * bank);
+            PPU_MEM_TYPE[page] = BANKTYPE_VRAM;
+            PPU_MEM_PAGE[page] = bank;
+        }
+
+        internal static void SetVRAM_Bank(int bank0, int bank1, int bank2, int bank3)
+        {
+            SetVRAM_1K_Bank(8, bank0);
+            SetVRAM_1K_Bank(9, bank1);
+            SetVRAM_1K_Bank(10, bank2);
+            SetVRAM_1K_Bank(11, bank3);
+        }
+
+        internal static void SetVRAM_Mirror(int type)
+        {
+            switch (type)
+            {
+                case VRAM_HMIRROR:
+                    SetVRAM_Bank(0, 0, 1, 1);
+                    break;
+                case VRAM_VMIRROR:
+                    SetVRAM_Bank(0, 1, 0, 1);
+                    break;
+                case VRAM_MIRROR4L:
+                    SetVRAM_Bank(0, 0, 0, 0);
+                    break;
+                case VRAM_MIRROR4H:
+                    SetVRAM_Bank(1, 1, 1, 1);
+                    break;
+                case VRAM_MIRROR4:
+                    SetVRAM_Bank(0, 1, 2, 3);
+                    break;
+            }
+        }
+
+        internal static void SetVRAM_Mirror(int bank0, int bank1, int bank2, int bank3)
+        {
+            SetVRAM_1K_Bank(8, bank0);
+            SetVRAM_1K_Bank(9, bank1);
+            SetVRAM_1K_Bank(10, bank2);
+            SetVRAM_1K_Bank(11, bank3);
+        }
     }
 }

@@ -1,13 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using UnityEngine;
-
 namespace VirtualNes.Core
 {
     public static class RomPatch
     {
-        public static void DoPatch(ref ulong crc, ref byte[] lpPRG, ref byte[] lpCHR, ref int mapper, ref NESHEADER header)
+        public static void DoPatch(ref uint crc, ref byte[] lpPRG, ref byte[] lpCHR, ref int mapper, ref NESHEADER header)
         {
             // Mapper 000
             if (crc == 0x57970078)

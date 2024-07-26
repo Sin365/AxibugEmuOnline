@@ -1,5 +1,3 @@
-using System;
-
 namespace VirtualNes.Core
 {
     public class APU_INTERNAL : APU_INTERFACE
@@ -63,8 +61,43 @@ namespace VirtualNes.Core
 
         private bool SyncUpdateDPCM(int cycles)
         {
-            //TODO : й╣ож
-            return false;
+            bool bIRQ = false;
+
+            if (ch4.sync_enable != 0)
+            {
+                ch4.sync_cycles -= cycles;
+                while (ch4.sync_cycles < 0)
+                {
+                    ch4.sync_cycles += ch4.sync_cache_cycles;
+                    if (ch4.sync_dmalength != 0)
+                    {
+                        //				if( !(--ch4.sync_dmalength) ) {
+                        if (--ch4.sync_dmalength < 2)
+                        {
+                            if (ch4.sync_looping != 0)
+                            {
+                                ch4.sync_dmalength = ch4.sync_cache_dmalength;
+                            }
+                            else
+                            {
+                                ch4.sync_dmalength = 0;
+
+                                if (ch4.sync_irq_gen != 0)
+                                {
+                                    ch4.sync_irq_enable = 0xFF;
+                                    nes.cpu.SetIRQ(CPU.IRQ_DPCM);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (ch4.sync_irq_enable != 0)
+            {
+                bIRQ = true;
+            }
+
+            return bIRQ;
         }
 
         private void UpdateFrame()
