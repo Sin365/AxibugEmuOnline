@@ -8,6 +8,8 @@ namespace VirtualNes.Core
 {
     public class NES
     {
+        public const int FETCH_CYCLES = 8;
+
         public CPU cpu;
         public PPU ppu;
         public APU apu;
@@ -181,7 +183,25 @@ namespace VirtualNes.Core
                         if (RenderMethod < EnumRenderMethod.POST_RENDER)
                         {
                             EmulationCPU(nescfg.ScanlineCycles);
+                            ppu.FrameStart();
+                            ppu.ScanlineNext();
+                            mapper.HSync(scanline);
+                            ppu.ScanlineStart();
                         }
+                        else
+                        {
+                            EmulationCPU(nescfg.HDrawCycles);
+                            ppu.FrameStart();
+                            ppu.ScanlineNext();
+                            mapper.HSync(scanline);
+                            EmulationCPU(FETCH_CYCLES * 32);
+                            ppu.ScanlineStart();
+                            EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                        }
+                    }
+                    else if (scanline < 240)
+                    {
+
                     }
                 }
             }

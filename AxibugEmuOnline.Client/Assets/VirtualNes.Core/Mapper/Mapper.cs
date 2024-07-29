@@ -78,6 +78,7 @@ namespace VirtualNes.Core
 
         public static Mapper CreateMapper(NES parent, int no)
         {
+            //todo : 实现加载mapper
             switch (no)
             {
                 default:

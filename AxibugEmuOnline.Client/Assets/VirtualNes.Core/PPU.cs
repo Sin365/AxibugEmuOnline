@@ -363,6 +363,68 @@ namespace VirtualNes.Core
                 MemoryUtility.memset(lpColormode, 0, (int)(Screen.SCREEN_HEIGHT));
         }
 
+        internal void FrameStart()
+        {
+            if ((MMU.PPUREG[1] & (PPU_SPDISP_BIT | PPU_BGDISP_BIT)) != 0)
+            {
+                MMU.loopy_v = MMU.loopy_t;
+                loopy_shift = MMU.loopy_x;
+                loopy_y = (ushort)((MMU.loopy_v & 0x7000) >> 12);
+            }
+
+            if (lpScreen != null)
+            {
+                MemoryUtility.memset(lpScreen, 0x3F, (int)Screen.SCREEN_WIDTH);
+            }
+            if (lpColormode != null)
+            {
+                lpColormode[0] = 0;
+            }
+        }
+
+        internal void ScanlineNext()
+        {
+            if ((MMU.PPUREG[1] & (PPU_BGDISP_BIT | PPU_SPDISP_BIT)) != 0)
+            {
+                if ((MMU.loopy_v & 0x7000) == 0x7000)
+                {
+                    MMU.loopy_v &= 0x8FFF;
+                    if ((MMU.loopy_v & 0x03E0) == 0x03A0)
+                    {
+                        MMU.loopy_v ^= 0x0800;
+                        MMU.loopy_v &= 0xFC1F;
+                    }
+                    else
+                    {
+                        if ((MMU.loopy_v & 0x03E0) == 0x03E0)
+                        {
+                            MMU.loopy_v &= 0xFC1F;
+                        }
+                        else
+                        {
+                            MMU.loopy_v += 0x0020;
+                        }
+                    }
+                }
+                else
+                {
+                    MMU.loopy_v += 0x1000;
+                }
+                loopy_y = (ushort)((MMU.loopy_v & 0x7000) >> 12);
+            }
+        }
+
+        internal void ScanlineStart()
+        {
+            if ((MMU.PPUREG[1] & (PPU_BGDISP_BIT | PPU_SPDISP_BIT)) != 0)
+            {
+                MMU.loopy_v = (ushort)((MMU.loopy_v & 0xFBE0) | (MMU.loopy_t & 0x041F));
+                loopy_shift = MMU.loopy_x;
+                loopy_y = (ushort)((MMU.loopy_v & 0x7000) >> 12);
+                nes.mapper.PPU_Latch((ushort)(0x2000 + (MMU.loopy_v & 0x0FFF)));
+            }
+        }
+
         private enum Screen
         {
             SCREEN_WIDTH = 256 + 16,
