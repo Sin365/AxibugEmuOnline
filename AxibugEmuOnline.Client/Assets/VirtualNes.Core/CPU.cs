@@ -1169,7 +1169,7 @@ namespace VirtualNes.Core
                 return (ushort)(nes.Read(addr) + nes.Read((ushort)(addr + 1)) * 0x100);
             }
 
-            var temp = MMU.CPU_MEM_BANK[addr >> 13].Span;
+            var temp = MMU.CPU_MEM_BANK[addr >> 13];
             shortTemp[0] = temp[addr & 0x1FFF];
             shortTemp[1] = temp[(addr & 0x1FFF) + 1];
             return BitConverter.ToUInt16(shortTemp, 0);
@@ -1716,14 +1716,14 @@ namespace VirtualNes.Core
 
         internal byte OP6502(ushort addr)
         {
-            return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
+            return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
         }
 
         private byte[] shortTemp = new byte[2];
         internal ushort OP6502W(ushort addr)
         {
             var bytePage = MMU.CPU_MEM_BANK[addr >> 13];
-            var spanByte = bytePage.Span;
+            var spanByte = bytePage;
             shortTemp[0] = spanByte[addr & 0x1FFF];
             shortTemp[1] = spanByte[(addr & 0x1FFF) + 1];
             return BitConverter.ToUInt16(shortTemp, 0);
@@ -1744,11 +1744,11 @@ namespace VirtualNes.Core
             else
             {
                 // Dummy access
-                mapper.Read(addr, MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF]);
+                mapper.Read(addr, MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF]);
             }
 
             // Quick bank read
-            return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
+            return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
         }
 
         private void AND()

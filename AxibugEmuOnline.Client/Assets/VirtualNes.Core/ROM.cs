@@ -347,12 +347,12 @@ namespace VirtualNes.Core
             return diskno;
         }
 
-        internal ulong GetGameID()
+        internal uint GetGameID()
         {
             return fdsgameID;
         }
 
-        internal ulong GetMakerID()
+        internal uint GetMakerID()
         {
             return fdsmakerID;
         }

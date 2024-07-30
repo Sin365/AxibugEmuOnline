@@ -330,7 +330,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private void SetExController(EXCONTROLLER type)
+        internal void SetExController(EXCONTROLLER type)
         {
             excontroller_select = (int)type;
 

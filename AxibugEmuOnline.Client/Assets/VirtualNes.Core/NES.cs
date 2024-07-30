@@ -75,6 +75,10 @@ namespace VirtualNes.Core
         private long base_cycles;
         private long emul_cycles;
 
+        // For VS-Unisystem
+        byte m_VSDipValue;
+        VSDIPSWITCH[] m_VSDipTable;
+
         private byte[] m_PadImg = new byte[226]
         {
             28, 8,
@@ -253,11 +257,108 @@ namespace VirtualNes.Core
                 NesSub_MemoryInitial();
                 LoadSRAM();
                 LoadDISK();
+
+                {
+                    // Padクラス内だと初期化タイミングが遅いのでここで
+                    uint crc = rom.GetPROM_CRC();
+                    if (
+                        crc == 0xe792de94       // Best Play - Pro Yakyuu (New) (J)
+                        || crc == 0xf79d684a        // Best Play - Pro Yakyuu (Old) (J)
+                        || crc == 0xc2ef3422        // Best Play - Pro Yakyuu 2 (J)
+                        || crc == 0x974e8840        // Best Play - Pro Yakyuu '90 (J)
+                        || crc == 0xb8747abf        // Best Play - Pro Yakyuu Special (J)
+                        || crc == 0x9fa1c11f        // Castle Excellent (J)
+                        || crc == 0x0b0d4d1b        // Derby Stallion - Zenkoku Ban (J)
+                        || crc == 0x728c3d98        // Downtown - Nekketsu Monogatari (J)
+                        || crc == 0xd68a6f33        // Dungeon Kid (J)
+                        || crc == 0x3a51eb04        // Fleet Commander (J)
+                        || crc == 0x7c46998b        // Haja no Fuuin (J)
+                        || crc == 0x7e5d2f1a        // Itadaki Street - Watashi no Mise ni Yottette (J)
+                        || crc == 0xcee5857b        // Ninjara Hoi! (J)
+                        || crc == 0x50ec5e8b        // Wizardry - Legacy of Llylgamyn (J)
+                        || crc == 0x343e9146        // Wizardry - Proving Grounds of the Mad Overlord (J)
+                        || crc == 0x33d07e45)
+                    {   // Wizardry - The Knight of Diamonds (J)
+                        pad.SetExController(EXCONTROLLER.EXCONTROLLER_TURBOFILE);
+                    }
+                }
+
+                LoadTurboFile();
+
+                // VS-Unisystemのデフォルト設定
+                if (rom.IsVSUNISYSTEM())
+                {
+                    uint crc = rom.GetPROM_CRC();
+
+                    m_VSDipValue = 0;
+                    m_VSDipTable = VsUnisystem.vsdip_default;
+                }
+
+                Reset();
+
+                // ゲーム固有のデフォルトオプションを設定(設定戻す時に使う為)
+                GameOption.defRenderMethod = (int)GetRenderMethod();
+                GameOption.defIRQtype = GetIrqType();
+                GameOption.defFrameIRQ = GetFrameIRQmode();
+                GameOption.defVideoMode = GetVideoMode();
+
+                // 設定をロードして設定する(エントリが無ければデフォルトが入る)
+                if (rom.GetMapperNo() != 20)
+                {
+                    GameOption.Load(rom.GetPROM_CRC());
+                }
+                else
+                {
+                    GameOption.Load(rom.GetGameID(), rom.GetMakerID());
+                }
+
+                SetRenderMethod((EnumRenderMethod)GameOption.nRenderMethod);
+                SetIrqType((IRQMETHOD)GameOption.nIRQtype);
+                SetFrameIRQmode(GameOption.bFrameIRQ);
+                SetVideoMode(GameOption.bVideoMode);
             }
             catch (Exception ex)
             {
                 Debuger.LogError(ex.ToString());
                 throw ex;
+            }
+        }
+
+        private int GetIrqType()
+        {
+            return nIRQtype;
+        }
+
+        private void LoadTurboFile()
+        {
+            MemoryUtility.ZEROMEMORY(MMU.ERAM, MMU.ERAM.Length);
+
+            if (pad.GetExController() != (int)EXCONTROLLER.EXCONTROLLER_TURBOFILE)
+                return;
+
+            var fp = Supporter.OpenFile(Supporter.Config.path.szSavePath, "TurboFile.vtf");
+            try
+            {
+                if (fp == null)
+                {
+                    // xxx ファイルを開けません
+                    throw new Exception($"Can Not Open File [TurboFile.vtf]");
+                }
+
+                long size = fp.Length;
+                // ファイルサイズ取得
+                if (size > 32 * 1024)
+                {
+                    size = 32 * 1024;
+                }
+
+                fp.Read(MMU.ERAM, 0, MMU.ERAM.Length);
+                fp.Close();
+            }
+            catch (Exception ex)
+            {
+                fp?.Close();
+                Debuger.LogError($"Loading TurboFile Error.\n{ex}");
             }
         }
 
@@ -1308,7 +1409,7 @@ namespace VirtualNes.Core
                 case 0x05:  // $A000-$BFFF
                 case 0x06:  // $C000-$DFFF
                 case 0x07:  // $E000-$FFFF
-                    return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
+                    return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
             }
 
             return 0x00;    // Warning梊杊
@@ -1414,8 +1515,13 @@ namespace VirtualNes.Core
             return ret;
         }
 
+        static int NESWRITECOUNT = 0;
         internal void Write(ushort addr, byte data)
         {
+            NESWRITECOUNT++;
+
+            Debuger.Log($"[{NESWRITECOUNT}] addr:{addr},data:{data}");
+
             switch (addr >> 13)
             {
                 case 0x00:  // $0000-$1FFF
@@ -1461,16 +1567,16 @@ namespace VirtualNes.Core
                 if ((addr & 0x8000) != 0)
                 {
                     // 8character codes
-                    if (MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] == m_GenieCode[i].cmp)
+                    if (MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF] == m_GenieCode[i].cmp)
                     {
-                        MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] = m_GenieCode[i].data;
+                        MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF] = m_GenieCode[i].data;
                     }
                 }
                 else
                 {
                     // 6character codes
                     addr |= 0x8000;
-                    MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] = m_GenieCode[i].data;
+                    MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF] = m_GenieCode[i].data;
                 }
             }
         }

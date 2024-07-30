@@ -1,7 +1,11 @@
-﻿namespace VirtualNes.Core.Debug
+﻿using System.Collections.Generic;
+
+namespace VirtualNes.Core.Debug
 {
     public static class Debuger
     {
+        public static List<string> logRecords = new List<string>();
+
         private static IDebugerImpl s_debuger;
         public static void Setup(IDebugerImpl debuger)
         {
@@ -10,6 +14,7 @@
         public static void Log(string message)
         {
             s_debuger.Log(message);
+            logRecords.Add(message);
         }
 
         public static void LogError(string message)
