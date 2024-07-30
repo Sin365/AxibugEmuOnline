@@ -1,0 +1,1565 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{838e2a92-2af0-4988-bfc6-aeb761e74092}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{fa211b91-695f-494c-a6e4-ab261099e7fb}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{3bc77606-806d-4a5d-8f1b-e9942058e1f7}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="NES">
+      <UniqueIdentifier>{8d8c1a1f-0fb2-4a32-a7b1-e8a0c8d8f7b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NES\Mapper">
+      <UniqueIdentifier>{039fef49-90d4-4d8f-8939-7549f680ee2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NES\ApuEx">
+      <UniqueIdentifier>{98caa730-39c5-4a07-a91e-634a37b87045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NES\ApuEx\emu2413">
+      <UniqueIdentifier>{ac6b7630-911f-4b5b-b42d-dcbbc3f761aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NES\PadEx">
+      <UniqueIdentifier>{1fecdf47-2af5-4bbf-acb6-a4d40709f6dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Zlib">
+      <UniqueIdentifier>{bc932c3f-9d44-4b6d-82ab-cf162aadc0cd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Archive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AviConvDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AviWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Com.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Crclib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DatachBarcodeDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugOut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DipSwitchDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmulatorDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EmuThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOptionDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JoyAxisDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LauncherDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MMTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MovieDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MovieInfoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NameTableView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetPlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NetPlayDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PaletteEdit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PaletteView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathlib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PatternView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Recent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Registry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RomInfoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShortcutDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleVirusChecker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveRec.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WndHook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper000.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper001.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper002.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper003.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper004.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper005.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper006.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper007.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper008.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper009.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper010.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper011.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper012.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper013.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper015.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper016.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper017.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper018.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper019.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper021.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper022.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper023.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper024.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper025.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper026.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper027.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper032.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper033.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper034.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper040.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper041.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper042.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper043.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper044.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper045.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper046.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper047.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper048.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper050.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper051.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper057.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper058.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper060.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper061.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper062.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper064.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper065.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper066.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper067.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper068.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper069.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper070.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper071.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper072.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper073.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper074.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper075.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper076.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper077.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper078.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper079.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper080.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper082.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper083.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper085.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper086.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper087.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper088.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper089.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper090.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper091.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper092.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper093.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper094.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper095.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper096.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper097.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper099.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper100.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper101.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper105.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper107.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper108.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper109.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper110.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper112.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper113.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper114.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper115.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper116.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper117.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper118.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper119.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper122.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper133.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper134.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper135.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper140.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper142.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper151.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper160.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper164.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper165.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper167.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper180.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper181.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper182.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper183.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper185.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper187.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper188.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper189.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper190.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper191.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper193.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper194.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper198.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper200.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper201.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper202.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper222.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper225.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper226.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper227.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper228.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper229.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper230.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper231.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper232.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper233.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper234.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper235.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper236.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper240.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper241.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper242.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper243.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper244.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper245.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper246.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper248.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper249.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper251.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper252.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper254.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\Mapper255.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\MapperFactory.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\MapperFDS.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Mapper\MapperNSF.cpp">
+      <Filter>NES\Mapper</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\emu2413\emu2413.c">
+      <Filter>NES\ApuEx\emu2413</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_FDS.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_FME7.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_INTERNAL.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_MMC5.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_N106.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_VRC6.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ApuEX\APU_VRC7.cpp">
+      <Filter>NES\ApuEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_CrazyClimber.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_ExcitingBoxing.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_FamlyTrainer.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Gyromite.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_HyperShot.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Keyboard.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Mahjang.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_OekakidsTablet.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Paddle.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_SpaceShadowGun.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Supor_Keyboard.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Toprider.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_TurboFile.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_VSUnisystem.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_VSZapper.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PadEX\EXPAD_Zapper.cpp">
+      <Filter>NES\PadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\APU.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Cpu.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\IPS.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\MMU.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\Nes.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PAD.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\PPU.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ROM.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ROM_Patch.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\ROMDB.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="NES\VsUnisystem.cpp">
+      <Filter>NES</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\unzip.c">
+      <Filter>Zlib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VirtuaNES.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Archive.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AviConvDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AviWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CHyperLink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Com.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Crclib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DatachBarcodeDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugOut.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DipSwitchDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectDraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectSound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EmulatorDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EmuThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOptionDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hq2x.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JoyAxisDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LanguageDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LauncherDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lq2x.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lzAscii.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lzSight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lzTVlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Macro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MMTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovieDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MovieInfoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NameTableView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetPlay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NetPlayDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nx_2xSaI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nx_hq2x.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nx_Scale2x.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nx_Super2xSaI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nx_Super2xSaI_32bpp_mmx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nx_SuperEagle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaletteEdit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PaletteView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PatternView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pngwrite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Recent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render16bpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render24bpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render32bpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render8bpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RomInfoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShortcutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleVirusChecker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Typedef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtuaNESres.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveRec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WndHook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\EEPROM.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper000.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper001.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper002.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper003.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper004.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper005.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper006.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper007.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper008.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper009.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper010.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper011.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper012.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper013.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper015.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper016.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper017.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper018.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper019.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper021.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper022.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper023.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper024.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper025.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper026.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper027.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper032.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper033.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper034.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper040.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper041.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper042.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper043.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper044.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper045.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper046.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper047.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper048.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper050.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper051.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper057.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper058.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper060.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper061.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper062.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper064.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper065.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper066.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper067.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper068.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper069.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper070.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper071.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper072.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper073.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper074.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper075.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper076.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper077.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper078.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper079.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper080.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper082.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper083.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper085.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper086.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper087.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper088.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper089.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper090.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper091.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper092.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper093.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper094.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper095.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper096.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper097.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper099.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper100.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper101.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper105.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper107.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper108.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper109.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper110.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper112.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper113.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper114.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper115.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper116.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper117.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper118.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper119.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper122.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper133.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper134.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper135.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper140.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper142.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper151.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper160.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper164.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper165.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper167.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper180.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper181.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper182.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper183.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper185.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper187.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper188.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper189.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper190.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper191.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper193.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper194.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper198.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper200.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper201.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper202.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper222.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper225.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper226.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper227.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper228.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper229.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper230.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper231.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper232.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper233.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper234.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper235.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper236.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper240.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper241.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper242.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper243.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper244.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper245.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper246.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper248.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper249.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper251.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper252.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper254.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\Mapper255.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\MapperFDS.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Mapper\MapperNSF.h">
+      <Filter>NES\Mapper</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\emu2413\2413tone.h">
+      <Filter>NES\ApuEx\emu2413</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\emu2413\emu2413.h">
+      <Filter>NES\ApuEx\emu2413</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\emu2413\vrc7tone.h">
+      <Filter>NES\ApuEx\emu2413</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_FDS.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_FME7.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_INTERFACE.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_INTERNAL.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_MMC5.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_N106.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_VRC6.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ApuEX\APU_VRC7.h">
+      <Filter>NES\ApuEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_CrazyClimber.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_ExcitingBoxing.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_FamlyTrainer.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Gyromite.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_HyperShot.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Keyboard.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Mahjang.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_OekakidsTablet.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Paddle.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_SpaceShadowGun.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Supor_Keyboard.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Toprider.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_TurboFile.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_VSUnisystem.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_VSZapper.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PadEX\EXPAD_Zapper.h">
+      <Filter>NES\PadEx</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\APU.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Cheat.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\CPU.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\IPS.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\MMU.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\Nes.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PAD.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\PPU.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ROM.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\ROMDB.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\State.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\VS_Setting.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="NES\VsUnisystem.h">
+      <Filter>NES</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\unzip.h">
+      <Filter>Zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zconf.h">
+      <Filter>Zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\zlib.h">
+      <Filter>Zlib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CheatImageList.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\header_down.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\header_up.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="LauncherImageList.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\VirtuaNES.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="res\VirtuaNES.exe.manifest">
+      <Filter>Resource Files</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="zlib\zlib.lib">
+      <Filter>Zlib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
