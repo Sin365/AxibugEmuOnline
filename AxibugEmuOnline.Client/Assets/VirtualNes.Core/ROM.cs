@@ -218,7 +218,7 @@ namespace VirtualNes.Core
                 }
 
                 Supporter.GetFilePathInfo(fname, out fullpath, out path);
-
+                name = Path.GetFileNameWithoutExtension(fullpath);
                 if (!bNSF)
                 {
                     mapper = (header.control1 >> 4) | (header.control2 & 0xF0);
@@ -395,6 +395,11 @@ namespace VirtualNes.Core
         internal NSFHEADER GetNsfHeader()
         {
             return nsfheader;
+        }
+
+        internal string GetRomPath()
+        {
+            return path;
         }
     }
 

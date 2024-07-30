@@ -1,17 +1,26 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace VirtualNes.Core
 {
     public static class MemoryUtility
     {
-        public static void ZEROMEMORY(byte[] array, uint length)
+        public static void ZEROMEMORY(byte[] array, int length)
         {
-            memset(array, 0, length);
+            Array.Clear(array, 0, array.Length);
         }
 
-        public static void memset(byte[] array, byte value, uint length)
+        public static void memset(byte[] array, byte value, int length)
         {
-            Unsafe.InitBlock(ref array[0], value, length);
+            memset(array, 0, value, length);
+        }
+
+        public static void memset(byte[] array, int offset, byte value, int length)
+        {
+            for (int i = offset; i < length; i++)
+            {
+                array[i] = value;
+            }
         }
     }
 }

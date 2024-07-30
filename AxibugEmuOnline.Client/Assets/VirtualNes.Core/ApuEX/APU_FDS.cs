@@ -9,22 +9,23 @@ namespace VirtualNes.Core
 
         public override void Reset(float fClock, int nRate)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
         }
 
         public override void Setup(float fClock, int nRate)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
         }
 
         public override void Write(ushort addr, byte data)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
         }
 
         public override int Process(int channel)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
+            return 0;
         }
 
         internal void SyncWrite(ushort addr, byte data)
@@ -34,7 +35,7 @@ namespace VirtualNes.Core
 
         private void WriteSub(ushort addr, byte data, FDSSOUND ch, double rate)
         {
-            throw new NotImplementedException();
+            //todo : 实现
         }
 
         private class FDSSOUND

@@ -5,6 +5,7 @@ namespace VirtualNes.Core
     public abstract class Mapper
     {
         protected NES nes;
+
         public Mapper(NES parent)
         {
             nes = parent;
@@ -81,8 +82,10 @@ namespace VirtualNes.Core
             //todo : 实现加载mapper
             switch (no)
             {
+                case 4:
+                    return new Mapper004(parent);
                 default:
-                    throw new NotImplementedException($"Mapper#{no} is not Impl");
+                    throw new NotImplementedException($"Mapper#{no:000} is not Impl");
             }
         }
     }

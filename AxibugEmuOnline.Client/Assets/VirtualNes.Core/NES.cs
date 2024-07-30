@@ -1,8 +1,15 @@
+using Codice.CM.Client.Differences;
+using Google.Protobuf.Collections;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Numerics;
 using System.Text;
+using UnityEngine.UIElements;
+using UnityEngine;
 using VirtualNes.Core.Debug;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 namespace VirtualNes.Core
 {
@@ -30,6 +37,9 @@ namespace VirtualNes.Core
         private bool m_bMoviePlay;
         private bool m_bMovieRec;
         private Stream m_fpMovie;
+        private uint m_MovieControl;
+        private int m_MovieStepTotal;
+        private int m_MovieStep;
         private bool m_bTapePlay;
         private bool m_bTapeRec;
         private Stream m_fpTape;
@@ -60,8 +70,106 @@ namespace VirtualNes.Core
         private int NES_scanline;
         private EnumRenderMethod RenderMethod;
         private bool bZapper;
+        private int ZapperX;
+        private int ZapperY;
         private long base_cycles;
         private long emul_cycles;
+
+        private byte[] m_PadImg = new byte[226]
+        {
+            28, 8,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00,
+            0x00, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x0F, 0x0F, 0x00, 0x0F, 0x0F, 0x0F, 0x0F, 0x00,
+            0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x0F, 0x00, 0x0F,
+            0x0F, 0x0F, 0x00, 0x00, 0x0F, 0x0F, 0x0F, 0x0F, 0x00, 0x0F, 0x0F, 0x0F, 0x0F, 0x00,
+            0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x0F, 0x00, 0x0F,
+            0x0F, 0x0F, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00, 0x00, 0x0F, 0x0F, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        };
+
+        private byte[] m_KeyImg0 = new byte[6]
+        {
+            2,    2,
+            0x2A, 0x2A,
+            0x2A, 0x2A,
+        };
+
+        private byte[] m_KeyImg1 = new byte[8]
+        {
+            3, 3,
+            0x2A, 0x2A, 0x2A,
+            0x2A, 0x2A, 0x2A,
+        };
+
+        private byte[] m_KeyImg2 = new byte[18]
+        {
+            4, 4,
+            0xFF, 0x2A, 0x2A, 0xFF,
+            0x2A, 0x2A, 0x2A, 0x2A,
+            0x2A, 0x2A, 0x2A, 0x2A,
+            0xFF, 0x2A, 0x2A, 0xFF,
+        };
+
+        private byte[] Font6x8 = new byte[768]
+        {
+            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x20,0x20,0x20,0x20,0x20,0x00,0x20,0x00,
+            0x50,0x50,0x00,0x00,0x00,0x00,0x00,0x00,0x50,0x50,0xF8,0x50,0xF8,0x50,0x50,0x00,
+            0x20,0x78,0xA0,0x70,0x28,0xF0,0x20,0x00,0x48,0xB0,0x50,0x20,0x50,0x68,0x90,0x00,
+            0x40,0xA0,0xA8,0x68,0x90,0x90,0x68,0x00,0x30,0x20,0x00,0x00,0x00,0x00,0x00,0x00,
+            0x10,0x20,0x40,0x40,0x40,0x20,0x10,0x00,0x40,0x20,0x10,0x10,0x10,0x20,0x40,0x00,
+            0x00,0x88,0x50,0x20,0x50,0x88,0x00,0x00,0x00,0x20,0x20,0xF8,0x20,0x20,0x00,0x00,
+            0x00,0x00,0x00,0x00,0x00,0x20,0x40,0x00,0x00,0x00,0x00,0xF8,0x00,0x00,0x00,0x00,
+            0x00,0x00,0x00,0x00,0x00,0x00,0x20,0x00,0x08,0x10,0x10,0x20,0x40,0x40,0x80,0x00,
+            0x70,0x88,0x98,0xA8,0xC8,0x88,0x70,0x00,0x20,0x60,0x20,0x20,0x20,0x20,0xF8,0x00,
+            0x70,0x88,0x08,0x30,0x40,0x80,0xF8,0x00,0x70,0x88,0x08,0x30,0x08,0x88,0x70,0x00,
+            0x30,0x50,0x90,0x90,0xF8,0x10,0x10,0x00,0xF8,0x80,0x80,0xF0,0x08,0x08,0xF0,0x00,
+            0x70,0x88,0x80,0xF0,0x88,0x88,0x70,0x00,0xF8,0x08,0x10,0x10,0x20,0x20,0x20,0x00,
+            0x70,0x88,0x88,0x70,0x88,0x88,0x70,0x00,0x70,0x88,0x88,0x78,0x08,0x88,0x70,0x00,
+            0x00,0x20,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x20,0x40,0x00,
+            0x10,0x20,0x40,0x80,0x40,0x20,0x10,0x00,0x00,0x00,0xF8,0x00,0xF8,0x00,0x00,0x00,
+            0x40,0x20,0x10,0x08,0x10,0x20,0x40,0x00,0x70,0x88,0x08,0x10,0x20,0x00,0x20,0x00,
+            0x30,0x48,0x88,0x98,0xA8,0xA8,0x78,0x00,0x20,0x50,0x50,0x88,0xF8,0x88,0x88,0x00,
+            0xF0,0x88,0x88,0xF0,0x88,0x88,0xF0,0x00,0x70,0x88,0x80,0x80,0x80,0x88,0x70,0x00,
+            0xF0,0x88,0x88,0x88,0x88,0x88,0xF0,0x00,0xF8,0x80,0x80,0xF0,0x80,0x80,0xF8,0x00,
+            0xF8,0x80,0x80,0xF0,0x80,0x80,0x80,0x00,0x70,0x88,0x80,0xB8,0x88,0x88,0x70,0x00,
+            0x88,0x88,0x88,0xF8,0x88,0x88,0x88,0x00,0xF8,0x20,0x20,0x20,0x20,0x20,0xF8,0x00,
+            0x38,0x08,0x08,0x08,0x08,0x88,0x70,0x00,0x88,0x88,0x90,0xE0,0x90,0x88,0x88,0x00,
+            0x80,0x80,0x80,0x80,0x80,0x80,0xF8,0x00,0x88,0xD8,0xA8,0xA8,0xA8,0xA8,0xA8,0x00,
+            0x88,0xC8,0xA8,0xA8,0xA8,0x98,0x88,0x00,0x70,0x88,0x88,0x88,0x88,0x88,0x70,0x00,
+            0xF0,0x88,0x88,0xF0,0x80,0x80,0x80,0x00,0x70,0x88,0x88,0x88,0xA8,0x90,0x68,0x00,
+            0xF0,0x88,0x88,0xF0,0x88,0x88,0x88,0x00,0x70,0x88,0x80,0x70,0x08,0x88,0x70,0x00,
+            0xF8,0x20,0x20,0x20,0x20,0x20,0x20,0x00,0x88,0x88,0x88,0x88,0x88,0x88,0x70,0x00,
+            0x88,0x88,0x88,0x50,0x50,0x50,0x20,0x00,0x88,0xA8,0xA8,0xA8,0xA8,0xD8,0x88,0x00,
+            0x88,0x88,0x50,0x20,0x50,0x88,0x88,0x00,0x88,0x88,0x88,0x70,0x20,0x20,0x20,0x00,
+            0xF8,0x08,0x10,0x20,0x40,0x80,0xF8,0x00,0x70,0x40,0x40,0x40,0x40,0x40,0x70,0x00,
+            0x88,0x50,0xF8,0x20,0xF8,0x20,0x20,0x00,0x70,0x10,0x10,0x10,0x10,0x10,0x70,0x00,
+            0x20,0x50,0x88,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xF8,0x00,
+            0x80,0xC0,0xE0,0xF0,0xE0,0xC0,0x80,0x00,0x00,0x00,0x70,0x08,0x78,0x88,0xF8,0x00,
+            0x80,0x80,0x80,0xF0,0x88,0x88,0xF0,0x00,0x00,0x00,0x78,0x80,0x80,0x80,0x78,0x00,
+            0x08,0x08,0x08,0x78,0x88,0x88,0x78,0x00,0x00,0x00,0x70,0x88,0xF8,0x80,0x78,0x00,
+            0x18,0x20,0xF8,0x20,0x20,0x20,0x20,0x00,0x00,0x00,0x78,0x88,0x78,0x08,0xF0,0x00,
+            0x80,0x80,0x80,0xF0,0x88,0x88,0x88,0x00,0x20,0x00,0x20,0x20,0x20,0x20,0x20,0x00,
+            0x20,0x00,0x20,0x20,0x20,0x20,0xC0,0x00,0x80,0x80,0x88,0x90,0xE0,0x90,0x88,0x00,
+            0x20,0x20,0x20,0x20,0x20,0x20,0x30,0x00,0x00,0x00,0xF0,0xA8,0xA8,0xA8,0xA8,0x00,
+            0x00,0x00,0xF0,0x88,0x88,0x88,0x88,0x00,0x00,0x00,0x70,0x88,0x88,0x88,0x70,0x00,
+            0x00,0x00,0xF0,0x88,0xF0,0x80,0x80,0x00,0x00,0x00,0x78,0x88,0x78,0x08,0x08,0x00,
+            0x00,0x00,0xB8,0xC0,0x80,0x80,0x80,0x00,0x00,0x00,0x78,0x80,0x70,0x08,0xF0,0x00,
+            0x20,0x20,0xF8,0x20,0x20,0x20,0x20,0x00,0x00,0x00,0x88,0x88,0x88,0x88,0x70,0x00,
+            0x00,0x00,0x88,0x88,0x50,0x50,0x20,0x00,0x00,0x00,0x88,0xA8,0xA8,0xD8,0x88,0x00,
+            0x00,0x00,0x88,0x50,0x20,0x50,0x88,0x00,0x00,0x00,0x88,0x88,0x78,0x08,0xF0,0x00,
+            0x00,0x00,0xF8,0x08,0x70,0x80,0xF8,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+            0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+        };
 
         public NES(string fname)
         {
@@ -113,6 +221,11 @@ namespace VirtualNes.Core
                 Debuger.Log("Allocating PPU...");
                 ppu = new PPU(this);
 
+                var screenBuffer = new byte[PPU.SCREEN_WIDTH * PPU.SCREEN_HEIGHT];
+                var colormode = new byte[PPU.SCREEN_HEIGHT];
+
+                ppu.SetScreenPtr(screenBuffer, colormode);
+
                 Debuger.Log("Allocating APU...");
                 apu = new APU(this);
 
@@ -121,10 +234,124 @@ namespace VirtualNes.Core
 
                 Debuger.Log("Loading ROM Image...");
                 rom = new ROM(fname);
+
+                mapper = Mapper.CreateMapper(this, rom.GetMapperNo());
+
+                Debuger.Log("OK");
+
+                Debuger.Log($"{rom.GetRomName()}");
+                Debuger.Log($"Mapper        : #{rom.GetMapperNo():D3}");
+                Debuger.Log($"PRG SIZE      : {16 * rom.GetPROM_SIZE():4:0000}K");
+                Debuger.Log($"CHR SIZE      : {8 * rom.GetVROM_SIZE():4:0000}K");
+
+                Debuger.Log($"V MIRROR      :{rom.IsVMIRROR()}");
+                Debuger.Log($"4 SCREEN      :{rom.Is4SCREEN()}");
+                Debuger.Log($"SAVE RAM      :{rom.IsSAVERAM()}");
+                Debuger.Log($"TRAINER       :{rom.IsTRAINER()}");
+                Debuger.Log($"VS-Unisystem  :{rom.IsVSUNISYSTEM()}");
+
+                NesSub_MemoryInitial();
+                LoadSRAM();
+                LoadDISK();
             }
             catch (Exception ex)
             {
                 Debuger.LogError(ex.ToString());
+                throw ex;
+            }
+        }
+
+        private void LoadDISK()
+        {
+            //todo : 磁碟机读取支持
+        }
+
+        private void LoadSRAM()
+        {
+            if (rom.IsNSF())
+                return;
+
+            MemoryUtility.ZEROMEMORY(MMU.WRAM, MMU.WRAM.Length);
+
+            if (!rom.IsSAVERAM())
+                return;
+
+            var saveFileDir = Supporter.Config.path.szSavePath;
+            var saveFileName = $"{rom.GetRomName()}.sav";
+
+            var fp = Supporter.OpenFile(saveFileDir, saveFileName);
+
+            try
+            {
+                if (fp == null)
+                {
+                    throw new Exception("not find ram file to read");
+                }
+
+                Debuger.Log("Loading SAVERAM...");
+
+                int size = (int)fp.Length;
+                if (size <= 128 * 1024)
+                {
+                    fp.Read(MMU.WRAM, 0, size);
+                }
+                Debuger.Log("OK.");
+                fp.Close();
+            }
+            catch (Exception ex)
+            {
+                fp?.Close();
+                fp = null;
+            }
+        }
+
+        private void NesSub_MemoryInitial()
+        {
+            int i;
+
+            // 儊儌儕僋儕傾
+            MemoryUtility.ZEROMEMORY(MMU.RAM, MMU.RAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.WRAM, MMU.WRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.DRAM, MMU.DRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.ERAM, MMU.ERAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.XRAM, MMU.XRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.CRAM, MMU.CRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.VRAM, MMU.VRAM.Length);
+
+            MemoryUtility.ZEROMEMORY(MMU.SPRAM, MMU.SPRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.BGPAL, MMU.BGPAL.Length);
+            MemoryUtility.ZEROMEMORY(MMU.SPPAL, MMU.SPPAL.Length);
+
+            MemoryUtility.ZEROMEMORY(MMU.CPUREG, MMU.CPUREG.Length);
+            MemoryUtility.ZEROMEMORY(MMU.PPUREG, MMU.PPUREG.Length);
+
+            MMU.FrameIRQ = 0xC0;
+
+            MMU.PROM = MMU.VROM = null;
+
+            // 0 彍嶼杊巭懳嶔
+            MMU.PROM_8K_SIZE = MMU.PROM_16K_SIZE = MMU.PROM_32K_SIZE = 1;
+            MMU.VROM_1K_SIZE = MMU.VROM_2K_SIZE = MMU.VROM_4K_SIZE = MMU.VROM_8K_SIZE = 1;
+
+            // 僨僼僅儖僩僶儞僋愝掕
+            for (i = 0; i < 8; i++)
+            {
+                MMU.CPU_MEM_BANK[i] = null;
+                MMU.CPU_MEM_TYPE[i] = MMU.BANKTYPE_ROM;
+                MMU.CPU_MEM_PAGE[i] = 0;
+            }
+
+            // 撪憻RAM/WRAM
+            MMU.SetPROM_Bank(0, MMU.RAM, MMU.BANKTYPE_RAM);
+            MMU.SetPROM_Bank(3, MMU.WRAM, MMU.BANKTYPE_RAM);
+
+            // 僟儈乕
+            MMU.SetPROM_Bank(1, MMU.XRAM, MMU.BANKTYPE_ROM);
+            MMU.SetPROM_Bank(2, MMU.XRAM, MMU.BANKTYPE_ROM);
+
+            for (i = 0; i < 8; i++)
+            {
+                MMU.CRAM_USED[i] = 0;
             }
         }
 
@@ -201,9 +428,391 @@ namespace VirtualNes.Core
                     }
                     else if (scanline < 240)
                     {
+                        if (RenderMethod < EnumRenderMethod.POST_RENDER)
+                        {
+                            if (RenderMethod == EnumRenderMethod.POST_ALL_RENDER)
+                                EmulationCPU(nescfg.ScanlineCycles);
+                            if (bDraw)
+                            {
+                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                            }
+                            else
+                            {
+                                if (pad.IsZapperMode() && scanline == ZapperY)
+                                {
+                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                }
+                                else
+                                {
+                                    if (!ppu.IsSprite0(scanline))
+                                    {
+                                        ppu.DummyScanline(scanline);
+                                    }
+                                    else
+                                    {
+                                        ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    }
+                                }
+                            }
+                            ppu.ScanlineNext();                // 偙傟偺埵抲偱儔僗僞乕宯偼夋柺偑堘偆
+                            if (RenderMethod == EnumRenderMethod.PRE_ALL_RENDER)
+                                EmulationCPU(nescfg.ScanlineCycles);
 
+                            mapper.HSync(scanline);
+                            ppu.ScanlineStart();
+                        }
+                        else
+                        {
+                            if (RenderMethod == EnumRenderMethod.POST_RENDER)
+                                EmulationCPU(nescfg.HDrawCycles);
+                            if (bDraw)
+                            {
+                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                            }
+                            else
+                            {
+                                if (pad.IsZapperMode() && scanline == ZapperY)
+                                {
+                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                }
+                                else
+                                {
+                                    if (!ppu.IsSprite0(scanline))
+                                    {
+                                        ppu.DummyScanline(scanline);
+                                    }
+                                    else
+                                    {
+                                        ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    }
+                                }
+                            }
+                            if (RenderMethod == EnumRenderMethod.PRE_RENDER)
+                                EmulationCPU(nescfg.HDrawCycles);
+                            ppu.ScanlineNext();
+                            mapper.HSync(scanline);
+                            EmulationCPU(FETCH_CYCLES * 32);
+                            ppu.ScanlineStart();
+                            EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                        }
+                    }
+                    else if (scanline == 240)
+                    {
+                        mapper.VSync();
+                        if (RenderMethod < EnumRenderMethod.POST_RENDER)
+                        {
+                            EmulationCPU(nescfg.ScanlineCycles);
+                            mapper.HSync(scanline);
+                        }
+                        else
+                        {
+                            EmulationCPU(nescfg.HDrawCycles);
+                            mapper.HSync(scanline);
+                            EmulationCPU(nescfg.HBlankCycles);
+                        }
+                    }
+                    else if (scanline <= nescfg.TotalScanlines - 1)
+                    {
+                        pad.VSync();
+
+                        // VBLANK婜娫
+                        if (scanline == nescfg.TotalScanlines - 1)
+                        {
+                            ppu.VBlankEnd();
+                        }
+                        if (RenderMethod < EnumRenderMethod.POST_RENDER)
+                        {
+                            if (scanline == 241)
+                            {
+                                ppu.VBlankStart();
+                                if ((MMU.PPUREG[0] & PPU.PPU_VBLANK_BIT) != 0)
+                                {
+                                    cpu.NMI();
+                                }
+                            }
+                            EmulationCPU(nescfg.ScanlineCycles);
+                            mapper.HSync(scanline);
+                        }
+                        else
+                        {
+                            if (scanline == 241)
+                            {
+                                ppu.VBlankStart();
+                                if ((MMU.PPUREG[0] & PPU.PPU_VBLANK_BIT) != 0)
+                                {
+                                    cpu.NMI();
+                                }
+                            }
+                            EmulationCPU(nescfg.HDrawCycles);
+                            mapper.HSync(scanline);
+                            EmulationCPU(nescfg.HBlankCycles);
+                        }
+
+                        if (scanline == nescfg.TotalScanlines - 1)
+                        {
+                            break;
+                        }
+                    }
+                    if (pad.IsZapperMode())
+                    {
+                        if (scanline == ZapperY)
+                            bZapper = true;
+                        else
+                            bZapper = false;
+                    }
+
+                    scanline++;
+                    NES_scanline = scanline;
+                }
+            }
+            else
+            {
+                bZapper = false;
+                while (true)
+                {
+                    ppu.SetRenderScanline(scanline);
+
+                    if (scanline == 0)
+                    {
+                        // 僟儈乕僗僉儍儞儔僀儞
+                        // H-Draw (4fetches*32)
+                        EmulationCPU(FETCH_CYCLES * 128);
+                        ppu.FrameStart();
+                        ppu.ScanlineNext();
+                        EmulationCPU(FETCH_CYCLES * 10);
+                        mapper.HSync(scanline);
+                        EmulationCPU(FETCH_CYCLES * 22);
+                        ppu.ScanlineStart();
+                        EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                    }
+                    else if (scanline < 240)
+                    {
+                        // 僗僋儕乕儞昤夋(Scanline 1乣239)
+                        if (bDraw)
+                        {
+                            ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                            ppu.ScanlineNext();
+                            EmulationCPU(FETCH_CYCLES * 10);
+                            mapper.HSync(scanline);
+                            EmulationCPU(FETCH_CYCLES * 22);
+                            ppu.ScanlineStart();
+                            EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                        }
+                        else
+                        {
+                            if (pad.IsZapperMode() && scanline == ZapperY)
+                            {
+                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.ScanlineNext();
+                                EmulationCPU(FETCH_CYCLES * 10);
+                                mapper.HSync(scanline);
+                                EmulationCPU(FETCH_CYCLES * 22);
+                                ppu.ScanlineStart();
+                                EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                            }
+                            else
+                            {
+                                if (!ppu.IsSprite0(scanline))
+                                {
+                                    // H-Draw (4fetches*32)
+                                    EmulationCPU(FETCH_CYCLES * 128);
+                                    ppu.DummyScanline(scanline);
+                                    ppu.ScanlineNext();
+                                    EmulationCPU(FETCH_CYCLES * 10);
+                                    mapper.HSync(scanline);
+                                    EmulationCPU(FETCH_CYCLES * 22);
+                                    ppu.ScanlineStart();
+                                    EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                                }
+                                else
+                                {
+                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.ScanlineNext();
+                                    EmulationCPU(FETCH_CYCLES * 10);
+                                    mapper.HSync(scanline);
+                                    EmulationCPU(FETCH_CYCLES * 22);
+                                    ppu.ScanlineStart();
+                                    EmulationCPU(FETCH_CYCLES * 10 + nescfg.ScanlineEndCycles);
+                                }
+                            }
+                        }
+                    }
+                    else if (scanline == 240)
+                    {
+                        // 僟儈乕僗僉儍儞儔僀儞 (Scanline 240)
+                        mapper.VSync();
+
+                        EmulationCPU(nescfg.HDrawCycles);
+                        // H-Sync
+                        mapper.HSync(scanline);
+
+                        EmulationCPU(nescfg.HBlankCycles);
+                    }
+                    else if (scanline <= nescfg.TotalScanlines - 1)
+                    {
+                        pad.VSync();
+
+                        // VBLANK婜娫
+                        if (scanline == nescfg.TotalScanlines - 1)
+                        {
+                            ppu.VBlankEnd();
+                        }
+                        if (scanline == 241)
+                        {
+                            ppu.VBlankStart();
+                            if ((MMU.PPUREG[0] & PPU.PPU_VBLANK_BIT) != 0)
+                            {
+                                cpu.NMI();
+                            }
+                        }
+                        EmulationCPU(nescfg.HDrawCycles);
+
+                        // H-Sync
+                        mapper.HSync(scanline);
+
+                        EmulationCPU(nescfg.HBlankCycles);
+
+                        if (scanline == nescfg.TotalScanlines - 1)
+                        {
+                            break;
+                        }
+                    }
+                    if (pad.IsZapperMode())
+                    {
+                        if (scanline == ZapperY)
+                            bZapper = true;
+                        else
+                            bZapper = false;
+                    }
+
+                    scanline++;
+                    NES_scanline = scanline;
+                }
+            }
+
+            if (bDraw)
+            {
+                DrawPad();
+            }
+        }
+
+        private void DrawPad()
+        {
+            if (m_bMoviePlay)
+            {
+                int offset_h = 12;
+                int offset_v = Supporter.Config.graphics.bAllLine ? (240 - 18) : (240 - 22);
+
+                if (Supporter.Config.movie.bPadDisplay)
+                {
+                    uint dwData = pad.GetSyncData();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        byte Data = (byte)(dwData >> (i * 8));
+                        if ((m_MovieControl & (1 << i)) != 0)
+                        {
+                            DrawBitmap(offset_h, offset_v, m_PadImg);
+
+                            // KEY
+                            if ((Data & (1 << 4)) != 0) DrawBitmap(offset_h + 3, offset_v + 1, m_KeyImg0); // U
+                            if ((Data & (1 << 5)) != 0) DrawBitmap(offset_h + 3, offset_v + 5, m_KeyImg0); // D
+                            if ((Data & (1 << 6)) != 0) DrawBitmap(offset_h + 1, offset_v + 3, m_KeyImg0); // L
+                            if ((Data & (1 << 7)) != 0) DrawBitmap(offset_h + 5, offset_v + 3, m_KeyImg0); // R
+
+                            // START,SELECT
+                            if ((Data & (1 << 2)) != 0) DrawBitmap(offset_h + 9, offset_v + 5, m_KeyImg1); // SELECT
+                            if ((Data & (1 << 3)) != 0) DrawBitmap(offset_h + 13, offset_v + 5, m_KeyImg1); // START
+
+                            // A,B
+                            if ((Data & (1 << 0)) != 0) DrawBitmap(offset_h + 23, offset_v + 3, m_KeyImg2); // A
+                            if ((Data & (1 << 1)) != 0) DrawBitmap(offset_h + 18, offset_v + 3, m_KeyImg2); // B
+
+                            offset_h += 30;
+                        }
                     }
                 }
+
+                if (Supporter.Config.movie.bTimeDisplay)
+                {
+                    // Time display
+                    int t = m_MovieStep;
+                    int h = t / 216000;
+                    t -= h * 216000;
+                    int m = t / 3600;
+                    t -= m * 3600;
+                    int s = t / 60;
+                    t -= s * 60;
+
+                    string szTemp = $"{h:00}:{m:00}:{s:00}.{t * 100 / 60:00}";
+                    DrawString(256 - 80 + 0, offset_v - 1, szTemp, 0x1F);
+                    DrawString(256 - 80 + 0, offset_v + 1, szTemp, 0x1F);
+                    DrawString(256 - 80 - 1, offset_v + 0, szTemp, 0x1F);
+                    DrawString(256 - 80 + 1, offset_v + 0, szTemp, 0x1F);
+                    DrawString(256 - 80, offset_v, szTemp, 0x30);
+                }
+            }
+        }
+
+        internal void DrawString(int x, int y, string str, byte col)
+        {
+            foreach (var @char in str)
+            {
+                DrawFont(x, y, (byte)@char, col);
+                x += 6;
+            }
+        }
+
+        internal void DrawFont(int x, int y, byte chr, byte col)
+        {
+            int i;
+            int pFnt;
+            int pPtr;
+            var Scn = ppu.GetScreenPtr();
+            int pScn = 8;
+
+
+            if (chr < 0x20 || chr > 0x7F)
+                return;
+            chr -= 0x20;
+            pFnt = chr * 8;
+            pPtr = pScn + (256 + 16) * y + x;
+            for (i = 0; i < 8; i++)
+            {
+                if ((Font6x8[pFnt + i] & 0x80) != 0) Scn[pPtr + 0] = col;
+                if ((Font6x8[pFnt + i] & 0x40) != 0) Scn[pPtr + 1] = col;
+                if ((Font6x8[pFnt + i] & 0x20) != 0) Scn[pPtr + 2] = col;
+                if ((Font6x8[pFnt + i] & 0x10) != 0) Scn[pPtr + 3] = col;
+                if ((Font6x8[pFnt + i] & 0x08) != 0) Scn[pPtr + 4] = col;
+                if ((Font6x8[pFnt + i] & 0x04) != 0) Scn[pPtr + 5] = col;
+                pPtr += (256 + 16);
+            }
+        }
+
+        private void DrawBitmap(int x, int y, byte[] bitMap)
+        {
+            int i, j;
+            int h, v;
+            var Scn = ppu.GetScreenPtr();
+            int pScn = 8 + (256 + 16) * y + x;
+            int pPtr;
+
+            int lpBitmap = 0;
+            h = bitMap[lpBitmap++];
+            v = bitMap[lpBitmap++];
+
+            for (j = 0; j < v; j++)
+            {
+                pPtr = pScn;
+                for (i = 0; i < h; i++)
+                {
+                    if (bitMap[lpBitmap] != 0xFF)
+                    {
+                        Scn[pPtr] = bitMap[lpBitmap];
+                    }
+                    lpBitmap++;
+                    pPtr++;
+                }
+                pScn += 256 + 16;
             }
         }
 
@@ -227,27 +836,27 @@ namespace VirtualNes.Core
             SaveTurboFile();
 
             // RAM Clear
-            MemoryUtility.ZEROMEMORY(MMU.RAM, (uint)MMU.RAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.RAM, MMU.RAM.Length);
             if (rom.GetPROM_CRC() == 0x29401686)
-            {	// Minna no Taabou no Nakayoshi Dai Sakusen(J)
-                MemoryUtility.memset(MMU.RAM, 0xFF, (uint)MMU.RAM.Length);
+            {   // Minna no Taabou no Nakayoshi Dai Sakusen(J)
+                MemoryUtility.memset(MMU.RAM, 0xFF, MMU.RAM.Length);
             }
 
             // RAM set
             if (!rom.IsSAVERAM() && rom.GetMapperNo() != 20)
             {
-                MemoryUtility.memset(MMU.WRAM, 0xFF, (uint)MMU.WRAM.Length);
+                MemoryUtility.memset(MMU.WRAM, 0xFF, MMU.WRAM.Length);
             }
 
-            MemoryUtility.ZEROMEMORY(MMU.CRAM, (uint)MMU.CRAM.Length);
-            MemoryUtility.ZEROMEMORY(MMU.VRAM, (uint)MMU.VRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.CRAM, MMU.CRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.VRAM, MMU.VRAM.Length);
 
-            MemoryUtility.ZEROMEMORY(MMU.SPRAM, (uint)MMU.SPRAM.Length);
-            MemoryUtility.ZEROMEMORY(MMU.BGPAL, (uint)MMU.BGPAL.Length);
-            MemoryUtility.ZEROMEMORY(MMU.SPPAL, (uint)MMU.SPPAL.Length);
+            MemoryUtility.ZEROMEMORY(MMU.SPRAM, MMU.SPRAM.Length);
+            MemoryUtility.ZEROMEMORY(MMU.BGPAL, MMU.BGPAL.Length);
+            MemoryUtility.ZEROMEMORY(MMU.SPPAL, MMU.SPPAL.Length);
 
-            MemoryUtility.ZEROMEMORY(MMU.CPUREG, (uint)MMU.CPUREG.Length);
-            MemoryUtility.ZEROMEMORY(MMU.PPUREG, (uint)MMU.PPUREG.Length);
+            MemoryUtility.ZEROMEMORY(MMU.CPUREG, MMU.CPUREG.Length);
+            MemoryUtility.ZEROMEMORY(MMU.PPUREG, MMU.PPUREG.Length);
 
             m_bDiskThrottle = false;
 
@@ -365,7 +974,7 @@ namespace VirtualNes.Core
             {
                 if (m_bNsfInit)
                 {
-                    MemoryUtility.ZEROMEMORY(MMU.RAM, (uint)MMU.RAM.Length);
+                    MemoryUtility.ZEROMEMORY(MMU.RAM, MMU.RAM.Length);
                     if ((rom.GetNsfHeader().ExtraChipSelect & 0x04) == 0)
                     {
                         MemoryUtility.ZEROMEMORY(MMU.RAM, 0x2000);
@@ -427,7 +1036,54 @@ namespace VirtualNes.Core
 
         internal void CheatCodeProcess()
         {
-            //todo : 实现作弊码
+            foreach (var it in m_CheatCode)
+            {
+                if ((it.enable & CHEATCODE.CHEAT_ENABLE) == 0)
+                    continue;
+
+                switch (it.type)
+                {
+                    case CHEATCODE.CHEAT_TYPE_ALWAYS:
+                        CheatWrite(it.length, it.address, it.data);
+                        break;
+                    case CHEATCODE.CHEAT_TYPE_ONCE:
+                        CheatWrite(it.length, it.address, it.data);
+                        it.enable = 0;
+                        break;
+                    case CHEATCODE.CHEAT_TYPE_GREATER:
+                        if (CheatRead(it.length, it.address) > it.data)
+                        {
+                            CheatWrite(it.length, it.address, it.data);
+                        }
+                        break;
+                    case CHEATCODE.CHEAT_TYPE_LESS:
+                        if (CheatRead(it.length, it.address) < it.data)
+                        {
+                            CheatWrite(it.length, it.address, it.data);
+                        }
+                        break;
+                }
+            }
+        }
+
+        private uint CheatRead(byte length, ushort addr)
+        {
+            uint data = 0;
+            for (int i = 0; i <= length; i++)
+            {
+                data |= (uint)(Read((ushort)(addr + i)) * (1 << (i * 8)));
+            }
+
+            return data;
+        }
+
+        private void CheatWrite(int length, ushort addr, uint data)
+        {
+            for (int i = 0; i <= length; i++)
+            {
+                Write((ushort)(addr + i), (byte)(data & 0xFF));
+                data >>= 8;
+            }
         }
 
         public void Dispose()
@@ -515,7 +1171,23 @@ namespace VirtualNes.Core
 
         private void SaveTurboFile()
         {
-            //todo : 实现
+            int i;
+
+            if (pad.GetExController() != (int)EXCONTROLLER.EXCONTROLLER_TURBOFILE)
+                return;
+
+            for (i = 0; i < MMU.ERAM.Length; i++)
+            {
+                if (MMU.ERAM[i] != 0x00)
+                    break;
+            }
+
+            if (i < MMU.ERAM.Length)
+            {
+                Debuger.Log("Saving TURBOFILE...");
+
+                Supporter.SaveFile(MMU.ERAM, Supporter.Config.path.szSavePath, "TurboFile.vtf");
+            }
         }
 
         internal void Clock(int cycles)
@@ -564,7 +1236,53 @@ namespace VirtualNes.Core
 
         internal void Tape(int cycles)
         {
-            //todo : 实现Tape (目测是记录玩家操作再Play,优先级很低)
+            if (!(IsTapePlay() || IsTapeRec()))
+            {
+                return;
+            }
+
+            if ((m_TapeCycles -= (double)cycles) > 0)
+                return;
+
+            m_TapeCycles += (nescfg.CpuClock / 32000.0);
+            //	m_TapeCycles += (nescfg->CpuClock / 22050.0);	// 抶偡偓偰僟儊偭傐偄
+
+            if (m_bTapePlay)
+            {
+                int data = m_fpTape.ReadByte();
+                if (data != -1) //EOF
+                {
+                    if ((data & 0xFF) >= 0x8C)
+                    {
+                        m_TapeOut = 0x02;
+                    }
+                    else
+                        if ((data & 0xFF) <= 0x74)
+                    {
+                        m_TapeOut = 0x00;
+                    }
+                }
+                else
+                {
+                    TapeStop();
+                }
+            }
+            if (m_bTapeRec)
+            {
+                m_fpTape.WriteByte((m_TapeIn & 7) == 7 ? (byte)0x90 : (byte)0x70);
+            }
+        }
+
+        private void TapeStop()
+        {
+            if (!m_bBarcode)
+            {
+                cpu.SetClockProcess(false);
+            }
+
+            m_bTapePlay = m_bTapeRec = false;
+            m_fpTape?.Dispose();
+            m_fpTape = null;
         }
 
         internal byte Read(ushort addr)
@@ -593,7 +1311,7 @@ namespace VirtualNes.Core
                     return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
             }
 
-            return 0x00;	// Warning梊杊
+            return 0x00;    // Warning梊杊
         }
 
         private byte ReadReg(ushort addr)
@@ -824,6 +1542,26 @@ namespace VirtualNes.Core
         internal bool GetFrameIRQmode()
         {
             return bFrameIRQ;
+        }
+
+        internal EnumRenderMethod GetRenderMethod()
+        {
+            return RenderMethod;
+        }
+
+        internal void SetIrqType(IRQMETHOD nType)
+        {
+            nIRQtype = (int)nType;
+        }
+
+        internal int GetScanline()
+        {
+            return NES_scanline;
+        }
+
+        public enum IRQMETHOD
+        {
+            IRQ_HSYNC = 0, IRQ_CLOCK = 1
         }
     }
 }

@@ -127,22 +127,23 @@ namespace VirtualNes.Core
 
         public override void Reset(float fClock, int nRate)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
         }
 
         public override void Setup(float fClock, int nRate)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
         }
 
         public override void Write(ushort addr, byte data)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
         }
 
         public override int Process(int channel)
         {
-            throw new System.NotImplementedException();
+            //todo : 实现
+            return 0;
         }
 
         internal byte SyncRead(ushort addr)

@@ -67,6 +67,9 @@ namespace VirtualNes
         public const byte VRAM_MIRROR4L = 0x03;     // PA10 L屌掕 $2000-$23FF偺儈儔乕
         public const byte VRAM_MIRROR4H = 0x04;     // PA10 H屌掕 $2400-$27FF偺儈儔乕
 
+        // Frame-IRQ儗僕僗僞($4017)
+        public static int FrameIRQ;
+
         internal static void SetPROM_Bank(byte page, Memory<byte> ptr, byte type)
         {
             CPU_MEM_BANK[page] = ptr;
