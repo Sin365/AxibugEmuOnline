@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VirtuaNES", "VirtuaNES.vcxproj", "{788F7F02-C4F5-4477-8429-CB02507855EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Profile|Win32 = Profile|Win32
+		Release_Debugout|Win32 = Release_Debugout|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Debug|Win32.Build.0 = Debug|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Profile|Win32.ActiveCfg = Profile|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Profile|Win32.Build.0 = Profile|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Release_Debugout|Win32.ActiveCfg = Release_Debugout|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Release_Debugout|Win32.Build.0 = Release_Debugout|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Release|Win32.ActiveCfg = Release|Win32
+		{788F7F02-C4F5-4477-8429-CB02507855EA}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
