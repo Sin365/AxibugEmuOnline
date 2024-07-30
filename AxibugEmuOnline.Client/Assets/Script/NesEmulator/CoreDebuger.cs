@@ -7,6 +7,7 @@ namespace AxibugEmuOnline.Client
 {
     public class CoreDebuger : IDebugerImpl
     {
+
         public void Log(string message)
         {
             Debug.Log(message);

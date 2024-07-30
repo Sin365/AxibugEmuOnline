@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
@@ -26,7 +27,6 @@ namespace AxibugEmuOnline.Client
             try
             {
                 m_nesIns = new NES(romName);
-                m_nesIns.Command(NESCOMMAND.NESCMD_HWRESET);
             }
             catch (Exception ex)
             {
@@ -46,9 +46,17 @@ namespace AxibugEmuOnline.Client
             if (m_nesIns != null)
             {
                 m_nesIns.EmulateFrame(true);
+
                 var screenBuffer = m_nesIns.ppu.GetScreenPtr();
-                VideoProvider.SetDrawData(screenBuffer, PPU.SCREEN_WIDTH, PPU.SCREEN_HEIGHT);
+                var lineColorMode = m_nesIns.ppu.GetLineColorMode();
+
+                VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
             }
+        }
+
+        private void OnDestroy()
+        {
+            File.WriteAllLines("E:/log.txt", Debuger.logRecords);
         }
     }
 }

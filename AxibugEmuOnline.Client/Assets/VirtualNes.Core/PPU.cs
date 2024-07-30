@@ -1,12 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using Microsoft.Win32;
-using System;
-using System.IO;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEngine;
-using static VirtualNes.Core.PPU;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public class PPU
     {
@@ -195,7 +187,7 @@ namespace VirtualNes.Core
                         }
                         addr &= 0xEFFF;
                     }
-                    MMU.PPU7_Temp = MMU.PPU_MEM_BANK[addr >> 10].Span[addr & 0x03FF];
+                    MMU.PPU7_Temp = MMU.PPU_MEM_BANK[addr >> 10][addr & 0x03FF];
                     break;
             }
 
@@ -331,7 +323,7 @@ namespace VirtualNes.Core
                     }
                     if (MMU.PPU_MEM_TYPE[vaddr >> 10] != MMU.BANKTYPE_VROM)
                     {
-                        MMU.PPU_MEM_BANK[vaddr >> 10].Span[vaddr & 0x03FF] = data;
+                        MMU.PPU_MEM_BANK[vaddr >> 10][vaddr & 0x03FF] = data;
                     }
                     break;
             }
@@ -473,7 +465,7 @@ namespace VirtualNes.Core
                         int attradr = 0x23C0 + (MMU.loopy_v & 0x0C00) + ((MMU.loopy_v & 0x0380) >> 4);
                         int ntbl_x = ntbladr & 0x001F;
                         int attrsft = (ntbladr & 0x0040) >> 4;
-                        var pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10].Span;
+                        var pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10];
 
                         int tileadr;
                         int cache_tile = unchecked((int)(0xFFFF0000));
@@ -486,7 +478,6 @@ namespace VirtualNes.Core
 
                         for (int i = 0; i < 33; i++)
                         {
-
                             tileadr = tileofs + pNTBL[ntbladr & 0x03FF] * 0x10 + loopy_y;
                             attr = (byte)(((pNTBL[attradr + (ntbl_x >> 2)] >> ((ntbl_x & 2) + attrsft)) & 3) << 2);
 
@@ -508,8 +499,8 @@ namespace VirtualNes.Core
                             {
                                 cache_tile = tileadr;
                                 cache_attr = attr;
-                                chr_l = MMU.PPU_MEM_BANK[tileadr >> 10].Span[tileadr & 0x03FF];
-                                chr_h = MMU.PPU_MEM_BANK[tileadr >> 10].Span[(tileadr & 0x03FF) + 8];
+                                chr_l = MMU.PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
+                                chr_h = MMU.PPU_MEM_BANK[tileadr >> 10][(tileadr & 0x03FF) + 8];
                                 BGwrite[pBGw] = (byte)(chr_h | chr_l);
 
                                 int pBGPAL = attr;
@@ -540,7 +531,7 @@ namespace VirtualNes.Core
                                 ntbl_x = 0;
                                 ntbladr ^= 0x41F;
                                 attradr = 0x03C0 + ((ntbladr & 0x0380) >> 4);
-                                pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10].Span;
+                                pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10];
                             }
                             else
                             {
@@ -632,7 +623,7 @@ namespace VirtualNes.Core
                             int attradr = 0x03C0 + ((MMU.loopy_v & 0x0380) >> 4);
                             int ntbl_x = ntbladr & 0x001F;
                             int attrsft = (ntbladr & 0x0040) >> 4;
-                            var pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10].Span;
+                            var pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10];
 
                             int tileadr = 0;
                             int cache_tile = unchecked((int)(0xFFFF0000));
@@ -656,8 +647,8 @@ namespace VirtualNes.Core
                                     cache_tile = tileadr;
                                     cache_attr = attr;
 
-                                    chr_l = MMU.PPU_MEM_BANK[tileadr >> 10].Span[tileadr & 0x03FF];
-                                    chr_h = MMU.PPU_MEM_BANK[tileadr >> 10].Span[(tileadr & 0x03FF) + 8];
+                                    chr_l = MMU.PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
+                                    chr_h = MMU.PPU_MEM_BANK[tileadr >> 10][(tileadr & 0x03FF) + 8];
                                     lpScreen[pBGw] = (byte)(chr_l | chr_h);
 
                                     int pBGPAL = attr;
@@ -702,7 +693,7 @@ namespace VirtualNes.Core
                                     ntbl_x = 0;
                                     ntbladr ^= 0x41F;
                                     attradr = 0x03C0 + ((ntbladr & 0x0380) >> 4);
-                                    pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10].Span;
+                                    pNTBL = MMU.PPU_MEM_BANK[ntbladr >> 10];
                                 }
                                 else
                                 {
@@ -732,16 +723,16 @@ namespace VirtualNes.Core
                                 }
 
                                 ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
-                                tileadr = ((MMU.PPUREG[0] & PPU_BGTBL_BIT) << 8) + MMU.PPU_MEM_BANK[ntbladr >> 10].Span[ntbladr & 0x03FF] * 0x10 + ((MMU.loopy_v & 0x7000) >> 12);
-                                attr = (byte)(((MMU.PPU_MEM_BANK[ntbladr >> 10].Span[0x03C0 + ((ntbladr & 0x0380) >> 4) + ((ntbladr & 0x001C) >> 2)] >> (((ntbladr & 0x40) >> 4) + (ntbladr & 0x02))) & 3) << 2);
+                                tileadr = ((MMU.PPUREG[0] & PPU_BGTBL_BIT) << 8) + MMU.PPU_MEM_BANK[ntbladr >> 10][ntbladr & 0x03FF] * 0x10 + ((MMU.loopy_v & 0x7000) >> 12);
+                                attr = (byte)(((MMU.PPU_MEM_BANK[ntbladr >> 10][0x03C0 + ((ntbladr & 0x0380) >> 4) + ((ntbladr & 0x001C) >> 2)] >> (((ntbladr & 0x40) >> 4) + (ntbladr & 0x02))) & 3) << 2);
 
                                 if (cache_tile != tileadr || cache_attr != attr)
                                 {
                                     cache_tile = tileadr;
                                     cache_attr = attr;
 
-                                    chr_l = MMU.PPU_MEM_BANK[tileadr >> 10].Span[tileadr & 0x03FF];
-                                    chr_h = MMU.PPU_MEM_BANK[tileadr >> 10].Span[(tileadr & 0x03FF) + 8];
+                                    chr_l = MMU.PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
+                                    chr_h = MMU.PPU_MEM_BANK[tileadr >> 10][(tileadr & 0x03FF) + 8];
                                     BGwrite[pBGw] = (byte)(chr_l | chr_h);
 
                                     int pBGPAL = attr;
@@ -937,8 +928,8 @@ namespace VirtualNes.Core
                         spraddr += ((~sp_y & 8) << 1) + (7 - (sp_y & 7));
                 }
                 // Character pattern
-                chr_l = MMU.PPU_MEM_BANK[spraddr >> 10].Span[spraddr & 0x3FF];
-                chr_h = MMU.PPU_MEM_BANK[spraddr >> 10].Span[(spraddr & 0x3FF) + 8];
+                chr_l = MMU.PPU_MEM_BANK[spraddr >> 10][spraddr & 0x3FF];
+                chr_h = MMU.PPU_MEM_BANK[spraddr >> 10][(spraddr & 0x3FF) + 8];
 
                 // Character latch(For MMC2/MMC4)
                 if (bChrLatch)
@@ -1117,11 +1108,17 @@ namespace VirtualNes.Core
             return lpScreen;
         }
 
+        public byte[] GetLineColorMode()
+        {
+            return lpColormode;
+        }
+
         internal void SetScreenPtr(byte[] screenBuffer, byte[] colormode)
         {
             lpScreen = screenBuffer;
             lpColormode = colormode;
         }
+
 
         internal bool IsDispON()
         {
