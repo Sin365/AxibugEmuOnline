@@ -64,5 +64,33 @@ namespace AxibugEmuOnline.Client
         }
 
         public EmulatorConfig Config { get; private set; } = new EmulatorConfig();
+
+        public void PrepareDirectory(string directPath)
+        {
+            Directory.CreateDirectory($"{Application.persistentDataPath}/{directPath}");
+        }
+
+        public void SaveFile(byte[] fileData, string directPath, string fileName)
+        {
+            PrepareDirectory(directPath);
+
+            var fileFullpath = $"{Application.persistentDataPath}/{directPath}/{fileName}";
+            File.WriteAllBytes(fileFullpath, fileData);
+        }
+
+        public Stream OpenFile(string directPath, string fileName)
+        {
+            try
+            {
+                var data = File.ReadAllBytes($"{Application.persistentDataPath}/{directPath}/{fileName}");
+                if (data == null) return null;
+                return new MemoryStream(data);
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
     }
 }

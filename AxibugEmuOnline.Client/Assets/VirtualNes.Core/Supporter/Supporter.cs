@@ -35,6 +35,20 @@ namespace VirtualNes.Core
             s_support.SaveDISKToFile(diskFileContent, romName);
         }
 
+        public static void PrepareDirectory(string directPath)
+        {
+            s_support.PrepareDirectory(directPath);
+        }
+
+        public static void SaveFile(byte[] fileData, string directPath, string fileName)
+        {
+            s_support.SaveFile(fileData, directPath, fileName);
+        }
+        public static Stream OpenFile(string directPath, string fileName)
+        {
+            return s_support.OpenFile(directPath, fileName);
+        }
+
         public static EmulatorConfig Config => s_support.Config;
     }
 
@@ -46,5 +60,9 @@ namespace VirtualNes.Core
         void SaveSRAMToFile(byte[] sramContent, string romName);
         void SaveDISKToFile(byte[] diskFileContent, string romName);
         EmulatorConfig Config { get; }
+
+        void PrepareDirectory(string directPath);
+        void SaveFile(byte[] fileData, string directPath, string fileName);
+        Stream OpenFile(string directPath, string fileName);
     }
 }
