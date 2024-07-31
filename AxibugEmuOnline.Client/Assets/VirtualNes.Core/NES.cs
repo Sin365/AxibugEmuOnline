@@ -486,8 +486,11 @@ namespace VirtualNes.Core
             m_CheatCode.Clear();
         }
 
+        private int FrameCount = 0;
         public void EmulateFrame(bool bDraw)
         {
+            FrameCount++;
+
             int scanline = 0;
             if (rom.IsNSF())
             {
@@ -498,6 +501,7 @@ namespace VirtualNes.Core
             CheatCodeProcess();
 
             NES_scanline = scanline;
+            bool NotTile = RenderMethod != EnumRenderMethod.TILE_RENDER;
 
             if (RenderMethod != EnumRenderMethod.TILE_RENDER)
             {
@@ -917,6 +921,7 @@ namespace VirtualNes.Core
             }
         }
 
+        int CPU_CALL_COUNT = 0;
         internal void EmulationCPU(int basecycles)
         {
             int cycles;
@@ -926,8 +931,11 @@ namespace VirtualNes.Core
 
             if (cycles > 0)
             {
-                emul_cycles += cpu.EXEC(cycles);
+                var cycleAdd = cpu.EXEC(cycles);
+                emul_cycles += cycleAdd;
             }
+
+            CPU_CALL_COUNT++;
         }
 
         internal void Reset()
@@ -1041,10 +1049,7 @@ namespace VirtualNes.Core
             apu.SoundSetup();
         }
 
-        public void SetRenderMethod(EnumRenderMethod type)
-        {
-            RenderMethod = type;
-        }
+
 
         internal void SoftReset()
         {
@@ -1514,14 +1519,12 @@ namespace VirtualNes.Core
 
             return ret;
         }
-
-        static int NESWRITECOUNT = 0;
+        public void SetRenderMethod(EnumRenderMethod type)
+        {
+            RenderMethod = type;
+        }
         internal void Write(ushort addr, byte data)
         {
-            NESWRITECOUNT++;
-
-            Debuger.Log($"[{NESWRITECOUNT}] addr:{addr},data:{data}");
-
             switch (addr >> 13)
             {
                 case 0x00:  // $0000-$1FFF

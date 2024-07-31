@@ -34,12 +34,18 @@
 
         public static void Load(uint crc)
         {
-
+            nRenderMethod = defRenderMethod;
+            nIRQtype = defIRQtype;
+            bFrameIRQ = defFrameIRQ;
+            bVideoMode = defVideoMode;
         }
 
         public static void Load(uint gid, uint mid)
         {
-
+            nRenderMethod = defRenderMethod;
+            nIRQtype = defIRQtype;
+            bFrameIRQ = defFrameIRQ;
+            bVideoMode = defVideoMode;
         }
     }
 }

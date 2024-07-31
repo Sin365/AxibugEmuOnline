@@ -41,6 +41,7 @@ namespace AxibugEmuOnline.Client
             m_nesIns = null;
         }
 
+
         private void Update()
         {
             if (m_nesIns != null)
@@ -52,11 +53,6 @@ namespace AxibugEmuOnline.Client
 
                 VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
             }
-        }
-
-        private void OnDestroy()
-        {
-            File.WriteAllLines("E:/log.txt", Debuger.logRecords);
         }
     }
 }

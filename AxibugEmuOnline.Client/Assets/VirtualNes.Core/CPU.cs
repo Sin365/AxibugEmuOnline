@@ -1,6 +1,7 @@
 ﻿#undef DPCM_SYNCCLOCK
 
 using System;
+using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
 {
@@ -42,7 +43,7 @@ namespace VirtualNes.Core
         private int DMA_cycles;
         private Mapper mapper;
         private APU apu;
-        private R6502 R = new R6502();
+        internal R6502 R = new R6502();
         private byte[] ZN_Table = new byte[256];
         private Memory<byte> STACK;
 
@@ -132,75 +133,77 @@ namespace VirtualNes.Core
 
                 switch (opcode)
                 {
-                    case 0x69:
+                    case 0x69: // ADC #$??
                         MR_IM(); ADC();
                         ADD_CYCLE(2);
                         break;
-                    case 0x65:
+                    case 0x65: // ADC $??
                         MR_ZP(); ADC();
                         ADD_CYCLE(3);
                         break;
-                    case 0x75:
+                    case 0x75: // ADC $??,X
                         MR_ZX(); ADC();
                         ADD_CYCLE(4);
                         break;
-                    case 0x6D:
+                    case 0x6D: // ADC $????
                         MR_AB(); ADC();
                         ADD_CYCLE(4);
                         break;
-                    case 0x7D:
+                    case 0x7D: // ADC $????,X
                         MR_AX(); ADC(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0x79:
+                    case 0x79: // ADC $????,Y
                         MR_AY(); ADC(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0x61:
+                    case 0x61: // ADC ($??,X)
                         MR_IX(); ADC();
                         ADD_CYCLE(6);
                         break;
-                    case 0x71:
+                    case 0x71: // ADC ($??),Y
                         MR_IY(); ADC(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0xE9:
+
+                    case 0xE9: // SBC #$??
                         MR_IM(); SBC();
                         ADD_CYCLE(2);
                         break;
-                    case 0xE5:
+                    case 0xE5: // SBC $??
                         MR_ZP(); SBC();
                         ADD_CYCLE(3);
                         break;
-                    case 0xF5:
+                    case 0xF5: // SBC $??,X
                         MR_ZX(); SBC();
                         ADD_CYCLE(4);
                         break;
-                    case 0xED:
+                    case 0xED: // SBC $????
                         MR_AB(); SBC();
                         ADD_CYCLE(4);
                         break;
-                    case 0xFD:
+                    case 0xFD: // SBC $????,X
                         MR_AX(); SBC(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0xF9: // SBC $????Y
+                    case 0xF9: // SBC $????,Y
                         MR_AY(); SBC(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0xE1: // SBC ($??X)
+                    case 0xE1: // SBC ($??,X)
                         MR_IX(); SBC();
                         ADD_CYCLE(6);
                         break;
-                    case 0xF1: // SBC ($??)Y
+                    case 0xF1: // SBC ($??),Y
                         MR_IY(); SBC(); CHECK_EA();
                         ADD_CYCLE(5);
                         break;
+
                     case 0xC6: // DEC $??
                         MR_ZP(); DEC(); MW_ZP();
                         ADD_CYCLE(5);
                         break;
-                    case 0xD6: // DEC $??X
+                    case 0xD6: // DEC $??,X
                         MR_ZX(); DEC(); MW_ZP();
                         ADD_CYCLE(6);
                         break;
@@ -208,10 +211,11 @@ namespace VirtualNes.Core
                         MR_AB(); DEC(); MW_EA();
                         ADD_CYCLE(6);
                         break;
-                    case 0xDE: // DEC $????X
+                    case 0xDE: // DEC $????,X
                         MR_AX(); DEC(); MW_EA();
                         ADD_CYCLE(7);
                         break;
+
                     case 0xCA: // DEX
                         DEX();
                         ADD_CYCLE(2);
@@ -220,11 +224,12 @@ namespace VirtualNes.Core
                         DEY();
                         ADD_CYCLE(2);
                         break;
+
                     case 0xE6: // INC $??
                         MR_ZP(); INC(); MW_ZP();
                         ADD_CYCLE(5);
                         break;
-                    case 0xF6: // INC $??X
+                    case 0xF6: // INC $??,X
                         MR_ZX(); INC(); MW_ZP();
                         ADD_CYCLE(6);
                         break;
@@ -232,10 +237,11 @@ namespace VirtualNes.Core
                         MR_AB(); INC(); MW_EA();
                         ADD_CYCLE(6);
                         break;
-                    case 0xFE: // INC $????X
+                    case 0xFE: // INC $????,X
                         MR_AX(); INC(); MW_EA();
                         ADD_CYCLE(7);
                         break;
+
                     case 0xE8: // INX
                         INX();
                         ADD_CYCLE(2);
@@ -244,6 +250,7 @@ namespace VirtualNes.Core
                         INY();
                         ADD_CYCLE(2);
                         break;
+
                     case 0x29: // AND #$??
                         MR_IM(); AND();
                         ADD_CYCLE(2);
@@ -252,7 +259,7 @@ namespace VirtualNes.Core
                         MR_ZP(); AND();
                         ADD_CYCLE(3);
                         break;
-                    case 0x35: // AND $??X
+                    case 0x35: // AND $??,X
                         MR_ZX(); AND();
                         ADD_CYCLE(4);
                         break;
@@ -260,22 +267,23 @@ namespace VirtualNes.Core
                         MR_AB(); AND();
                         ADD_CYCLE(4);
                         break;
-                    case 0x3D: // AND $????X
+                    case 0x3D: // AND $????,X
                         MR_AX(); AND(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0x39: // AND $????Y
+                    case 0x39: // AND $????,Y
                         MR_AY(); AND(); CHECK_EA();
                         ADD_CYCLE(4);
                         break;
-                    case 0x21: // AND ($??X)
+                    case 0x21: // AND ($??,X)
                         MR_IX(); AND();
                         ADD_CYCLE(6);
                         break;
-                    case 0x31: // AND ($??)Y
+                    case 0x31: // AND ($??),Y
                         MR_IY(); AND(); CHECK_EA();
                         ADD_CYCLE(5);
                         break;
+
                     case 0x0A: // ASL A
                         ASL_A();
                         ADD_CYCLE(2);
@@ -705,7 +713,7 @@ namespace VirtualNes.Core
                         ADD_CYCLE(6);
                         break;
 
-                    // 僼儔僌惂屼宯
+                    // フラグ制御系
                     case 0x18: // CLC
                         CLC();
                         ADD_CYCLE(2);
@@ -736,7 +744,7 @@ namespace VirtualNes.Core
                         ADD_CYCLE(2);
                         break;
 
-                    // 僗僞僢僋宯
+                    // スタック系
                     case 0x48: // PHA
                         PUSH(R.A);
                         ADD_CYCLE(3);
@@ -755,7 +763,7 @@ namespace VirtualNes.Core
                         ADD_CYCLE(4);
                         break;
 
-                    // 偦偺懠
+                    // その他
                     case 0x00: // BRK
                         BRK();
                         ADD_CYCLE(7);
@@ -765,7 +773,7 @@ namespace VirtualNes.Core
                         ADD_CYCLE(2);
                         break;
 
-                    // 枹岞奐柦椷孮
+                    // 未公開命令群
                     case 0x0B: // ANC #$??
                     case 0x2B: // ANC #$??
                         MR_IM(); ANC();
@@ -1105,7 +1113,7 @@ namespace VirtualNes.Core
                     default:
                         if (!Supporter.Config.emulator.bIllegalOp)
                         {
-                            throw new Exception("Illegal Opcode");
+                            throw new Exception("IllegalOp");
                         }
                         else
                         {
@@ -1113,6 +1121,8 @@ namespace VirtualNes.Core
                             ADD_CYCLE(4);
                         }
                         break;
+                        //			default:
+                        //				__assume(0);
                 }
 
                 if (nmi_request != 0)
@@ -1143,7 +1153,6 @@ namespace VirtualNes.Core
 #endif
             return TOTAL_cycles - OLD_cycles;
         }
-
         private void _IRQ()
         {
             PUSH((byte)(R.PC >> 8));
@@ -1836,7 +1845,7 @@ namespace VirtualNes.Core
         {
             ET = OP6502W(R.PC);
             R.PC += 2;
-            EA = (byte)(ET + R.X);
+            EA = (ushort)(ET + R.X);
             DT = RD6502(EA);
         }
 
