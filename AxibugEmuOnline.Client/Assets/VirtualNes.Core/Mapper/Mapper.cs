@@ -5,6 +5,7 @@ namespace VirtualNes.Core
     public abstract class Mapper
     {
         protected NES nes;
+
         public Mapper(NES parent)
         {
             nes = parent;
@@ -25,7 +26,7 @@ namespace VirtualNes.Core
             // $6000-$7FFF WRAM
             if (addr >= 0x6000 && addr <= 0x7FFF)
             {
-                return MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF];
+                return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
             }
 
             return (byte)(addr >> 8);
@@ -34,7 +35,7 @@ namespace VirtualNes.Core
         {
             if (addr >= 0x6000 && addr <= 0x7FFF)
             {
-                MMU.CPU_MEM_BANK[addr >> 13].Span[addr & 0x1FFF] = data;
+                MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF] = data;
             }
         }
 
@@ -78,10 +79,13 @@ namespace VirtualNes.Core
 
         public static Mapper CreateMapper(NES parent, int no)
         {
+            //todo : 实现加载mapper
             switch (no)
             {
+                case 4:
+                    return new Mapper004(parent);
                 default:
-                    throw new NotImplementedException($"Mapper#{no} is not Impl");
+                    throw new NotImplementedException($"Mapper#{no:000} is not Impl");
             }
         }
     }

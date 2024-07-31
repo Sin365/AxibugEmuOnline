@@ -330,7 +330,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private void SetExController(EXCONTROLLER type)
+        internal void SetExController(EXCONTROLLER type)
         {
             excontroller_select = (int)type;
 
@@ -403,6 +403,42 @@ namespace VirtualNes.Core
             {
                 expad.Reset();
             }
+        }
+
+        internal bool IsZapperMode()
+        {
+            return bZapperMode;
+        }
+
+        internal void VSync()
+        {
+            padbitsync[0] = padbit[0];
+            padbitsync[1] = padbit[1];
+            padbitsync[2] = padbit[2];
+            padbitsync[3] = padbit[3];
+            micbitsync = micbit;
+        }
+
+        internal uint GetSyncData()
+        {
+            uint ret;
+            ret = (uint)(padbit[0] | (padbit[1] << 8) | (padbit[2] << 16) | (padbit[3] << 24));
+            ret |= (uint)(micbit << 8);
+            return ret;
+        }
+
+        internal void SetSyncData(uint data)
+        {
+            micbit = (byte)((data & 0x00000400) >> 8);
+            padbit[0] = (byte)data;
+            padbit[1] = (byte)(data >> 8);
+            padbit[2] = (byte)(data >> 16);
+            padbit[3] = (byte)(data >> 24);
+        }
+
+        internal int GetExController()
+        {
+            return excontroller_select;
         }
     }
 

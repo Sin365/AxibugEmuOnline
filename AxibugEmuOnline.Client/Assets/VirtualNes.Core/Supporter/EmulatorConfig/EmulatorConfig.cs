@@ -17,4 +17,35 @@
         public CfgExtraSound extsound { get; private set; } = new CfgExtraSound();
         public CfgNetPlay netplay { get; private set; } = new CfgNetPlay();
     }
+
+    public static class GameOption
+    {
+        // Default保存
+        public static int defRenderMethod;
+        public static int defIRQtype;
+        public static bool defFrameIRQ;
+        public static bool defVideoMode;
+
+        // データ
+        public static int nRenderMethod;
+        public static int nIRQtype;
+        public static bool bFrameIRQ;
+        public static bool bVideoMode;
+
+        public static void Load(uint crc)
+        {
+            nRenderMethod = defRenderMethod;
+            nIRQtype = defIRQtype;
+            bFrameIRQ = defFrameIRQ;
+            bVideoMode = defVideoMode;
+        }
+
+        public static void Load(uint gid, uint mid)
+        {
+            nRenderMethod = defRenderMethod;
+            nIRQtype = defIRQtype;
+            bFrameIRQ = defFrameIRQ;
+            bVideoMode = defVideoMode;
+        }
+    }
 }
