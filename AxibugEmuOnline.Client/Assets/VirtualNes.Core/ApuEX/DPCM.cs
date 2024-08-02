@@ -12,7 +12,7 @@
         public int phaseacc;
         public int output;
 
-        ushort address, cache_addr;
+        public ushort address, cache_addr;
         public int dmalength, cache_dmalength;
         public int dpcm_output_real, dpcm_output_fake, dpcm_output_old, dpcm_output_offset;
 

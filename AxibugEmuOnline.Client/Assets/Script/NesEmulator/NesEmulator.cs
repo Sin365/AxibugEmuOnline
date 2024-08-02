@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using UnityEngine;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
@@ -11,6 +10,7 @@ namespace AxibugEmuOnline.Client
         private NES m_nesIns;
 
         public VideoProvider VideoProvider;
+        public AudioProvider AudioProvider;
 
         private void Start()
         {
@@ -51,8 +51,9 @@ namespace AxibugEmuOnline.Client
 
                 var screenBuffer = m_nesIns.ppu.GetScreenPtr();
                 var lineColorMode = m_nesIns.ppu.GetLineColorMode();
-
                 VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
+
+                AudioProvider.ProcessSound(m_nesIns);
             }
         }
     }
