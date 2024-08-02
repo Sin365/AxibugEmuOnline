@@ -6,7 +6,23 @@
         private int m_offset;
         private int m_length;
 
+        public int Offset
+        {
+            get => m_offset;
+            set
+            {
+                var gap = value - m_offset;
+                m_length -= gap;
+            }
+        }
+
+        public ByteArrayRef() { }
         public ByteArrayRef(byte[] array, int offset, int length)
+        {
+            SetArray(array, offset, length);
+        }
+
+        public void SetArray(byte[] array, int offset, int length)
         {
             m_rawArray = array;
             m_offset = offset;

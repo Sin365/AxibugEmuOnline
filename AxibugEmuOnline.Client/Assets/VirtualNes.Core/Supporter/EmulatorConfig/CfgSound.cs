@@ -3,7 +3,7 @@
     public class CfgSound
     {
         public bool bEnable { get; set; } = true;
-        public int nRate { get; set; } = 22050;
+        public int nRate { get; set; } = 48000;
         public int nBits { get; set; } = 8;
         public int nBufferSize { get; set; } = 4;
         public int nFilterType { get; set; } = 0;
