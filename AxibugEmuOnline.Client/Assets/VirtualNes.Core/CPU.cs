@@ -45,7 +45,7 @@ namespace VirtualNes.Core
         private APU apu;
         internal R6502 R = new R6502();
         private byte[] ZN_Table = new byte[256];
-        private Memory<byte> STACK;
+        private ByteArrayRef STACK;
 
         public CPU(NES parent)
         {
@@ -1361,12 +1361,12 @@ namespace VirtualNes.Core
 
         private byte POP()
         {
-            return STACK.Span[(++R.S) & 0xFF];
+            return STACK[(++R.S) & 0xFF];
         }
 
         private void PUSH(byte V)
         {
-            STACK.Span[(R.S--) & 0xFF] = V;
+            STACK[(R.S--) & 0xFF] = V;
         }
 
         private void SEI()
@@ -2010,7 +2010,7 @@ namespace VirtualNes.Core
             DMA_cycles = 0;
 
             // STACK quick access
-            STACK = new Memory<byte>(MMU.RAM, 0x0100, MMU.RAM.Length - 0x100);
+            STACK = new ByteArrayRef(MMU.RAM, 0x0100, MMU.RAM.Length - 0x100);
 
             // Zero/Negative FLAG
             ZN_Table[0] = Z_FLAG;

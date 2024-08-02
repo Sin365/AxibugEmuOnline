@@ -14,6 +14,7 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
+            Application.targetFrameRate = 60;
             StartGame("Kirby.nes");
         }
 
