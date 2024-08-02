@@ -9,6 +9,10 @@ namespace VirtualNes.Core
         {
             Array.Clear(array, 0, array.Length);
         }
+        public static void ZEROMEMORY(int[] array, int length)
+        {
+            Array.Clear(array, 0, array.Length);
+        }
 
         public static void memset(byte[] array, byte value, int length)
         {
