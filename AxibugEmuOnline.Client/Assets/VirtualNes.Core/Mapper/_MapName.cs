@@ -8,13 +8,13 @@ namespace VirtualNes.Core
 {
     public class _MapName : Mapper
     {
-        public _MapName(NES parent) : base(parent)
+		public _MapName(NES parent) : base(parent)
         {
         }
 
         public override void Reset()
-        { 
-        }
+		{
+		}
 
-    }
+	}
 }
