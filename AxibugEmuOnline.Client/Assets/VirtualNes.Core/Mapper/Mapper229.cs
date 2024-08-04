@@ -15,8 +15,9 @@ namespace VirtualNes.Core
         public Mapper229(NES parent) : base(parent)
         {
         }
-        public override void Read(ushort addr, byte data)
-        {
+
+		public override void Reset()
+		{
             SetPROM_32K_Bank(0);
             SetVROM_8K_Bank(0);
         }
