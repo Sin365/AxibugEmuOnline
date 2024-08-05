@@ -401,6 +401,11 @@ namespace VirtualNes.Core
         {
             return path;
         }
+
+        internal uint GetVROM_CRC()
+        {
+            return crcvrom;
+        }
     }
 
 

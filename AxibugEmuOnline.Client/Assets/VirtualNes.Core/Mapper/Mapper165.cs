@@ -41,7 +41,7 @@ namespace VirtualNes.Core
 
             we_sram = 0;    // Disable
 
-            nes->ppu->SetChrLatchMode(TRUE);
+            nes.ppu.SetChrLatchMode(true);
         }
 
         //void Mapper165::Write(WORD addr, BYTE data)

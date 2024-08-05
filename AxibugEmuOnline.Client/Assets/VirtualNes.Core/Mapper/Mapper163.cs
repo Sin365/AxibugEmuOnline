@@ -37,7 +37,8 @@ namespace VirtualNes.Core
 				rom_type = 1;
 			}
 			*/
-			memset(reg, 0, 8);
+
+			MemoryUtility.ZEROMEMORY(reg, reg.Length);
 			laststrobe = 1;
 			SetPROM_32K_Bank((reg[0] << 4) | (reg[1] & 0xF));
 			//SetPROM_32K_Bank(0);

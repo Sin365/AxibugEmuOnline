@@ -502,6 +502,35 @@ namespace VirtualNes.Core
                 Debuger.LogError("exqueue overflow.");
             }
         }
+
+        internal byte ExRead(ushort addr)
+        {
+            byte data = 0;
+
+            if ((exsound_select & 0x10) != 0)
+            {
+                if (addr == 0x4800)
+                {
+                    SetExQueue(nes.cpu.GetTotalCycles(), 0, 0);
+                }
+            }
+            if ((exsound_select & 0x04) != 0)
+            {
+                if (addr >= 0x4040 && addr < 0x4100)
+                {
+                    data = fds.SyncRead(addr);
+                }
+            }
+            if ((exsound_select & 0x08) != 0)
+            {
+                if (addr >= 0x5000 && addr <= 0x5015)
+                {
+                    data = mmc5.SyncRead(addr);
+                }
+            }
+
+            return data;
+        }
     }
 
     public struct QUEUEDATA

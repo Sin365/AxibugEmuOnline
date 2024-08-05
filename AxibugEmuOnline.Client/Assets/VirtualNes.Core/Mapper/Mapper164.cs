@@ -7,6 +7,7 @@ using INT = System.Int32;
 using BYTE = System.Byte;
 using System;
 using Codice.CM.Client.Differences;
+using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
 {
@@ -20,13 +21,12 @@ namespace VirtualNes.Core
         }
 
         public override void Reset()
-
         {
             reg5000 = 0;
             reg5100 = 0;
             SetBank_CPU();
             SetBank_PPU();
-            nes.ppu.SetExtLatchMode(TRUE);
+            nes.ppu.SetExtLatchMode(true);
         }
 
         //void Mapper164::WriteLow(WORD addr, BYTE data)
@@ -51,7 +51,7 @@ namespace VirtualNes.Core
             }
             else
             {
-                DEBUGOUT("write to %04x:%02x\n", addr, data);
+                Debuger.Log($"write to {addr:X4}:{data:X2}");
             }
 
         }
@@ -74,11 +74,11 @@ namespace VirtualNes.Core
                     bank += (reg5000 & 0x20) >> 1;
                     SetPROM_16K_Bank(4, bank + @base);
                     SetPROM_16K_Bank(6, @base + 0x1f);
-                    DEBUGOUT("-- normal mode: mode=%d, bank=%d --\n", mode, bank);
+                    Debuger.Log($"-- normal mode: mode={mode}, bank={bank} --");
                     break;
                 case 1:
                 case 3:             /* REG MODE */
-                    DEBUGOUT("-- reg mode --\n");
+                    Debuger.Log("-- reg mode --");
                     break;
                 case 5:             /* 32K MODE */
                     bank = (reg5000 & 0x0f);
@@ -91,7 +91,7 @@ namespace VirtualNes.Core
                     SetPROM_16K_Bank(4, bank + @base);
                     bank = (bank & 0x10) + 0x0f;
                     SetPROM_16K_Bank(6, @base + 0x1f);
-                    DEBUGOUT("-- half mode --\n");
+                    Debuger.Log("-- half mode --");
                     break;
                 default:
                     break;
@@ -116,18 +116,19 @@ namespace VirtualNes.Core
         {
             INT loopy_v = nes.ppu.GetPPUADDR();
             INT loopy_y = nes.ppu.GetTILEY();
-            INT tileofs = (PPUREG[0] & PPU_BGTBL_BIT) << 8;
+            INT tileofs = (PPUREG[0] & PPU.PPU_BGTBL_BIT) << 8;
             INT attradr = 0x23C0 + (loopy_v & 0x0C00) + ((loopy_v & 0x0380) >> 4);
             INT attrsft = (ntbladr & 0x0040) >> 4;
-            LPBYTE pNTBL = PPU_MEM_BANK[ntbladr >> 10];
+            Span<byte> pNTBL = PPU_MEM_BANK[ntbladr >> 10];
+
             INT ntbl_x = ntbladr & 0x001F;
             INT tileadr;
 
             attradr &= 0x3FF;
-            attr = ((pNTBL[attradr + (ntbl_x >> 2)] >> ((ntbl_x & 2) + attrsft)) & 3) << 2;
+            attr = (byte)(((pNTBL[attradr + (ntbl_x >> 2)] >> ((ntbl_x & 2) + attrsft)) & 3) << 2);
             tileadr = tileofs + pNTBL[ntbladr & 0x03FF] * 0x10 + loopy_y;
 
-            if (p_mode)
+            if (p_mode != 0)
             {
                 tileadr = (tileadr & 0xfff7) | a3;
                 chr_l = chr_h = PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
