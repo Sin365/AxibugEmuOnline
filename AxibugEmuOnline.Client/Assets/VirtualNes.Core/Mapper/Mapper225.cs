@@ -20,7 +20,7 @@ namespace VirtualNes.Core
         {
             SetPROM_32K_Bank(0, 1, 2, 3);
 
-            if (VROM_1K_SIZE)
+            if (VROM_1K_SIZE != 0)
             {
                 SetVROM_8K_Bank(0);
             }
