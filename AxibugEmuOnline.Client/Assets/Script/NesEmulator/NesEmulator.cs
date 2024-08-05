@@ -1,4 +1,6 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System;
+using System.Xml.Linq;
 using UnityEngine;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
@@ -56,5 +58,29 @@ namespace AxibugEmuOnline.Client
                 AudioProvider.ProcessSound(m_nesIns);
             }
         }
+
+#if UNITY_EDITOR
+        [ContextMenu("IMPORT")]
+        public void TTTA()
+        {
+            var db = Resources.Load<RomDB>("NES/ROMDB");
+            db.Clear();
+
+            var dbFile = Resources.Load<TextAsset>("NES/nes20db");
+            var xml = XDocument.Parse(dbFile.text);
+            var games = xml.Element("nes20db").Elements("game");
+            foreach (var game in games)
+            {
+                var crcStr = game.Element("rom").Attribute("crc32").Value;
+                var crc = uint.Parse($"{crcStr}", System.Globalization.NumberStyles.HexNumber);
+
+                var mapper = int.Parse($"{game.Element("pcb").Attribute("mapper").Value}");
+
+                db.AddInfo(new RomDB.RomInfo { CRC = crc, Mapper = mapper });
+            }
+
+            UnityEditor.AssetDatabase.SaveAssets();
+        }
+#endif
     }
 }

@@ -244,6 +244,11 @@ namespace VirtualNes.Core
 
                         FileNameCheck(fname);
 
+                        if (Supporter.TryGetMapperNo(this, out int mapperNo))
+                        {
+                            mapper = mapperNo;
+                        }
+
                         RomPatch.DoPatch(ref crc, ref lpPRG, ref lpCHR, ref mapper, ref header);
 
                         fdsmakerID = fdsgameID = 0;
@@ -362,7 +367,7 @@ namespace VirtualNes.Core
             return (header.control2 & (byte)EnumRomControlByte2.ROM_VSUNISYSTEM) != 0;
         }
 
-        internal uint GetPROM_CRC()
+        public uint GetPROM_CRC()
         {
             return crc;
         }
