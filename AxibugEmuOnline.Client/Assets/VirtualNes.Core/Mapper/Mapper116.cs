@@ -7,6 +7,7 @@ using INT = System.Int32;
 using BYTE = System.Byte;
 using System;
 using Codice.CM.Client.Differences;
+using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
 {
@@ -73,7 +74,7 @@ namespace VirtualNes.Core
         //void Mapper116::WriteLow(WORD addr, BYTE data)
         public override void WriteLow(ushort addr, byte data)
         {
-            DEBUGOUT("MPRWR A=%04X D=%02X L=%3d CYC=%d\n", addr & 0xFFFF, data & 0xFF, nes.GetScanline(), nes.cpu.GetTotalCycles());
+            Debuger.Log($"MPRWR A={addr & 0xFFFF:X4} D={data & 0xFF:X2} L={nes.GetScanline(),3} CYC={nes.cpu.GetTotalCycles()}");
             if ((addr & 0x4100) == 0x4100)
             {
                 ExChrSwitch = data;
@@ -84,7 +85,7 @@ namespace VirtualNes.Core
         //void Mapper116::Write(WORD addr, BYTE data)
         public override void Write(ushort addr, byte data)
         {
-            DEBUGOUT("MPRWR A=%04X D=%02X L=%3d CYC=%d\n", addr & 0xFFFF, data & 0xFF, nes.GetScanline(), nes.cpu.GetTotalCycles());
+            Debuger.Log($"MPRWR A={addr & 0xFFFF:X4} D={data & 0xFF:X2} L={nes.GetScanline(),3} CYC={nes.cpu.GetTotalCycles()}");
 
             switch (addr & 0xE001)
             {
