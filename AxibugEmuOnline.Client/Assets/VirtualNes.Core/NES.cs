@@ -247,8 +247,8 @@ namespace VirtualNes.Core
                 Debuger.Log($"Mapper        : #{rom.GetMapperNo():D3}");
                 Debuger.Log($"PROM-CRC      : #{rom.GetPROM_CRC():X2}");
                 Debuger.Log($"VROM-CRC      : #{rom.GetVROM_CRC():X2}");
-                Debuger.Log($"PRG SIZE      : {16 * rom.GetPROM_SIZE():4:0000}K");
-                Debuger.Log($"CHR SIZE      : {8 * rom.GetVROM_SIZE():4:0000}K");
+                Debuger.Log($"PRG SIZE      : {16 * rom.GetPROM_SIZE():0000}K");
+                Debuger.Log($"CHR SIZE      : {8 * rom.GetVROM_SIZE():0000}K");
 
                 Debuger.Log($"V MIRROR      :{rom.IsVMIRROR()}");
                 Debuger.Log($"4 SCREEN      :{rom.Is4SCREEN()}");
