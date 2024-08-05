@@ -96,7 +96,6 @@ namespace VirtualNes.Core
 				case 11: return new Mapper011(parent);
 				case 12: return new Mapper012(parent);
 				case 13: return new Mapper013(parent);
-				//case 14: return new Mapper014(parent);
 				case 15: return new Mapper015(parent);
 				case 16: return new Mapper016(parent);
                 case 17: return new Mapper017(parent);
@@ -112,7 +111,7 @@ namespace VirtualNes.Core
                 case 32: return new Mapper032(parent);
                 case 33: return new Mapper033(parent);
                 case 34: return new Mapper034(parent);
-                //case 35: return new Mapper035(parent);
+                case 35: return new Mapper035(parent);
                 case 40: return new Mapper040(parent);
                 case 41: return new Mapper041(parent);
                 case 42: return new Mapper042(parent);
@@ -168,7 +167,7 @@ namespace VirtualNes.Core
                 case 108: return new Mapper108(parent);
                 case 109: return new Mapper109(parent);
                 case 110: return new Mapper110(parent);
-                //case 111: return new Mapper111(parent);
+                case 111: return new Mapper111(parent);
                 case 112: return new Mapper112(parent);
                 case 113: return new Mapper113(parent);
                 case 114: return new Mapper114(parent);
