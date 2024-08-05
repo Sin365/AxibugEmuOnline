@@ -81,9 +81,24 @@ namespace VirtualNes.Core
         {
             //todo : 实现加载mapper
             switch (no)
-            {
-                case 4: return new Mapper004(parent);
-                case 16: return new Mapper016(parent);
+			{
+				case 0: return new Mapper000(parent);
+				case 1: return new Mapper001(parent);
+				case 2: return new Mapper002(parent);
+				case 3: return new Mapper003(parent);
+				case 4: return new Mapper004(parent);
+				case 5: return new Mapper005(parent);
+				case 6: return new Mapper006(parent);
+				case 7: return new Mapper007(parent);
+				case 8: return new Mapper008(parent);
+				case 9: return new Mapper009(parent);
+				case 10: return new Mapper010(parent);
+				case 11: return new Mapper011(parent);
+				case 12: return new Mapper012(parent);
+				case 13: return new Mapper013(parent);
+				//case 14: return new Mapper014(parent);
+				case 15: return new Mapper015(parent);
+				case 16: return new Mapper016(parent);
                 case 17: return new Mapper017(parent);
                 case 18: return new Mapper018(parent);
                 case 19: return new Mapper019(parent);
@@ -97,7 +112,7 @@ namespace VirtualNes.Core
                 case 32: return new Mapper032(parent);
                 case 33: return new Mapper033(parent);
                 case 34: return new Mapper034(parent);
-                case 35: return new Mapper035(parent);
+                //case 35: return new Mapper035(parent);
                 case 40: return new Mapper040(parent);
                 case 41: return new Mapper041(parent);
                 case 42: return new Mapper042(parent);
@@ -153,7 +168,7 @@ namespace VirtualNes.Core
                 case 108: return new Mapper108(parent);
                 case 109: return new Mapper109(parent);
                 case 110: return new Mapper110(parent);
-                case 111: return new Mapper111(parent);
+                //case 111: return new Mapper111(parent);
                 case 112: return new Mapper112(parent);
                 case 113: return new Mapper113(parent);
                 case 114: return new Mapper114(parent);
