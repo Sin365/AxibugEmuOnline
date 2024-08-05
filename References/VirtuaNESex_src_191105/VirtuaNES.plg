@@ -1,0 +1,124 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: VirtuaNES - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\yefeng\AppData\Local\Temp\RSPBAC.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /I "Zlib" /I "." /I "NES" /I "NES\Mapper" /I "NES\ApuEx" /I "NES\ApuEx\emu2413" /I "NES\PadEx" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Release/" /Fp"Release/VirtuaNES.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"E:\Game\NES\Emulator\VirtuaNESex_src_chen\AboutDlg.cpp"
+]
+Creating command line "cl.exe @C:\Users\yefeng\AppData\Local\Temp\RSPBAC.tmp" 
+Creating temporary file "C:\Users\yefeng\AppData\Local\Temp\RSPBAD.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib comctl32.lib imm32.lib dinput.lib shlwapi.lib /nologo /subsystem:windows /incremental:no /pdb:"VirtuaNESex.pdb" /map:"Release/VirtuaNESex.map" /machine:I386 /out:"Release\VirtuaNESex.exe" 
+.\Release\AboutDlg.obj
+.\Release\App.obj
+.\Release\Archive.obj
+.\Release\ChatDlg.obj
+.\Release\CheatDlg.obj
+.\Release\Com.obj
+.\Release\Config.obj
+.\Release\ControllerDlg.obj
+.\Release\Crclib.obj
+.\Release\DatachBarcodeDlg.obj
+.\Release\DebugOut.obj
+.\Release\DipSwitchDlg.obj
+.\Release\DirectDraw.obj
+.\Release\DirectInput.obj
+.\Release\DirectSound.obj
+.\Release\EmulatorDlg.obj
+.\Release\EmuThread.obj
+.\Release\FolderDlg.obj
+.\Release\GameOptionDlg.obj
+.\Release\GraphicsDlg.obj
+.\Release\JoyAxisDlg.obj
+.\Release\LanguageDlg.obj
+.\Release\LauncherDlg.obj
+.\Release\MainFrame.obj
+.\Release\MemoryView.obj
+.\Release\MMTimer.obj
+.\Release\MovieDlg.obj
+.\Release\MovieInfoDlg.obj
+.\Release\NameTableView.obj
+.\Release\NetPlay.obj
+.\Release\NetPlayDlg.obj
+.\Release\PaletteEdit.obj
+.\Release\PaletteView.obj
+.\Release\Pathlib.obj
+.\Release\PatternView.obj
+.\Release\Plugin.obj
+.\Release\Recent.obj
+.\Release\Registry.obj
+.\Release\RomInfoDlg.obj
+.\Release\ShortcutDlg.obj
+.\Release\SimpleVirusChecker.obj
+.\Release\SoundDlg.obj
+.\Release\WaveRec.obj
+.\Release\WinMain.obj
+.\Release\Wnd.obj
+.\Release\WndHook.obj
+.\Release\Mapper.obj
+.\Release\MapperFactory.obj
+.\Release\emu2413.obj
+.\Release\APU_FDS.obj
+.\Release\APU_FME7.obj
+.\Release\APU_INTERNAL.obj
+.\Release\APU_MMC5.obj
+.\Release\APU_N106.obj
+.\Release\APU_VRC6.obj
+.\Release\APU_VRC7.obj
+.\Release\APU.obj
+.\Release\Cpu.obj
+.\Release\MMU.obj
+.\Release\Nes.obj
+.\Release\PAD.obj
+.\Release\PPU.obj
+.\Release\ROM.obj
+.\Release\ROMDB.obj
+.\Release\VsUnisystem.obj
+.\Release\unzip.obj
+.\Release\7zAlloc.obj
+.\Release\7zBuf.obj
+.\Release\7zCrc.obj
+.\Release\7zCrcOpt.obj
+.\Release\7zDec.obj
+.\Release\7zFile.obj
+.\Release\7zIn.obj
+.\Release\7zMain.obj
+.\Release\7zStream.obj
+.\Release\Bcj2.obj
+.\Release\Bra.obj
+.\Release\Bra86.obj
+.\Release\CpuArch.obj
+.\Release\Lzma2Dec.obj
+.\Release\LzmaDec.obj
+.\Release\Ppmd7.obj
+.\Release\Ppmd7Dec.obj
+.\Release\VirtuaNES.res
+.\zlib\zlib.lib
+]
+Creating command line "link.exe @C:\Users\yefeng\AppData\Local\Temp\RSPBAD.tmp"
+<h3>Output Window</h3>
+Compiling...
+AboutDlg.cpp
+Linking...
+Creating temporary file "C:\Users\yefeng\AppData\Local\Temp\RSPE1F.bat" with contents
+[
+@echo off
+.\rebuidFiles.bat
+]
+Creating command line "C:\Users\yefeng\AppData\Local\Temp\RSPE1F.bat"
+
+" --- del AboutDlg.obj ---"
+
+
+
+<h3>Results</h3>
+VirtuaNESex.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
