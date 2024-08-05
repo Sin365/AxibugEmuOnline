@@ -9,9 +9,9 @@ using System;
 
 namespace VirtualNes.Core
 {
-	public class _MapName : Mapper
+	public class Mapper107 : Mapper
 	{
-		public _MapName(NES parent) : base(parent)
+		public Mapper107(NES parent) : base(parent)
 		{
 		}
 

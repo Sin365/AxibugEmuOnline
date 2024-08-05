@@ -1,4 +1,6 @@
-﻿namespace VirtualNes.Core
+﻿using System;
+
+namespace VirtualNes.Core
 {
     public class ByteArrayRef
     {
@@ -22,6 +24,9 @@
             SetArray(array, offset, length);
         }
 
+        public ByteArrayRef(byte[] array) : this(array, 0, array.Length) { }
+        public ByteArrayRef(byte[] array, int offset) : this(array, offset, array.Length - offset) { }
+
         public void SetArray(byte[] array, int offset, int length)
         {
             m_rawArray = array;
@@ -39,6 +44,16 @@
             {
                 m_rawArray[(m_offset + index)] = value;
             }
+        }
+
+        public static implicit operator ByteArrayRef(byte[] array)
+        {
+            return new ByteArrayRef(array);
+        }
+
+        public static implicit operator Span<byte>(ByteArrayRef array)
+        {
+            return new Span<byte>(array.m_rawArray, array.Offset, array.m_length);
         }
     }
 }

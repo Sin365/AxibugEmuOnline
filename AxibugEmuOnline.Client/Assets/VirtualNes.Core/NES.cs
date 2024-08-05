@@ -324,7 +324,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private int GetIrqType()
+        internal int GetIrqType()
         {
             return nIRQtype;
         }
@@ -1666,6 +1666,16 @@ namespace VirtualNes.Core
         internal int GetScanline()
         {
             return NES_scanline;
+        }
+
+        internal void SetSAVERAM_SIZE(int size)
+        {
+            SAVERAM_SIZE = size;
+        }
+
+        internal byte GetBarcodeStatus()
+        {
+            return m_BarcodeOut;
         }
 
         public enum IRQMETHOD

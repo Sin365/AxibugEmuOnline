@@ -28,7 +28,7 @@ namespace VirtualNes.Core
 		{
 			addrmask = 0xFFFF;
 
-			for (INT i = 0; i < 8; i++)
+			for (byte i = 0; i < 8; i++)
 			{
 				reg[i] = i;
 			}

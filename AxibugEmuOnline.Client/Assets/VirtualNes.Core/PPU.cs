@@ -1,4 +1,6 @@
-﻿namespace VirtualNes.Core
+﻿using System;
+
+namespace VirtualNes.Core
 {
     public class PPU
     {
@@ -1123,6 +1125,26 @@
         internal bool IsDispON()
         {
             return (MMU.PPUREG[1] & (PPU_BGDISP_BIT | PPU_SPDISP_BIT)) != 0;
+        }
+
+        internal void SetExtLatchMode(bool bMode)
+        {
+            bExtLatch = bMode;
+        }
+
+        internal ushort GetPPUADDR()
+        {
+            return MMU.loopy_v;
+        }
+
+        internal ushort GetTILEY()
+        {
+            return loopy_y;
+        }
+
+        internal void SetChrLatchMode(bool bMode)
+        {
+            bChrLatch = bMode;
         }
 
         public struct Sprite
