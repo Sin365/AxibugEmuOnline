@@ -38,7 +38,8 @@ namespace VirtualNes.Core
 			 || crc == 0xCEB65B06)
 			{   // Battletoads Double Dragon (U)
 				nes.SetRenderMethod( EnumRenderMethod.PRE_ALL_RENDER);
-		::memset(WRAM, 0, sizeof(WRAM));
+				//::memset(WRAM, 0, sizeof(WRAM));
+				MemoryUtility.ZEROMEMORY(WRAM, WRAM.Length);
 			}
 		}
 
