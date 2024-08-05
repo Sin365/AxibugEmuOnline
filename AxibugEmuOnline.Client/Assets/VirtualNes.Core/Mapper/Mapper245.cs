@@ -1,12 +1,10 @@
 ﻿//////////////////////////////////////////////////////////////
 // Mapper245  Yong Zhe Dou E Long                                       //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
 
 namespace VirtualNes.Core
 {
@@ -136,7 +134,7 @@ namespace VirtualNes.Core
             {
                 if (nes.ppu.IsDispON())
                 {
-                    if (irq_enable != 0&& irq_request == 0)
+                    if (irq_enable != 0 && irq_request == 0)
                     {
                         if (scanline == 0)
                         {
@@ -166,9 +164,9 @@ namespace VirtualNes.Core
 
         void SetBank_PPU()
         {
-            if ((VROM_1K_SIZE)!= 0)
+            if ((VROM_1K_SIZE) != 0)
             {
-                if (((reg[0] & 0x80) !+ 0) != 0)
+                if (((reg[0] & 0x80)! + 0) != 0)
                 {
                     SetVROM_8K_Bank(chr4, chr5, chr6, chr7,
                              chr23 + 1, chr23, chr01 + 1, chr01);
@@ -215,7 +213,7 @@ namespace VirtualNes.Core
         //void Mapper245::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-                     //for (INT i = 0; i < 8; i++)
+            //for (INT i = 0; i < 8; i++)
             //{
             //    p[i] = reg[i];
             //}
