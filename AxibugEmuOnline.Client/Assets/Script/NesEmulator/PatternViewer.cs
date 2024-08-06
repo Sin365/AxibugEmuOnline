@@ -24,6 +24,16 @@ namespace AxibugEmuOnline.Client
             Paint();
         }
 
+        private void OnEnable()
+        {
+            img.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            img.gameObject.SetActive(false);
+        }
+
         public void Paint()
         {
             img.texture = m_texture;
