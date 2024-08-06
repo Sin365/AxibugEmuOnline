@@ -437,8 +437,6 @@ namespace VirtualNes.Core
             }
         }
 
-
-
         private byte SyncSub(int no, ControllerState state)
         {
             ushort bit = 0;

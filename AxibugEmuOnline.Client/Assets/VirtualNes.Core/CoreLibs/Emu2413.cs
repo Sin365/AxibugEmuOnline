@@ -80,10 +80,36 @@ namespace VirtualNes.Core
         public UInt32 noiseB_idx;
         public UInt32 noiseA_dphase;
         public UInt32 noiseB_dphase;
+
+        public int masterVolume; /* 0min -- 64 -- 127 max (Liner) */
     }
 
     public static class Emu2413API
     {
+        /* Bits for Pitch and Amp modulator */
+        public const int PM_PG_BITS = 8;
+        public const int PM_PG_WIDTH = 1 << PM_PG_BITS;
+        public const int PM_DP_BITS = 16;
+        public const int PM_DP_WIDTH = (1 << PM_DP_BITS);
+        public const int AM_PG_BITS = 8;
+        public const int AM_PG_WIDTH = (1 << AM_PG_BITS);
+        public const int AM_DP_BITS = 16;
+        public const int AM_DP_WIDTH = (1 << AM_DP_BITS);
+
+        /* PM table is calcurated by PM_AMP * pow(2,PM_DEPTH*sin(x)/1200) */
+        public const int PM_AMP_BITS = 8;
+        public const int PM_AMP = (1 << PM_AMP_BITS);
+
+        /* PM speed(Hz) and depth(cent) */
+        public const double PM_SPEED = 6.4d;
+        public const double PM_DEPTH = 13.75d;
+
+        public const int OPLL_2413_TONE = 0;
+        public const int OPLL_VRC7_TONE = 1;
+
+        static int[] pmtable = new int[PM_PG_WIDTH];
+        static int[] amtable = new int[AM_PG_WIDTH];
+
         public static void OPLL_init(UInt32 c, UInt32 r)
         {
             makePmTable();
@@ -97,7 +123,7 @@ namespace VirtualNes.Core
             OPLL_setClock(c, r);
         }
 
-        private static void OPLL_setClock(uint c, uint r)
+        internal static void OPLL_setClock(uint c, uint r)
         {
             throw new NotImplementedException();
         }
@@ -138,6 +164,39 @@ namespace VirtualNes.Core
         }
 
         private static void makePmTable()
+        {
+            int i;
+
+            for (i = 0; i < PM_PG_WIDTH; i++)
+                pmtable[i] = (int)(PM_AMP * Math.Pow(2, PM_DEPTH * Math.Sin(2.0 * Math.PI * i / PM_PG_WIDTH) / 1200));
+        }
+
+        internal static OPLL OPLL_new()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void OPLL_reset(OPLL vRC7_OPLL)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void OPLL_reset_patch(OPLL vRC7_OPLL, int oPLL_VRC7_TONE)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void OPLL_delete(OPLL vRC7_OPLL)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void OPLL_writeReg(OPLL opll, UInt32 reg, UInt32 data)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static int OPLL_calc(OPLL opll)
         {
             throw new NotImplementedException();
         }

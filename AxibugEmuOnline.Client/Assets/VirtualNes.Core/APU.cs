@@ -60,7 +60,16 @@ namespace VirtualNes.Core
                 m_bMute[i] = true;
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            @internal.Dispose();
+            vrc6.Dispose();
+            vrc7.Dispose();
+            mmc5.Dispose();
+            fds.Dispose();
+            n106.Dispose();
+            fme7.Dispose();
+        }
 
         private int[] vol = new int[24];
         static double cutofftemp = (2.0 * 3.141592653579 * 40.0);
