@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4785916497946256520}
   - component: {fileID: 9003897287163669553}
-  - component: {fileID: 7558824780418593440}
+  - component: {fileID: 8726979175317618791}
   m_Layer: 0
   m_Name: AudioProvider
   m_TagString: Untagged
@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a09b6a4cf4c2d4f994a13fd7e89d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_as: {fileID: 7558824780418593440}
---- !u!82 &7558824780418593440
+  m_as: {fileID: 8726979175317618791}
+--- !u!82 &8726979175317618791
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1038087993597378172
 RectTransform:
   m_ObjectHideFlags: 0
@@ -407,6 +407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VideoProvider: {fileID: 4232056520112715744}
   AudioProvider: {fileID: 9003897287163669553}
+  RomName: 
 --- !u!1 &4232056521759880276
 GameObject:
   m_ObjectHideFlags: 0
@@ -495,7 +496,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &393435831810118449
 Transform:
   m_ObjectHideFlags: 0

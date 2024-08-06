@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
@@ -8,12 +6,13 @@ namespace AxibugEmuOnline.Client
 
     public class AudioProvider : MonoBehaviour
     {
+        public NesEmulator NesEmu;
+
         [SerializeField]
         private AudioSource m_as;
 
         private SoundBuffer _buffer = new SoundBuffer(4096);
-
-        public void Initialize()
+        public void Start()
         {
             var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
 
@@ -28,7 +27,9 @@ namespace AxibugEmuOnline.Client
         {
             int step = channels;
 
-            var bufferCount = _buffer.Available();
+            if (NesEmu == null || NesEmu.NesCore == null) return;
+
+            ProcessSound(NesEmu.NesCore, (uint)(data.Length / channels));
 
             for (int i = 0; i < data.Length; i += step)
             {
@@ -43,9 +44,9 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void ProcessSound(NES nes)
+        void ProcessSound(NES nes, uint feedCount)
         {
-            nes.apu.Process(_buffer, (uint)(Supporter.Config.sound.nRate * Time.deltaTime));
+            nes.apu.Process(_buffer, feedCount);
         }
     }
 
