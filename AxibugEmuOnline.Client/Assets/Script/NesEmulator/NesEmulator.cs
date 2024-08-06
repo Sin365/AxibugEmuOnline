@@ -57,6 +57,8 @@ namespace AxibugEmuOnline.Client
         {
             if (NesCore != null)
             {
+                var controlState = Supporter.GetControllerState();
+                NesCore.pad.Sync(controlState);
                 NesCore.EmulateFrame(true);
 
                 var screenBuffer = NesCore.ppu.GetScreenPtr();

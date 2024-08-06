@@ -98,5 +98,11 @@ namespace AxibugEmuOnline.Client
             var db = Resources.Load<RomDB>("NES/ROMDB");
             return db.GetMapperNo(rom.GetPROM_CRC(), out mapperNo);
         }
+
+        public ControllerState GetControllerState()
+        {
+            var mapper = Resources.Load<NesControllerMapper>("NES/ControlSettings");
+            return mapper.CreateState();
+        }
     }
 }
