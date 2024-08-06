@@ -1,9 +1,7 @@
-using AxibugEmuOnline.Client.Assets.Script.NesEmulator;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {

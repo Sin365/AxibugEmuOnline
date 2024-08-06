@@ -78,6 +78,13 @@ namespace VirtualNes
             CPU_MEM_PAGE[page] = 0;
         }
 
+        internal static void SetPROM_Bank(byte page, ByteArrayRef ptr, byte type)
+        {
+            CPU_MEM_BANK[page] = ptr;
+            CPU_MEM_TYPE[page] = type;
+            CPU_MEM_PAGE[page] = 0;
+        }
+
         internal static void SetPROM_8K_Bank(byte page, int bank)
         {
             bank %= PROM_8K_SIZE;
