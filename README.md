@@ -93,7 +93,7 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 
 追加了特殊的失传Mapper 35,111,162,163,175,176,178,192,195,199,216 (from https://github.com/yamanyandakure/VirtuaNES097)
 
-后续补充二次，修正 Mapper199 参照叶枫VirtuaNESex_src(20191105)
+后续补充二次，修正 Mapper163 175 176 178 192 199 参照叶枫VirtuaNESex_src(20191105)
 
 
 
