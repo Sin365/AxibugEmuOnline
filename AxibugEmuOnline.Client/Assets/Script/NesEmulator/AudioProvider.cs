@@ -3,7 +3,6 @@ using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
-
     public class AudioProvider : MonoBehaviour
     {
         public NesEmulator NesEmu;
@@ -40,7 +39,6 @@ namespace AxibugEmuOnline.Client
                 data[i] = rawFloat;
                 for (int fill = 1; fill < step; fill++)
                     data[i + fill] = rawFloat;
-
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Codice.CM.Client.Differences;
 using System;
+using System.Collections.Generic;
 
 namespace VirtualNes.Core
 {
@@ -24,6 +25,19 @@ namespace VirtualNes.Core
         };
 
         public uint pad1bit, pad2bit, pad3bit, pad4bit;
+
+        private static int[] ren10fps = new int[6] { 1, 1, 1, 0, 0, 0 };
+        private static int[] ren15fps = new int[4] { 1, 1, 0, 0 };
+        private static int[] ren20fps = new int[3] { 1, 1, 0 };
+        private static int[] ren30fps = new int[2] { 1, 0 };
+        private static int[] renmask = new int[4] { 6, 4, 3, 2 };
+        public static Dictionary<int, int[]> rentbl = new Dictionary<int, int[]>()
+        {
+            {0,ren10fps },
+            {1,ren15fps },
+            {2,ren20fps },
+            {3,ren30fps },
+        };
 
         public PAD(NES parent)
         {
@@ -403,6 +417,106 @@ namespace VirtualNes.Core
             {
                 expad.Reset();
             }
+        }
+
+        public void Sync(ControllerState state)
+        {
+            padbit[0] = SyncSub(0, state);
+            padbit[1] = SyncSub(1, state);
+            padbit[2] = SyncSub(2, state);
+            padbit[3] = SyncSub(3, state);
+
+            // Mic
+            micbit = 0;
+            if (state.HasButton(1, EnumButtonType.MIC)) micbit |= 4;
+
+            // For Excontroller
+            if (expad != null)
+            {
+                expad.Sync();
+            }
+        }
+
+
+
+        private byte SyncSub(int no, ControllerState state)
+        {
+            ushort bit = 0;
+                        
+            // Up
+            if (state.HasButton(no, EnumButtonType.UP))
+                bit |= 1 << 4;
+            // Down
+            if (state.HasButton(no, EnumButtonType.DOWN))
+                bit |= 1 << 5;
+            // Left
+            if (state.HasButton(no, EnumButtonType.LEFT))
+                bit |= 1 << 6;
+            // Right
+            if (state.HasButton(no, EnumButtonType.RIGHT))
+                bit |= 1 << 7;
+
+            // 同時入力を禁止する
+            //	if( (bit&((1<<4)|(1<<5))) == ((1<<4)|(1<<5)) )
+            //		bit &= ~((1<<4)|(1<<5));
+            if ((bit & ((1 << 6) | (1 << 7))) == ((1 << 6) | (1 << 7)))
+                bit = (byte)(bit & ~((1 << 6) | (1 << 7)));
+
+            // A
+            if (state.HasButton(no, EnumButtonType.A)) bit |= 1 << 0;
+            // B
+            if (state.HasButton(no, EnumButtonType.B)) bit |= 1 << 1;
+
+            // Select
+            if (state.HasButton(no, EnumButtonType.SELECT)) bit |= 1 << 2;
+            // Start
+            if (state.HasButton(no, EnumButtonType.START)) bit |= 1 << 3;
+
+            // A rapid setup
+            if ((bit & (1 << 8)) != 0)
+            {
+                int spd = Supporter.Config.controller.nRapid[no][0];
+                if (spd >= 3) spd = 3;
+
+                int[] tbl = rentbl[spd];
+
+                if (padcnt[no][0] >= renmask[spd])
+                    padcnt[no][0] = 0;
+
+                if ((tbl[padcnt[no][0]]) != 0)
+                    bit |= (1 << 0);
+                else
+                    bit = (byte)(bit & ~(1 << 0));
+
+                padcnt[no][0]++;
+            }
+            else
+            {
+                padcnt[no][0] = 0;
+            }
+            // B rapid setup
+            if ((bit & (1 << 9)) != 0)
+            {
+                int spd = Supporter.Config.controller.nRapid[no][1];
+                if (spd >= 3) spd = 3;
+                int[] tbl = rentbl[spd];
+
+                if (padcnt[no][1] >= renmask[spd])
+                    padcnt[no][1] = 0;
+
+                if ((tbl[padcnt[no][1]]) != 0)
+                    bit |= (1 << 1);
+                else
+                    bit = (byte)(bit & ~(1 << 1));
+
+                padcnt[no][1]++;
+            }
+            else
+            {
+                padcnt[no][1] = 0;
+            }
+
+            return (byte)(bit & 0xFF);
         }
 
         internal bool IsZapperMode()
