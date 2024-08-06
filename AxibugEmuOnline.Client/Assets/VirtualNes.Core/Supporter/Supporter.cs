@@ -49,6 +49,11 @@ namespace VirtualNes.Core
             return s_support.OpenFile(directPath, fileName);
         }
 
+        public static bool TryGetMapperNo(ROM rom, out int mapperNo)
+        {
+            return s_support.TryGetMapperNo(rom, out mapperNo);
+        }
+
         public static EmulatorConfig Config => s_support.Config;
     }
 
@@ -64,5 +69,6 @@ namespace VirtualNes.Core
         void PrepareDirectory(string directPath);
         void SaveFile(byte[] fileData, string directPath, string fileName);
         Stream OpenFile(string directPath, string fileName);
+        bool TryGetMapperNo(ROM rom, out int mapperNo);
     }
 }

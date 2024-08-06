@@ -415,12 +415,6 @@ namespace VirtualNes.Core
             {
                 header.control2 |= (byte)EnumRomControlByte2.ROM_VSUNISYSTEM;
             }
-
-            //吞食天地2 豪华中文版
-            if (crc == 0x19B9E732)
-            {
-                mapper = 199;
-            }
         }
     }
 }
