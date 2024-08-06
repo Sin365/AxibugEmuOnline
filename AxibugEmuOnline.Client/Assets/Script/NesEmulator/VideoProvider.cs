@@ -7,6 +7,8 @@ namespace AxibugEmuOnline.Client
 {
     public class VideoProvider : MonoBehaviour
     {
+        public NesEmulator NesEmu;
+
         public RawImage Image;
 
         private UInt32[] wrapTexBuffer;

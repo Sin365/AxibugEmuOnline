@@ -9,15 +9,24 @@ namespace AxibugEmuOnline.Client
 {
     public class NesEmulator : MonoBehaviour
     {
-        private NES m_nesIns;
+        public NES NesCore { get; private set; }
 
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
 
+#if UNITY_EDITOR
+        public string RomName;
+#endif
+
         private void Start()
         {
             Application.targetFrameRate = 60;
-            StartGame("ff1.nes");
+            VideoProvider.NesEmu = this;
+            AudioProvider.NesEmu = this;
+
+#if UNITY_EDITOR
+            StartGame(RomName);
+#endif
         }
 
         public void StartGame(string romName)
@@ -29,32 +38,30 @@ namespace AxibugEmuOnline.Client
 
             try
             {
-                m_nesIns = new NES(romName);
+                NesCore = new NES(romName);
             }
             catch (Exception ex)
             {
-                m_nesIns = null;
+                NesCore = null;
                 Debug.LogError(ex);
             }
         }
 
         public void StopGame()
         {
-            m_nesIns?.Dispose();
-            m_nesIns = null;
+            NesCore?.Dispose();
+            NesCore = null;
         }
 
         private void Update()
         {
-            if (m_nesIns != null)
+            if (NesCore != null)
             {
-                m_nesIns.EmulateFrame(true);
+                NesCore.EmulateFrame(true);
 
-                var screenBuffer = m_nesIns.ppu.GetScreenPtr();
-                var lineColorMode = m_nesIns.ppu.GetLineColorMode();
+                var screenBuffer = NesCore.ppu.GetScreenPtr();
+                var lineColorMode = NesCore.ppu.GetLineColorMode();
                 VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
-
-                AudioProvider.ProcessSound(m_nesIns);
             }
         }
 
