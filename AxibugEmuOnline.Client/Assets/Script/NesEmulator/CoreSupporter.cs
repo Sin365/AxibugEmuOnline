@@ -1,8 +1,8 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
+using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 using VirtualNes.Core;
 
@@ -15,9 +15,9 @@ namespace AxibugEmuOnline.Client
             get
             {
 #if UNITY_EDITOR
-                return "Assets/StreamingAssets/Roms";
+                return "Assets/StreamingAssets/NES/Roms";
 #else
-                return $"{Application.streamingAssetsPath}/Roms";
+                return $"{Application.streamingAssetsPath}/NES/Roms";
 #endif
             }
         }
@@ -44,7 +44,7 @@ namespace AxibugEmuOnline.Client
 
         public Stream OpenFile_DISKSYS()
         {
-            return File.Open($"{Application.streamingAssetsPath}/Disksys.rom", FileMode.Open, FileAccess.Read);
+            return new MemoryStream(Resources.Load<TextAsset>("NES/Disksys.rom").bytes);
         }
 
         public void SaveSRAMToFile(byte[] sramContent, string romName)
@@ -91,6 +91,12 @@ namespace AxibugEmuOnline.Client
                 return null;
             }
 
+        }
+
+        public bool TryGetMapperNo(ROM rom, out int mapperNo)
+        {
+            var db = Resources.Load<RomDB>("NES/ROMDB");
+            return db.GetMapperNo(rom.GetPROM_CRC(), out mapperNo);
         }
     }
 }
