@@ -13,43 +13,43 @@ namespace VirtualNes.Core
 	public class Mapper192 : Mapper
 	{
 		BYTE[] reg = new byte[8];
-		BYTE prg0, prg1;
-		BYTE chr01, chr23, chr4, chr5, chr6, chr7;
-		BYTE we_sram;
+        BYTE prg0, prg1;
+        BYTE chr01, chr23, chr4, chr5, chr6, chr7;
+        BYTE we_sram;
 
-		BYTE irq_type;
-		BYTE irq_enable;
-		BYTE irq_counter;
-		BYTE irq_latch;
-		BYTE irq_request;
-		public Mapper192(NES parent) : base(parent)
+        BYTE irq_type;
+        BYTE irq_enable;
+        BYTE irq_counter;
+        BYTE irq_latch;
+        BYTE irq_request;
+        public Mapper192(NES parent) : base(parent)
 		{
 		}
 
 		public override void Reset()
 		{
-			for (INT i = 0; i < 8; i++)
-			{
-				reg[i] = 0x00;
-			}
-			prg0 = 0;
-			prg1 = 1;
-			SetBank_CPU();
+            for (byte i = 0; i < 8; i++)
+            {
+                reg[i] = 0x00;
+            }
+            prg0 = 0;
+            prg1 = 1;
+            SetBank_CPU();
 
-			chr01 = 0;
-			chr23 = 2;
-			chr4 = 4;
-			chr5 = 5;
-			chr6 = 6;
-			chr7 = 7;
-			SetBank_PPU();
+            chr01 = 0;
+            chr23 = 2;
+            chr4 = 4;
+            chr5 = 5;
+            chr6 = 6;
+            chr7 = 7;
+            SetBank_PPU();
 
-			we_sram = 0;    // Disable
-			irq_enable = 0; // Disable
-			irq_counter = 0;
-			irq_latch = 0;
-			irq_request = 0;
-		}
+            we_sram = 0;    // Disable
+            irq_enable = 0; // Disable
+            irq_counter = 0;
+            irq_latch = 0;
+            irq_request = 0;
+        }
 
 
 		//BYTE Mapper192::ReadLow(WORD addr)
@@ -81,116 +81,116 @@ namespace VirtualNes.Core
 		//void Mapper192::Write(WORD addr, BYTE data)
 		public override void Write(ushort addr, byte data)
 		{
-			//DEBUGOUT( "MPRWR A=%04X D=%02X L=%3d CYC=%d\n", addr&0xFFFF, data&0xFF, nes.GetScanline(), nes.cpu.GetTotalCycles() );
+            //DEBUGOUT( "MPRWR A=%04X D=%02X L=%3d CYC=%d\n", addr&0xFFFF, data&0xFF, nes.GetScanline(), nes.cpu.GetTotalCycles() );
 
-			switch (addr & 0xE001)
-			{
-				case 0x8000:
-					reg[0] = data;
-					SetBank_CPU();
-					SetBank_PPU();
-					break;
-				case 0x8001:
-					reg[1] = data;
+            switch (addr & 0xE001)
+            {
+                case 0x8000:
+                    reg[0] = data;
+                    SetBank_CPU();
+                    SetBank_PPU();
+                    break;
+                case 0x8001:
+                    reg[1] = data;
 
-					switch (reg[0] & 0x07)
-					{
-						case 0x00:
-							chr01 = data;
-							SetBank_PPU();
-							break;
-						case 0x01:
-							chr23 = data;
-							SetBank_PPU();
-							break;
-						case 0x02:
-							chr4 = data;
-							SetBank_PPU();
-							break;
-						case 0x03:
-							chr5 = data;
-							SetBank_PPU();
-							break;
-						case 0x04:
-							chr6 = data;
-							SetBank_PPU();
-							break;
-						case 0x05:
-							chr7 = data;
-							SetBank_PPU();
-							break;
-						case 0x06:
-							prg0 = data;
-							SetBank_CPU();
-							break;
-						case 0x07:
-							prg1 = data;
-							SetBank_CPU();
-							break;
-					}
-					break;
-				case 0xA000:
-					reg[2] = data;
-					if (!nes.rom.Is4SCREEN())
-					{
-						if ((data & 0x01) != 0) SetVRAM_Mirror(VRAM_HMIRROR);
-						else SetVRAM_Mirror(VRAM_VMIRROR);
-					}
-					break;
-				case 0xA001:
-					reg[3] = data;
-					break;
-				case 0xC000:
-					reg[4] = data;
-					irq_counter = data;
-					irq_request = 0;
-					break;
-				case 0xC001:
-					reg[5] = data;
-					irq_latch = data;
-					irq_request = 0;
-					break;
-				case 0xE000:
-					reg[6] = data;
-					irq_enable = 0;
-					irq_request = 0;
-					nes.cpu.ClrIRQ(IRQ_MAPPER);
-					break;
-				case 0xE001:
-					reg[7] = data;
-					irq_enable = 1;
-					irq_request = 0;
-					break;
-			}
+                    switch (reg[0] & 0x07)
+                    {
+                        case 0x00:
+                            chr01 = data;
+                            SetBank_PPU();
+                            break;
+                        case 0x01:
+                            chr23 = data;
+                            SetBank_PPU();
+                            break;
+                        case 0x02:
+                            chr4 = data;
+                            SetBank_PPU();
+                            break;
+                        case 0x03:
+                            chr5 = data;
+                            SetBank_PPU();
+                            break;
+                        case 0x04:
+                            chr6 = data;
+                            SetBank_PPU();
+                            break;
+                        case 0x05:
+                            chr7 = data;
+                            SetBank_PPU();
+                            break;
+                        case 0x06:
+                            prg0 = data;
+                            SetBank_CPU();
+                            break;
+                        case 0x07:
+                            prg1 = data;
+                            SetBank_CPU();
+                            break;
+                    }
+                    break;
+                case 0xA000:
+                    reg[2] = data;
+                    if (!nes.rom.Is4SCREEN())
+                    {
+                        if ((data & 0x01)!=0) SetVRAM_Mirror(VRAM_HMIRROR);
+                        else SetVRAM_Mirror(VRAM_VMIRROR);
+                    }
+                    break;
+                case 0xA001:
+                    reg[3] = data;
+                    break;
+                case 0xC000:
+                    reg[4] = data;
+                    irq_counter = data;
+                    irq_request = 0;
+                    break;
+                case 0xC001:
+                    reg[5] = data;
+                    irq_latch = data;
+                    irq_request = 0;
+                    break;
+                case 0xE000:
+                    reg[6] = data;
+                    irq_enable = 0;
+                    irq_request = 0;
+                    nes.cpu.ClrIRQ(IRQ_MAPPER);
+                    break;
+                case 0xE001:
+                    reg[7] = data;
+                    irq_enable = 1;
+                    irq_request = 0;
+                    break;
+            }
 
-		}
+        }
 
 		//void Mapper192::HSync(INT scanline)
 		public override void HSync(int scanline)
 		{
-			if ((scanline >= 0 && scanline <= 239))
-			{
-				if (nes.ppu.IsDispON())
-				{
-					if (irq_enable != 0 && irq_request == 0)
-					{
-						if (scanline == 0)
-						{
-							if (irq_counter != 0)
-							{
-								irq_counter--;
-							}
-						}
-						if ((irq_counter--) == 0)
-						{
-							irq_request = 0xFF;
-							irq_counter = irq_latch;
-							nes.cpu.SetIRQ(IRQ_MAPPER);
-						}
-					}
-				}
-			}
-		}
+            if ((scanline >= 0 && scanline <= 239))
+            {
+                if (nes.ppu.IsDispON())
+                {
+                    if (irq_enable!=0 && irq_request == 0)
+                    {
+                        if (scanline == 0)
+                        {
+                            if (irq_counter!=0)
+                            {
+                                irq_counter--;
+                            }
+                        }
+                        if ((irq_counter--)==0)
+                        {
+                            irq_request = 0xFF;
+                            irq_counter = irq_latch;
+                            nes.cpu.SetIRQ(IRQ_MAPPER);
+                        }
+                    }
+                }
+            }
+        }
 
 		void SetBank_CPU()
 		{
@@ -298,7 +298,7 @@ namespace VirtualNes.Core
 		//void Mapper192::LoadState(LPBYTE p)
 		public override void LoadState(byte[] p)
 		{
-			for (INT i = 0; i < 8; i++)
+			for (byte i = 0; i < 8; i++)
 			{
 				reg[i] = p[i];
 			}
