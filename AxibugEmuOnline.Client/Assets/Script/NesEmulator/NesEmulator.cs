@@ -17,7 +17,7 @@ namespace AxibugEmuOnline.Client
         private void Start()
         {
             Application.targetFrameRate = 60;
-            StartGame("tstd2.nes");
+            StartGame("ff1.nes");
         }
 
         public void StartGame(string romName)
@@ -43,7 +43,6 @@ namespace AxibugEmuOnline.Client
             m_nesIns?.Dispose();
             m_nesIns = null;
         }
-
 
         private void Update()
         {

@@ -1147,6 +1147,16 @@ namespace VirtualNes.Core
             bChrLatch = bMode;
         }
 
+        internal void SetExtNameTableMode(bool bMode)
+        {
+            bExtNameTable = bMode;
+        }
+
+        internal void SetExtMonoMode(bool bMode)
+        {
+            bExtMono = bMode;
+        }
+
         public struct Sprite
         {
             public byte y

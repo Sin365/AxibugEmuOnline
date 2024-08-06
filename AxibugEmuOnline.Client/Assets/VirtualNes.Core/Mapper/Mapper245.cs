@@ -22,6 +22,7 @@ namespace VirtualNes.Core
         BYTE irq_latch;
         BYTE irq_request;
         int MMC4prg, MMC4chr;
+
         public Mapper245(NES parent) : base(parent)
         {
         }
@@ -164,9 +165,9 @@ namespace VirtualNes.Core
 
         void SetBank_PPU()
         {
-            if ((VROM_1K_SIZE) != 0)
+            if (VROM_1K_SIZE != 0)
             {
-                if (((reg[0] & 0x80)! + 0) != 0)
+                if ((reg[0] & 0x80) != 0)
                 {
                     SetVROM_8K_Bank(chr4, chr5, chr6, chr7,
                              chr23 + 1, chr23, chr01 + 1, chr01);
