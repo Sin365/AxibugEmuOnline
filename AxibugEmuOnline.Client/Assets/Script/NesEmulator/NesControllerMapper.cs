@@ -1,15 +1,36 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
-    public class NesControllerMapper : ScriptableObject
+    public class NesControllerMapper
     {
+        private static readonly string ConfigFilePath = $"{Application.persistentDataPath}/NES/ControllerMapper.json";
+
         public MapperSetter Player1 = new MapperSetter();
         public MapperSetter Player2 = new MapperSetter();
         public MapperSetter Player3 = new MapperSetter();
         public MapperSetter Player4 = new MapperSetter();
+
+        public NesControllerMapper()
+        {
+            Player1.UP.keyCode = KeyCode.W;
+            Player1.DOWN.keyCode = KeyCode.S;
+            Player1.LEFT.keyCode = KeyCode.A;
+            Player1.RIGHT.keyCode = KeyCode.D;
+            Player1.B.keyCode = KeyCode.J;
+            Player1.A.keyCode = KeyCode.K;
+            Player1.SELECT.keyCode = KeyCode.V;
+            Player1.START.keyCode = KeyCode.B;
+        }
+
+        public void Save()
+        {
+            var jsonStr = JsonUtility.ToJson(this);
+            File.WriteAllText(ConfigFilePath, jsonStr);
+        }
 
         public ControllerState CreateState()
         {
@@ -19,6 +40,25 @@ namespace AxibugEmuOnline.Client
             var state4 = Player4.GetButtons();
 
             return new ControllerState(state1, state2, state3, state4);
+        }
+
+        private static NesControllerMapper s_setting;
+        public static NesControllerMapper Get()
+        {
+            if (s_setting == null)
+            {
+                try
+                {
+                    var json = File.ReadAllText($"{Application.persistentDataPath}/Nes/ControllerMapper.json");
+                    s_setting = JsonUtility.FromJson<NesControllerMapper>(json);
+                }
+                catch
+                {
+                    s_setting = new NesControllerMapper();
+                }
+            }
+
+            return s_setting;
         }
 
         [Serializable]
