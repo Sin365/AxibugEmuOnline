@@ -101,7 +101,7 @@ namespace AxibugEmuOnline.Client
 
         public ControllerState GetControllerState()
         {
-            var mapper = Resources.Load<NesControllerMapper>("NES/ControlSettings");
+            var mapper = NesControllerMapper.Get();
             return mapper.CreateState();
         }
     }
