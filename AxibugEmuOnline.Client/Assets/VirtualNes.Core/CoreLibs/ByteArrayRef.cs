@@ -34,6 +34,13 @@ namespace VirtualNes.Core
             m_length = length;
         }
 
+        public void SetArray(byte[] array, int offset)
+        {
+            m_rawArray = array;
+            m_offset = offset;
+            m_length = array.Length - offset;
+        }
+
         public byte this[int index]
         {
             get
