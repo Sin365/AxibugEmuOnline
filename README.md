@@ -66,6 +66,11 @@
 
 		*PorotoBuf 传输使用的是bytes，但是Porotbuff只会对数组里每一个byte进行位压缩，整个byte[]不压缩。于是C#先GZIP压缩之后，在扔给protobuf。对面再解压。超级马里奥最复杂的画面情况是9k每秒的样子/。
 
+
+## 代码贡献/协作者
+
+[AlienJack](https://github.com/AlienJack "AlienJack") 
+
 ## 引用
 
 ### 本项目使用，我自构建的HaoYueNet高性能网络库作为基础而开发
@@ -73,6 +78,15 @@
 [HaoYueNet-Github](https://github.com/Sin365/HaoYueNet "HaoYueNet-Github")
 
 [HaoYueNet-自建Git站点](http://git.axibug.com/sin365/HaoYueNet "HaoYueNet-自建Git站点")
+
+[nesdev.org NES - 2.0 XML Database](https://forums.nesdev.org/viewtopic.php?t=19940 "nesdev.org - NES 2.0 XML Database")
+
+[VirtuaNES](http://virtuanes.s1.xrea.com/ "VirtuaNES")
+
+部分NES-Mapper扩展 https://github.com/yamanyandakure/VirtuaNES097
+
+部分NES-Mapper扩展 [VirtuaNESex](https://github.com/pengan1987/VirtuaNESex "VirtuaNESex")
+
 
 ### NES 模拟器内核
 
