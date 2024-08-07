@@ -2,9 +2,9 @@
 
 namespace VirtualNes.Core
 {
-    public class ByteArrayRef
+    public class ArrayRef<T>
     {
-        private byte[] m_rawArray;
+        private T[] m_rawArray;
         private int m_offset;
         private int m_length;
 
@@ -18,30 +18,30 @@ namespace VirtualNes.Core
             }
         }
 
-        public ByteArrayRef() { }
-        public ByteArrayRef(byte[] array, int offset, int length)
+        public ArrayRef() { }
+        public ArrayRef(T[] array, int offset, int length)
         {
             SetArray(array, offset, length);
         }
 
-        public ByteArrayRef(byte[] array) : this(array, 0, array.Length) { }
-        public ByteArrayRef(byte[] array, int offset) : this(array, offset, array.Length - offset) { }
+        public ArrayRef(T[] array) : this(array, 0, array.Length) { }
+        public ArrayRef(T[] array, int offset) : this(array, offset, array.Length - offset) { }
 
-        public void SetArray(byte[] array, int offset, int length)
+        public void SetArray(T[] array, int offset, int length)
         {
             m_rawArray = array;
             m_offset = offset;
             m_length = length;
         }
 
-        public void SetArray(byte[] array, int offset)
+        public void SetArray(T[] array, int offset)
         {
             m_rawArray = array;
             m_offset = offset;
             m_length = array.Length - offset;
         }
 
-        public byte this[int index]
+        public T this[int index]
         {
             get
             {
@@ -53,14 +53,14 @@ namespace VirtualNes.Core
             }
         }
 
-        public static implicit operator ByteArrayRef(byte[] array)
+        public static implicit operator ArrayRef<T>(T[] array)
         {
-            return new ByteArrayRef(array);
+            return new ArrayRef<T>(array);
         }
 
-        public static implicit operator Span<byte>(ByteArrayRef array)
+        public static implicit operator Span<T>(ArrayRef<T> array)
         {
-            return new Span<byte>(array.m_rawArray, array.Offset, array.m_length);
+            return new Span<T>(array.m_rawArray, array.Offset, array.m_length);
         }
     }
 }

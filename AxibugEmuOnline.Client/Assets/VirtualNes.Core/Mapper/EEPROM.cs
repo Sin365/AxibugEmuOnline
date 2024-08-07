@@ -19,7 +19,7 @@ namespace VirtualNes.Core
         byte sda;
         byte scl_old, sda_old;
 
-        ByteArrayRef pEEPDATA;
+        ArrayRef<byte> pEEPDATA;
 
         public X24C01()
         {
@@ -34,7 +34,7 @@ namespace VirtualNes.Core
             pEEPDATA = null;
         }
 
-        public void Reset(ByteArrayRef ptr)
+        public void Reset(ArrayRef<byte> ptr)
         {
             now_state = X24C01_IDLE;
             next_state = X24C01_IDLE;
@@ -220,7 +220,7 @@ namespace VirtualNes.Core
         byte sda;
         byte scl_old, sda_old;
 
-        ByteArrayRef pEEPDATA;
+        ArrayRef<byte> pEEPDATA;
 
         public X24C02()
         {
@@ -236,7 +236,7 @@ namespace VirtualNes.Core
             pEEPDATA = null;
         }
 
-        public void Reset(ByteArrayRef ptr)
+        public void Reset(ArrayRef<byte> ptr)
         {
             now_state = X24C02_IDLE;
             next_state = X24C02_IDLE;

@@ -146,8 +146,10 @@ static unsigned char default_inst[OPLL_TONE_NUM][(16+3)*16]=
 /* Adjust envelope speed which depends on sampling rate. */
 #define rate_adjust(x) (uint32)((double)(x)*clk/72/rate + 0.5) /* +0.5 to round */
 
+ 
 #define MOD(x) ch[x]->mod
 #define CAR(x) ch[x]->car
+
 
 /* Sampling rate */
 static uint32 rate ;
@@ -555,6 +557,7 @@ INLINE static void slotOff(OPLL_SLOT *slot)
 /* Channel key on */
 INLINE static void keyOn(OPLL *opll, int i)
 {
+  
   if(!opll->slot_on_flag[i*2]) slotOn(opll->MOD(i)) ;
   if(!opll->slot_on_flag[i*2+1]) slotOn(opll->CAR(i)) ;
   opll->ch[i]->key_status = 1 ;
@@ -894,6 +897,7 @@ void OPLL_setClock(uint32 c, uint32 r)
 
 void OPLL_init(uint32 c, uint32 r)
 {
+    
   makePmTable() ;
   makeAmTable() ;
   makeDB2LinTable() ; 

@@ -132,7 +132,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private ByteArrayRef _PROM_BANK = new ByteArrayRef();
+        private ArrayRef<byte> _PROM_BANK = new ArrayRef<byte>();
         //void Mapper001::Write(WORD addr, BYTE data)
         public override void Write(ushort addr, byte data)
         {

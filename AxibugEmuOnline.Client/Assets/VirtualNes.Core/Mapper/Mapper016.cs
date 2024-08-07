@@ -139,7 +139,7 @@ namespace VirtualNes.Core
             {
                 nes.SetSAVERAM_SIZE(384);
                 x24c02.Reset(WRAM);
-                x24c01.Reset(new ByteArrayRef(WRAM, 256));
+                x24c01.Reset(new ArrayRef<byte>(WRAM, 256));
             }
         }
 
