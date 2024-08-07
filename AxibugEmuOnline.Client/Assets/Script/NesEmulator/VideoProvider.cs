@@ -1,14 +1,14 @@
-using AxibugEmuOnline.Client.Assets.Script.NesEmulator;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
     public class VideoProvider : MonoBehaviour
     {
+        public NesEmulator NesEmu;
+
         public RawImage Image;
 
         private UInt32[] wrapTexBuffer;

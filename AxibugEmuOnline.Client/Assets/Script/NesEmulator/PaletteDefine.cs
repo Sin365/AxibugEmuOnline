@@ -7,10 +7,18 @@ using System.Threading.Tasks;
 using UnityEngine;
 using VirtualNes.Core;
 
-namespace AxibugEmuOnline.Client.Assets.Script.NesEmulator
+namespace AxibugEmuOnline.Client
 {
     public static class PaletteDefine
     {
+        public struct RGBQUAD
+        {
+            public byte rgbBlue;
+            public byte rgbGreen;
+            public byte rgbRed;
+            public byte rgbReserved;
+        }
+
         public class PALBUF
         {
             public byte r;
@@ -108,6 +116,33 @@ namespace AxibugEmuOnline.Client.Assets.Script.NesEmulator
             new PALBUF(0x00, 0x00, 0x00),
         };
 
+        #region 256色モード用
+        // Color
+        public static RGBQUAD[][] m_cpPalette = new RGBQUAD[8][]
+        {
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+        };
+        // Monochrome
+        public static RGBQUAD[][] m_mpPalette = new RGBQUAD[8][]
+        {
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+            new RGBQUAD[64*2],
+        };
+        #endregion
+
         #region ピクセルフォーマットに変換したパレット
         // Color
         public static uint[][] m_cnPalette = new uint[8][]
@@ -161,6 +196,18 @@ namespace AxibugEmuOnline.Client.Assets.Script.NesEmulator
         };
         #endregion
 
+        public static RGBQUAD[] GetPaletteData()
+        {
+            RGBQUAD[] rgb = new RGBQUAD[256];
+            for (int i = 0; i < 64; i++)
+            {
+                rgb[i] = m_cpPalette[0][i];
+                rgb[i + 0x40] = m_mpPalette[0][i];
+            }
+
+            return rgb;
+        }
+
         static PaletteDefine()
         {
             int Rbit = 0, Gbit = 0, Bbit = 0;
@@ -185,6 +232,13 @@ namespace AxibugEmuOnline.Client.Assets.Script.NesEmulator
                     Rs = (uint)(PalConvTbl[j][0] * m_PaletteBuf[i].r * m_nScanlineColor / 100.0f);
                     Gs = (uint)(PalConvTbl[j][1] * m_PaletteBuf[i].g * m_nScanlineColor / 100.0f);
                     Bs = (uint)(PalConvTbl[j][2] * m_PaletteBuf[i].b * m_nScanlineColor / 100.0f);
+
+                    m_cpPalette[j][i + 0x00].rgbRed = (byte)Rn;
+                    m_cpPalette[j][i + 0x00].rgbGreen = (byte)Gn;
+                    m_cpPalette[j][i + 0x00].rgbBlue = (byte)Bn;
+                    m_cpPalette[j][i + 0x40].rgbRed = (byte)Rs;
+                    m_cpPalette[j][i + 0x40].rgbGreen = (byte)Gs;
+                    m_cpPalette[j][i + 0x40].rgbBlue = (byte)Bs;
 
                     m_cnPalette[j][i] = ((Rn >> (8 - Rbit)) << Rsft) | ((Gn >> (8 - Gbit)) << Gsft) | ((Bn >> (8 - Bbit)) << Bsft);
                     m_csPalette[j][i] = ((Rs >> (8 - Rbit)) << Rsft) | ((Gs >> (8 - Gbit)) << Gsft) | ((Bs >> (8 - Bbit)) << Bsft);
@@ -215,6 +269,13 @@ namespace AxibugEmuOnline.Client.Assets.Script.NesEmulator
                     if (Rs > 0xFF) Rs = 0xFF;
                     if (Gs > 0xFF) Gs = 0xFF;
                     if (Bs > 0xFF) Bs = 0xFF;
+
+                    m_mpPalette[j][i + 0x00].rgbRed = (byte)Rn;
+                    m_mpPalette[j][i + 0x00].rgbGreen = (byte)Gn;
+                    m_mpPalette[j][i + 0x00].rgbBlue = (byte)Bn;
+                    m_mpPalette[j][i + 0x40].rgbRed = (byte)Rs;
+                    m_mpPalette[j][i + 0x40].rgbGreen = (byte)Gs;
+                    m_mpPalette[j][i + 0x40].rgbBlue = (byte)Bs;
 
                     m_mnPalette[j][i] = ((Rn >> (8 - Rbit)) << Rsft) | ((Gn >> (8 - Gbit)) << Gsft) | ((Bn >> (8 - Bbit)) << Bsft);
                     m_msPalette[j][i] = ((Rs >> (8 - Rbit)) << Rsft) | ((Gs >> (8 - Gbit)) << Gsft) | ((Bs >> (8 - Bbit)) << Bsft);

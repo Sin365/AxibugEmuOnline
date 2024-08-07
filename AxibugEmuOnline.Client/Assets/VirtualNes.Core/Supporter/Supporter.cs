@@ -54,6 +54,11 @@ namespace VirtualNes.Core
             return s_support.TryGetMapperNo(rom, out mapperNo);
         }
 
+        public static ControllerState GetControllerState()
+        {
+            return s_support.GetControllerState();
+        }
+
         public static EmulatorConfig Config => s_support.Config;
     }
 
@@ -70,5 +75,6 @@ namespace VirtualNes.Core
         void SaveFile(byte[] fileData, string directPath, string fileName);
         Stream OpenFile(string directPath, string fileName);
         bool TryGetMapperNo(ROM rom, out int mapperNo);
+        ControllerState GetControllerState();
     }
 }
