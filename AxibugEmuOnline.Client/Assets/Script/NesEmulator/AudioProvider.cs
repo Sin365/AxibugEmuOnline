@@ -1,47 +1,51 @@
-﻿using System;
-using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using VirtualNes.Core;
 
-public class AudioProvider : MonoBehaviour
+namespace AxibugEmuOnline.Client
 {
-    [SerializeField]
-    private AudioSource m_as;
-
-    private SoundBuffer _buffer = new SoundBuffer(4096);
-
-    public void Initialize()
+    public class AudioProvider : MonoBehaviour
     {
-        var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
+        public NesEmulator NesEmu;
 
-        dummy.SetData(new float[] { 1 }, 0);
-        m_as.clip = dummy; //just to let unity play the audiosource
-        m_as.loop = true;
-        m_as.spatialBlend = 1;
-        m_as.Play();
-    }
+        [SerializeField]
+        private AudioSource m_as;
 
-    void OnAudioFilterRead(float[] data, int channels)
-    {
-        int step = channels;
-
-        var bufferCount = _buffer.Available();
-
-        for (int i = 0; i < data.Length; i += step)
+        private SoundBuffer _buffer = new SoundBuffer(4096);
+        public void Start()
         {
-            float rawFloat = 0;
-            if (_buffer.TryRead(out byte rawData))
-                rawFloat = rawData / 255f;
+            var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
 
-            data[i] = rawFloat;
-            for (int fill = 1; fill < step; fill++)
-                data[i + fill] = rawFloat;
+            dummy.SetData(new float[] { 1 }, 0);
+            m_as.clip = dummy; //just to let unity play the audiosource
+            m_as.loop = true;
+            m_as.spatialBlend = 1;
+            m_as.Play();
+        }
 
+        void OnAudioFilterRead(float[] data, int channels)
+        {
+            int step = channels;
+
+            if (NesEmu == null || NesEmu.NesCore == null) return;
+
+            ProcessSound(NesEmu.NesCore, (uint)(data.Length / channels));
+
+            for (int i = 0; i < data.Length; i += step)
+            {
+                float rawFloat = 0;
+                if (_buffer.TryRead(out byte rawData))
+                    rawFloat = rawData / 255f;
+
+                data[i] = rawFloat;
+                for (int fill = 1; fill < step; fill++)
+                    data[i + fill] = rawFloat;
+            }
+        }
+
+        void ProcessSound(NES nes, uint feedCount)
+        {
+            nes.apu.Process(_buffer, feedCount);
         }
     }
 
-    public void ProcessSound(NES nes)
-    {
-        nes.apu.Process(_buffer, (uint)(Supporter.Config.sound.nRate * Time.deltaTime));
-    }
 }
