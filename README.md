@@ -1,12 +1,26 @@
 # AxibugEmuOnline
 
-	用于游戏模拟器同步的联机.Net实现
+	用于游戏模拟器同步的联机纯C#实现
 
-	AxibugEmuOnline.Server 是服务端 .Net 8
+	AxibugEmuOnline.Server 是服务端 .Net8
+	
+	AxibugEmuOnline.Web 是Asp.Net Core(.Net 8)的WebApi
 
 	AxibugEmuOnline.Client 是客户端 Unity
+		
+		- NES EmuCore NES模拟器核心
+		
+				VirtualNes （C++手动翻译到C#）
+				
+				~~ My Nes ~~ (功能全，但是性能局限，不作为主要使用，但已经移植纯.Net Standard2.0归档)
+				
+				~~ Emulator.NES ~~ (较为初级，已经废弃)
+		
+		- 街机模拟器核心 Arcade EmuCore
+				
+				MAME.Net 来自于我另一个移植项目 ，http://git.axibug.com/sin365/MAME.Core 最终会迁移进来。源头上是MAME C/C++源码翻译C#
 
-	AxibugEmuOnline.Web 是Asp.Net Core(.Net 8)的WebApi
+		- 其他核心，长期补充
 
 ## 意义
 
@@ -60,7 +74,7 @@
 
 [HaoYueNet-自建Git站点](http://git.axibug.com/sin365/HaoYueNet "HaoYueNet-自建Git站点")
 
-### 模拟器内核
+### NES 模拟器内核
 
 ~~模拟器内核采用 Emulator.NES  https://github.com/Xyene/Emulator.NES~~
 
@@ -77,7 +91,7 @@
 然后我们又开始尝试把 VirtualNes 的内核翻译为C#，在尝试内核的路上越走越远……
 
 
-### 关于Mapper支持
+### 关于 NES Mapper支持
 
 众所周知 NES/FC 在整个生命周期中，有各种厂商扩展的各色卡带Mapper，
 
@@ -95,5 +109,13 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 
 后续补充二次，修正 Mapper163 175 176 178 192 199 参照叶枫VirtuaNESex_src(20191105)
 
+
+### 街机模拟器核心
+	
+	原本是我独立移植到Unity的C# MAME.Core实现
+	
+	最终会继承到本项目中
+	
+	http://git.axibug.com/sin365/MAME.Core
 
 
