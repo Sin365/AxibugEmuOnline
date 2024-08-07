@@ -1,4 +1,6 @@
-﻿namespace VirtualNes.Core
+﻿using System;
+
+namespace VirtualNes.Core
 {
     public class EmulatorConfig
     {
