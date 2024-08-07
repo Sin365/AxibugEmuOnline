@@ -12,9 +12,9 @@
 		
 				VirtualNes （C++手动翻译到C#）
 				
-				~~ My Nes ~~ (功能全，但是性能局限，不作为主要使用，但已经移植纯.Net Standard2.0归档)
+				~~My Nes~~ (功能全，但是性能局限，不作为主要使用，但已经移植纯.Net Standard2.0归档)
 				
-				~~ Emulator.NES ~~ (较为初级，已经废弃)
+				~~Emulator.NES~~ (较为初级，已经废弃)
 		
 		- 街机模拟器核心 Arcade EmuCore
 				
