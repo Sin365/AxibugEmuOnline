@@ -7,6 +7,12 @@ namespace VirtualNes.Core
         private FDSSOUND fds = new FDSSOUND();
         private FDSSOUND fds_sync = new FDSSOUND();
 
+        public APU_FDS()
+        {
+            fds.ZeroMemory();
+            fds_sync.ZeroMemory();
+        }
+
         public override void Reset(float fClock, int nRate)
         {
             //todo : 实现
@@ -94,6 +100,36 @@ namespace VirtualNes.Core
             public int now_volume;
             public int now_freq;
             public int output;
+
+            public void ZeroMemory()
+            {
+                Array.Clear(reg, 0, reg.Length);
+                volenv_mode = 0;
+                volenv_gain = 0;
+                volenv_decay = 0;
+                volenv_phaseacc = 0.0;
+                swpenv_mode = 0;
+                swpenv_gain = 0;
+                swpenv_decay = 0;
+                swpenv_phaseacc = 0.0;
+                envelope_enable = 0;
+                envelope_speed = 0;
+                wave_setup = 0;
+                master_volume = 0;
+                Array.Clear(main_wavetable, 0, main_wavetable.Length);
+                main_enable = 0;
+                main_frequency = 0;
+                main_addr = 0;
+                Array.Clear(lfo_wavetable, 0, lfo_wavetable.Length);
+                lfo_enable = 0;
+                lfo_frequency = 0;
+                lfo_addr = 0;
+                lfo_phaseacc = 0.0;
+                sweep_bias = 0;
+                now_volume = 0;
+                now_freq = 0;
+                output = 0;
+            }
         }
     }
 }
