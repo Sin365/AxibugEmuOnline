@@ -270,6 +270,35 @@ namespace VirtualNes.Core
             return 0;
         }
 
+        public override int GetFreq(int channel)
+        {
+            if (channel == 0 || channel == 1)
+            {
+                RECTANGLE ch = null;
+                if (channel == 0) ch = ch0;
+                else ch = ch1;
+
+                if (ch.enable == 0 || ch.vbl_length <= 0)
+                    return 0;
+                if (ch.freq < INT2FIX(8))
+                    return 0;
+                if (ch.fixed_envelope != 0)
+                {
+                    if (ch.volume == 0)
+                        return 0;
+                }
+                else
+                {
+                    if ((0x0F - ch.env_vol) == 0)
+                        return 0;
+                }
+
+                return (int)(256.0f * cpu_clock / (FIX2INT(ch.freq) * 16.0f));
+            }
+
+            return 0;
+        }
+
         private int RectangleRender(RECTANGLE ch)
         {
             if (ch.enable == 0 || ch.vbl_length <= 0)
@@ -358,7 +387,7 @@ namespace VirtualNes.Core
                 Array.Clear(dummy, 0, dummy.Length);
                 vbl_length = 0;
             }
-        }
+        }        
 
         public class RECTANGLE
         {

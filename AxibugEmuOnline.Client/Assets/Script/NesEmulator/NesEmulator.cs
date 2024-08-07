@@ -1,5 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System;
+using System.IO;
 using System.Xml.Linq;
 using UnityEngine;
 using VirtualNes.Core;
@@ -74,8 +75,8 @@ namespace AxibugEmuOnline.Client
             var db = Resources.Load<RomDB>("NES/ROMDB");
             db.Clear();
 
-            var dbFile = Resources.Load<TextAsset>("NES/nes20db");
-            var xml = XDocument.Parse(dbFile.text);
+            var xmlStr = File.ReadAllText("nes20db.xml");
+            var xml = XDocument.Parse(xmlStr);
             var games = xml.Element("nes20db").Elements("game");
             foreach (var game in games)
             {
@@ -84,9 +85,11 @@ namespace AxibugEmuOnline.Client
 
                 var mapper = int.Parse($"{game.Element("pcb").Attribute("mapper").Value}");
 
+                if (mapper > 255) continue;
                 db.AddInfo(new RomDB.RomInfo { CRC = crc, Mapper = mapper });
             }
 
+            UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
 #endif
