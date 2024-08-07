@@ -1353,7 +1353,7 @@ namespace VirtualNes.Core
                 return;
 
             m_TapeCycles += (nescfg.CpuClock / 32000.0);
-            //	m_TapeCycles += (nescfg->CpuClock / 22050.0);	// ’x‚·‚¬‚Äƒ_ƒ‚Á‚Û‚¢
+            //	m_TapeCycles += (nescfg.CpuClock / 22050.0);	// ’x‚·‚¬‚Äƒ_ƒ‚Á‚Û‚¢
 
             if (m_bTapePlay)
             {
