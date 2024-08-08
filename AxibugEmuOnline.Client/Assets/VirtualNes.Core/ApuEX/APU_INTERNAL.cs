@@ -1192,5 +1192,222 @@ namespace VirtualNes.Core
                     break;
             }
         }
+        public class RECTANGLE
+        {
+            public byte[] reg = new byte[4];        // register
+
+            public byte enable;        // enable
+            public byte holdnote;  // holdnote
+            public byte volume;        // volume
+            public byte complement;
+
+            // For Render
+            public int phaseacc;
+            public int freq;
+            public int freqlimit;
+            public int adder;
+            public int duty;
+            public int len_count;
+
+            public int nowvolume;
+
+            // For Envelope
+            public byte env_fixed;
+            public byte env_decay;
+            public byte env_count;
+            public byte dummy0;
+            public int env_vol;
+
+            // For Sweep
+            public byte swp_on;
+            public byte swp_inc;
+            public byte swp_shift;
+            public byte swp_decay;
+            public byte swp_count;
+            public byte[] dummy1 = new byte[3];
+
+            // For sync;
+            public byte[] sync_reg = new byte[4];
+            public byte sync_output_enable;
+            public byte sync_enable;
+            public byte sync_holdnote;
+            public byte dummy2;
+            public int sync_len_count;
+
+            public void ZeroMemory()
+            {
+                Array.Clear(reg, 0, reg.Length);
+                enable = 0;
+                holdnote = 0;
+                volume = 0;
+                complement = 0;
+
+                phaseacc = 0;
+                freq = 0;
+                freqlimit = 0;
+                adder = 0;
+                duty = 0;
+                len_count = 0;
+
+                nowvolume = 0;
+
+                env_fixed = 0;
+                env_decay = 0;
+                env_count = 0;
+                dummy0 = 0;
+                env_vol = 0;
+
+                swp_on = 0;
+                swp_inc = 0;
+                swp_shift = 0;
+                swp_decay = 0;
+                swp_count = 0;
+                Array.Clear(dummy1, 0, dummy1.Length);
+
+                Array.Clear(sync_reg, 0, sync_reg.Length);
+                sync_output_enable = 0;
+                sync_enable = 0;
+                sync_holdnote = 0;
+                dummy2 = 0;
+                sync_len_count = 0;
+            }
+        }
+        public class TRIANGLE
+        {
+            public byte[] reg = new byte[4];
+
+            public byte enable;
+            public byte holdnote;
+            public byte counter_start;
+            public byte dummy0;
+
+            public int phaseacc;
+            public int freq;
+            public int len_count;
+            public int lin_count;
+            public int adder;
+
+            public int nowvolume;
+
+            // For sync;
+            public byte[] sync_reg = new byte[4];
+            public byte sync_enable;
+            public byte sync_holdnote;
+            public byte sync_counter_start;
+            //		public byte	dummy1;
+            public int sync_len_count;
+            public int sync_lin_count;
+
+            internal void ZeroMemory()
+            {
+                Array.Clear(reg, 0, reg.Length);
+
+                enable = 0;
+                holdnote = 0;
+                counter_start = 0;
+                dummy0 = 0;
+                phaseacc = 0;
+                freq = 0;
+                len_count = 0;
+                lin_count = 0;
+                adder = 0;
+                nowvolume = 0;
+                Array.Clear(sync_reg, 0, sync_reg.Length);
+                sync_enable = 0;
+                sync_holdnote = 0;
+                sync_counter_start = 0;
+
+                sync_len_count = 0;
+                sync_lin_count = 0;
+            }
+        }
+        public class DPCM
+        {
+            public byte[] reg = new byte[4];
+            public byte enable;
+            public byte looping;
+            public byte cur_byte;
+            public byte dpcm_value;
+
+            public int freq;
+            public int phaseacc;
+            public int output;
+
+            public ushort address, cache_addr;
+            public int dmalength, cache_dmalength;
+            public int dpcm_output_real, dpcm_output_fake, dpcm_output_old, dpcm_output_offset;
+
+            // For sync
+            public byte[] sync_reg = new byte[4];
+            public byte sync_enable;
+            public byte sync_looping;
+            public byte sync_irq_gen;
+            public byte sync_irq_enable;
+            public int sync_cycles, sync_cache_cycles;
+            public int sync_dmalength, sync_cache_dmalength;
+        }
+        public class NOISE
+        {
+            public byte[] reg = new byte[4];        // register
+
+            public byte enable;        // enable
+            public byte holdnote;  // holdnote
+            public byte volume;        // volume
+            public byte xor_tap;
+            public int shift_reg;
+
+            // For Render
+            public int phaseacc;
+            public int freq;
+            public int len_count;
+
+            public int nowvolume;
+            public int output;
+
+            // For Envelope
+            public byte env_fixed;
+            public byte env_decay;
+            public byte env_count;
+            public byte dummy0;
+            public int env_vol;
+
+            // For sync;
+            public byte[] sync_reg = new byte[4];
+            public byte sync_output_enable;
+            public byte sync_enable;
+            public byte sync_holdnote;
+            public byte dummy1;
+            public int sync_len_count;
+
+            internal void ZeroMemory()
+            {
+                Array.Clear(reg, 0, reg.Length);
+
+                enable = 0;
+                holdnote = 0;
+                volume = 0;
+                xor_tap = 0;
+                shift_reg = 0;
+
+                phaseacc = 0;
+                freq = 0;
+                len_count = 0;
+                nowvolume = 0;
+                output = 0;
+
+                env_fixed = 0;
+                env_decay = 0;
+                env_count = 0;
+                dummy0 = 0;
+                env_vol = 0;
+
+                Array.Clear(sync_reg, 0, sync_reg.Length);
+                sync_output_enable = 0;
+                sync_enable = 0;
+                sync_holdnote = 0;
+                dummy1 = 0;
+                sync_len_count = 0;
+            }
+        }
     }
 }

@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a09b6a4cf4c2d4f994a13fd7e89d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NesEmu: {fileID: 0}
   m_as: {fileID: 8726979175317618791}
 --- !u!82 &8726979175317618791
 AudioSource:
@@ -256,6 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83fbe375412d1af4482ae76e81c1dda2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NesEmu: {fileID: 0}
   Image: {fileID: 4232056521759880274}
 --- !u!1 &4232056520494431712
 GameObject:

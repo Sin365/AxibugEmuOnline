@@ -325,7 +325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4232056521131536012, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
       propertyPath: RomName
-      value: tortoise4.nes
+      value: tstd2.nes
       objectReference: {fileID: 0}
     - target: {fileID: 4232056521131536013, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
       propertyPath: m_Name

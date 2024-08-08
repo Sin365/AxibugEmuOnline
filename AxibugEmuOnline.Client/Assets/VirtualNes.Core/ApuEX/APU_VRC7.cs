@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net;
+using VirtualNes.Core.Emu2413;
 
 namespace VirtualNes.Core
 {
@@ -86,7 +86,7 @@ namespace VirtualNes.Core
 
                 if ((VRC7_OPLL.reg[0x20 + channel] & 0x10) != 0)
                 {
-                    return (int)((256.0d * (double)fno * blkmul[blk]) / ((double)(1 << 18) / (3579545.0 / 72.0)));
+                    return (int)((256.0d * fno * blkmul[blk]) / ((1 << 18) / (3579545.0 / 72.0)));
                 }
             }
 

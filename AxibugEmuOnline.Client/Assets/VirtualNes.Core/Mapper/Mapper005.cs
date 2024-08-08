@@ -39,15 +39,15 @@ namespace VirtualNes.Core
                             //BYTE chr_page[2][8];
         BYTE[,] chr_page = new byte[2, 8];      // $5120-$512B
         // BGパターン用バンク
-        ByteArrayRef[] BG_MEM_BANK = new ByteArrayRef[8]{
-            new ByteArrayRef(),
-            new ByteArrayRef(),
-            new ByteArrayRef(),
-            new ByteArrayRef(),
-            new ByteArrayRef(),
-            new ByteArrayRef(),
-            new ByteArrayRef(),
-            new ByteArrayRef(),
+        ArrayRef<byte>[] BG_MEM_BANK = new ArrayRef<byte>[8]{
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
+            new ArrayRef<byte>(),
         };
         BYTE[] BG_MEM_PAGE = new byte[8];
 
@@ -433,7 +433,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private ByteArrayRef _prom_bank = new ByteArrayRef();
+        private ArrayRef<byte> _prom_bank = new ArrayRef<byte>();
         void SetBank_SRAM(BYTE page, BYTE data)
         {
             if (sram_size == 0) data = (byte)((data > 3) ? 8 : 0);

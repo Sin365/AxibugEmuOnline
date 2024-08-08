@@ -245,7 +245,7 @@ namespace VirtualNes.Core
             return ch.output_vol;
         }
 
-        private class RECTANGLE
+        public class RECTANGLE
         {
             public byte[] reg = new byte[3];
 
@@ -276,7 +276,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private class SAWTOOTH
+        public class SAWTOOTH
         {
             public byte[] reg = new byte[3];
 
