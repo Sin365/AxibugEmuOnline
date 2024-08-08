@@ -6,11 +6,11 @@ namespace VirtualNes
     public static class MMU
     {
         // CPU 儊儌儕僶儞僋
-        public static ByteArrayRef[] CPU_MEM_BANK = new ByteArrayRef[8];            // 8K扨埵
+        public static ArrayRef<byte>[] CPU_MEM_BANK = new ArrayRef<byte>[8];            // 8K扨埵
         public static byte[] CPU_MEM_TYPE = new byte[8];
         public static int[] CPU_MEM_PAGE = new int[8];	                    // 僗僥乕僩僙乕僽梡
         // PPU 儊儌儕僶儞僋
-        public static ByteArrayRef[] PPU_MEM_BANK = new ByteArrayRef[12];           // 1K扨埵
+        public static ArrayRef<byte>[] PPU_MEM_BANK = new ArrayRef<byte>[12];           // 1K扨埵
         public static byte[] PPU_MEM_TYPE = new byte[12];
         public static int[] PPU_MEM_PAGE = new int[12];                 // 僗僥乕僩僙乕僽梡
         public static byte[] CRAM_USED = new byte[16];		            // 僗僥乕僩僙乕僽梡
@@ -73,12 +73,12 @@ namespace VirtualNes
 
         internal static void SetPROM_Bank(byte page, byte[] ptr, byte type)
         {
-            CPU_MEM_BANK[page] = new ByteArrayRef(ptr, 0, ptr.Length);
+            CPU_MEM_BANK[page] = new ArrayRef<byte>(ptr, 0, ptr.Length);
             CPU_MEM_TYPE[page] = type;
             CPU_MEM_PAGE[page] = 0;
         }
 
-        internal static void SetPROM_Bank(byte page, ByteArrayRef ptr, byte type)
+        internal static void SetPROM_Bank(byte page, ArrayRef<byte> ptr, byte type)
         {
             CPU_MEM_BANK[page] = ptr;
             CPU_MEM_TYPE[page] = type;
@@ -88,7 +88,7 @@ namespace VirtualNes
         internal static void SetPROM_8K_Bank(byte page, int bank)
         {
             bank %= PROM_8K_SIZE;
-            CPU_MEM_BANK[page] = new ByteArrayRef(MMU.PROM, 0x2000 * bank, MMU.PROM.Length - 0x2000 * bank);
+            CPU_MEM_BANK[page] = new ArrayRef<byte>(MMU.PROM, 0x2000 * bank, MMU.PROM.Length - 0x2000 * bank);
             CPU_MEM_TYPE[page] = BANKTYPE_ROM;
             CPU_MEM_PAGE[page] = bank;
         }
@@ -116,7 +116,7 @@ namespace VirtualNes
         }
 
         // PPU VROM bank
-        internal static void SetVROM_Bank(byte page, ByteArrayRef ptr, byte type)
+        internal static void SetVROM_Bank(byte page, ArrayRef<byte> ptr, byte type)
         {
             PPU_MEM_BANK[page] = ptr;
             PPU_MEM_TYPE[page] = type;
@@ -126,7 +126,7 @@ namespace VirtualNes
         internal static void SetVROM_1K_Bank(byte page, int bank)
         {
             bank %= VROM_1K_SIZE;
-            PPU_MEM_BANK[page] = new ByteArrayRef(VROM, 0x0400 * bank, VROM.Length - (0x0400 * bank));
+            PPU_MEM_BANK[page] = new ArrayRef<byte>(VROM, 0x0400 * bank, VROM.Length - (0x0400 * bank));
             PPU_MEM_TYPE[page] = BANKTYPE_VROM;
             PPU_MEM_PAGE[page] = bank;
         }
@@ -169,7 +169,7 @@ namespace VirtualNes
         internal static void SetCRAM_1K_Bank(byte page, int bank)
         {
             bank &= 0x1F;
-            PPU_MEM_BANK[page] = new ByteArrayRef(MMU.CRAM, 0x0400 * bank, MMU.CRAM.Length - 0x0400 * bank);
+            PPU_MEM_BANK[page] = new ArrayRef<byte>(MMU.CRAM, 0x0400 * bank, MMU.CRAM.Length - 0x0400 * bank);
             PPU_MEM_TYPE[page] = BANKTYPE_CRAM;
             PPU_MEM_PAGE[page] = bank;
 
@@ -201,7 +201,7 @@ namespace VirtualNes
         internal static void SetVRAM_1K_Bank(byte page, int bank)
         {
             bank &= 3;
-            PPU_MEM_BANK[page] = new ByteArrayRef(VRAM, 0x0400 * bank, VRAM.Length - 0x0400 * bank);
+            PPU_MEM_BANK[page] = new ArrayRef<byte>(VRAM, 0x0400 * bank, VRAM.Length - 0x0400 * bank);
             PPU_MEM_TYPE[page] = BANKTYPE_VRAM;
             PPU_MEM_PAGE[page] = bank;
         }

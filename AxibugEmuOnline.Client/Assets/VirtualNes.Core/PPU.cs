@@ -1157,6 +1157,11 @@ namespace VirtualNes.Core
             bExtMono = bMode;
         }
 
+        internal int GetScanlineNo()
+        {
+            return ScanlineNo;
+        }
+
         public struct Sprite
         {
             public byte y
