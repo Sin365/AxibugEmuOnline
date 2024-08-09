@@ -106,7 +106,7 @@ namespace VirtualNes.Core
         private ushort loopy_y;
         private ushort loopy_shift;
 
-        private byte[] lpScreen;
+        private uint[] lpScreen;
         /// <summary> 作为lpScreen数组的索引 </summary>
         private int lpScanline;
         private int ScanlineNo;
@@ -1105,7 +1105,7 @@ namespace VirtualNes.Core
             MMU.PPUREG[2] |= PPU_VBLANK_FLAG;
         }
 
-        public byte[] GetScreenPtr()
+        public uint[] GetScreenPtr()
         {
             return lpScreen;
         }
@@ -1115,7 +1115,7 @@ namespace VirtualNes.Core
             return lpColormode;
         }
 
-        internal void SetScreenPtr(byte[] screenBuffer, byte[] colormode)
+        internal void SetScreenPtr(uint[] screenBuffer, byte[] colormode)
         {
             lpScreen = screenBuffer;
             lpColormode = colormode;

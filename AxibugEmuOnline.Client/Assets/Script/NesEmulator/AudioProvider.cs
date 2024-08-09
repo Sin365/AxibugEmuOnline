@@ -5,7 +5,7 @@ namespace AxibugEmuOnline.Client
 {
     public class AudioProvider : MonoBehaviour
     {
-        public NesEmulator NesEmu;
+        public NesEmulator NesEmu { get; set; }
 
         [SerializeField]
         private AudioSource m_as;
