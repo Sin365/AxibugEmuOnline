@@ -19,7 +19,23 @@ namespace VirtualNes.Core
             memset(array, 0, value, length);
         }
 
+        public static void memset(uint[] array, uint value, int length)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                array[i] = value;
+            }
+        }
+
         public static void memset(byte[] array, int offset, byte value, int length)
+        {
+            for (int i = offset; i < length; i++)
+            {
+                array[i] = value;
+            }
+        }
+
+        public static void memset(uint[] array, int offset, uint value, int length)
         {
             for (int i = offset; i < length; i++)
             {
