@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
 using System;
+using System.Collections;
 using UnityEngine;
 using static AxibugEmuOnline.Client.Manager.LogManager;
 
@@ -19,8 +20,13 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static UserDataManager user;
         public static AppNetGame netgame;
         public static AppEmu emu;
+        public static RomLib romLib;
+        public static HttpAPI httpAPI;
 
-        public static void Init()
+        private static CoroutineRunner coRunner;
+
+        [RuntimeInitializeOnLoadMethod]
+        static void Init()
         {
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
@@ -30,6 +36,22 @@ namespace AxibugEmuOnline.Client.ClientCore
             user = new UserDataManager();
             emu = new AppEmu();
             netgame = new AppNetGame();
+            romLib = new RomLib();
+            httpAPI = new HttpAPI();
+
+            var go = new GameObject("[AppAxibugEmuOnline]");
+            GameObject.DontDestroyOnLoad(go);
+            coRunner = go.AddComponent<CoroutineRunner>();
+        }
+
+        public static Coroutine StartCoroutine(IEnumerator itor)
+        {
+            return coRunner.StartCoroutine(itor);
+        }
+
+        public static void StopCoroutine(Coroutine cor)
+        {
+            coRunner.StopCoroutine(cor);
         }
 
         public static bool Connect(string IP, int port)
@@ -43,7 +65,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         }
         static void OnNoSugarNetLog(int LogLevel, string msg)
         {
-            Debug.Log("[AxibugEmuOnline]:"+msg);
+            Debug.Log("[AxibugEmuOnline]:" + msg);
         }
     }
 }

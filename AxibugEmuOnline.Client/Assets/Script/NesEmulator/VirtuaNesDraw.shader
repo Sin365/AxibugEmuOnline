@@ -105,13 +105,13 @@
                 float start= 8.0/272.0;
                 float end = (272.0-8.0)/272.0;
 
-                //mapUV.x = lerp(start,end, mapUV.x);
+                mapUV.x = lerp(start,end, mapUV.x);
 
                 half4 color = tex2D(_MainTex,mapUV);
                 
                 float rawIndex = color.b;
 
-                color = tex2D(_PalTex,float2(rawIndex,0.5));
+                color = tex2D(_PalTex,float2(rawIndex,0.5)); 
 
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
