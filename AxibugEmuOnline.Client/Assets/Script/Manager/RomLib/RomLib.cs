@@ -1,9 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
@@ -53,14 +50,15 @@ namespace AxibugEmuOnline.Client
 
         public static string CalcHash(byte[] data)
         {
-            var hashBytes = MD5.Create().ComputeHash(data);
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in hashBytes)
-            {
-                sb.Append(b.ToString("x2"));
-            }
+            return string.Empty; //todo : 等待远程仓库敲定hash算法
+            //var hashBytes = MD5.Create().ComputeHash(data);
+            //StringBuilder sb = new StringBuilder();
+            //foreach (byte b in hashBytes)
+            //{
+            //    sb.Append(b.ToString("x2"));
+            //}
 
-            return sb.ToString();
+            //return sb.ToString();
         }
     }
 }
