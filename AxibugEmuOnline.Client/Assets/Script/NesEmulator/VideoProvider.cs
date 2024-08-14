@@ -2,7 +2,6 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
@@ -30,7 +29,8 @@ namespace AxibugEmuOnline.Client
                 GCHandle handle = GCHandle.Alloc(wrapTexBuffer, GCHandleType.Pinned);
                 // 获取数组的指针  
                 wrapTexBufferPointer = handle.AddrOfPinnedObject();
-                
+
+                Image.texture = wrapTex;
                 Image.material.SetTexture("_MainTex", wrapTex);
 
                 TexBufferSize = wrapTexBuffer.Length * 4;
@@ -43,9 +43,9 @@ namespace AxibugEmuOnline.Client
                     uint colorRaw = palRaw[i];
                     var argbColor = BitConverter.GetBytes(colorRaw);
                     Color temp = Color.white;
-                    temp.r = argbColor[2]/255f;
-                    temp.g = argbColor[1]/255f;
-                    temp.b = argbColor[0]/255f;
+                    temp.r = argbColor[2] / 255f;
+                    temp.g = argbColor[1] / 255f;
+                    temp.b = argbColor[0] / 255f;
                     temp.a = 1;
                     pPal.SetPixel(i, 0, temp);
                 }
