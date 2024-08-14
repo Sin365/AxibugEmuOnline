@@ -1,6 +1,7 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
 using VirtualNes.Core;
@@ -15,22 +16,14 @@ namespace AxibugEmuOnline.Client
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
 
-#if UNITY_EDITOR
-        public string RomName;
-#endif
-
         private void Start()
         {
             Application.targetFrameRate = 60;
             VideoProvider.NesEmu = this;
             AudioProvider.NesEmu = this;
-
-#if UNITY_EDITOR
-            StartGame(RomName);
-#endif
         }
 
-        public void StartGame(string romName)
+        public void StartGame(RomFile rom)
         {
             StopGame();
 
@@ -39,7 +32,7 @@ namespace AxibugEmuOnline.Client
 
             try
             {
-                NesCore = new NES(romName);
+                NesCore = new NES(rom.FileName);
             }
             catch (Exception ex)
             {
@@ -91,6 +84,38 @@ namespace AxibugEmuOnline.Client
 
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
+        }
+
+        [ContextMenu("LoadRom")]
+        public void LoadRom()
+        {
+            AppAxibugEmuOnline.romLib.GetNesRomFile(0, 10, (romFiles) =>
+            {
+                if (romFiles == null) return;
+
+                var file = romFiles[2];
+
+                if (file.FileReady)
+                {
+                    StartGame(file);
+                }
+                else
+                {
+                    file.BeginDownload();
+                    Action action = null;
+                    action = () =>
+                    {
+                        file.OnDownloadOver -= action;
+                        if (!file.FileReady)
+                        {
+                            throw new Exception("Download Failed");
+                        }
+                        StartGame(file);
+                    };
+                    file.OnDownloadOver += action;
+                }
+
+            });
         }
 #endif
     }

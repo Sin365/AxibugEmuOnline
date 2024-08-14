@@ -1,44 +1,66 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
     public class RomLib
     {
-        private List<RomFile> nesRomFiles = new List<RomFile>();
+        private Dictionary<int, RomFile> nesRomFileIdMapper = new Dictionary<int, RomFile>();
+        private Dictionary<string, RomFile> nesRomFileNameMapper = new Dictionary<string, RomFile>();
 
-        public void GetNesRomFile(int index, Action<RomFile> callback)
+        public RomFile GetNesRomFile(string romFileName)
         {
-            if (nesRomFiles.Count <= index)
+            nesRomFileNameMapper.TryGetValue(romFileName, out RomFile romFile);
+            return romFile;
+        }
+
+        public void GetNesRomFile(int page, int pageSize, Action<List<RomFile>> callback)
+        {
+            AppAxibugEmuOnline.httpAPI.GetNesRomList((romList) =>
             {
-                int pageSize = 10;
-                int page = index / pageSize;
-                int indexInPage = index % page;
-
-                //填充空的RomFile数据
-                var needFill = index - nesRomFiles.Count + 1;
-                needFill += pageSize - indexInPage - 1;
-                for (int i = 0; i < needFill; i++)
+                if (romList == null)
                 {
-                    nesRomFiles.Add(new RomFile(EnumPlatform.NES));
+                    callback.Invoke(null);
                 }
-
-                AppAxibugEmuOnline.httpAPI.GetNesRomList((romList) =>
+                else
                 {
-                    if (romList == null)
+                    List<RomFile> result = new List<RomFile>();
+                    for (int i = 0; i < romList.gameList.Count; i++)
                     {
-                        callback.Invoke(null);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < romList.GameList.Count; i++)
+                        var webData = romList.gameList[i];
+
+                        nesRomFileIdMapper.TryGetValue(webData.id, out var targetRomFile);
+                        if (targetRomFile == null)
                         {
-                            nesRomFiles[pageSize * (page - 1) + i].SetWebData(romList.GameList[i]);
+                            targetRomFile = new RomFile(EnumPlatform.NES);
+                            targetRomFile.SetWebData(webData);
+                            nesRomFileIdMapper[webData.id] = targetRomFile;
+
+                            nesRomFileNameMapper[targetRomFile.FileName] = targetRomFile;
                         }
+
+                        result.Add(targetRomFile);
                     }
-                }, page, pageSize);
+
+                    callback(result);
+                }
+            }, page, pageSize);
+        }
+
+        public static string CalcHash(byte[] data)
+        {
+            var hashBytes = MD5.Create().ComputeHash(data);
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                sb.Append(b.ToString("x2"));
             }
+
+            return sb.ToString();
         }
     }
 }

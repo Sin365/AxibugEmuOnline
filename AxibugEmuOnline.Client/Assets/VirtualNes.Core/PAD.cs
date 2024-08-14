@@ -470,49 +470,6 @@ namespace VirtualNes.Core
             // Start
             if (state.HasButton(no, EnumButtonType.START)) bit |= 1 << 3;
 
-            // A rapid setup
-            if ((bit & (1 << 8)) != 0)
-            {
-                int spd = Supporter.Config.controller.nRapid[no][0];
-                if (spd >= 3) spd = 3;
-
-                int[] tbl = rentbl[spd];
-
-                if (padcnt[no][0] >= renmask[spd])
-                    padcnt[no][0] = 0;
-
-                if ((tbl[padcnt[no][0]]) != 0)
-                    bit |= (1 << 0);
-                else
-                    bit = (byte)(bit & ~(1 << 0));
-
-                padcnt[no][0]++;
-            }
-            else
-            {
-                padcnt[no][0] = 0;
-            }
-            // B rapid setup
-            if ((bit & (1 << 9)) != 0)
-            {
-                int spd = Supporter.Config.controller.nRapid[no][1];
-                if (spd >= 3) spd = 3;
-                int[] tbl = rentbl[spd];
-
-                if (padcnt[no][1] >= renmask[spd])
-                    padcnt[no][1] = 0;
-
-                if ((tbl[padcnt[no][1]]) != 0)
-                    bit |= (1 << 1);
-                else
-                    bit = (byte)(bit & ~(1 << 1));
-
-                padcnt[no][1]++;
-            }
-            else
-            {
-                padcnt[no][1] = 0;
-            }
 
             return (byte)(bit & 0xFF);
         }

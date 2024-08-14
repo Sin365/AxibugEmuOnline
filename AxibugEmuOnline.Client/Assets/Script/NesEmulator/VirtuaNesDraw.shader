@@ -111,7 +111,7 @@
                 
                 float rawIndex = color.b;
 
-                color = tex2D(_PalTex,float2(rawIndex,0.5));
+                color = tex2D(_PalTex,float2(rawIndex,0.5)); 
 
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);

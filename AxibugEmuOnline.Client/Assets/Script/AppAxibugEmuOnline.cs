@@ -36,6 +36,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             user = new UserDataManager();
             emu = new AppEmu();
             netgame = new AppNetGame();
+            romLib = new RomLib();
+            httpAPI = new HttpAPI();
 
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);

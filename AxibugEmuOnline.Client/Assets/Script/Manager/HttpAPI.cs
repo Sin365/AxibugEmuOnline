@@ -10,6 +10,7 @@ namespace AxibugEmuOnline.Client
     public class HttpAPI
     {
         public string WebSite = "http://emu.axibug.com/api";
+        public string DownSite = "http://emu.axibug.com";
 
         public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
         {
@@ -18,7 +19,7 @@ namespace AxibugEmuOnline.Client
 
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
         {
-            UnityWebRequest request = new UnityWebRequest($"{WebSite}/NesRomList?Page={page}&PageSize={pageSize}");
+            UnityWebRequest request = UnityWebRequest.Get($"{WebSite}/NesRomList?Page={page}&PageSize={pageSize}");
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
@@ -31,21 +32,48 @@ namespace AxibugEmuOnline.Client
             callback.Invoke(resp);
         }
 
-        public class Resp_GameList
+        enum GameType : byte
         {
-            public int Page { get; set; }
-            public int MaxPage { get; set; }
-            public int ResultAllCount { get; set; }
-            public List<Resp_RomInfo> GameList { get; set; }
+            NONE = 0,
+            ACT,
+            ARPG,
+            AVG,
+            ETC,
+            FTG,
+            PUZ,
+            RAC,
+            RPG,
+            SLG,
+            SPG,
+            SRPG,
+            STG,
+            TAB,
+            /// <summary>
+            /// 合卡
+            /// </summary>
+            ALLINONE,
         }
 
+        [Serializable]
+        public class Resp_GameList
+        {
+            public int page;
+            public int maxPage;
+            public int resultAllCount;
+            public List<Resp_RomInfo> gameList;
+        }
+
+        [Serializable]
         public class Resp_RomInfo
         {
-            public int ID { get; set; }
-            public string Hash { get; set; }
-            public string RomName { get; set; }
-            public string Url { get; set; }
-            public string ImgUrl { get; set; }
+            public int id;
+            public string romName;
+            public string gType;
+            public string desc;
+            public string url;
+            public string imgUrl;
+            public string hash;
+            public int stars;
         }
     }
 }

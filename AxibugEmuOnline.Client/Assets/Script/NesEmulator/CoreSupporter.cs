@@ -26,8 +26,10 @@ namespace AxibugEmuOnline.Client
         {
             try
             {
-                var stream = File.Open($"{RomDirectoryPath}/{fname}", FileMode.Open);
-                return stream;
+                var romFile = AppAxibugEmuOnline.romLib.GetNesRomFile(fname);
+                var bytes = romFile.GetRomFileData();
+                Debug.Log($"Open {romFile.Alias}");
+                return new MemoryStream(bytes);
             }
             catch (Exception ex)
             {
