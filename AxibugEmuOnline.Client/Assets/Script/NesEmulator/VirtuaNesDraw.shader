@@ -105,7 +105,7 @@
                 float start= 8.0/272.0;
                 float end = (272.0-8.0)/272.0;
 
-                //mapUV.x = lerp(start,end, mapUV.x);
+                mapUV.x = lerp(start,end, mapUV.x);
 
                 half4 color = tex2D(_MainTex,mapUV);
                 
