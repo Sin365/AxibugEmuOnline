@@ -104,6 +104,7 @@ namespace AxibugEmuOnline.Client
         {
             webData = resp_RomInfo;
             fileName = Path.GetFileName(webData.url);
+            fileName = System.Net.WebUtility.UrlDecode(fileName);
 
             if (File.Exists(LocalFilePath))
             {
