@@ -360,7 +360,7 @@ namespace VirtualNes.Core
             loopy_shift = 0;
 
             if (lpScreen != null)
-                MemoryUtility.memset(lpScreen, 0x3F, SCREEN_WIDTH * SCREEN_HEIGHT);
+                MemoryUtility.memset(lpScreen, 0, 0x3F, SCREEN_WIDTH * SCREEN_HEIGHT);
             if (lpColormode != null)
                 MemoryUtility.memset(lpColormode, 0, SCREEN_HEIGHT);
         }
@@ -376,7 +376,7 @@ namespace VirtualNes.Core
 
             if (lpScreen != null)
             {
-                MemoryUtility.memset(lpScreen, 0x3F, SCREEN_WIDTH);
+                MemoryUtility.memset(lpScreen, 0, 0x3F, SCREEN_WIDTH);
             }
             if (lpColormode != null)
             {

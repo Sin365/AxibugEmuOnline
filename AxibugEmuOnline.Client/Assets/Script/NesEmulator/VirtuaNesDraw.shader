@@ -107,6 +107,8 @@
 
                 mapUV.x = lerp(start,end, mapUV.x);
 
+
+
                 half4 color = tex2D(_MainTex,mapUV);
                 
                 float rawIndex = color.b;
