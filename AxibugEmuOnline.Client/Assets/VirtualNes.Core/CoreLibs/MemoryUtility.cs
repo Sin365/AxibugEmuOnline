@@ -27,7 +27,7 @@ namespace VirtualNes.Core
             {
                 var offsetptr = ptr + offset;
 
-                Unsafe.InitBlock(offsetptr, value, (uint)length);
+                Unsafe.InitBlockUnaligned(offsetptr, value, (uint)length);
             }
         }
 
