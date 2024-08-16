@@ -8,6 +8,13 @@ namespace AxibugEmuOnline.Client
 {
     public class CoreSupporter : ISupporterImpl
     {
+        public static string PersistentDataPath
+        {
+            get
+            {
+                return Application.persistentDataPath;
+            }
+        }
 
         public Stream OpenRom(string fname)
         {
