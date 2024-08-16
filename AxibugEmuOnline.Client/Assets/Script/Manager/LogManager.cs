@@ -2,7 +2,7 @@
 {
     public class LogManager
     {
-        public enum E_LogType:byte
+        public enum E_LogType : byte
         {
             Info = 0,
             Debug = 1,
@@ -13,7 +13,7 @@
         /// 日志
         /// </summary>
         /// <param name="sk"></param>
-        public delegate void OnLogHandler(int debuglv,string msg);
+        public delegate void OnLogHandler(int debuglv, string msg);
 
         /// <summary>  
         /// 内部输出
@@ -40,7 +40,7 @@
             Log(E_LogType.Error, str);
         }
 
-        public void Log(E_LogType logtype,string str)
+        public void Log(E_LogType logtype, string str)
         {
             OnLog?.Invoke((int)logtype, str);
         }

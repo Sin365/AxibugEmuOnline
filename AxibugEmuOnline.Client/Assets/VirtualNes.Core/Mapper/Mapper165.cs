@@ -2,11 +2,9 @@
 // Mapper165   Fire Emblem Chinese version                                                         //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {
@@ -94,7 +92,7 @@ namespace VirtualNes.Core
                     break;
                 case 0xA000:
                     reg[2] = data;
-                    if ((data & 0x01)!= 0)
+                    if ((data & 0x01) != 0)
                     {
                         SetVRAM_Mirror(VRAM_HMIRROR);
                     }

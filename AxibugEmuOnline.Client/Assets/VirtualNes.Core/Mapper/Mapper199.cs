@@ -1,12 +1,10 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper199  WaiXingTypeG Base ON Nintendo MMC3                        //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {

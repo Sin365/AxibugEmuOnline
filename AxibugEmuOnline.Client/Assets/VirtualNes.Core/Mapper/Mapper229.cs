@@ -2,11 +2,8 @@
 // Mapper229  31-in-1                                                   //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {
@@ -16,8 +13,8 @@ namespace VirtualNes.Core
         {
         }
 
-		public override void Reset()
-		{
+        public override void Reset()
+        {
             SetPROM_32K_Bank(0);
             SetVROM_8K_Bank(0);
         }

@@ -1,9 +1,7 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
-using System;
 using System.Collections;
 using UnityEngine;
-using static AxibugEmuOnline.Client.Manager.LogManager;
 
 namespace AxibugEmuOnline.Client.ClientCore
 {

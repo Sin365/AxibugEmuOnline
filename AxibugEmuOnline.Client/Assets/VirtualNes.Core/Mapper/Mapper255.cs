@@ -1,7 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public class Mapper255 : Mapper
     {
@@ -56,10 +53,10 @@ namespace VirtualNes.Core
         public override void Write(ushort addr, byte data)
         {
             byte prg = (byte)((addr & 0x0F80) >> 7);
-            int chr =  (byte)((addr & 0x003F));
+            int chr = (byte)((addr & 0x003F));
             int bank = (byte)((addr & 0x4000) >> 14);
 
-            if ((addr & 0x2000) != 0 )
+            if ((addr & 0x2000) != 0)
             {
                 MMU.SetVRAM_Mirror(MMU.VRAM_HMIRROR);
             }
@@ -68,7 +65,7 @@ namespace VirtualNes.Core
                 MMU.SetVRAM_Mirror(MMU.VRAM_VMIRROR);
             }
 
-            if ((addr & 0x1000) !=0)
+            if ((addr & 0x1000) != 0)
             {
                 if ((addr & 0x0040) != 0)
                 {
@@ -109,7 +106,7 @@ namespace VirtualNes.Core
             return true;
         }
 
-        
+
         public override void SaveState(byte[] p)
         {
             p[0] = reg[0];

@@ -1,13 +1,11 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper114                                                            //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using System;
-using System.Text.RegularExpressions;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {

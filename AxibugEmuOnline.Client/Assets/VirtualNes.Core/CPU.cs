@@ -1,7 +1,6 @@
 ﻿#undef DPCM_SYNCCLOCK
 
 using System;
-using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
 {

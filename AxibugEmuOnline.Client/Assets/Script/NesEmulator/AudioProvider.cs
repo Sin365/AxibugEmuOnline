@@ -33,7 +33,8 @@ namespace AxibugEmuOnline.Client
             for (int i = 0; i < data.Length; i += step)
             {
                 float rawFloat = 0;
-                if (_buffer.TryRead(out byte rawData))
+                byte rawData;
+                if (_buffer.TryRead(out rawData))
                     rawFloat = rawData / 255f;
 
                 data[i] = rawFloat;

@@ -1,26 +1,25 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper035                                                            //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {
-	public class Mapper035 : Mapper
-	{
+    public class Mapper035 : Mapper
+    {
 
         BYTE[] reg = new byte[8];
         BYTE[] chr = new byte[8];
         ushort IRQCount, IRQa;
         public Mapper035(NES parent) : base(parent)
-		{
-		}
+        {
+        }
 
 
-		public override void Reset()
+        public override void Reset()
         {
             for (int i = 0; i < 8; i++)
                 reg[i] = chr[i] = 0;
@@ -103,7 +102,7 @@ namespace VirtualNes.Core
             {
                 if (nes.ppu.IsDispON())
                 {
-                    if (IRQa!=0)
+                    if (IRQa != 0)
                     {
                         IRQCount--;
                         if (IRQCount == 0)
@@ -118,7 +117,7 @@ namespace VirtualNes.Core
 
         public override bool IsStateSave()
         {
-			 return true;
+            return true;
         }
     }
 }
