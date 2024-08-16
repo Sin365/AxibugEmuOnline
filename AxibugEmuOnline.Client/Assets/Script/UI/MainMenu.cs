@@ -17,10 +17,6 @@ namespace AxibugEmuOnline.Client.UI
         [SerializeField]
         List<MainMenuData> MenuSetting;
         [SerializeField]
-        float SelectScale = 1f;
-        [SerializeField]
-        float UnSelectScale = 0.85f;
-        [SerializeField]
         float HoriRollSpd = 1f;
 
         private RectTransform groupRootRect => GroupRoot.transform as RectTransform;
@@ -66,7 +62,7 @@ namespace AxibugEmuOnline.Client.UI
 
         private void SetSelectProgress(MenuItem item, float selectProg)
         {
-            item.Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, selectProg);
+            item.ControlSelectProgress(selectProg);
         }
 
         private void Start()
@@ -77,6 +73,7 @@ namespace AxibugEmuOnline.Client.UI
                 m_runtimeMenuUI.Add(child.GetComponent<MenuItem>());
             }
 
+            Canvas.ForceUpdateCanvases();
             SelectIndex = 0;
         }
 

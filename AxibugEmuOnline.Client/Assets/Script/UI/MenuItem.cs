@@ -9,7 +9,11 @@ namespace AxibugEmuOnline.Client.UI
         Image Icon;
         [SerializeField]
         Text Txt;
-        public Transform Root;
+        [SerializeField]
+        Transform Root;
+
+        public float SelectScale = 1f;
+        public float UnSelectScale = 0.85f;
 
         public RectTransform Rect => transform as RectTransform;
 
@@ -21,7 +25,11 @@ namespace AxibugEmuOnline.Client.UI
 
         public void ControlSelectProgress(float progress)
         {
+            var temp = Txt.color;
+            temp.a = progress;
+            Txt.color = temp;
 
+            Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, progress);
         }
     }
 }
