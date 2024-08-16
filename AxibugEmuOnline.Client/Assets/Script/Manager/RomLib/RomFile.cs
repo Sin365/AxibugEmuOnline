@@ -15,7 +15,7 @@ namespace AxibugEmuOnline.Client
         private string fileName;
         private EnumPlatform platform;
 
-        public string LocalFilePath => $"{Application.persistentDataPath}/RemoteRoms/{platform}/{fileName}";
+        public string LocalFilePath => $"{CoreSupporter.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
         public bool FileReady => hasLocalFile;
         public int ID => webData != null ? webData.id : -1;
         public bool IsDownloading { get; private set; }
