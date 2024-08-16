@@ -2,10 +2,7 @@
 // Mapper176         ShuQiYu / HengGe / WaiXing                         //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
 
 namespace VirtualNes.Core
 {
@@ -35,7 +32,7 @@ namespace VirtualNes.Core
                 SetPROM_32K_Bank(0, 1, PROM_8K_SIZE - 2, PROM_8K_SIZE - 1);
             }
             //	SetPROM_32K_Bank( PROM_8K_SIZE-4, PROM_8K_SIZE-3, PROM_8K_SIZE-2, PROM_8K_SIZE-1 );
-            if (VROM_1K_SIZE!=0) SetVROM_8K_Bank(0);
+            if (VROM_1K_SIZE != 0) SetVROM_8K_Bank(0);
 
             reg5000 = 0;
             reg5001 = 0;
@@ -115,7 +112,7 @@ namespace VirtualNes.Core
                     break;
                 case 0x5001:            //[ES-1006] Meng Huan Zhi Xing IV (C)
                     reg5001 = data;
-                    if (SBW!=0) SetPROM_32K_Bank(reg5001);
+                    if (SBW != 0) SetPROM_32K_Bank(reg5001);
                     break;
                 case 0x5010:
                     reg5010 = data;
@@ -123,7 +120,7 @@ namespace VirtualNes.Core
                     break;
                 case 0x5011:
                     reg5011 = (byte)(data >> 1);
-                    if (SBW!=0) SetPROM_32K_Bank(reg5011);
+                    if (SBW != 0) SetPROM_32K_Bank(reg5011);
                     break;
                 case 0x5013:
                     reg5013 = data;

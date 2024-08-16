@@ -2,22 +2,19 @@
 // Mapper175  15-in-1 (Kaiser)                                          //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {
-	public class Mapper175 : Mapper
-	{
-		BYTE reg_dat;
-		public Mapper175(NES parent) : base(parent)
-		{
-		}
+    public class Mapper175 : Mapper
+    {
+        BYTE reg_dat;
+        public Mapper175(NES parent) : base(parent)
+        {
+        }
 
-		public override void Reset()
+        public override void Reset()
         {
             SetPROM_16K_Bank(4, 0);
             SetPROM_16K_Bank(6, 0);
@@ -45,7 +42,7 @@ namespace VirtualNes.Core
             switch (addr)
             {
                 case 0x8000:
-                    if ((data & 0x04)!=0)
+                    if ((data & 0x04) != 0)
                     {
                         SetVRAM_Mirror(VRAM_HMIRROR);
                     }
@@ -63,9 +60,9 @@ namespace VirtualNes.Core
         }
 
         public override bool IsStateSave()
-		{
-			return true;
-		}
+        {
+            return true;
+        }
 
-	}
+    }
 }

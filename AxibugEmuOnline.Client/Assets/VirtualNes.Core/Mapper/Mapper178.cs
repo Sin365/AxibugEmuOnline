@@ -2,23 +2,21 @@
 // Mapper178  Education / WaiXing_FS305                                 //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {
-	public class Mapper178 : Mapper
-	{
-		BYTE[] reg = new byte[3];
+    public class Mapper178 : Mapper
+    {
+        BYTE[] reg = new byte[3];
         BYTE banknum;
         BYTE OP_rom;
         public Mapper178(NES parent) : base(parent)
-		{
-		}
+        {
+        }
 
-		public override void Reset()
+        public override void Reset()
         {
             reg[0] = 0;
             reg[1] = 0;
@@ -47,13 +45,13 @@ namespace VirtualNes.Core
             else if (addr == 0x4801)
             {
                 reg[0] = (byte)((data >> 1) & 0x0F);
-                if (OP_rom!=0) reg[0] = (byte)(data << 2);
+                if (OP_rom != 0) reg[0] = (byte)(data << 2);
                 SetBank_CPU();
             }
             else if (addr == 0x4802)
             {
                 reg[1] = (byte)(data << 2);
-                if (OP_rom!=0) reg[1] = data;
+                if (OP_rom != 0) reg[1] = data;
                 SetBank_CPU();
             }
             else if (addr == 0x4803)

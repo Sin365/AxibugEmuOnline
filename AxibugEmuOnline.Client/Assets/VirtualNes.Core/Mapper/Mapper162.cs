@@ -1,13 +1,9 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper162  Pocket Monster Gold                                       //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
-using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
 using VirtualNes.Core.Debug;
+using static VirtualNes.MMU;
+using BYTE = System.Byte;
 
 namespace VirtualNes.Core
 {

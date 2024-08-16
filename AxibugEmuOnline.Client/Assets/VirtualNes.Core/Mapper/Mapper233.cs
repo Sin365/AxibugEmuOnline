@@ -1,11 +1,8 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper233  42-in-1                                                   //
 //////////////////////////////////////////////////////////////////////////using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
 
 namespace VirtualNes.Core
 {

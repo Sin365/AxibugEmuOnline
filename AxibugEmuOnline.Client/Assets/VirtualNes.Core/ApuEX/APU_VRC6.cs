@@ -263,16 +263,16 @@ namespace VirtualNes.Core
             public void ZeroMemory()
             {
                 Array.Clear(reg, 0, reg.Length);
-                enable = default;
-                gate = default;
-                volume = default;
+                enable = 0;
+                gate = 0;
+                volume = 0;
 
-                phaseacc = default;
-                freq = default;
-                output_vol = default;
+                phaseacc = 0;
+                freq = 0;
+                output_vol = 0;
 
-                adder = default;
-                duty_pos = default;
+                adder = 0;
+                duty_pos = 0;
             }
         }
 
@@ -294,16 +294,16 @@ namespace VirtualNes.Core
             public void ZeroMemory()
             {
                 Array.Clear(reg, 0, reg.Length);
-                enable = default;
-                volume = default;
+                enable = 0;
+                volume = 0;
 
-                phaseacc = default;
-                freq = default;
-                output_vol = default;
+                phaseacc = 0;
+                freq = 0;
+                output_vol = 0;
 
-                adder = default;
-                accum = default;
-                phaseaccum = default;
+                adder = 0;
+                accum = 0;
+                phaseaccum = 0;
             }
         }
     }
