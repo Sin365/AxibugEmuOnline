@@ -49,15 +49,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4f275956ba18440b061e92278f13cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_menuItemRoot: {fileID: 7102897325704768026}
   GroupRoot: {fileID: 5247317738185020566}
   Template: {fileID: 2502609279043838113, guid: ece591129eb9bcc48bd83ec153c98018, type: 3}
   MenuSetting:
   - Icon: {fileID: 21300000, guid: 1b52cdd34b39a8c4fa0dad6f2007e2f3, type: 3}
     Name: Game
+    Description: 
+    SubMenus: []
   - Icon: {fileID: 21300000, guid: c300d49e84cf0fb4186c750320e50146, type: 3}
     Name: Settings
-  SelectScale: 1
-  UnSelectScale: 0.85
+    Description: 
+    SubMenus: []
   HoriRollSpd: 1500
 --- !u!1 &1639091783724093882
 GameObject:
