@@ -2,11 +2,7 @@
 // Mapper122/184  SunSoft-1                                             //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
-using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {

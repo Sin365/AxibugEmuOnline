@@ -1,11 +1,10 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper019  Namcot 106                                                //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {

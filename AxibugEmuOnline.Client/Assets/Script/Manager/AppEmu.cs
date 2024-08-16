@@ -1,10 +1,7 @@
-﻿using System.IO;
-using UnityEngine;
-
-namespace AxibugEmuOnline.Client.Manager
+﻿namespace AxibugEmuOnline.Client.Manager
 {
-    public class AppEmu 
+    public class AppEmu
     {
-        
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using Codice.CM.Client.Differences;
+﻿
 using System;
 
 namespace VirtualNes.Core
@@ -387,7 +387,7 @@ namespace VirtualNes.Core
                 Array.Clear(dummy, 0, dummy.Length);
                 vbl_length = 0;
             }
-        }        
+        }
 
         public class RECTANGLE
         {

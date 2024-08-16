@@ -2,12 +2,11 @@
 // Mapper115 CartSaint : Yuu Yuu Hakusho Final                          //
 //           JusticePao(?)                                              //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {
@@ -46,7 +45,7 @@ namespace VirtualNes.Core
 
             SetBank_CPU();
 
-            if (VROM_1K_SIZE!=0)
+            if (VROM_1K_SIZE != 0)
             {
                 chr0 = 0;
                 chr1 = 1;
@@ -143,7 +142,7 @@ namespace VirtualNes.Core
                     reg[2] = data;
                     if (!nes.rom.Is4SCREEN())
                     {
-                        if ((data & 0x01)!=0) SetVRAM_Mirror(VRAM_HMIRROR);
+                        if ((data & 0x01) != 0) SetVRAM_Mirror(VRAM_HMIRROR);
                         else SetVRAM_Mirror(VRAM_VMIRROR);
                     }
                     break;
@@ -178,9 +177,9 @@ namespace VirtualNes.Core
             {
                 if (nes.ppu.IsDispON())
                 {
-                    if (irq_enable!=0)
+                    if (irq_enable != 0)
                     {
-                        if ((irq_counter--)==0)
+                        if ((irq_counter--) == 0)
                         {
                             irq_counter = irq_latch;
                             //					nes.cpu.IRQ_NotPending();
@@ -194,7 +193,7 @@ namespace VirtualNes.Core
 
         void SetBank_CPU()
         {
-            if ((ExPrgSwitch & 0x80)!=0)
+            if ((ExPrgSwitch & 0x80) != 0)
             {
                 prg0 = (byte)(((ExPrgSwitch << 1) & 0x1e));
                 prg1 = (byte)(prg0 + 1);
@@ -205,7 +204,7 @@ namespace VirtualNes.Core
             {
                 prg0 = prg0L;
                 prg1 = prg1L;
-                if ((reg[0] & 0x40)!=0)
+                if ((reg[0] & 0x40) != 0)
                 {
                     SetPROM_32K_Bank(PROM_8K_SIZE - 2, prg1, prg0, PROM_8K_SIZE - 1);
                 }
@@ -218,9 +217,9 @@ namespace VirtualNes.Core
 
         void SetBank_PPU()
         {
-            if (VROM_1K_SIZE!=0)
+            if (VROM_1K_SIZE != 0)
             {
-                if ((reg[0] & 0x80)!=0)
+                if ((reg[0] & 0x80) != 0)
                 {
                     SetVROM_8K_Bank((ExChrSwitch << 8) + chr4, (ExChrSwitch << 8) + chr5,
                              (ExChrSwitch << 8) + chr6, (ExChrSwitch << 8) + chr7,

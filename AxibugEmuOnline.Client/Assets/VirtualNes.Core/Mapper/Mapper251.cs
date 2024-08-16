@@ -1,9 +1,7 @@
 ﻿using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {
@@ -59,7 +57,7 @@ namespace VirtualNes.Core
                     SetBank();
                     break;
                 case 0xA001:
-                    if ((data & 0x80)!= 0)
+                    if ((data & 0x80) != 0)
                     {
                         reg[9] = 1;
                         reg[10] = 0;

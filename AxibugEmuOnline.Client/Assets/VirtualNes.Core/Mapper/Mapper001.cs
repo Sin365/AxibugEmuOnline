@@ -2,10 +2,9 @@
 // Mapper001  Nintendo MMC1                                             //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {

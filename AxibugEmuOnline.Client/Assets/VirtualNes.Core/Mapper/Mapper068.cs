@@ -2,29 +2,27 @@
 // Mapper068  SunSoft Mapper 4 (After Burner II)                        //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {
-	public class Mapper068 : Mapper
-	{
-		BYTE[] reg = new byte[4];
-		BYTE coin;
-		public Mapper068(NES parent) : base(parent)
-		{
-		}
+    public class Mapper068 : Mapper
+    {
+        BYTE[] reg = new byte[4];
+        BYTE coin;
+        public Mapper068(NES parent) : base(parent)
+        {
+        }
 
-		public override void Reset()
-		{
-			reg[0] = reg[1] = reg[2] = reg[3] = 0;
-			coin = 0;
+        public override void Reset()
+        {
+            reg[0] = reg[1] = reg[2] = reg[3] = 0;
+            coin = 0;
 
-			SetPROM_32K_Bank(0, 1, PROM_8K_SIZE - 2, PROM_8K_SIZE - 1);
-		}
+            SetPROM_32K_Bank(0, 1, PROM_8K_SIZE - 2, PROM_8K_SIZE - 1);
+        }
 
 
 #if FALSE //0
@@ -47,118 +45,118 @@ DEBUGOUT( "WR $4020:%02X\n", data );
 }
 #endif
 
-		//void Mapper068::Write(WORD addr, BYTE data)
-		public override void Write(ushort addr, byte data)
-		{
-			switch (addr & 0xF000)
-			{
-				case 0x8000:
-					SetVROM_2K_Bank(0, data);
-					break;
-				case 0x9000:
-					SetVROM_2K_Bank(2, data);
-					break;
-				case 0xA000:
-					SetVROM_2K_Bank(4, data);
-					break;
-				case 0xB000:
-					SetVROM_2K_Bank(6, data);
-					break;
+        //void Mapper068::Write(WORD addr, BYTE data)
+        public override void Write(ushort addr, byte data)
+        {
+            switch (addr & 0xF000)
+            {
+                case 0x8000:
+                    SetVROM_2K_Bank(0, data);
+                    break;
+                case 0x9000:
+                    SetVROM_2K_Bank(2, data);
+                    break;
+                case 0xA000:
+                    SetVROM_2K_Bank(4, data);
+                    break;
+                case 0xB000:
+                    SetVROM_2K_Bank(6, data);
+                    break;
 
-				case 0xC000:
-					reg[2] = data;
-					SetBank();
-					break;
-				case 0xD000:
-					reg[3] = data;
-					SetBank();
-					break;
-				case 0xE000:
-					reg[0] = (byte)((data & 0x10) >> 4);
-					reg[1] = (byte)(data & 0x03);
-					SetBank();
-					break;
+                case 0xC000:
+                    reg[2] = data;
+                    SetBank();
+                    break;
+                case 0xD000:
+                    reg[3] = data;
+                    SetBank();
+                    break;
+                case 0xE000:
+                    reg[0] = (byte)((data & 0x10) >> 4);
+                    reg[1] = (byte)(data & 0x03);
+                    SetBank();
+                    break;
 
-				case 0xF000:
-					SetPROM_16K_Bank(4, data);
-					break;
-			}
-		}
+                case 0xF000:
+                    SetPROM_16K_Bank(4, data);
+                    break;
+            }
+        }
 
-		void SetBank()
-		{
-			if (reg[0] != 0)
-			{
-				switch (reg[1])
-				{
-					case 0:
-						SetVROM_1K_Bank(8, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(9, (INT)reg[3] + 0x80);
-						SetVROM_1K_Bank(10, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(11, (INT)reg[3] + 0x80);
-						break;
-					case 1:
-						SetVROM_1K_Bank(8, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(9, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(10, (INT)reg[3] + 0x80);
-						SetVROM_1K_Bank(11, (INT)reg[3] + 0x80);
-						break;
-					case 2:
-						SetVROM_1K_Bank(8, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(9, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(10, (INT)reg[2] + 0x80);
-						SetVROM_1K_Bank(11, (INT)reg[2] + 0x80);
-						break;
-					case 3:
-						SetVROM_1K_Bank(8, (INT)reg[3] + 0x80);
-						SetVROM_1K_Bank(9, (INT)reg[3] + 0x80);
-						SetVROM_1K_Bank(10, (INT)reg[3] + 0x80);
-						SetVROM_1K_Bank(11, (INT)reg[3] + 0x80);
-						break;
-				}
-			}
-			else
-			{
-				switch (reg[1])
-				{
-					case 0:
-						SetVRAM_Mirror(VRAM_VMIRROR);
-						break;
-					case 1:
-						SetVRAM_Mirror(VRAM_HMIRROR);
-						break;
-					case 2:
-						SetVRAM_Mirror(VRAM_MIRROR4L);
-						break;
-					case 3:
-						SetVRAM_Mirror(VRAM_MIRROR4H);
-						break;
-				}
-			}
-		}
+        void SetBank()
+        {
+            if (reg[0] != 0)
+            {
+                switch (reg[1])
+                {
+                    case 0:
+                        SetVROM_1K_Bank(8, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(9, (INT)reg[3] + 0x80);
+                        SetVROM_1K_Bank(10, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(11, (INT)reg[3] + 0x80);
+                        break;
+                    case 1:
+                        SetVROM_1K_Bank(8, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(9, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(10, (INT)reg[3] + 0x80);
+                        SetVROM_1K_Bank(11, (INT)reg[3] + 0x80);
+                        break;
+                    case 2:
+                        SetVROM_1K_Bank(8, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(9, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(10, (INT)reg[2] + 0x80);
+                        SetVROM_1K_Bank(11, (INT)reg[2] + 0x80);
+                        break;
+                    case 3:
+                        SetVROM_1K_Bank(8, (INT)reg[3] + 0x80);
+                        SetVROM_1K_Bank(9, (INT)reg[3] + 0x80);
+                        SetVROM_1K_Bank(10, (INT)reg[3] + 0x80);
+                        SetVROM_1K_Bank(11, (INT)reg[3] + 0x80);
+                        break;
+                }
+            }
+            else
+            {
+                switch (reg[1])
+                {
+                    case 0:
+                        SetVRAM_Mirror(VRAM_VMIRROR);
+                        break;
+                    case 1:
+                        SetVRAM_Mirror(VRAM_HMIRROR);
+                        break;
+                    case 2:
+                        SetVRAM_Mirror(VRAM_MIRROR4L);
+                        break;
+                    case 3:
+                        SetVRAM_Mirror(VRAM_MIRROR4H);
+                        break;
+                }
+            }
+        }
 
-		//void Mapper068::SaveState(LPBYTE p)
-		public override void SaveState(byte[] p)
-		{
-			p[0] = reg[0];
-			p[1] = reg[1];
-			p[2] = reg[2];
-			p[3] = reg[3];
-		}
+        //void Mapper068::SaveState(LPBYTE p)
+        public override void SaveState(byte[] p)
+        {
+            p[0] = reg[0];
+            p[1] = reg[1];
+            p[2] = reg[2];
+            p[3] = reg[3];
+        }
 
-		//void Mapper068::LoadState(LPBYTE p)
-		public override void LoadState(byte[] p)
-		{
-			reg[0] = p[0];
-			reg[1] = p[1];
-			reg[2] = p[2];
-			reg[3] = p[3];
-		}
+        //void Mapper068::LoadState(LPBYTE p)
+        public override void LoadState(byte[] p)
+        {
+            reg[0] = p[0];
+            reg[1] = p[1];
+            reg[2] = p[2];
+            reg[3] = p[3];
+        }
 
 
-		public override bool IsStateSave()
-		{
-			return true;
-		}
-	}
+        public override bool IsStateSave()
+        {
+            return true;
+        }
+    }
 }

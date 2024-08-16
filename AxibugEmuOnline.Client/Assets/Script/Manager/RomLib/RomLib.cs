@@ -11,7 +11,8 @@ namespace AxibugEmuOnline.Client
 
         public RomFile GetNesRomFile(string romFileName)
         {
-            nesRomFileNameMapper.TryGetValue(romFileName, out RomFile romFile);
+            RomFile romFile;
+            nesRomFileNameMapper.TryGetValue(romFileName, out romFile);
             return romFile;
         }
 
@@ -29,8 +30,8 @@ namespace AxibugEmuOnline.Client
                     for (int i = 0; i < romList.gameList.Count; i++)
                     {
                         var webData = romList.gameList[i];
-
-                        nesRomFileIdMapper.TryGetValue(webData.id, out var targetRomFile);
+                        RomFile targetRomFile;
+                        nesRomFileIdMapper.TryGetValue(webData.id, out targetRomFile);
                         if (targetRomFile == null)
                         {
                             targetRomFile = new RomFile(EnumPlatform.NES);

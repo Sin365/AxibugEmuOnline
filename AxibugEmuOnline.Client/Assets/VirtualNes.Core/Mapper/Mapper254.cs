@@ -1,6 +1,4 @@
 ﻿using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
 
 namespace VirtualNes.Core
@@ -205,7 +203,7 @@ namespace VirtualNes.Core
 
         public void SetBank_CPU()
         {
-            if ((reg[0] & 0x40)!=0)
+            if ((reg[0] & 0x40) != 0)
             {
                 SetPROM_32K_Bank(PROM_8K_SIZE - 2, prg1, prg0, PROM_8K_SIZE - 1);
             }
@@ -219,7 +217,7 @@ namespace VirtualNes.Core
         {
             if (VROM_1K_SIZE != 0)
             {
-                if ((reg[0] & 0x80)!= 0)
+                if ((reg[0] & 0x80) != 0)
                 {
                     SetVROM_8K_Bank(chr4, chr5, chr6, chr7,
                              chr01, chr01 + 1, chr23, chr23 + 1);

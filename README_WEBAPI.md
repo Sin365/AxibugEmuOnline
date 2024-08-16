@@ -6,57 +6,72 @@
 ### Nes游戏列表
 
 ```
-{WebHost}/api/NesRomList?Page=<页码>&PageSize=<单大小>&SearchKey=<可选的模糊查询关键字>
+{WebHost}/api/NesRomList?Page=<页码>&PageSize=<单大小>&SearchKey=<可选的模糊查询关键字>&PType=<平台枚举（int）>&GType=<游戏类型枚举>
 ```
 
 Request:
 
 ```
-/api/NesRomList?Page=1&PageSize=5&SearchKey=热血
+http://emu.axibug.com/api/NesRomList?Page=0&PageSize=5&SearchKey=%热血&PType=1&GType=1
 ```
 
 Response:
 
 ```
 {
-    "page": 1,
-    "maxPage": 5,
-    "resultAllCount": 27,
+    "page": 0,
+    "maxPage": 2,
+    "resultAllCount": 6,
     "gameList": [
         {
-            "id": 584,
+            "id": 190,
+            "romName": "热血物语",
+            "gType": "ACT",
+            "desc": "设有拳击及体力槽的热血系列节目。是带有RPG色彩的街头斗殴节目。",
+            "url": "roms/fcrom/Downtown%20-%20Nekketsu%20Monogatari%20(J).zip",
+            "imgUrl": "images/fcrom/Downtown%20-%20Nekketsu%20Monogatari%20(J).JPG",
             "hash": "",
-            "romName": "热血格斗传说",
-            "url": "images/fcrom/Nekketsu%20Kakutou%20Densetsu%20(J).JPG",
-            "imgUrl": "roms/fcrom/Nekketsu%20Kakutou%20Densetsu%20(J).zip"
+            "stars": 0
+        },
+        {
+            "id": 460,
+            "romName": "热血时代剧(热血道中记)",
+            "gType": "ACT",
+            "desc": "以古代日本为舞台展开的热血系列节目。设有多种必杀技可使用。",
+            "url": "roms/fcrom/Kunio%20Kun%20No%20Jidaigekidayo%20Zenin%20Shuugou%20(J).zip",
+            "imgUrl": "images/fcrom/Kunio%20Kun%20No%20Jidaigekidayo%20Zenin%20Shuugou%20(J).JPG",
+            "hash": "",
+            "stars": 0
         },
         {
             "id": 585,
-            "hash": "",
             "romName": "热血硬派",
-            "url": "images/fcrom/Nekketsu%20Kouha%20-%20Kunio%20Kun%20(J).JPG",
-            "imgUrl": "roms/fcrom/Nekketsu%20Kouha%20-%20Kunio%20Kun%20(J).zip"
+            "gType": "ACT",
+            "desc": "有着多种模式的格斗节目。各版面均有不同的趣味性。是热血系列游戏最初的作品。",
+            "url": "roms/fcrom/Nekketsu%20Kouha%20-%20Kunio%20Kun%20(J).zip",
+            "imgUrl": "images/fcrom/Nekketsu%20Kouha%20-%20Kunio%20Kun%20(J).JPG",
+            "hash": "",
+            "stars": 0
         },
         {
-            "id": 586,
+            "id": 674,
+            "romName": "热血物语(美版)",
+            "gType": "ACT",
+            "desc": "设有拳击及体力槽的热血系列节目。是带有RPG色彩的街头斗殴节目。",
+            "url": "roms/fcrom/River%20City%20Brawl%20(J).zip",
+            "imgUrl": "images/fcrom/River%20City%20Brawl%20(J).JPG",
             "hash": "",
-            "romName": "热血高校躲避球",
-            "url": "images/fcrom/Nekketsu%20Koukou%20-%20Dodgeball%20Bu%20(J).JPG",
-            "imgUrl": "roms/fcrom/Nekketsu%20Koukou%20-%20Dodgeball%20Bu%20(J).zip"
+            "stars": 0
         },
         {
-            "id": 587,
+            "id": 826,
+            "romName": "热血时代剧美版(热血道中记美版)",
+            "gType": "ACT",
+            "desc": "以古代日本为舞台展开的热血系列节目。设有多种必杀技可使用。",
+            "url": "roms/fcrom/Technos%20Samurai%20-%20Downtown%20Special%20(J).zip",
+            "imgUrl": "images/fcrom/Technos%20Samurai%20-%20Downtown%20Special%20(J).JPG",
             "hash": "",
-            "romName": "热血高校-足球篇",
-            "url": "images/fcrom/Nekketsu%20Koukou%20Dodgeball%20Bu%20-%20Soccer%20Hen%20(J).JPG",
-            "imgUrl": "roms/fcrom/Nekketsu%20Koukou%20Dodgeball%20Bu%20-%20Soccer%20Hen%20(J).zip"
-        },
-        {
-            "id": 588,
-            "hash": "",
-            "romName": "热血新记录",
-            "url": "images/fcrom/Nekketsu%20Shinkiroku%20-%20Harukanaru%20Kin%20Medal%20(J).JPG",
-            "imgUrl": "roms/fcrom/Nekketsu%20Shinkiroku%20-%20Harukanaru%20Kin%20Medal%20(J).zip"
+            "stars": 0
         }
     ]
 }
@@ -65,20 +80,51 @@ Response:
 序列化C#实体类示例
 
 ```
-class Resp_GameList
-{
-    public int Page { get; set; }
-    public int MaxPage { get; set; }
-    public int ResultAllCount { get; set; }
-    public List<Resp_RomInfo> GameList { get; set; }
-}
+      enum PlatformType : byte
+      {
+          All = 0,
+          Nes,
+      }
 
-public class Resp_RomInfo
-{
-    public int ID { get; set; }
-    public string Hash { get; set; }
-    public string RomName { get; set;}
-    public string Url { get; set; }
-    public string ImgUrl { get; set; }
-}
+      enum GameType : byte
+      {
+          NONE = 0,
+          ACT,
+          ARPG,
+          AVG,
+          ETC,
+          FTG,
+          PUZ,
+          RAC,
+          RPG,
+          SLG,
+          SPG,
+          SRPG,
+          STG,
+          TAB,
+          /// <summary>
+          /// 合卡
+          /// </summary>
+          ALLINONE,
+      }
+
+      class Resp_GameList
+      {
+          public int page { get; set; }
+          public int maxPage { get; set; }
+          public int resultAllCount { get; set; }
+          public List<Resp_RomInfo> gameList { get; set; }
+      }
+
+      public class Resp_RomInfo
+      {
+          public int id { get; set; }
+          public string romName { get; set;}
+          public string gType { get; set; }
+          public string desc { get; set; }
+          public string url { get; set; }
+          public string imgUrl { get; set; }
+          public string hash { get; set; }
+          public int stars { get; set; }
+      }
 ```

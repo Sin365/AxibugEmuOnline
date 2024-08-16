@@ -1,7 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
 using VirtualNes.Core;

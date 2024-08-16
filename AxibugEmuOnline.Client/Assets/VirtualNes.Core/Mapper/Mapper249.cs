@@ -1,9 +1,8 @@
-﻿using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+﻿using static VirtualNes.Core.CPU;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {
@@ -254,7 +253,7 @@ namespace VirtualNes.Core
                     reg[2] = data;
                     if (!nes.rom.Is4SCREEN())
                     {
-                        if ((data & 0x01)!= 0) SetVRAM_Mirror(VRAM_HMIRROR);
+                        if ((data & 0x01) != 0) SetVRAM_Mirror(VRAM_HMIRROR);
                         else SetVRAM_Mirror(VRAM_VMIRROR);
                     }
                     break;
@@ -308,7 +307,7 @@ namespace VirtualNes.Core
             {
                 if (nes.ppu.IsDispON())
                 {
-                    if (irq_enable !=0 && irq_request == 0)
+                    if (irq_enable != 0 && irq_request == 0)
                     {
                         if (scanline == 0)
                         {

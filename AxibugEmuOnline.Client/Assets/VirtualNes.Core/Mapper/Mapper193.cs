@@ -2,10 +2,6 @@
 // Mapper193 MEGA SOFT (NTDEC) : Fighting Hero                          //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
-using BYTE = System.Byte;
-using System;
 
 namespace VirtualNes.Core
 {
