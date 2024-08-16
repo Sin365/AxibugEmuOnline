@@ -8,76 +8,49 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.UI
 {
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : MenuItemController
     {
         [SerializeField]
         HorizontalLayoutGroup GroupRoot;
         [SerializeField]
         MenuItem Template;
         [SerializeField]
-        List<MainMenuData> MenuSetting;
+        List<MenuData> MenuSetting;
         [SerializeField]
         float HoriRollSpd = 1f;
 
-        private RectTransform groupRootRect => GroupRoot.transform as RectTransform;
-        private List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
+        private RectTransform groupRootRect => m_menuItemRoot as RectTransform;
 
-        private int m_selectIndex;
         private TweenerCore<Vector2, Vector2, VectorOptions> rollTween;
 
-        public int SelectIndex
+
+        protected override void OnSelectMenuChanged()
         {
-            get => m_selectIndex;
-            set
-            {
-                value = Mathf.Clamp(value, 0, m_runtimeMenuUI.Count - 1);
-                m_selectIndex = value;
+            var step = GroupRoot.spacing;
+            var needSelectItem = m_runtimeMenuUI[SelectIndex];
+            var offset = needSelectItem.Rect.anchoredPosition.x;
 
-                var step = GroupRoot.spacing;
-                var needSelectItem = m_runtimeMenuUI[value];
-                var offset = needSelectItem.Rect.anchoredPosition.x;
+            var targetPosition = groupRootRect.anchoredPosition;
+            targetPosition.x = -offset;
 
-                var targetPosition = groupRootRect.anchoredPosition;
-                targetPosition.x = -offset;
+            if (rollTween != null) { rollTween.Kill(); rollTween = null; }
 
-                if (rollTween != null) { rollTween.Kill(); rollTween = null; }
-
-                rollTween = DOTween.To(
-                    () => groupRootRect.anchoredPosition,
-                    (x) => groupRootRect.anchoredPosition = x,
-                    targetPosition,
-                    HoriRollSpd)
-                    .SetSpeedBased().OnUpdate(() =>
+            rollTween = DOTween.To(
+                () => groupRootRect.anchoredPosition,
+                (x) => groupRootRect.anchoredPosition = x,
+                targetPosition,
+                HoriRollSpd)
+                .SetSpeedBased().OnUpdate(() =>
+                {
+                    for (var i = 0; i < m_runtimeMenuUI.Count; i++)
                     {
-                        foreach (var item in m_runtimeMenuUI)
-                        {
-                            var distance = Mathf.Abs(item.Rect.anchoredPosition.x + groupRootRect.anchoredPosition.x);
-                            var selectProg = (1 - distance / 200f);
-
-                            SetSelectProgress(item, selectProg);
-                        }
-                    });
-            }
+                        var item = m_runtimeMenuUI[i];
+                        item.SetSelectState(i == SelectIndex);
+                    }
+                });
         }
 
-        private void SetSelectProgress(MenuItem item, float selectProg)
-        {
-            item.ControlSelectProgress(selectProg);
-        }
-
-        private void Start()
-        {
-            for (int i = 0; i < GroupRoot.transform.childCount; i++)
-            {
-                Transform child = GroupRoot.transform.GetChild(i);
-                m_runtimeMenuUI.Add(child.GetComponent<MenuItem>());
-            }
-
-            Canvas.ForceUpdateCanvases();
-            SelectIndex = 0;
-        }
-
-        private void Update()
+        protected override void Update()
         {
             if (Input.GetKeyDown(KeyCode.D))
                 SelectIndex += 1;
@@ -112,9 +85,12 @@ namespace AxibugEmuOnline.Client.UI
     }
 
     [Serializable]
-    public class MainMenuData
+    public class MenuData
     {
         public Sprite Icon;
         public string Name;
+        public string Description;
+
+        public List<MenuData> SubMenus;
     }
 }
