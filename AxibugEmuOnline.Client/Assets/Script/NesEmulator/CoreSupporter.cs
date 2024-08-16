@@ -8,17 +8,6 @@ namespace AxibugEmuOnline.Client
 {
     public class CoreSupporter : ISupporterImpl
     {
-        private static string RomDirectoryPath
-        {
-            get
-            {
-#if UNITY_EDITOR
-                return "Assets/StreamingAssets/NES/Roms";
-#else
-                return $"{Application.streamingAssetsPath}/NES/Roms";
-#endif
-            }
-        }
 
         public Stream OpenRom(string fname)
         {
@@ -38,8 +27,11 @@ namespace AxibugEmuOnline.Client
 
         public void GetRomPathInfo(string fname, out string fullPath, out string directPath)
         {
-            directPath = RomDirectoryPath;
-            fullPath = $"{directPath}/{fname}";
+            var romFile = AppAxibugEmuOnline.romLib.GetNesRomFile(fname);
+            UnityEngine.Debug.Assert(romFile != null);
+
+            fullPath = romFile.LocalFilePath;
+            directPath = Path.GetDirectoryName(fullPath);
         }
 
         public Stream OpenFile_DISKSYS()
