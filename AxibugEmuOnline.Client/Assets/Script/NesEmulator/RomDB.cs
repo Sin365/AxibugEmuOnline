@@ -31,8 +31,8 @@ namespace AxibugEmuOnline.Client.ClientCore
                     crc_Info_mapper[info.CRC] = info;
                 }
             }
-
-            if (crc_Info_mapper.TryGetValue(crc, out var romInfo))
+            RomInfo romInfo;
+            if (crc_Info_mapper.TryGetValue(crc, out romInfo))
             {
                 mapperNo = romInfo.Mapper;
                 return true;

@@ -1,13 +1,11 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper116 CartSaint : 幽遊AV強列伝                                   //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
-using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
 using VirtualNes.Core.Debug;
+using static VirtualNes.Core.CPU;
+using static VirtualNes.MMU;
+using BYTE = System.Byte;
+using INT = System.Int32;
 
 namespace VirtualNes.Core
 {

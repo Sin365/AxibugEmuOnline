@@ -2,10 +2,8 @@
 // Mapper198  Nintendo MMC3                                             //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
 using BYTE = System.Byte;
-using System;
+using INT = System.Int32;
 
 namespace VirtualNes.Core
 {

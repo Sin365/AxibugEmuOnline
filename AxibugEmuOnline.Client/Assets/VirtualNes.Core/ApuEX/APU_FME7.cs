@@ -1,6 +1,4 @@
 ﻿using System;
-using static VirtualNes.Core.APU_INTERNAL;
-using System.Net;
 
 namespace VirtualNes.Core
 {

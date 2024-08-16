@@ -1,6 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace VirtualNes.Core
 {
@@ -440,7 +438,7 @@ namespace VirtualNes.Core
         private byte SyncSub(int no, ControllerState state)
         {
             ushort bit = 0;
-                        
+
             // Up
             if (state.HasButton(no, EnumButtonType.UP))
                 bit |= 1 << 4;

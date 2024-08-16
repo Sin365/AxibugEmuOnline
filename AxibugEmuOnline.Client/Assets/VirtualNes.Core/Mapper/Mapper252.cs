@@ -1,8 +1,8 @@
-﻿using static VirtualNes.MMU;
+﻿using System;
 using static VirtualNes.Core.CPU;
-using INT = System.Int32;
+using static VirtualNes.MMU;
 using BYTE = System.Byte;
-using System;
+using INT = System.Int32;
 
 namespace VirtualNes.Core
 {
@@ -42,7 +42,7 @@ namespace VirtualNes.Core
 
         public override void Write(ushort addr, byte data)
         {
-         
+
             if ((addr & 0xF000) == 0x8000)
             {
                 SetPROM_8K_Bank(4, data);
@@ -207,7 +207,7 @@ namespace VirtualNes.Core
             irq_counter = p[10];
             irq_latch = p[11];
             //irq_clock = *(INT*)&p[12];
-            irq_clock = BitConverter.ToInt32(p,12);
+            irq_clock = BitConverter.ToInt32(p, 12);
         }
     }
 }

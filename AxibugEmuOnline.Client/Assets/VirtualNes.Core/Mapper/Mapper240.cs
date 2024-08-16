@@ -2,11 +2,7 @@
 // Mapper240  Gen Ke Le Zhuan                                           //
 //////////////////////////////////////////////////////////////////////////
 using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
-using BYTE = System.Byte;
-using System;
-using Codice.CM.Client.Differences;
+
 
 namespace VirtualNes.Core
 {

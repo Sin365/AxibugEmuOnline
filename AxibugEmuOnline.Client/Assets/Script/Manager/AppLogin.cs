@@ -17,7 +17,7 @@ namespace AxibugEmuOnline.Client.Manager
         public void Login()
         {
             AppAxibugEmuOnline.log.Debug("-->Login");
-            if(string.IsNullOrEmpty(LastLoginGuid))
+            if (string.IsNullOrEmpty(LastLoginGuid))
                 LastLoginGuid = Guid.NewGuid().ToString();
 
             AppAxibugEmuOnline.user.userdata.Account = LastLoginGuid;
@@ -35,7 +35,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (msg.Status == LoginResultStatus.Ok)
             {
                 AppAxibugEmuOnline.log.Info("登录成功");
-                AppAxibugEmuOnline.user.InitMainUserData(AppAxibugEmuOnline.user.userdata.Account,msg.UID);
+                AppAxibugEmuOnline.user.InitMainUserData(AppAxibugEmuOnline.user.userdata.Account, msg.UID);
             }
             else
             {

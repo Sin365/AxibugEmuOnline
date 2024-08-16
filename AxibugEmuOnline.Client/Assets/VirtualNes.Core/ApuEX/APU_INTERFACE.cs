@@ -22,7 +22,7 @@
         public virtual int GetStateSize() { return 0; }
         public virtual void SaveState(byte[] p) { }
         public virtual void LoadState(byte[] p) { }
-        
+
         public static int INT2FIX(int x)
         {
             return x << 16;

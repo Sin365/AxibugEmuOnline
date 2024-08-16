@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.Remoting.Lifetime;
 namespace VirtualNes.Core.Emu2413
 {
     public static class Emu2413API

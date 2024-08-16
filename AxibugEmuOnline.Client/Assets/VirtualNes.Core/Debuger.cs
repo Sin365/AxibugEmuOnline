@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace VirtualNes.Core.Debug
+﻿namespace VirtualNes.Core.Debug
 {
     public static class Debuger
     {

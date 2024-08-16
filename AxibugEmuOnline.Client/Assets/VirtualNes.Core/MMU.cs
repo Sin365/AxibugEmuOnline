@@ -1,5 +1,4 @@
-﻿using System;
-using VirtualNes.Core;
+﻿using VirtualNes.Core;
 
 namespace VirtualNes
 {

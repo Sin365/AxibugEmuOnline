@@ -1,5 +1,4 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using AxibugProtobuf;
 
 namespace AxibugEmuOnline.Client.Manager
 {
@@ -21,10 +20,10 @@ namespace AxibugEmuOnline.Client.Manager
             //注册重连成功事件，以便后续自动登录
             AppAxibugEmuOnline.networkHelper.OnReConnected += OnReConnected;
         }
-        public MainUserDataBase userdata { get;private set; } = new MainUserDataBase();
+        public MainUserDataBase userdata { get; private set; } = new MainUserDataBase();
         public bool IsLoggedIn => userdata.IsLoggedIn;
 
-        public void InitMainUserData(string UName,long UID)
+        public void InitMainUserData(string UName, long UID)
         {
             userdata.Account = UName;
             userdata.IsLoggedIn = true;

@@ -1,9 +1,5 @@
-﻿using Codice.CM.Client.Differences;
+﻿
 using System;
-using System.IO;
-using System.Security.Principal;
-using UnityEngine;
-using VirtualNes.Core;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
@@ -80,7 +76,7 @@ namespace VirtualNes.Core
             int nBits = Supporter.Config.sound.nBits;
             uint dwLength = (uint)(dwSize / (nBits / 8));
             int output;
-            QUEUEDATA q = default;
+            QUEUEDATA q = new QUEUEDATA();
             uint writetime;
 
             var pSoundBuf = m_SoundBuffer;

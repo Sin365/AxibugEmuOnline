@@ -1,17 +1,16 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper163  NanJing Games                                             //
 //////////////////////////////////////////////////////////////////////////
-using static VirtualNes.MMU;
-using static VirtualNes.Core.CPU;
-using INT = System.Int32;
-using BYTE = System.Byte;
 using System;
-using Codice.CM.Client.Differences;
+using static VirtualNes.MMU;
+using BYTE = System.Byte;
+using INT = System.Int32;
+
 
 namespace VirtualNes.Core
 {
-	public class Mapper163 : Mapper
-	{
+    public class Mapper163 : Mapper
+    {
         //BYTE    strobe;
         //BYTE	security;
         //BYTE	trigger;
@@ -25,10 +24,10 @@ namespace VirtualNes.Core
 
         INT www, index;
         public Mapper163(NES parent) : base(parent)
-        { 
+        {
         }
 
-        static Int32[] index_adjust = new Int32[]{ -1, -1, -1, -1, 2, 4, 6, 8 };
+        static Int32[] index_adjust = new Int32[] { -1, -1, -1, -1, 2, 4, 6, 8 };
         static Int16[] step_table = new Int16[] {
 7,8,9,10,11,12,13,14,16,17,19,21,23,25,28,31,34,37,41,45,50,55,
 60,66,73,80,88,97,107,118,130,143,157,173,190,209,230,253,279,
@@ -101,7 +100,7 @@ namespace VirtualNes.Core
                         return (byte)security;
                         break;
                     case 0x5500:
-                        if (trigger!=0)
+                        if (trigger != 0)
                             return (byte)security;
                         else
                             return 0;
@@ -125,7 +124,7 @@ namespace VirtualNes.Core
             {
                 if (addr == 0x5101)
                 {
-                    if (strobe !=0 && data == 0)
+                    if (strobe != 0 && data == 0)
                     {
                         trigger ^= 1;
                         //				trigger ^= 0xFF;
@@ -186,7 +185,7 @@ namespace VirtualNes.Core
         //void Mapper163::HSync(int scanline)
         public override void HSync(int scanline)
         {
-            if ((reg[1] & 0x80) !=0 && nes.ppu.IsDispON())
+            if ((reg[1] & 0x80) != 0 && nes.ppu.IsDispON())
             {
                 if (scanline == 127)
                 {
