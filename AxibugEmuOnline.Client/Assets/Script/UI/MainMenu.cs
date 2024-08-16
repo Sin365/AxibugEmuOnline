@@ -23,7 +23,6 @@ namespace AxibugEmuOnline.Client.UI
 
         private TweenerCore<Vector2, Vector2, VectorOptions> rollTween;
 
-
         protected override void OnSelectMenuChanged()
         {
             var step = GroupRoot.spacing;
@@ -50,12 +49,14 @@ namespace AxibugEmuOnline.Client.UI
                 });
         }
 
-        protected override void Update()
+        protected override void OnCmdSelectItemLeft()
         {
-            if (Input.GetKeyDown(KeyCode.D))
-                SelectIndex += 1;
-            else if (Input.GetKeyDown(KeyCode.A))
-                SelectIndex -= 1;
+            SelectIndex--;
+        }
+
+        protected override void OnCmdSelectItemRight()
+        {
+            SelectIndex++;
         }
 
 #if UNITY_EDITOR

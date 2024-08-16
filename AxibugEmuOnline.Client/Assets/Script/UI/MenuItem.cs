@@ -2,6 +2,7 @@ using Coffee.UIExtensions;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static Codice.Client.BaseCommands.Import.Commit;
@@ -90,6 +91,10 @@ namespace AxibugEmuOnline.Client.UI
 
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });
+        }
+
+        public void OnEnterItem()
+        {
         }
     }
 }
