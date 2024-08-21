@@ -6,26 +6,54 @@ enum CommandID
 {
     CMD_DEFAUL = 0;//缺省不使用
 	
+	//服务器或客户端，均可主动ping请求，对方响应。（这里测全流程延迟，即序 列化->发送->传输过程->接收->反序列化）
+	CMD_PING = 1;  //Ping | 请求 对应 Protobuf_Ping
+	CMD_PONG = 2;  //Pong | 响应 对应 Protobuf_Pong
+	
 	CMD_LOGIN = 2001;  //自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
 	
 	CMD_CHATMSG = 4001;  //广播聊天信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
 	
-	//房间列表相关
+	//房间列表相关（仅用于列表显示）
 	CMD_Room_List = 5001;  //房间列表 上行 | 下行 对应 Protobuf_Room_List | Protobuf_Room_List_RESP
-	
 	CMD_Room_List_Update = 5002;  //房间单个房间信息更新 对应 Protobuf_Room_Update_RESP
 	
 	//房间内相关
-	CMD_Room_Create = 5101;  //房间列表创建 对应 Protobuf_Room_Create | Protobuf_Room_Create_RESP
+	CMD_Room_Create = 5101;  //房间创建 对应 Protobuf_Room_Create | Protobuf_Room_Create_RESP
+	CMD_Room_Join = 5105;  //房间加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP
+	CMD_Room_Leave = 5106;  //房间离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
+	CMD_Room_MyRoom_State_Changed = 5110;  //我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change
 	
-	CMD_Room_Join = 5105;  //房间列表加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP
-	
-	CMD_Room_Leave = 5106;  //房间列表离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
-	
-	CMD_Room_MyRoom_State_Changed = 5110;  //我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change;
+		//准备和开始流程（5201 ~ 5204 ~ 5208）
+		//
+		// 我们采用，玩家可以随时进入的方式开发
+		//
+		// 设计流程： 
+		//
+		// Step0：服务器广播"等待-主机上报即使存档" CMD_Room_WaitStep WaitStep=[0] ---> 客户端：暂停模拟器核心：全员等待（主机玩家一人上传即时存档)
+		// 			主机玩家 上行 CMD_Room_HostPlayer_UpdateStateRaw消息，上传即时存档
+		// 			主机玩家上传完毕之后，服务器会通知进入Step1
+		//
+		// Step1：服务器广播"等待-全员加载即时存档" CMD_Room_WaitStep WaitStep=[1] 附带即时存档 ---> 客户端：全员等待（主机玩家一人上传)
+		//			所有玩家确保加载ROM和即时存档，并保持模拟器暂停，准备完毕后 发送 CMD_Room_Player_Ready
+		//			所有玩家Ready之后，服务器会根据所有玩家延迟提前跑若干Frame，通知进入Step2 
+		//			
+		// Step2：服务器广播"开始" CMD_Room_WaitStep WaitStep=[2] ---> 客户端：立即开始
+		//
+		//
+		// PS：[联机过程中加载即时存档] 房间在游玩过程中，单个玩家发送CMD_Room_HostPlayer_UpdateStateRaw 上报即时存档
+		// 		重新从Step1走流程
+		// 
+	CMD_Room_WaitStep = 5201;  //服务器等待Step通知 下行 Protobuf_Room_WaitStep_RESP
+	CMD_Room_HostPlayer_UpdateStateRaw = 5204;  //服务器房间准备和开始标识 下行 Protobuf_Room_HostPlayer_UpdateStateRaw
+	CMD_Room_Player_Ready = 5208;  //玩家准备完毕 上行 Protobuf_Room_Player_Ready
 	
 	//游戏同步
-	CMD_Screen = 6001;  //画面同步 | 同步广播 对应 Protobuf_Screnn_Frame
+	CMD_Room_Singel_PlayerInput = 6010; //单个玩家操作同步上行 对应 Protobuf_Room_SinglePlayerInputData
+	CMD_ROOM_SYN = 6015; //单个玩家操作同步上行 对应 Protobuf_Room_Syn_RoomFrameAllInput
+	
+	//画面采集
+	CMD_Screen = 7001;  //画面采集 | 同步广播 对应 Protobuf_Screnn_Frame
 }
 
 enum ErrorCode
@@ -62,8 +90,12 @@ enum RoomPlayerState
 enum RoomGameState
 {
     None_GameState = 0;//缺省
-	InGame = 1;//游戏中
-	Pause = 2;//暂停
+    OnlyHost = 1;//仅主机，待加入
+	ReadyStep_0 = 2;//ReadyStep0
+	ReadyStep_1 = 3;//ReadyStep1
+	ReadyStep_2 = 4;//ReadyStep2
+	Pause = 5;//暂停
+	InGame = 6;//游戏中
 }
 
 
@@ -88,6 +120,15 @@ message Protobuf_ChatMsg_RESP
 	int64 Date = 3;//时间
 }
 
+message Protobuf_Ping
+{
+	int32 Seed = 1;//随机数
+}
+
+message Protobuf_Pong
+{
+	int32 Seed = 1;//原样返回随机数
+}
 
 //登录数据上行
 message Protobuf_Login
@@ -101,13 +142,13 @@ message Protobuf_Login
 //登录数据下行
 message Protobuf_Login_RESP
 {
-	string Token = 1;//登录凭据 （本次登录之后，所有业务请求凭据，需要存储在内存中）
-	string LastLoginDate = 2;//上次登录时间（只用于呈现的字符串，若界面需求需要）
-	string RegDate = 3;//注册时间（只用于呈现的字符串，若界面需求需要）
-	LoginResultStatus Status = 4;//账号状态 （预留） [1]正常[0]被禁封
-	int64 UID = 5;
+	string DeviceUUID = 1;//设备唯一串
+	string Token = 2;//登录凭据 （本次登录之后，所有业务请求凭据，需要存储在内存中）
+	string LastLoginDate = 3;//上次登录时间（只用于呈现的字符串，若界面需求需要）
+	string RegDate = 4;//注册时间（只用于呈现的字符串，若界面需求需要）
+	LoginResultStatus Status = 5;//账号状态 （预留） [1]正常[0]被禁封
+	int64 UID = 6;
 }
-
 
 message Protobuf_Room_List
 {
@@ -146,6 +187,18 @@ message Protobuf_Screnn_Frame
     bytes RawBitmap = 3;//渲染层画面
 }
 
+message Protobuf_Room_SinglePlayerInputData
+{
+	uint32 FrameID = 1;//帧编号
+	uint32 InputData = 2;//单个玩家操作位运算汇总
+}
+
+message Protobuf_Room_Syn_RoomFrameAllInput
+{
+	uint32 FrameID = 1;//帧编号
+	uint64 InputData = 2;//所有玩家操作位运算汇总
+}
+
 message Protobuf_Room_Create
 {
 	int32 GameRomID = 1;
@@ -181,4 +234,20 @@ message Protobuf_Room_Leave_RESP
 message Protobuf_Room_MyRoom_State_Change
 {
 	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//更新房间信息
+}
+
+
+message Protobuf_Room_WaitStep_RESP
+{
+	int32 WaitStep = 1;//状态 [0]等待主机上报即时存档 [1]要求准备 [2]开始（收到本状态时，立即开始跑模拟器核心）
+}
+
+message Protobuf_Room_HostPlayer_UpdateStateRaw
+{
+	int32 ReadyFrame = 1;//要求准备的帧数 (非即时存档则为0）
+    bytes LoadStateRaw = 2;//即时存档byte数据
+}
+
+message Protobuf_Room_Player_Ready
+{
 }

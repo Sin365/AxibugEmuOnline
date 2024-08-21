@@ -21,7 +21,8 @@ namespace AxibugEmuOnline.Client
         {
             if (wrapTex == null)
             {
-                wrapTex = new Texture2D(272, 240, TextureFormat.BGRA32, false);
+                //wrapTex = new Texture2D(272, 240, TextureFormat.BGRA32, false);
+                wrapTex = new Texture2D(272, 240, TextureFormat.RGBA32, false);
                 wrapTex.filterMode = FilterMode.Point;
                 wrapTexBuffer = screenData;
 
@@ -36,7 +37,8 @@ namespace AxibugEmuOnline.Client
                 TexBufferSize = wrapTexBuffer.Length * 4;
 
                 var palRaw = PaletteDefine.m_cnPalette[0];
-                pPal = new Texture2D(palRaw.Length, 1, TextureFormat.BGRA32, 1, true);
+                //pPal = new Texture2D(palRaw.Length, 1, TextureFormat.BGRA32, 1, true);
+                pPal = new Texture2D(palRaw.Length, 1, TextureFormat.RGBA32, false);
                 pPal.filterMode = FilterMode.Point;
                 for (int i = 0; i < palRaw.Length; i++)
                 {
