@@ -7,6 +7,7 @@ namespace AxibugEmuOnline.Server
 
     public static class AppSrv
     {
+        public static TickManager g_Tick;
         public static ClientManager g_ClientMgr;
         public static LogManager g_Log;
         public static LoginManager g_Login;
@@ -17,6 +18,7 @@ namespace AxibugEmuOnline.Server
 
         public static void InitServer(int port)
         {
+            g_Tick = new TickManager();
             g_ClientMgr = new ClientManager();
             g_ClientMgr.Init(45000, 120);
             g_Log = new LogManager();

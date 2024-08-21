@@ -111,7 +111,8 @@
 
                 half4 color = tex2D(_MainTex,mapUV);
                 
-                float rawIndex = color.b;
+                //float rawIndex = color.b;
+                float rawIndex = color.r;
 
                 color = tex2D(_PalTex,float2(rawIndex,0.5)); 
 
