@@ -12,5 +12,5 @@ for /f "delims=" %%i in ('dir /b proto "proto/*.proto"') do (
 echo "==>>build finish"
 echo "==>>copy cs"
 
-copy %cd%\out\CS\ ..\AxibugEmuOnline.Server\AxibugEmuOnline.Server\Protobuf
+copy %cd%\out\CS\ ..\AxibugEmuOnline.Server\Protobuf
 pause

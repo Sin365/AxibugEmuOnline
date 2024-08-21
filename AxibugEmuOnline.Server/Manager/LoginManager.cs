@@ -26,7 +26,6 @@ namespace AxibugEmuOnline.Server.Manager
                 Token = "",
                 UID = cinfo.UID
             });
-
         }
     }
 }

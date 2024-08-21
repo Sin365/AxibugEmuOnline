@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\..\Lib\Google.Protobuf.dll</HintPath>
+      <HintPath>..\Lib\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="HaoYueNet.ServerNetwork">
-      <HintPath>..\..\Lib\HaoYueNet.ServerNetwork.dll</HintPath>
+      <HintPath>..\Lib\HaoYueNet.ServerNetwork.dll</HintPath>
     </Reference>
   </ItemGroup>
 
