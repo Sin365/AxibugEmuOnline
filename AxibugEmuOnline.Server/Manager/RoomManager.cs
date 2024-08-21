@@ -2,9 +2,10 @@
 using AxibugEmuOnline.Server.Manager;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
-using System.Net;
+using System;
 using System.Net.Sockets;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Runtime.InteropServices;
+using System.Xml;
 
 namespace AxibugEmuOnline.Server
 {
@@ -12,14 +13,22 @@ namespace AxibugEmuOnline.Server
     public class RoomManager
     {
         Dictionary<int, Data_RoomData> mDictRoom = new Dictionary<int, Data_RoomData>();
+        List<int> mKeyRoomList = new List<int>();
+        AutoResetEvent roomTickARE;
+        Thread threadRoomTick;
+
         int RoomIDSeed = 1;
         public RoomManager()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomList, OnCmdRoomList);
-
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomCreate, OnCmdRoomCreate);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomJoin, OnCmdRoomJoin);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomLeave, OnCmdRoomLeave);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomSingelPlayerInput, OnSingelPlayerInput);
+
+            roomTickARE = AppSrv.g_Tick.AddNewARE(TickManager.TickType.Interval_16MS);
+            threadRoomTick = new Thread(UpdateLoopTick);
+            threadRoomTick.Start();
         }
 
         #region 房间管理
@@ -31,32 +40,33 @@ namespace AxibugEmuOnline.Server
 
         void AddRoom(Data_RoomData data)
         {
-            lock (mDictRoom) 
+            lock (mDictRoom)
             {
                 if (!mDictRoom.ContainsKey(data.RoomID))
                 {
                     mDictRoom.Add(data.RoomID, data);
+                    mKeyRoomList.Remove(data.RoomID);
                 }
             }
         }
 
-        void RemoveRoom(int RoomID) 
+        void RemoveRoom(int RoomID)
         {
-            lock(mDictRoom) 
+            lock (mDictRoom)
             {
                 if (mDictRoom.ContainsKey(RoomID))
                 {
                     mDictRoom.Remove(RoomID);
+                    mKeyRoomList.Remove(RoomID);
                 }
             }
         }
 
-        public Data_RoomData GetRoomData(int RoomID) 
+        public Data_RoomData GetRoomData(int RoomID)
         {
-            if (!mDictRoom.ContainsKey(RoomID))
+            if (!mDictRoom.TryGetValue(RoomID,out Data_RoomData data))
                 return null;
-
-            return mDictRoom[RoomID];
+            return data;
         }
 
         List<Data_RoomData> GetRoomList()
@@ -105,7 +115,7 @@ namespace AxibugEmuOnline.Server
 
             Protobuf_Room_List_RESP resp = new Protobuf_Room_List_RESP();
             List<Data_RoomData> temp = GetRoomList();
-            foreach (var room in temp) 
+            foreach (var room in temp)
                 resp.RoomMiniInfoList.Add(GetProtoDataRoom(room));
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdChatmsg, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
         }
@@ -115,7 +125,7 @@ namespace AxibugEmuOnline.Server
         /// </summary>
         /// <param name="RoomID"></param>
         /// <param name="type">//[0] 更新或新增 [1] 删除</param>
-        public void SendRoomUpdateToAll(int RoomID,int type)
+        public void SendRoomUpdateToAll(int RoomID, int type)
         {
             Data_RoomData room = GetRoomData(RoomID);
             if (room == null)
@@ -129,7 +139,7 @@ namespace AxibugEmuOnline.Server
 
             AppSrv.g_ClientMgr.ClientSendALL((int)CommandID.CmdRoomListUpdate, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
         }
-        
+
         public void OnCmdRoomCreate(Socket sk, byte[] reqData)
         {
             AppSrv.g_Log.Debug($"OnCmdRoomCreate ");
@@ -137,7 +147,7 @@ namespace AxibugEmuOnline.Server
             Protobuf_Room_Create msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Create>(reqData);
 
             Data_RoomData newRoom = new Data_RoomData();
-            newRoom.Init(GetNewRoomID(), msg.GameRomID,msg.GameRomHash);
+            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash);
             AddRoom(newRoom);
 
 
@@ -203,6 +213,16 @@ namespace AxibugEmuOnline.Server
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomLeave, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
             Protobuf_Room_MyRoom_State_Change(msg.RoomID);
         }
+        public void OnSingelPlayerInput(Socket sk, byte[] reqData)
+        {
+            ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
+            Protobuf_Room_SinglePlayerInputData msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_SinglePlayerInputData>(reqData);
+
+            Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
+            if (room == null)
+                return;
+            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, (ushort)msg.InputData);
+        }
 
         /// <summary>
         /// 广播房间状态变化
@@ -221,9 +241,9 @@ namespace AxibugEmuOnline.Server
 
             List<ClientInfo> userlist = room.GetAllPlayerClientList();
 
-            foreach(ClientInfo _c in userlist) 
+            foreach (ClientInfo _c in userlist)
             {
-                AppSrv.g_ClientMgr.ClientSend(_c,(int)CommandID.CmdRoomMyRoomStateChanged, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomMyRoomStateChanged, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
             }
         }
 
@@ -236,7 +256,7 @@ namespace AxibugEmuOnline.Server
         /// <param name="_c"></param>
         /// <param name="errcode"></param>
         /// <returns></returns>
-        bool Join(int RoomID,int PlayerNum,ClientInfo _c,out ErrorCode errcode)
+        bool Join(int RoomID, int PlayerNum, ClientInfo _c, out ErrorCode errcode)
         {
             Data_RoomData room = GetRoomData(RoomID);
             if (room == null)
@@ -252,7 +272,7 @@ namespace AxibugEmuOnline.Server
                     errcode = ErrorCode.ErrorRoomSlotReadlyHadPlayer;
                     return false;
                 }
-                room.Player1_UID = _c.UID;
+                room.SetPlayerUID(0,_c);
             }
             //其他玩家
             else
@@ -262,7 +282,7 @@ namespace AxibugEmuOnline.Server
                     errcode = ErrorCode.ErrorRoomSlotReadlyHadPlayer;
                     return false;
                 }
-                room.Player2_UID = _c.UID;
+                room.SetPlayerUID(1, _c);
             }
 
             //广播房间
@@ -287,10 +307,7 @@ namespace AxibugEmuOnline.Server
                 return false;
             }
 
-            if (room.Player1_UID == _c.UID)
-                room.Player1_UID = -1;
-            if (room.Player2_UID == _c.UID)
-                room.Player2_UID = -1;
+            room.RemovePlayer(_c);
 
             if (room.PlayerState == RoomPlayerState.NonePlayerState)
             {
@@ -306,26 +323,108 @@ namespace AxibugEmuOnline.Server
             return true;
         }
         #endregion
+
+
+        #region 房间帧循环
+        void UpdateLoopTick()
+        {
+            while (true)
+            {
+                roomTickARE.WaitOne();
+                UpdateAllRoomLogic();
+            }
+        }
+        void UpdateAllRoomLogic()
+        {
+            for (int i = 0; i < mKeyRoomList.Count; i++)
+            {
+                int roomid = mKeyRoomList[i];
+                if (!mDictRoom.TryGetValue(roomid,out Data_RoomData room))
+                    continue;
+                if (room.GameState > RoomGameState.InGame)
+                    continue;
+                //更新帧
+                room.TakeFrame();
+                //广播
+                room.SynInputData();
+            }
+        }
+        #endregion
     }
 
     public class Data_RoomData
     {
-        public int RoomID;
-        public int GameRomID;
-        public string RomHash;
-        public long Player1_UID;
-        public long Player2_UID;
+        public int RoomID { get; private set; }
+        public int GameRomID { get; private set; }
+        public string RomHash { get; private set; }
+        public bool bNeedLoadState { get; private set; }
+        public int LoadStateFrame { get; private set; }
+        public Google.Protobuf.ByteString LoadStateRaw { get; set; }
+        public long Player1_UID { get; private set; }
+        public long Player2_UID { get; private set; }
+        public long Player3_UID { get; private set; }
+        public long Player4_UID { get; private set; }
+        public bool[] PlayerReadyState { get; private set; }
+        public List<long> SynUIDs;
         public RoomPlayerState PlayerState => getPlayerState();
         public RoomGameState GameState;
+        public uint mCurrFrameId = 0;
+        public ServerInputSnapShot mCurrInputData;
+        public Queue<(uint, ServerInputSnapShot)> mInputQueue;
+        //TODO
+        public Dictionary<int, Queue<byte[]>> mDictPlayerIdx2SendQueue;
 
-        public void Init(int roomID,int gameRomID,string roomHash)
+        public void Init(int roomID, int gameRomID, string roomHash, bool bloadState = false)
         {
             RoomID = roomID;
             GameRomID = gameRomID;
             RomHash = roomHash;
             Player1_UID = -1;
             Player2_UID = -1;
+            Player3_UID = -1;
+            Player4_UID = -1;
+            SynUIDs = new List<long>();//广播角色列表
             GameState = RoomGameState.NoneGameState;
+            mCurrInputData = new ServerInputSnapShot();
+            mInputQueue = new Queue<(uint, ServerInputSnapShot)>();
+        }
+
+        public void SetPlayerUID(int PlayerIdx,ClientInfo _c)
+        {
+            long oldUID = -1;
+            switch (PlayerIdx)
+            {
+                case 0: oldUID = Player1_UID; Player1_UID = _c.UID; break;
+                case 1: oldUID = Player2_UID; Player2_UID = _c.UID; break;
+                case 2: oldUID = Player3_UID; Player3_UID = _c.UID; break;
+                case 3: oldUID = Player4_UID; Player4_UID = _c.UID; break;
+            }
+            if(oldUID <= 0)
+                SynUIDs.Remove(oldUID);
+            SynUIDs.Add(_c.UID); 
+            _c.RoomState.SetRoomData(this.RoomID, PlayerIdx);
+        }
+
+        public void RemovePlayer(ClientInfo _c)
+        {
+            int PlayerIdx = GetPlayerIdx(_c);
+            switch (PlayerIdx)
+            {
+                case 0: Player1_UID = -1; SynUIDs.Remove(_c.UID);break;
+                case 1: Player2_UID = -1; SynUIDs.Remove(_c.UID);break;
+                case 2: Player3_UID = -1; SynUIDs.Remove(_c.UID);break;
+                case 3: Player4_UID = -1; SynUIDs.Remove(_c.UID);break;
+            }
+            _c.RoomState.ClearRoomData();
+        }
+
+        int GetPlayerIdx(ClientInfo _c)
+        {
+            if (Player1_UID == _c.UID) return 0;
+            if (Player2_UID == _c.UID) return 1;
+            if (Player3_UID == _c.UID) return 2;
+            if (Player4_UID == _c.UID) return 3;
+            return -1;
         }
 
         RoomPlayerState getPlayerState()
@@ -358,7 +457,7 @@ namespace AxibugEmuOnline.Server
 
             foreach (long uid in Uids)
             {
-                if (!AppSrv.g_ClientMgr.GetClientByUID(uid, out ClientInfo _c,true))
+                if (!AppSrv.g_ClientMgr.GetClientByUID(uid, out ClientInfo _c, true))
                     continue;
 
                 list.Add(_c);
@@ -366,5 +465,65 @@ namespace AxibugEmuOnline.Server
 
             return list;
         }
+
+        public void SetPlayerInput(int PlayerIdx,long mFrameID,ushort input)
+        {
+            switch (PlayerIdx)
+            {
+                case 0: mCurrInputData.p1 = input; break;
+                case 1: mCurrInputData.p2 = input; break;
+                case 2: mCurrInputData.p3 = input; break;
+                case 3: mCurrInputData.p4 = input; break;
+            }
+        }
+
+        public void ClearPlayerInput(int PlayerIdx)
+        {
+            switch (PlayerIdx)
+            {
+                case 0: mCurrInputData.p1 = 0; break;
+                case 1: mCurrInputData.p2 = 0; break;
+                case 2: mCurrInputData.p3 = 0; break;
+                case 3: mCurrInputData.p4 = 0; break;
+            }
+        }
+
+        public void TakeFrame()
+        {
+            mInputQueue.Enqueue((mCurrFrameId, mCurrInputData));
+            mCurrFrameId++;
+        }
+
+        /// <summary>
+        /// 广播数据
+        /// </summary>
+        public void SynInputData()
+        {
+            while (mInputQueue.Count > 0)
+            {
+                (uint frameId, ServerInputSnapShot inputdata) data = mInputQueue.Dequeue();
+                Protobuf_Room_Syn_RoomFrameAllInput resp = new Protobuf_Room_Syn_RoomFrameAllInput()
+                {
+                    FrameID = data.frameId,
+                    InputData = data.inputdata.all
+                };
+                AppSrv.g_ClientMgr.ClientSendALL((int)CommandID.CmdRoomSyn, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+            }
+        }
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct ServerInputSnapShot
+    {
+        [FieldOffset(0)]
+        public UInt64 all;
+        [FieldOffset(0)]
+        public ushort p1;
+        [FieldOffset(2)]
+        public ushort p2;
+        [FieldOffset(4)]
+        public ushort p3;
+        [FieldOffset(6)]
+        public ushort p4;
     }
 }
