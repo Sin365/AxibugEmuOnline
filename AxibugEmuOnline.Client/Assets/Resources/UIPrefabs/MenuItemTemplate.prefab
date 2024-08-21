@@ -283,7 +283,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed40f0945dba47e409627739ce124125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_listenControlAction: 1
+  PulseInvoke_Delay: 0.4
+  PulseInvoke_Interval: 0.05
+  m_listenControlAction: 0
   m_menuItemRoot: {fileID: 3226730524206505336}
   SubMenuItemTemplate: {fileID: 2502609279043838113, guid: 01f3c5497992f944eae9b9efa15a19c2, type: 3}
   alphaGroup: {fileID: 6355204462360987243}

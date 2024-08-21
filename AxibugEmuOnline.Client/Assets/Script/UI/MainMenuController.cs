@@ -3,12 +3,14 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static GluonGui.WorkspaceWindow.Views.Checkin.Operations.CheckinViewDeleteOperation;
 
 namespace AxibugEmuOnline.Client.UI
 {
-    public class MainMenu : MenuItemController
+    public class MainMenuController : MenuItemController
     {
         [SerializeField]
         HorizontalLayoutGroup GroupRoot;
@@ -22,6 +24,61 @@ namespace AxibugEmuOnline.Client.UI
         private RectTransform groupRootRect => m_menuItemRoot as RectTransform;
 
         private TweenerCore<Vector2, Vector2, VectorOptions> rollTween;
+        private List<CanvasGroup> m_runtimeMenuUICanvas;
+        private Sequence seq;
+
+        protected override void Start()
+        {
+            base.Start();
+
+            m_runtimeMenuUICanvas = m_runtimeMenuUI.Select(menu => menu.gameObject.AddComponent<CanvasGroup>()).ToList();
+        }
+
+
+        public void EnterDetailState()
+        {
+            if (seq != null)
+            {
+                seq.Kill();
+                seq = null;
+            }
+
+            var selectItem = m_runtimeMenuUICanvas[SelectIndex];
+            var hideItem = m_runtimeMenuUICanvas.Where(i => i != selectItem).ToList();
+            seq = DOTween.Sequence();
+
+            seq.Append(
+                DOTween.To(() => selectItem.alpha, (x) => selectItem.alpha = x, 1, 0.2f)
+            )
+            .Join(
+               DOTween.To(() => hideItem[0].alpha, (x) => hideItem.ForEach(i => i.alpha = x), 0, 0.2f)
+            );
+
+            seq.Play();
+
+        }
+
+        public void ExitDetailState()
+        {
+            if (seq != null)
+            {
+                seq.Kill();
+                seq = null;
+            }
+
+            var selectItem = m_runtimeMenuUICanvas[SelectIndex];
+            var hideItem = m_runtimeMenuUICanvas.Where(i => i != selectItem).ToList();
+            seq = DOTween.Sequence();
+
+            seq.Append(
+                DOTween.To(() => selectItem.alpha, (x) => selectItem.alpha = x, 1, 0.2f)
+            )
+            .Join(
+               DOTween.To(() => hideItem[0].alpha, (x) => hideItem.ForEach(i => i.alpha = x), 1, 0.2f)
+            );
+
+            seq.Play();
+        }
 
         protected override void OnSelectMenuChanged()
         {
@@ -34,19 +91,18 @@ namespace AxibugEmuOnline.Client.UI
 
             if (rollTween != null) { rollTween.Kill(); rollTween = null; }
 
+            for (var i = 0; i < m_runtimeMenuUI.Count; i++)
+            {
+                var item = m_runtimeMenuUI[i];
+                item.SetSelectState(i == SelectIndex);
+            }
+
             rollTween = DOTween.To(
                 () => groupRootRect.anchoredPosition,
                 (x) => groupRootRect.anchoredPosition = x,
                 targetPosition,
                 HoriRollSpd)
-                .SetSpeedBased().OnUpdate(() =>
-                {
-                    for (var i = 0; i < m_runtimeMenuUI.Count; i++)
-                    {
-                        var item = m_runtimeMenuUI[i];
-                        item.SetSelectState(i == SelectIndex);
-                    }
-                });
+                .SetSpeedBased();
         }
 
         protected override void OnCmdSelectItemLeft()
