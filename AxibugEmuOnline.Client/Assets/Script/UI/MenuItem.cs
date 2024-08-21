@@ -1,11 +1,9 @@
-using Coffee.UIExtensions;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using static Codice.Client.BaseCommands.Import.Commit;
 
 namespace AxibugEmuOnline.Client.UI
 {
@@ -29,6 +27,7 @@ namespace AxibugEmuOnline.Client.UI
 
         public RectTransform Rect => transform as RectTransform;
 
+        [SerializeField]
         private bool m_select;
         private TweenerCore<float, float, FloatOptions> progressTween;
         public float m_progress;
@@ -54,6 +53,7 @@ namespace AxibugEmuOnline.Client.UI
 
         public void SetData(MenuData data)
         {
+            name = data.Name;
             Icon.sprite = data.Icon;
 
             if (ShadowIcon != null) ShadowIcon.sprite = data.Icon;
@@ -95,6 +95,11 @@ namespace AxibugEmuOnline.Client.UI
 
         public void OnEnterItem()
         {
+        }
+
+        public void OnExitItem()
+        {
+
         }
     }
 }

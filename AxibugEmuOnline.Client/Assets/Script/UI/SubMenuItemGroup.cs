@@ -59,6 +59,20 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        protected override void OnCmdEnter(MenuItem item)
+        {
+            LaunchUI.Instance.ToDetailMenuLayout();
+            item.SetSelectState(false);
+            base.OnCmdEnter(item);
+        }
+
+        protected override void OnCmdBack(MenuItem item)
+        {
+            LaunchUI.Instance.ToMainMenuLayout();
+            item.SetSelectState(true);
+            base.OnCmdBack(item);
+        }
+
         protected override void OnCmdSelectItemUp()
         {
             SelectIndex--;
@@ -101,6 +115,13 @@ namespace AxibugEmuOnline.Client
 
             calcItemPosition();
 
+            for (var i = 0; i < m_runtimeMenuUI.Count; i++)
+            {
+                var item = m_runtimeMenuUI[i];
+                bool isSelectItem = i == SelectIndex;
+                item.SetSelectState(isSelectItem);
+            }
+
             rollTween = DOTween.To(() => 1, (x) => { }, 1, duration).OnUpdate(() =>
             {
                 var tweenProgress = rollTween.position / rollTween.Duration();
@@ -109,8 +130,6 @@ namespace AxibugEmuOnline.Client
                     var item = m_runtimeMenuUI[i];
                     var needPos = m_itemUIPosition[i];
                     item.Rect.anchoredPosition = Vector2.Lerp(item.Rect.anchoredPosition, needPos, tweenProgress);
-                    bool isSelectItem = i == SelectIndex;
-                    item.SetSelectState(isSelectItem);
                 }
             }).OnComplete(() =>
             {

@@ -11,8 +11,7 @@ namespace AxibugEmuOnline.Client
         float PulseInvoke_Delay = 0.4f;
         [SerializeField]
         float PulseInvoke_Interval = 0.05f;
-
-        [SerializeField]
+        
         private bool m_listenControlAction;
         public bool ListenControlAction
         {
@@ -33,7 +32,7 @@ namespace AxibugEmuOnline.Client
         private PulseInvoker m_pulsInvoker_Up;
         private PulseInvoker m_pulsInvoker_Down;
 
-        private int m_selectIndex;
+        private int m_selectIndex = -1;
         protected List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
 
         public int SelectIndex
@@ -42,6 +41,7 @@ namespace AxibugEmuOnline.Client
             set
             {
                 value = Mathf.Clamp(value, 0, m_runtimeMenuUI.Count - 1);
+                if (m_selectIndex == value) return;
                 m_selectIndex = value;
 
                 OnSelectMenuChanged();
@@ -62,11 +62,6 @@ namespace AxibugEmuOnline.Client
             Canvas.ForceUpdateCanvases();
             SelectIndex = 0;
 
-            if (m_listenControlAction)
-            {
-                CommandDispatcher.Instance.RegistController(this);
-            }
-
             m_pulsInvoker_Left = new PulseInvoker(OnCmdSelectItemLeft, PulseInvoke_Delay, PulseInvoke_Interval);
             m_pulsInvoker_Right = new PulseInvoker(OnCmdSelectItemRight, PulseInvoke_Delay, PulseInvoke_Interval);
             m_pulsInvoker_Up = new PulseInvoker(OnCmdSelectItemUp, PulseInvoke_Delay, PulseInvoke_Interval);
@@ -75,7 +70,8 @@ namespace AxibugEmuOnline.Client
 
         private void OnDestroy()
         {
-            CommandDispatcher.Instance.UnRegistController(this);
+            if (CommandDispatcher.Instance != null)
+                CommandDispatcher.Instance.UnRegistController(this);
         }
 
         protected virtual void Update()
@@ -88,8 +84,7 @@ namespace AxibugEmuOnline.Client
 
         protected abstract void OnSelectMenuChanged();
 
-
-
+        MenuItem m_enteredItem = null;
         public void ExecuteCommand(EnumCommand cmd, bool cancel)
         {
             if (!cancel)
@@ -97,23 +92,52 @@ namespace AxibugEmuOnline.Client
                 switch (cmd)
                 {
                     case EnumCommand.SelectItemLeft:
-                        m_pulsInvoker_Left.SetActive();
-                        OnCmdSelectItemLeft(); break;
+                        if (m_enteredItem == null)
+                        {
+                            m_pulsInvoker_Left.SetActive();
+                            OnCmdSelectItemLeft();
+                        }
+                        break;
                     case EnumCommand.SelectItemRight:
-                        m_pulsInvoker_Right.SetActive();
-                        OnCmdSelectItemRight(); break;
+                        if (m_enteredItem == null)
+                        {
+                            m_pulsInvoker_Right.SetActive();
+                            OnCmdSelectItemRight();
+                        }
+                        break;
                     case EnumCommand.SelectItemUp:
-                        m_pulsInvoker_Up.SetActive();
-                        OnCmdSelectItemUp(); break;
+                        if (m_enteredItem == null)
+                        {
+                            m_pulsInvoker_Up.SetActive();
+                            OnCmdSelectItemUp();
+                        }
+                        break;
                     case EnumCommand.SelectItemDown:
-                        m_pulsInvoker_Down.SetActive();
-                        OnCmdSelectItemDown(); break;
+                        if (m_enteredItem == null)
+                        {
+                            m_pulsInvoker_Down.SetActive();
+                            OnCmdSelectItemDown();
+                        }
+                        break;
                     case EnumCommand.Enter:
-                        var item = m_runtimeMenuUI[SelectIndex];
-                        OnCmdEnter(item);
+                        if (m_enteredItem == null)
+                        {
+                            m_enteredItem = m_runtimeMenuUI[SelectIndex];
+                            OnCmdEnter(m_enteredItem);
+
+                            m_pulsInvoker_Left.DisActive();
+                            m_pulsInvoker_Right.DisActive();
+                            m_pulsInvoker_Up.DisActive();
+                            m_pulsInvoker_Down.DisActive();
+                        }
                         break;
                     case EnumCommand.Back:
-                        OnCmdBack(); break;
+                        if (m_enteredItem != null)
+                        {
+                            OnCmdBack(m_enteredItem);
+                            m_enteredItem = null;
+                        }
+                        break;
                     case EnumCommand.OptionMenu:
                         OnCmdOptionMenu();
                         break;
@@ -145,7 +169,7 @@ namespace AxibugEmuOnline.Client
 
         protected virtual void OnCmdOptionMenu() { }
         protected virtual void OnCmdEnter(MenuItem item) { item.OnEnterItem(); }
-        protected virtual void OnCmdBack() { }
+        protected virtual void OnCmdBack(MenuItem item) { item.OnExitItem(); }
         public enum EnumCommand
         {
             SelectItemLeft,

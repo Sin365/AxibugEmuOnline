@@ -8,7 +8,7 @@ namespace AxibugEmuOnline.Client
     {
         public static CommandDispatcher Instance { get; private set; }
 
-        HashSet<MenuItemController> m_register = new HashSet<MenuItemController>();
+        List<MenuItemController> m_register = new List<MenuItemController>();
         Dictionary<KeyCode, MenuItemController.EnumCommand> m_keyMapper = new Dictionary<KeyCode, MenuItemController.EnumCommand>();
 
         private void Awake()
@@ -40,6 +40,8 @@ namespace AxibugEmuOnline.Client
 
         public void RegistController(MenuItemController controller)
         {
+            if (m_register.Contains(controller)) { return; }
+
             m_register.Add(controller);
         }
 
@@ -54,13 +56,19 @@ namespace AxibugEmuOnline.Client
             {
                 if (Input.GetKeyDown(item.Key))
                 {
-                    foreach (var controller in m_register)
+                    for (int i = 0; i < m_register.Count; i++)
+                    {
+                        var controller = m_register[i];
                         controller.ExecuteCommand(item.Value, false);
+                    }
                 }
                 if (Input.GetKeyUp(item.Key))
                 {
-                    foreach (var controller in m_register)
+                    for (int i = 0; i < m_register.Count; i++)
+                    {
+                        var controller = m_register[i];
                         controller.ExecuteCommand(item.Value, true);
+                    }
                 }
             }
         }
