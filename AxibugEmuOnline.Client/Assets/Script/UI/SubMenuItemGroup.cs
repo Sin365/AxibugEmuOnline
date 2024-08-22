@@ -1,0 +1,184 @@
+using AxibugEmuOnline.Client.UI;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace AxibugEmuOnline.Client
+{
+    public class SubMenuItemGroup : MenuItemController
+    {
+        [SerializeField]
+        MenuItem SubMenuItemTemplate;
+        [SerializeField]
+        CanvasGroup alphaGroup;
+        private TweenerCore<float, float, FloatOptions> selectTween;
+
+        private bool m_selected;
+
+        private TweenerCore<int, int, NoOptions> rollTween;
+
+
+        private void Awake()
+        {
+            m_selected = false;
+            alphaGroup.alpha = 0;
+        }
+
+        public void Init(List<MenuData> menuDataList)
+        {
+#if UNITY_EDITOR
+            while (transform.childCount > 0)
+            {
+                DestroyImmediate(transform.GetChild(0).gameObject);
+            }
+#else
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+#endif
+
+            m_runtimeMenuUI.Clear();
+            foreach (MenuData menuData in menuDataList)
+            {
+                var item = Clone(transform);
+                item.SetData(menuData);
+                m_runtimeMenuUI.Add(item);
+            }
+
+            calcItemPosition();
+
+            for (var i = 0; i < m_runtimeMenuUI.Count; i++)
+            {
+                var item = m_runtimeMenuUI[i];
+                var needPos = m_itemUIPosition[i];
+                item.Rect.anchoredPosition = needPos;
+            }
+        }
+
+        protected override void OnCmdEnter(MenuItem item)
+        {
+            LaunchUI.Instance.ToDetailMenuLayout();
+            item.SetSelectState(false);
+            base.OnCmdEnter(item);
+        }
+
+        protected override void OnCmdBack(MenuItem item)
+        {
+            LaunchUI.Instance.ToMainMenuLayout();
+            item.SetSelectState(true);
+            base.OnCmdBack(item);
+        }
+
+        protected override void OnCmdSelectItemUp()
+        {
+            SelectIndex--;
+        }
+
+        protected override void OnCmdSelectItemDown()
+        {
+            SelectIndex++;
+        }
+
+        public void SetSelect(bool select)
+        {
+            if (m_selected == select) return;
+            m_selected = select;
+
+            if (selectTween != null)
+            {
+                selectTween.Kill();
+                selectTween = null;
+            }
+
+            if (select)
+            {
+                selectTween = DOTween.To(() => alphaGroup.alpha, (x) => alphaGroup.alpha = x, 1, 10).SetSpeedBased();
+            }
+            else
+            {
+                selectTween = DOTween.To(() => alphaGroup.alpha, (x) => alphaGroup.alpha = x, 0, 10).SetSpeedBased();
+            }
+
+            ListenControlAction = m_selected;
+        }
+
+
+        protected override void OnSelectMenuChanged()
+        {
+            if (rollTween != null) { rollTween.Kill(); rollTween = null; }
+
+            float duration = 0.5f;
+
+            calcItemPosition();
+
+            for (var i = 0; i < m_runtimeMenuUI.Count; i++)
+            {
+                var item = m_runtimeMenuUI[i];
+                bool isSelectItem = i == SelectIndex;
+                item.SetSelectState(isSelectItem);
+            }
+
+            rollTween = DOTween.To(() => 1, (x) => { }, 1, duration).OnUpdate(() =>
+            {
+                var tweenProgress = rollTween.position / rollTween.Duration();
+                for (var i = 0; i < m_runtimeMenuUI.Count; i++)
+                {
+                    var item = m_runtimeMenuUI[i];
+                    var needPos = m_itemUIPosition[i];
+                    item.Rect.anchoredPosition = Vector2.Lerp(item.Rect.anchoredPosition, needPos, tweenProgress);
+                }
+            }).OnComplete(() =>
+            {
+                for (var i = 0; i < m_runtimeMenuUI.Count; i++)
+                {
+                    var item = m_runtimeMenuUI[i];
+                    var needPos = m_itemUIPosition[i];
+                    item.Rect.anchoredPosition = needPos;
+                }
+            });
+        }
+
+        [SerializeField]
+        Vector2 m_selectItemPosition = new Vector2(50, -51);
+        [SerializeField]
+        float step = 50f;
+        [SerializeField]
+        float splitStep = 200f;
+
+        List<Vector2> m_itemUIPosition = new List<Vector2>();
+        private void calcItemPosition()
+        {
+            m_itemUIPosition.Clear();
+            for (int i = 0; i < m_runtimeMenuUI.Count; i++)
+            {
+                var gap = SelectIndex - i;
+                var start = m_selectItemPosition;
+                start.y += step * gap;
+                if (i < SelectIndex) start.y += splitStep;
+
+                m_itemUIPosition.Add(start);
+            }
+        }
+
+        private MenuItem Clone(Transform parent)
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                return GameObject.Instantiate(SubMenuItemTemplate.gameObject, parent).GetComponent<MenuItem>();
+            }
+            else
+            {
+                var clone = UnityEditor.PrefabUtility.InstantiatePrefab(SubMenuItemTemplate.gameObject, parent) as GameObject;
+                return clone.GetComponent<MenuItem>();
+            }
+#else
+                return GameObject.Instantiate(SubMenuItemTemplate.gameObject, parent).GetComponent<MenuItem>();
+#endif
+        }
+    }
+}

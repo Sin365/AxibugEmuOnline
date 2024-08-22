@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace VirtualNes.Core
 {
@@ -18,27 +19,25 @@ namespace VirtualNes.Core
             memset(array, 0, value, length);
         }
 
-        public static void memset(uint[] array, uint value, int length)
+        public unsafe static void memset(byte[] array, int offset, byte value, int length)
         {
-            for (int i = 0; i < length; i++)
+            fixed (byte* ptr = array)
             {
-                array[i] = value;
+                var offsetptr = ptr + offset;
+
+                Unsafe.InitBlockUnaligned(offsetptr, value, (uint)length);
             }
         }
 
-        public static void memset(byte[] array, int offset, byte value, int length)
+        public unsafe static void memset(uint[] array, int offset, byte value, int length)
         {
-            for (int i = offset; i < length; i++)
+            fixed (uint* ptr = array)
             {
-                array[i] = value;
-            }
-        }
-
-        public static void memset(uint[] array, int offset, uint value, int length)
-        {
-            for (int i = offset; i < length; i++)
-            {
-                array[i] = value;
+                var offsetptr = ptr + offset;
+                for (int i = 0; i < length; i++)
+                {
+                    offsetptr[i] = value;
+                }
             }
         }
     }
