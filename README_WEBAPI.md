@@ -24,6 +24,7 @@ Response:
     "resultAllCount": 6,
     "gameList": [
         {
+            "orderid": 0,
             "id": 190,
             "romName": "热血物语",
             "gType": "ACT",
@@ -34,6 +35,7 @@ Response:
             "stars": 0
         },
         {
+            "orderid": 1,
             "id": 460,
             "romName": "热血时代剧(热血道中记)",
             "gType": "ACT",
@@ -44,6 +46,7 @@ Response:
             "stars": 0
         },
         {
+            "orderid": 2,
             "id": 585,
             "romName": "热血硬派",
             "gType": "ACT",
@@ -54,6 +57,7 @@ Response:
             "stars": 0
         },
         {
+            "orderid": 3,
             "id": 674,
             "romName": "热血物语(美版)",
             "gType": "ACT",
@@ -64,6 +68,7 @@ Response:
             "stars": 0
         },
         {
+            "orderid": 4,
             "id": 826,
             "romName": "热血时代剧美版(热血道中记美版)",
             "gType": "ACT",
@@ -118,6 +123,7 @@ Response:
 
       public class Resp_RomInfo
       {
+          public int orderid { get; set; }
           public int id { get; set; }
           public string romName { get; set;}
           public string gType { get; set; }
