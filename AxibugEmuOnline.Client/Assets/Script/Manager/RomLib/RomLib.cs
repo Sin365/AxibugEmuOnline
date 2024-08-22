@@ -1,52 +1,93 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
+using static AxibugEmuOnline.Client.HttpAPI;
 
 namespace AxibugEmuOnline.Client
 {
     public class RomLib
     {
+        /// <summary> Rom请求,一页的大小 </summary>
+        private const int PAGE_SIZE = 10;
+
+        /// <summary> 请求指令 </summary>
+        private HashSet<int> FetchPageCmd = new HashSet<int>();
+        private RomFile[] nesRomFetchList;
         private Dictionary<int, RomFile> nesRomFileIdMapper = new Dictionary<int, RomFile>();
         private Dictionary<string, RomFile> nesRomFileNameMapper = new Dictionary<string, RomFile>();
+        private HttpAPI.GetRomListAPI m_romGetFunc;
+        private EnumPlatform m_platform;
 
-        public RomFile GetNesRomFile(string romFileName)
+        public RomLib(EnumPlatform platform)
+        {
+            m_platform = platform;
+            switch (platform)
+            {
+                case EnumPlatform.NES:
+                    m_romGetFunc = AppAxibugEmuOnline.httpAPI.GetNesRomList;
+                    break;
+            }
+        }
+
+        public RomFile GetRomFile(string romFileName)
         {
             RomFile romFile;
             nesRomFileNameMapper.TryGetValue(romFileName, out romFile);
             return romFile;
         }
 
-        public void GetNesRomFile(int page, int pageSize, Action<List<RomFile>> callback)
+        /// <summary>
+        /// 获得所有Rom文件
+        /// </summary>
+        /// <param name="callback"></param>
+        public void FetchRomCount(Action<RomFile[]> callback)
         {
-            AppAxibugEmuOnline.httpAPI.GetNesRomList((romList) =>
+            m_romGetFunc((romList) =>
             {
-                if (romList == null)
+                FetchPageCmd.Clear();
+                nesRomFileIdMapper.Clear();
+                nesRomFileNameMapper.Clear();
+                nesRomFetchList = new RomFile[romList.resultAllCount];
+                for (int i = 0; i < nesRomFetchList.Length; i++)
                 {
-                    callback.Invoke(null);
+                    //以后考虑用对象池实例化RomFile
+                    nesRomFetchList[i] = new RomFile(m_platform, i, i / PAGE_SIZE);
                 }
-                else
-                {
-                    List<RomFile> result = new List<RomFile>();
-                    for (int i = 0; i < romList.gameList.Count; i++)
-                    {
-                        var webData = romList.gameList[i];
-                        RomFile targetRomFile;
-                        nesRomFileIdMapper.TryGetValue(webData.id, out targetRomFile);
-                        if (targetRomFile == null)
-                        {
-                            targetRomFile = new RomFile(EnumPlatform.NES);
-                            targetRomFile.SetWebData(webData);
-                            nesRomFileIdMapper[webData.id] = targetRomFile;
+                SaveRomInfoFromWeb(romList);
 
-                            nesRomFileNameMapper[targetRomFile.FileName] = targetRomFile;
-                        }
+                callback.Invoke(nesRomFetchList);
+            }, 0, PAGE_SIZE);
+        }
 
-                        result.Add(targetRomFile);
-                    }
+        public void BeginFetchRomInfo(RomFile romFile)
+        {
+            if (romFile.InfoReady) return;
 
-                    callback(result);
-                }
-            }, page, pageSize);
+            FetchPageCmd.Add(romFile.Page);
+        }
+
+        public void ExecuteFetchRomInfo()
+        {
+            if (FetchPageCmd.Count == 0) return;
+
+            foreach (var pageNo in FetchPageCmd)
+            {
+                m_romGetFunc(SaveRomInfoFromWeb, pageNo, PAGE_SIZE);
+            }
+            FetchPageCmd.Clear();
+        }
+
+        private void SaveRomInfoFromWeb(Resp_GameList resp)
+        {
+            for (int i = 0; i < resp.gameList.Count; i++)
+            {
+                var webData = resp.gameList[i];
+                RomFile targetRomFile = nesRomFetchList[webData.orderid];
+
+                targetRomFile.SetWebData(webData);
+                nesRomFileIdMapper[webData.id] = nesRomFetchList[webData.orderid];
+                nesRomFileNameMapper[targetRomFile.FileName] = targetRomFile;
+            }
         }
 
         public static string CalcHash(byte[] data)

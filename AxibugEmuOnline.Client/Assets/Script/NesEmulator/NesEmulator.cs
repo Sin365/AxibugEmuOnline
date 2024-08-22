@@ -84,38 +84,6 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
-
-        [ContextMenu("LoadRom")]
-        public void LoadRom()
-        {
-            AppAxibugEmuOnline.romLib.GetNesRomFile(0, 10, (romFiles) =>
-            {
-                if (romFiles == null) return;
-
-                var file = romFiles[2];
-
-                if (file.FileReady)
-                {
-                    StartGame(file);
-                }
-                else
-                {
-                    file.BeginDownload();
-                    Action action = null;
-                    action = () =>
-                    {
-                        file.OnDownloadOver -= action;
-                        if (!file.FileReady)
-                        {
-                            throw new Exception("Download Failed");
-                        }
-                        StartGame(file);
-                    };
-                    file.OnDownloadOver += action;
-                }
-
-            });
-        }
 #endif
     }
 }

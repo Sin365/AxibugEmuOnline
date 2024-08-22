@@ -20,6 +20,8 @@ namespace AxibugEmuOnline.Client.UI
         [SerializeField]
         Image ShadowIcon;
         [SerializeField]
+        CanvasGroup InfoNode;
+        [SerializeField]
         SubMenuItemGroup SubMenuItemGroup;
 
         public float SelectScale = 1f;
@@ -27,10 +29,9 @@ namespace AxibugEmuOnline.Client.UI
 
         public RectTransform Rect => transform as RectTransform;
 
-        [SerializeField]
-        private bool m_select;
-        private TweenerCore<float, float, FloatOptions> progressTween;
-        public float m_progress;
+        bool m_select;
+        TweenerCore<float, float, FloatOptions> progressTween;
+        float m_progress;
         private void Awake()
         {
             m_select = false;
@@ -38,31 +39,26 @@ namespace AxibugEmuOnline.Client.UI
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);
 
-            var temp = Txt.color;
-            temp.a = 0;
-            Txt.color = temp;
-            if (Descript != null)
-            {
-                temp = Descript.color;
-                temp.a = 0;
-                Descript.color = temp;
-            }
+            InfoNode.alpha = 0;
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActiveEx(false);
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(false);
         }
 
         public void SetData(MenuData data)
         {
-            name = data.Name;
-            Icon.sprite = data.Icon;
+            SetBaseInfo(data.Name, data.Description, data.Icon);
+            if (SubMenuItemGroup != null) SubMenuItemGroup.Init(data.SubMenus);
+        }
 
-            if (ShadowIcon != null) ShadowIcon.sprite = data.Icon;
+        protected void SetBaseInfo(string name, string descript, Sprite icon)
+        {
+            this.name = name;
 
-            Txt.text = data.Name;
-            if (Descript != null) Descript.text = data.Description;
+            if (Icon != null) Icon.sprite = icon;
+            if (ShadowIcon != null) ShadowIcon.sprite = icon;
+            if (Txt != null) Txt.text = name;
+            if (Descript != null) Descript.text = descript;
 
-            if (SubMenuItemGroup != null)
-                SubMenuItemGroup.Init(data.SubMenus);
         }
 
         public void SetSelectState(bool selected)
@@ -79,27 +75,14 @@ namespace AxibugEmuOnline.Client.UI
             progressTween = DOTween.To(() => m_progress, (x) => m_progress = x, m_select ? 1 : 0, 5)
                 .SetSpeedBased().OnUpdate(() =>
                 {
-                    var temp = Txt.color;
-                    temp.a = m_progress;
-                    Txt.color = temp;
-                    if (Descript != null)
-                    {
-                        temp = Descript.color;
-                        temp.a = m_progress;
-                        Descript.color = temp;
-                    }
+                    InfoNode.alpha = m_progress;
 
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });
         }
 
-        public void OnEnterItem()
-        {
-        }
+        public virtual void OnEnterItem() { }
 
-        public void OnExitItem()
-        {
-
-        }
+        public virtual void OnExitItem() { }
     }
 }
