@@ -66,10 +66,12 @@ namespace AxibugEmuOnline.Web.Controllers
                     // 执行查询并处理结果  
                     using (var reader = command.ExecuteReader())
                     {
+                        int orderIndex = Page * PageSize;
                         while (reader.Read())
                         {
                             resp.gameList.Add(new Resp_RomInfo()
                             {
+                                orderid = orderIndex++,
                                 id = reader.GetInt32(0),
                                 romName = !reader.IsDBNull(1) ? reader.GetString(1) : string.Empty,
                                 gType = !reader.IsDBNull(2) ? reader.GetString(2) : string.Empty,
@@ -125,6 +127,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
         public class Resp_RomInfo
         {
+            public int orderid { get; set; }
             public int id { get; set; }
             public string romName { get; set;}
             public string gType { get; set; }
