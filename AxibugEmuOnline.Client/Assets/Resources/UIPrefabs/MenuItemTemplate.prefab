@@ -131,10 +131,10 @@ MonoBehaviour:
   Descript: {fileID: 0}
   Root: {fileID: 8754483333502849411}
   ShadowIcon: {fileID: 0}
+  InfoNode: {fileID: 632697230221148209}
   SubMenuItemGroup: {fileID: 2060695589654091386}
   SelectScale: 1
   UnSelectScale: 0.85
-  m_progress: 0
 --- !u!114 &5700455559359757662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 6095356919362338847}
   - component: {fileID: 7651669947470814669}
   - component: {fileID: 991446423622995247}
+  - component: {fileID: 632697230221148209}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -234,6 +235,18 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: NAME
+--- !u!225 &632697230221148209
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5340761592919397836}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8218630550162509793
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +298,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PulseInvoke_Delay: 0.4
   PulseInvoke_Interval: 0.05
-  m_listenControlAction: 0
   m_menuItemRoot: {fileID: 3226730524206505336}
   SubMenuItemTemplate: {fileID: 2502609279043838113, guid: 01f3c5497992f944eae9b9efa15a19c2, type: 3}
   alphaGroup: {fileID: 6355204462360987243}

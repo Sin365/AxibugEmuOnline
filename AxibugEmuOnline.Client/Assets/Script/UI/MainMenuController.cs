@@ -4,9 +4,9 @@ using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static GluonGui.WorkspaceWindow.Views.Checkin.Operations.CheckinViewDeleteOperation;
 
 namespace AxibugEmuOnline.Client.UI
 {
@@ -126,14 +126,17 @@ namespace AxibugEmuOnline.Client.UI
 
             for (int i = 0; i < MenuSetting.Count; i++)
             {
+                var settingData = MenuSetting[i];
+
+                var templatePrefab = settingData.OverrideTemplate != null ? settingData.OverrideTemplate.gameObject : Template.gameObject;
                 MenuItem itemScript = null;
-                var prefabClone = UnityEditor.PrefabUtility.InstantiatePrefab(Template.gameObject) as GameObject;
+                var prefabClone = UnityEditor.PrefabUtility.InstantiatePrefab(templatePrefab) as GameObject;
                 itemScript = prefabClone.GetComponent<MenuItem>();
                 itemScript.gameObject.SetActive(true);
                 itemScript.transform.SetParent(GroupRoot.transform);
                 itemScript.transform.localScale = Vector3.one;
 
-                itemScript.SetData(MenuSetting[i]);
+                itemScript.SetData(settingData);
             }
 
             UnityEditor.EditorUtility.SetDirty(this);
@@ -147,7 +150,7 @@ namespace AxibugEmuOnline.Client.UI
         public Sprite Icon;
         public string Name;
         public string Description;
-
+        public MenuItem OverrideTemplate;
         public List<MenuData> SubMenus;
     }
 }

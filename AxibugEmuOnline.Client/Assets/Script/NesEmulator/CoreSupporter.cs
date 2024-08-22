@@ -20,7 +20,7 @@ namespace AxibugEmuOnline.Client
         {
             try
             {
-                var romFile = AppAxibugEmuOnline.romLib.GetNesRomFile(fname);
+                var romFile = AppAxibugEmuOnline.nesRomLib.GetRomFile(fname);
                 var bytes = romFile.GetRomFileData();
                 Debug.Log($"Open {romFile.Alias}");
                 return new MemoryStream(bytes);
@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
 
         public void GetRomPathInfo(string fname, out string fullPath, out string directPath)
         {
-            var romFile = AppAxibugEmuOnline.romLib.GetNesRomFile(fname);
+            var romFile = AppAxibugEmuOnline.nesRomLib.GetRomFile(fname);
             UnityEngine.Debug.Assert(romFile != null);
 
             fullPath = romFile.LocalFilePath;
