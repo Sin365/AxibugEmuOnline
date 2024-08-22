@@ -32,6 +32,7 @@ namespace AxibugEmuOnline.Client.UI
             base.Start();
 
             m_runtimeMenuUICanvas = m_runtimeMenuUI.Select(menu => menu.gameObject.AddComponent<CanvasGroup>()).ToList();
+            m_runtimeMenuUICanvas.ForEach(canv => canv.gameObject.AddComponent<AutoRaycastCanvasGroup>());
         }
 
 

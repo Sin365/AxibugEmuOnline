@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client
         private EnumPlatform platform;
 
         /// <summary> 指示该Rom文件的存放路径 </summary>
-        public string LocalFilePath => $"{CoreSupporter.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
+        public string LocalFilePath => $"{AppAxibugEmuOnline.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;
         /// <summary> 指示是否正在下载Rom文件 </summary>
@@ -30,6 +30,8 @@ namespace AxibugEmuOnline.Client
         public string Alias => webData.romName;
         /// <summary> 描述 </summary>
         public string Descript => webData.desc;
+        /// <summary> 小图URL </summary>
+        public string ImageURL => webData.imgUrl;
 
         /// <summary> 文件名 </summary>
         public string FileName => fileName;

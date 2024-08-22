@@ -39,26 +39,30 @@ namespace AxibugEmuOnline.Client.UI
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);
 
-            InfoNode.alpha = 0;
+            if (InfoNode != null) InfoNode.alpha = 0;
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActiveEx(false);
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(false);
         }
 
         public void SetData(MenuData data)
         {
-            SetBaseInfo(data.Name, data.Description, data.Icon);
+            SetBaseInfo(data.Name, data.Description);
+            SetIcon(data.Icon);
             if (SubMenuItemGroup != null) SubMenuItemGroup.Init(data.SubMenus);
         }
 
-        protected void SetBaseInfo(string name, string descript, Sprite icon)
+        protected void SetBaseInfo(string name, string descript)
         {
             this.name = name;
 
-            if (Icon != null) Icon.sprite = icon;
-            if (ShadowIcon != null) ShadowIcon.sprite = icon;
             if (Txt != null) Txt.text = name;
             if (Descript != null) Descript.text = descript;
+        }
 
+        protected void SetIcon(Sprite icon)
+        {
+            if (Icon != null) Icon.sprite = icon;
+            if (ShadowIcon != null) ShadowIcon.sprite = icon;
         }
 
         public void SetSelectState(bool selected)
@@ -75,7 +79,7 @@ namespace AxibugEmuOnline.Client.UI
             progressTween = DOTween.To(() => m_progress, (x) => m_progress = x, m_select ? 1 : 0, 5)
                 .SetSpeedBased().OnUpdate(() =>
                 {
-                    InfoNode.alpha = m_progress;
+                    if (InfoNode != null) InfoNode.alpha = m_progress;
 
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });

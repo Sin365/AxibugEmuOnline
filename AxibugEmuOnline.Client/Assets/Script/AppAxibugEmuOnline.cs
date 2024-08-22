@@ -21,8 +21,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppEmu emu;
         public static RomLib nesRomLib;
         public static HttpAPI httpAPI;
+        public static CacheManager CacheMgr;
 
         private static CoroutineRunner coRunner;
+
+        public static string PersistentDataPath => Application.persistentDataPath;
 
         [RuntimeInitializeOnLoadMethod]
         static void Init()
@@ -37,6 +40,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             netgame = new AppNetGame();
             httpAPI = new HttpAPI();
             nesRomLib = new RomLib(EnumPlatform.NES);
+            CacheMgr = new CacheManager();
 
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
