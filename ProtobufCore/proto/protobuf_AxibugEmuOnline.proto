@@ -20,7 +20,7 @@ enum CommandID
 	
 	//房间内相关
 	CMD_Room_Create = 5101;  //房间创建 对应 Protobuf_Room_Create | Protobuf_Room_Create_RESP
-	CMD_Room_Join = 5105;  //房间加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP
+	CMD_Room_Join = 5105;  //房间加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP //建议Join之前按照房间信息，提前下载并读取本地Rom
 	CMD_Room_Leave = 5106;  //房间离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
 	CMD_Room_MyRoom_State_Changed = 5110;  //我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change
 	
@@ -45,12 +45,12 @@ enum CommandID
 		// 		重新从Step1走流程
 		// 
 	CMD_Room_WaitStep = 5201;  //服务器等待Step通知 下行 Protobuf_Room_WaitStep_RESP
-	CMD_Room_HostPlayer_UpdateStateRaw = 5204;  //服务器房间准备和开始标识 下行 Protobuf_Room_HostPlayer_UpdateStateRaw
+	CMD_Room_HostPlayer_UpdateStateRaw = 5204;  //主机玩家上传即时存档 上行 | 下行 对应 Protobuf_Room_HostPlayer_UpdateStateRaw | Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
 	CMD_Room_Player_Ready = 5208;  //玩家准备完毕 上行 Protobuf_Room_Player_Ready
 	
 	//游戏同步
 	CMD_Room_Singel_PlayerInput = 6010; //单个玩家操作同步上行 对应 Protobuf_Room_SinglePlayerInputData
-	CMD_ROOM_SYN = 6015; //单个玩家操作同步上行 对应 Protobuf_Room_Syn_RoomFrameAllInput
+	CMD_ROOM_SYN_PlayerInput = 6015; //单个玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
 	
 	//画面采集
 	CMD_Screen = 7001;  //画面采集 | 同步广播 对应 Protobuf_Screnn_Frame
@@ -63,6 +63,8 @@ enum ErrorCode
 	
 	ERROR_ROOM_NOT_FOUND = 10;//房间不存在
 	ERROR_ROOM_SLOT_READLY_HAD_PLAYER=11;//加入目标位置已经有人
+	
+	ERROR_ROOM_CANT_DO_CURR_STATE =50;//当前房间状态不允许本操作
 }
 
 enum LoginType
@@ -79,23 +81,22 @@ enum DeviceType
 	PSV = 4;
 }
 
-enum RoomPlayerState
-{
-    None_PlayerState = 0;//缺省
-	OnlyP1 = 1;   //仅P1
-	OnlyP2 = 2;   //仅P2
-	BothOnline = 3;   //玩家都在
-}
+//enum RoomPlayerState
+//{
+//    None_PlayerState = 0;//缺省
+//	OnlyP1 = 1;   //仅P1
+//	OnlyP2 = 2;   //仅P2
+//	BothOnline = 3;   //玩家都在
+//}
 
 enum RoomGameState
 {
     None_GameState = 0;//缺省
     OnlyHost = 1;//仅主机，待加入
-	ReadyStep_0 = 2;//ReadyStep0
-	ReadyStep_1 = 3;//ReadyStep1
-	ReadyStep_2 = 4;//ReadyStep2
-	Pause = 5;//暂停
-	InGame = 6;//游戏中
+	WaitRawUpdate = 2;//等待即时存档
+	WaitReady = 3;//等待Ready
+	Pause = 4;//暂停
+	InOnlineGame = 5;//联机中
 }
 
 
@@ -165,7 +166,6 @@ message Protobuf_Room_MiniInfo
 	int32 RoomID = 1;//房间ID
 	int32 GameRomID = 2;//游戏ID
 	string GameRomHash = 3;
-	RoomPlayerState PlayerState = 4;//玩家加入状态
 	RoomGameState GameState = 5;//游戏状态
 	int32 ObsUserCount = 6;//观战用户数量
 	int64 Player1_UID = 7;//玩家1 UID
@@ -193,7 +193,7 @@ message Protobuf_Room_SinglePlayerInputData
 	uint32 InputData = 2;//单个玩家操作位运算汇总
 }
 
-message Protobuf_Room_Syn_RoomFrameAllInput
+message Protobuf_Room_Syn_RoomFrameAllInputData
 {
 	uint32 FrameID = 1;//帧编号
 	uint64 InputData = 2;//所有玩家操作位运算汇总
@@ -203,6 +203,7 @@ message Protobuf_Room_Create
 {
 	int32 GameRomID = 1;
 	string GameRomHash = 2;
+	int32 JoinPlayerIdx = 3;//P1~P4[0~3] 以几号位玩家创建房间
 }
 
 message Protobuf_Room_Create_RESP
@@ -239,13 +240,19 @@ message Protobuf_Room_MyRoom_State_Change
 
 message Protobuf_Room_WaitStep_RESP
 {
-	int32 WaitStep = 1;//状态 [0]等待主机上报即时存档 [1]要求准备 [2]开始（收到本状态时，立即开始跑模拟器核心）
+	int32 WaitStep = 1;//状态 [0]等待主机上报即时存档 [1]要求客户端准备 [2]开始（收到本状态时，立即开始跑模拟器核心）
+	
+	//如下是 WaitStep = 1 时，才有值。广播即时存档
+    bytes LoadStateRaw = 2;//即时存档byte数据
 }
 
 message Protobuf_Room_HostPlayer_UpdateStateRaw
 {
-	int32 ReadyFrame = 1;//要求准备的帧数 (非即时存档则为0）
-    bytes LoadStateRaw = 2;//即时存档byte数据
+    bytes LoadStateRaw = 1;//即时存档byte数据
+}
+
+message Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
+{
 }
 
 message Protobuf_Room_Player_Ready
