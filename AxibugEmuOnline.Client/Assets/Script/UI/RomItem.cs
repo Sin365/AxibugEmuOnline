@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
 using System;
 using UnityEngine;
@@ -17,15 +18,14 @@ namespace AxibugEmuOnline.Client
 
         public void SetData(object data)
         {
-            SetSelectState(true);
-
             m_romfile = (RomFile)data;
+            m_romfile.OnInfoFilled += OnRomInfoFilled;
+            m_romImage.sprite = null;
 
             UpdateView();
 
             if (!m_romfile.InfoReady)
             {
-                m_romfile.OnInfoFilled += OnRomInfoFilled;
                 m_romlib.BeginFetchRomInfo(m_romfile);
             }
         }
@@ -38,7 +38,6 @@ namespace AxibugEmuOnline.Client
         public void Release()
         {
             m_romfile.OnInfoFilled -= OnRomInfoFilled;
-            SetSelectState(false);
         }
 
         private void OnRomInfoFilled()
@@ -50,11 +49,17 @@ namespace AxibugEmuOnline.Client
         {
             if (!m_romfile.InfoReady)
             {
-                SetBaseInfo(string.Empty, string.Empty, null);
+                SetBaseInfo(string.Empty, string.Empty);
             }
             else
             {
-                SetBaseInfo(m_romfile.Alias, m_romfile.Descript, null);
+                SetBaseInfo(m_romfile.Alias, m_romfile.Descript);
+                AppAxibugEmuOnline.CacheMgr.GetSpriteCache(m_romfile.ImageURL, (img, url) =>
+                {
+                    if (url != m_romfile.ImageURL) return;
+
+                    m_romImage.sprite = img;
+                });
             }
         }
     }
