@@ -112,30 +112,30 @@ namespace VirtualNes.Core
         //void Mapper251::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //INT i;
+            INT i;
 
-            //for (i = 0; i < 11; i++)
-            //{
-            //    p[i] = reg[i];
-            //}
-            //for (i = 0; i < 4; i++)
-            //{
-            //    p[i + 11] = breg[i];
-            //}
+            for (i = 0; i < 11; i++)
+            {
+                p[i] = reg[i];
+            }
+            for (i = 0; i < 4; i++)
+            {
+                p[i + 11] = breg[i];
+            }
         }
 
         //void Mapper251::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //INT i;
-            //for (i = 0; i < 11; i++)
-            //{
-            //    reg[i] = p[i];
-            //}
-            //for (i = 0; i < 4; i++)
-            //{
-            //    reg[i] = p[i + 11];
-            //}
+            INT i;
+            for (i = 0; i < 11; i++)
+            {
+                reg[i] = p[i];
+            }
+            for (i = 0; i < 4; i++)
+            {
+                reg[i] = p[i + 11];
+            }
         }
     }
 }

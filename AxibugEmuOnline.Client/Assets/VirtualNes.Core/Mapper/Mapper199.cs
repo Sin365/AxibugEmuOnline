@@ -259,53 +259,55 @@ namespace VirtualNes.Core
         //void Mapper199::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //    p[i] = reg[i];
-            //}
-            //for (i = 8; i < 12; i++)
-            //{
-            //    p[i] = prg[i];
-            //}
-            //for (i = 8; i < 20; i++)
-            //{
-            //    p[i] = chr[i];
-            //}
-            //p[20] = we_sram;
-            //p[21] = JMaddr;
-            //p[22] = JMaddrDAT[0];
-            //p[23] = JMaddrDAT[1];
-            //p[24] = JMaddrDAT[2];
-            //p[25] = irq_enable;
-            //p[26] = irq_counter;
-            //p[27] = irq_latch;
-            //p[28] = irq_request;
+            int i;
+            for (i = 0; i < 8; i++)
+            {
+                p[i] = reg[i];
+            }
+            for (i = 8; i < 12; i++)
+            {
+                p[i] = prg[i];
+            }
+            for (i = 8; i < 20; i++)
+            {
+                p[i] = chr[i];
+            }
+            p[20] = we_sram;
+            p[21] = JMaddr;
+            p[22] = JMaddrDAT[0];
+            p[23] = JMaddrDAT[1];
+            p[24] = JMaddrDAT[2];
+            p[25] = irq_enable;
+            p[26] = irq_counter;
+            p[27] = irq_latch;
+            p[28] = irq_request;
         }
 
         //void Mapper199::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //    reg[i] = p[i];
-            //}
-            //for (i = 8; i < 12; i++)
-            //{
-            //    prg[i] = p[i];
-            //}
-            //for (i = 8; i < 20; i++)
-            //{
-            //    chr[i] = p[i];
-            //}
-            //we_sram = p[20];
-            //JMaddr = p[21];
-            //JMaddrDAT[0] = p[22];
-            //JMaddrDAT[1] = p[23];
-            //JMaddrDAT[2] = p[24];
-            //irq_enable = p[25];
-            //irq_counter = p[26];
-            //irq_latch = p[27];
-            //irq_request = p[28];
+            int i;
+            for (i = 0; i < 8; i++)
+            {
+                reg[i] = p[i];
+            }
+            for (i = 8; i < 12; i++)
+            {
+                prg[i] = p[i];
+            }
+            for (i = 8; i < 20; i++)
+            {
+                chr[i] = p[i];
+            }
+            we_sram = p[20];
+            JMaddr = p[21];
+            JMaddrDAT[0] = p[22];
+            JMaddrDAT[1] = p[23];
+            JMaddrDAT[2] = p[24];
+            irq_enable = p[25];
+            irq_counter = p[26];
+            irq_latch = p[27];
+            irq_request = p[28];
         }
 
         public override bool IsStateSave()

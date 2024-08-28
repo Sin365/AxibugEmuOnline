@@ -338,45 +338,45 @@ namespace VirtualNes.Core
         //void Mapper249::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //    p[i] = reg[i];
-            //}
-            //p[8] = prg0;
-            //p[9] = prg1;
-            //p[10] = chr01;
-            //p[11] = chr23;
-            //p[12] = chr4;
-            //p[13] = chr5;
-            //p[14] = chr6;
-            //p[15] = chr7;
-            //p[16] = irq_enable;
-            //p[17] = irq_counter;
-            //p[18] = irq_latch;
-            //p[19] = irq_request;
-            //p[20] = spdata;
+            for (INT i = 0; i < 8; i++)
+            {
+                p[i] = reg[i];
+            }
+            p[8] = prg0;
+            p[9] = prg1;
+            p[10] = chr01;
+            p[11] = chr23;
+            p[12] = chr4;
+            p[13] = chr5;
+            p[14] = chr6;
+            p[15] = chr7;
+            p[16] = irq_enable;
+            p[17] = irq_counter;
+            p[18] = irq_latch;
+            p[19] = irq_request;
+            p[20] = spdata;
         }
 
         //void Mapper249::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //    reg[i] = p[i];
-            //}
-            //prg0 = p[8];
-            //prg1 = p[9];
-            //chr01 = p[10];
-            //chr23 = p[11];
-            //chr4 = p[12];
-            //chr5 = p[13];
-            //chr6 = p[14];
-            //chr7 = p[15];
-            //irq_enable = p[16];
-            //irq_counter = p[17];
-            //irq_latch = p[18];
-            //irq_request = p[19];
-            //spdata = p[20];
+            for (INT i = 0; i < 8; i++)
+            {
+                reg[i] = p[i];
+            }
+            prg0 = p[8];
+            prg1 = p[9];
+            chr01 = p[10];
+            chr23 = p[11];
+            chr4 = p[12];
+            chr5 = p[13];
+            chr6 = p[14];
+            chr7 = p[15];
+            irq_enable = p[16];
+            irq_counter = p[17];
+            irq_latch = p[18];
+            irq_request = p[19];
+            spdata = p[20];
         }
     }
 }

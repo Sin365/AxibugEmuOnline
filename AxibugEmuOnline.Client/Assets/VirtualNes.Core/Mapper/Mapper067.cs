@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper067  SunSoft Mapper 3                                          //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -114,19 +115,21 @@ namespace VirtualNes.Core
         //void Mapper067::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = irq_enable;
-            //p[1] = irq_occur;
-            //p[2] = irq_toggle;
+            p[0] = irq_enable;
+            p[1] = irq_occur;
+            p[2] = irq_toggle;
             //*((INT*)&p[3]) = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 3);
         }
 
         //void Mapper067::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //irq_enable = p[0];
-            //irq_occur = p[1];
-            //irq_toggle = p[2];
+            irq_enable = p[0];
+            irq_occur = p[1];
+            irq_toggle = p[2];
             //irq_counter = *((INT*)&p[3]);
+            irq_counter = BitConverter.ToInt32(p, 3);
         }
 
 

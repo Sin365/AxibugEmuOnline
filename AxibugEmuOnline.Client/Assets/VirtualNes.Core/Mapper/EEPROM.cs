@@ -1,4 +1,6 @@
-﻿namespace VirtualNes.Core
+﻿using System;
+
+namespace VirtualNes.Core
 {
 
 
@@ -176,28 +178,31 @@
             return sda;
         }
 
-        public void Load(byte[] p)
+        public unsafe void Load(byte* p)
         {
             //now_state = *((INT*)&p[0]);
+            now_state = *(int*)p;
             //next_state = *((INT*)&p[4]);
+            next_state = *(int*)p[4];
             //bitcnt = *((INT*)&p[8]);
-            //addr = p[12];
-            //data = p[13];
-            //sda = p[14];
-            //scl_old = p[15];
-            //sda_old = p[16];
+            bitcnt = *(int*)p[8];
+            addr = p[12];
+            data = p[13];
+            sda = p[14];
+            scl_old = p[15];
+            sda_old = p[16];
         }
 
-        public void Save(byte[] p)
+        public unsafe void Save(byte* p)
         {
-            //*((INT*)&p[0]) = now_state;
-            //*((INT*)&p[4]) = next_state;
-            //*((INT*)&p[8]) = bitcnt;
-            //p[12] = addr;
-            //p[13] = data;
-            //p[14] = sda;
-            //p[15] = scl_old;
-            //p[16] = sda_old;
+            *((int*)&p[0]) = now_state;
+            *((int*)&p[4]) = next_state;
+            *((int*)&p[8]) = bitcnt;
+            p[12] = addr;
+            p[13] = data;
+            p[14] = sda;
+            p[15] = scl_old;
+            p[16] = sda_old;
         }
     }
 
@@ -424,30 +429,31 @@
             return sda;
         }
 
-        public void Load(byte[] p)
+        public unsafe void Load(byte* p)
         {
             //now_state = *((INT*)&p[0]);
-            //next_state = *((INT*)&p[4]);
+            next_state = *((int*)&p[4]);
             //bitcnt = *((INT*)&p[8]);
-            //addr = p[12];
-            //data = p[13];
-            //rw = p[14];
-            //sda = p[15];
-            //scl_old = p[16];
-            //sda_old = p[17];
+            bitcnt = *((int*)&p[8]);
+            addr = p[12];
+            data = p[13];
+            rw = p[14];
+            sda = p[15];
+            scl_old = p[16];
+            sda_old = p[17];
         }
 
-        public void Save(byte[] p)
+        public unsafe void Save(byte* p)
         {
-            //*((INT*)&p[0]) = now_state;
-            //*((INT*)&p[4]) = next_state;
-            //*((INT*)&p[8]) = bitcnt;
-            //p[12] = addr;
-            //p[13] = data;
-            //p[14] = rw;
-            //p[15] = sda;
-            //p[16] = scl_old;
-            //p[17] = sda_old;
+            *((int*)&p[0]) = now_state;
+            *((int*)&p[4]) = next_state;
+            *((int*)&p[8]) = bitcnt;
+            p[12] = addr;
+            p[13] = data;
+            p[14] = rw;
+            p[15] = sda;
+            p[16] = scl_old;
+            p[17] = sda_old;
         }
     }
 }
