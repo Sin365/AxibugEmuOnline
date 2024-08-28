@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper105  Nintendo World Championship                               //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -166,29 +167,31 @@ namespace VirtualNes.Core
         //void Mapper105::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 4; i++)
-            //{
-            //	p[i] = reg[i];
-            //}
-            //p[8] = init_state;
-            //p[9] = write_count;
-            //p[10] = bits;
-            //p[11] = irq_enable;
+            for (INT i = 0; i < 4; i++)
+            {
+                p[i] = reg[i];
+            }
+            p[8] = init_state;
+            p[9] = write_count;
+            p[10] = bits;
+            p[11] = irq_enable;
             //*((INT*)&p[12]) = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 12);
         }
 
         //void Mapper105::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //for (INT i = 0; i < 4; i++)
-            //{
-            //	reg[i] = p[i];
-            //}
-            //init_state = p[8];
-            //write_count = p[9];
-            //bits = p[10];
-            //irq_enable = p[11];
+            for (INT i = 0; i < 4; i++)
+            {
+                reg[i] = p[i];
+            }
+            init_state = p[8];
+            write_count = p[9];
+            bits = p[10];
+            irq_enable = p[11];
             //irq_counter = *((INT*)&p[12]);
+            irq_counter = BitConverter.ToInt32(p, 12);
         }
 
 

@@ -368,55 +368,64 @@ namespace VirtualNes.Core
             }
         }
 
-        public override void SaveState(byte[] p)
+        public unsafe override void SaveState(byte[] buffer)
         {
-            //p[0] = reg[0];
-            //p[1] = reg[1];
-            //p[2] = reg[2];
-            //p[3] = irq_enable;
-            //*(INT*)&p[4] = irq_counter;
-            //*(INT*)&p[8] = irq_latch;
+            fixed (byte* p = buffer)
+            {
+                p[0] = reg[0];
+                p[1] = reg[1];
+                p[2] = reg[2];
+                p[3] = irq_enable;
+                *(INT*)&p[4] = irq_counter;
+                *(INT*)&p[8] = irq_latch;
 
-            //if (eeprom_type == 0)
-            //{
-            //    x24c01.Save(&p[16]);
-            //}
-            //else
-            //if (eeprom_type == 1)
-            //{
-            //    x24c02.Save(&p[16]);
-            //}
-            //else
-            //if (eeprom_type == 2)
-            //{
-            //    x24c02.Save(&p[16]);
-            //    x24c01.Save(&p[48]);
-            //}
+                if (eeprom_type == 0)
+                {
+                    x24c01.Save(&p[16]);
+                }
+                else
+                if (eeprom_type == 1)
+                {
+                    x24c02.Save(&p[16]);
+                }
+                else
+                if (eeprom_type == 2)
+                {
+                    x24c02.Save(&p[16]);
+                    x24c01.Save(&p[48]);
+                }
+            }
         }
 
-        public override void LoadState(byte[] p)
+        public unsafe override void LoadState(byte[] buffer)
         {
-            //reg[0] = p[0];
-            //reg[1] = p[1];
-            //reg[2] = p[2];
-            //irq_enable = p[3];
-            //irq_counter = *(INT*)&p[4];
-            //irq_latch = *(INT*)&p[8];
-            //if (eeprom_type == 0)
-            //{
-            //    x24c01.Load(&p[16]);
-            //}
-            //else
-            //if (eeprom_type == 1)
-            //{
-            //    x24c02.Load(&p[16]);
-            //}
-            //else
-            //if (eeprom_type == 2)
-            //{
-            //    x24c02.Load(&p[16]);
-            //    x24c01.Load(&p[48]);
-            //}
+            fixed (byte* p = buffer)
+            {
+                reg[0] = p[0];
+                reg[1] = p[1];
+                reg[2] = p[2];
+                irq_enable = p[3];
+                irq_counter = *(INT*)&p[4];
+                irq_latch = *(INT*)&p[8];
+                if (eeprom_type == 0)
+                {
+                    x24c01.Load(&p[16]);
+                }
+                else
+                if (eeprom_type == 1)
+                {
+                    //x24c02.Load(&p[16]);
+                    x24c02.Load(p + 16);
+                }
+                else
+                if (eeprom_type == 2)
+                {
+                    //x24c02.Load(&p[16]);
+                    //x24c01.Load(&p[48]);
+                    x24c02.Load(p+16);
+                    x24c01.Load(p+48);
+                }
+            }
         }
 
 
