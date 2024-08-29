@@ -16,15 +16,16 @@ namespace VirtualNes.Core
         /// <summary> 2字节 </summary>
         public ushort Ext2;
 
-        public void SaveState(StateBuffer buffer)
+        public readonly void SaveState(StateBuffer buffer)
         {
             buffer.Write(ID);
             buffer.Write(BlockVersion);
+            buffer.Write(Ext0);
             buffer.Write(Ext1);
             buffer.Write(Ext2);
         }
 
-        public uint GetSize()
+        public readonly uint GetSize()
         {
             return (uint)(ID.Length + sizeof(ushort) + sizeof(uint) + sizeof(ushort) + sizeof(ushort));
         }
