@@ -92,19 +92,19 @@ namespace VirtualNes.Core
         //void Mapper243::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = reg[0];
-            //p[1] = reg[1];
-            //p[2] = reg[2];
-            //p[3] = reg[3];
+            p[0] = reg[0];
+            p[1] = reg[1];
+            p[2] = reg[2];
+            p[3] = reg[3];
         }
 
         //void Mapper243::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //reg[0] = p[0];
-            //reg[1] = p[1];
-            //reg[2] = p[2];
-            //reg[3] = p[3];
+            reg[0] = p[0];
+            reg[1] = p[1];
+            reg[2] = p[2];
+            reg[3] = p[3];
         }
 
     }

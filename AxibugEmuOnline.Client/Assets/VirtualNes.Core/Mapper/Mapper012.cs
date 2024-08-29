@@ -1,4 +1,5 @@
-﻿using static VirtualNes.Core.CPU;
+﻿using System;
+using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
 using INT = System.Int32;
@@ -275,51 +276,55 @@ namespace VirtualNes.Core
         //void Mapper012::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //	p[i] = reg[i];
-            //}
-            //p[8] = prg0;
-            //p[9] = prg1;
-            //p[10] = chr01;
-            //p[11] = chr23;
-            //p[12] = chr4;
-            //p[13] = chr5;
-            //p[14] = chr6;
-            //p[15] = chr7;
-            //p[16] = irq_enable;
-            //p[17] = (BYTE)irq_counter;
-            //p[18] = irq_latch;
-            //p[19] = irq_request;
-            //p[20] = irq_preset;
-            //p[21] = irq_preset_vbl;
+            for (INT i = 0; i < 8; i++)
+            {
+                p[i] = reg[i];
+            }
+            p[8] = prg0;
+            p[9] = prg1;
+            p[10] = chr01;
+            p[11] = chr23;
+            p[12] = chr4;
+            p[13] = chr5;
+            p[14] = chr6;
+            p[15] = chr7;
+            p[16] = irq_enable;
+            p[17] = (BYTE)irq_counter;
+            p[18] = irq_latch;
+            p[19] = irq_request;
+            p[20] = irq_preset;
+            p[21] = irq_preset_vbl;
             //*((DWORD*)&p[22]) = vb0;
+            BitConverter.GetBytes(vb0).CopyTo(p,22);
             //*((DWORD*)&p[26]) = vb1;
+            BitConverter.GetBytes(vb1).CopyTo(p,26);
         }
 
         //void Mapper012::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //	reg[i] = p[i];
-            //}
-            //prg0 = p[8];
-            //prg1 = p[9];
-            //chr01 = p[10];
-            //chr23 = p[11];
-            //chr4 = p[12];
-            //chr5 = p[13];
-            //chr6 = p[14];
-            //chr7 = p[15];
-            //irq_enable = p[16];
-            //irq_counter = (INT)p[17];
-            //irq_latch = p[18];
-            //irq_request = p[19];
-            //irq_preset = p[20];
-            //irq_preset_vbl = p[21];
+            for (INT i = 0; i < 8; i++)
+            {
+                reg[i] = p[i];
+            }
+            prg0 = p[8];
+            prg1 = p[9];
+            chr01 = p[10];
+            chr23 = p[11];
+            chr4 = p[12];
+            chr5 = p[13];
+            chr6 = p[14];
+            chr7 = p[15];
+            irq_enable = p[16];
+            irq_counter = (byte)p[17];
+            irq_latch = p[18];
+            irq_request = p[19];
+            irq_preset = p[20];
+            irq_preset_vbl = p[21];
             //vb0 = *((DWORD*)&p[22]);
+            vb0 = BitConverter.ToUInt32(p, 22);
             //vb1 = *((DWORD*)&p[26]);
+            vb1 = BitConverter.ToUInt32(p, 26);
         }
 
 

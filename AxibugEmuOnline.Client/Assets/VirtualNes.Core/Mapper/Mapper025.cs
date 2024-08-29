@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper025  Konami VRC4 (Normal)                                      //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -248,29 +249,31 @@ namespace VirtualNes.Core
         //void Mapper025::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 11; i++)
-            //{
-            //	p[i] = reg[i];
-            //}
-            //p[11] = irq_enable;
-            //p[12] = irq_occur;
-            //p[13] = irq_latch;
-            //p[14] = irq_counter;
+            for (INT i = 0; i < 11; i++)
+            {
+                p[i] = reg[i];
+            }
+            p[11] = irq_enable;
+            p[12] = irq_occur;
+            p[13] = irq_latch;
+            p[14] = irq_counter;
             //*((INT*)&p[15]) = irq_clock;
+            BitConverter.GetBytes(irq_clock).CopyTo(p, 15);
         }
 
         //void Mapper025::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //for (INT i = 0; i < 11; i++)
-            //{
-            //	reg[i] = p[i];
-            //}
-            //irq_enable = p[11];
-            //irq_occur = p[12];
-            //irq_latch = p[13];
-            //irq_counter = p[14];
+            for (INT i = 0; i < 11; i++)
+            {
+                reg[i] = p[i];
+            }
+            irq_enable = p[11];
+            irq_occur = p[12];
+            irq_latch = p[13];
+            irq_counter = p[14];
             //irq_clock = *((INT*)&p[15]);
+            irq_clock = BitConverter.ToInt32(p, 15);
         }
 
 

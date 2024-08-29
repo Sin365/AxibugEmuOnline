@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper064  Tengen Rambo-1                                            //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -249,29 +250,33 @@ namespace VirtualNes.Core
         //void Mapper064::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = reg[0];
-            //p[1] = reg[1];
-            //p[2] = reg[2];
-            //p[3] = irq_enable;
-            //p[4] = irq_mode;
-            //p[5] = irq_latch;
-            //p[6] = irq_reset;
+            p[0] = reg[0];
+            p[1] = reg[1];
+            p[2] = reg[2];
+            p[3] = irq_enable;
+            p[4] = irq_mode;
+            p[5] = irq_latch;
+            p[6] = irq_reset;
             //*((INT*)&p[8]) = irq_counter;
-            //*((INT*)&p[12]) = irq_counter2;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 8);
+            //* ((INT*)&p[12]) = irq_counter2;
+            BitConverter.GetBytes(irq_counter2).CopyTo(p, 12);
         }
 
         //void Mapper064::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //reg[0] = p[0];
-            //reg[1] = p[1];
-            //reg[2] = p[2];
-            //irq_enable = p[3];
-            //irq_mode = p[4];
-            //irq_latch = p[5];
-            //irq_reset = p[6];
+            reg[0] = p[0];
+            reg[1] = p[1];
+            reg[2] = p[2];
+            irq_enable = p[3];
+            irq_mode = p[4];
+            irq_latch = p[5];
+            irq_reset = p[6];
             //irq_counter = *((INT*)&p[8]);
+            irq_counter = BitConverter.ToInt32(p, 8);
             //irq_counter2 = *((INT*)&p[12]);
+            irq_counter2 = BitConverter.ToInt32(p, 12);
         }
 
         public override bool IsStateSave()

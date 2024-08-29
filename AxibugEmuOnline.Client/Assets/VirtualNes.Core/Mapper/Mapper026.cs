@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper026  Konami VRC6 (PA0,PA1 reverse)                             //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -160,19 +161,21 @@ namespace VirtualNes.Core
         //void Mapper026::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = irq_enable;
-            //p[1] = irq_counter;
-            //p[2] = irq_latch;
+            p[0] = irq_enable;
+            p[1] = irq_counter;
+            p[2] = irq_latch;
             //*(INT*)&p[3] = irq_clock;
+            BitConverter.GetBytes(irq_clock).CopyTo(p, 3);
         }
 
         //void Mapper026::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //irq_enable = p[0];
-            //irq_counter = p[1];
-            //irq_latch = p[2];
+            irq_enable = p[0];
+            irq_counter = p[1];
+            irq_latch = p[2];
             //irq_clock = *(INT*)&p[3];
+            irq_clock = BitConverter.ToInt32(p, 3);
         }
 
 

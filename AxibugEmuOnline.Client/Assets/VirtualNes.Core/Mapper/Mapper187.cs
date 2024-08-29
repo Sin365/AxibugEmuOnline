@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper187  Street Fighter Zero 2 97                                  //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -310,56 +311,58 @@ namespace VirtualNes.Core
         //void Mapper187::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //INT i;
+            int i;
 
-            //for (i = 0; i < 4; i++)
-            //{
-            //    p[i] = prg[i];
-            //}
-            //for (i = 0; i < 8; i++)
-            //{
-            //    p[4 + i] = bank[i];
-            //}
-            //for (i = 0; i < 8; i++)
-            //{
-            //    *((INT*)&p[12 + i * sizeof(INT)]) = chr[i];
-            //}
+            for (i = 0; i < 4; i++)
+            {
+                p[i] = prg[i];
+            }
+            for (i = 0; i < 8; i++)
+            {
+                p[4 + i] = bank[i];
+            }
+            for (i = 0; i < 8; i++)
+            {
+                //*((INT*)&p[12 + i * sizeof(INT)]) = chr[i];
+                BitConverter.GetBytes(chr[i]).CopyTo(p, 12 + i * sizeof(int));
+            }
 
-            //p[44] = ext_mode;
-            //p[45] = chr_mode;
-            //p[46] = ext_enable;
-            //p[47] = irq_enable;
-            //p[48] = irq_counter;
-            //p[49] = irq_latch;
-            //p[50] = irq_occur;
-            //p[51] = last_write;
+            p[44] = ext_mode;
+            p[45] = chr_mode;
+            p[46] = ext_enable;
+            p[47] = irq_enable;
+            p[48] = irq_counter;
+            p[49] = irq_latch;
+            p[50] = irq_occur;
+            p[51] = last_write;
         }
 
         //void Mapper187::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //INT i;
+            int i;
 
-            //for (i = 0; i < 4; i++)
-            //{
-            //    prg[i] = p[i];
-            //}
-            //for (i = 0; i < 8; i++)
-            //{
-            //    bank[i] = p[4 + i];
-            //}
-            //for (i = 0; i < 8; i++)
-            //{
-            //    chr[i] = *((INT*)&p[12 + i * sizeof(INT)]);
-            //}
-            //ext_mode = p[44];
-            //chr_mode = p[45];
-            //ext_enable = p[46];
-            //irq_enable = p[47];
-            //irq_counter = p[48];
-            //irq_latch = p[49];
-            //irq_occur = p[50];
-            //last_write = p[51];
+            for (i = 0; i < 4; i++)
+            {
+                prg[i] = p[i];
+            }
+            for (i = 0; i < 8; i++)
+            {
+                bank[i] = p[4 + i];
+            }
+            for (i = 0; i < 8; i++)
+            {
+                chr[i] = BitConverter.ToInt32(p, 12 + i * sizeof(int));
+                //chr[i] = *((INT*)&p[12 + i * sizeof(INT)]);
+            }
+            ext_mode = p[44];
+            chr_mode = p[45];
+            ext_enable = p[46];
+            irq_enable = p[47];
+            irq_counter = p[48];
+            irq_latch = p[49];
+            irq_occur = p[50];
+            last_write = p[51];
         }
 
         public override bool IsStateSave()
