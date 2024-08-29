@@ -22,6 +22,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static RomLib nesRomLib;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
+        public static AppSceneLoader SceneLoader;
 
         private static CoroutineRunner coRunner;
 
@@ -41,6 +42,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             httpAPI = new HttpAPI();
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
+            SceneLoader = new AppSceneLoader();
 
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);

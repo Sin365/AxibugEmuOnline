@@ -2,11 +2,13 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
-    public class RomItem : MenuItem, IVirtualItem
+    public class RomItem : MenuItem, IVirtualItem, IPointerClickHandler
     {
         [SerializeField]
         Image m_romImage;
@@ -59,6 +61,19 @@ namespace AxibugEmuOnline.Client
                     if (url != m_romfile.ImageURL) return;
 
                     m_romImage.sprite = img;
+                });
+            }
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!m_romfile.RomReady)
+                m_romfile.BeginDownload();
+            else
+            {
+                AppAxibugEmuOnline.SceneLoader.BeginLoad("Scene/EmuTest", () =>
+                {
+                    var nesEmu = GameObject.FindObjectOfType<NesEmulator>();
                 });
             }
         }
