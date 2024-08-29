@@ -1,6 +1,7 @@
 ﻿/////////////////////////////
 // Mapper083  Cony                                                      //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -215,23 +216,27 @@ namespace VirtualNes.Core
         //void Mapper083::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = reg[0];
-            //p[1] = reg[1];
-            //p[2] = reg[2];
+            p[0] = reg[0];
+            p[1] = reg[1];
+            p[2] = reg[2];
             //*(INT*)&p[3] = chr_bank;
-            //p[7] = irq_enable;
+            BitConverter.GetBytes(chr_bank).CopyTo(p,3);
+            p[7] = irq_enable;
             //*(INT*)&p[8] = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p,8);
         }
 
         //void Mapper083::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //reg[0] = p[0];
-            //reg[1] = p[1];
-            //reg[2] = p[2];
+            reg[0] = p[0];
+            reg[1] = p[1];
+            reg[2] = p[2];
             //chr_bank = *(INT*)&p[3];
-            //irq_enable = p[7];
+            chr_bank = BitConverter.ToInt32(p, 3);
+            irq_enable = p[7];
             //irq_counter = *(INT*)&p[8];
+            irq_counter = BitConverter.ToInt32(p, 8);
         }
 
         public override bool IsStateSave()

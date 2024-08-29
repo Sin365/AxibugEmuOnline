@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper142  SMB2J                                                     //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -90,17 +91,19 @@ namespace VirtualNes.Core
         //void Mapper142::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = prg_sel;
-            //p[0] = irq_enable;
+            p[0] = prg_sel;
+            p[0] = irq_enable;
             //*(INT*)&p[2] = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 2);
         }
 
         //void Mapper142::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //prg_sel = p[0];
-            //irq_enable = p[1];
+            prg_sel = p[0];
+            irq_enable = p[1];
             //irq_counter = *(INT*)&p[2];
+            irq_counter = BitConverter.ToInt32 (p, 2);
         }
         public override bool IsStateSave()
         {

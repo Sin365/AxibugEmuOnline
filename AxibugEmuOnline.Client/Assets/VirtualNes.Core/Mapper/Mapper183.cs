@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper183  Gimmick (Bootleg)                                         //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -168,23 +169,25 @@ namespace VirtualNes.Core
         //void Mapper183::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 8; i++)
-            //{
-            //    p[i] = reg[i];
-            //}
-            //p[8] = irq_enable;
+            for (INT i = 0; i < 8; i++)
+            {
+                p[i] = reg[i];
+            }
+            p[8] = irq_enable;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 9);
             //*((INT*)&p[9]) = irq_counter;
         }
 
         //void Mapper183::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //    for (INT i = 0; i < 8; i++)
-            //    {
-            //        reg[i] = p[i];
-            //    }
-            //    irq_enable = p[8];
-            //    irq_counter = *((INT*)&p[9]);
+            for (INT i = 0; i < 8; i++)
+            {
+                reg[i] = p[i];
+            }
+            irq_enable = p[8];
+            irq_counter = BitConverter.ToInt32(p, 9);
+            //irq_counter = *((INT*)&p[9]);
         }
 
         public override bool IsStateSave()

@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper045  1000000-in-1                                              //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -311,69 +312,71 @@ namespace VirtualNes.Core
         }
 
         //void Mapper045::SaveState(LPBYTE ps)
-        public override void SaveState(byte[] p)
+        public override void SaveState(byte[] ps)
         {
-            //INT i;
-            //for (i = 0; i < 8; i++)
-            //{
-            //	ps[i] = reg[i];
-            //}
-            //for (i = 0; i < 4; i++)
-            //{
-            //	ps[i + 8] = p[i];
-            //}
-            //for (i = 0; i < 8; i++)
-            //{
-            //	*(INT*)&ps[i * 4 + 64] = c[i];
-            //}
-            //ps[20] = prg0;
-            //ps[21] = prg1;
-            //ps[22] = prg2;
-            //ps[23] = prg3;
-            //ps[24] = chr0;
-            //ps[25] = chr1;
-            //ps[26] = chr2;
-            //ps[27] = chr3;
-            //ps[28] = chr4;
-            //ps[29] = chr5;
-            //ps[30] = chr6;
-            //ps[31] = chr7;
-            //ps[32] = irq_enable;
-            //ps[33] = irq_counter;
-            //ps[34] = irq_latch;
+            int i;
+            for (i = 0; i < 8; i++)
+            {
+                ps[i] = reg[i];
+            }
+            for (i = 0; i < 4; i++)
+            {
+                ps[i + 8] = p[i];
+            }
+            for (i = 0; i < 8; i++)
+            {
+                //*(INT*)&ps[i * 4 + 64] = c[i];
+                BitConverter.GetBytes(c[i]).CopyTo(ps, i * 4 + 64);
+            }
+            ps[20] = prg0;
+            ps[21] = prg1;
+            ps[22] = prg2;
+            ps[23] = prg3;
+            ps[24] = chr0;
+            ps[25] = chr1;
+            ps[26] = chr2;
+            ps[27] = chr3;
+            ps[28] = chr4;
+            ps[29] = chr5;
+            ps[30] = chr6;
+            ps[31] = chr7;
+            ps[32] = irq_enable;
+            ps[33] = irq_counter;
+            ps[34] = irq_latch;
         }
 
         //void Mapper045::LoadState(LPBYTE ps)
-        public override void LoadState(byte[] p)
+        public override void LoadState(byte[] ps)
         {
-            //INT i;
-            //for (i = 0; i < 8; i++)
-            //{
-            //	reg[i] = ps[i];
-            //}
-            //for (i = 0; i < 4; i++)
-            //{
-            //	p[i] = ps[i + 8];
-            //}
-            //for (i = 0; i < 8; i++)
-            //{
-            //	c[i] = *(INT*)&ps[i * 4 + 64];
-            //}
-            //prg0 = ps[20];
-            //prg1 = ps[21];
-            //prg2 = ps[22];
-            //prg3 = ps[23];
-            //chr0 = ps[24];
-            //chr1 = ps[25];
-            //chr2 = ps[26];
-            //chr3 = ps[27];
-            //chr4 = ps[28];
-            //chr5 = ps[29];
-            //chr6 = ps[30];
-            //chr7 = ps[31];
-            //irq_enable = ps[32];
-            //irq_counter = ps[33];
-            //irq_latch = ps[34];
+            int i;
+            for (i = 0; i < 8; i++)
+            {
+                reg[i] = ps[i];
+            }
+            for (i = 0; i < 4; i++)
+            {
+                p[i] = ps[i + 8];
+            }
+            for (i = 0; i < 8; i++)
+            {
+                //c[i] = *(INT*)&ps[i * 4 + 64];
+                c[i] = BitConverter.ToInt32(ps, i * 4 + 64);
+            }
+            prg0 = ps[20];
+            prg1 = ps[21];
+            prg2 = ps[22];
+            prg3 = ps[23];
+            chr0 = ps[24];
+            chr1 = ps[25];
+            chr2 = ps[26];
+            chr3 = ps[27];
+            chr4 = ps[28];
+            chr5 = ps[29];
+            chr6 = ps[30];
+            chr7 = ps[31];
+            irq_enable = ps[32];
+            irq_counter = ps[33];
+            irq_latch = ps[34];
         }
 
 

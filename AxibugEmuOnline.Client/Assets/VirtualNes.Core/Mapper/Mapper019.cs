@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper019  Namcot 106                                                //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -386,25 +387,29 @@ namespace VirtualNes.Core
         //void Mapper019::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //		p[0] = reg[0];
-            //		p[1] = reg[1];
-            //		p[2] = reg[2];
-            //		p[3] = irq_enable;
-            //		*(WORD*)&p[4] = irq_counter;
+            p[0] = reg[0];
+            p[1] = reg[1];
+            p[2] = reg[2];
+            p[3] = irq_enable;
+            //*(WORD*)&p[4] = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 4);
 
             //::memcpy(&p[8], exram, sizeof(exram));
+            Array.Copy(exram, p, exram.Length);
+
         }
 
         //void Mapper019::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //		reg[0] = p[0];
-            //		reg[1] = p[1];
-            //		reg[2] = p[2];
-            //		irq_enable = p[3];
-            //		irq_counter = *(WORD*)&p[4];
-
+            reg[0] = p[0];
+            reg[1] = p[1];
+            reg[2] = p[2];
+            irq_enable = p[3];
+            //irq_counter = *(WORD*)&p[4];
+            irq_counter = BitConverter.ToUInt16(p, 4);
             //::memcpy(exram, &p[8], sizeof(exram));
+            Array.Copy(p,exram,exram.Length);
         }
 
 

@@ -1,6 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////
 // Mapper018  Jaleco SS8806                                             //
 //////////////////////////////////////////////////////////////////////////
+using System;
 using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
@@ -245,27 +246,31 @@ namespace VirtualNes.Core
         //void Mapper018::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //for (INT i = 0; i < 11; i++)
-            //{
-            //	p[i] = reg[i];
-            //}
-            //p[11] = irq_enable;
-            //p[12] = irq_mode;
+            for (INT i = 0; i < 11; i++)
+            {
+                p[i] = reg[i];
+            }
+            p[11] = irq_enable;
+            p[12] = irq_mode;
             //*(INT*)&p[13] = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 13);
             //*(INT*)&p[17] = irq_latch;
+            BitConverter.GetBytes(irq_latch).CopyTo(p, 17);
         }
 
         //void Mapper018::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //for (INT i = 0; i < 11; i++)
-            //{
-            //	p[i] = reg[i];
-            //}
-            //irq_enable = p[11];
-            //irq_mode = p[12];
+            for (INT i = 0; i < 11; i++)
+            {
+                p[i] = reg[i];
+            }
+            irq_enable = p[11];
+            irq_mode = p[12];
             //irq_counter = *(INT*)&p[13];
+            irq_counter = BitConverter.ToInt32(p, 13);
             //irq_latch = *(INT*)&p[17];
+            irq_latch = BitConverter.ToInt32(p, 17);
         }
 
 

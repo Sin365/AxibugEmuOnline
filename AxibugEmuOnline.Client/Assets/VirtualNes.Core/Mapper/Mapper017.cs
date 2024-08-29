@@ -1,4 +1,5 @@
-﻿using static VirtualNes.Core.CPU;
+﻿using System;
+using static VirtualNes.Core.CPU;
 using static VirtualNes.MMU;
 using BYTE = System.Byte;
 using INT = System.Int32;
@@ -104,17 +105,21 @@ namespace VirtualNes.Core
         //void Mapper017::SaveState(LPBYTE p)
         public override void SaveState(byte[] p)
         {
-            //p[0] = irq_enable;
+            p[0] = irq_enable;
             //*(INT*)&p[1] = irq_counter;
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 1);
             //*(INT*)&p[5] = irq_latch;
+            BitConverter.GetBytes(irq_latch).CopyTo(p, 5);
         }
 
         //void Mapper017::LoadState(LPBYTE p)
         public override void LoadState(byte[] p)
         {
-            //irq_enable = p[0];
+            irq_enable = p[0];
             //irq_counter = *(INT*)&p[1];
+            irq_counter = BitConverter.ToInt32(p, 1);
             //irq_latch = *(INT*)&p[5];
+            irq_latch = BitConverter.ToInt32(p, 5);
         }
 
 
