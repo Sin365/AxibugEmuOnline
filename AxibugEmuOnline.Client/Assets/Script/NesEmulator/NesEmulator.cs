@@ -62,8 +62,8 @@ namespace AxibugEmuOnline.Client
         }
 
 #if UNITY_EDITOR
-        [ContextMenu("IMPORT")]
-        public void TTTA()
+        [ContextMenu("ImportNesDB")]
+        public void ImportNesDB()
         {
             var db = Resources.Load<RomDB>("NES/ROMDB");
             db.Clear();
@@ -84,6 +84,13 @@ namespace AxibugEmuOnline.Client
 
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
+        }
+
+        [ContextMenu("GetState")]
+        public void GetState()
+        {
+            var state = NesCore.GetState();
+            var bytes = state.ToBytes();
         }
 #endif
     }
