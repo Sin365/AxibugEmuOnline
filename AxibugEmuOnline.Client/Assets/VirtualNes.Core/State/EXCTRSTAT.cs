@@ -11,7 +11,7 @@
 
         public readonly void SaveState(StateBuffer buffer)
         {
-            throw new System.NotImplementedException();
+            buffer.Write(data);
         }
     }
 }
