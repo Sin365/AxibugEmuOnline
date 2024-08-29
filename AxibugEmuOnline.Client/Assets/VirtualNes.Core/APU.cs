@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
@@ -535,6 +536,58 @@ namespace VirtualNes.Core
             }
 
             return data;
+        }
+
+        internal void GetFrameIRQ(ref int Cycle, ref byte Count, ref byte Type, ref byte IRQ, ref byte Occur)
+        {
+            @internal.GetFrameIRQ(ref Cycle, ref Count, ref Type, ref IRQ, ref Occur);
+        }
+
+        internal void SaveState(StateBuffer buffer)
+        {
+            // 時間軸を同期させる為Flushする
+            QueueFlush();
+
+            @internal.SaveState(buffer);
+            buffer.Position += (@internal.GetSize() + 15) & (~0x0F);
+
+            // VRC6
+            if ((exsound_select & 0x01) != 0)
+            {
+                vrc6.SaveState(buffer);
+                buffer.Position += (vrc6.GetSize() + 15) & (~0x0F);  // Padding
+            }
+            // VRC7 (not support)
+            if ((exsound_select & 0x02) != 0)
+            {
+                vrc7.SaveState(buffer);
+                buffer.Position += (vrc7.GetSize() + 15) & (~0x0F);  // Padding
+            }
+            // FDS
+            if ((exsound_select & 0x04) != 0)
+            {
+                fds.SaveState(buffer);
+                buffer.Position += (fds.GetSize() + 15) & (~0x0F);   // Padding
+
+            }
+            // MMC5
+            if ((exsound_select & 0x08) != 0)
+            {
+                mmc5.SaveState(buffer);
+                buffer.Position += (mmc5.GetSize() + 15) & (~0x0F);  // Padding
+            }
+            // N106
+            if ((exsound_select & 0x10) != 0)
+            {
+                n106.SaveState(buffer); 
+                buffer.Position += (n106.GetSize() + 15) & (~0x0F);  // Padding
+            }
+            // FME7
+            if ((exsound_select & 0x20) != 0)
+            {
+                fme7.SaveState(buffer);
+                buffer.Position += (fme7.GetSize() + 15) & (~0x0F);  // Padding
+            }
         }
     }
 

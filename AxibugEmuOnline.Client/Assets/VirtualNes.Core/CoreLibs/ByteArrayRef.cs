@@ -53,6 +53,11 @@ namespace VirtualNes.Core
             }
         }
 
+        public Span<T> Span(int start, int length)
+        {
+            return new Span<T>(m_rawArray, start + Offset, length);
+        }
+
         public static implicit operator ArrayRef<T>(T[] array)
         {
             return new ArrayRef<T>(array);

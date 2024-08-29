@@ -2021,6 +2021,11 @@ namespace VirtualNes.Core
         {
             r = R;
         }
+
+        internal int GetDmaCycles()
+        {
+            return DMA_cycles;
+        }
     }
 
     public enum StatusFlag6502 : int

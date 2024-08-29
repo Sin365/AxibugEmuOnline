@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VirtualNes.Core
 {
@@ -245,7 +246,18 @@ namespace VirtualNes.Core
             return ch.output_vol;
         }
 
-        public class RECTANGLE
+        public override uint GetSize()
+        {
+            return ch0.GetSize() + ch1.GetSize() + ch2.GetSize();
+        }
+        public override void SaveState(StateBuffer p)
+        {
+            ch0.SaveState(p);
+            ch1.SaveState(p);
+            ch2.SaveState(p);
+        }
+
+        public class RECTANGLE : IStateBufferObject
         {
             public byte[] reg = new byte[3];
 
@@ -274,9 +286,27 @@ namespace VirtualNes.Core
                 adder = 0;
                 duty_pos = 0;
             }
+
+            public uint GetSize()
+            {
+                return 20;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(gate);
+                buffer.Write(volume);
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(output_vol);
+                buffer.Write(adder);
+                buffer.Write(duty_pos);
+            }
         }
 
-        public class SAWTOOTH
+        public class SAWTOOTH : IStateBufferObject
         {
             public byte[] reg = new byte[3];
 
@@ -304,6 +334,24 @@ namespace VirtualNes.Core
                 adder = 0;
                 accum = 0;
                 phaseaccum = 0;
+            }
+
+            public uint GetSize()
+            {
+                return 20;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(volume);
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(output_vol);
+                buffer.Write(adder);
+                buffer.Write(accum);
+                buffer.Write(phaseaccum);
             }
         }
     }

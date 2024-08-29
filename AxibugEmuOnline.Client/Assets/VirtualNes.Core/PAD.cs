@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Codice.CM.Client.Differences;
+using System;
+using System.Collections.Generic;
 
 namespace VirtualNes.Core
 {
@@ -506,6 +508,68 @@ namespace VirtualNes.Core
         internal int GetExController()
         {
             return excontroller_select;
+        }
+
+        internal bool GetStrobe()
+        {
+            return bStrobe;
+        }
+
+        internal uint GetSyncExData()
+        {
+            uint data = 0;
+
+            switch ((EXCONTROLLER)excontroller_select)
+            {
+                case EXCONTROLLER.EXCONTROLLER_ZAPPER:
+                case EXCONTROLLER.EXCONTROLLER_PADDLE:
+                case EXCONTROLLER.EXCONTROLLER_SPACESHADOWGUN:
+                case EXCONTROLLER.EXCONTROLLER_OEKAKIDS_TABLET:
+                case EXCONTROLLER.EXCONTROLLER_VSZAPPER:
+                    {
+                        int x, y;
+                        x = expad.GetSyncData(0);
+                        y = expad.GetSyncData(1);
+                        if (x == -1 || y == -1)
+                        {
+                            data = 0x80000000;
+                        }
+                        else
+                        {
+                            data = (uint)((x & 0xFF) | ((y & 0xFF) << 8));
+                        }
+                    }
+                    if (excontroller_select != (int)EXCONTROLLER.EXCONTROLLER_SPACESHADOWGUN)
+                    {
+                        if (expad.GetSyncData(2) != 0)
+                            data |= 0x0010000;
+                    }
+                    else
+                    {
+                        data |= (uint)(expad.GetSyncData(2) << 16);
+                    }
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_CRAZYCLIMBER:
+                    data = (uint)expad.GetSyncData(0);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_TOPRIDER:
+                    data = (uint)expad.GetSyncData(0);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_FAMILYTRAINER_A:
+                case EXCONTROLLER.EXCONTROLLER_FAMILYTRAINER_B:
+                    data = (uint)expad.GetSyncData(0);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_EXCITINGBOXING:
+                    data = (uint)expad.GetSyncData(0);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_MAHJANG:
+                    data = (uint)expad.GetSyncData(0);
+                    break;
+
+                default:
+                    break;
+            }
+            return data;
         }
     }
 

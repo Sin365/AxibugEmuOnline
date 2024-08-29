@@ -1,7 +1,12 @@
+using Codice.CM.Client.Differences;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography;
 using System.Text;
+using UnityEngine;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
@@ -21,7 +26,6 @@ namespace VirtualNes.Core
         private List<CHEATCODE> m_CheatCode = new List<CHEATCODE>();
         private List<GENIECODE> m_GenieCode = new List<GENIECODE>();
         private bool m_bDiskThrottle;
-        private int m_CommandRequest;
         private int m_nSnapNo;
         private bool m_bNsfPlaying;
         private bool m_bNsfInit;
@@ -173,7 +177,6 @@ namespace VirtualNes.Core
             Debuger.Log("VirtuaNES - CSharpCore\n");
 
             m_bDiskThrottle = false;
-            m_CommandRequest = 0;
 
             m_nSnapNo = 0;
 
@@ -449,31 +452,6 @@ namespace VirtualNes.Core
             {
                 MMU.CRAM_USED[i] = 0;
             }
-        }
-
-        public void Command(NESCOMMAND cmd)
-        {
-            CommandParam(cmd, 0);
-        }
-
-        public bool CommandParam(NESCOMMAND cmd, int param)
-        {
-            switch (cmd)
-            {
-                case NESCOMMAND.NESCMD_NONE: break;
-                case NESCOMMAND.NESCMD_HWRESET:
-                    Reset();
-                    m_CommandRequest = (int)cmd;
-                    break;
-                case NESCOMMAND.NESCMD_SWRESET:
-                    SoftReset();
-                    m_CommandRequest = (int)cmd;
-                    break;
-                default:
-                    throw new NotImplementedException($"{cmd} not impl right now");
-            }
-
-            return true;
         }
 
         public void CheatInitial()
@@ -1671,6 +1649,256 @@ namespace VirtualNes.Core
         internal byte GetBarcodeStatus()
         {
             return m_BarcodeOut;
+        }
+
+        public State GetState()
+        {
+            State state = new State();
+
+            //HEADER
+            {
+                state.HEADER.ID = "VirtuaNES ST";
+                state.HEADER.BlockVersion = 0x0200;
+
+                if (rom.GetMapperNo() != 20)
+                    state.HEADER.Ext0 = rom.GetPROM_CRC();
+                else
+                {
+                    state.HEADER.Ext0 = rom.GetGameID();
+                    state.HEADER.Ext1 = (ushort)rom.GetMakerID();
+                    state.HEADER.Ext2 = (ushort)rom.GetDiskNo();
+                }
+            }
+
+            //REGISTER STATE
+            {
+                state.regBLOCK.ID = "REG DATA";
+                state.regBLOCK.BlockVersion = 0x0210;
+                state.regBLOCK.BlockSize = state.reg.GetSize();
+
+                R6502 R = null;
+                cpu.GetContext(ref R);
+
+                state.reg.cpureg.PC = R.PC;
+                state.reg.cpureg.A = R.A;
+                state.reg.cpureg.X = R.X;
+                state.reg.cpureg.Y = R.Y;
+                state.reg.cpureg.S = R.S;
+                state.reg.cpureg.P = R.P;
+                state.reg.cpureg.I = R.INT_pending;
+
+                int cycles = 0;
+                apu.GetFrameIRQ(ref cycles,
+                    ref state.reg.cpureg.FrameIRQ_count,
+                    ref state.reg.cpureg.FrameIRQ_type,
+                    ref state.reg.cpureg.FrameIRQ,
+                    ref state.reg.cpureg.FrameIRQ_occur);
+                state.reg.cpureg.FrameIRQ_cycles = cycles;	// 参照がINTな為（ぉ
+
+                state.reg.cpureg.DMA_cycles = cpu.GetDmaCycles();
+                state.reg.cpureg.emul_cycles = emul_cycles;
+                state.reg.cpureg.base_cycles = base_cycles;
+
+                // SAVE PPU STATE
+                state.reg.ppureg.reg0 = MMU.PPUREG[0];
+                state.reg.ppureg.reg1 = MMU.PPUREG[1];
+                state.reg.ppureg.reg2 = MMU.PPUREG[2];
+                state.reg.ppureg.reg3 = MMU.PPUREG[3];
+                state.reg.ppureg.reg7 = MMU.PPU7_Temp;
+                state.reg.ppureg.loopy_t = MMU.loopy_t;
+                state.reg.ppureg.loopy_v = MMU.loopy_v;
+                state.reg.ppureg.loopy_x = MMU.loopy_x;
+                state.reg.ppureg.toggle56 = MMU.PPU56Toggle;
+            }
+
+            //RAM STATE
+            {
+                state.ram = RAMSTAT.GetDefault();
+                uint size = 0;
+
+                // SAVE RAM STATE
+                MemoryUtility.memcpy(state.ram.RAM, MMU.RAM, state.ram.RAM.Length);
+                MemoryUtility.memcpy(state.ram.BGPAL, MMU.BGPAL, state.ram.BGPAL.Length);
+                MemoryUtility.memcpy(state.ram.SPPAL, MMU.SPPAL, state.ram.SPPAL.Length);
+                MemoryUtility.memcpy(state.ram.SPRAM, MMU.SPRAM, state.ram.SPRAM.Length);
+
+                // S-RAM STATE(使用/未使用に関わらず存在すればセーブする)
+                if (rom.IsSAVERAM())
+                {
+                    size = (uint)SAVERAM_SIZE;
+                }
+
+                // Create Header
+                state.ramBLOCK.ID = "RAM DATA";
+                state.ramBLOCK.BlockVersion = 0x0100;
+                state.ramBLOCK.BlockSize = size + state.ram.GetSize();
+
+                if (rom.IsSAVERAM())
+                {
+                    state.WRAM = new byte[SAVERAM_SIZE];
+                    Array.Copy(MMU.WRAM, state.WRAM, SAVERAM_SIZE);
+                }
+            }
+
+            //BANK STATE
+            {
+                state.mmu = MMUSTAT.GetDefault();
+                uint size = 0;
+
+                // SAVE CPU MEMORY BANK DATA
+                // BANK0,1,2はバンクセーブに関係なし
+                // VirtuaNES0.30から
+                // バンク３はSRAM使用に関わらずセーブ
+                for (int i = 3; i < 8; i++)
+                {
+                    state.mmu.CPU_MEM_TYPE[i] = MMU.CPU_MEM_TYPE[i];
+                    state.mmu.CPU_MEM_PAGE[i] = (ushort)MMU.CPU_MEM_PAGE[i];
+
+                    if (MMU.CPU_MEM_TYPE[i] == MMU.BANKTYPE_RAM
+                        || MMU.CPU_MEM_TYPE[i] == MMU.BANKTYPE_DRAM)
+                    {
+                        size += 8 * 1024;   // 8K BANK
+                    }
+                }
+
+                // SAVE VRAM MEMORY DATA
+                for (int i = 0; i < 12; i++)
+                {
+                    state.mmu.PPU_MEM_TYPE[i] = MMU.PPU_MEM_TYPE[i];
+                    state.mmu.PPU_MEM_PAGE[i] = (ushort)MMU.PPU_MEM_PAGE[i];
+                }
+                size += 4 * 1024;   // 1K BANK x 4 (VRAM)
+
+                for (int i = 0; i < 8; i++)
+                {
+                    state.mmu.CRAM_USED[i] = MMU.CRAM_USED[i];
+                    if (MMU.CRAM_USED[i] != 0)
+                    {
+                        size += 4 * 1024;   // 4K BANK
+                    }
+                }
+
+                // Create Header
+                state.mmuBLOCK.ID = "MMU DATA";
+                state.mmuBLOCK.BlockVersion = 0x0200;
+                state.mmuBLOCK.BlockSize = size + state.mmu.GetSize();
+
+                state.CPU_MEM_BANK = new List<byte>();
+                // WRITE CPU RAM MEMORY BANK
+                for (int i = 3; i < 8; i++)
+                {
+                    if (state.mmu.CPU_MEM_TYPE[i] != MMU.BANKTYPE_ROM)
+                    {
+                        state.CPU_MEM_BANK.AddRange(MMU.CPU_MEM_BANK[i].Span(0, 8 * 1024).ToArray());
+                    }
+                }
+
+                // WRITE VRAM MEMORY(常に4K分すべて書き込む)
+                state.VRAM = new byte[4 * 1024];
+                Array.Copy(MMU.VRAM, state.VRAM, state.VRAM.Length);
+
+                state.CRAM = new List<byte>();
+                // WRITE CRAM MEMORY
+                for (int i = 0; i < 8; i++)
+                {
+                    if (MMU.CRAM_USED[i] != 0)
+                    {
+                        var bytes = new byte[4 * 1024];
+                        Array.Copy(MMU.CRAM, 0x1000 * i, bytes, 0, bytes.Length);
+                        state.CRAM.AddRange(bytes);
+                    }
+                }
+            }
+
+            // MMC STATE
+            {
+                state.mmc = MMCSTAT.GetDefault();
+
+                // Create Header
+                state.mmcBLOCK.ID = "MMC DATA";
+                state.mmcBLOCK.BlockVersion = 0x0100;
+                state.mmcBLOCK.BlockSize = state.mmc.GetSize();
+
+                if (mapper.IsStateSave())
+                {
+                    mapper.SaveState(state.mmc.mmcdata);
+                }
+            }
+
+            //CONTROLLER STATE
+            {
+                // Create Header
+                state.ctrBLOCK.ID = "CTR DATA";
+                state.ctrBLOCK.BlockVersion = 0x0100;
+                state.ctrBLOCK.BlockSize = state.ctr.GetSize();
+
+                state.ctr.pad1bit = pad.pad1bit;
+                state.ctr.pad2bit = pad.pad2bit;
+                state.ctr.pad3bit = pad.pad3bit;
+                state.ctr.pad4bit = pad.pad4bit;
+                state.ctr.strobe = (byte)(pad.GetStrobe() ? 0xFF : 0);
+            }
+
+            //SND STATE
+            {
+                state.snd = SNDSTAT.GetDefault();
+
+                // Create Header
+                state.sndBLOCK.ID = "SND DATA";
+                state.sndBLOCK.BlockVersion = 0x0100;
+                state.sndBLOCK.BlockSize = state.snd.GetSize();
+
+                StateBuffer buffer = new StateBuffer();
+                apu.SaveState(buffer);
+                Array.Copy(buffer.Data.ToArray(), state.snd.snddata, buffer.Data.Count);
+            }
+
+            // DISKIMAGE STATE
+            if (rom.GetMapperNo() == 20)
+            {
+                var lpDisk = rom.GetPROM();
+                var lpWrite = rom.GetDISK();
+                int DiskSize = 16 + 65500 * rom.GetDiskNo();
+
+
+                // 相違数をカウント
+                for (int i = 16; i < DiskSize; i++)
+                {
+                    if (lpWrite[i] != 0)
+                        state.dsk.DifferentSize++;
+                }
+
+                state.dskBLOCK.ID = "DISKDATA";
+                state.dskBLOCK.BlockVersion = 0x0210;
+                state.dskBLOCK.BlockSize = 0;
+
+                for (int i = 16; i < DiskSize; i++)
+                {
+                    if (lpWrite[i] != 0)
+                    {
+                        state.dskdata = (uint)(i & 0x00FFFFFF);
+                        state.dskdata |= ((uint)lpDisk[i] & 0xFF) << 24;
+                    }
+                }
+            }
+
+            // EXCTR STATE
+            if (pad.GetExController() != 0)
+            {
+                state.exctrBLOCK.ID = "EXCTRDAT";
+                state.exctrBLOCK.BlockVersion = 0x0100;
+                state.exctrBLOCK.BlockSize = state.exctr.GetSize();
+
+                // Some excontrollers will default 0
+                state.exctr.data = pad.GetSyncExData();
+            }
+
+            return state;
+        }
+
+        public void LoadState(State state)
+        {
+
         }
 
         public enum IRQMETHOD
