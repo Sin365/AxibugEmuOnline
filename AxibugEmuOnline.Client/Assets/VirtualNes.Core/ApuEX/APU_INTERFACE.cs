@@ -1,6 +1,9 @@
-﻿namespace VirtualNes.Core
+﻿using System;
+using System.IO;
+
+namespace VirtualNes.Core
 {
-    public abstract class APU_INTERFACE
+    public abstract class APU_INTERFACE : IStateBufferObject
     {
         public const float APU_CLOCK = 1789772.5f;
 
@@ -19,8 +22,7 @@
         public virtual void VSync() { }
         public virtual bool Sync(int cycles) { return false; }
         public virtual int GetFreq(int channel) { return 0; }
-        public virtual int GetStateSize() { return 0; }
-        public virtual void SaveState(byte[] p) { }
+        public virtual void SaveState(StateBuffer buffer) { }
         public virtual void LoadState(byte[] p) { }
 
         public static int INT2FIX(int x)
@@ -31,6 +33,12 @@
         public static int FIX2INT(int x)
         {
             return x >> 16;
+        }
+
+
+        public virtual uint GetSize()
+        {
+            return 0;
         }
     }
 }

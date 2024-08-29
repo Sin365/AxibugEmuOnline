@@ -8,8 +8,9 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
+
     public class NesEmulator : MonoBehaviour
-    {
+    { 
         public NES NesCore { get; private set; }
 
         public VideoProvider VideoProvider;

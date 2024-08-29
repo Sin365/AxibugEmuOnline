@@ -60,12 +60,12 @@ namespace VirtualNes
         public const byte BANKTYPE_CRAM = 0x01;
         public const byte BANKTYPE_VRAM = 0x80;
 
-        // 儈儔乕僞僀僾                        
+        // =ミラータイプ;                       
         public const byte VRAM_HMIRROR = 0x00;     // Horizontal
         public const byte VRAM_VMIRROR = 0x01;     // Virtical
         public const byte VRAM_MIRROR4 = 0x02;     // All screen
-        public const byte VRAM_MIRROR4L = 0x03;     // PA10 L屌掕 $2000-$23FF偺儈儔乕
-        public const byte VRAM_MIRROR4H = 0x04;     // PA10 H屌掕 $2400-$27FF偺儈儔乕
+        public const byte VRAM_MIRROR4L = 0x03;    // PA10 L固定 $2000-$23FFのミラー
+        public const byte VRAM_MIRROR4H = 0x04;    // PA10 H固定 $2400-$27FFのミラー
 
         // Frame-IRQ儗僕僗僞($4017)
         public static int FrameIRQ;

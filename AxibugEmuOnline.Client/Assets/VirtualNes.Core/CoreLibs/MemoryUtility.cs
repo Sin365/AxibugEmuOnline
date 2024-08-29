@@ -40,5 +40,10 @@ namespace VirtualNes.Core
                 }
             }
         }
+
+        public static void memcpy(Array dst, Array src, int length)
+        {
+            Array.Copy(src, dst, length);
+        }
     }
 }

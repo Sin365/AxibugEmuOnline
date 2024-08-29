@@ -17,6 +17,7 @@ namespace AxibugEmuOnline.Client
         private int TexBufferSize;
 
         private Texture2D pPal;
+
         public void SetDrawData(uint[] screenData, byte[] lineColorMode, int screenWidth, int screenHeight)
         {
             if (wrapTex == null)
