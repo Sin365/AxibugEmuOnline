@@ -10,28 +10,28 @@ namespace AxibugEmuOnline.Client.UI
     public class MenuItem : MonoBehaviour
     {
         [SerializeField]
-        Image Icon;
+        protected Image Icon;
         [SerializeField]
-        Text Txt;
+        protected Text Txt;
         [SerializeField]
-        Text Descript;
+        protected Text Descript;
         [SerializeField]
-        Transform Root;
+        protected Transform Root;
         [SerializeField]
-        Image ShadowIcon;
+        protected Image ShadowIcon;
         [SerializeField]
-        CanvasGroup InfoNode;
+        protected CanvasGroup InfoNode;
         [SerializeField]
-        SubMenuItemGroup SubMenuItemGroup;
+        protected SubMenuItemGroup SubMenuItemGroup;
 
         public float SelectScale = 1f;
         public float UnSelectScale = 0.85f;
 
         public RectTransform Rect => transform as RectTransform;
 
-        bool m_select;
-        TweenerCore<float, float, FloatOptions> progressTween;
-        float m_progress;
+        protected bool m_select;
+        protected TweenerCore<float, float, FloatOptions> progressTween;
+        protected float m_progress;
         private void Awake()
         {
             m_select = false;
@@ -65,7 +65,7 @@ namespace AxibugEmuOnline.Client.UI
             if (ShadowIcon != null) ShadowIcon.sprite = icon;
         }
 
-        public void SetSelectState(bool selected)
+        public virtual void SetSelectState(bool selected)
         {
             if (m_select == selected) return;
 

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class SubMenuItemGroup : MenuItemController
+    public class SubMenuItemGroup : MenuItemController<MenuData>
     {
         [SerializeField]
         MenuItem SubMenuItemTemplate;
@@ -28,7 +28,7 @@ namespace AxibugEmuOnline.Client
             alphaGroup.alpha = 0;
         }
 
-        public void Init(List<MenuData> menuDataList)
+        public override void Init(List<MenuData> menuDataList)
         {
 #if UNITY_EDITOR
             while (transform.childCount > 0)
@@ -86,7 +86,7 @@ namespace AxibugEmuOnline.Client
             SelectIndex++;
         }
 
-        public void SetSelect(bool select)
+        public virtual void SetSelect(bool select)
         {
             if (m_selected == select) return;
             m_selected = select;
