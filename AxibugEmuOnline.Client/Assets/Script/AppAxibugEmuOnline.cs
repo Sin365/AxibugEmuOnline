@@ -1,11 +1,12 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
+using System;
 using System.Collections;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.ClientCore
 {
-    public class AppAxibugEmuOnline
+    public static class AppAxibugEmuOnline
     {
         public static string TokenStr;
         public static long RID = -1;
@@ -18,10 +19,14 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static UserDataManager user;
         public static AppNetGame netgame;
         public static AppEmu emu;
-        public static RomLib romLib;
+        public static RomLib nesRomLib;
         public static HttpAPI httpAPI;
+        public static CacheManager CacheMgr;
+        public static AppSceneLoader SceneLoader;
 
         private static CoroutineRunner coRunner;
+
+        public static string PersistentDataPath => Application.persistentDataPath;
 
         [RuntimeInitializeOnLoadMethod]
         static void Init()
@@ -34,12 +39,30 @@ namespace AxibugEmuOnline.Client.ClientCore
             user = new UserDataManager();
             emu = new AppEmu();
             netgame = new AppNetGame();
-            romLib = new RomLib();
             httpAPI = new HttpAPI();
+            nesRomLib = new RomLib(EnumPlatform.NES);
+            CacheMgr = new CacheManager();
+            SceneLoader = new AppSceneLoader();
 
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             coRunner = go.AddComponent<CoroutineRunner>();
+
+            StartCoroutine(AppTickFlow());
+        }
+
+        private static IEnumerator AppTickFlow()
+        {
+            while (true)
+            {
+                Tick();
+                yield return null;
+            }
+        }
+
+        private static void Tick()
+        {
+            nesRomLib.ExecuteFetchRomInfo();
         }
 
         public static Coroutine StartCoroutine(IEnumerator itor)

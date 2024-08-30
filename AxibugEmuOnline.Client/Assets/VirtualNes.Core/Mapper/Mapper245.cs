@@ -248,7 +248,7 @@ namespace VirtualNes.Core
             chr6 = p[14];
             chr7 = p[15];
             irq_enable = p[16];
-            irq_counter = (INT)p[17];
+            irq_counter = p[17];
             irq_latch = p[18];
             irq_request = p[19];
         }

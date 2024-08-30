@@ -8,8 +8,9 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
+
     public class NesEmulator : MonoBehaviour
-    {
+    { 
         public NES NesCore { get; private set; }
 
         public VideoProvider VideoProvider;
@@ -61,8 +62,8 @@ namespace AxibugEmuOnline.Client
         }
 
 #if UNITY_EDITOR
-        [ContextMenu("IMPORT")]
-        public void TTTA()
+        [ContextMenu("ImportNesDB")]
+        public void ImportNesDB()
         {
             var db = Resources.Load<RomDB>("NES/ROMDB");
             db.Clear();
@@ -85,36 +86,11 @@ namespace AxibugEmuOnline.Client
             UnityEditor.AssetDatabase.SaveAssets();
         }
 
-        [ContextMenu("LoadRom")]
-        public void LoadRom()
+        [ContextMenu("GetState")]
+        public void GetState()
         {
-            AppAxibugEmuOnline.romLib.GetNesRomFile(0, 10, (romFiles) =>
-            {
-                if (romFiles == null) return;
-
-                var file = romFiles[2];
-
-                if (file.FileReady)
-                {
-                    StartGame(file);
-                }
-                else
-                {
-                    file.BeginDownload();
-                    Action action = null;
-                    action = () =>
-                    {
-                        file.OnDownloadOver -= action;
-                        if (!file.FileReady)
-                        {
-                            throw new Exception("Download Failed");
-                        }
-                        StartGame(file);
-                    };
-                    file.OnDownloadOver += action;
-                }
-
-            });
+            var state = NesCore.GetState();
+            var bytes = state.ToBytes();
         }
 #endif
     }

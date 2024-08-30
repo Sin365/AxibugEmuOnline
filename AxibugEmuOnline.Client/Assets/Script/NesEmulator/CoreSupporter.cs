@@ -8,19 +8,11 @@ namespace AxibugEmuOnline.Client
 {
     public class CoreSupporter : ISupporterImpl
     {
-        public static string PersistentDataPath
-        {
-            get
-            {
-                return Application.persistentDataPath;
-            }
-        }
-
         public Stream OpenRom(string fname)
         {
             try
             {
-                var romFile = AppAxibugEmuOnline.romLib.GetNesRomFile(fname);
+                var romFile = AppAxibugEmuOnline.nesRomLib.GetRomFile(fname);
                 var bytes = romFile.GetRomFileData();
                 Debug.Log($"Open {romFile.Alias}");
                 return new MemoryStream(bytes);
@@ -34,7 +26,7 @@ namespace AxibugEmuOnline.Client
 
         public void GetRomPathInfo(string fname, out string fullPath, out string directPath)
         {
-            var romFile = AppAxibugEmuOnline.romLib.GetNesRomFile(fname);
+            var romFile = AppAxibugEmuOnline.nesRomLib.GetRomFile(fname);
             UnityEngine.Debug.Assert(romFile != null);
 
             fullPath = romFile.LocalFilePath;
@@ -48,7 +40,7 @@ namespace AxibugEmuOnline.Client
 
         public void SaveSRAMToFile(byte[] sramContent, string romName)
         {
-            string sramDirectoryPath = $"{Application.persistentDataPath}/sav";
+            string sramDirectoryPath = $"{AppAxibugEmuOnline.PersistentDataPath}/sav";
             Directory.CreateDirectory(sramDirectoryPath);
             romName = Path.GetFileNameWithoutExtension(romName);
             File.WriteAllBytes($"{sramDirectoryPath}/{romName}.sav", sramContent);
@@ -56,7 +48,7 @@ namespace AxibugEmuOnline.Client
 
         public void SaveDISKToFile(byte[] diskFileContent, string romName)
         {
-            string diskFileDirectoryPath = $"{Application.persistentDataPath}/dsv";
+            string diskFileDirectoryPath = $"{AppAxibugEmuOnline.PersistentDataPath}/dsv";
             Directory.CreateDirectory(diskFileDirectoryPath);
             romName = Path.GetFileNameWithoutExtension(romName);
             File.WriteAllBytes($"{diskFileDirectoryPath}/{romName}.dsv", diskFileContent);
@@ -66,14 +58,14 @@ namespace AxibugEmuOnline.Client
 
         public void PrepareDirectory(string directPath)
         {
-            Directory.CreateDirectory($"{Application.persistentDataPath}/{directPath}");
+            Directory.CreateDirectory($"{AppAxibugEmuOnline.PersistentDataPath}/{directPath}");
         }
 
         public void SaveFile(byte[] fileData, string directPath, string fileName)
         {
             PrepareDirectory(directPath);
 
-            var fileFullpath = $"{Application.persistentDataPath}/{directPath}/{fileName}";
+            var fileFullpath = $"{AppAxibugEmuOnline.PersistentDataPath}/{directPath}/{fileName}";
             File.WriteAllBytes(fileFullpath, fileData);
         }
 
@@ -81,7 +73,7 @@ namespace AxibugEmuOnline.Client
         {
             try
             {
-                var data = File.ReadAllBytes($"{Application.persistentDataPath}/{directPath}/{fileName}");
+                var data = File.ReadAllBytes($"{AppAxibugEmuOnline.PersistentDataPath}/{directPath}/{fileName}");
                 if (data == null) return null;
                 return new MemoryStream(data);
             }

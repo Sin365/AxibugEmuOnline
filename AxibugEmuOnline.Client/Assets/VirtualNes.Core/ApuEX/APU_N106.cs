@@ -1,101 +1,130 @@
-﻿using RECTANGLE = VirtualNes.Core.APU_VRC6.RECTANGLE;
+﻿using Codice.CM.Client.Differences;
+using System;
+using RECTANGLE = VirtualNes.Core.APU_VRC6.RECTANGLE;
 using SAWTOOTH = VirtualNes.Core.APU_VRC6.SAWTOOTH;
 
 namespace VirtualNes.Core
 {
     public class APU_N106 : APU_INTERFACE
     {
-        RECTANGLE ch0 = new RECTANGLE();
-        RECTANGLE ch1 = new RECTANGLE();
-        SAWTOOTH ch2 = new SAWTOOTH();
+        CHANNEL[] op = new CHANNEL[8];
+
+        const int CHANNEL_VOL_SHIFT = 6;
         float cpu_clock;
-        int cycle_rate;
+        uint cycle_rate;
+
+        byte addrinc;
+        byte address;
+        byte channel_use;
+
+        byte[] tone = new byte[0x100];
 
         public APU_N106()
         {
-            Reset(APU_CLOCK, 22050);
+            // 仮設定
+            cpu_clock = APU_CLOCK;
+            cycle_rate = (uint)(cpu_clock * 12.0f * (1 << 20) / (45.0f * 22050.0f));
         }
 
         public override void Reset(float fClock, int nRate)
         {
-            ch0.ZeroMemory();
-            ch1.ZeroMemory();
-            ch2.ZeroMemory();
+            for (int i = 0; i < 8; i++)
+            {
+                op[i].ZeroMemory();
+                op[i].tonelen = 0x10 << 18;
+            }
+
+            address = 0;
+            addrinc = 1;
+            channel_use = 8;
 
             Setup(fClock, nRate);
+
+            // TONEの初期化はしない...
         }
 
         public override void Setup(float fClock, int nRate)
         {
             cpu_clock = fClock;
-            cycle_rate = (int)(fClock * 65536.0f / nRate);
+            cycle_rate = (uint)(cpu_clock * 12.0f * (1 << 20) / (45.0f * nRate));
         }
 
         public override void Write(ushort addr, byte data)
         {
-            switch (addr)
+            if (addr == 0x4800)
             {
-                // VRC6 CH0 rectangle
-                case 0x9000:
-                    ch0.reg[0] = data;
-                    ch0.gate = (byte)(data & 0x80);
-                    ch0.volume = (byte)(data & 0x0F);
-                    ch0.duty_pos = (byte)((data >> 4) & 0x07);
-                    break;
-                case 0x9001:
-                    ch0.reg[1] = data;
-                    ch0.freq = INT2FIX((((ch0.reg[2] & 0x0F) << 8) | data) + 1);
-                    break;
-                case 0x9002:
-                    ch0.reg[2] = data;
-                    ch0.enable = (byte)(data & 0x80);
-                    ch0.freq = INT2FIX((((data & 0x0F) << 8) | ch0.reg[1]) + 1);
-                    break;
-                // VRC6 CH1 rectangle
-                case 0xA000:
-                    ch1.reg[0] = data;
-                    ch1.gate = (byte)(data & 0x80);
-                    ch1.volume = (byte)(data & 0x0F);
-                    ch1.duty_pos = (byte)((data >> 4) & 0x07);
-                    break;
-                case 0xA001:
-                    ch1.reg[1] = data;
-                    ch1.freq = INT2FIX((((ch1.reg[2] & 0x0F) << 8) | data) + 1);
-                    break;
-                case 0xA002:
-                    ch1.reg[2] = data;
-                    ch1.enable = (byte)(data & 0x80);
-                    ch1.freq = INT2FIX((((data & 0x0F) << 8) | ch1.reg[1]) + 1);
-                    break;
-                // VRC6 CH2 sawtooth
-                case 0xB000:
-                    ch2.reg[1] = data;
-                    ch2.phaseaccum = (byte)(data & 0x3F);
-                    break;
-                case 0xB001:
-                    ch2.reg[1] = data;
-                    ch2.freq = INT2FIX((((ch2.reg[2] & 0x0F) << 8) | data) + 1);
-                    break;
-                case 0xB002:
-                    ch2.reg[2] = data;
-                    ch2.enable = (byte)(data & 0x80);
-                    ch2.freq = INT2FIX((((data & 0x0F) << 8) | ch2.reg[1]) + 1);
-                    //			ch2.adder = 0;	// クリアするとノイズの原因になる
-                    //			ch2.accum = 0;	// クリアするとノイズの原因になる
-                    break;
+                //		tone[address*2+0] = (INT)(data&0x0F);
+                //		tone[address*2+1] = (INT)(data  >>4);
+                tone[address * 2 + 0] = (byte)(data & 0x0F);
+                tone[address * 2 + 1] = (byte)(data >> 4);
+
+                if (address >= 0x40)
+                {
+                    int no = (address - 0x40) >> 3;
+                    uint tonelen = 0;
+                    ref CHANNEL ch = ref op[no];
+
+                    switch (address & 7)
+                    {
+                        case 0x00:
+                            ch.freq = (uint)((ch.freq & ~0x000000FF) | data);
+                            break;
+                        case 0x02:
+                            ch.freq = (uint)((ch.freq & ~0x0000FF00) | ((uint)data << 8));
+                            break;
+                        case 0x04:
+                            ch.freq = (uint)((ch.freq & ~0x00030000) | (((uint)data & 0x03) << 16));
+                            tonelen = (uint)((0x20 - (data & 0x1c)) << 18);
+                            ch.databuf = (byte)((data & 0x1c) >> 2);
+                            if (ch.tonelen != tonelen)
+                            {
+                                ch.tonelen = tonelen;
+                                ch.phase = 0;
+                            }
+                            break;
+                        case 0x06:
+                            ch.toneadr = data;
+                            break;
+                        case 0x07:
+                            ch.vol = (byte)(data & 0x0f);
+                            ch.volupdate = 0xFF;
+                            if (no == 7)
+                                channel_use = (byte)(((data >> 4) & 0x07) + 1);
+                            break;
+                    }
+                }
+
+                if (addrinc != 0)
+                {
+                    address = (byte)((address + 1) & 0x7f);
+                }
             }
+            else if (addr == 0xF800)
+            {
+                address = (byte)(data & 0x7F);
+                addrinc = (byte)(data & 0x80);
+            }
+        }
+
+        public override byte Read(ushort addr)
+        {
+            // $4800 dummy read!!
+            if (addr == 0x0000)
+            {
+                if (addrinc != 0)
+                {
+                    address = (byte)((address + 1) & 0x7F);
+                }
+            }
+
+            return (byte)(addr >> 8);
         }
 
         public override int Process(int channel)
         {
-            switch (channel)
+            if (channel >= (8 - channel_use) && channel < 8)
             {
-                case 0:
-                    return RectangleRender(ch0);
-                case 1:
-                    return RectangleRender(ch1);
-                case 2:
-                    return SawtoothRender(ch2);
+                return ChannelRender(ref op[channel]);
             }
 
             return 0;
@@ -103,143 +132,117 @@ namespace VirtualNes.Core
 
         public override int GetFreq(int channel)
         {
-            if (channel == 0 || channel == 1)
+            if (channel < 8)
             {
-                RECTANGLE ch;
-                if (channel == 0) ch = ch0;
-                else ch = ch1;
-                if (ch.enable == 0 || ch.gate != 0 || ch.volume == 0)
+                channel &= 7;
+                if (channel < (8 - channel_use))
                     return 0;
-                if (ch.freq < INT2FIX(8))
+
+                ref CHANNEL ch = ref op[channel & 0x07];
+                if (ch.freq == 0 || ch.vol == 0)
                     return 0;
-                return (int)((256.0f * cpu_clock / (FIX2INT(ch.freq) * 16.0f)));
-            }
-            if (channel == 2)
-            {
-                SAWTOOTH ch = ch2;
-                if (ch.enable == 0 || ch.phaseaccum == 0)
+                int temp = channel_use * (8 - ch.databuf) * 4 * 45;
+                if (temp == 0)
                     return 0;
-                if (ch.freq < INT2FIX(8))
-                    return 0;
-                return (int)(256.0f * cpu_clock / (FIX2INT(ch.freq) * 14.0f));
+                return (int)(256.0 * (double)cpu_clock * 12.0 * ch.freq / ((double)0x40000 * temp));
             }
 
             return 0;
         }
 
-        int RectangleRender(RECTANGLE ch)
+        private int ChannelRender(ref CHANNEL ch)
         {
-            // Enable?
-            if (ch.enable == 0)
-            {
-                ch.output_vol = 0;
-                ch.adder = 0;
-                return ch.output_vol;
-            }
+            uint phasespd = (uint)(channel_use << 20);
 
-            // Digitized output
-            if (ch.gate != 0)
-            {
-                ch.output_vol = ch.volume << APU_VRC6.RECTANGLE_VOL_SHIFT;
-                return ch.output_vol;
-            }
-
-            // 一定以上の周波数は処理しない(無駄)
-            if (ch.freq < INT2FIX(8))
-            {
-                ch.output_vol = 0;
-                return ch.output_vol;
-            }
-
-            ch.phaseacc -= cycle_rate;
+            ch.phaseacc -= (int)cycle_rate;
             if (ch.phaseacc >= 0)
-                return ch.output_vol;
-
-            int output = ch.volume << APU_VRC6.RECTANGLE_VOL_SHIFT;
-
-            if (ch.freq > cycle_rate)
             {
-                // add 1 step
-                ch.phaseacc += ch.freq;
-                ch.adder = (byte)((ch.adder + 1) & 0x0F);
-                if (ch.adder <= ch.duty_pos)
-                    ch.output_vol = output;
-                else
-                    ch.output_vol = -output;
-            }
-            else
-            {
-                // average calculate
-                int num_times, total;
-                num_times = total = 0;
-                while (ch.phaseacc < 0)
+                if (ch.volupdate != 0)
                 {
-                    ch.phaseacc += ch.freq;
-                    ch.adder = (byte)((ch.adder + 1) & 0x0F);
-                    if (ch.adder <= ch.duty_pos)
-                        total += output;
-                    else
-                        total += -output;
-                    num_times++;
+                    ch.output = (tone[((ch.phase >> 18) + ch.toneadr) & 0xFF] * ch.vol) << CHANNEL_VOL_SHIFT;
+                    ch.volupdate = 0;
                 }
-                ch.output_vol = total / num_times;
+                return ch.output;
             }
 
-            return ch.output_vol;
+            while (ch.phaseacc < 0)
+            {
+                ch.phaseacc += (int)phasespd;
+                ch.phase += ch.freq;
+            }
+            while (ch.tonelen != 0 && (ch.phase >= ch.tonelen))
+            {
+                ch.phase -= ch.tonelen;
+            }
+
+            ch.output = (tone[((ch.phase >> 18) + ch.toneadr) & 0xFF] * ch.vol) << CHANNEL_VOL_SHIFT;
+
+            return ch.output;
         }
 
-        int SawtoothRender(SAWTOOTH ch)
+        public override uint GetSize()
         {
-            // Digitized output
-            if (ch.enable == 0)
+            return (uint)(3 * sizeof(byte) + 8 * op[0].GetSize() + tone.Length);
+        }
+
+        public override void SaveState(StateBuffer buffer)
+        {
+            buffer.Write(addrinc);
+            buffer.Write(address);
+            buffer.Write(channel_use);
+
+            foreach (var oneOp in op)
+                oneOp.SaveState(buffer);
+
+            buffer.Write(tone);
+        }
+
+        public struct CHANNEL : IStateBufferObject
+        {
+            public int phaseacc;
+
+            public uint freq;
+            public uint phase;
+            public uint tonelen;
+
+            public int output;
+
+            public byte toneadr;
+            public byte volupdate;
+
+            public byte vol;
+            public byte databuf;
+
+            internal void ZeroMemory()
             {
-                ch.output_vol = 0;
-                return ch.output_vol;
+                phaseacc = 0;
+                freq = 0;
+                phase = 0;
+                tonelen = 0;
+                output = 0;
+                toneadr = 0;
+                volupdate = 0;
+                vol = 0;
+                databuf = 0;
             }
 
-            // 一定以上の周波数は処理しない(無駄)
-            if (ch.freq < INT2FIX(9))
+            public uint GetSize()
             {
-                return ch.output_vol;
+                return 4 * 5 + 4;
             }
 
-            ch.phaseacc -= cycle_rate / 2;
-            if (ch.phaseacc >= 0)
-                return ch.output_vol;
-
-            if (ch.freq > cycle_rate / 2)
+            public void SaveState(StateBuffer buffer)
             {
-                // add 1 step
-                ch.phaseacc += ch.freq;
-                if (++ch.adder >= 7)
-                {
-                    ch.adder = 0;
-                    ch.accum = 0;
-                }
-                ch.accum += ch.phaseaccum;
-                ch.output_vol = ch.accum << APU_VRC6.SAWTOOTH_VOL_SHIFT;
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(phase);
+                buffer.Write(tonelen);
+                buffer.Write(output);
+                buffer.Write(toneadr);
+                buffer.Write(volupdate);
+                buffer.Write(vol);
+                buffer.Write(databuf);
             }
-            else
-            {
-                // average calculate
-                int num_times, total;
-                num_times = total = 0;
-                while (ch.phaseacc < 0)
-                {
-                    ch.phaseacc += ch.freq;
-                    if (++ch.adder >= 7)
-                    {
-                        ch.adder = 0;
-                        ch.accum = 0;
-                    }
-                    ch.accum += ch.phaseaccum;
-                    total += ch.accum << APU_VRC6.SAWTOOTH_VOL_SHIFT;
-                    num_times++;
-                }
-                ch.output_vol = (total / num_times);
-            }
-
-            return ch.output_vol;
         }
     }
 }

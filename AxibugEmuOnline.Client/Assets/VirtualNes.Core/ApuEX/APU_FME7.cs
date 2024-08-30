@@ -1,4 +1,5 @@
 ﻿using System;
+using static VirtualNes.Core.APU_FME7;
 
 namespace VirtualNes.Core
 {
@@ -91,7 +92,7 @@ namespace VirtualNes.Core
         byte[][] envelope_table;
         sbyte[][] envstep_table;
 
-        ENVELOPE envelope = new ENVELOPE();
+        ENVELOPE envelope;
         NOISE noise = new NOISE();
         CHANNEL[] op = new CHANNEL[3] { new CHANNEL(), new CHANNEL(), new CHANNEL() };
         byte address;
@@ -117,6 +118,7 @@ namespace VirtualNes.Core
                 envstep_sawtooth, envstep_pulse, envstep_triangle, envstep_pulse,
                 envstep_sawtooth, envstep_pulse, envstep_triangle, envstep_pulse
             };
+            envelope = new ENVELOPE(envelope_table, envstep_table);
 
             Reset(APU_CLOCK, 22050);
         }
@@ -133,8 +135,8 @@ namespace VirtualNes.Core
                 item.ZeroMemory();
             }
 
-            envelope.envtbl = envelope_table[0];
-            envelope.envstep = envstep_table[0];
+            envelope.envtbl_index = 0;
+            envelope.envstep_index = 0;
 
             noise.noiserange = 1;
             noise.noiseout = 0xFF;
@@ -211,8 +213,8 @@ namespace VirtualNes.Core
                         envelope.freq = INT2FIX(((envelope.reg[1] & 0x0F) << 8) + envelope.reg[0] + 1);
                         break;
                     case 0x0D:
-                        envelope.envtbl = envelope_table[data & 0x0F];
-                        envelope.envstep = envstep_table[data & 0x0F];
+                        envelope.envtbl_index = (byte)(data & 0x0F);
+                        envelope.envstep_index = (byte)(data & 0x0F);
                         envelope.envadr = 0;
                         break;
                 }
@@ -332,7 +334,22 @@ namespace VirtualNes.Core
             return ch.output_vol;
         }
 
-        public class ENVELOPE
+        public override uint GetSize()
+        {
+            return (uint)(1 + envelope.GetSize() + noise.GetSize() + op[0].GetSize() * op.Length);
+        }
+
+        public override void SaveState(StateBuffer buffer)
+        {
+            buffer.Write(address);
+
+            envelope.SaveState(buffer);
+            noise.SaveState(buffer);
+            foreach (var oneOp in op)
+                oneOp.SaveState(buffer);
+        }
+
+        public class ENVELOPE : IStateBufferObject
         {
             public byte[] reg = new byte[3];
             public byte volume;
@@ -341,8 +358,19 @@ namespace VirtualNes.Core
             public int phaseacc;
             public int envadr;
 
-            public byte[] envtbl;
-            public sbyte[] envstep;
+            public byte envtbl_index;
+            public byte envstep_index;
+
+            byte[][] ref_envtbl;
+            sbyte[][] ref_envstep;
+            public byte[] envtbl => ref_envtbl[envtbl_index];
+            public sbyte[] envstep => ref_envstep[envstep_index];
+            public ENVELOPE(byte[][] envtbl, sbyte[][] envstep)
+            {
+                ref_envtbl = envtbl;
+                ref_envstep = envstep;
+            }
+
 
             public void ZeroMemory()
             {
@@ -351,12 +379,28 @@ namespace VirtualNes.Core
                 freq = 0;
                 phaseacc = 0;
                 envadr = 0;
-                envtbl = null;
-                envstep = null;
+                envtbl_index = 0;
+                envstep_index = 0;
+            }
+
+            public uint GetSize()
+            {
+                return 18;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(volume);
+                buffer.Write(freq);
+                buffer.Write(phaseacc);
+                buffer.Write(envadr);
+                buffer.Write(envtbl_index);
+                buffer.Write(envstep_index);
             }
         }
 
-        public class NOISE
+        public class NOISE : IStateBufferObject
         {
             public int freq;
             public int phaseacc;
@@ -367,9 +411,22 @@ namespace VirtualNes.Core
             {
                 freq = 0; phaseacc = 0; noiserange = 0; noiseout = 0;
             }
+
+            public uint GetSize()
+            {
+                return 13;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(freq);
+                buffer.Write(phaseacc);
+                buffer.Write(noiserange);
+                buffer.Write(noiseout);
+            }
         }
 
-        public class CHANNEL
+        public class CHANNEL : IStateBufferObject
         {
             public byte[] reg = new byte[3];
             public byte enable;
@@ -393,6 +450,24 @@ namespace VirtualNes.Core
                 volume = 0; freq = 0;
                 phaseacc = 0;
                 output_vol = 0;
+            }
+
+            public uint GetSize()
+            {
+                return 20;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(env_on);
+                buffer.Write(noise_on);
+                buffer.Write(adder);
+                buffer.Write(volume);
+                buffer.Write(freq);
+                buffer.Write(phaseacc);
+                buffer.Write(output_vol);
             }
         }
     }

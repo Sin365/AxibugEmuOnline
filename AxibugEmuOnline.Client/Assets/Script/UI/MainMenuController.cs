@@ -4,13 +4,13 @@ using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-using static GluonGui.WorkspaceWindow.Views.Checkin.Operations.CheckinViewDeleteOperation;
 
 namespace AxibugEmuOnline.Client.UI
 {
-    public class MainMenuController : MenuItemController
+    public class MainMenuController : MenuItemController<MenuData>
     {
         [SerializeField]
         HorizontalLayoutGroup GroupRoot;
@@ -32,8 +32,11 @@ namespace AxibugEmuOnline.Client.UI
             base.Start();
 
             m_runtimeMenuUICanvas = m_runtimeMenuUI.Select(menu => menu.gameObject.AddComponent<CanvasGroup>()).ToList();
+            m_runtimeMenuUICanvas.ForEach(canv => canv.gameObject.AddComponent<AutoRaycastCanvasGroup>());
         }
-
+        public override void Init(List<MenuData> menuDataList)
+        {
+        }
 
         public void EnterDetailState()
         {
@@ -126,14 +129,17 @@ namespace AxibugEmuOnline.Client.UI
 
             for (int i = 0; i < MenuSetting.Count; i++)
             {
+                var settingData = MenuSetting[i];
+
+                var templatePrefab = settingData.OverrideTemplate != null ? settingData.OverrideTemplate.gameObject : Template.gameObject;
                 MenuItem itemScript = null;
-                var prefabClone = UnityEditor.PrefabUtility.InstantiatePrefab(Template.gameObject) as GameObject;
+                var prefabClone = UnityEditor.PrefabUtility.InstantiatePrefab(templatePrefab) as GameObject;
                 itemScript = prefabClone.GetComponent<MenuItem>();
                 itemScript.gameObject.SetActive(true);
                 itemScript.transform.SetParent(GroupRoot.transform);
                 itemScript.transform.localScale = Vector3.one;
 
-                itemScript.SetData(MenuSetting[i]);
+                itemScript.SetData(settingData);
             }
 
             UnityEditor.EditorUtility.SetDirty(this);
@@ -147,7 +153,7 @@ namespace AxibugEmuOnline.Client.UI
         public Sprite Icon;
         public string Name;
         public string Description;
-
+        public MenuItem OverrideTemplate;
         public List<MenuData> SubMenus;
     }
 }

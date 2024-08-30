@@ -1,5 +1,8 @@
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
 namespace VirtualNes.Core
 {
@@ -1190,7 +1193,49 @@ namespace VirtualNes.Core
                     break;
             }
         }
-        public class RECTANGLE
+
+        internal void GetFrameIRQ(ref int cycle, ref byte count, ref byte type, ref byte IRQ, ref byte occur)
+        {
+            cycle = FrameCycle;
+            count = (byte)FrameCount;
+            type = (byte)FrameType;
+            IRQ = FrameIRQ;
+            occur = FrameIRQoccur;
+        }
+
+        public override uint GetSize()
+        {
+            return sizeof(byte) +
+            sizeof(byte) +
+            sizeof(int) +
+            sizeof(int) +
+            sizeof(int) +
+            sizeof(byte) +
+            sizeof(byte) +
+            ch0.GetSize() +
+            ch1.GetSize() +
+            ch2.GetSize() +
+            ch3.GetSize() +
+            ch4.GetSize();
+        }
+
+        public unsafe override void SaveState(StateBuffer p)
+        {
+            p.Write(reg4015);
+            p.Write(sync_reg4015);
+            p.Write(FrameCycle);
+            p.Write(FrameCount);
+            p.Write(FrameType);
+            p.Write(FrameIRQ);
+            p.Write(FrameIRQoccur);
+            ch0.SaveState(p);
+            ch1.SaveState(p);
+            ch2.SaveState(p);
+            ch3.SaveState(p);
+            ch4.SaveState(p);
+        }
+
+        public class RECTANGLE : IStateBufferObject
         {
             public byte[] reg = new byte[4];        // register
 
@@ -1269,8 +1314,46 @@ namespace VirtualNes.Core
                 dummy2 = 0;
                 sync_len_count = 0;
             }
+
+            public uint GetSize()
+            {
+                return 64;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(holdnote);
+                buffer.Write(volume);
+                buffer.Write(complement);
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(freqlimit);
+                buffer.Write(adder);
+                buffer.Write(duty);
+                buffer.Write(len_count);
+                buffer.Write(nowvolume);
+                buffer.Write(env_fixed);
+                buffer.Write(env_decay);
+                buffer.Write(env_count);
+                buffer.Write(dummy0);
+                buffer.Write(env_vol);
+                buffer.Write(swp_on);
+                buffer.Write(swp_inc);
+                buffer.Write(swp_shift);
+                buffer.Write(swp_decay);
+                buffer.Write(swp_count);
+                buffer.Write(dummy1);
+                buffer.Write(sync_reg);
+                buffer.Write(sync_output_enable);
+                buffer.Write(sync_enable);
+                buffer.Write(sync_holdnote);
+                buffer.Write(dummy2);
+                buffer.Write(sync_len_count);
+            }
         }
-        public class TRIANGLE
+        public class TRIANGLE : IStateBufferObject
         {
             public byte[] reg = new byte[4];
 
@@ -1296,6 +1379,7 @@ namespace VirtualNes.Core
             public int sync_len_count;
             public int sync_lin_count;
 
+
             internal void ZeroMemory()
             {
                 Array.Clear(reg, 0, reg.Length);
@@ -1318,8 +1402,34 @@ namespace VirtualNes.Core
                 sync_len_count = 0;
                 sync_lin_count = 0;
             }
+
+            public uint GetSize()
+            {
+                return 47;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(holdnote);
+                buffer.Write(counter_start);
+                buffer.Write(dummy0);
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(len_count);
+                buffer.Write(lin_count);
+                buffer.Write(adder);
+                buffer.Write(nowvolume);
+                buffer.Write(sync_reg);
+                buffer.Write(sync_enable);
+                buffer.Write(sync_holdnote);
+                buffer.Write(sync_counter_start);
+                buffer.Write(sync_len_count);
+                buffer.Write(sync_lin_count);
+            }
         }
-        public class DPCM
+        public class DPCM : IStateBufferObject
         {
             public byte[] reg = new byte[4];
             public byte enable;
@@ -1343,8 +1453,42 @@ namespace VirtualNes.Core
             public byte sync_irq_enable;
             public int sync_cycles, sync_cache_cycles;
             public int sync_dmalength, sync_cache_dmalength;
+
+            public uint GetSize()
+            {
+                return 72;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(looping);
+                buffer.Write(cur_byte);
+                buffer.Write(dpcm_value);
+                buffer.Write(freq);
+                buffer.Write(phaseacc);
+                buffer.Write(output);
+                buffer.Write(address);
+                buffer.Write(cache_addr);
+                buffer.Write(dmalength);
+                buffer.Write(cache_dmalength);
+                buffer.Write(dpcm_output_real);
+                buffer.Write(dpcm_output_fake);
+                buffer.Write(dpcm_output_old);
+                buffer.Write(dpcm_output_offset);
+                buffer.Write(sync_reg);
+                buffer.Write(sync_enable);
+                buffer.Write(sync_looping);
+                buffer.Write(sync_irq_gen);
+                buffer.Write(sync_irq_enable);
+                buffer.Write(sync_cycles);
+                buffer.Write(sync_cache_cycles);
+                buffer.Write(sync_dmalength);
+                buffer.Write(sync_cache_dmalength);
+            }
         }
-        public class NOISE
+        public class NOISE : IStateBufferObject
         {
             public byte[] reg = new byte[4];        // register
 
@@ -1377,6 +1521,7 @@ namespace VirtualNes.Core
             public byte dummy1;
             public int sync_len_count;
 
+
             internal void ZeroMemory()
             {
                 Array.Clear(reg, 0, reg.Length);
@@ -1405,6 +1550,37 @@ namespace VirtualNes.Core
                 sync_holdnote = 0;
                 dummy1 = 0;
                 sync_len_count = 0;
+            }
+
+            public uint GetSize()
+            {
+                return 52;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(holdnote);
+                buffer.Write(volume);
+                buffer.Write(xor_tap);
+                buffer.Write(shift_reg);
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(len_count);
+                buffer.Write(nowvolume);
+                buffer.Write(output);
+                buffer.Write(env_fixed);
+                buffer.Write(env_decay);
+                buffer.Write(env_count);
+                buffer.Write(dummy0);
+                buffer.Write(env_vol);
+                buffer.Write(sync_reg);
+                buffer.Write(sync_output_enable);
+                buffer.Write(sync_enable);
+                buffer.Write(sync_holdnote);
+                buffer.Write(dummy1);
+                buffer.Write(sync_len_count);
             }
         }
     }
