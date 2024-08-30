@@ -15,23 +15,44 @@ namespace AxibugEmuOnline.Client
         private string fileName;
         private EnumPlatform platform;
 
-        public string LocalFilePath => $"{CoreSupporter.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
-        public bool FileReady => hasLocalFile;
-        public int ID => webData != null ? webData.id : -1;
+        /// <summary> 指示该Rom文件的存放路径 </summary>
+        public string LocalFilePath => $"{AppAxibugEmuOnline.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
+        /// <summary> 指示该Rom文件是否已下载完毕 </summary>
+        public bool RomReady => hasLocalFile;
+        /// <summary> 指示是否正在下载Rom文件 </summary>
         public bool IsDownloading { get; private set; }
+
+        /// <summary> 指示该Rom信息是否已填充 </summary>
+        public bool InfoReady => webData != null;
+        /// <summary> 唯一标识 </summary>
+        public int ID => webData != null ? webData.id : -1;
+        /// <summary> 别名 </summary>
         public string Alias => webData.romName;
+        /// <summary> 描述 </summary>
+        public string Descript => webData.desc;
+        /// <summary> 小图URL </summary>
+        public string ImageURL => webData.imgUrl;
+
+        /// <summary> 文件名 </summary>
         public string FileName => fileName;
+        /// <summary> 在查询结果中的索引 </summary>
+        public int Index { get; private set; }
+        /// <summary> 在查询结果中的所在页 </summary>
+        public int Page { get; private set; }
 
         public event Action OnDownloadOver;
+        public event Action OnInfoFilled;
 
-        public RomFile(EnumPlatform platform)
+        public RomFile(EnumPlatform platform, int index, int insidePage)
         {
             this.platform = platform;
+            Index = index;
+            Page = insidePage;
         }
 
         public void BeginDownload()
         {
-            if (FileReady) return;
+            if (RomReady) return;
             if (IsDownloading) return;
 
             IsDownloading = true;
@@ -54,7 +75,7 @@ namespace AxibugEmuOnline.Client
         public byte[] GetRomFileData()
         {
             if (webData == null) throw new Exception("Not Valid Rom");
-            if (!FileReady) throw new Exception("Rom File Not Downloaded");
+            if (!RomReady) throw new Exception("Rom File Not Downloaded");
 
             var bytes = File.ReadAllBytes(LocalFilePath);
             if (Path.GetExtension(LocalFilePath).ToLower() == ".zip")
@@ -118,6 +139,8 @@ namespace AxibugEmuOnline.Client
             {
                 hasLocalFile = false;
             }
+
+            OnInfoFilled?.Invoke();
         }
     }
 }

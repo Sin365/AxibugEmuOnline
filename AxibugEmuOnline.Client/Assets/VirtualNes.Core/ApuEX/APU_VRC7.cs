@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using VirtualNes.Core.Emu2413;
 
 namespace VirtualNes.Core
@@ -91,6 +92,16 @@ namespace VirtualNes.Core
             }
 
             return 0;
+        }
+
+        public override uint GetSize()
+        {
+            return 0;
+        }
+
+        public override void SaveState(StateBuffer buffer)
+        {
+            //not impl
         }
     }
 }

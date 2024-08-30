@@ -12,6 +12,8 @@ namespace AxibugEmuOnline.Client
         public string WebSite = "http://emu.axibug.com/api";
         public string DownSite = "http://emu.axibug.com";
 
+        public delegate void GetRomListAPI(Action<Resp_GameList> callback, int page, int pageSize = 10);
+
         public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
         {
             AppAxibugEmuOnline.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
@@ -66,6 +68,7 @@ namespace AxibugEmuOnline.Client
         [Serializable]
         public class Resp_RomInfo
         {
+            public int orderid;
             public int id;
             public string romName;
             public string gType;

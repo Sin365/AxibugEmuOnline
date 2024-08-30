@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VirtualNes.Core
 {
@@ -403,7 +404,18 @@ namespace VirtualNes.Core
             return fds.now_freq;
         }
 
-        private class FDSSOUND
+        public override uint GetSize()
+        {
+            return fds.GetSize() + fds_sync.GetSize();
+        }
+
+        public override void SaveState(StateBuffer buffer)
+        {
+            fds.SaveState(buffer);
+            fds_sync.SaveState(buffer);
+        }
+
+        private class FDSSOUND : IStateBufferObject
         {
             public byte[] reg = new byte[0x80];
             public byte volenv_mode;       // Volume Envelope
@@ -466,6 +478,41 @@ namespace VirtualNes.Core
                 now_volume = 0;
                 now_freq = 0;
                 output = 0;
+            }
+
+            public uint GetSize()
+            {
+                return 512;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(volenv_mode);
+                buffer.Write(volenv_gain);
+                buffer.Write(volenv_decay);
+                buffer.Write(volenv_phaseacc);
+                buffer.Write(swpenv_mode);
+                buffer.Write(swpenv_gain);
+                buffer.Write(swpenv_decay);
+                buffer.Write(swpenv_phaseacc);
+                buffer.Write(envelope_enable);
+                buffer.Write(envelope_speed);
+                buffer.Write(wave_setup);
+                buffer.Write(master_volume);
+                buffer.Write(main_wavetable);
+                buffer.Write(main_enable);
+                buffer.Write(main_frequency);
+                buffer.Write(main_addr);
+                buffer.Write(lfo_wavetable);
+                buffer.Write(lfo_enable);
+                buffer.Write(lfo_frequency);
+                buffer.Write(lfo_addr);
+                buffer.Write(lfo_phaseacc);
+                buffer.Write(sweep_bias);
+                buffer.Write(now_volume);
+                buffer.Write(now_freq);
+                buffer.Write(output);
             }
         }
     }

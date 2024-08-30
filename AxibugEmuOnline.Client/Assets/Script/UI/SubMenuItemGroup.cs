@@ -1,4 +1,5 @@
 using AxibugEmuOnline.Client.UI;
+using Codice.Utils;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class SubMenuItemGroup : MenuItemController
+    public class SubMenuItemGroup : MenuItemController<MenuData>
     {
         [SerializeField]
         MenuItem SubMenuItemTemplate;
@@ -27,7 +28,7 @@ namespace AxibugEmuOnline.Client
             alphaGroup.alpha = 0;
         }
 
-        public void Init(List<MenuData> menuDataList)
+        public override void Init(List<MenuData> menuDataList)
         {
 #if UNITY_EDITOR
             while (transform.childCount > 0)
@@ -44,7 +45,9 @@ namespace AxibugEmuOnline.Client
             m_runtimeMenuUI.Clear();
             foreach (MenuData menuData in menuDataList)
             {
-                var item = Clone(transform);
+                var template = menuData.OverrideTemplate != null ? menuData.OverrideTemplate : SubMenuItemTemplate;
+
+                var item = Clone(template, transform);
                 item.SetData(menuData);
                 m_runtimeMenuUI.Add(item);
             }
@@ -83,7 +86,7 @@ namespace AxibugEmuOnline.Client
             SelectIndex++;
         }
 
-        public void SetSelect(bool select)
+        public virtual void SetSelect(bool select)
         {
             if (m_selected == select) return;
             m_selected = select;
@@ -164,16 +167,16 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private MenuItem Clone(Transform parent)
+        private MenuItem Clone(MenuItem template, Transform parent)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying)
             {
-                return GameObject.Instantiate(SubMenuItemTemplate.gameObject, parent).GetComponent<MenuItem>();
+                return GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
             }
             else
             {
-                var clone = UnityEditor.PrefabUtility.InstantiatePrefab(SubMenuItemTemplate.gameObject, parent) as GameObject;
+                var clone = UnityEditor.PrefabUtility.InstantiatePrefab(template.gameObject, parent) as GameObject;
                 return clone.GetComponent<MenuItem>();
             }
 #else

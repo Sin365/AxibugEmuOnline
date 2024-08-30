@@ -370,7 +370,27 @@ namespace VirtualNes.Core
             return ch.output_vol;
         }
 
-        public class SYNCRECTANGLE
+        public override uint GetSize()
+        {
+            //3*sizeof(BYTE) + sizeof(ch0) + sizeof(ch1) + sizeof(sch0) + sizeof(sch1); 源代码似乎少了sync_reg5015的大小
+            return 3 + ch0.GetSize() + ch1.GetSize() + 1 + sch0.GetSize() + sch1.GetSize();
+        }
+
+        public override void SaveState(StateBuffer buffer)
+        {
+            buffer.Write(reg5010);
+            buffer.Write(reg5011);
+            buffer.Write(reg5015);
+
+            ch0.SaveState(buffer);
+            ch1.SaveState(buffer);
+
+            buffer.Write(sync_reg5015);
+            sch0.SaveState(buffer);
+            sch1.SaveState(buffer);
+        }
+
+        public class SYNCRECTANGLE : IStateBufferObject
         {
             // For sync
             public byte[] reg = new byte[4];
@@ -387,9 +407,23 @@ namespace VirtualNes.Core
                 Array.Clear(dummy, 0, dummy.Length);
                 vbl_length = 0;
             }
+
+            public uint GetSize()
+            {
+                return 12;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(holdnote);
+                buffer.Write(dummy);
+                buffer.Write(vbl_length);
+            }
         }
 
-        public class RECTANGLE
+        public class RECTANGLE : IStateBufferObject
         {
             public byte[] reg = new byte[4];
             public byte enable;
@@ -410,6 +444,29 @@ namespace VirtualNes.Core
 
             public int adder;
             public int duty_flip;
+
+            public uint GetSize()
+            {
+                return 45;
+            }
+
+            public void SaveState(StateBuffer buffer)
+            {
+                buffer.Write(reg);
+                buffer.Write(enable);
+                buffer.Write(vbl_length);
+                buffer.Write(phaseacc);
+                buffer.Write(freq);
+                buffer.Write(output_vol);
+                buffer.Write(fixed_envelope);
+                buffer.Write(holdnote);
+                buffer.Write(volume);
+                buffer.Write(env_vol);
+                buffer.Write(env_phase);
+                buffer.Write(env_decay);
+                buffer.Write(adder);
+                buffer.Write(duty_flip);
+            }
         }
     }
 }

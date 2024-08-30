@@ -353,6 +353,7 @@ MonoBehaviour:
   Descript: {fileID: 3380485461544738227}
   Root: {fileID: 8754483333502849411}
   ShadowIcon: {fileID: 2619187604372594158}
+  InfoNode: {fileID: 2621205976727769389}
   SubMenuItemGroup: {fileID: 0}
   SelectScale: 1
   UnSelectScale: 1
@@ -387,6 +388,7 @@ GameObject:
   - component: {fileID: 8789823129857705082}
   - component: {fileID: 3252398029444565139}
   - component: {fileID: 4972426757569440742}
+  - component: {fileID: 2621205976727769389}
   m_Layer: 5
   m_Name: InfoNode
   m_TagString: Untagged
@@ -455,6 +457,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!225 &2621205976727769389
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993825260653792697}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5340761592919397836
 GameObject:
   m_ObjectHideFlags: 0

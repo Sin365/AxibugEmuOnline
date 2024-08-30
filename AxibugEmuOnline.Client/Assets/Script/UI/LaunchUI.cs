@@ -28,6 +28,8 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
             Instance = this;
+            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(Camera.main.gameObject);
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;
         }
