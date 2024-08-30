@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.UI
 {
-    public class MainMenuController : MenuItemController
+    public class MainMenuController : MenuItemController<MenuData>
     {
         [SerializeField]
         HorizontalLayoutGroup GroupRoot;
@@ -34,7 +34,9 @@ namespace AxibugEmuOnline.Client.UI
             m_runtimeMenuUICanvas = m_runtimeMenuUI.Select(menu => menu.gameObject.AddComponent<CanvasGroup>()).ToList();
             m_runtimeMenuUICanvas.ForEach(canv => canv.gameObject.AddComponent<AutoRaycastCanvasGroup>());
         }
-
+        public override void Init(List<MenuData> menuDataList)
+        {
+        }
 
         public void EnterDetailState()
         {

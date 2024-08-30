@@ -1,5 +1,4 @@
 using AxibugEmuOnline.Client.UI;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,35 +6,36 @@ namespace AxibugEmuOnline.Client
 {
     public abstract class MenuItemController : MonoBehaviour
     {
-        [SerializeField]
-        float PulseInvoke_Delay = 0.4f;
-        [SerializeField]
-        float PulseInvoke_Interval = 0.05f;
-        
-        private bool m_listenControlAction;
-        public bool ListenControlAction
+        public enum EnumCommand
         {
-            get => m_listenControlAction;
-            set
-            {
-                m_listenControlAction = value;
-
-                if (value)
-                    CommandDispatcher.Instance.RegistController(this);
-                else
-                    CommandDispatcher.Instance.UnRegistController(this);
-            }
+            SelectItemLeft,
+            SelectItemRight,
+            SelectItemUp,
+            SelectItemDown,
+            Enter,
+            Back,
+            OptionMenu
         }
+
+
+        [SerializeField]
+        protected Transform m_menuItemRoot;
+        protected List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
 
         private PulseInvoker m_pulsInvoker_Left;
         private PulseInvoker m_pulsInvoker_Right;
         private PulseInvoker m_pulsInvoker_Up;
         private PulseInvoker m_pulsInvoker_Down;
+        MenuItem m_enteredItem = null;
 
-        private int m_selectIndex = -1;
-        protected List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
+        [SerializeField]
+        float PulseInvoke_Delay = 0.4f;
+        [SerializeField]
+        float PulseInvoke_Interval = 0.05f;
 
-        public int SelectIndex
+        protected int m_selectIndex = -1;
+
+        public virtual int SelectIndex
         {
             get => m_selectIndex;
             set
@@ -48,15 +48,15 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        [SerializeField]
-        protected Transform m_menuItemRoot;
-
         protected virtual void Start()
         {
-            for (int i = 0; i < m_menuItemRoot.childCount; i++)
+            if (m_menuItemRoot != null)
             {
-                Transform child = m_menuItemRoot.GetChild(i);
-                m_runtimeMenuUI.Add(child.GetComponent<MenuItem>());
+                for (int i = 0; i < m_menuItemRoot.childCount; i++)
+                {
+                    Transform child = m_menuItemRoot.GetChild(i);
+                    m_runtimeMenuUI.Add(child.GetComponent<MenuItem>());
+                }
             }
 
             Canvas.ForceUpdateCanvases();
@@ -68,11 +68,6 @@ namespace AxibugEmuOnline.Client
             m_pulsInvoker_Down = new PulseInvoker(OnCmdSelectItemDown, PulseInvoke_Delay, PulseInvoke_Interval);
         }
 
-        private void OnDestroy()
-        {
-            if (CommandDispatcher.Instance != null)
-                CommandDispatcher.Instance.UnRegistController(this);
-        }
 
         protected virtual void Update()
         {
@@ -82,9 +77,6 @@ namespace AxibugEmuOnline.Client
             m_pulsInvoker_Down.Update(Time.deltaTime);
         }
 
-        protected abstract void OnSelectMenuChanged();
-
-        MenuItem m_enteredItem = null;
         public void ExecuteCommand(EnumCommand cmd, bool cancel)
         {
             if (!cancel)
@@ -170,15 +162,39 @@ namespace AxibugEmuOnline.Client
         protected virtual void OnCmdOptionMenu() { }
         protected virtual void OnCmdEnter(MenuItem item) { item.OnEnterItem(); }
         protected virtual void OnCmdBack(MenuItem item) { item.OnExitItem(); }
-        public enum EnumCommand
+        protected abstract void OnSelectMenuChanged();
+
+    }
+
+    public abstract class MenuItemController<T> : MenuItemController
+    {
+        private bool m_listenControlAction;
+        public bool ListenControlAction
         {
-            SelectItemLeft,
-            SelectItemRight,
-            SelectItemUp,
-            SelectItemDown,
-            Enter,
-            Back,
-            OptionMenu
+            get => m_listenControlAction;
+            set
+            {
+                m_listenControlAction = value;
+
+                if (value)
+                    CommandDispatcher.Instance.RegistController(this);
+                else
+                    CommandDispatcher.Instance.UnRegistController(this);
+            }
         }
+
+        public abstract void Init(List<T> menuDataList);
+
+
+        private void OnDestroy()
+        {
+            if (CommandDispatcher.Instance != null)
+                CommandDispatcher.Instance.UnRegistController(this);
+        }
+
+
+
+        
+
     }
 }

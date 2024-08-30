@@ -15,7 +15,7 @@ namespace AxibugEmuOnline.Client
 
         public int Index { get; set; }
 
-        private RomLib m_romlib;
+        private RomLib m_romlib => AppAxibugEmuOnline.nesRomLib;
         private RomFile m_romfile;
 
         public void SetData(object data)
@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
 
         public void SetDependencyProperty(object data)
         {
-            m_romlib = (RomLib)data;
+            SetSelectState(data is ThirdMenuRoot tr && tr.SelectIndex == Index);
         }
 
         public void Release()
@@ -74,6 +74,7 @@ namespace AxibugEmuOnline.Client
                 AppAxibugEmuOnline.SceneLoader.BeginLoad("Scene/EmuTest", () =>
                 {
                     var nesEmu = GameObject.FindObjectOfType<NesEmulator>();
+                    nesEmu.StartGame(m_romfile);
                 });
             }
         }

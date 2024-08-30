@@ -1,14 +1,43 @@
+using AxibugEmuOnline.Client.UI;
+using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
-    public class ThirdMenuRoot : MonoBehaviour
+    public class ThirdMenuRoot : SubMenuItemGroup
     {
         private RectTransform m_rect;
         private RectTransform m_parent;
 
         [SerializeField]
+        private RectTransform m_selectArrow;
+        [SerializeField]
+        float ArrowOffset = 50;
+        [SerializeField]
         float WidthFix = 50;
+        [SerializeField]
+        public ItemPresent itemGroup;
+        [SerializeField]
+        ScrollRect srollRect;
+
+        public override int SelectIndex
+        {
+            get => m_selectIndex;
+            set
+            {
+                if (itemGroup.DataList == null) return;
+
+                value = Mathf.Clamp(value, 0, itemGroup.DataList.Count - 1);
+                if (m_selectIndex == value) return;
+                bool useAnim = m_selectIndex != -1;
+                m_selectIndex = value;
+
+                RollToIndex(m_selectIndex, useAnim);
+                OnSelectMenuChanged();
+            }
+        }
 
         private void Awake()
         {
@@ -19,6 +48,29 @@ namespace AxibugEmuOnline.Client
         private void LateUpdate()
         {
             SyncRectToLaunchUI();
+        }
+
+        protected override void OnSelectMenuChanged()
+        {
+            itemGroup.UpdateDependencyProperty(this);
+        }
+
+        void RollToIndex(int index, bool useAnim = false)
+        {
+            Vector2 itemPos = itemGroup.GetItemAnchorePos(index);
+
+            Vector3[] corners = new Vector3[4];
+            Vector2 targetPos = itemGroup.transform.InverseTransformPoint(m_selectArrow.position);
+            itemGroup.RectTransform.GetLocalCorners(corners);
+            targetPos = targetPos - (Vector2)corners[1];
+
+            float gap = targetPos.y - itemPos.y;
+
+            srollRect.velocity = Vector2.zero;
+            if (!useAnim)
+                srollRect.content.anchoredPosition += new Vector2(0, gap);
+            else
+                srollRect.content.anchoredPosition += new Vector2(0, gap);
         }
 
         Vector3[] corner = new Vector3[4];
@@ -48,6 +100,21 @@ namespace AxibugEmuOnline.Client
 
             var widthGap = parentPosition.x - rootPosition.x;
             m_rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, launchUIRect.rect.width - widthGap - WidthFix);
+
+            m_selectArrow.position = m_parent.transform.position;
+            temp = m_selectArrow.anchoredPosition;
+            temp.x += ArrowOffset;
+            m_selectArrow.anchoredPosition = temp;
+        }
+
+        protected override void OnCmdSelectItemDown()
+        {
+            base.OnCmdSelectItemDown();
+        }
+
+        protected override void OnCmdSelectItemUp()
+        {
+            base.OnCmdSelectItemUp();
         }
     }
 }

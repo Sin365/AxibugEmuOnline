@@ -9,6 +9,7 @@ namespace AxibugEmuOnline.Client
 {
     public class AppSceneLoader
     {
+
         public LoadTask CurrentTask { get; private set; }
 
         Queue<LoadTask> m_tasks = new Queue<LoadTask>();
@@ -54,7 +55,7 @@ namespace AxibugEmuOnline.Client
                 if (State == EnumTaskState.Idle)
                 {
                     State = EnumTaskState.Running;
-                    m_loadingOp = SceneManager.LoadSceneAsync(m_scenePath, LoadSceneMode.Additive);
+                    m_loadingOp = SceneManager.LoadSceneAsync(m_scenePath, LoadSceneMode.Single);
                     return true;
                 }
                 else if (State == EnumTaskState.Running)
