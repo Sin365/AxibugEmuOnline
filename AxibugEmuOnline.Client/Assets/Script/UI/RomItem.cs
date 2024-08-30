@@ -30,6 +30,8 @@ namespace AxibugEmuOnline.Client
             {
                 m_romlib.BeginFetchRomInfo(m_romfile);
             }
+
+            SetSelectState(data is ThirdMenuRoot tr && tr.SelectIndex == Index);
         }
 
         public void SetDependencyProperty(object data)
