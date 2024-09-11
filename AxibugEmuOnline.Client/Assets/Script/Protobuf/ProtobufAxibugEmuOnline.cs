@@ -27,30 +27,94 @@ namespace AxibugProtobuf {
             "Ch5wcm90b2J1Zl9BeGlidWdFbXVPbmxpbmUucHJvdG8SDkF4aWJ1Z1Byb3Rv",
             "YnVmIiMKEFByb3RvYnVmX0NoYXRNc2cSDwoHQ2hhdE1zZxgBIAEoCSJIChVQ",
             "cm90b2J1Zl9DaGF0TXNnX1JFU1ASEAoITmlja05hbWUYASABKAkSDwoHQ2hh",
-            "dE1zZxgCIAEoCRIMCgREYXRlGAMgASgDIpEBCg5Qcm90b2J1Zl9Mb2dpbhIs",
-            "Cglsb2dpblR5cGUYASABKA4yGS5BeGlidWdQcm90b2J1Zi5Mb2dpblR5cGUS",
-            "LgoKZGV2aWNlVHlwZRgCIAEoDjIaLkF4aWJ1Z1Byb3RvYnVmLkRldmljZVR5",
-            "cGUSDwoHQWNjb3VudBgDIAEoCRIQCghQYXNzd29yZBgEIAEoCSKMAQoTUHJv",
-            "dG9idWZfTG9naW5fUkVTUBINCgVUb2tlbhgBIAEoCRIVCg1MYXN0TG9naW5E",
-            "YXRlGAIgASgJEg8KB1JlZ0RhdGUYAyABKAkSMQoGU3RhdHVzGAQgASgOMiEu",
-            "QXhpYnVnUHJvdG9idWYuTG9naW5SZXN1bHRTdGF0dXMSCwoDVUlEGAUgASgD",
-            "IjsKFVByb3RvYnVmX1NjcmVubl9GcmFtZRIPCgdGcmFtZUlEGAEgASgFEhEK",
-            "CVJhd0JpdG1hcBgCIAEoDCpOCglDb21tYW5kSUQSDgoKQ01EX0RFRkFVTBAA",
-            "Eg4KCUNNRF9MT0dJThDRDxIQCgtDTURfQ0hBVE1TRxChHxIPCgpDTURfU2Ny",
-            "ZWVuEIknKisKCUVycm9yQ29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJP",
-            "Ul9PSxABKhwKCUxvZ2luVHlwZRIPCgtCYXNlRGVmYXVsdBAAKksKCkRldmlj",
-            "ZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQARILCgdBbmRy",
-            "b2lkEAISBwoDSU9TEAMSBwoDUFNWEAQqTgoRTG9naW5SZXN1bHRTdGF0dXMS",
-            "IQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1bHQQABIGCgJPSxABEg4K",
-            "CkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
+            "dE1zZxgCIAEoCRIMCgREYXRlGAMgASgDIh0KDVByb3RvYnVmX1BpbmcSDAoE",
+            "U2VlZBgBIAEoBSIdCg1Qcm90b2J1Zl9Qb25nEgwKBFNlZWQYASABKAUikQEK",
+            "DlByb3RvYnVmX0xvZ2luEiwKCWxvZ2luVHlwZRgBIAEoDjIZLkF4aWJ1Z1By",
+            "b3RvYnVmLkxvZ2luVHlwZRIuCgpkZXZpY2VUeXBlGAIgASgOMhouQXhpYnVn",
+            "UHJvdG9idWYuRGV2aWNlVHlwZRIPCgdBY2NvdW50GAMgASgJEhAKCFBhc3N3",
+            "b3JkGAQgASgJIqABChNQcm90b2J1Zl9Mb2dpbl9SRVNQEhIKCkRldmljZVVV",
+            "SUQYASABKAkSDQoFVG9rZW4YAiABKAkSFQoNTGFzdExvZ2luRGF0ZRgDIAEo",
+            "CRIPCgdSZWdEYXRlGAQgASgJEjEKBlN0YXR1cxgFIAEoDjIhLkF4aWJ1Z1By",
+            "b3RvYnVmLkxvZ2luUmVzdWx0U3RhdHVzEgsKA1VJRBgGIAEoAyIUChJQcm90",
+            "b2J1Zl9Sb29tX0xpc3QiWwoXUHJvdG9idWZfUm9vbV9MaXN0X1JFU1ASQAoQ",
+            "Um9vbU1pbmlJbmZvTGlzdBgBIAMoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3Rv",
+            "YnVmX1Jvb21fTWluaUluZm8ijQIKFlByb3RvYnVmX1Jvb21fTWluaUluZm8S",
+            "DgoGUm9vbUlEGAEgASgFEhEKCUdhbWVSb21JRBgCIAEoBRITCgtHYW1lUm9t",
+            "SGFzaBgDIAEoCRIwCglHYW1lU3RhdGUYBSABKA4yHS5BeGlidWdQcm90b2J1",
+            "Zi5Sb29tR2FtZVN0YXRlEhUKDUhvc3RQbGF5ZXJVSUQYBiABKAUSFAoMT2Jz",
+            "VXNlckNvdW50GAcgASgFEhMKC1BsYXllcjFfVUlEGAggASgDEhgKEFBsYXll",
+            "cjFfTmlja05hbWUYCSABKAkSEwoLUGxheWVyMl9VSUQYCiABKAMSGAoQUGxh",
+            "eWVyMl9OaWNrTmFtZRgLIAEoCSJtChlQcm90b2J1Zl9Sb29tX1VwZGF0ZV9S",
+            "RVNQEhIKClVwZGF0ZVR5cGUYASABKAUSPAoMUm9vbU1pbmlJbmZvGAIgASgL",
+            "MiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyJLChVQ",
+            "cm90b2J1Zl9TY3Jlbm5fRnJhbWUSDgoGUm9vbUlEGAEgASgFEg8KB0ZyYW1l",
+            "SUQYAiABKAUSEQoJUmF3Qml0bWFwGAMgASgMIkkKI1Byb3RvYnVmX1Jvb21f",
+            "U2luZ2xlUGxheWVySW5wdXREYXRhEg8KB0ZyYW1lSUQYASABKA0SEQoJSW5w",
+            "dXREYXRhGAIgASgNIk0KJ1Byb3RvYnVmX1Jvb21fU3luX1Jvb21GcmFtZUFs",
+            "bElucHV0RGF0YRIPCgdGcmFtZUlEGAEgASgNEhEKCUlucHV0RGF0YRgCIAEo",
+            "BCJVChRQcm90b2J1Zl9Sb29tX0NyZWF0ZRIRCglHYW1lUm9tSUQYASABKAUS",
+            "EwoLR2FtZVJvbUhhc2gYAiABKAkSFQoNSm9pblBsYXllcklkeBgDIAEoBSJZ",
+            "ChlQcm90b2J1Zl9Sb29tX0NyZWF0ZV9SRVNQEjwKDFJvb21NaW5pSW5mbxgB",
+            "IAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8i",
+            "NwoSUHJvdG9idWZfUm9vbV9Kb2luEg4KBlJvb21JRBgBIAEoBRIRCglQbGF5",
+            "ZXJOdW0YAiABKAUiVwoXUHJvdG9idWZfUm9vbV9Kb2luX1JFU1ASPAoMUm9v",
+            "bU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfUm9v",
+            "bV9NaW5pSW5mbyIlChNQcm90b2J1Zl9Sb29tX0xlYXZlEg4KBlJvb21JRBgB",
+            "IAEoBSIqChhQcm90b2J1Zl9Sb29tX0xlYXZlX1JFU1ASDgoGUm9vbUlEGAEg",
+            "ASgFImEKIVByb3RvYnVmX1Jvb21fTXlSb29tX1N0YXRlX0NoYW5nZRI8CgxS",
+            "b29tTWluaUluZm8YASABKAsyJi5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9S",
+            "b29tX01pbmlJbmZvIkUKG1Byb3RvYnVmX1Jvb21fV2FpdFN0ZXBfUkVTUBIQ",
+            "CghXYWl0U3RlcBgBIAEoBRIUCgxMb2FkU3RhdGVSYXcYAiABKAwiPwonUHJv",
+            "dG9idWZfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3EhQKDExvYWRT",
+            "dGF0ZVJhdxgBIAEoDCIuCixQcm90b2J1Zl9Sb29tX0hvc3RQbGF5ZXJfVXBk",
+            "YXRlU3RhdGVSYXdfUkVTUCIcChpQcm90b2J1Zl9Sb29tX1BsYXllcl9SZWFk",
+            "eSqaAwoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElORxAB",
+            "EgwKCENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhAKC0NNRF9DSEFUTVNH",
+            "EKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01EX1Jvb21fTGlzdF9VcGRh",
+            "dGUQiicSFAoPQ01EX1Jvb21fQ3JlYXRlEO0nEhIKDUNNRF9Sb29tX0pvaW4Q",
+            "8ScSEwoOQ01EX1Jvb21fTGVhdmUQ8icSIgodQ01EX1Jvb21fTXlSb29tX1N0",
+            "YXRlX0NoYW5nZWQQ9icSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ0SgSJwoiQ01E",
+            "X1Jvb21fSG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIaChVDTURfUm9v",
+            "bV9QbGF5ZXJfUmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2VsX1BsYXllcklu",
+            "cHV0EPouEh0KGENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/LhIPCgpDTURf",
+            "U2NyZWVuENk2Ko8BCglFcnJvckNvZGUSEAoMRVJST1JfREVGQVVMEAASDAoI",
+            "RVJST1JfT0sQARIYChRFUlJPUl9ST09NX05PVF9GT1VORBAKEiUKIUVSUk9S",
+            "X1JPT01fU0xPVF9SRUFETFlfSEFEX1BMQVlFUhALEiEKHUVSUk9SX1JPT01f",
+            "Q0FOVF9ET19DVVJSX1NUQVRFEDIqHAoJTG9naW5UeXBlEg8KC0Jhc2VEZWZh",
+            "dWx0EAAqSwoKRGV2aWNlVHlwZRIWChJEZXZpY2VUeXBlX0RlZmF1bHQQABIG",
+            "CgJQQxABEgsKB0FuZHJvaWQQAhIHCgNJT1MQAxIHCgNQU1YQBCpwCg1Sb29t",
+            "R2FtZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIR",
+            "Cg1XYWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQ",
+            "CgxJbk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dp",
+            "blJlc3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3Vu",
+            "dEVychACQgJIAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg), global::AxibugProtobuf.Protobuf_ChatMsg.Parser, new[]{ "ChatMsg" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg_RESP), global::AxibugProtobuf.Protobuf_ChatMsg_RESP.Parser, new[]{ "NickName", "ChatMsg", "Date" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Ping), global::AxibugProtobuf.Protobuf_Ping.Parser, new[]{ "Seed" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Pong), global::AxibugProtobuf.Protobuf_Pong.Parser, new[]{ "Seed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login), global::AxibugProtobuf.Protobuf_Login.Parser, new[]{ "LoginType", "DeviceType", "Account", "Password" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login_RESP), global::AxibugProtobuf.Protobuf_Login_RESP.Parser, new[]{ "Token", "LastLoginDate", "RegDate", "Status", "UID" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Screnn_Frame), global::AxibugProtobuf.Protobuf_Screnn_Frame.Parser, new[]{ "FrameID", "RawBitmap" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login_RESP), global::AxibugProtobuf.Protobuf_Login_RESP.Parser, new[]{ "DeviceUUID", "Token", "LastLoginDate", "RegDate", "Status", "UID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List), global::AxibugProtobuf.Protobuf_Room_List.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List_RESP), global::AxibugProtobuf.Protobuf_Room_List_RESP.Parser, new[]{ "RoomMiniInfoList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "GameState", "HostPlayerUID", "ObsUserCount", "Player1UID", "Player1NickName", "Player2UID", "Player2NickName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Update_RESP), global::AxibugProtobuf.Protobuf_Room_Update_RESP.Parser, new[]{ "UpdateType", "RoomMiniInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Screnn_Frame), global::AxibugProtobuf.Protobuf_Screnn_Frame.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData), global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData.Parser, new[]{ "FrameID", "InputData" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData), global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData.Parser, new[]{ "FrameID", "InputData" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create), global::AxibugProtobuf.Protobuf_Room_Create.Parser, new[]{ "GameRomID", "GameRomHash", "JoinPlayerIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create_RESP), global::AxibugProtobuf.Protobuf_Room_Create_RESP.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Join), global::AxibugProtobuf.Protobuf_Room_Join.Parser, new[]{ "RoomID", "PlayerNum" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Join_RESP), global::AxibugProtobuf.Protobuf_Room_Join_RESP.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Leave), global::AxibugProtobuf.Protobuf_Room_Leave.Parser, new[]{ "RoomID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Leave_RESP), global::AxibugProtobuf.Protobuf_Room_Leave_RESP.Parser, new[]{ "RoomID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MyRoom_State_Change), global::AxibugProtobuf.Protobuf_Room_MyRoom_State_Change.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP), global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP.Parser, new[]{ "WaitStep", "LoadStateRaw" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw.Parser, new[]{ "LoadStateRaw" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, null, null, null, null, null)
           }));
     }
     #endregion
@@ -63,17 +127,87 @@ namespace AxibugProtobuf {
     /// </summary>
     [pbr::OriginalName("CMD_DEFAUL")] CmdDefaul = 0,
     /// <summary>
+    ///服务器或客户端，均可主动ping请求，对方响应。（这里测全流程延迟，即序 列化->发送->传输过程->接收->反序列化）
+    /// </summary>
+    [pbr::OriginalName("CMD_PING")] CmdPing = 1,
+    /// <summary>
+    ///Pong | 响应 对应 Protobuf_Pong
+    /// </summary>
+    [pbr::OriginalName("CMD_PONG")] CmdPong = 2,
+    /// <summary>
     ///自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
     /// </summary>
     [pbr::OriginalName("CMD_LOGIN")] CmdLogin = 2001,
     /// <summary>
-    ///广播信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
+    ///广播聊天信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
     /// </summary>
     [pbr::OriginalName("CMD_CHATMSG")] CmdChatmsg = 4001,
     /// <summary>
-    ///画面同步 | 同步广播 对应 Protobuf_Screnn_Frame
+    ///房间列表相关（仅用于列表显示）
     /// </summary>
-    [pbr::OriginalName("CMD_Screen")] CmdScreen = 5001,
+    [pbr::OriginalName("CMD_Room_List")] CmdRoomList = 5001,
+    /// <summary>
+    ///房间单个房间信息更新 对应 Protobuf_Room_Update_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_List_Update")] CmdRoomListUpdate = 5002,
+    /// <summary>
+    ///房间内相关
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_Create")] CmdRoomCreate = 5101,
+    /// <summary>
+    ///房间加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP //建议Join之前按照房间信息，提前下载并读取本地Rom
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_Join")] CmdRoomJoin = 5105,
+    /// <summary>
+    ///房间离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_Leave")] CmdRoomLeave = 5106,
+    /// <summary>
+    ///我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_MyRoom_State_Changed")] CmdRoomMyRoomStateChanged = 5110,
+    /// <summary>
+    ///准备和开始流程（5201 ~ 5204 ~ 5208）
+    ///
+    /// 我们采用，玩家可以随时进入的方式开发
+    ///
+    /// 设计流程： 
+    ///
+    /// Step0：服务器广播"等待-主机上报即使存档" CMD_Room_WaitStep WaitStep=[0] ---> 客户端：暂停模拟器核心：全员等待（主机玩家一人上传即时存档)
+    /// 			主机玩家 上行 CMD_Room_HostPlayer_UpdateStateRaw消息，上传即时存档
+    /// 			主机玩家上传完毕之后，服务器会通知进入Step1
+    ///
+    /// Step1：服务器广播"等待-全员加载即时存档" CMD_Room_WaitStep WaitStep=[1] 附带即时存档 ---> 客户端：全员等待（主机玩家一人上传)
+    ///			所有玩家确保加载ROM和即时存档，并保持模拟器暂停，准备完毕后 发送 CMD_Room_Player_Ready
+    ///			所有玩家Ready之后，服务器会根据所有玩家延迟提前跑若干Frame，通知进入Step2 
+    ///			
+    /// Step2：服务器广播"开始" CMD_Room_WaitStep WaitStep=[2] ---> 客户端：立即开始
+    ///
+    /// PS：[联机过程中加载即时存档] 房间在游玩过程中，单个玩家发送CMD_Room_HostPlayer_UpdateStateRaw 上报即时存档
+    /// 		重新从Step1走流程
+    /// 
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_WaitStep")] CmdRoomWaitStep = 5201,
+    /// <summary>
+    ///主机玩家上传即时存档 上行 | 下行 对应 Protobuf_Room_HostPlayer_UpdateStateRaw | Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_HostPlayer_UpdateStateRaw")] CmdRoomHostPlayerUpdateStateRaw = 5204,
+    /// <summary>
+    ///玩家准备完毕 上行 Protobuf_Room_Player_Ready
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_Player_Ready")] CmdRoomPlayerReady = 5208,
+    /// <summary>
+    ///游戏同步
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_Singel_PlayerInput")] CmdRoomSingelPlayerInput = 6010,
+    /// <summary>
+    ///单个玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
+    /// </summary>
+    [pbr::OriginalName("CMD_ROOM_SYN_PlayerInput")] CmdRoomSynPlayerInput = 6015,
+    /// <summary>
+    ///画面采集
+    /// </summary>
+    [pbr::OriginalName("CMD_Screen")] CmdScreen = 7001,
   }
 
   public enum ErrorCode {
@@ -85,6 +219,18 @@ namespace AxibugProtobuf {
     ///成功
     /// </summary>
     [pbr::OriginalName("ERROR_OK")] ErrorOk = 1,
+    /// <summary>
+    ///房间不存在
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROOM_NOT_FOUND")] ErrorRoomNotFound = 10,
+    /// <summary>
+    ///加入目标位置已经有人
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROOM_SLOT_READLY_HAD_PLAYER")] ErrorRoomSlotReadlyHadPlayer = 11,
+    /// <summary>
+    ///当前房间状态不允许本操作
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROOM_CANT_DO_CURR_STATE")] ErrorRoomCantDoCurrState = 50,
   }
 
   public enum LoginType {
@@ -103,6 +249,33 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("Android")] Android = 2,
     [pbr::OriginalName("IOS")] Ios = 3,
     [pbr::OriginalName("PSV")] Psv = 4,
+  }
+
+  public enum RoomGameState {
+    /// <summary>
+    ///缺省
+    /// </summary>
+    [pbr::OriginalName("None_GameState")] NoneGameState = 0,
+    /// <summary>
+    ///仅主机，待加入
+    /// </summary>
+    [pbr::OriginalName("OnlyHost")] OnlyHost = 1,
+    /// <summary>
+    ///等待即时存档
+    /// </summary>
+    [pbr::OriginalName("WaitRawUpdate")] WaitRawUpdate = 2,
+    /// <summary>
+    ///等待Ready
+    /// </summary>
+    [pbr::OriginalName("WaitReady")] WaitReady = 3,
+    /// <summary>
+    ///暂停
+    /// </summary>
+    [pbr::OriginalName("Pause")] Pause = 4,
+    /// <summary>
+    ///联机中
+    /// </summary>
+    [pbr::OriginalName("InOnlineGame")] InOnlineGame = 5,
   }
 
   public enum LoginResultStatus {
@@ -551,6 +724,356 @@ namespace AxibugProtobuf {
 
   }
 
+  public sealed partial class Protobuf_Ping : pb::IMessage<Protobuf_Ping>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Ping> _parser = new pb::MessageParser<Protobuf_Ping>(() => new Protobuf_Ping());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Ping> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Ping() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Ping(Protobuf_Ping other) : this() {
+      seed_ = other.seed_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Ping Clone() {
+      return new Protobuf_Ping(this);
+    }
+
+    /// <summary>Field number for the "Seed" field.</summary>
+    public const int SeedFieldNumber = 1;
+    private int seed_;
+    /// <summary>
+    ///随机数
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Seed {
+      get { return seed_; }
+      set {
+        seed_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Ping);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Ping other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Seed != other.Seed) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Seed != 0) hash ^= Seed.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Seed != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Seed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Seed != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Seed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Seed != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Seed);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Ping other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Seed != 0) {
+        Seed = other.Seed;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Seed = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Seed = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Pong : pb::IMessage<Protobuf_Pong>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Pong> _parser = new pb::MessageParser<Protobuf_Pong>(() => new Protobuf_Pong());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Pong> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Pong() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Pong(Protobuf_Pong other) : this() {
+      seed_ = other.seed_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Pong Clone() {
+      return new Protobuf_Pong(this);
+    }
+
+    /// <summary>Field number for the "Seed" field.</summary>
+    public const int SeedFieldNumber = 1;
+    private int seed_;
+    /// <summary>
+    ///原样返回随机数
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Seed {
+      get { return seed_; }
+      set {
+        seed_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Pong);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Pong other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Seed != other.Seed) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Seed != 0) hash ^= Seed.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Seed != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Seed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Seed != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Seed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Seed != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Seed);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Pong other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Seed != 0) {
+        Seed = other.Seed;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Seed = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Seed = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   /// <summary>
   ///登录数据上行
   /// </summary>
@@ -566,7 +1089,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[2]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -861,7 +1384,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[3]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -878,6 +1401,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Login_RESP(Protobuf_Login_RESP other) : this() {
+      deviceUUID_ = other.deviceUUID_;
       token_ = other.token_;
       lastLoginDate_ = other.lastLoginDate_;
       regDate_ = other.regDate_;
@@ -891,8 +1415,22 @@ namespace AxibugProtobuf {
       return new Protobuf_Login_RESP(this);
     }
 
+    /// <summary>Field number for the "DeviceUUID" field.</summary>
+    public const int DeviceUUIDFieldNumber = 1;
+    private string deviceUUID_ = "";
+    /// <summary>
+    ///设备唯一串
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string DeviceUUID {
+      get { return deviceUUID_; }
+      set {
+        deviceUUID_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "Token" field.</summary>
-    public const int TokenFieldNumber = 1;
+    public const int TokenFieldNumber = 2;
     private string token_ = "";
     /// <summary>
     ///登录凭据 （本次登录之后，所有业务请求凭据，需要存储在内存中）
@@ -906,7 +1444,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "LastLoginDate" field.</summary>
-    public const int LastLoginDateFieldNumber = 2;
+    public const int LastLoginDateFieldNumber = 3;
     private string lastLoginDate_ = "";
     /// <summary>
     ///上次登录时间（只用于呈现的字符串，若界面需求需要）
@@ -920,7 +1458,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "RegDate" field.</summary>
-    public const int RegDateFieldNumber = 3;
+    public const int RegDateFieldNumber = 4;
     private string regDate_ = "";
     /// <summary>
     ///注册时间（只用于呈现的字符串，若界面需求需要）
@@ -934,7 +1472,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "Status" field.</summary>
-    public const int StatusFieldNumber = 4;
+    public const int StatusFieldNumber = 5;
     private global::AxibugProtobuf.LoginResultStatus status_ = global::AxibugProtobuf.LoginResultStatus.BaseDefault;
     /// <summary>
     ///账号状态 （预留） [1]正常[0]被禁封
@@ -948,7 +1486,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "UID" field.</summary>
-    public const int UIDFieldNumber = 5;
+    public const int UIDFieldNumber = 6;
     private long uID_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long UID {
@@ -971,6 +1509,7 @@ namespace AxibugProtobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (DeviceUUID != other.DeviceUUID) return false;
       if (Token != other.Token) return false;
       if (LastLoginDate != other.LastLoginDate) return false;
       if (RegDate != other.RegDate) return false;
@@ -982,6 +1521,7 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (DeviceUUID.Length != 0) hash ^= DeviceUUID.GetHashCode();
       if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (LastLoginDate.Length != 0) hash ^= LastLoginDate.GetHashCode();
       if (RegDate.Length != 0) hash ^= RegDate.GetHashCode();
@@ -1003,24 +1543,28 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Token.Length != 0) {
+      if (DeviceUUID.Length != 0) {
         output.WriteRawTag(10);
+        output.WriteString(DeviceUUID);
+      }
+      if (Token.Length != 0) {
+        output.WriteRawTag(18);
         output.WriteString(Token);
       }
       if (LastLoginDate.Length != 0) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteString(LastLoginDate);
       }
       if (RegDate.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteString(RegDate);
       }
       if (Status != global::AxibugProtobuf.LoginResultStatus.BaseDefault) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteEnum((int) Status);
       }
       if (UID != 0L) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteInt64(UID);
       }
       if (_unknownFields != null) {
@@ -1032,24 +1576,28 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Token.Length != 0) {
+      if (DeviceUUID.Length != 0) {
         output.WriteRawTag(10);
+        output.WriteString(DeviceUUID);
+      }
+      if (Token.Length != 0) {
+        output.WriteRawTag(18);
         output.WriteString(Token);
       }
       if (LastLoginDate.Length != 0) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteString(LastLoginDate);
       }
       if (RegDate.Length != 0) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteString(RegDate);
       }
       if (Status != global::AxibugProtobuf.LoginResultStatus.BaseDefault) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteEnum((int) Status);
       }
       if (UID != 0L) {
-        output.WriteRawTag(40);
+        output.WriteRawTag(48);
         output.WriteInt64(UID);
       }
       if (_unknownFields != null) {
@@ -1061,6 +1609,9 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (DeviceUUID.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceUUID);
+      }
       if (Token.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Token);
       }
@@ -1086,6 +1637,9 @@ namespace AxibugProtobuf {
     public void MergeFrom(Protobuf_Login_RESP other) {
       if (other == null) {
         return;
+      }
+      if (other.DeviceUUID.Length != 0) {
+        DeviceUUID = other.DeviceUUID;
       }
       if (other.Token.Length != 0) {
         Token = other.Token;
@@ -1117,22 +1671,26 @@ namespace AxibugProtobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Token = input.ReadString();
+            DeviceUUID = input.ReadString();
             break;
           }
           case 18: {
-            LastLoginDate = input.ReadString();
+            Token = input.ReadString();
             break;
           }
           case 26: {
+            LastLoginDate = input.ReadString();
+            break;
+          }
+          case 34: {
             RegDate = input.ReadString();
             break;
           }
-          case 32: {
+          case 40: {
             Status = (global::AxibugProtobuf.LoginResultStatus) input.ReadEnum();
             break;
           }
-          case 40: {
+          case 48: {
             UID = input.ReadInt64();
             break;
           }
@@ -1151,23 +1709,1073 @@ namespace AxibugProtobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            Token = input.ReadString();
+            DeviceUUID = input.ReadString();
             break;
           }
           case 18: {
-            LastLoginDate = input.ReadString();
+            Token = input.ReadString();
             break;
           }
           case 26: {
+            LastLoginDate = input.ReadString();
+            break;
+          }
+          case 34: {
             RegDate = input.ReadString();
             break;
           }
-          case 32: {
+          case 40: {
             Status = (global::AxibugProtobuf.LoginResultStatus) input.ReadEnum();
             break;
           }
-          case 40: {
+          case 48: {
             UID = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_List : pb::IMessage<Protobuf_Room_List>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_List> _parser = new pb::MessageParser<Protobuf_Room_List>(() => new Protobuf_Room_List());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_List> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_List() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_List(Protobuf_Room_List other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_List Clone() {
+      return new Protobuf_Room_List(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_List);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_List other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_List other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_List_RESP : pb::IMessage<Protobuf_Room_List_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_List_RESP> _parser = new pb::MessageParser<Protobuf_Room_List_RESP>(() => new Protobuf_Room_List_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_List_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_List_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_List_RESP(Protobuf_Room_List_RESP other) : this() {
+      roomMiniInfoList_ = other.roomMiniInfoList_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_List_RESP Clone() {
+      return new Protobuf_Room_List_RESP(this);
+    }
+
+    /// <summary>Field number for the "RoomMiniInfoList" field.</summary>
+    public const int RoomMiniInfoListFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::AxibugProtobuf.Protobuf_Room_MiniInfo> _repeated_roomMiniInfoList_codec
+        = pb::FieldCodec.ForMessage(10, global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser);
+    private readonly pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Room_MiniInfo> roomMiniInfoList_ = new pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Room_MiniInfo>();
+    /// <summary>
+    ///房间列表
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Room_MiniInfo> RoomMiniInfoList {
+      get { return roomMiniInfoList_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_List_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_List_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!roomMiniInfoList_.Equals(other.roomMiniInfoList_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= roomMiniInfoList_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      roomMiniInfoList_.WriteTo(output, _repeated_roomMiniInfoList_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      roomMiniInfoList_.WriteTo(ref output, _repeated_roomMiniInfoList_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += roomMiniInfoList_.CalculateSize(_repeated_roomMiniInfoList_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_List_RESP other) {
+      if (other == null) {
+        return;
+      }
+      roomMiniInfoList_.Add(other.roomMiniInfoList_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            roomMiniInfoList_.AddEntriesFrom(input, _repeated_roomMiniInfoList_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            roomMiniInfoList_.AddEntriesFrom(ref input, _repeated_roomMiniInfoList_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_MiniInfo : pb::IMessage<Protobuf_Room_MiniInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_MiniInfo> _parser = new pb::MessageParser<Protobuf_Room_MiniInfo>(() => new Protobuf_Room_MiniInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_MiniInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_MiniInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_MiniInfo(Protobuf_Room_MiniInfo other) : this() {
+      roomID_ = other.roomID_;
+      gameRomID_ = other.gameRomID_;
+      gameRomHash_ = other.gameRomHash_;
+      gameState_ = other.gameState_;
+      hostPlayerUID_ = other.hostPlayerUID_;
+      obsUserCount_ = other.obsUserCount_;
+      player1UID_ = other.player1UID_;
+      player1NickName_ = other.player1NickName_;
+      player2UID_ = other.player2UID_;
+      player2NickName_ = other.player2NickName_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_MiniInfo Clone() {
+      return new Protobuf_Room_MiniInfo(this);
+    }
+
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "GameRomID" field.</summary>
+    public const int GameRomIDFieldNumber = 2;
+    private int gameRomID_;
+    /// <summary>
+    ///游戏ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int GameRomID {
+      get { return gameRomID_; }
+      set {
+        gameRomID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "GameRomHash" field.</summary>
+    public const int GameRomHashFieldNumber = 3;
+    private string gameRomHash_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string GameRomHash {
+      get { return gameRomHash_; }
+      set {
+        gameRomHash_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "GameState" field.</summary>
+    public const int GameStateFieldNumber = 5;
+    private global::AxibugProtobuf.RoomGameState gameState_ = global::AxibugProtobuf.RoomGameState.NoneGameState;
+    /// <summary>
+    ///游戏状态
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.RoomGameState GameState {
+      get { return gameState_; }
+      set {
+        gameState_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "HostPlayerUID" field.</summary>
+    public const int HostPlayerUIDFieldNumber = 6;
+    private int hostPlayerUID_;
+    /// <summary>
+    ///主机玩家ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int HostPlayerUID {
+      get { return hostPlayerUID_; }
+      set {
+        hostPlayerUID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ObsUserCount" field.</summary>
+    public const int ObsUserCountFieldNumber = 7;
+    private int obsUserCount_;
+    /// <summary>
+    ///观战用户数量
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ObsUserCount {
+      get { return obsUserCount_; }
+      set {
+        obsUserCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Player1_UID" field.</summary>
+    public const int Player1UIDFieldNumber = 8;
+    private long player1UID_;
+    /// <summary>
+    ///玩家1 UID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Player1UID {
+      get { return player1UID_; }
+      set {
+        player1UID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Player1_NickName" field.</summary>
+    public const int Player1NickNameFieldNumber = 9;
+    private string player1NickName_ = "";
+    /// <summary>
+    ///玩家1 昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Player1NickName {
+      get { return player1NickName_; }
+      set {
+        player1NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Player2_UID" field.</summary>
+    public const int Player2UIDFieldNumber = 10;
+    private long player2UID_;
+    /// <summary>
+    ///玩家2 UID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Player2UID {
+      get { return player2UID_; }
+      set {
+        player2UID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Player2_NickName" field.</summary>
+    public const int Player2NickNameFieldNumber = 11;
+    private string player2NickName_ = "";
+    /// <summary>
+    ///玩家2 昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Player2NickName {
+      get { return player2NickName_; }
+      set {
+        player2NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_MiniInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_MiniInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomID != other.RoomID) return false;
+      if (GameRomID != other.GameRomID) return false;
+      if (GameRomHash != other.GameRomHash) return false;
+      if (GameState != other.GameState) return false;
+      if (HostPlayerUID != other.HostPlayerUID) return false;
+      if (ObsUserCount != other.ObsUserCount) return false;
+      if (Player1UID != other.Player1UID) return false;
+      if (Player1NickName != other.Player1NickName) return false;
+      if (Player2UID != other.Player2UID) return false;
+      if (Player2NickName != other.Player2NickName) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
+      if (GameRomID != 0) hash ^= GameRomID.GetHashCode();
+      if (GameRomHash.Length != 0) hash ^= GameRomHash.GetHashCode();
+      if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) hash ^= GameState.GetHashCode();
+      if (HostPlayerUID != 0) hash ^= HostPlayerUID.GetHashCode();
+      if (ObsUserCount != 0) hash ^= ObsUserCount.GetHashCode();
+      if (Player1UID != 0L) hash ^= Player1UID.GetHashCode();
+      if (Player1NickName.Length != 0) hash ^= Player1NickName.GetHashCode();
+      if (Player2UID != 0L) hash ^= Player2UID.GetHashCode();
+      if (Player2NickName.Length != 0) hash ^= Player2NickName.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (GameRomID != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(GameRomID);
+      }
+      if (GameRomHash.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(GameRomHash);
+      }
+      if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) GameState);
+      }
+      if (HostPlayerUID != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(HostPlayerUID);
+      }
+      if (ObsUserCount != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(ObsUserCount);
+      }
+      if (Player1UID != 0L) {
+        output.WriteRawTag(64);
+        output.WriteInt64(Player1UID);
+      }
+      if (Player1NickName.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(Player1NickName);
+      }
+      if (Player2UID != 0L) {
+        output.WriteRawTag(80);
+        output.WriteInt64(Player2UID);
+      }
+      if (Player2NickName.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Player2NickName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (GameRomID != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(GameRomID);
+      }
+      if (GameRomHash.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(GameRomHash);
+      }
+      if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) GameState);
+      }
+      if (HostPlayerUID != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(HostPlayerUID);
+      }
+      if (ObsUserCount != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(ObsUserCount);
+      }
+      if (Player1UID != 0L) {
+        output.WriteRawTag(64);
+        output.WriteInt64(Player1UID);
+      }
+      if (Player1NickName.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(Player1NickName);
+      }
+      if (Player2UID != 0L) {
+        output.WriteRawTag(80);
+        output.WriteInt64(Player2UID);
+      }
+      if (Player2NickName.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Player2NickName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
+      if (GameRomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(GameRomID);
+      }
+      if (GameRomHash.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(GameRomHash);
+      }
+      if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) GameState);
+      }
+      if (HostPlayerUID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(HostPlayerUID);
+      }
+      if (ObsUserCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObsUserCount);
+      }
+      if (Player1UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player1UID);
+      }
+      if (Player1NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player1NickName);
+      }
+      if (Player2UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player2UID);
+      }
+      if (Player2NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player2NickName);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_MiniInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
+      }
+      if (other.GameRomID != 0) {
+        GameRomID = other.GameRomID;
+      }
+      if (other.GameRomHash.Length != 0) {
+        GameRomHash = other.GameRomHash;
+      }
+      if (other.GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
+        GameState = other.GameState;
+      }
+      if (other.HostPlayerUID != 0) {
+        HostPlayerUID = other.HostPlayerUID;
+      }
+      if (other.ObsUserCount != 0) {
+        ObsUserCount = other.ObsUserCount;
+      }
+      if (other.Player1UID != 0L) {
+        Player1UID = other.Player1UID;
+      }
+      if (other.Player1NickName.Length != 0) {
+        Player1NickName = other.Player1NickName;
+      }
+      if (other.Player2UID != 0L) {
+        Player2UID = other.Player2UID;
+      }
+      if (other.Player2NickName.Length != 0) {
+        Player2NickName = other.Player2NickName;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            GameRomID = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            GameRomHash = input.ReadString();
+            break;
+          }
+          case 40: {
+            GameState = (global::AxibugProtobuf.RoomGameState) input.ReadEnum();
+            break;
+          }
+          case 48: {
+            HostPlayerUID = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            ObsUserCount = input.ReadInt32();
+            break;
+          }
+          case 64: {
+            Player1UID = input.ReadInt64();
+            break;
+          }
+          case 74: {
+            Player1NickName = input.ReadString();
+            break;
+          }
+          case 80: {
+            Player2UID = input.ReadInt64();
+            break;
+          }
+          case 90: {
+            Player2NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            GameRomID = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            GameRomHash = input.ReadString();
+            break;
+          }
+          case 40: {
+            GameState = (global::AxibugProtobuf.RoomGameState) input.ReadEnum();
+            break;
+          }
+          case 48: {
+            HostPlayerUID = input.ReadInt32();
+            break;
+          }
+          case 56: {
+            ObsUserCount = input.ReadInt32();
+            break;
+          }
+          case 64: {
+            Player1UID = input.ReadInt64();
+            break;
+          }
+          case 74: {
+            Player1NickName = input.ReadString();
+            break;
+          }
+          case 80: {
+            Player2UID = input.ReadInt64();
+            break;
+          }
+          case 90: {
+            Player2NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Update_RESP : pb::IMessage<Protobuf_Room_Update_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Update_RESP> _parser = new pb::MessageParser<Protobuf_Room_Update_RESP>(() => new Protobuf_Room_Update_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Update_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Update_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Update_RESP(Protobuf_Room_Update_RESP other) : this() {
+      updateType_ = other.updateType_;
+      roomMiniInfo_ = other.roomMiniInfo_ != null ? other.roomMiniInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Update_RESP Clone() {
+      return new Protobuf_Room_Update_RESP(this);
+    }
+
+    /// <summary>Field number for the "UpdateType" field.</summary>
+    public const int UpdateTypeFieldNumber = 1;
+    private int updateType_;
+    /// <summary>
+    ///[0] 更新或新增 [1] 删除
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int UpdateType {
+      get { return updateType_; }
+      set {
+        updateType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "RoomMiniInfo" field.</summary>
+    public const int RoomMiniInfoFieldNumber = 2;
+    private global::AxibugProtobuf.Protobuf_Room_MiniInfo roomMiniInfo_;
+    /// <summary>
+    ///房间信息
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.Protobuf_Room_MiniInfo RoomMiniInfo {
+      get { return roomMiniInfo_; }
+      set {
+        roomMiniInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Update_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Update_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UpdateType != other.UpdateType) return false;
+      if (!object.Equals(RoomMiniInfo, other.RoomMiniInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UpdateType != 0) hash ^= UpdateType.GetHashCode();
+      if (roomMiniInfo_ != null) hash ^= RoomMiniInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (UpdateType != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(UpdateType);
+      }
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UpdateType != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(UpdateType);
+      }
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UpdateType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UpdateType);
+      }
+      if (roomMiniInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Update_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UpdateType != 0) {
+        UpdateType = other.UpdateType;
+      }
+      if (other.roomMiniInfo_ != null) {
+        if (roomMiniInfo_ == null) {
+          RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+        }
+        RoomMiniInfo.MergeFrom(other.RoomMiniInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            UpdateType = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            UpdateType = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
             break;
           }
         }
@@ -1189,7 +2797,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[4]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1206,6 +2814,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Screnn_Frame(Protobuf_Screnn_Frame other) : this() {
+      roomID_ = other.roomID_;
       frameID_ = other.frameID_;
       rawBitmap_ = other.rawBitmap_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1216,8 +2825,22 @@ namespace AxibugProtobuf {
       return new Protobuf_Screnn_Frame(this);
     }
 
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
     /// <summary>Field number for the "FrameID" field.</summary>
-    public const int FrameIDFieldNumber = 1;
+    public const int FrameIDFieldNumber = 2;
     private int frameID_;
     /// <summary>
     ///帧编号
@@ -1231,7 +2854,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "RawBitmap" field.</summary>
-    public const int RawBitmapFieldNumber = 2;
+    public const int RawBitmapFieldNumber = 3;
     private pb::ByteString rawBitmap_ = pb::ByteString.Empty;
     /// <summary>
     ///渲染层画面
@@ -1257,6 +2880,7 @@ namespace AxibugProtobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (RoomID != other.RoomID) return false;
       if (FrameID != other.FrameID) return false;
       if (RawBitmap != other.RawBitmap) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -1265,6 +2889,7 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
       if (FrameID != 0) hash ^= FrameID.GetHashCode();
       if (RawBitmap.Length != 0) hash ^= RawBitmap.GetHashCode();
       if (_unknownFields != null) {
@@ -1283,12 +2908,16 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (FrameID != 0) {
+      if (RoomID != 0) {
         output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (FrameID != 0) {
+        output.WriteRawTag(16);
         output.WriteInt32(FrameID);
       }
       if (RawBitmap.Length != 0) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteBytes(RawBitmap);
       }
       if (_unknownFields != null) {
@@ -1300,12 +2929,16 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (FrameID != 0) {
+      if (RoomID != 0) {
         output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (FrameID != 0) {
+        output.WriteRawTag(16);
         output.WriteInt32(FrameID);
       }
       if (RawBitmap.Length != 0) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteBytes(RawBitmap);
       }
       if (_unknownFields != null) {
@@ -1317,6 +2950,9 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
       if (FrameID != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(FrameID);
       }
@@ -1333,6 +2969,9 @@ namespace AxibugProtobuf {
     public void MergeFrom(Protobuf_Screnn_Frame other) {
       if (other == null) {
         return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
       }
       if (other.FrameID != 0) {
         FrameID = other.FrameID;
@@ -1355,10 +2994,14 @@ namespace AxibugProtobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
             FrameID = input.ReadInt32();
             break;
           }
-          case 18: {
+          case 26: {
             RawBitmap = input.ReadBytes();
             break;
           }
@@ -1377,13 +3020,2469 @@ namespace AxibugProtobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
             FrameID = input.ReadInt32();
             break;
           }
-          case 18: {
+          case 26: {
             RawBitmap = input.ReadBytes();
             break;
           }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_SinglePlayerInputData : pb::IMessage<Protobuf_Room_SinglePlayerInputData>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_SinglePlayerInputData> _parser = new pb::MessageParser<Protobuf_Room_SinglePlayerInputData>(() => new Protobuf_Room_SinglePlayerInputData());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_SinglePlayerInputData> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_SinglePlayerInputData() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_SinglePlayerInputData(Protobuf_Room_SinglePlayerInputData other) : this() {
+      frameID_ = other.frameID_;
+      inputData_ = other.inputData_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_SinglePlayerInputData Clone() {
+      return new Protobuf_Room_SinglePlayerInputData(this);
+    }
+
+    /// <summary>Field number for the "FrameID" field.</summary>
+    public const int FrameIDFieldNumber = 1;
+    private uint frameID_;
+    /// <summary>
+    ///帧编号
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint FrameID {
+      get { return frameID_; }
+      set {
+        frameID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "InputData" field.</summary>
+    public const int InputDataFieldNumber = 2;
+    private uint inputData_;
+    /// <summary>
+    ///单个玩家操作位运算汇总
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint InputData {
+      get { return inputData_; }
+      set {
+        inputData_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_SinglePlayerInputData);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_SinglePlayerInputData other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (FrameID != other.FrameID) return false;
+      if (InputData != other.InputData) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (FrameID != 0) hash ^= FrameID.GetHashCode();
+      if (InputData != 0) hash ^= InputData.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (FrameID != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(FrameID);
+      }
+      if (InputData != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(InputData);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (FrameID != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(FrameID);
+      }
+      if (InputData != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(InputData);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (FrameID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FrameID);
+      }
+      if (InputData != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(InputData);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_SinglePlayerInputData other) {
+      if (other == null) {
+        return;
+      }
+      if (other.FrameID != 0) {
+        FrameID = other.FrameID;
+      }
+      if (other.InputData != 0) {
+        InputData = other.InputData;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            FrameID = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            InputData = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            FrameID = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            InputData = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Syn_RoomFrameAllInputData : pb::IMessage<Protobuf_Room_Syn_RoomFrameAllInputData>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Syn_RoomFrameAllInputData> _parser = new pb::MessageParser<Protobuf_Room_Syn_RoomFrameAllInputData>(() => new Protobuf_Room_Syn_RoomFrameAllInputData());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Syn_RoomFrameAllInputData> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[12]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Syn_RoomFrameAllInputData() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Syn_RoomFrameAllInputData(Protobuf_Room_Syn_RoomFrameAllInputData other) : this() {
+      frameID_ = other.frameID_;
+      inputData_ = other.inputData_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Syn_RoomFrameAllInputData Clone() {
+      return new Protobuf_Room_Syn_RoomFrameAllInputData(this);
+    }
+
+    /// <summary>Field number for the "FrameID" field.</summary>
+    public const int FrameIDFieldNumber = 1;
+    private uint frameID_;
+    /// <summary>
+    ///帧编号
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint FrameID {
+      get { return frameID_; }
+      set {
+        frameID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "InputData" field.</summary>
+    public const int InputDataFieldNumber = 2;
+    private ulong inputData_;
+    /// <summary>
+    ///所有玩家操作位运算汇总
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong InputData {
+      get { return inputData_; }
+      set {
+        inputData_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Syn_RoomFrameAllInputData);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Syn_RoomFrameAllInputData other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (FrameID != other.FrameID) return false;
+      if (InputData != other.InputData) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (FrameID != 0) hash ^= FrameID.GetHashCode();
+      if (InputData != 0UL) hash ^= InputData.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (FrameID != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(FrameID);
+      }
+      if (InputData != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(InputData);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (FrameID != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(FrameID);
+      }
+      if (InputData != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(InputData);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (FrameID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FrameID);
+      }
+      if (InputData != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(InputData);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Syn_RoomFrameAllInputData other) {
+      if (other == null) {
+        return;
+      }
+      if (other.FrameID != 0) {
+        FrameID = other.FrameID;
+      }
+      if (other.InputData != 0UL) {
+        InputData = other.InputData;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            FrameID = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            InputData = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            FrameID = input.ReadUInt32();
+            break;
+          }
+          case 16: {
+            InputData = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Create : pb::IMessage<Protobuf_Room_Create>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Create> _parser = new pb::MessageParser<Protobuf_Room_Create>(() => new Protobuf_Room_Create());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Create> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[13]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Create() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Create(Protobuf_Room_Create other) : this() {
+      gameRomID_ = other.gameRomID_;
+      gameRomHash_ = other.gameRomHash_;
+      joinPlayerIdx_ = other.joinPlayerIdx_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Create Clone() {
+      return new Protobuf_Room_Create(this);
+    }
+
+    /// <summary>Field number for the "GameRomID" field.</summary>
+    public const int GameRomIDFieldNumber = 1;
+    private int gameRomID_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int GameRomID {
+      get { return gameRomID_; }
+      set {
+        gameRomID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "GameRomHash" field.</summary>
+    public const int GameRomHashFieldNumber = 2;
+    private string gameRomHash_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string GameRomHash {
+      get { return gameRomHash_; }
+      set {
+        gameRomHash_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "JoinPlayerIdx" field.</summary>
+    public const int JoinPlayerIdxFieldNumber = 3;
+    private int joinPlayerIdx_;
+    /// <summary>
+    ///P1~P4[0~3] 以几号位玩家创建房间
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int JoinPlayerIdx {
+      get { return joinPlayerIdx_; }
+      set {
+        joinPlayerIdx_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Create);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Create other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (GameRomID != other.GameRomID) return false;
+      if (GameRomHash != other.GameRomHash) return false;
+      if (JoinPlayerIdx != other.JoinPlayerIdx) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (GameRomID != 0) hash ^= GameRomID.GetHashCode();
+      if (GameRomHash.Length != 0) hash ^= GameRomHash.GetHashCode();
+      if (JoinPlayerIdx != 0) hash ^= JoinPlayerIdx.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (GameRomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(GameRomID);
+      }
+      if (GameRomHash.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(GameRomHash);
+      }
+      if (JoinPlayerIdx != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(JoinPlayerIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (GameRomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(GameRomID);
+      }
+      if (GameRomHash.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(GameRomHash);
+      }
+      if (JoinPlayerIdx != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(JoinPlayerIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (GameRomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(GameRomID);
+      }
+      if (GameRomHash.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(GameRomHash);
+      }
+      if (JoinPlayerIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(JoinPlayerIdx);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Create other) {
+      if (other == null) {
+        return;
+      }
+      if (other.GameRomID != 0) {
+        GameRomID = other.GameRomID;
+      }
+      if (other.GameRomHash.Length != 0) {
+        GameRomHash = other.GameRomHash;
+      }
+      if (other.JoinPlayerIdx != 0) {
+        JoinPlayerIdx = other.JoinPlayerIdx;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            GameRomID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            GameRomHash = input.ReadString();
+            break;
+          }
+          case 24: {
+            JoinPlayerIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            GameRomID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            GameRomHash = input.ReadString();
+            break;
+          }
+          case 24: {
+            JoinPlayerIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Create_RESP : pb::IMessage<Protobuf_Room_Create_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Create_RESP> _parser = new pb::MessageParser<Protobuf_Room_Create_RESP>(() => new Protobuf_Room_Create_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Create_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[14]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Create_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Create_RESP(Protobuf_Room_Create_RESP other) : this() {
+      roomMiniInfo_ = other.roomMiniInfo_ != null ? other.roomMiniInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Create_RESP Clone() {
+      return new Protobuf_Room_Create_RESP(this);
+    }
+
+    /// <summary>Field number for the "RoomMiniInfo" field.</summary>
+    public const int RoomMiniInfoFieldNumber = 1;
+    private global::AxibugProtobuf.Protobuf_Room_MiniInfo roomMiniInfo_;
+    /// <summary>
+    ///房间信息
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.Protobuf_Room_MiniInfo RoomMiniInfo {
+      get { return roomMiniInfo_; }
+      set {
+        roomMiniInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Create_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Create_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(RoomMiniInfo, other.RoomMiniInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (roomMiniInfo_ != null) hash ^= RoomMiniInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (roomMiniInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Create_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.roomMiniInfo_ != null) {
+        if (roomMiniInfo_ == null) {
+          RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+        }
+        RoomMiniInfo.MergeFrom(other.RoomMiniInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Join : pb::IMessage<Protobuf_Room_Join>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Join> _parser = new pb::MessageParser<Protobuf_Room_Join>(() => new Protobuf_Room_Join());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Join> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[15]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Join() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Join(Protobuf_Room_Join other) : this() {
+      roomID_ = other.roomID_;
+      playerNum_ = other.playerNum_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Join Clone() {
+      return new Protobuf_Room_Join(this);
+    }
+
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlayerNum" field.</summary>
+    public const int PlayerNumFieldNumber = 2;
+    private int playerNum_;
+    /// <summary>
+    ///玩家编号 [0]1号玩家 [1]2号玩家
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerNum {
+      get { return playerNum_; }
+      set {
+        playerNum_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Join);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Join other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomID != other.RoomID) return false;
+      if (PlayerNum != other.PlayerNum) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
+      if (PlayerNum != 0) hash ^= PlayerNum.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (PlayerNum != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PlayerNum);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (PlayerNum != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PlayerNum);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
+      if (PlayerNum != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerNum);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Join other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
+      }
+      if (other.PlayerNum != 0) {
+        PlayerNum = other.PlayerNum;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlayerNum = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlayerNum = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Join_RESP : pb::IMessage<Protobuf_Room_Join_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Join_RESP> _parser = new pb::MessageParser<Protobuf_Room_Join_RESP>(() => new Protobuf_Room_Join_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Join_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[16]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Join_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Join_RESP(Protobuf_Room_Join_RESP other) : this() {
+      roomMiniInfo_ = other.roomMiniInfo_ != null ? other.roomMiniInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Join_RESP Clone() {
+      return new Protobuf_Room_Join_RESP(this);
+    }
+
+    /// <summary>Field number for the "RoomMiniInfo" field.</summary>
+    public const int RoomMiniInfoFieldNumber = 1;
+    private global::AxibugProtobuf.Protobuf_Room_MiniInfo roomMiniInfo_;
+    /// <summary>
+    ///房间信息
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.Protobuf_Room_MiniInfo RoomMiniInfo {
+      get { return roomMiniInfo_; }
+      set {
+        roomMiniInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Join_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Join_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(RoomMiniInfo, other.RoomMiniInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (roomMiniInfo_ != null) hash ^= RoomMiniInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (roomMiniInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Join_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.roomMiniInfo_ != null) {
+        if (roomMiniInfo_ == null) {
+          RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+        }
+        RoomMiniInfo.MergeFrom(other.RoomMiniInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Leave : pb::IMessage<Protobuf_Room_Leave>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Leave> _parser = new pb::MessageParser<Protobuf_Room_Leave>(() => new Protobuf_Room_Leave());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Leave> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[17]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Leave() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Leave(Protobuf_Room_Leave other) : this() {
+      roomID_ = other.roomID_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Leave Clone() {
+      return new Protobuf_Room_Leave(this);
+    }
+
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///离开的房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Leave);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Leave other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomID != other.RoomID) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Leave other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Leave_RESP : pb::IMessage<Protobuf_Room_Leave_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Leave_RESP> _parser = new pb::MessageParser<Protobuf_Room_Leave_RESP>(() => new Protobuf_Room_Leave_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Leave_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[18]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Leave_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Leave_RESP(Protobuf_Room_Leave_RESP other) : this() {
+      roomID_ = other.roomID_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Leave_RESP Clone() {
+      return new Protobuf_Room_Leave_RESP(this);
+    }
+
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///离开的房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Leave_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Leave_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomID != other.RoomID) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Leave_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_MyRoom_State_Change : pb::IMessage<Protobuf_Room_MyRoom_State_Change>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_MyRoom_State_Change> _parser = new pb::MessageParser<Protobuf_Room_MyRoom_State_Change>(() => new Protobuf_Room_MyRoom_State_Change());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_MyRoom_State_Change> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[19]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_MyRoom_State_Change() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_MyRoom_State_Change(Protobuf_Room_MyRoom_State_Change other) : this() {
+      roomMiniInfo_ = other.roomMiniInfo_ != null ? other.roomMiniInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_MyRoom_State_Change Clone() {
+      return new Protobuf_Room_MyRoom_State_Change(this);
+    }
+
+    /// <summary>Field number for the "RoomMiniInfo" field.</summary>
+    public const int RoomMiniInfoFieldNumber = 1;
+    private global::AxibugProtobuf.Protobuf_Room_MiniInfo roomMiniInfo_;
+    /// <summary>
+    ///更新房间信息
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.Protobuf_Room_MiniInfo RoomMiniInfo {
+      get { return roomMiniInfo_; }
+      set {
+        roomMiniInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_MyRoom_State_Change);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_MyRoom_State_Change other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(RoomMiniInfo, other.RoomMiniInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (roomMiniInfo_ != null) hash ^= RoomMiniInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (roomMiniInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (roomMiniInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoomMiniInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_MyRoom_State_Change other) {
+      if (other == null) {
+        return;
+      }
+      if (other.roomMiniInfo_ != null) {
+        if (roomMiniInfo_ == null) {
+          RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+        }
+        RoomMiniInfo.MergeFrom(other.RoomMiniInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (roomMiniInfo_ == null) {
+              RoomMiniInfo = new global::AxibugProtobuf.Protobuf_Room_MiniInfo();
+            }
+            input.ReadMessage(RoomMiniInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_WaitStep_RESP : pb::IMessage<Protobuf_Room_WaitStep_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_WaitStep_RESP> _parser = new pb::MessageParser<Protobuf_Room_WaitStep_RESP>(() => new Protobuf_Room_WaitStep_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_WaitStep_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[20]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_WaitStep_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_WaitStep_RESP(Protobuf_Room_WaitStep_RESP other) : this() {
+      waitStep_ = other.waitStep_;
+      loadStateRaw_ = other.loadStateRaw_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_WaitStep_RESP Clone() {
+      return new Protobuf_Room_WaitStep_RESP(this);
+    }
+
+    /// <summary>Field number for the "WaitStep" field.</summary>
+    public const int WaitStepFieldNumber = 1;
+    private int waitStep_;
+    /// <summary>
+    ///状态 [0]等待主机上报即时存档 [1]要求客户端准备 [2]开始（收到本状态时，立即开始跑模拟器核心）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int WaitStep {
+      get { return waitStep_; }
+      set {
+        waitStep_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "LoadStateRaw" field.</summary>
+    public const int LoadStateRawFieldNumber = 2;
+    private pb::ByteString loadStateRaw_ = pb::ByteString.Empty;
+    /// <summary>
+    ///如下是 WaitStep = 1 时，才有值。广播即时存档
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString LoadStateRaw {
+      get { return loadStateRaw_; }
+      set {
+        loadStateRaw_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_WaitStep_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_WaitStep_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (WaitStep != other.WaitStep) return false;
+      if (LoadStateRaw != other.LoadStateRaw) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (WaitStep != 0) hash ^= WaitStep.GetHashCode();
+      if (LoadStateRaw.Length != 0) hash ^= LoadStateRaw.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (WaitStep != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(WaitStep);
+      }
+      if (LoadStateRaw.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(LoadStateRaw);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (WaitStep != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(WaitStep);
+      }
+      if (LoadStateRaw.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(LoadStateRaw);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (WaitStep != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(WaitStep);
+      }
+      if (LoadStateRaw.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(LoadStateRaw);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_WaitStep_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.WaitStep != 0) {
+        WaitStep = other.WaitStep;
+      }
+      if (other.LoadStateRaw.Length != 0) {
+        LoadStateRaw = other.LoadStateRaw;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            WaitStep = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            LoadStateRaw = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            WaitStep = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            LoadStateRaw = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_HostPlayer_UpdateStateRaw : pb::IMessage<Protobuf_Room_HostPlayer_UpdateStateRaw>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_HostPlayer_UpdateStateRaw> _parser = new pb::MessageParser<Protobuf_Room_HostPlayer_UpdateStateRaw>(() => new Protobuf_Room_HostPlayer_UpdateStateRaw());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_HostPlayer_UpdateStateRaw> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[21]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_HostPlayer_UpdateStateRaw() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_HostPlayer_UpdateStateRaw(Protobuf_Room_HostPlayer_UpdateStateRaw other) : this() {
+      loadStateRaw_ = other.loadStateRaw_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_HostPlayer_UpdateStateRaw Clone() {
+      return new Protobuf_Room_HostPlayer_UpdateStateRaw(this);
+    }
+
+    /// <summary>Field number for the "LoadStateRaw" field.</summary>
+    public const int LoadStateRawFieldNumber = 1;
+    private pb::ByteString loadStateRaw_ = pb::ByteString.Empty;
+    /// <summary>
+    ///即时存档byte数据
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString LoadStateRaw {
+      get { return loadStateRaw_; }
+      set {
+        loadStateRaw_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_HostPlayer_UpdateStateRaw);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_HostPlayer_UpdateStateRaw other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (LoadStateRaw != other.LoadStateRaw) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (LoadStateRaw.Length != 0) hash ^= LoadStateRaw.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (LoadStateRaw.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteBytes(LoadStateRaw);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (LoadStateRaw.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteBytes(LoadStateRaw);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (LoadStateRaw.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(LoadStateRaw);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_HostPlayer_UpdateStateRaw other) {
+      if (other == null) {
+        return;
+      }
+      if (other.LoadStateRaw.Length != 0) {
+        LoadStateRaw = other.LoadStateRaw;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            LoadStateRaw = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            LoadStateRaw = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_HostPlayer_UpdateStateRaw_RESP : pb::IMessage<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP> _parser = new pb::MessageParser<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP>(() => new Protobuf_Room_HostPlayer_UpdateStateRaw_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[22]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_HostPlayer_UpdateStateRaw_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_HostPlayer_UpdateStateRaw_RESP(Protobuf_Room_HostPlayer_UpdateStateRaw_RESP other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_HostPlayer_UpdateStateRaw_RESP Clone() {
+      return new Protobuf_Room_HostPlayer_UpdateStateRaw_RESP(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_HostPlayer_UpdateStateRaw_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_HostPlayer_UpdateStateRaw_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_HostPlayer_UpdateStateRaw_RESP other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Player_Ready : pb::IMessage<Protobuf_Room_Player_Ready>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Player_Ready> _parser = new pb::MessageParser<Protobuf_Room_Player_Ready>(() => new Protobuf_Room_Player_Ready());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Player_Ready> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[23]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Player_Ready() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Player_Ready(Protobuf_Room_Player_Ready other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Player_Ready Clone() {
+      return new Protobuf_Room_Player_Ready(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Player_Ready);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Player_Ready other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Player_Ready other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
         }
       }
     }
