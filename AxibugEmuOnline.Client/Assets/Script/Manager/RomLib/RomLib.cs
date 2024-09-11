@@ -1,6 +1,8 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using Codice.Client.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using static AxibugEmuOnline.Client.HttpAPI;
 
 namespace AxibugEmuOnline.Client
@@ -34,6 +36,20 @@ namespace AxibugEmuOnline.Client
             RomFile romFile;
             nesRomFileNameMapper.TryGetValue(romFileName, out romFile);
             return romFile;
+        }
+
+        /// <summary> 清除所有下载的Rom文件 </summary>
+        public void ClearRomFile()
+        {
+            var path = $"{AppAxibugEmuOnline.PersistentDataPath}/RemoteRoms/{m_platform}";
+            if (Directory.Exists(path)) Directory.Delete(path, true);
+        }
+
+        /// <summary> 移除一个已下载的Rom </summary>
+        public void RemoveOneRomFile(RomFile romFile)
+        {
+            if (romFile.RomReady)
+                File.Delete(romFile.LocalFilePath);
         }
 
         /// <summary>
