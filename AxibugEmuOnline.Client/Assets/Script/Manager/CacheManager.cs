@@ -10,7 +10,7 @@ namespace AxibugEmuOnline.Client
 {
     public class CacheManager
     {
-        static readonly string CacheDirPath = $"{AppAxibugEmuOnline.PersistentDataPath}/Caches";
+        static readonly string CacheDirPath = $"{App.PersistentDataPath}/Caches";
         static readonly string TextureCacheDirPath = $"{CacheDirPath}/Texture";
 
         public void GetSpriteCache(string url, Action<Sprite, string> callback)
@@ -27,7 +27,7 @@ namespace AxibugEmuOnline.Client
 
         IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
         {
-            var request = UnityWebRequest.Get($"{AppAxibugEmuOnline.httpAPI.DownSite}/{url}");
+            var request = UnityWebRequest.Get($"{App.httpAPI.DownSite}/{url}");
             yield return request.SendWebRequest();
 
             if (request.result == UnityWebRequest.Result.Success)
@@ -62,7 +62,7 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                AppAxibugEmuOnline.StartCoroutine(DownloadFromURL(url, path, (data) =>
+                App.StartCoroutine(DownloadFromURL(url, path, (data) =>
                 {
                     var @out = RawDataConvert<T>(data);
                     cachesInMemory[url] = @out;

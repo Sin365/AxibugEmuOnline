@@ -26,7 +26,7 @@ namespace AxibugEmuOnline.Client
             switch (platform)
             {
                 case EnumPlatform.NES:
-                    m_romGetFunc = AppAxibugEmuOnline.httpAPI.GetNesRomList;
+                    m_romGetFunc = App.httpAPI.GetNesRomList;
                     break;
             }
         }
@@ -41,7 +41,7 @@ namespace AxibugEmuOnline.Client
         /// <summary> 清除所有下载的Rom文件 </summary>
         public void ClearRomFile()
         {
-            var path = $"{AppAxibugEmuOnline.PersistentDataPath}/RemoteRoms/{m_platform}";
+            var path = $"{App.PersistentDataPath}/RemoteRoms/{m_platform}";
             if (Directory.Exists(path)) Directory.Delete(path, true);
         }
 

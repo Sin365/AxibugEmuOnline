@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client.ClientCore
 {
-    public static class AppAxibugEmuOnline
+    public static class App
     {
         public static string TokenStr;
         public static string IP;
@@ -22,6 +22,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
         public static AppSceneLoader SceneLoader;
+        public static AppRoom roomMgr;
 
         private static CoroutineRunner coRunner;
 
@@ -42,6 +43,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
             SceneLoader = new AppSceneLoader();
+            roomMgr = new AppRoom();
 
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
@@ -81,7 +83,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 
         public static void Close()
         {
-            AppAxibugEmuOnline.log.Info("停止");
+            App.log.Info("停止");
         }
         static void OnNoSugarNetLog(int LogLevel, string msg)
         {
