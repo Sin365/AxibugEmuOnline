@@ -1,17 +1,21 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
-using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
-    public class RomItem : MenuItem, IVirtualItem, IPointerClickHandler
+    public class RomItem : MenuItem, IVirtualItem
     {
         [SerializeField]
         Image m_romImage;
+
+        [SerializeField]
+        GameObject DownloadingFlag;
+        [SerializeField]
+        Slider DownProgress;
+        [SerializeField]
+        GameObject FileReadyFlag;
 
         public int Index { get; set; }
 
@@ -20,6 +24,8 @@ namespace AxibugEmuOnline.Client
 
         public void SetData(object data)
         {
+            Reset();
+
             m_romfile = (RomFile)data;
             m_romfile.OnInfoFilled += OnRomInfoFilled;
             m_romImage.sprite = null;
@@ -67,17 +73,37 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        public override bool OnEnterItem()
         {
             if (!m_romfile.RomReady)
+            {
                 m_romfile.BeginDownload();
+                return false;
+            }
             else
             {
-                AppAxibugEmuOnline.SceneLoader.BeginLoad("Scene/EmuTest", () =>
-                {
-                    var nesEmu = GameObject.FindObjectOfType<NesEmulator>();
-                    nesEmu.StartGame(m_romfile);
-                });
+                AppAxibugEmuOnline.BeginGame(m_romfile);
+
+                return false;
+            }
+        }
+
+        private void Update()
+        {
+            DownloadingFlag.SetActiveEx(false);
+            FileReadyFlag.SetActiveEx(false);
+
+            if (m_romfile == null) return;
+            if (!m_romfile.InfoReady) return;
+
+            if (m_romfile.IsDownloading)
+            {
+                DownloadingFlag.SetActiveEx(true);
+                DownProgress.value = m_romfile.Progress;
+            }
+            else if (m_romfile.RomReady)
+            {
+                FileReadyFlag.SetActiveEx(true);
             }
         }
     }

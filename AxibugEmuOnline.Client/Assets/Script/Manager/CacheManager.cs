@@ -18,6 +18,13 @@ namespace AxibugEmuOnline.Client
             GetCacheData(url, TextureCacheDirPath, callback);
         }
 
+        /// <summary> ÒÆ³ýÎÄ¼þ»º´æ </summary>
+        public void ClearCaches()
+        {
+            if (Directory.Exists(CacheDirPath))
+                Directory.Delete(CacheDirPath, true);
+        }
+
         IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
         {
             var request = UnityWebRequest.Get($"{AppAxibugEmuOnline.httpAPI.DownSite}/{url}");
@@ -39,6 +46,7 @@ namespace AxibugEmuOnline.Client
             if (cachesInMemory.TryGetValue(url, out var cacheObj) && cacheObj is T obj)
             {
                 callback.Invoke(obj, url);
+                return;
             }
 
             var fileName = $"{url.GetHashCode()}";

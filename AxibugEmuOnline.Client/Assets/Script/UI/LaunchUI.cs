@@ -2,8 +2,6 @@ using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -34,6 +32,15 @@ namespace AxibugEmuOnline.Client
             MainMenu.ListenControlAction = true;
         }
 
+        public void HideMainMenu()
+        {
+            MainMenuRoot.gameObject.SetActiveEx(false);
+        }
+
+        public void ShowMainMenu()
+        {
+            MainMenuRoot.gameObject.SetActiveEx(true);
+        }
 
         public void ToDetailMenuLayout()
         {

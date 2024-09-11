@@ -9,9 +9,8 @@ namespace AxibugEmuOnline.Client
 {
     public class AppSceneLoader
     {
-
         public LoadTask CurrentTask { get; private set; }
-
+        
         Queue<LoadTask> m_tasks = new Queue<LoadTask>();
         Coroutine m_coroutine;
         public void BeginLoad(string scenePath, Action callback)
@@ -65,7 +64,7 @@ namespace AxibugEmuOnline.Client
                     {
                         State = EnumTaskState.Complete;
                     }
-
+                    
                     return true;
                 }
                 else

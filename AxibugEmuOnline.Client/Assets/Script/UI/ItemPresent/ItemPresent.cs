@@ -535,7 +535,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
         {
             _scrollRect = GetComponentInParent<ScrollRect>();
         }
-        if (_scrollRect != null) MoveToScrollViewCenter(_scrollRect, dataIndex);
+        //if (_scrollRect != null) MoveToScrollViewCenter(_scrollRect, dataIndex);
 
         return this.GetItemUIIfExist(dataIndex);
     }
