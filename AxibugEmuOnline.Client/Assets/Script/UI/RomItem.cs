@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client
 
         public int Index { get; set; }
 
-        private RomLib m_romlib => AppAxibugEmuOnline.nesRomLib;
+        private RomLib m_romlib => App.nesRomLib;
         private RomFile m_romfile;
 
         public void SetData(object data)
@@ -64,7 +64,7 @@ namespace AxibugEmuOnline.Client
             else
             {
                 SetBaseInfo(m_romfile.Alias, m_romfile.Descript);
-                AppAxibugEmuOnline.CacheMgr.GetSpriteCache(m_romfile.ImageURL, (img, url) =>
+                App.CacheMgr.GetSpriteCache(m_romfile.ImageURL, (img, url) =>
                 {
                     if (url != m_romfile.ImageURL) return;
 
@@ -82,7 +82,7 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                AppAxibugEmuOnline.BeginGame(m_romfile);
+                App.BeginGame(m_romfile);
 
                 return false;
             }

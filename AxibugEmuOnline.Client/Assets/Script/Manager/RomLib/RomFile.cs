@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client
         private UnityWebRequest downloadRequest;
 
         /// <summary> 指示该Rom文件的存放路径 </summary>
-        public string LocalFilePath => $"{AppAxibugEmuOnline.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
+        public string LocalFilePath => $"{App.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;
         /// <summary> 指示是否正在下载Rom文件 </summary>
@@ -57,7 +57,7 @@ namespace AxibugEmuOnline.Client
             if (RomReady) return;
             if (IsDownloading) return;
 
-            AppAxibugEmuOnline.StartCoroutine(DownloadRemoteRom((bytes) =>
+            App.StartCoroutine(DownloadRemoteRom((bytes) =>
             {
                 if (bytes != null)
                 {
@@ -106,7 +106,7 @@ namespace AxibugEmuOnline.Client
 
         private IEnumerator DownloadRemoteRom(Action<byte[]> callback)
         {
-            downloadRequest = UnityWebRequest.Get($"{AppAxibugEmuOnline.httpAPI.DownSite}/{webData.url}");
+            downloadRequest = UnityWebRequest.Get($"{App.httpAPI.DownSite}/{webData.url}");
             yield return downloadRequest.SendWebRequest();
 
             if (downloadRequest.result != UnityWebRequest.Result.Success)

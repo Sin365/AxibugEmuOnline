@@ -137,7 +137,7 @@ namespace AxibugEmuOnline.Client.Event
                     }
                     catch (Exception e)
                     {
-                        AppAxibugEmuOnline.log.Error(e.Message);
+                        App.log.Error(e.Message);
                     }
                 }
             }
@@ -156,7 +156,7 @@ namespace AxibugEmuOnline.Client.Event
                     }
                     catch (Exception e)
                     {
-                        AppAxibugEmuOnline.log.Error(e.Message);
+                        App.log.Error(e.Message);
                     }
                 }
             }
@@ -175,7 +175,7 @@ namespace AxibugEmuOnline.Client.Event
                     }
                     catch (Exception e)
                     {
-                        AppAxibugEmuOnline.log.Error(e.Message);
+                        App.log.Error(e.Message);
                     }
                 }
             }
@@ -194,7 +194,7 @@ namespace AxibugEmuOnline.Client.Event
                     }
                     catch (Exception e)
                     {
-                        AppAxibugEmuOnline.log.Error(e.Message + ", method name : " + callback.Method);
+                        App.log.Error(e.Message + ", method name : " + callback.Method);
                     }
                 }
             }
@@ -214,7 +214,7 @@ namespace AxibugEmuOnline.Client.Event
                     }
                     catch (Exception e)
                     {
-                        AppAxibugEmuOnline.log.Error(e.Message);
+                        App.log.Error(e.Message);
                     }
                 }
             }

@@ -41,10 +41,10 @@ namespace AxibugEmuOnline.Client.Network
             if (IsConnect)
             {
                 //从未登录过
-                if (!AppAxibugEmuOnline.user.IsLoggedIn)
+                if (!App.user.IsLoggedIn)
                 {
                     //首次登录
-                    AppAxibugEmuOnline.login.Login();
+                    App.login.Login();
                 }
             }
             else
@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client.Network
         {
             //用于Unity内的输出
             //Debug.Log("NetCoreDebug >> "+str);
-            AppAxibugEmuOnline.log.Info("NetCoreDebug >> " + str);
+            App.log.Info("NetCoreDebug >> " + str);
         }
 
         /// <summary>
@@ -115,13 +115,13 @@ namespace AxibugEmuOnline.Client.Network
             {
                 //等待时间
                 Thread.Sleep(ReConnectTryTime);
-                AppAxibugEmuOnline.log.Info($"尝试自动重连{LastConnectIP}:{LastConnectPort}……");
+                App.log.Info($"尝试自动重连{LastConnectIP}:{LastConnectPort}……");
                 //第一步
                 if (Init(LastConnectIP, LastConnectPort))
                 {
-                    AppAxibugEmuOnline.log.Info($"自动重连成功!");
+                    App.log.Info($"自动重连成功!");
                     bflagDone = true;
-                    AppAxibugEmuOnline.log.Info($"触发重连后的自动逻辑!");
+                    App.log.Info($"触发重连后的自动逻辑!");
                     OnReConnected?.Invoke();
                 }
             } while (!bflagDone);
