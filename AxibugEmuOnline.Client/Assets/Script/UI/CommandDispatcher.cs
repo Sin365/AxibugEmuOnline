@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,23 +49,32 @@ namespace AxibugEmuOnline.Client
             m_register.Remove(menuItemController);
         }
 
+        readonly List<MenuItemController> oneFrameRegister = new List<MenuItemController>();
         private void Update()
         {
             foreach (var item in m_keyMapper)
             {
                 if (Input.GetKeyDown(item.Key))
                 {
-                    for (int i = 0; i < m_register.Count; i++)
+                    oneFrameRegister.Clear();
+                    oneFrameRegister.AddRange(m_register);
+
+                    for (int i = 0; i < oneFrameRegister.Count; i++)
                     {
-                        var controller = m_register[i];
+                        var controller = oneFrameRegister[i];
+                        if (!controller.enabled) continue;
                         controller.ExecuteCommand(item.Value, false);
                     }
                 }
                 if (Input.GetKeyUp(item.Key))
                 {
-                    for (int i = 0; i < m_register.Count; i++)
+                    oneFrameRegister.Clear();
+                    oneFrameRegister.AddRange(m_register);
+
+                    for (int i = 0; i < oneFrameRegister.Count; i++)
                     {
-                        var controller = m_register[i];
+                        var controller = oneFrameRegister[i];
+                        if (!controller.enabled) continue;
                         controller.ExecuteCommand(item.Value, true);
                     }
                 }

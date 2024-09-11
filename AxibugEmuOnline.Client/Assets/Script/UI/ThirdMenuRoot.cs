@@ -39,10 +39,29 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private void Awake()
+        protected override MenuItem GetItemUIByIndex(int index)
+        {
+            return itemGroup.GetItemUIByDataIndex(index).GetComponent<MenuItem>();
+        }
+
+        protected override void Awake()
         {
             m_rect = transform as RectTransform;
             m_parent = transform.parent as RectTransform;
+
+            base.Awake();
+        }
+
+        public override void Init(List<MenuData> menuDataList) { }
+
+        protected override bool OnCmdEnter(MenuItem item)
+        {
+            return item.OnEnterItem();
+        }
+
+        protected override bool OnCmdBack(MenuItem item)
+        {
+            return item.OnExitItem();
         }
 
         private void LateUpdate()

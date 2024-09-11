@@ -34,6 +34,15 @@ namespace AxibugEmuOnline.Client
             MainMenu.ListenControlAction = true;
         }
 
+        public void HideMainMenu()
+        {
+            MainMenuRoot.gameObject.SetActiveEx(false);
+        }
+
+        public void ShowMainMenu()
+        {
+            MainMenuRoot.gameObject.SetActiveEx(true);
+        }
 
         public void ToDetailMenuLayout()
         {
