@@ -24,7 +24,7 @@ namespace AxibugEmuOnline.Client.Manager
             byte[] comData = Helper.CompressByteArray(RenderBuffer);
             _Protobuf_Screnn_Frame.FrameID = 0;
             _Protobuf_Screnn_Frame.RawBitmap = ByteString.CopyFrom(comData);
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdScreen, ProtoBufHelper.Serizlize(_Protobuf_Screnn_Frame));
+            App.networkHelper.SendToServer((int)CommandID.CmdScreen, ProtoBufHelper.Serizlize(_Protobuf_Screnn_Frame));
         }
 
         public void OnScreen(byte[] reqData)

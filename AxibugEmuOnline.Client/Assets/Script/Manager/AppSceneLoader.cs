@@ -17,7 +17,7 @@ namespace AxibugEmuOnline.Client
         {
             m_tasks.Enqueue(new LoadTask(scenePath, callback));
             if (m_coroutine == null)
-                m_coroutine = AppAxibugEmuOnline.StartCoroutine(TaskFlow());
+                m_coroutine = App.StartCoroutine(TaskFlow());
         }
 
         private IEnumerator TaskFlow()

@@ -8,7 +8,7 @@ namespace AxibugEmuOnline.Client
 {
     public class NesControllerMapper
     {
-        private static readonly string ConfigFilePath = $"{AppAxibugEmuOnline.PersistentDataPath}/NES/ControllerMapper.json";
+        private static readonly string ConfigFilePath = $"{App.PersistentDataPath}/NES/ControllerMapper.json";
 
         public MapperSetter Player1 = new MapperSetter();
         public MapperSetter Player2 = new MapperSetter();
@@ -50,7 +50,7 @@ namespace AxibugEmuOnline.Client
             {
                 try
                 {
-                    var json = File.ReadAllText($"{AppAxibugEmuOnline.PersistentDataPath}/Nes/ControllerMapper.json");
+                    var json = File.ReadAllText($"{App.PersistentDataPath}/Nes/ControllerMapper.json");
                     s_setting = JsonUtility.FromJson<NesControllerMapper>(json);
                 }
                 catch

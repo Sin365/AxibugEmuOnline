@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client.Manager
         public UserDataManager()
         {
             //注册重连成功事件，以便后续自动登录
-            AppAxibugEmuOnline.networkHelper.OnReConnected += OnReConnected;
+            App.networkHelper.OnReConnected += OnReConnected;
         }
         public MainUserDataBase userdata { get; private set; } = new MainUserDataBase();
         public bool IsLoggedIn => userdata.IsLoggedIn;
@@ -50,7 +50,7 @@ namespace AxibugEmuOnline.Client.Manager
             //如果之前已登录，则重新登录
             if (userdata.IsLoggedIn)
             {
-                AppAxibugEmuOnline.login.Login();
+                App.login.Login();
             }
         }
     }

@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client
 
         public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
         {
-            AppAxibugEmuOnline.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
+            App.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
         }
 
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
