@@ -9,7 +9,6 @@ namespace AxibugEmuOnline.Client.ClientCore
     public static class AppAxibugEmuOnline
     {
         public static string TokenStr;
-        public static long RID = -1;
         public static string IP;
         public static int Port;
         public static LogManager log;
