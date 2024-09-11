@@ -3,7 +3,6 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
-using static Codice.Client.BaseCommands.Import.Commit;
 using App = AxibugEmuOnline.Client.ClientCore.AppAxibugEmuOnline;
 
 namespace AxibugEmuOnline.Client
@@ -39,7 +38,7 @@ namespace AxibugEmuOnline.Client
                 });
         }
 
-        public override void OnEnterItem()
+        public override bool OnEnterItem()
         {
             RomGroupRoot.gameObject.SetActive(true);
             RomGroupRoot.alpha = 0;
@@ -51,6 +50,8 @@ namespace AxibugEmuOnline.Client
             }
             m_showTween = DOTween.To(() => RomGroupRoot.alpha, (x) => RomGroupRoot.alpha = x, 1, 0.2f);
 
+            var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
+            thirdMenuGroup.itemGroup.Clear();
             App.nesRomLib.FetchRomCount((roms) =>
             {
                 var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
@@ -61,9 +62,11 @@ namespace AxibugEmuOnline.Client
             });
 
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(true);
+
+            return true;
         }
 
-        public override void OnExitItem()
+        public override bool OnExitItem()
         {
             if (m_showTween != null)
             {
@@ -77,6 +80,8 @@ namespace AxibugEmuOnline.Client
             });
 
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(false);
+
+            return true;
         }
     }
 }

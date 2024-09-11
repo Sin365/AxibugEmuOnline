@@ -32,23 +32,30 @@ namespace AxibugEmuOnline.Client.UI
         protected bool m_select;
         protected TweenerCore<float, float, FloatOptions> progressTween;
         protected float m_progress;
-        private void Awake()
+
+        public void SetData(MenuData data)
+        {
+            Reset();
+
+            SetBaseInfo(data.Name, data.Description);
+            SetIcon(data.Icon);
+            if (SubMenuItemGroup != null) SubMenuItemGroup.Init(data.SubMenus);
+        }
+
+        protected void Reset()
         {
             m_select = false;
             m_progress = 0f;
+
+            if (InfoNode != null) InfoNode.alpha = 0;
+            Root.localScale = Vector3.one * UnSelectScale;
+            if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);
 
             if (InfoNode != null) InfoNode.alpha = 0;
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActiveEx(false);
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(false);
-        }
-
-        public void SetData(MenuData data)
-        {
-            SetBaseInfo(data.Name, data.Description);
-            SetIcon(data.Icon);
-            if (SubMenuItemGroup != null) SubMenuItemGroup.Init(data.SubMenus);
         }
 
         protected void SetBaseInfo(string name, string descript)
@@ -85,8 +92,8 @@ namespace AxibugEmuOnline.Client.UI
                 });
         }
 
-        public virtual void OnEnterItem() { }
+        public virtual bool OnEnterItem() => true;
 
-        public virtual void OnExitItem() { }
+        public virtual bool OnExitItem() => true;
     }
 }
