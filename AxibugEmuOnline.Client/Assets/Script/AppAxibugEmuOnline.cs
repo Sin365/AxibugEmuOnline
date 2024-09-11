@@ -87,5 +87,35 @@ namespace AxibugEmuOnline.Client.ClientCore
         {
             Debug.Log("[AxibugEmuOnline]:" + msg);
         }
+
+        private static RomFile m_currentGame;
+        public static void BeginGame(RomFile romFile)
+        {
+            if (m_currentGame != null) return;
+
+            m_currentGame = romFile;
+
+            switch (romFile.Platform)
+            {
+                case EnumPlatform.NES:
+                    SceneLoader.BeginLoad("Scene/Emu_NES", () =>
+                    {
+                        LaunchUI.Instance.HideMainMenu();
+                        var nesEmu = GameObject.FindObjectOfType<NesEmulator>();
+                        nesEmu.StartGame(romFile);
+                    });
+                    break;
+            }
+        }
+
+        public static void StopGame()
+        {
+            if (m_currentGame == null) return;
+
+            SceneLoader.BeginLoad("Scene/AxibugEmuOnline.Client", () =>
+            {
+                LaunchUI.Instance.ShowMainMenu();
+            });
+        }
     }
 }

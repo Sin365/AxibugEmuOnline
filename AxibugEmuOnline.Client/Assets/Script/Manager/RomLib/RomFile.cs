@@ -3,7 +3,6 @@ using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using System.IO;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace AxibugEmuOnline.Client
@@ -14,14 +13,17 @@ namespace AxibugEmuOnline.Client
         private bool hasLocalFile;
         private string fileName;
         private EnumPlatform platform;
+        private UnityWebRequest downloadRequest;
 
         /// <summary> 指示该Rom文件的存放路径 </summary>
         public string LocalFilePath => $"{AppAxibugEmuOnline.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;
         /// <summary> 指示是否正在下载Rom文件 </summary>
-        public bool IsDownloading { get; private set; }
+        public bool IsDownloading => downloadRequest != null && downloadRequest.result == UnityWebRequest.Result.InProgress;
+        public float Progress => IsDownloading ? downloadRequest.downloadProgress : 0;
 
+        public EnumPlatform Platform => platform;
         /// <summary> 指示该Rom信息是否已填充 </summary>
         public bool InfoReady => webData != null;
         /// <summary> 唯一标识 </summary>
@@ -55,11 +57,8 @@ namespace AxibugEmuOnline.Client
             if (RomReady) return;
             if (IsDownloading) return;
 
-            IsDownloading = true;
             AppAxibugEmuOnline.StartCoroutine(DownloadRemoteRom((bytes) =>
             {
-                IsDownloading = false;
-
                 if (bytes != null)
                 {
                     var directPath = Path.GetDirectoryName(LocalFilePath);
@@ -107,16 +106,16 @@ namespace AxibugEmuOnline.Client
 
         private IEnumerator DownloadRemoteRom(Action<byte[]> callback)
         {
-            UnityWebRequest uwr = UnityWebRequest.Get($"{AppAxibugEmuOnline.httpAPI.DownSite}/{webData.url}");
-            yield return uwr.SendWebRequest();
+            downloadRequest = UnityWebRequest.Get($"{AppAxibugEmuOnline.httpAPI.DownSite}/{webData.url}");
+            yield return downloadRequest.SendWebRequest();
 
-            if (uwr.result != UnityWebRequest.Result.Success)
+            if (downloadRequest.result != UnityWebRequest.Result.Success)
             {
                 callback(null);
             }
             else
             {
-                callback(uwr.downloadHandler.data);
+                callback(downloadRequest.downloadHandler.data);
             }
         }
 
