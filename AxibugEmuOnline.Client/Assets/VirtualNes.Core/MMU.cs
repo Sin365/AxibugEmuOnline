@@ -1,4 +1,5 @@
-﻿using VirtualNes.Core;
+﻿using Codice.CM.Client.Differences;
+using VirtualNes.Core;
 
 namespace VirtualNes
 {
@@ -83,6 +84,20 @@ namespace VirtualNes
             CPU_MEM_TYPE[page] = type;
             CPU_MEM_PAGE[page] = 0;
         }
+
+        internal static void SetPROM_4K_Bank(ushort addr, int bank)
+        {
+            throw new System.NotImplementedException();
+
+            bank %= (PROM_8K_SIZE * 2);
+
+            //TODO
+            //memcpy(&CPU_MEM_BANK[addr >> 13][addr & 0x1FFF], PROM + 0x1000 * bank, 0x1000);
+            ////	memcpy( &CPU_MEM_BANK[addr>>13][addr&0x1FFF], YSRAM+0x1000*bank, 0x1000);
+            CPU_MEM_TYPE[addr >> 13] = BANKTYPE_ROM;
+            CPU_MEM_PAGE[addr >> 13] = 0;
+        }
+
 
         internal static void SetPROM_8K_Bank(byte page, int bank)
         {

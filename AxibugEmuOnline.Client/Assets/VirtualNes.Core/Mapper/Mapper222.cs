@@ -60,6 +60,16 @@ namespace VirtualNes.Core
             }
         }
 
+        public override void LoadState(byte[] p)
+        {
+            //
+        }
+
+        public override void SaveState(byte[] p)
+        {
+            //
+        }
+
 
 
     }
