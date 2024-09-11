@@ -16,17 +16,17 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void Login()
         {
-            AppAxibugEmuOnline.log.Debug("-->Login");
+            App.log.Debug("-->Login");
             if (string.IsNullOrEmpty(LastLoginGuid))
                 LastLoginGuid = Guid.NewGuid().ToString();
 
-            AppAxibugEmuOnline.user.userdata.Account = LastLoginGuid;
+            App.user.userdata.Account = LastLoginGuid;
             Protobuf_Login msg = new Protobuf_Login()
             {
                 LoginType = 0,
-                Account = AppAxibugEmuOnline.user.userdata.Account,
+                Account = App.user.userdata.Account,
             };
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdLogin, ProtoBufHelper.Serizlize(msg));
+            App.networkHelper.SendToServer((int)CommandID.CmdLogin, ProtoBufHelper.Serizlize(msg));
         }
 
         public void RecvLoginMsg(byte[] reqData)
@@ -34,12 +34,12 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Login_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Login_RESP>(reqData);
             if (msg.Status == LoginResultStatus.Ok)
             {
-                AppAxibugEmuOnline.log.Info("登录成功");
-                AppAxibugEmuOnline.user.InitMainUserData(AppAxibugEmuOnline.user.userdata.Account, msg.UID);
+                App.log.Info("登录成功");
+                App.user.InitMainUserData(App.user.userdata.Account, msg.UID);
             }
             else
             {
-                AppAxibugEmuOnline.log.Info("登录失败");
+                App.log.Info("登录失败");
             }
         }
     }

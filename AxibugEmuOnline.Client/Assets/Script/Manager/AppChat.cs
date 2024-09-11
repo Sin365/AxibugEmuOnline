@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 ChatMsg = ChatMsg,
             };
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdChatmsg, ProtoBufHelper.Serizlize(msg));
+            App.networkHelper.SendToServer((int)CommandID.CmdChatmsg, ProtoBufHelper.Serizlize(msg));
         }
 
         public void RecvChatMsg(byte[] reqData)

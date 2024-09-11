@@ -3,7 +3,7 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
-using App = AxibugEmuOnline.Client.ClientCore.AppAxibugEmuOnline;
+using App = AxibugEmuOnline.Client.ClientCore.App;
 
 namespace AxibugEmuOnline.Client
 {

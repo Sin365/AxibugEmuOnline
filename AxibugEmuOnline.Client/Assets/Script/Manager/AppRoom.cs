@@ -14,7 +14,7 @@ namespace AxibugEmuOnline.Client.Manager
     {
         public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; } = null;
         public bool InRoom => mineRoomMiniInfo != null;
-        public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == AppAxibugEmuOnline.user.userdata.UID;
+        public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == App.user.userdata.UID;
         public RoomGameState RoomState => mineRoomMiniInfo.GameState;
         public int MinePlayerIdx => GetMinePlayerIndex();
         public int WaitStep { get; private set; } = -1;
@@ -100,9 +100,9 @@ namespace AxibugEmuOnline.Client.Manager
             if (mineRoomMiniInfo == null)
                 return -1;
 
-            if (mineRoomMiniInfo.Player1UID == AppAxibugEmuOnline.user.userdata.UID)
+            if (mineRoomMiniInfo.Player1UID == App.user.userdata.UID)
                 return 0;
-            if (mineRoomMiniInfo.Player2UID == AppAxibugEmuOnline.user.userdata.UID)
+            if (mineRoomMiniInfo.Player2UID == App.user.userdata.UID)
                 return 1;
             return -1;
         }
@@ -115,7 +115,7 @@ namespace AxibugEmuOnline.Client.Manager
 
             if (mineRoomMiniInfo.Player1UID > 0)
                 result[0] = mineRoomMiniInfo.Player1UID;
-            if (mineRoomMiniInfo.Player2UID == AppAxibugEmuOnline.user.userdata.UID)
+            if (mineRoomMiniInfo.Player2UID == App.user.userdata.UID)
                 result[1] = mineRoomMiniInfo.Player2UID;
 
             return result;
@@ -129,8 +129,8 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="ChatMsg"></param>
         public void SendGetRoomList()
         {
-            AppAxibugEmuOnline.log.Info("拉取房间列表");
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomList, ProtoBufHelper.Serizlize(_Protobuf_Room_List));
+            App.log.Info("拉取房间列表");
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomList, ProtoBufHelper.Serizlize(_Protobuf_Room_List));
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvGetRoomList(byte[] reqData)
         {
-            AppAxibugEmuOnline.log.Info("取得完整房间列表");
+            App.log.Info("取得完整房间列表");
             Protobuf_Room_List_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_List_RESP>(reqData);
             for (int i = 0; i < msg.RoomMiniInfoList.Count; i++)
                 AddOrUpdateRoomList(msg.RoomMiniInfoList[i]);
@@ -152,7 +152,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvGetRoomListUpdate(byte[] reqData)
         {
-            AppAxibugEmuOnline.log.Debug("单个房间状态更新");
+            App.log.Debug("单个房间状态更新");
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
             AddOrUpdateRoomList(msg.RoomMiniInfo);
             EventSystem.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
@@ -169,8 +169,8 @@ namespace AxibugEmuOnline.Client.Manager
             _Protobuf_Room_Create.JoinPlayerIdx = JoinPlayerIdx;
             _Protobuf_Room_Create.GameRomID = GameRomID;
             _Protobuf_Room_Create.GameRomHash = GameRomHash;
-            AppAxibugEmuOnline.log.Info($"创建房间");
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomCreate, ProtoBufHelper.Serizlize(_Protobuf_Room_Create));
+            App.log.Info($"创建房间");
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomCreate, ProtoBufHelper.Serizlize(_Protobuf_Room_Create));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvCreateRoom(byte[] reqData)
         {
-            AppAxibugEmuOnline.log.Debug("创建房间成功");
+            App.log.Debug("创建房间成功");
             Protobuf_Room_Create_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Create_RESP>(reqData);
             mineRoomMiniInfo = msg.RoomMiniInfo;
         }
@@ -194,8 +194,8 @@ namespace AxibugEmuOnline.Client.Manager
         {
             _Protobuf_Room_Join.RoomID = RoomID;
             _Protobuf_Room_Join.PlayerNum = JoinPlayerIdx;
-            AppAxibugEmuOnline.log.Info($"创建房间");
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomJoin, ProtoBufHelper.Serizlize(_Protobuf_Room_Join));
+            App.log.Info($"创建房间");
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomJoin, ProtoBufHelper.Serizlize(_Protobuf_Room_Join));
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvJoinRoom(byte[] reqData)
         {
-            AppAxibugEmuOnline.log.Debug("加入房间成功");
+            App.log.Debug("加入房间成功");
             Protobuf_Room_Join_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Join_RESP>(reqData);
             mineRoomMiniInfo = msg.RoomMiniInfo;
             InitRePlay();
@@ -218,8 +218,8 @@ namespace AxibugEmuOnline.Client.Manager
         public void SendLeavnRoom(int RoomID)
         {
             _Protobuf_Room_Leave.RoomID = RoomID;
-            AppAxibugEmuOnline.log.Info($"创建房间");
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomLeave, ProtoBufHelper.Serizlize(_Protobuf_Room_Leave));
+            App.log.Info($"创建房间");
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomLeave, ProtoBufHelper.Serizlize(_Protobuf_Room_Leave));
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvLeavnRoom(byte[] reqData)
         {
-            AppAxibugEmuOnline.log.Debug("加入房间成功");
+            App.log.Debug("加入房间成功");
             Protobuf_Room_Leave_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Leave_RESP>(reqData);
             ReleaseRePlay();
             mineRoomMiniInfo = null;
@@ -271,8 +271,8 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 LoadStateRaw = Google.Protobuf.ByteString.CopyFrom(compressRawData)
             };
-            AppAxibugEmuOnline.log.Info($"上报即时存档数据 原数据大小:{RawData.Length},压缩后;{compressRawData.Length}");
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, ProtoBufHelper.Serizlize(msg));
+            App.log.Info($"上报即时存档数据 原数据大小:{RawData.Length},压缩后;{compressRawData.Length}");
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, ProtoBufHelper.Serizlize(msg));
         }
 
         void RecvRoom_WaitStep(byte[] reqData)
@@ -285,7 +285,7 @@ namespace AxibugEmuOnline.Client.Manager
                 if (WaitStep == 1)
                 {
                     byte[] decompressRawData = Helper.DecompressByteArray(msg.LoadStateRaw.ToByteArray());
-                    AppAxibugEmuOnline.log.Info($"收到即时存档数据 解压后;{decompressRawData.Length}");
+                    App.log.Info($"收到即时存档数据 解压后;{decompressRawData.Length}");
                     RawData = decompressRawData;
                 }
             }
@@ -294,7 +294,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvHostPlayer_UpdateStateRaw(byte[] reqData)
         {
             Protobuf_Room_HostPlayer_UpdateStateRaw_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP>(reqData);
-            AppAxibugEmuOnline.log.Info($"鸡翅孙当上报成功");
+            App.log.Info($"鸡翅孙当上报成功");
         }
 
         /// <summary>
@@ -302,8 +302,8 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         public void SendRoomPlayerReady()
         {
-            AppAxibugEmuOnline.log.Debug("上报准备完毕");
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomPlayerReady, ProtoBufHelper.Serizlize(_Protobuf_Room_Player_Ready));
+            App.log.Debug("上报准备完毕");
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomPlayerReady, ProtoBufHelper.Serizlize(_Protobuf_Room_Player_Ready));
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace AxibugEmuOnline.Client.Manager
         {
             _Protobuf_Room_SinglePlayerInputData.FrameID = FrameID;
             _Protobuf_Room_SinglePlayerInputData.InputData = InputData;
-            AppAxibugEmuOnline.networkHelper.SendToServer((int)CommandID.CmdRoomSingelPlayerInput, ProtoBufHelper.Serizlize(_Protobuf_Room_SinglePlayerInputData));
+            App.networkHelper.SendToServer((int)CommandID.CmdRoomSingelPlayerInput, ProtoBufHelper.Serizlize(_Protobuf_Room_SinglePlayerInputData));
         }
 
 
