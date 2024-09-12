@@ -60,14 +60,16 @@ namespace AxibugEmuOnline.Client
 
         public override void Init(List<MenuData> menuDataList) { }
 
-        protected override bool OnCmdEnter(MenuItem item)
+        protected override bool OnCmdEnter()
         {
+            var item = GetItemUIByIndex(SelectIndex);
             return item.OnEnterItem();
         }
 
-        protected override bool OnCmdBack(MenuItem item)
+        protected override void OnCmdBack()
         {
-            return item.OnExitItem();
+            var item = GetItemUIByIndex(SelectIndex);
+            item.OnExitItem();
         }
 
         private void LateUpdate()
