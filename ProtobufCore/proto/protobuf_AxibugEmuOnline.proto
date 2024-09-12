@@ -50,7 +50,7 @@ enum CommandID
 	
 	//游戏同步
 	CMD_Room_Singel_PlayerInput = 6010; //单个玩家操作同步上行 对应 Protobuf_Room_SinglePlayerInputData
-	CMD_ROOM_SYN_PlayerInput = 6015; //单个玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
+	CMD_ROOM_SYN_PlayerInput = 6015; //所有玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
 	
 	//画面采集
 	CMD_Screen = 7001;  //画面采集 | 同步广播 对应 Protobuf_Screnn_Frame
@@ -166,12 +166,18 @@ message Protobuf_Room_MiniInfo
 	int32 RoomID = 1;//房间ID
 	int32 GameRomID = 2;//游戏ID
 	string GameRomHash = 3;
+	int64 HostPlayerUID = 4;//主机玩家ID
 	RoomGameState GameState = 5;//游戏状态
 	int32 ObsUserCount = 6;//观战用户数量
 	int64 Player1_UID = 7;//玩家1 UID
 	string Player1_NickName = 8;//玩家1 昵称
 	int64 Player2_UID = 9;//玩家2 UID
 	string Player2_NickName = 10;//玩家2 昵称
+	int64 Player3_UID = 11;//玩家3 UID
+	string Player3_NickName = 12;//玩家3 昵称
+	int64 Player4_UID = 13;//玩家4 UID
+	string Player4_NickName = 14;//玩家4 昵称
+	int64 ScreenProviderUID = 15;//屏幕数据供应者
 }
 
 message Protobuf_Room_Update_RESP
@@ -236,7 +242,6 @@ message Protobuf_Room_MyRoom_State_Change
 {
 	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//更新房间信息
 }
-
 
 message Protobuf_Room_WaitStep_RESP
 {
