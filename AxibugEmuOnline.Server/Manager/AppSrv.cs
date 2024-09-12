@@ -14,7 +14,6 @@ namespace AxibugEmuOnline.Server
         public static ChatManager g_Chat;
         public static IOCPNetWork g_SocketMgr;
         public static RoomManager g_Room;
-        public static GameManager g_Game;
 
         public static void InitServer(int port)
         {
@@ -27,7 +26,6 @@ namespace AxibugEmuOnline.Server
             //g_SocketMgr = new IOCPNetWork(1024, 1024);
             g_SocketMgr = new IOCPNetWork(1024, 4096);
             g_Room = new RoomManager();
-            g_Game = new GameManager();
 
             g_SocketMgr.Init();
             g_SocketMgr.Start(new IPEndPoint(IPAddress.Any.Address, port));

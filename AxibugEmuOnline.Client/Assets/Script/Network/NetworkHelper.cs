@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using HaoYueNet.ClientNetworkNet.Standard2;
 using System;
+using System.Net.Sockets;
 using System.Threading;
 
 namespace AxibugEmuOnline.Client.Network
@@ -26,6 +27,7 @@ namespace AxibugEmuOnline.Client.Network
         /// 重连成功事件
         /// </summary>
         public event OnReConnectedHandler OnReConnected;
+        public bool isConnected => CheckIsConnectd();
         /// <summary>
         /// 是否自动重连
         /// </summary>
@@ -93,6 +95,7 @@ namespace AxibugEmuOnline.Client.Network
         {
             NetworkDeBugLog("OnConnectClose");
 
+            App.user.LoginOutData();
 
             //自动重连开关
             if (bAutoReConnect)
@@ -126,6 +129,14 @@ namespace AxibugEmuOnline.Client.Network
                 }
             } while (!bflagDone);
             bInReConnecting = false;
+        }
+
+        bool CheckIsConnectd()
+        {
+            Socket socket = GetClientSocket();
+            if(socket == null)
+                return false;
+            return socket.Connected;
         }
     }
 }

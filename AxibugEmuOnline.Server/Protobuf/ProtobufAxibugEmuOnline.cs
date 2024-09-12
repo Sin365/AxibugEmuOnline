@@ -38,55 +38,59 @@ namespace AxibugProtobuf {
             "b3RvYnVmLkxvZ2luUmVzdWx0U3RhdHVzEgsKA1VJRBgGIAEoAyIUChJQcm90",
             "b2J1Zl9Sb29tX0xpc3QiWwoXUHJvdG9idWZfUm9vbV9MaXN0X1JFU1ASQAoQ",
             "Um9vbU1pbmlJbmZvTGlzdBgBIAMoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3Rv",
-            "YnVmX1Jvb21fTWluaUluZm8i9gEKFlByb3RvYnVmX1Jvb21fTWluaUluZm8S",
+            "YnVmX1Jvb21fTWluaUluZm8ihgMKFlByb3RvYnVmX1Jvb21fTWluaUluZm8S",
             "DgoGUm9vbUlEGAEgASgFEhEKCUdhbWVSb21JRBgCIAEoBRITCgtHYW1lUm9t",
-            "SGFzaBgDIAEoCRIwCglHYW1lU3RhdGUYBSABKA4yHS5BeGlidWdQcm90b2J1",
-            "Zi5Sb29tR2FtZVN0YXRlEhQKDE9ic1VzZXJDb3VudBgGIAEoBRITCgtQbGF5",
-            "ZXIxX1VJRBgHIAEoAxIYChBQbGF5ZXIxX05pY2tOYW1lGAggASgJEhMKC1Bs",
-            "YXllcjJfVUlEGAkgASgDEhgKEFBsYXllcjJfTmlja05hbWUYCiABKAkibQoZ",
-            "UHJvdG9idWZfUm9vbV9VcGRhdGVfUkVTUBISCgpVcGRhdGVUeXBlGAEgASgF",
-            "EjwKDFJvb21NaW5pSW5mbxgCIAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3Rv",
-            "YnVmX1Jvb21fTWluaUluZm8iSwoVUHJvdG9idWZfU2NyZW5uX0ZyYW1lEg4K",
-            "BlJvb21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgD",
-            "IAEoDCJJCiNQcm90b2J1Zl9Sb29tX1NpbmdsZVBsYXllcklucHV0RGF0YRIP",
-            "CgdGcmFtZUlEGAEgASgNEhEKCUlucHV0RGF0YRgCIAEoDSJNCidQcm90b2J1",
-            "Zl9Sb29tX1N5bl9Sb29tRnJhbWVBbGxJbnB1dERhdGESDwoHRnJhbWVJRBgB",
-            "IAEoDRIRCglJbnB1dERhdGEYAiABKAQiVQoUUHJvdG9idWZfUm9vbV9DcmVh",
-            "dGUSEQoJR2FtZVJvbUlEGAEgASgFEhMKC0dhbWVSb21IYXNoGAIgASgJEhUK",
-            "DUpvaW5QbGF5ZXJJZHgYAyABKAUiWQoZUHJvdG9idWZfUm9vbV9DcmVhdGVf",
-            "UkVTUBI8CgxSb29tTWluaUluZm8YASABKAsyJi5BeGlidWdQcm90b2J1Zi5Q",
-            "cm90b2J1Zl9Sb29tX01pbmlJbmZvIjcKElByb3RvYnVmX1Jvb21fSm9pbhIO",
-            "CgZSb29tSUQYASABKAUSEQoJUGxheWVyTnVtGAIgASgFIlcKF1Byb3RvYnVm",
-            "X1Jvb21fSm9pbl9SRVNQEjwKDFJvb21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1",
-            "Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iJQoTUHJvdG9idWZf",
-            "Um9vbV9MZWF2ZRIOCgZSb29tSUQYASABKAUiKgoYUHJvdG9idWZfUm9vbV9M",
-            "ZWF2ZV9SRVNQEg4KBlJvb21JRBgBIAEoBSJhCiFQcm90b2J1Zl9Sb29tX015",
-            "Um9vbV9TdGF0ZV9DaGFuZ2USPAoMUm9vbU1pbmlJbmZvGAEgASgLMiYuQXhp",
-            "YnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyJFChtQcm90b2J1",
-            "Zl9Sb29tX1dhaXRTdGVwX1JFU1ASEAoIV2FpdFN0ZXAYASABKAUSFAoMTG9h",
-            "ZFN0YXRlUmF3GAIgASgMIj8KJ1Byb3RvYnVmX1Jvb21fSG9zdFBsYXllcl9V",
-            "cGRhdGVTdGF0ZVJhdxIUCgxMb2FkU3RhdGVSYXcYASABKAwiLgosUHJvdG9i",
-            "dWZfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3X1JFU1AiHAoaUHJv",
-            "dG9idWZfUm9vbV9QbGF5ZXJfUmVhZHkqmgMKCUNvbW1hbmRJRBIOCgpDTURf",
-            "REVGQVVMEAASDAoIQ01EX1BJTkcQARIMCghDTURfUE9ORxACEg4KCUNNRF9M",
-            "T0dJThDRDxIQCgtDTURfQ0hBVE1TRxChHxISCg1DTURfUm9vbV9MaXN0EIkn",
-            "EhkKFENNRF9Sb29tX0xpc3RfVXBkYXRlEIonEhQKD0NNRF9Sb29tX0NyZWF0",
-            "ZRDtJxISCg1DTURfUm9vbV9Kb2luEPEnEhMKDkNNRF9Sb29tX0xlYXZlEPIn",
-            "EiIKHUNNRF9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2VkEPYnEhYKEUNNRF9S",
-            "b29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRl",
-            "U3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAKG0NN",
-            "RF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9TWU5f",
-            "UGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNiqPAQoJRXJyb3JDb2Rl",
-            "EhAKDEVSUk9SX0RFRkFVTBAAEgwKCEVSUk9SX09LEAESGAoURVJST1JfUk9P",
-            "TV9OT1RfRk9VTkQQChIlCiFFUlJPUl9ST09NX1NMT1RfUkVBRExZX0hBRF9Q",
-            "TEFZRVIQCxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9TVEFURRAyKhwK",
-            "CUxvZ2luVHlwZRIPCgtCYXNlRGVmYXVsdBAAKksKCkRldmljZVR5cGUSFgoS",
-            "RGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQARILCgdBbmRyb2lkEAISBwoD",
-            "SU9TEAMSBwoDUFNWEAQqcAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVT",
-            "dGF0ZRAAEgwKCE9ubHlIb3N0EAESEQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdh",
-            "aXRSZWFkeRADEgkKBVBhdXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9n",
-            "aW5SZXN1bHRTdGF0dXMSIQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1",
-            "bHQQABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
+            "SGFzaBgDIAEoCRIVCg1Ib3N0UGxheWVyVUlEGAQgASgDEjAKCUdhbWVTdGF0",
+            "ZRgFIAEoDjIdLkF4aWJ1Z1Byb3RvYnVmLlJvb21HYW1lU3RhdGUSFAoMT2Jz",
+            "VXNlckNvdW50GAYgASgFEhMKC1BsYXllcjFfVUlEGAcgASgDEhgKEFBsYXll",
+            "cjFfTmlja05hbWUYCCABKAkSEwoLUGxheWVyMl9VSUQYCSABKAMSGAoQUGxh",
+            "eWVyMl9OaWNrTmFtZRgKIAEoCRITCgtQbGF5ZXIzX1VJRBgLIAEoAxIYChBQ",
+            "bGF5ZXIzX05pY2tOYW1lGAwgASgJEhMKC1BsYXllcjRfVUlEGA0gASgDEhgK",
+            "EFBsYXllcjRfTmlja05hbWUYDiABKAkSGQoRU2NyZWVuUHJvdmlkZXJVSUQY",
+            "DyABKAMibQoZUHJvdG9idWZfUm9vbV9VcGRhdGVfUkVTUBISCgpVcGRhdGVU",
+            "eXBlGAEgASgFEjwKDFJvb21NaW5pSW5mbxgCIAEoCzImLkF4aWJ1Z1Byb3Rv",
+            "YnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iSwoVUHJvdG9idWZfU2NyZW5u",
+            "X0ZyYW1lEg4KBlJvb21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJh",
+            "d0JpdG1hcBgDIAEoDCJJCiNQcm90b2J1Zl9Sb29tX1NpbmdsZVBsYXllcklu",
+            "cHV0RGF0YRIPCgdGcmFtZUlEGAEgASgNEhEKCUlucHV0RGF0YRgCIAEoDSJN",
+            "CidQcm90b2J1Zl9Sb29tX1N5bl9Sb29tRnJhbWVBbGxJbnB1dERhdGESDwoH",
+            "RnJhbWVJRBgBIAEoDRIRCglJbnB1dERhdGEYAiABKAQiVQoUUHJvdG9idWZf",
+            "Um9vbV9DcmVhdGUSEQoJR2FtZVJvbUlEGAEgASgFEhMKC0dhbWVSb21IYXNo",
+            "GAIgASgJEhUKDUpvaW5QbGF5ZXJJZHgYAyABKAUiWQoZUHJvdG9idWZfUm9v",
+            "bV9DcmVhdGVfUkVTUBI8CgxSb29tTWluaUluZm8YASABKAsyJi5BeGlidWdQ",
+            "cm90b2J1Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvIjcKElByb3RvYnVmX1Jv",
+            "b21fSm9pbhIOCgZSb29tSUQYASABKAUSEQoJUGxheWVyTnVtGAIgASgFIlcK",
+            "F1Byb3RvYnVmX1Jvb21fSm9pbl9SRVNQEjwKDFJvb21NaW5pSW5mbxgBIAEo",
+            "CzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iJQoT",
+            "UHJvdG9idWZfUm9vbV9MZWF2ZRIOCgZSb29tSUQYASABKAUiKgoYUHJvdG9i",
+            "dWZfUm9vbV9MZWF2ZV9SRVNQEg4KBlJvb21JRBgBIAEoBSJhCiFQcm90b2J1",
+            "Zl9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2USPAoMUm9vbU1pbmlJbmZvGAEg",
+            "ASgLMiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyJF",
+            "ChtQcm90b2J1Zl9Sb29tX1dhaXRTdGVwX1JFU1ASEAoIV2FpdFN0ZXAYASAB",
+            "KAUSFAoMTG9hZFN0YXRlUmF3GAIgASgMIj8KJ1Byb3RvYnVmX1Jvb21fSG9z",
+            "dFBsYXllcl9VcGRhdGVTdGF0ZVJhdxIUCgxMb2FkU3RhdGVSYXcYASABKAwi",
+            "LgosUHJvdG9idWZfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3X1JF",
+            "U1AiHAoaUHJvdG9idWZfUm9vbV9QbGF5ZXJfUmVhZHkqmgMKCUNvbW1hbmRJ",
+            "RBIOCgpDTURfREVGQVVMEAASDAoIQ01EX1BJTkcQARIMCghDTURfUE9ORxAC",
+            "Eg4KCUNNRF9MT0dJThDRDxIQCgtDTURfQ0hBVE1TRxChHxISCg1DTURfUm9v",
+            "bV9MaXN0EIknEhkKFENNRF9Sb29tX0xpc3RfVXBkYXRlEIonEhQKD0NNRF9S",
+            "b29tX0NyZWF0ZRDtJxISCg1DTURfUm9vbV9Kb2luEPEnEhMKDkNNRF9Sb29t",
+            "X0xlYXZlEPInEiIKHUNNRF9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2VkEPYn",
+            "EhYKEUNNRF9Sb29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5",
+            "ZXJfVXBkYXRlU3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5",
+            "ENgoEiAKG0NNRF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURf",
+            "Uk9PTV9TWU5fUGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNiqPAQoJ",
+            "RXJyb3JDb2RlEhAKDEVSUk9SX0RFRkFVTBAAEgwKCEVSUk9SX09LEAESGAoU",
+            "RVJST1JfUk9PTV9OT1RfRk9VTkQQChIlCiFFUlJPUl9ST09NX1NMT1RfUkVB",
+            "RExZX0hBRF9QTEFZRVIQCxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9T",
+            "VEFURRAyKhwKCUxvZ2luVHlwZRIPCgtCYXNlRGVmYXVsdBAAKksKCkRldmlj",
+            "ZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQARILCgdBbmRy",
+            "b2lkEAISBwoDSU9TEAMSBwoDUFNWEAQqcAoNUm9vbUdhbWVTdGF0ZRISCg5O",
+            "b25lX0dhbWVTdGF0ZRAAEgwKCE9ubHlIb3N0EAESEQoNV2FpdFJhd1VwZGF0",
+            "ZRACEg0KCVdhaXRSZWFkeRADEgkKBVBhdXNlEAQSEAoMSW5PbmxpbmVHYW1l",
+            "EAUqTgoRTG9naW5SZXN1bHRTdGF0dXMSIQodTG9naW5SZXN1bHRTdGF0dXNf",
+            "QmFzZURlZmF1bHQQABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -98,7 +102,7 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login_RESP), global::AxibugProtobuf.Protobuf_Login_RESP.Parser, new[]{ "DeviceUUID", "Token", "LastLoginDate", "RegDate", "Status", "UID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List), global::AxibugProtobuf.Protobuf_Room_List.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List_RESP), global::AxibugProtobuf.Protobuf_Room_List_RESP.Parser, new[]{ "RoomMiniInfoList" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "GameState", "ObsUserCount", "Player1UID", "Player1NickName", "Player2UID", "Player2NickName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "HostPlayerUID", "GameState", "ObsUserCount", "Player1UID", "Player1NickName", "Player2UID", "Player2NickName", "Player3UID", "Player3NickName", "Player4UID", "Player4NickName", "ScreenProviderUID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Update_RESP), global::AxibugProtobuf.Protobuf_Room_Update_RESP.Parser, new[]{ "UpdateType", "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Screnn_Frame), global::AxibugProtobuf.Protobuf_Screnn_Frame.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData), global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData.Parser, new[]{ "FrameID", "InputData" }, null, null, null, null),
@@ -200,7 +204,7 @@ namespace AxibugProtobuf {
     /// </summary>
     [pbr::OriginalName("CMD_Room_Singel_PlayerInput")] CmdRoomSingelPlayerInput = 6010,
     /// <summary>
-    ///单个玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
+    ///所有玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
     /// </summary>
     [pbr::OriginalName("CMD_ROOM_SYN_PlayerInput")] CmdRoomSynPlayerInput = 6015,
     /// <summary>
@@ -2070,12 +2074,18 @@ namespace AxibugProtobuf {
       roomID_ = other.roomID_;
       gameRomID_ = other.gameRomID_;
       gameRomHash_ = other.gameRomHash_;
+      hostPlayerUID_ = other.hostPlayerUID_;
       gameState_ = other.gameState_;
       obsUserCount_ = other.obsUserCount_;
       player1UID_ = other.player1UID_;
       player1NickName_ = other.player1NickName_;
       player2UID_ = other.player2UID_;
       player2NickName_ = other.player2NickName_;
+      player3UID_ = other.player3UID_;
+      player3NickName_ = other.player3NickName_;
+      player4UID_ = other.player4UID_;
+      player4NickName_ = other.player4NickName_;
+      screenProviderUID_ = other.screenProviderUID_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2120,6 +2130,20 @@ namespace AxibugProtobuf {
       get { return gameRomHash_; }
       set {
         gameRomHash_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "HostPlayerUID" field.</summary>
+    public const int HostPlayerUIDFieldNumber = 4;
+    private long hostPlayerUID_;
+    /// <summary>
+    ///主机玩家ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long HostPlayerUID {
+      get { return hostPlayerUID_; }
+      set {
+        hostPlayerUID_ = value;
       }
     }
 
@@ -2207,6 +2231,76 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "Player3_UID" field.</summary>
+    public const int Player3UIDFieldNumber = 11;
+    private long player3UID_;
+    /// <summary>
+    ///玩家3 UID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Player3UID {
+      get { return player3UID_; }
+      set {
+        player3UID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Player3_NickName" field.</summary>
+    public const int Player3NickNameFieldNumber = 12;
+    private string player3NickName_ = "";
+    /// <summary>
+    ///玩家3 昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Player3NickName {
+      get { return player3NickName_; }
+      set {
+        player3NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Player4_UID" field.</summary>
+    public const int Player4UIDFieldNumber = 13;
+    private long player4UID_;
+    /// <summary>
+    ///玩家4 UID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Player4UID {
+      get { return player4UID_; }
+      set {
+        player4UID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Player4_NickName" field.</summary>
+    public const int Player4NickNameFieldNumber = 14;
+    private string player4NickName_ = "";
+    /// <summary>
+    ///玩家4 昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Player4NickName {
+      get { return player4NickName_; }
+      set {
+        player4NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "ScreenProviderUID" field.</summary>
+    public const int ScreenProviderUIDFieldNumber = 15;
+    private long screenProviderUID_;
+    /// <summary>
+    ///屏幕数据供应者
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ScreenProviderUID {
+      get { return screenProviderUID_; }
+      set {
+        screenProviderUID_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Protobuf_Room_MiniInfo);
@@ -2223,12 +2317,18 @@ namespace AxibugProtobuf {
       if (RoomID != other.RoomID) return false;
       if (GameRomID != other.GameRomID) return false;
       if (GameRomHash != other.GameRomHash) return false;
+      if (HostPlayerUID != other.HostPlayerUID) return false;
       if (GameState != other.GameState) return false;
       if (ObsUserCount != other.ObsUserCount) return false;
       if (Player1UID != other.Player1UID) return false;
       if (Player1NickName != other.Player1NickName) return false;
       if (Player2UID != other.Player2UID) return false;
       if (Player2NickName != other.Player2NickName) return false;
+      if (Player3UID != other.Player3UID) return false;
+      if (Player3NickName != other.Player3NickName) return false;
+      if (Player4UID != other.Player4UID) return false;
+      if (Player4NickName != other.Player4NickName) return false;
+      if (ScreenProviderUID != other.ScreenProviderUID) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2238,12 +2338,18 @@ namespace AxibugProtobuf {
       if (RoomID != 0) hash ^= RoomID.GetHashCode();
       if (GameRomID != 0) hash ^= GameRomID.GetHashCode();
       if (GameRomHash.Length != 0) hash ^= GameRomHash.GetHashCode();
+      if (HostPlayerUID != 0L) hash ^= HostPlayerUID.GetHashCode();
       if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) hash ^= GameState.GetHashCode();
       if (ObsUserCount != 0) hash ^= ObsUserCount.GetHashCode();
       if (Player1UID != 0L) hash ^= Player1UID.GetHashCode();
       if (Player1NickName.Length != 0) hash ^= Player1NickName.GetHashCode();
       if (Player2UID != 0L) hash ^= Player2UID.GetHashCode();
       if (Player2NickName.Length != 0) hash ^= Player2NickName.GetHashCode();
+      if (Player3UID != 0L) hash ^= Player3UID.GetHashCode();
+      if (Player3NickName.Length != 0) hash ^= Player3NickName.GetHashCode();
+      if (Player4UID != 0L) hash ^= Player4UID.GetHashCode();
+      if (Player4NickName.Length != 0) hash ^= Player4NickName.GetHashCode();
+      if (ScreenProviderUID != 0L) hash ^= ScreenProviderUID.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2272,6 +2378,10 @@ namespace AxibugProtobuf {
         output.WriteRawTag(26);
         output.WriteString(GameRomHash);
       }
+      if (HostPlayerUID != 0L) {
+        output.WriteRawTag(32);
+        output.WriteInt64(HostPlayerUID);
+      }
       if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
         output.WriteRawTag(40);
         output.WriteEnum((int) GameState);
@@ -2295,6 +2405,26 @@ namespace AxibugProtobuf {
       if (Player2NickName.Length != 0) {
         output.WriteRawTag(82);
         output.WriteString(Player2NickName);
+      }
+      if (Player3UID != 0L) {
+        output.WriteRawTag(88);
+        output.WriteInt64(Player3UID);
+      }
+      if (Player3NickName.Length != 0) {
+        output.WriteRawTag(98);
+        output.WriteString(Player3NickName);
+      }
+      if (Player4UID != 0L) {
+        output.WriteRawTag(104);
+        output.WriteInt64(Player4UID);
+      }
+      if (Player4NickName.Length != 0) {
+        output.WriteRawTag(114);
+        output.WriteString(Player4NickName);
+      }
+      if (ScreenProviderUID != 0L) {
+        output.WriteRawTag(120);
+        output.WriteInt64(ScreenProviderUID);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -2317,6 +2447,10 @@ namespace AxibugProtobuf {
         output.WriteRawTag(26);
         output.WriteString(GameRomHash);
       }
+      if (HostPlayerUID != 0L) {
+        output.WriteRawTag(32);
+        output.WriteInt64(HostPlayerUID);
+      }
       if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
         output.WriteRawTag(40);
         output.WriteEnum((int) GameState);
@@ -2341,6 +2475,26 @@ namespace AxibugProtobuf {
         output.WriteRawTag(82);
         output.WriteString(Player2NickName);
       }
+      if (Player3UID != 0L) {
+        output.WriteRawTag(88);
+        output.WriteInt64(Player3UID);
+      }
+      if (Player3NickName.Length != 0) {
+        output.WriteRawTag(98);
+        output.WriteString(Player3NickName);
+      }
+      if (Player4UID != 0L) {
+        output.WriteRawTag(104);
+        output.WriteInt64(Player4UID);
+      }
+      if (Player4NickName.Length != 0) {
+        output.WriteRawTag(114);
+        output.WriteString(Player4NickName);
+      }
+      if (ScreenProviderUID != 0L) {
+        output.WriteRawTag(120);
+        output.WriteInt64(ScreenProviderUID);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2359,6 +2513,9 @@ namespace AxibugProtobuf {
       if (GameRomHash.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(GameRomHash);
       }
+      if (HostPlayerUID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(HostPlayerUID);
+      }
       if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) GameState);
       }
@@ -2376,6 +2533,21 @@ namespace AxibugProtobuf {
       }
       if (Player2NickName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Player2NickName);
+      }
+      if (Player3UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player3UID);
+      }
+      if (Player3NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player3NickName);
+      }
+      if (Player4UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player4UID);
+      }
+      if (Player4NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player4NickName);
+      }
+      if (ScreenProviderUID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ScreenProviderUID);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2397,6 +2569,9 @@ namespace AxibugProtobuf {
       if (other.GameRomHash.Length != 0) {
         GameRomHash = other.GameRomHash;
       }
+      if (other.HostPlayerUID != 0L) {
+        HostPlayerUID = other.HostPlayerUID;
+      }
       if (other.GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) {
         GameState = other.GameState;
       }
@@ -2414,6 +2589,21 @@ namespace AxibugProtobuf {
       }
       if (other.Player2NickName.Length != 0) {
         Player2NickName = other.Player2NickName;
+      }
+      if (other.Player3UID != 0L) {
+        Player3UID = other.Player3UID;
+      }
+      if (other.Player3NickName.Length != 0) {
+        Player3NickName = other.Player3NickName;
+      }
+      if (other.Player4UID != 0L) {
+        Player4UID = other.Player4UID;
+      }
+      if (other.Player4NickName.Length != 0) {
+        Player4NickName = other.Player4NickName;
+      }
+      if (other.ScreenProviderUID != 0L) {
+        ScreenProviderUID = other.ScreenProviderUID;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2441,6 +2631,10 @@ namespace AxibugProtobuf {
             GameRomHash = input.ReadString();
             break;
           }
+          case 32: {
+            HostPlayerUID = input.ReadInt64();
+            break;
+          }
           case 40: {
             GameState = (global::AxibugProtobuf.RoomGameState) input.ReadEnum();
             break;
@@ -2463,6 +2657,26 @@ namespace AxibugProtobuf {
           }
           case 82: {
             Player2NickName = input.ReadString();
+            break;
+          }
+          case 88: {
+            Player3UID = input.ReadInt64();
+            break;
+          }
+          case 98: {
+            Player3NickName = input.ReadString();
+            break;
+          }
+          case 104: {
+            Player4UID = input.ReadInt64();
+            break;
+          }
+          case 114: {
+            Player4NickName = input.ReadString();
+            break;
+          }
+          case 120: {
+            ScreenProviderUID = input.ReadInt64();
             break;
           }
         }
@@ -2491,6 +2705,10 @@ namespace AxibugProtobuf {
             GameRomHash = input.ReadString();
             break;
           }
+          case 32: {
+            HostPlayerUID = input.ReadInt64();
+            break;
+          }
           case 40: {
             GameState = (global::AxibugProtobuf.RoomGameState) input.ReadEnum();
             break;
@@ -2513,6 +2731,26 @@ namespace AxibugProtobuf {
           }
           case 82: {
             Player2NickName = input.ReadString();
+            break;
+          }
+          case 88: {
+            Player3UID = input.ReadInt64();
+            break;
+          }
+          case 98: {
+            Player3NickName = input.ReadString();
+            break;
+          }
+          case 104: {
+            Player4UID = input.ReadInt64();
+            break;
+          }
+          case 114: {
+            Player4NickName = input.ReadString();
+            break;
+          }
+          case 120: {
+            ScreenProviderUID = input.ReadInt64();
             break;
           }
         }

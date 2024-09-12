@@ -26,7 +26,7 @@ namespace AxibugEmuOnline.Client.Manager
                 LoginType = 0,
                 Account = App.user.userdata.Account,
             };
-            App.networkHelper.SendToServer((int)CommandID.CmdLogin, ProtoBufHelper.Serizlize(msg));
+            App.network.SendToServer((int)CommandID.CmdLogin, ProtoBufHelper.Serizlize(msg));
         }
 
         public void RecvLoginMsg(byte[] reqData)

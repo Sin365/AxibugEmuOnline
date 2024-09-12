@@ -1,5 +1,4 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using Codice.Client.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
