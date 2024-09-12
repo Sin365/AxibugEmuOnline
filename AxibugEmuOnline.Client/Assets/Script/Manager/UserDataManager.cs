@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client.Manager
         public UserDataManager()
         {
             //注册重连成功事件，以便后续自动登录
-            App.networkHelper.OnReConnected += OnReConnected;
+            App.network.OnReConnected += OnReConnected;
         }
         public MainUserDataBase userdata { get; private set; } = new MainUserDataBase();
         public bool IsLoggedIn => userdata.IsLoggedIn;
