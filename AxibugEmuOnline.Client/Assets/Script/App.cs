@@ -49,6 +49,9 @@ namespace AxibugEmuOnline.Client.ClientCore
             GameObject.DontDestroyOnLoad(go);
             coRunner = go.AddComponent<CoroutineRunner>();
 
+            var importNode = GameObject.Find("IMPORTENT");
+            GameObject.DontDestroyOnLoad(importNode);
+
             StartCoroutine(AppTickFlow());
         }
 

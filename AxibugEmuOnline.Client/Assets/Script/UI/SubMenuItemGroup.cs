@@ -66,8 +66,9 @@ namespace AxibugEmuOnline.Client
 
         protected override bool OnCmdEnter()
         {
-            LaunchUI.Instance.ToDetailMenuLayout();
             base.OnCmdEnter();
+
+            LaunchUI.Instance.ToDetailMenuLayout();
             var item = GetItemUIByIndex(SelectIndex);
             item.SetSelectState(false);
 
@@ -77,6 +78,7 @@ namespace AxibugEmuOnline.Client
         protected override void OnCmdBack()
         {
             base.OnCmdBack();
+
             LaunchUI.Instance.ToMainMenuLayout();
             var item = GetItemUIByIndex(SelectIndex);
             item.SetSelectState(true);
@@ -84,12 +86,14 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdSelectItemUp()
         {
-            SelectIndex--;
+            if (m_enteredItem == null)
+                SelectIndex--;
         }
 
         protected override void OnCmdSelectItemDown()
         {
-            SelectIndex++;
+            if (m_enteredItem == null)
+                SelectIndex++;
         }
 
         public virtual void SetSelect(bool select)

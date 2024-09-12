@@ -17,6 +17,8 @@ namespace AxibugEmuOnline.Client
         [Header("Ä£°å")]
         [SerializeField] OptionUI_ExecuteItem TEMPLATE_EXECUTEITEM;
 
+        public override bool AloneMode => true;
+
         private bool m_bPoped = false;
         private List<MonoBehaviour> m_runtimeMenuItems = new List<MonoBehaviour>();
 
@@ -77,6 +79,7 @@ namespace AxibugEmuOnline.Client
         {
             if (m_bPoped)
             {
+                CommandDispatcher.Instance.UnRegistController(this);
                 m_bPoped = false;
                 Canvas.ForceUpdateCanvases();
                 var width = MenuRoot.rect.width;
@@ -118,7 +121,7 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnSelectMenuChanged()
         {
-            
+
         }
     }
 
