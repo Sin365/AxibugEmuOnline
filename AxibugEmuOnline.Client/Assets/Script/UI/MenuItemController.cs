@@ -11,7 +11,7 @@ namespace AxibugEmuOnline.Client
         protected List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
         public override bool Enable => enabled;
 
-        private MenuItem m_enteredItem = null;
+        protected MenuItem m_enteredItem = null;
 
         protected int m_selectIndex = -1;
 

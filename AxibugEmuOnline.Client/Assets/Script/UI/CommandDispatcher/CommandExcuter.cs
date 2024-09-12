@@ -18,6 +18,7 @@ namespace AxibugEmuOnline.Client
         float PulseInvoke_Interval = 0.05f;
 
         public abstract bool Enable { get; }
+        public virtual bool AloneMode { get; }
 
         protected virtual void Awake()
         {
