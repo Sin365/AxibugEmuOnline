@@ -39,6 +39,12 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public void ResetToFirst()
+        {
+            m_selectIndex = -1;
+            SelectIndex = 0;
+        }
+
         protected override MenuItem GetItemUIByIndex(int index)
         {
             return itemGroup.GetItemUIByDataIndex(index).GetComponent<MenuItem>();
@@ -89,7 +95,10 @@ namespace AxibugEmuOnline.Client
             if (!useAnim)
                 srollRect.content.anchoredPosition += new Vector2(0, gap);
             else
-                srollRect.content.anchoredPosition += new Vector2(0, gap);
+            {
+                var endValue = srollRect.content.anchoredPosition + new Vector2(0, gap);
+                DOTween.To(() => srollRect.content.anchoredPosition, (x) => srollRect.content.anchoredPosition = x, endValue, 0.125f);
+            }
         }
 
         Vector3[] corner = new Vector3[4];

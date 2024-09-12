@@ -13,8 +13,10 @@ namespace AxibugEmuOnline.Client
         CanvasGroup RomGroupRoot;
         private TweenerCore<float, float, FloatOptions> m_showTween;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             RomGroupRoot.gameObject.SetActive(false);
             RomGroupRoot.alpha = 0;
         }
@@ -58,7 +60,7 @@ namespace AxibugEmuOnline.Client
                 thirdMenuGroup.itemGroup.UpdateDependencyProperty(thirdMenuGroup);
                 thirdMenuGroup.itemGroup.SetData(roms);
                 thirdMenuGroup.itemGroup.UpdateProxyVisualState();
-                thirdMenuGroup.SelectIndex = 0;
+                thirdMenuGroup.ResetToFirst();
             });
 
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(true);
