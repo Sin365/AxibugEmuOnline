@@ -12,11 +12,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static string IP;
         public static int Port;
         public static LogManager log;
-        public static NetworkHelper networkHelper;
+        public static NetworkHelper network;
         public static AppLogin login;
         public static AppChat chat;
         public static UserDataManager user;
-        public static AppNetGame netgame;
+        //public static AppNetGame netgame;
         public static AppEmu emu;
         public static RomLib nesRomLib;
         public static HttpAPI httpAPI;
@@ -33,12 +33,12 @@ namespace AxibugEmuOnline.Client.ClientCore
         {
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
-            networkHelper = new NetworkHelper();
+            network = new NetworkHelper();
             login = new AppLogin();
             chat = new AppChat();
             user = new UserDataManager();
             emu = new AppEmu();
-            netgame = new AppNetGame();
+            //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
@@ -78,7 +78,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 
         public static bool Connect(string IP, int port)
         {
-            return networkHelper.Init(IP, port);
+            return network.Init(IP, port);
         }
 
         public static void Close()

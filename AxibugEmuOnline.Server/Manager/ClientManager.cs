@@ -19,7 +19,11 @@ namespace AxibugEmuOnline.Server.Manager
 
         public TimeSpan LastStartPingTime { get; set; }
         public int LastPingSeed { get; set; }
-        public double NetDelay { get; set; }
+        public double AveNetDelay { get; set; }
+        public double MinNetDelay { get; set; }
+        public double MaxNetDelay { get; set; }
+        public List<double> NetDelays { get; set; } = new List<double>();
+        public const int NetAveDelayCount = 3;
     }
 
     public class UserRoomState
@@ -31,7 +35,7 @@ namespace AxibugEmuOnline.Server.Manager
             ClearRoomData();
         }
 
-        public void SetRoomData(int roomID,int playerIdx)
+        public void SetRoomData(int roomID, int playerIdx)
         {
             RoomID = roomID;
             PlayerIdx = playerIdx;
@@ -280,7 +284,21 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 TimeSpan current = AppSrv.g_Tick.sw.Elapsed;
                 TimeSpan delta = current - _c.LastStartPingTime;
-                _c.NetDelay = delta.TotalSeconds;
+                _c.NetDelays.Add(delta.TotalSeconds);
+
+                while (_c.NetDelays.Count > ClientInfo.NetAveDelayCount)
+                    _c.NetDelays.RemoveAt(0);
+
+                double tempMin = double.MaxValue;
+                double tempMax = double.MinValue;
+                for (int i = 0; i < _c.NetDelays.Count; i++)
+                {
+                    tempMin = Math.Min(_c.NetDelays[i], tempMin);
+                    tempMax = Math.Max(_c.NetDelays[i], tempMax);
+                }
+                _c.MinNetDelay = tempMin;
+                _c.MaxNetDelay = tempMax;
+                _c.AveNetDelay = _c.NetDelays.Average(w => w);
             }
         }
         #endregion
@@ -290,7 +308,7 @@ namespace AxibugEmuOnline.Server.Manager
             ClientSend(ClientList, CMDID, ERRCODE, data, SkipUID);
         }
 
-        public void ClientSend(List<long> UIDs,int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
+        public void ClientSend(List<long> UIDs, int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
         {
             for (int i = 0; i < UIDs.Count(); i++)
             {
@@ -307,14 +325,14 @@ namespace AxibugEmuOnline.Server.Manager
         /// <param name="CMDID"></param>
         /// <param name="ERRCODE"></param>
         /// <param name="data"></param>
-        public void ClientSend(List<ClientInfo> _toclientlist, int CMDID, int ERRCODE, byte[] data,long SkipUID = -1)
+        public void ClientSend(List<ClientInfo> _toclientlist, int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
         {
             for (int i = 0; i < _toclientlist.Count(); i++)
             {
                 if (_toclientlist[i] == null || _toclientlist[i].IsOffline)
                     continue;
 
-                if(SkipUID > -1 && _toclientlist[i].UID == SkipUID)
+                if (SkipUID > -1 && _toclientlist[i].UID == SkipUID)
                     continue;
 
                 AppSrv.g_SocketMgr.SendToSocket(_toclientlist[i]._socket, CMDID, ERRCODE, data);
