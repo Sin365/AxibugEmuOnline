@@ -83,7 +83,10 @@ namespace AxibugEmuOnline.Client.UI
             m_select = selected;
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActiveEx(selected);
-            if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(selected);
+            if (SubMenuItemGroup != null)
+            {
+                SubMenuItemGroup.SetSelect(selected);
+            }
 
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
