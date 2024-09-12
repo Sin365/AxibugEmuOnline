@@ -1,8 +1,6 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
-using System;
 using System.Collections;
-using System.Net.Sockets;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.ClientCore
