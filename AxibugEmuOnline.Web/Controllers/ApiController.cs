@@ -14,6 +14,20 @@ namespace AxibugEmuOnline.Web.Controllers
         }
 
         [HttpGet]
+        public JsonResult CheckStandInfo(int platform, string version)
+        {
+            Resp_CheckStandInfo resp = new Resp_CheckStandInfo()
+            {
+                needUpdateClient = 0,
+                clientVersion = Config.cfg.ClientVersion,
+                serverIp = Config.cfg.ServerIp,
+                serverPort = Config.cfg.ServerPort,
+                downLoadUrl = ""
+            };
+            return new JsonResult(resp);
+        }
+
+        [HttpGet]
         public JsonResult NesRomList(string SearchKey,int Ptype,int GType,int Page, int PageSize)
         {
             string searchPattern = $"%{SearchKey}%";
@@ -116,6 +130,16 @@ namespace AxibugEmuOnline.Web.Controllers
             /// </summary>
             ALLINONE,
         }
+
+        class Resp_CheckStandInfo
+        {
+            public int needUpdateClient { get; set; }
+            public string serverIp { get; set; }
+            public ushort serverPort { get; set; }
+            public string clientVersion { get; set; }
+            public string downLoadUrl { get; set; }
+        }
+
 
         class Resp_GameList
         {
