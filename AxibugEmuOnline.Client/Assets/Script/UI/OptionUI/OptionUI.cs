@@ -12,21 +12,43 @@ namespace AxibugEmuOnline.Client
 
         [SerializeField]
         RectTransform MenuRoot;
+        [SerializeField]
+        RectTransform SelectBorder;
 
         [Space]
         [Header("Ä£°å")]
         [SerializeField] OptionUI_ExecuteItem TEMPLATE_EXECUTEITEM;
 
         public override bool AloneMode => true;
+        public override bool Enable => m_bPoped;
 
         private bool m_bPoped = false;
         private List<MonoBehaviour> m_runtimeMenuItems = new List<MonoBehaviour>();
+
+        private int m_selectIndex = -1;
+        public int SelectIndex
+        {
+            get { return m_selectIndex; }
+            set
+            {
+                value = Mathf.Clamp(value, 0, m_runtimeMenuItems.Count - 1);
+                if (m_selectIndex == value) return;
+
+                m_selectIndex = value;
+
+                var itemUIRect = m_runtimeMenuItems[m_selectIndex].transform as RectTransform;
+                SelectBorder.pivot = itemUIRect.pivot;
+                SelectBorder.sizeDelta = itemUIRect.rect.size;
+                DOTween.To(() => SelectBorder.position, (value) => SelectBorder.position = value, itemUIRect.position, 0.125f);
+                SelectBorder.SetAsLastSibling();
+            }
+        }
 
         protected override void Awake()
         {
             Instance = this;
             TEMPLATE_EXECUTEITEM.gameObject.SetActiveEx(false);
-
+            SelectBorder.gameObject.SetActiveEx(false);
             base.Awake();
         }
 
@@ -58,6 +80,17 @@ namespace AxibugEmuOnline.Client
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
             CommandDispatcher.Instance.RegistController(this);
+            SelectBorder.gameObject.SetActiveEx(true);
+
+            Canvas.ForceUpdateCanvases();
+
+            m_selectIndex = 0;
+            var itemUIRect = m_runtimeMenuItems[m_selectIndex].transform as RectTransform;
+            SelectBorder.pivot = itemUIRect.pivot;
+            SelectBorder.position = itemUIRect.position;
+            SelectBorder.sizeDelta = itemUIRect.rect.size;
+            SelectBorder.SetAsLastSibling();
+
             if (!m_bPoped)
             {
                 m_bPoped = true;
@@ -79,6 +112,8 @@ namespace AxibugEmuOnline.Client
         {
             if (m_bPoped)
             {
+                SelectBorder.gameObject.SetActiveEx(false);
+
                 CommandDispatcher.Instance.UnRegistController(this);
                 m_bPoped = false;
                 Canvas.ForceUpdateCanvases();
@@ -117,11 +152,14 @@ namespace AxibugEmuOnline.Client
             m_runtimeMenuItems.Clear();
         }
 
-        public override bool Enable => m_bPoped;
-
-        protected override void OnSelectMenuChanged()
+        protected override void OnCmdSelectItemDown()
         {
+            SelectIndex++;
+        }
 
+        protected override void OnCmdSelectItemUp()
+        {
+            SelectIndex--;
         }
     }
 
