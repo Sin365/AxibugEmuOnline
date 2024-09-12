@@ -33,6 +33,11 @@ namespace AxibugEmuOnline.Client.UI
         protected TweenerCore<float, float, FloatOptions> progressTween;
         protected float m_progress;
 
+        protected virtual void Awake()
+        {
+            Reset();
+        }
+
         public void SetData(MenuData data)
         {
             Reset();
@@ -47,7 +52,6 @@ namespace AxibugEmuOnline.Client.UI
             m_select = false;
             m_progress = 0f;
 
-            if (InfoNode != null) InfoNode.alpha = 0;
             Root.localScale = Vector3.one * UnSelectScale;
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
