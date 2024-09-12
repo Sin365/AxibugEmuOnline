@@ -16,6 +16,9 @@ namespace AxibugEmuOnline.Web.Common
         public string DBPwd{get;set;}
         public string RomDir{get;set;}
         public string ImageDir { get; set; }
+        public string ServerIp { get; set; }
+        public ushort ServerPort { get; set; }
+        public string ClientVersion { get; set; }
     }
 
 
@@ -38,6 +41,9 @@ namespace AxibugEmuOnline.Web.Common
                         DBName = "DBName",
                         RomDir = "./Rom",
                         ImageDir = "./Img",
+                        ServerIp = "127.0.0.1",
+                        ServerPort = 10001,
+                        ClientVersion = "0.0.0.1"
                     };
 
                     string jsonString = JsonSerializer.Serialize(sampleCfg, new JsonSerializerOptions()

@@ -2,6 +2,41 @@
 
 这里说明，WebApi类的接口
 
+### 基本信息检查
+
+```
+{WebHost}/api/NesRomList?platform=<平台编号>&version=<版本>
+```
+Request:
+
+```
+http://emu.axibug.com/api/CheckStandInfo?platform=1&version=1.0.0.0
+```
+
+Response:
+
+```
+{
+    "needUpdateClient": 0,
+    "serverIp": "139.186.160.243",
+    "serverPort": 10492,
+    "clientVersion": "0.0.0.1",
+    "downLoadUrl": ""
+}
+```
+
+序列化C#实体类示例
+
+```
+class Resp_CheckStandInfo
+{
+    public int needUpdateClient { get; set; }
+    public string serverIp { get; set; }
+    public ushort serverPort { get; set; }
+    public string clientVersion { get; set; }
+    public string downLoadUrl { get; set; }
+}
+```
 
 ### Nes游戏列表
 
