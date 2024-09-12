@@ -102,7 +102,6 @@ namespace AxibugEmuOnline.Client
         protected virtual void OnCmdOptionMenu() { }
         protected virtual bool OnCmdEnter() => false;
         protected virtual void OnCmdBack() { }
-        protected abstract void OnSelectMenuChanged();
 
     }
 

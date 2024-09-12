@@ -72,6 +72,8 @@ namespace AxibugEmuOnline.Client
                 m_enteredItem = null;
             }
         }
+
+        protected abstract void OnSelectMenuChanged();
     }
 
     public abstract class MenuItemController<T> : MenuItemController
