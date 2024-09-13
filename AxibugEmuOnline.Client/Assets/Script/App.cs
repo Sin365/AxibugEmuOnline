@@ -56,6 +56,9 @@ namespace AxibugEmuOnline.Client.ClientCore
             tickLoop = go.AddComponent<TickLoop>();
             coRunner = go.AddComponent<CoroutineRunner>();
 
+            var importNode = GameObject.Find("IMPORTENT");
+            GameObject.DontDestroyOnLoad(importNode);
+
             StartCoroutine(AppTickFlow());
             RePullNetInfo();
         }

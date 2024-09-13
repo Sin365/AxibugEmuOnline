@@ -7,14 +7,33 @@ using App = AxibugEmuOnline.Client.ClientCore.App;
 
 namespace AxibugEmuOnline.Client
 {
-    public class Game_NES : MenuItem
+    public class RomListMenuItem : MenuItem
     {
         [SerializeField]
         CanvasGroup RomGroupRoot;
+        [SerializeField]
+        EnumPlatform Platform;
+
         private TweenerCore<float, float, FloatOptions> m_showTween;
 
-        private void Awake()
+        private RomLib RomLib
         {
+            get
+            {
+                switch (Platform)
+                {
+                    case EnumPlatform.NES:
+                        return App.nesRomLib;
+                    default:
+                        throw new System.NotImplementedException($"未实现的平台 {Platform}");
+                }
+            }
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+
             RomGroupRoot.gameObject.SetActive(false);
             RomGroupRoot.alpha = 0;
         }
@@ -52,13 +71,13 @@ namespace AxibugEmuOnline.Client
 
             var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
             thirdMenuGroup.itemGroup.Clear();
-            App.nesRomLib.FetchRomCount((roms) =>
+            RomLib.FetchRomCount((roms) =>
             {
                 var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
                 thirdMenuGroup.itemGroup.UpdateDependencyProperty(thirdMenuGroup);
                 thirdMenuGroup.itemGroup.SetData(roms);
                 thirdMenuGroup.itemGroup.UpdateProxyVisualState();
-                thirdMenuGroup.SelectIndex = 0;
+                thirdMenuGroup.ResetToFirst();
             });
 
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(true);
