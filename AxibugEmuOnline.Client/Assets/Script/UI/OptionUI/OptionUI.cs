@@ -1,7 +1,6 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -23,7 +22,7 @@ namespace AxibugEmuOnline.Client
         public override bool Enable => m_bPoped;
 
         private bool m_bPoped = false;
-        private List<MonoBehaviour> m_runtimeMenuItems = new List<MonoBehaviour>();
+        private List<OptionUI_MenuItem> m_runtimeMenuItems = new List<OptionUI_MenuItem>();
 
         private int m_selectIndex = -1;
         public int SelectIndex
@@ -36,7 +35,9 @@ namespace AxibugEmuOnline.Client
 
                 m_selectIndex = value;
 
-                var itemUIRect = m_runtimeMenuItems[m_selectIndex].transform as RectTransform;
+                OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
+                optionUI_MenuItem.OnFocus();
+                var itemUIRect = optionUI_MenuItem.transform as RectTransform;
                 SelectBorder.pivot = itemUIRect.pivot;
                 SelectBorder.sizeDelta = itemUIRect.rect.size;
                 DOTween.To(() => SelectBorder.position, (value) => SelectBorder.position = value, itemUIRect.position, 0.125f);
@@ -61,21 +62,7 @@ namespace AxibugEmuOnline.Client
             MenuRoot.anchoredPosition = temp;
         }
 
-        protected override void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                if (m_bPoped) Hide();
-                else Pop(new List<OptionMenu>
-                {
-                    new ExecuteMenu("≤‚ ‘≤Àµ•1"),
-                    new ExecuteMenu("Copilot"),
-                    new ExecuteMenu("ChatGPT 4o"),
-                });
-            }
-        }
-
-        public void Pop(IEnumerable<OptionMenu> menus)
+        public void Pop(List<OptionMenu> menus, int defaultIndex = 0)
         {
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
@@ -85,7 +72,9 @@ namespace AxibugEmuOnline.Client
             Canvas.ForceUpdateCanvases();
 
             m_selectIndex = 0;
-            var itemUIRect = m_runtimeMenuItems[m_selectIndex].transform as RectTransform;
+            OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[defaultIndex];
+            optionUI_MenuItem.OnFocus();
+            var itemUIRect = optionUI_MenuItem.transform as RectTransform;
             SelectBorder.pivot = itemUIRect.pivot;
             SelectBorder.position = itemUIRect.position;
             SelectBorder.sizeDelta = itemUIRect.rect.size;
@@ -160,6 +149,18 @@ namespace AxibugEmuOnline.Client
         protected override void OnCmdSelectItemUp()
         {
             SelectIndex--;
+        }
+
+        protected override void OnCmdBack()
+        {
+            Hide();
+        }
+
+        protected override bool OnCmdEnter()
+        {
+            m_runtimeMenuItems[SelectIndex].OnExecute();
+            Hide();
+            return true;
         }
     }
 

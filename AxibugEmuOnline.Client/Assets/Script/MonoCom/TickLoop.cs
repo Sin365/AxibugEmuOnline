@@ -28,6 +28,14 @@ namespace AxibugEmuOnline.Client
 
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdPing, OnCmdPing);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdPong, OnCmdPong);
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += (state) =>
+            {
+                if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode)
+                    OnApplicationQuit();
+            };
+#endif
         }
         float LastPingTime;
         private void Update()
@@ -46,11 +54,11 @@ namespace AxibugEmuOnline.Client
         {
             App.log.Debug("OnApplicationQuit");
             App.network.bAutoReConnect = false;
+
             if (App.network.isConnected)
             {
                 App.network.CloseConntect();
             }
-            App.network.CancelReConnect();
         }
 
 

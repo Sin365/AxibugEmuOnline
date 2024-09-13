@@ -82,7 +82,7 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                App.BeginGame(m_romfile);
+                App.emu.BeginGame(m_romfile);
 
                 return false;
             }
