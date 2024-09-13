@@ -12,6 +12,8 @@ namespace AxibugEmuOnline.Client.Network
 
         private Dictionary<int, List<Delegate>> netEventDic = new Dictionary<int, List<Delegate>>(128);
 
+        private Queue<(int, int, byte[])> queueNetMsg = new Queue<(int, int, byte[])>();
+
         private NetMsg() { }
 
 
@@ -57,7 +59,21 @@ namespace AxibugEmuOnline.Client.Network
         #endregion
 
         #region PostEvent
-        public void PostNetMsgEvent(int cmd, byte[] arg)
+        public void EnqueueNesMsg(int cmd, int ERRCODE, byte[] arg)
+        {
+            queueNetMsg.Enqueue((cmd, ERRCODE, arg));
+        }
+
+        public void DequeueNesMsg()
+        {
+            if (queueNetMsg.Count > 0)
+            {
+                (int, int, byte[]) msgData = queueNetMsg.Dequeue();
+                PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
+            }
+        }
+
+        public void PostNetMsgEvent(int cmd, int ERRCODE, byte[] arg)
         {
             List<Delegate> eventList = GetNetEventDicList(cmd);
             if (eventList != null)

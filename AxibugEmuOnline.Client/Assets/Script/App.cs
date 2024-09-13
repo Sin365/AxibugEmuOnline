@@ -1,8 +1,10 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
-using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
+using static AxibugEmuOnline.Client.HttpAPI;
 
 namespace AxibugEmuOnline.Client.ClientCore
 {
@@ -24,7 +26,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppSceneLoader SceneLoader;
         public static AppRoom roomMgr;
 
+        #region Mono
+        public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
+        #endregion
+
 
         public static string PersistentDataPath => Application.persistentDataPath;
 
@@ -47,9 +53,11 @@ namespace AxibugEmuOnline.Client.ClientCore
 
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
+            tickLoop = go.AddComponent<TickLoop>();
             coRunner = go.AddComponent<CoroutineRunner>();
 
             StartCoroutine(AppTickFlow());
+            RePullNetInfo();
         }
 
         private static IEnumerator AppTickFlow()
@@ -59,6 +67,37 @@ namespace AxibugEmuOnline.Client.ClientCore
                 Tick();
                 yield return null;
             }
+        }
+
+        public static void RePullNetInfo()
+        {
+            StartCoroutine(StartNetInit());
+        }
+
+        static IEnumerator StartNetInit()
+        {
+            if (App.network.isConnected) 
+                yield break;
+
+            int platform = 0;
+
+            UnityWebRequest request = UnityWebRequest.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+                yield break;
+
+            App.log.Debug($"ApiResp => {request.downloadHandler.text}");
+            Resp_CheckStandInfo resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);
+            //需要更新
+            if (resp.needUpdateClient == 1)
+            {
+                //TODO
+            }
+
+            yield return null;
+            Connect("127.0.0.1", 10492);
+            //Connect(resp.serverIp, resp.serverPort);
         }
 
         private static void Tick()
@@ -76,9 +115,13 @@ namespace AxibugEmuOnline.Client.ClientCore
             coRunner.StopCoroutine(cor);
         }
 
-        public static bool Connect(string IP, int port)
+        public static void Connect(string IP, int port)
         {
-            return network.Init(IP, port);
+            Task task = new Task(() =>
+            {
+                network.Init(IP, port);
+            });
+            task.Start();
         }
 
         public static void Close()
