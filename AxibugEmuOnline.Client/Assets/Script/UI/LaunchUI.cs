@@ -3,6 +3,7 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
@@ -12,6 +13,8 @@ namespace AxibugEmuOnline.Client
         RectTransform MainMenuRoot;
         [SerializeField]
         MainMenuController MainMenu;
+        [SerializeField]
+        Image BG;
 
         Vector2 m_mainLayoutPosition;
         [SerializeField]
@@ -26,19 +29,19 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(this);
-            DontDestroyOnLoad(Camera.main.gameObject);
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;
         }
 
         public void HideMainMenu()
         {
+            BG.gameObject.SetActiveEx(false);
             MainMenuRoot.gameObject.SetActiveEx(false);
         }
 
         public void ShowMainMenu()
         {
+            BG.gameObject.SetActiveEx(true);
             MainMenuRoot.gameObject.SetActiveEx(true);
         }
 

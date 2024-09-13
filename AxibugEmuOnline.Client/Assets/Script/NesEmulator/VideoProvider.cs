@@ -8,6 +8,7 @@ namespace AxibugEmuOnline.Client
     public class VideoProvider : MonoBehaviour
     {
         public NesEmulator NesEmu;
+        public Canvas DrawCanvas;
 
         public RawImage Image;
 
@@ -17,6 +18,11 @@ namespace AxibugEmuOnline.Client
         private int TexBufferSize;
 
         private Texture2D pPal;
+
+        private void Awake()
+        {
+            DrawCanvas.worldCamera = Camera.main;
+        }
 
         public void SetDrawData(uint[] screenData, byte[] lineColorMode, int screenWidth, int screenHeight)
         {

@@ -2,6 +2,7 @@
 {
     public struct BLOCKHDR : IStateBufferObject
     {
+        public readonly bool Valid => !string.IsNullOrEmpty(ID);
         public string ID;
         public ushort Reserved;
         public ushort BlockVersion;
@@ -9,10 +10,13 @@
 
         public readonly void SaveState(StateBuffer buffer)
         {
-            buffer.Write(ID);
-            buffer.Write(Reserved);
-            buffer.Write(BlockVersion);
-            buffer.Write(BlockSize);
+            if (Valid)
+            {
+                buffer.Write(ID);
+                buffer.Write(Reserved);
+                buffer.Write(BlockVersion);
+                buffer.Write(BlockSize);
+            }
         }
 
         public readonly uint GetSize()
