@@ -56,6 +56,7 @@ public class XMBTopGroup : MonoBehaviour
         {
             battery = 1f;
         }
+
         if (battery > 0.80f)
         {
             imgPower1.gameObject.SetActive(true);
