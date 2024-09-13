@@ -22,10 +22,12 @@ namespace AxibugEmuOnline.Client
         private TweenerCore<int, int, NoOptions> rollTween;
 
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
             m_selected = false;
             if (alphaGroup != null) alphaGroup.alpha = 0;
+
+            base.Awake();
         }
 
         public override void Init(List<MenuData> menuDataList)
@@ -62,32 +64,36 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        protected override bool OnCmdEnter(MenuItem item)
+        protected override bool OnCmdEnter()
         {
+            base.OnCmdEnter();
+
             LaunchUI.Instance.ToDetailMenuLayout();
+            var item = GetItemUIByIndex(SelectIndex);
             item.SetSelectState(false);
-            base.OnCmdEnter(item);
 
             return true;
         }
 
-        protected override bool OnCmdBack(MenuItem item)
+        protected override void OnCmdBack()
         {
-            LaunchUI.Instance.ToMainMenuLayout();
-            item.SetSelectState(true);
-            base.OnCmdBack(item);
+            base.OnCmdBack();
 
-            return true;
+            LaunchUI.Instance.ToMainMenuLayout();
+            var item = GetItemUIByIndex(SelectIndex);
+            item.SetSelectState(true);
         }
 
         protected override void OnCmdSelectItemUp()
         {
-            SelectIndex--;
+            if (m_enteredItem == null)
+                SelectIndex--;
         }
 
         protected override void OnCmdSelectItemDown()
         {
-            SelectIndex++;
+            if (m_enteredItem == null)
+                SelectIndex++;
         }
 
         public virtual void SetSelect(bool select)

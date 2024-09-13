@@ -4,34 +4,14 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public abstract class MenuItemController : MonoBehaviour
+    public abstract class MenuItemController : CommandExecuter
     {
-        public enum EnumCommand
-        {
-            SelectItemLeft,
-            SelectItemRight,
-            SelectItemUp,
-            SelectItemDown,
-            Enter,
-            Back,
-            OptionMenu
-        }
-
-
         [SerializeField]
         protected Transform m_menuItemRoot;
         protected List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
+        public override bool Enable => enabled;
 
-        private PulseInvoker m_pulsInvoker_Left;
-        private PulseInvoker m_pulsInvoker_Right;
-        private PulseInvoker m_pulsInvoker_Up;
-        private PulseInvoker m_pulsInvoker_Down;
-        private MenuItem m_enteredItem = null;
-
-        [SerializeField]
-        float PulseInvoke_Delay = 0.4f;
-        [SerializeField]
-        float PulseInvoke_Interval = 0.05f;
+        protected MenuItem m_enteredItem = null;
 
         protected int m_selectIndex = -1;
 
@@ -61,87 +41,6 @@ namespace AxibugEmuOnline.Client
 
             Canvas.ForceUpdateCanvases();
             SelectIndex = 0;
-
-            m_pulsInvoker_Left = new PulseInvoker(OnCmdSelectItemLeft, PulseInvoke_Delay, PulseInvoke_Interval);
-            m_pulsInvoker_Right = new PulseInvoker(OnCmdSelectItemRight, PulseInvoke_Delay, PulseInvoke_Interval);
-            m_pulsInvoker_Up = new PulseInvoker(OnCmdSelectItemUp, PulseInvoke_Delay, PulseInvoke_Interval);
-            m_pulsInvoker_Down = new PulseInvoker(OnCmdSelectItemDown, PulseInvoke_Delay, PulseInvoke_Interval);
-        }
-
-
-        protected virtual void Update()
-        {
-            m_pulsInvoker_Left.Update(Time.deltaTime);
-            m_pulsInvoker_Right.Update(Time.deltaTime);
-            m_pulsInvoker_Up.Update(Time.deltaTime);
-            m_pulsInvoker_Down.Update(Time.deltaTime);
-        }
-
-        public void ExecuteCommand(EnumCommand cmd, bool cancel)
-        {
-            if (!cancel)
-            {
-                switch (cmd)
-                {
-                    case EnumCommand.SelectItemLeft:
-                        m_pulsInvoker_Left.SetActive();
-                        OnCmdSelectItemLeft();
-                        break;
-                    case EnumCommand.SelectItemRight:
-                        m_pulsInvoker_Right.SetActive();
-                        OnCmdSelectItemRight();
-                        break;
-                    case EnumCommand.SelectItemUp:
-                        m_pulsInvoker_Up.SetActive();
-                        OnCmdSelectItemUp();
-                        break;
-                    case EnumCommand.SelectItemDown:
-                        m_pulsInvoker_Down.SetActive();
-                        OnCmdSelectItemDown();
-                        break;
-                    case EnumCommand.Enter:
-                        if (m_enteredItem == null)
-                        {
-                            var willEnterItem = GetItemUIByIndex(SelectIndex);
-                            bool res = OnCmdEnter(willEnterItem);
-                            if (res)
-                            {
-                                m_enteredItem = willEnterItem;
-
-                                m_pulsInvoker_Left.DisActive();
-                                m_pulsInvoker_Right.DisActive();
-                                m_pulsInvoker_Up.DisActive();
-                                m_pulsInvoker_Down.DisActive();
-                            }
-
-                        }
-                        break;
-                    case EnumCommand.Back:
-                        if (m_enteredItem != null)
-                        {
-                            OnCmdBack(m_enteredItem);
-                            m_enteredItem = null;
-                        }
-                        break;
-                    case EnumCommand.OptionMenu:
-                        OnCmdOptionMenu();
-                        break;
-                }
-            }
-            else
-            {
-                switch (cmd)
-                {
-                    case EnumCommand.SelectItemLeft:
-                        m_pulsInvoker_Left.DisActive(); break;
-                    case EnumCommand.SelectItemRight:
-                        m_pulsInvoker_Right.DisActive(); break;
-                    case EnumCommand.SelectItemUp:
-                        m_pulsInvoker_Up.DisActive(); break;
-                    case EnumCommand.SelectItemDown:
-                        m_pulsInvoker_Down.DisActive(); break;
-                }
-            }
         }
 
         protected virtual MenuItem GetItemUIByIndex(int index)
@@ -149,19 +48,32 @@ namespace AxibugEmuOnline.Client
             return m_runtimeMenuUI[SelectIndex];
         }
 
-        protected virtual void OnCmdSelectItemLeft() { }
+        protected override bool OnCmdEnter()
+        {
+            if (m_enteredItem == null)
+            {
+                var willEnterItem = GetItemUIByIndex(SelectIndex);
+                bool res = willEnterItem.OnEnterItem();
+                if (res)
+                {
+                    m_enteredItem = willEnterItem;
+                }
+                return res;
+            }
 
-        protected virtual void OnCmdSelectItemRight() { }
+            return false;
+        }
 
-        protected virtual void OnCmdSelectItemUp() { }
+        protected override void OnCmdBack()
+        {
+            if (m_enteredItem != null)
+            {
+                m_enteredItem.OnExitItem();
+                m_enteredItem = null;
+            }
+        }
 
-        protected virtual void OnCmdSelectItemDown() { }
-
-        protected virtual void OnCmdOptionMenu() { }
-        protected virtual bool OnCmdEnter(MenuItem item) => item.OnEnterItem();
-        protected virtual bool OnCmdBack(MenuItem item) => item.OnExitItem();
         protected abstract void OnSelectMenuChanged();
-
     }
 
     public abstract class MenuItemController<T> : MenuItemController
@@ -189,10 +101,5 @@ namespace AxibugEmuOnline.Client
             if (CommandDispatcher.Instance != null)
                 CommandDispatcher.Instance.UnRegistController(this);
         }
-
-
-
-
-
     }
 }
