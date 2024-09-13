@@ -27,7 +27,7 @@ namespace AxibugEmuOnline.Client
 
         IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
         {
-            var request = UnityWebRequest.Get($"{App.httpAPI.DownSite}/{url}");
+            var request = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{url}");
             yield return request.SendWebRequest();
 
             if (request.result == UnityWebRequest.Result.Success)

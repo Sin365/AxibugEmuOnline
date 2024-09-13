@@ -1,8 +1,10 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using HaoYueNet.ClientNetworkNet.Standard2;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace AxibugEmuOnline.Client.Network
 {
@@ -31,7 +33,7 @@ namespace AxibugEmuOnline.Client.Network
         /// <summary>
         /// 是否自动重连
         /// </summary>
-        public bool bAutoReConnect = false;
+        public bool bAutoReConnect = true;
         /// <summary>
         /// 重连尝试时间
         /// </summary>
@@ -80,7 +82,12 @@ namespace AxibugEmuOnline.Client.Network
             try
             {
                 //抛出网络数据
-                NetMsg.Instance.PostNetMsgEvent(CMDID, data);
+
+                //网络线程直接抛
+                if(CMDID == (int)CommandID.CmdPing || CMDID == (int)CommandID.CmdPong)
+                    NetMsg.Instance.PostNetMsgEvent(CMDID,ERRCODE, data);
+                else//加入队列，主线程来取
+                    NetMsg.Instance.EnqueueNesMsg(CMDID, ERRCODE, data);
             }
             catch (Exception ex)
             {
@@ -102,33 +109,44 @@ namespace AxibugEmuOnline.Client.Network
                 ReConnect();
         }
 
-
-        bool bInReConnecting = false;
+        CancellationTokenSource cts;
+        Task ReConnectTask;
+        public void CancelReConnect()
+        {
+            App.log.Debug("CancelReConnect");
+            cts?.Cancel();
+            cts = null;
+            ReConnectTask = null;
+        }
         /// <summary>
         /// 自动重连
         /// </summary>
         void ReConnect()
         {
-            if (bInReConnecting)
+            if (ReConnectTask != null)
                 return;
-            bInReConnecting = true;
-
-            bool bflagDone = false;
-            do
+            cts = new CancellationTokenSource();
+            ReConnectTask = new Task(() =>
             {
-                //等待时间
-                Thread.Sleep(ReConnectTryTime);
-                App.log.Info($"尝试自动重连{LastConnectIP}:{LastConnectPort}……");
-                //第一步
-                if (Init(LastConnectIP, LastConnectPort))
+                bool bflagDone = false;
+                do
                 {
-                    App.log.Info($"自动重连成功!");
-                    bflagDone = true;
-                    App.log.Info($"触发重连后的自动逻辑!");
-                    OnReConnected?.Invoke();
-                }
-            } while (!bflagDone);
-            bInReConnecting = false;
+                    //等待时间
+                    Thread.Sleep(ReConnectTryTime);
+                    App.log.Info($"尝试自动重连{LastConnectIP}:{LastConnectPort}……");
+                    //第一步
+                    if (Init(LastConnectIP, LastConnectPort))
+                    {
+                        App.log.Info($"自动重连成功!");
+                        bflagDone = true;
+                        App.log.Info($"触发重连后的自动逻辑!");
+                        OnReConnected?.Invoke();
+                    }
+                } while (!bflagDone);
+                ReConnectTask = null;
+                cts = null;
+            }, cts.Token);
+            ReConnectTask.Start();
         }
 
         bool CheckIsConnectd()

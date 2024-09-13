@@ -106,7 +106,7 @@ namespace AxibugEmuOnline.Client
 
         private IEnumerator DownloadRemoteRom(Action<byte[]> callback)
         {
-            downloadRequest = UnityWebRequest.Get($"{App.httpAPI.DownSite}/{webData.url}");
+            downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
             yield return downloadRequest.SendWebRequest();
 
             if (downloadRequest.result != UnityWebRequest.Result.Success)

@@ -3,12 +3,16 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Client.Manager
 {
     public class AppLogin
     {
         static string LastLoginGuid = "";
+
         public AppLogin()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdLogin, RecvLoginMsg);
@@ -42,5 +46,6 @@ namespace AxibugEmuOnline.Client.Manager
                 App.log.Info("登录失败");
             }
         }
+
     }
 }

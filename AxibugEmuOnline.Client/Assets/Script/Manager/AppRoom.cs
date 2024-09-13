@@ -6,6 +6,7 @@ using AxibugProtobuf;
 using AxiReplay;
 using Google.Protobuf;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
@@ -21,14 +22,21 @@ namespace AxibugEmuOnline.Client.Manager
         public byte[] RawData { get; private set; } = null;
         public NetReplay netReplay { get; private set; }
 
-
         Dictionary<int, Protobuf_Room_MiniInfo> dictRoomListID2Info = new Dictionary<int, Protobuf_Room_MiniInfo>();
-        static Protobuf_Room_List _Protobuf_Room_List = new Protobuf_Room_List();
-        static Protobuf_Room_Create _Protobuf_Room_Create = new Protobuf_Room_Create();
-        static Protobuf_Room_Join _Protobuf_Room_Join = new Protobuf_Room_Join();
-        static Protobuf_Room_Leave _Protobuf_Room_Leave = new Protobuf_Room_Leave();
-        static Protobuf_Room_Player_Ready _Protobuf_Room_Player_Ready = new Protobuf_Room_Player_Ready();
-        static Protobuf_Room_SinglePlayerInputData _Protobuf_Room_SinglePlayerInputData = new Protobuf_Room_SinglePlayerInputData();
+
+        struct S_PlayerMiniInfo
+        {
+            public long UID;
+            public string NickName;
+        }
+
+        Protobuf_Room_List _Protobuf_Room_List = new Protobuf_Room_List();
+        Protobuf_Room_Create _Protobuf_Room_Create = new Protobuf_Room_Create();
+        Protobuf_Room_Join _Protobuf_Room_Join = new Protobuf_Room_Join();
+        Protobuf_Room_Leave _Protobuf_Room_Leave = new Protobuf_Room_Leave();
+        Protobuf_Room_Player_Ready _Protobuf_Room_Player_Ready = new Protobuf_Room_Player_Ready();
+        Protobuf_Room_SinglePlayerInputData _Protobuf_Room_SinglePlayerInputData = new Protobuf_Room_SinglePlayerInputData();
+        Protobuf_Screnn_Frame _Protobuf_Screnn_Frame = new Protobuf_Screnn_Frame();
         public AppRoom()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomList, RecvGetRoomList);
@@ -40,6 +48,7 @@ namespace AxibugEmuOnline.Client.Manager
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomWaitStep, RecvRoom_WaitStep);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, RecvHostPlayer_UpdateStateRaw);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomSynPlayerInput, RecvHostSyn_RoomFrameAllInputData);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdScreen, OnScreen);
         }
 
         #region 房间列表管理
@@ -90,7 +99,7 @@ namespace AxibugEmuOnline.Client.Manager
         }
         public void ReleaseRePlay()
         {
-            
+
         }
         #endregion
 
@@ -107,17 +116,47 @@ namespace AxibugEmuOnline.Client.Manager
             return -1;
         }
 
-        long[] GetRoom4Player()
+        long[] GetRoom4PlayerUIDs()
         {
             if (mineRoomMiniInfo == null)
                 return null;
             long[] result = new long[4];
-
             if (mineRoomMiniInfo.Player1UID > 0)
                 result[0] = mineRoomMiniInfo.Player1UID;
-            if (mineRoomMiniInfo.Player2UID == App.user.userdata.UID)
+            if (mineRoomMiniInfo.Player2UID > 0)
                 result[1] = mineRoomMiniInfo.Player2UID;
+            if (mineRoomMiniInfo.Player3UID > 0)
+                result[2] = mineRoomMiniInfo.Player3UID;
+            if (mineRoomMiniInfo.Player4UID > 0)
+                result[3] = mineRoomMiniInfo.Player4UID;
+            return result;
+        }
 
+        S_PlayerMiniInfo[] GetRoom4PlayerMiniInfos()
+        {
+            if (mineRoomMiniInfo == null)
+                return null;
+            S_PlayerMiniInfo[] result = new S_PlayerMiniInfo[4];
+            if (mineRoomMiniInfo.Player1UID > 0)
+            {
+                result[0].UID = mineRoomMiniInfo.Player1UID;
+                result[0].NickName = mineRoomMiniInfo.Player1NickName;
+            }
+            if (mineRoomMiniInfo.Player2UID > 0)
+            {
+                result[1].UID = mineRoomMiniInfo.Player2UID;
+                result[1].NickName = mineRoomMiniInfo.Player2NickName;
+            }
+            if (mineRoomMiniInfo.Player3UID > 0)
+            {
+                result[2].UID = mineRoomMiniInfo.Player3UID;
+                result[2].NickName = mineRoomMiniInfo.Player3NickName;
+            }
+            if (mineRoomMiniInfo.Player4UID > 0)
+            {
+                result[3].UID = mineRoomMiniInfo.Player4UID;
+                result[3].NickName = mineRoomMiniInfo.Player4NickName;
+            }
             return result;
         }
 
@@ -238,9 +277,9 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvRoomMyRoomStateChange(byte[] reqData)
         {
             Protobuf_Room_MyRoom_State_Change msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_MyRoom_State_Change>(reqData);
-            long[] oldRoomPlayer = GetRoom4Player();
+            long[] oldRoomPlayer = GetRoom4PlayerUIDs();
             mineRoomMiniInfo = msg.RoomMiniInfo;
-            long[] newRoomPlayer = GetRoom4Player();
+            long[] newRoomPlayer = GetRoom4PlayerUIDs();
             for (int i = 0; i < 4; i++)
             {
                 long OldPlayer = oldRoomPlayer[i];
@@ -309,7 +348,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <summary>
         /// 同步上行
         /// </summary>
-        public void SendRoomSingelPlayerInput(uint FrameID,uint InputData)
+        public void SendRoomSingelPlayerInput(uint FrameID, uint InputData)
         {
             _Protobuf_Room_SinglePlayerInputData.FrameID = FrameID;
             _Protobuf_Room_SinglePlayerInputData.InputData = InputData;
@@ -321,6 +360,22 @@ namespace AxibugEmuOnline.Client.Manager
         {
             Protobuf_Room_Syn_RoomFrameAllInputData msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Syn_RoomFrameAllInputData>(reqData);
             netReplay.InData(new ReplayStep() { FrameStartID = (int)msg.FrameID, InPut = msg.InputData });
+        }
+
+        public void SendScreen(byte[] RenderBuffer)
+        {
+            //压缩
+            byte[] comData = Helper.CompressByteArray(RenderBuffer);
+            _Protobuf_Screnn_Frame.FrameID = 0;
+            _Protobuf_Screnn_Frame.RawBitmap = ByteString.CopyFrom(comData);
+            App.network.SendToServer((int)CommandID.CmdScreen, ProtoBufHelper.Serizlize(_Protobuf_Screnn_Frame));
+        }
+
+        public void OnScreen(byte[] reqData)
+        {
+            Protobuf_Screnn_Frame msg = ProtoBufHelper.DeSerizlize<Protobuf_Screnn_Frame>(reqData);
+            //解压
+            byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
         }
     }
 }

@@ -9,8 +9,8 @@ namespace AxibugEmuOnline.Client
 {
     public class HttpAPI
     {
-        public string WebSite = "http://emu.axibug.com/api";
-        public string DownSite = "http://emu.axibug.com";
+        public string WebHost = "http://emu.axibug.com";
+        public string WebSiteApi => WebHost + "/api";
 
         public delegate void GetRomListAPI(Action<Resp_GameList> callback, int page, int pageSize = 10);
 
@@ -21,7 +21,7 @@ namespace AxibugEmuOnline.Client
 
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
         {
-            UnityWebRequest request = UnityWebRequest.Get($"{WebSite}/NesRomList?Page={page}&PageSize={pageSize}");
+            UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
@@ -77,6 +77,15 @@ namespace AxibugEmuOnline.Client
             public string imgUrl;
             public string hash;
             public int stars;
+        }
+        [Serializable]
+        public class Resp_CheckStandInfo
+        {
+            public int needUpdateClient;
+            public string serverIp;
+            public ushort serverPort;
+            public string clientVersion;
+            public string downLoadUrl;
         }
     }
 }
