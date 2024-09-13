@@ -1,6 +1,6 @@
-﻿using AxibugProtobuf;
-using AxibugEmuOnline.Server.Common;
+﻿using AxibugEmuOnline.Server.Common;
 using AxibugEmuOnline.Server.NetWork;
+using AxibugProtobuf;
 using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Server.Manager
@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Server.Manager
         {
             AppSrv.g_Log.Debug("收到新的登录请求");
             Protobuf_Login msg = ProtoBufHelper.DeSerizlize<Protobuf_Login>(reqData);
-            ClientInfo cinfo = AppSrv.g_ClientMgr.JoinNewClient(msg, _socket);
+            ClientInfo _c = AppSrv.g_ClientMgr.JoinNewClient(msg, _socket);
 
             byte[] respData = ProtoBufHelper.Serizlize(new Protobuf_Login_RESP()
             {
@@ -24,8 +24,10 @@ namespace AxibugEmuOnline.Server.Manager
                 RegDate = "",
                 LastLoginDate = "",
                 Token = "",
-                UID = cinfo.UID
+                UID = _c.UID
             });
+
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdLogin, (int)ErrorCode.ErrorOk, respData);
         }
     }
 }
