@@ -1203,6 +1203,15 @@ namespace VirtualNes.Core
             occur = FrameIRQoccur;
         }
 
+        internal void SetFrameIRQ(int cycle, byte count, byte type, byte IRQ, byte occur)
+        {
+            FrameCycle = cycle;
+            FrameCount = count;
+            FrameType = type;
+            FrameIRQ = IRQ;
+            FrameIRQoccur = occur;
+        }
+
         public override uint GetSize()
         {
             return sizeof(byte) +
@@ -1219,7 +1228,7 @@ namespace VirtualNes.Core
             ch4.GetSize();
         }
 
-        public unsafe override void SaveState(StateBuffer p)
+        public override void SaveState(StateBuffer p)
         {
             p.Write(reg4015);
             p.Write(sync_reg4015);
@@ -1352,6 +1361,39 @@ namespace VirtualNes.Core
                 buffer.Write(dummy2);
                 buffer.Write(sync_len_count);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(4);
+                enable = buffer.Read_byte();
+                holdnote = buffer.Read_byte();
+                volume = buffer.Read_byte();
+                complement = buffer.Read_byte();
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_int();
+                freqlimit = buffer.Read_int();
+                adder = buffer.Read_int();
+                duty = buffer.Read_int();
+                len_count = buffer.Read_int();
+                nowvolume = buffer.Read_int();
+                env_fixed = buffer.Read_byte();
+                env_decay = buffer.Read_byte();
+                env_count = buffer.Read_byte();
+                dummy0 = buffer.Read_byte();
+                env_vol = buffer.Read_int();
+                swp_on = buffer.Read_byte();
+                swp_inc = buffer.Read_byte();
+                swp_shift = buffer.Read_byte();
+                swp_decay = buffer.Read_byte();
+                swp_count = buffer.Read_byte();
+                dummy1 = buffer.Read_bytes(3);
+                sync_reg = buffer.Read_bytes(4);
+                sync_output_enable = buffer.Read_byte();
+                sync_enable = buffer.Read_byte();
+                sync_holdnote = buffer.Read_byte();
+                dummy2 = buffer.Read_byte();
+                sync_len_count = buffer.Read_int();
+            }
         }
         public class TRIANGLE : IStateBufferObject
         {
@@ -1428,6 +1470,27 @@ namespace VirtualNes.Core
                 buffer.Write(sync_len_count);
                 buffer.Write(sync_lin_count);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(4);
+                enable = buffer.Read_byte();
+                holdnote = buffer.Read_byte();
+                counter_start = buffer.Read_byte();
+                dummy0 = buffer.Read_byte();
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_int();
+                len_count = buffer.Read_int();
+                lin_count = buffer.Read_int();
+                adder = buffer.Read_int();
+                nowvolume = buffer.Read_int();
+                sync_reg = buffer.Read_bytes(4);
+                sync_enable = buffer.Read_byte();
+                sync_holdnote = buffer.Read_byte();
+                sync_counter_start = buffer.Read_byte();
+                sync_len_count = buffer.Read_int();
+                sync_lin_count = buffer.Read_int();
+            }
         }
         public class DPCM : IStateBufferObject
         {
@@ -1486,6 +1549,35 @@ namespace VirtualNes.Core
                 buffer.Write(sync_cache_cycles);
                 buffer.Write(sync_dmalength);
                 buffer.Write(sync_cache_dmalength);
+            }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(4);
+                enable = buffer.Read_byte();
+                looping = buffer.Read_byte();
+                cur_byte = buffer.Read_byte();
+                dpcm_value = buffer.Read_byte();
+                freq = buffer.Read_int();
+                phaseacc = buffer.Read_int();
+                output = buffer.Read_int();
+                address = buffer.Read_ushort();
+                cache_addr = buffer.Read_ushort();
+                dmalength = buffer.Read_int();
+                cache_dmalength = buffer.Read_int();
+                dpcm_output_real = buffer.Read_int();
+                dpcm_output_fake = buffer.Read_int();
+                dpcm_output_old = buffer.Read_int();
+                dpcm_output_offset = buffer.Read_int();
+                sync_reg = buffer.Read_bytes(4);
+                sync_enable = buffer.Read_byte();
+                sync_looping = buffer.Read_byte();
+                sync_irq_gen = buffer.Read_byte();
+                sync_irq_enable = buffer.Read_byte();
+                sync_cycles = buffer.Read_int();
+                sync_cache_cycles = buffer.Read_int();
+                sync_dmalength = buffer.Read_int();
+                sync_cache_dmalength = buffer.Read_int();
             }
         }
         public class NOISE : IStateBufferObject
@@ -1581,6 +1673,32 @@ namespace VirtualNes.Core
                 buffer.Write(sync_holdnote);
                 buffer.Write(dummy1);
                 buffer.Write(sync_len_count);
+            }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(4);
+                enable = buffer.Read_byte();
+                holdnote = buffer.Read_byte();
+                volume = buffer.Read_byte();
+                xor_tap = buffer.Read_byte();
+                shift_reg = buffer.Read_int();
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_int();
+                len_count = buffer.Read_int();
+                nowvolume = buffer.Read_int();
+                output = buffer.Read_int();
+                env_fixed = buffer.Read_byte();
+                env_decay = buffer.Read_byte();
+                env_count = buffer.Read_byte();
+                dummy0 = buffer.Read_byte();
+                env_vol = buffer.Read_int();
+                sync_reg = buffer.Read_bytes(4);
+                sync_output_enable = buffer.Read_byte();
+                sync_enable = buffer.Read_byte();
+                sync_holdnote = buffer.Read_byte();
+                dummy1 = buffer.Read_byte();
+                sync_len_count = buffer.Read_int();
             }
         }
     }

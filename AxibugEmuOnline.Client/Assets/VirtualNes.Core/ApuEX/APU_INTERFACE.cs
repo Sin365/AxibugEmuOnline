@@ -23,7 +23,7 @@ namespace VirtualNes.Core
         public virtual bool Sync(int cycles) { return false; }
         public virtual int GetFreq(int channel) { return 0; }
         public virtual void SaveState(StateBuffer buffer) { }
-        public virtual void LoadState(byte[] p) { }
+        public virtual void LoadState(StateReader buffer) { }
 
         public static int INT2FIX(int x)
         {
