@@ -1,6 +1,5 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -48,6 +47,9 @@ namespace AxibugEmuOnline.Client.ClientCore
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             coRunner = go.AddComponent<CoroutineRunner>();
+
+            var importNode = GameObject.Find("IMPORTENT");
+            GameObject.DontDestroyOnLoad(importNode);
 
             StartCoroutine(AppTickFlow());
         }
