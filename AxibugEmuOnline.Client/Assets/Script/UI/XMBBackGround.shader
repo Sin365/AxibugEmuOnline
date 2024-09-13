@@ -82,10 +82,6 @@
             float4 _MainTex_ST;           
             float4 _MainTex_TexelSize;           
 
-            float3 lerp(float3 color1, float3 color2, float value)
-            {
-	            return value * (color2 - color1) + color1;
-            }
             float wave(float x, float frequency, float speed, float midHeight, float maxHeight)
             {
                 return (sin(frequency * (x + speed * (((1. - (pow(cos(0.002 * (_Time.y + 400.)), 2.) + 1.) / 2.) + .1) * 2048.))) * (maxHeight - midHeight)) + midHeight;
@@ -123,7 +119,7 @@
                 float3 blue2 = float3(0, 0.7, 1);
                 float amount = (uv.x + uv.y) / 2.0;
                 float3 bg = lerp(blue2, blue, amount);
-    
+                
                 // Overlayed sine waves
                 float midHeight1 = 0.4;
                 float maxHeight1 = 0.5 + wave(0.0, 4.0, 0.02, 0.0, 0.02);
