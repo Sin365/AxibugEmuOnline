@@ -49,7 +49,7 @@ namespace AxibugEmuOnline.Server
                 if (!mDictRoom.ContainsKey(data.RoomID))
                 {
                     mDictRoom.Add(data.RoomID, data);
-                    mKeyRoomList.Remove(data.RoomID);
+                    mKeyRoomList.Add(data.RoomID);
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace AxibugEmuOnline.Server
             return data;
         }
 
-        List<Data_RoomData> GetRoomList()
+        public List<Data_RoomData> GetRoomList()
         {
             lock (mDictRoom)
             {
@@ -461,7 +461,7 @@ namespace AxibugEmuOnline.Server
                 case 2: oldUID = Player3_UID; Player3_UID = _c.UID; break;
                 case 3: oldUID = Player4_UID; Player4_UID = _c.UID; break;
             }
-            if (oldUID <= 0)
+            if (oldUID >= 0)
                 SynUIDs.Remove(oldUID);
             SynUIDs.Add(_c.UID);
             _c.RoomState.SetRoomData(this.RoomID, PlayerIdx);
@@ -491,15 +491,15 @@ namespace AxibugEmuOnline.Server
 
         public bool GetPlayerUIDByIdx(int Idx, out long UID)
         {
-            UID = -1;
             switch (Idx)
             {
                 case 0: UID = Player1_UID; break;
                 case 1: UID = Player2_UID; break;
                 case 2: UID = Player3_UID; break;
                 case 3: UID = Player4_UID; break;
+                default: UID = -1; break;
             }
-            return UID != 0;
+            return UID > 0;
         }
         public bool GetPlayerClientByIdx(int Idx, out ClientInfo _c)
         {

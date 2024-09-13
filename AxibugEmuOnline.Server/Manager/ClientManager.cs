@@ -123,6 +123,7 @@ namespace AxibugEmuOnline.Server.Manager
                     UID = GetNextUID(),
                     _socket = _socket,
                     Account = data.Account,
+                    NickName = data.Account,
                     IsOffline = false,
                 };
                 AddClient(cinfo);
@@ -241,7 +242,7 @@ namespace AxibugEmuOnline.Server.Manager
             while (true)
             {
                 pingTickARE.WaitOne();
-                AppSrv.g_Log.Info("PingAll");
+                //AppSrv.g_Log.Info("PingAll");
                 PingAll();
             }
         }
@@ -263,7 +264,7 @@ namespace AxibugEmuOnline.Server.Manager
         }
         public void OnCmdPing(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdPing");
+            //AppSrv.g_Log.Debug($"OnCmdPing");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Ping msg = ProtoBufHelper.DeSerizlize<Protobuf_Ping>(reqData);
 
@@ -276,7 +277,7 @@ namespace AxibugEmuOnline.Server.Manager
         }
         public void OnCmdPong(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdPong");
+            //AppSrv.g_Log.Debug($"OnCmdPong");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Pong msg = ProtoBufHelper.DeSerizlize<Protobuf_Pong>(reqData);
 

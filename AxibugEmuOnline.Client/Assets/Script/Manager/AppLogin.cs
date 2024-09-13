@@ -45,7 +45,23 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 App.log.Info("登录失败");
             }
+#if UNITY_EDITOR
+            //TestCreate();
+#endif
         }
+
+
+        #region 测试
+        void TestCreate()
+        {
+            App.roomMgr.SendCreateRoom(1, 0, string.Empty);
+        }
+        long TestFrameID = 0;
+        void TestEmuUpdate()
+        {
+            
+        }
+        #endregion
 
     }
 }
