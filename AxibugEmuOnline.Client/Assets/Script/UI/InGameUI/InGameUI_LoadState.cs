@@ -1,13 +1,14 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System.Diagnostics;
+using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
-    public class InGameUI_SaveState : ExecuteMenu
+    public class InGameUI_LoadState : ExecuteMenu
     {
         private InGameUI m_gameUI;
 
-        public InGameUI_SaveState(InGameUI gameUI) : base("保存快照", null)
+        public InGameUI_LoadState(InGameUI gameUI) : base("读取快照", null)
         {
             m_gameUI = gameUI;
         }
@@ -18,13 +19,14 @@ namespace AxibugEmuOnline.Client
             switch (m_gameUI.RomFile.Platform)
             {
                 case EnumPlatform.NES:
-                    var state = m_gameUI.GetCore<NesEmulator>().NesCore.GetState();
-                    m_gameUI.SaveQuickState(state);
-                    App.log.Info($"{m_gameUI.RomFile.Platform}===>快照大小{state.ToBytes().Length}");
+                    if (m_gameUI.GetQuickState<State>(out var quickState))
+                    {
+                        m_gameUI.GetCore<NesEmulator>().NesCore.LoadState(quickState);
+                    }
                     break;
             }
             sw.Stop();
-            App.log.Info($"{m_gameUI.RomFile.Platform}====>获取快照耗时:{sw.Elapsed.TotalMilliseconds}ms");
+            App.log.Info($"{m_gameUI.RomFile.Platform}====>快照加载耗时:{sw.Elapsed.TotalMilliseconds}ms");
         }
     }
 }

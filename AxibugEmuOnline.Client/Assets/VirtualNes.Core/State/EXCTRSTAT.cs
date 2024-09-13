@@ -13,5 +13,10 @@
         {
             buffer.Write(data);
         }
+
+        public void LoadState(StateReader buffer)
+        {
+            data = buffer.Read_uint();
+        }
     }
 }

@@ -53,6 +53,11 @@ namespace VirtualNes.Core
             }
         }
 
+        public void WriteTo(T[] source, int start, int length)
+        {
+            Array.Copy(source, 0, m_rawArray, Offset + start, length);
+        }
+
         public Span<T> Span(int start, int length)
         {
             return new Span<T>(m_rawArray, start + Offset, length);

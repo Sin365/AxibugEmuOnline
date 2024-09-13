@@ -16,6 +16,13 @@ namespace VirtualNes.Core
         /// <summary> 2字节 </summary>
         public ushort Ext2;
 
+
+
+        public readonly uint GetSize()
+        {
+            return (uint)(ID.Length + sizeof(ushort) + sizeof(uint) + sizeof(ushort) + sizeof(ushort));
+        }
+
         public readonly void SaveState(StateBuffer buffer)
         {
             buffer.Write(ID);
@@ -25,9 +32,13 @@ namespace VirtualNes.Core
             buffer.Write(Ext2);
         }
 
-        public readonly uint GetSize()
+        public void LoadState(StateReader buffer)
         {
-            return (uint)(ID.Length + sizeof(ushort) + sizeof(uint) + sizeof(ushort) + sizeof(ushort));
+            ID = buffer.Read_string(12);
+            BlockVersion = buffer.Read_ushort();
+            Ext0 = buffer.Read_uint();
+            Ext1 = buffer.Read_ushort();
+            Ext2 = buffer.Read_ushort();
         }
     }
 }

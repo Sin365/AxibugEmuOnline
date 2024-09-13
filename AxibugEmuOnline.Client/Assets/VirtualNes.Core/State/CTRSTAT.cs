@@ -24,5 +24,14 @@ namespace VirtualNes.Core
             buffer.Write(pad4bit);
             buffer.Write(strobe);
         }
+
+        public void LoadState(StateReader buffer)
+        {
+            pad1bit = buffer.Read_uint();
+            pad2bit = buffer.Read_uint();
+            pad3bit = buffer.Read_uint();
+            pad4bit = buffer.Read_uint();
+            strobe = buffer.Read_byte();
+        }
     }
 }

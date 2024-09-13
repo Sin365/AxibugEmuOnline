@@ -543,6 +543,11 @@ namespace VirtualNes.Core
             @internal.GetFrameIRQ(ref Cycle, ref Count, ref Type, ref IRQ, ref Occur);
         }
 
+        internal void SetFrameIRQ(int Cycle, byte Count, byte Type, byte IRQ, byte Occur)
+        {
+            @internal.SetFrameIRQ(Cycle, Count, Type, IRQ, Occur);
+        }
+
         internal void SaveState(StateBuffer buffer)
         {
             // 時間軸を同期させる為Flushする
@@ -579,7 +584,7 @@ namespace VirtualNes.Core
             // N106
             if ((exsound_select & 0x10) != 0)
             {
-                n106.SaveState(buffer); 
+                n106.SaveState(buffer);
                 buffer.Position += (n106.GetSize() + 15) & (~0x0F);  // Padding
             }
             // FME7
@@ -587,6 +592,49 @@ namespace VirtualNes.Core
             {
                 fme7.SaveState(buffer);
                 buffer.Position += (fme7.GetSize() + 15) & (~0x0F);  // Padding
+            }
+        }
+
+        internal void LoadState(StateReader buffer)
+        {
+            @internal.LoadState(buffer);
+            buffer.Skip((@internal.GetSize() + 15) & (~0x0F));
+
+            // VRC6
+            if ((exsound_select & 0x01) != 0)
+            {
+                vrc6.LoadState(buffer);
+                buffer.Skip((int)((vrc6.GetSize() + 15) & (~0x0F)));  // Padding
+            }
+            // VRC7 (not support)
+            if ((exsound_select & 0x02) != 0)
+            {
+                vrc7.LoadState(buffer);
+                buffer.Skip((vrc7.GetSize() + 15) & (~0x0F));  // Padding
+            }
+            // FDS
+            if ((exsound_select & 0x04) != 0)
+            {
+                fds.LoadState(buffer);
+                buffer.Skip((fds.GetSize() + 15) & (~0x0F));   // Padding
+            }
+            // MMC5
+            if ((exsound_select & 0x08) != 0)
+            {
+                mmc5.LoadState(buffer);
+                buffer.Skip((mmc5.GetSize() + 15) & (~0x0F));  // Padding
+            }
+            // N106
+            if ((exsound_select & 0x10) != 0)
+            {
+                n106.LoadState(buffer);
+                buffer.Skip((n106.GetSize() + 15) & (~0x0F));  // Padding
+            }
+            // FME7
+            if ((exsound_select & 0x20) != 0)
+            {
+                fme7.LoadState(buffer);
+                buffer.Skip((fme7.GetSize() + 15) & (~0x0F));  // Padding
             }
         }
     }
