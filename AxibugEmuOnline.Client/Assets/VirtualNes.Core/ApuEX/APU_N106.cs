@@ -243,6 +243,19 @@ namespace VirtualNes.Core
                 buffer.Write(vol);
                 buffer.Write(databuf);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_uint();
+                phase = buffer.Read_uint();
+                tonelen = buffer.Read_uint();
+                output = buffer.Read_int();
+                toneadr = buffer.Read_byte();
+                volupdate = buffer.Read_byte();
+                vol = buffer.Read_byte();
+                databuf = buffer.Read_byte();
+            }
         }
     }
 }

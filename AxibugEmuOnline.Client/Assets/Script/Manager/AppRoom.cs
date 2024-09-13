@@ -359,7 +359,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvHostSyn_RoomFrameAllInputData(byte[] reqData)
         {
             Protobuf_Room_Syn_RoomFrameAllInputData msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Syn_RoomFrameAllInputData>(reqData);
-            netReplay.InData(new ReplayStep() { FrameStartID = (int)msg.FrameID, InPut = msg.InputData }, (int)msg.ServerFrameID);
+            //netReplay.InData(new ReplayStep() { FrameStartID = (int)msg.FrameID, InPut = msg.InputData }, (int)msg.ServerFrameID);
         }
 
         public void SendScreen(byte[] RenderBuffer)

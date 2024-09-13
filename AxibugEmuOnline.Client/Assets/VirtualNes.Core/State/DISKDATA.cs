@@ -13,5 +13,10 @@
         {
             buffer.Write(DifferentSize);
         }
+
+        public void LoadState(StateReader buffer)
+        {
+            DifferentSize = buffer.Read_int();
+        }
     }
 }

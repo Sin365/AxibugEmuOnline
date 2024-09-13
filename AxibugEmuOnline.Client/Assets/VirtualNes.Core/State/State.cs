@@ -31,7 +31,7 @@ namespace VirtualNes.Core
 
         public BLOCKHDR dskBLOCK;
         public DISKDATA dsk;
-        public uint dskdata;
+        public List<uint> dskdata;
 
         public BLOCKHDR exctrBLOCK;
         public EXCTRSTAT exctr;
@@ -87,7 +87,10 @@ namespace VirtualNes.Core
             {
                 dskBLOCK.SaveState(buffer);
                 dsk.SaveState(buffer);
-                buffer.Write(dskdata);
+                foreach (var data in dskdata)
+                {
+                    buffer.Write(data);
+                }
             }
 
             if (exctrBLOCK.Valid)

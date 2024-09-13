@@ -514,6 +514,36 @@ namespace VirtualNes.Core
                 buffer.Write(now_freq);
                 buffer.Write(output);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(0x80);
+                volenv_mode = buffer.Read_byte();
+                volenv_gain = buffer.Read_byte();
+                volenv_decay = buffer.Read_byte();
+                volenv_phaseacc = buffer.Read_double();
+                swpenv_mode = buffer.Read_byte();
+                swpenv_gain = buffer.Read_byte();
+                swpenv_decay = buffer.Read_byte();
+                swpenv_phaseacc = buffer.Read_double();
+                envelope_enable = buffer.Read_byte();
+                envelope_speed = buffer.Read_byte();
+                wave_setup = buffer.Read_byte();
+                master_volume = buffer.Read_int();
+                main_wavetable = buffer.Read_ints(64);
+                main_enable = buffer.Read_byte();
+                main_frequency = buffer.Read_int();
+                main_addr = buffer.Read_int();
+                lfo_wavetable = buffer.Read_bytes(64);
+                lfo_enable = buffer.Read_byte();
+                lfo_frequency = buffer.Read_int();
+                lfo_addr = buffer.Read_int();
+                lfo_phaseacc = buffer.Read_double();
+                sweep_bias = buffer.Read_int();
+                now_volume = buffer.Read_int();
+                now_freq = buffer.Read_int();
+                output = buffer.Read_int();
+            }
         }
     }
 }

@@ -34,5 +34,14 @@
             buffer.Write(PPU_MEM_PAGE);
             buffer.Write(CRAM_USED);
         }
+
+        public void LoadState(StateReader buffer)
+        {
+            CPU_MEM_TYPE = buffer.Read_bytes(8);
+            CPU_MEM_PAGE = buffer.Read_ushorts(8);
+            PPU_MEM_TYPE = buffer.Read_bytes(12);
+            PPU_MEM_PAGE = buffer.Read_ushorts(12);
+            CRAM_USED = buffer.Read_bytes(8);
+        }
     }
 }

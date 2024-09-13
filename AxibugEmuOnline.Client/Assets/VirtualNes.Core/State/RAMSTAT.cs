@@ -34,5 +34,13 @@ namespace VirtualNes.Core
             buffer.Write(SPPAL);
             buffer.Write(SPRAM);
         }
+
+        public void LoadState(StateReader buffer)
+        {
+            RAM = buffer.Read_bytes(2 * 1024);
+            BGPAL = buffer.Read_bytes(16);
+            SPPAL = buffer.Read_bytes(16);
+            SPRAM = buffer.Read_bytes(256);
+        }
     }
 }

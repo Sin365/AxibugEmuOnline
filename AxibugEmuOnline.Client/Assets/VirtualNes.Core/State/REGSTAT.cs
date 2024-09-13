@@ -5,15 +5,23 @@
         public CPUSTAT cpureg;
         public PPUSTAT ppureg;
 
-        public void SaveState(StateBuffer buffer)
+
+
+        public readonly uint GetSize()
+        {
+            return cpureg.GetSize() + ppureg.GetSize();
+        }
+
+        public readonly void SaveState(StateBuffer buffer)
         {
             cpureg.SaveState(buffer);
             ppureg.SaveState(buffer);
         }
 
-        public uint GetSize()
+        public void LoadState(StateReader buffer)
         {
-            return cpureg.GetSize() + ppureg.GetSize();
+            cpureg.LoadState(buffer);
+            ppureg.LoadState(buffer);
         }
     }
 
@@ -60,6 +68,25 @@
             buffer.Write(emul_cycles);
             buffer.Write(base_cycles);
         }
+
+        public void LoadState(StateReader buffer)
+        {
+            PC = buffer.Read_ushort();
+            A = buffer.Read_byte();
+            X = buffer.Read_byte();
+            Y = buffer.Read_byte();
+            S = buffer.Read_byte();
+            P = buffer.Read_byte();
+            I = buffer.Read_byte();
+            FrameIRQ = buffer.Read_byte();
+            FrameIRQ_occur = buffer.Read_byte();
+            FrameIRQ_count = buffer.Read_byte();
+            FrameIRQ_type = buffer.Read_byte();
+            FrameIRQ_cycles = buffer.Read_int();
+            DMA_cycles = buffer.Read_int();
+            emul_cycles = buffer.Read_long();
+            base_cycles = buffer.Read_long();
+        }
     }
 
     public struct PPUSTAT : IStateBufferObject
@@ -91,6 +118,19 @@
             buffer.Write(loopy_t);
             buffer.Write(loopy_v);
             buffer.Write(loopy_x);
+        }
+
+        public void LoadState(StateReader buffer)
+        {
+            reg0 = buffer.Read_byte();
+            reg1 = buffer.Read_byte();
+            reg2 = buffer.Read_byte();
+            reg3 = buffer.Read_byte();
+            reg7 = buffer.Read_byte();
+            toggle56 = buffer.Read_byte();
+            loopy_t = buffer.Read_ushort();
+            loopy_v = buffer.Read_ushort();
+            loopy_x = buffer.Read_ushort();
         }
     }
 }

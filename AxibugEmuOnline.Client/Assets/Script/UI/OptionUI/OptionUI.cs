@@ -168,6 +168,9 @@ namespace AxibugEmuOnline.Client
     {
         public string Name { get; protected set; }
         public Sprite Icon { get; protected set; }
+        public virtual bool Visible => true;
+        public virtual bool Enable => true;
+
         public OptionMenu(string name, Sprite icon = null)
         {
             Name = name;

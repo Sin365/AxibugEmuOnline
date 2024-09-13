@@ -2022,9 +2022,19 @@ namespace VirtualNes.Core
             r = R;
         }
 
+        internal void SetContext(R6502 r)
+        {
+            R = r;
+        }
+
         internal int GetDmaCycles()
         {
             return DMA_cycles;
+        }
+
+        internal void SetDmaCycles(int cycles)
+        {
+            DMA_cycles = cycles;
         }
     }
 
