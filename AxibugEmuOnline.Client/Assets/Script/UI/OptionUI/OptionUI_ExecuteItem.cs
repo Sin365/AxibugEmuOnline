@@ -1,22 +1,14 @@
-using UnityEngine;
-using UnityEngine.UI;
-
 namespace AxibugEmuOnline.Client
 {
-    public class OptionUI_ExecuteItem : MonoBehaviour
+    public class OptionUI_ExecuteItem : OptionUI_MenuItem<ExecuteMenu>
     {
-        [SerializeField] Text m_MenuNameTxt;
-        [SerializeField] Image m_Icon;
-
-        public void SetData(ExecuteMenu executeMenu)
+        public override void OnExecute()
         {
-            m_MenuNameTxt.text = executeMenu.Name;
-            if (executeMenu.Icon == null) m_Icon.gameObject.SetActiveEx(false);
-            else
-            {
-                m_Icon.gameObject.SetActiveEx(true);
-                m_Icon.sprite = executeMenu.Icon;
-            }
+            MenuData.OnExcute();
+        }
+
+        public override void OnFocus()
+        {
         }
     }
 }

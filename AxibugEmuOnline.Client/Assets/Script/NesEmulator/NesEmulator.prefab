@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a09b6a4cf4c2d4f994a13fd7e89d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NesEmu: {fileID: 4232056521131536012}
   m_as: {fileID: 8726979175317618791}
 --- !u!82 &8726979175317618791
 AudioSource:
@@ -258,6 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NesEmu: {fileID: 4232056521131536012}
+  DrawCanvas: {fileID: 4232056520494431724}
   Image: {fileID: 4232056521759880274}
 --- !u!1 &4232056520494431712
 GameObject:
@@ -308,7 +308,7 @@ Canvas:
   m_GameObject: {fileID: 4232056520494431712}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -409,7 +409,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VideoProvider: {fileID: 4232056520112715744}
   AudioProvider: {fileID: 9003897287163669553}
-  RomName: 
 --- !u!1 &4232056521759880276
 GameObject:
   m_ObjectHideFlags: 0

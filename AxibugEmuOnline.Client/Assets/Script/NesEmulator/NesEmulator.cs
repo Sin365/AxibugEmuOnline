@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Client
 
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
+        
 
         private void Start()
         {
@@ -84,13 +85,6 @@ namespace AxibugEmuOnline.Client
 
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
-        }
-
-        [ContextMenu("GetState")]
-        public void GetState()
-        {
-            var state = NesCore.GetState();
-            var bytes = state.ToBytes();
         }
 #endif
     }

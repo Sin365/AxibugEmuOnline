@@ -56,6 +56,8 @@ namespace VirtualNes.Core
         }
         public void Write(string value)
         {
+            if (value == null) return;
+
             Write(Encoding.ASCII.GetBytes(value));
         }
         public void Write(double value)
