@@ -10,14 +10,23 @@ namespace AxiReplay
         ReplayStep mNextReplay;
         ReplayStep mCurrReplay;
         int byFrameIdx = 0;
+        /// <summary>
+        /// 服务器远端当前帧
+        /// </summary>
+        public int remoteFrameIdx { get; private set; }
+        /// <summary>
+        /// 当前帧和服务器帧相差数量
+        /// </summary>
+        public int remoteFrameDiff => remoteFrameIdx - mCurrPlayFrame;
         public NetReplay()
         {
             mQueueReplay = new Queue<ReplayStep>();
         }
-        public void InData(ReplayStep inputData)
+        public void InData(ReplayStep inputData,int ServerFrameIdx)
         {
             mQueueReplay.Enqueue(inputData);
             MaxInFrame = inputData.FrameStartID;
+            remoteFrameIdx = ServerFrameIdx;
         }
         public bool NextFrame(out ReplayStep data, out int FrameDiff)
         {
