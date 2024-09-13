@@ -42,35 +42,59 @@ namespace VirtualNes.Core
 
             HEADER.SaveState(buffer);
 
-            regBLOCK.SaveState(buffer);
-            reg.SaveState(buffer);
+            if (regBLOCK.Valid)
+            {
+                regBLOCK.SaveState(buffer);
+                reg.SaveState(buffer);
+            }
 
-            ramBLOCK.SaveState(buffer);
-            ram.SaveState(buffer);
+            if (regBLOCK.Valid)
+            {
+                ramBLOCK.SaveState(buffer);
+                ram.SaveState(buffer);
+            }
 
-            if(WRAM!=null) buffer.Write(WRAM);
+            if (WRAM != null) buffer.Write(WRAM);
 
-            mmuBLOCK.SaveState(buffer);
-            mmu.SaveState(buffer);
-            buffer.Write(CPU_MEM_BANK.ToArray());
-            buffer.Write(VRAM);
-            buffer.Write(CRAM.ToArray());
+            if (mmuBLOCK.Valid)
+            {
+                mmuBLOCK.SaveState(buffer);
+                mmu.SaveState(buffer);
+                buffer.Write(CPU_MEM_BANK.ToArray());
+                buffer.Write(VRAM);
+                buffer.Write(CRAM.ToArray());
+            }
 
-            mmcBLOCK.SaveState(buffer);
-            mmc.SaveState(buffer);
+            if (mmcBLOCK.Valid)
+            {
+                mmcBLOCK.SaveState(buffer);
+                mmc.SaveState(buffer);
+            }
 
-            ctrBLOCK.SaveState(buffer);
-            ctr.SaveState(buffer);
+            if (ctrBLOCK.Valid)
+            {
+                ctrBLOCK.SaveState(buffer);
+                ctr.SaveState(buffer);
+            }
 
-            sndBLOCK.SaveState(buffer);
-            snd.SaveState(buffer);
+            if (sndBLOCK.Valid)
+            {
+                sndBLOCK.SaveState(buffer);
+                snd.SaveState(buffer);
+            }
 
-            dskBLOCK.SaveState(buffer);
-            dsk.SaveState(buffer);
-            buffer.Write(dskdata);
+            if (dskBLOCK.Valid)
+            {
+                dskBLOCK.SaveState(buffer);
+                dsk.SaveState(buffer);
+                buffer.Write(dskdata);
+            }
 
-            exctrBLOCK.SaveState(buffer);
-            exctr.SaveState(buffer);
+            if (exctrBLOCK.Valid)
+            {
+                exctrBLOCK.SaveState(buffer);
+                exctr.SaveState(buffer);
+            }
 
             return buffer.Data.ToArray();
         }

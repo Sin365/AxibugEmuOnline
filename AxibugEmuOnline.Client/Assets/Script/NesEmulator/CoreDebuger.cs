@@ -1,19 +1,18 @@
-using UnityEngine;
+using AxibugEmuOnline.Client.ClientCore;
 using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
     public class CoreDebuger : IDebugerImpl
     {
-
         public void Log(string message)
         {
-            Debug.Log(message);
+            App.log.Info(message);
         }
 
         public void LogError(string message)
         {
-            Debug.LogError(message);
+            App.log.Error(message);
         }
     }
 }

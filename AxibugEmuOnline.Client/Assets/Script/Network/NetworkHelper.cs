@@ -84,8 +84,8 @@ namespace AxibugEmuOnline.Client.Network
                 //抛出网络数据
 
                 //网络线程直接抛
-                if(CMDID == (int)CommandID.CmdPing || CMDID == (int)CommandID.CmdPong)
-                    NetMsg.Instance.PostNetMsgEvent(CMDID,ERRCODE, data);
+                if (CMDID == (int)CommandID.CmdPing || CMDID == (int)CommandID.CmdPong)
+                    NetMsg.Instance.PostNetMsgEvent(CMDID, ERRCODE, data);
                 else//加入队列，主线程来取
                     NetMsg.Instance.EnqueueNesMsg(CMDID, ERRCODE, data);
             }
@@ -109,15 +109,7 @@ namespace AxibugEmuOnline.Client.Network
                 ReConnect();
         }
 
-        CancellationTokenSource cts;
-        Task ReConnectTask;
-        public void CancelReConnect()
-        {
-            App.log.Debug("CancelReConnect");
-            cts?.Cancel();
-            cts = null;
-            ReConnectTask = null;
-        }
+        Thread ReConnectTask = null;
         /// <summary>
         /// 自动重连
         /// </summary>
@@ -125,8 +117,7 @@ namespace AxibugEmuOnline.Client.Network
         {
             if (ReConnectTask != null)
                 return;
-            cts = new CancellationTokenSource();
-            ReConnectTask = new Task(() =>
+            ReConnectTask = new Thread(() =>
             {
                 bool bflagDone = false;
                 do
@@ -142,17 +133,24 @@ namespace AxibugEmuOnline.Client.Network
                         App.log.Info($"触发重连后的自动逻辑!");
                         OnReConnected?.Invoke();
                     }
-                } while (!bflagDone);
+                } while (!bflagDone && App.network.bAutoReConnect);
+
+                if (!App.network.bAutoReConnect)
+                {
+                    if (App.network.isConnected)
+                    {
+                        App.network.CloseConntect();
+                    }
+                }
                 ReConnectTask = null;
-                cts = null;
-            }, cts.Token);
+            });
             ReConnectTask.Start();
         }
 
         bool CheckIsConnectd()
         {
             Socket socket = GetClientSocket();
-            if(socket == null)
+            if (socket == null)
                 return false;
             return socket.Connected;
         }

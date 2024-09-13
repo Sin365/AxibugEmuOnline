@@ -1,7 +1,6 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -160,6 +159,7 @@ namespace AxibugEmuOnline.Client
         protected override bool OnCmdEnter()
         {
             m_runtimeMenuItems[SelectIndex].OnExecute();
+            Hide();
             return true;
         }
     }

@@ -85,9 +85,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4f275956ba18440b061e92278f13cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_menuItemRoot: {fileID: 7102897325704768026}
   PulseInvoke_Delay: 0.4
   PulseInvoke_Interval: 0.05
+  m_menuItemRoot: {fileID: 7102897325704768026}
   GroupRoot: {fileID: 5247317738185020566}
   Template: {fileID: 2502609279043838113, guid: ece591129eb9bcc48bd83ec153c98018, type: 3}
   MenuSetting:
@@ -227,7 +227,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.00012207031, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1639091783724093861
 CanvasRenderer:
@@ -319,6 +319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainMenuRoot: {fileID: 1924338507}
   MainMenu: {fileID: 4533431376032812611}
+  BG: {fileID: 1639091783724093860}
   m_detailLayoutPosition: {x: 55, y: -140}
   m_LayoutChangeSpeed: 1000
 --- !u!1 &3732356966700017678
