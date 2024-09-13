@@ -13,7 +13,9 @@ namespace AxibugEmuOnline.Client
 {
     public class TickLoop : MonoBehaviour
     {
-        Action LoopAction;
+        public static Action LoopAction_tick;
+        public static Action LoopAction_1s;
+        public static Action LoopAction_3s;
         public Stopwatch sw = Stopwatch.StartNew();
         public TimeSpan LastStartPingTime;
         public int LastPingSeed;
@@ -24,10 +26,10 @@ namespace AxibugEmuOnline.Client
         public const int NetAveDelayCount = 3;
         private void Awake()
         {
-            Application.targetFrameRate = 60;
-
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdPing, OnCmdPing);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdPong, OnCmdPong);
+
+            LoopAction_3s += Ping;
 
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged += (state) =>
@@ -37,16 +39,24 @@ namespace AxibugEmuOnline.Client
             };
 #endif
         }
-        float LastPingTime;
+        float LastLoopTime_1s;
+        float LastLoopTime_3s;
         private void Update()
         {
             NetMsg.Instance.DequeueNesMsg();
-            LoopAction?.Invoke();
 
-            if (Time.time - LastPingTime > 3)
+            LoopAction_tick?.Invoke();
+
+            if (Time.time - LastLoopTime_1s > 1)
             {
-                LastPingTime = Time.time;
-                Ping();
+                LastLoopTime_1s = Time.time;
+                LoopAction_1s?.Invoke();
+            }
+
+            if (Time.time - LastLoopTime_3s > 3)
+            {
+                LastLoopTime_3s = Time.time;
+                LoopAction_3s?.Invoke();
             }
         }
 
