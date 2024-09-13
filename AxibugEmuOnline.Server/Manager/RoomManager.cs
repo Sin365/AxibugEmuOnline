@@ -611,7 +611,8 @@ namespace AxibugEmuOnline.Server
                 Protobuf_Room_Syn_RoomFrameAllInputData resp = new Protobuf_Room_Syn_RoomFrameAllInputData()
                 {
                     FrameID = data.frameId,
-                    InputData = data.inputdata.all
+                    InputData = data.inputdata.all,
+                    ServerFrameID = mCurrFrameId
                 };
                 AppSrv.g_ClientMgr.ClientSend(SynUIDs, (int)CommandID.CmdRoomSynPlayerInput, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
             }

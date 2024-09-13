@@ -203,6 +203,7 @@ message Protobuf_Room_Syn_RoomFrameAllInputData
 {
 	uint32 FrameID = 1;//帧编号
 	uint64 InputData = 2;//所有玩家操作位运算汇总
+	uint32 ServerFrameID = 3;//服务器帧编号
 }
 
 message Protobuf_Room_Create
