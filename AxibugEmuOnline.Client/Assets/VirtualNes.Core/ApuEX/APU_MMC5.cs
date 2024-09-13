@@ -421,6 +421,15 @@ namespace VirtualNes.Core
                 buffer.Write(dummy);
                 buffer.Write(vbl_length);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(4);
+                enable = buffer.Read_byte();
+                holdnote = buffer.Read_byte();
+                dummy = buffer.Read_bytes(2);
+                vbl_length = buffer.Read_int();
+            }
         }
 
         public class RECTANGLE : IStateBufferObject
@@ -466,6 +475,24 @@ namespace VirtualNes.Core
                 buffer.Write(env_decay);
                 buffer.Write(adder);
                 buffer.Write(duty_flip);
+            }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(4);
+                enable = buffer.Read_byte();
+                vbl_length = buffer.Read_int();
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_int();
+                output_vol = buffer.Read_int();
+                fixed_envelope = buffer.Read_byte();
+                holdnote = buffer.Read_byte();
+                volume = buffer.Read_byte();
+                env_vol = buffer.Read_byte();
+                env_phase = buffer.Read_int();
+                env_decay = buffer.Read_int();
+                adder = buffer.Read_int();
+                duty_flip = buffer.Read_int();
             }
         }
     }

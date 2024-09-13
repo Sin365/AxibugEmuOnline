@@ -304,6 +304,19 @@ namespace VirtualNes.Core
                 buffer.Write(adder);
                 buffer.Write(duty_pos);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(3);
+                enable = buffer.Read_byte();
+                gate = buffer.Read_byte();
+                volume = buffer.Read_byte();
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_int();
+                output_vol = buffer.Read_int();
+                adder = buffer.Read_byte();
+                duty_pos = buffer.Read_byte();
+            }
         }
 
         public class SAWTOOTH : IStateBufferObject
@@ -352,6 +365,19 @@ namespace VirtualNes.Core
                 buffer.Write(adder);
                 buffer.Write(accum);
                 buffer.Write(phaseaccum);
+            }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(3);
+                enable = buffer.Read_byte();
+                volume = buffer.Read_byte();
+                phaseacc = buffer.Read_int();
+                freq = buffer.Read_int();
+                output_vol = buffer.Read_int();
+                adder = buffer.Read_byte();
+                accum = buffer.Read_byte();
+                phaseaccum = buffer.Read_byte();
             }
         }
     }

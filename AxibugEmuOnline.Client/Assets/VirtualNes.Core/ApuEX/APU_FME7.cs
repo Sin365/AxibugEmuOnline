@@ -398,6 +398,17 @@ namespace VirtualNes.Core
                 buffer.Write(envtbl_index);
                 buffer.Write(envstep_index);
             }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(3);
+                volume = buffer.Read_byte();
+                freq = buffer.Read_int();
+                phaseacc = buffer.Read_int();
+                envadr = buffer.Read_int();
+                envtbl_index = buffer.Read_byte();
+                envstep_index = buffer.Read_byte();
+            }
         }
 
         public class NOISE : IStateBufferObject
@@ -423,6 +434,14 @@ namespace VirtualNes.Core
                 buffer.Write(phaseacc);
                 buffer.Write(noiserange);
                 buffer.Write(noiseout);
+            }
+
+            public void LoadState(StateReader buffer)
+            {
+                freq = buffer.Read_int();
+                phaseacc = buffer.Read_int();
+                noiserange = buffer.Read_int();
+                noiseout = buffer.Read_byte();
             }
         }
 
@@ -468,6 +487,19 @@ namespace VirtualNes.Core
                 buffer.Write(freq);
                 buffer.Write(phaseacc);
                 buffer.Write(output_vol);
+            }
+
+            public void LoadState(StateReader buffer)
+            {
+                reg = buffer.Read_bytes(3);
+                enable = buffer.Read_byte();
+                env_on = buffer.Read_byte();
+                noise_on = buffer.Read_byte();
+                adder = buffer.Read_byte();
+                volume = buffer.Read_byte();
+                freq = buffer.Read_int();
+                phaseacc = buffer.Read_int();
+                output_vol = buffer.Read_int();
             }
         }
     }

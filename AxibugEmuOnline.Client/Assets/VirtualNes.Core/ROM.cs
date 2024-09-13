@@ -353,14 +353,29 @@ namespace VirtualNes.Core
             return diskno;
         }
 
+        internal void SetDiskNo(int v)
+        {
+            diskno = v;
+        }
+
         internal uint GetGameID()
         {
             return fdsgameID;
         }
 
+        internal void SetGameID(uint id)
+        {
+            fdsgameID = id;
+        }
+
         internal uint GetMakerID()
         {
             return fdsmakerID;
+        }
+
+        internal void SetMakerID(uint id)
+        {
+            fdsmakerID = id;
         }
 
         internal bool IsVSUNISYSTEM()
@@ -371,6 +386,11 @@ namespace VirtualNes.Core
         public uint GetPROM_CRC()
         {
             return crc;
+        }
+
+        public void SetPROM_CRC(uint v)
+        {
+            crc = v;
         }
 
         internal byte GetPROM_SIZE()

@@ -5,15 +5,16 @@ namespace AxibugEmuOnline.Client
 {
     public class InGameUI : CommandExecuter
     {
-
         public static InGameUI Instance { get; private set; }
 
         public RomFile RomFile => m_rom;
         public override bool Enable => gameObject.activeInHierarchy;
         private RomFile m_rom;
         private object m_core;
+        private object m_state;
 
-        private InGameUI_SaveState m_saveMenu;
+        private InGameUI_SaveState m_saveStateMenu;
+        private InGameUI_LoadState m_loadStateMenu;
 
         protected override void Awake()
         {
@@ -27,15 +28,47 @@ namespace AxibugEmuOnline.Client
             Instance = null;
         }
 
+        /// <summary>
+        /// 获取模拟器核心对象
+        /// </summary>
+        /// <typeparam name="T">模拟器核心对象类型</typeparam>
         public T GetCore<T>() => (T)m_core;
+        /// <summary> 保存快速快照 </summary>
+        public void SaveQuickState(object state)
+        {
+            m_state = state;
+        }
+        /// <summary>
+        /// 读取快速快照
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool GetQuickState<T>(out T state)
+        {
+            state = default(T);
+
+            if (m_state is T)
+            {
+                state = (T)m_state;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
 
         public void Show(RomFile currentRom, object core)
         {
-            m_saveMenu = new InGameUI_SaveState(this);
             CommandDispatcher.Instance.RegistController(this);
+
+            m_saveStateMenu = new InGameUI_SaveState(this);
+            m_loadStateMenu = new InGameUI_LoadState(this);
 
             m_rom = currentRom;
             m_core = core;
+
             gameObject.SetActiveEx(true);
         }
 
@@ -43,14 +76,12 @@ namespace AxibugEmuOnline.Client
         {
             CommandDispatcher.Instance.UnRegistController(this);
 
-            m_rom = null;
-            m_core = null;
             gameObject.SetActiveEx(false);
         }
 
         protected override void OnCmdOptionMenu()
         {
-            OptionUI.Instance.Pop(new List<OptionMenu> { m_saveMenu });
+            OptionUI.Instance.Pop(new List<OptionMenu> { m_saveStateMenu, m_loadStateMenu });
         }
     }
 }

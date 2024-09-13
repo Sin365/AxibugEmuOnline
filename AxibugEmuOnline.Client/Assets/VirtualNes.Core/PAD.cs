@@ -515,6 +515,11 @@ namespace VirtualNes.Core
             return bStrobe;
         }
 
+        internal void SetStrobe(bool v)
+        {
+            bStrobe = v;
+        }
+
         internal uint GetSyncExData()
         {
             uint data = 0;
@@ -570,6 +575,63 @@ namespace VirtualNes.Core
                     break;
             }
             return data;
+        }
+        internal void SetSyncExData(uint data)
+        {
+            switch ((EXCONTROLLER)excontroller_select)
+            {
+                case EXCONTROLLER.EXCONTROLLER_ZAPPER:
+                case EXCONTROLLER.EXCONTROLLER_PADDLE:
+                case EXCONTROLLER.EXCONTROLLER_SPACESHADOWGUN:
+                case EXCONTROLLER.EXCONTROLLER_OEKAKIDS_TABLET:
+                case EXCONTROLLER.EXCONTROLLER_VSZAPPER:
+                    {
+                        int x, y;
+                        if ((data & 0x80000000) != 0)
+                        {
+                            x = -1;
+                            y = -1;
+                        }
+                        else
+                        {
+                            x = (int)(data & 0xFF);
+                            y = (int)((data & 0xFF00) >> 8);
+                        }
+                        expad.SetSyncData(0, x);
+                        expad.SetSyncData(1, y);
+                        nes.SetZapperPos(x, y);
+                    }
+                    if (excontroller_select != (int)EXCONTROLLER.EXCONTROLLER_SPACESHADOWGUN)
+                    {
+                        if ((data & 0x0010000) != 0)
+                            expad.SetSyncData(2, 1);
+                        else
+                            expad.SetSyncData(2, 0);
+                    }
+                    else
+                    {
+                        expad.SetSyncData(2, (byte)(data >> 16));
+                    }
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_CRAZYCLIMBER:
+                    expad.SetSyncData(0, (int)data);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_TOPRIDER:
+                    expad.SetSyncData(0, (int)data);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_FAMILYTRAINER_A:
+                case EXCONTROLLER.EXCONTROLLER_FAMILYTRAINER_B:
+                    expad.SetSyncData(0, (int)data);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_EXCITINGBOXING:
+                    expad.SetSyncData(0, (int)data);
+                    break;
+                case EXCONTROLLER.EXCONTROLLER_MAHJANG:
+                    expad.SetSyncData(0, (int)data);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
