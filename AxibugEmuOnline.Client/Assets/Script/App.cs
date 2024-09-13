@@ -99,8 +99,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             }
 
             yield return null;
-            Connect("127.0.0.1", 10492);
-            //Connect(resp.serverIp, resp.serverPort);
+            //Connect("127.0.0.1", 10492);
+            Connect(resp.serverIp, resp.serverPort);
         }
 
         private static void Tick()
