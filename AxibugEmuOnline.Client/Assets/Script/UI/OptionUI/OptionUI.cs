@@ -62,6 +62,54 @@ namespace AxibugEmuOnline.Client
             MenuRoot.anchoredPosition = temp;
         }
 
+        protected override void Update()
+        {
+            UpdateMenuState();
+        }
+
+        private void UpdateMenuState()
+        {
+            bool dirty = false;
+            foreach (var menuItem in m_runtimeMenuItems)
+            {
+                if (menuItem.gameObject.activeSelf != menuItem.Visible)
+                {
+                    dirty = true;
+                    menuItem.gameObject.SetActive(menuItem.Visible);
+                }
+            }
+            if (dirty)
+            {
+                if (m_runtimeMenuItems[SelectIndex].Visible == false)
+                {
+                    bool find = false;
+                    int currentSelect = SelectIndex;
+                    while (currentSelect >= 0)
+                    {
+                        currentSelect--;
+                        if (m_runtimeMenuItems[currentSelect].Visible)
+                        {
+                            find = true;
+                        }
+                    }
+                    if (!find)
+                    {
+                        currentSelect = SelectIndex;
+                        while (currentSelect < m_runtimeMenuItems.Count)
+                        {
+                            if (m_runtimeMenuItems[currentSelect].Visible)
+                            {
+                                find = true;
+                            }
+                        }
+                    }
+
+                    if (find)
+                        SelectIndex = currentSelect;
+                }
+            }
+        }
+
         public void Pop(List<OptionMenu> menus, int defaultIndex = 0)
         {
             ReleaseRuntimeMenus();
@@ -83,6 +131,7 @@ namespace AxibugEmuOnline.Client
             if (!m_bPoped)
             {
                 m_bPoped = true;
+
                 DOTween.To(
                     () => MenuRoot.anchoredPosition.x,
                     (value) =>
@@ -94,6 +143,7 @@ namespace AxibugEmuOnline.Client
                     0,
                     0.3f
                     ).SetEase(Ease.OutCubic);
+
             }
         }
 
@@ -101,10 +151,11 @@ namespace AxibugEmuOnline.Client
         {
             if (m_bPoped)
             {
+                m_runtimeMenuItems.Clear();
+
                 SelectBorder.gameObject.SetActiveEx(false);
 
                 CommandDispatcher.Instance.UnRegistController(this);
-                m_bPoped = false;
                 Canvas.ForceUpdateCanvases();
                 var width = MenuRoot.rect.width;
                 DOTween.To(
@@ -118,6 +169,8 @@ namespace AxibugEmuOnline.Client
                     width,
                     0.3f
                     ).SetEase(Ease.OutCubic);
+
+                m_bPoped = false;
             }
         }
 

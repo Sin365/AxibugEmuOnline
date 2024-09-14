@@ -34,7 +34,7 @@ enum CommandID
 		// 			主机玩家 上行 CMD_Room_HostPlayer_UpdateStateRaw消息，上传即时存档
 		// 			主机玩家上传完毕之后，服务器会通知进入Step1
 		//
-		// Step1：服务器广播"等待-全员加载即时存档" CMD_Room_WaitStep WaitStep=[1] 附带即时存档 ---> 客户端：全员等待（主机玩家一人上传)
+		// Step1：服务器广播"等待-全员加载即时存档" CMD_Room_WaitStep WaitStep=[1] 附带即时存档 ---> 客户端：全员等待
 		//			所有玩家确保加载ROM和即时存档，并保持模拟器暂停，准备完毕后 发送 CMD_Room_Player_Ready
 		//			所有玩家Ready之后，服务器会根据所有玩家延迟提前跑若干Frame，通知进入Step2 
 		//			
