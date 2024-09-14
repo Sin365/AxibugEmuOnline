@@ -9,6 +9,8 @@ namespace AxibugEmuOnline.Client
     {
         private InGameUI m_gameUI;
 
+        public override bool Visible => !m_gameUI.IsOnline;
+
         public InGameUI_SaveState(InGameUI gameUI) : base("±£´æ¿ìÕÕ", null)
         {
             m_gameUI = gameUI;

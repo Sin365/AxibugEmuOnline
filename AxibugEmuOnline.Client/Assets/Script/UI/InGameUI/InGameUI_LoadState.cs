@@ -7,6 +7,7 @@ namespace AxibugEmuOnline.Client
     public class InGameUI_LoadState : ExecuteMenu
     {
         private InGameUI m_gameUI;
+        public override bool Visible => !m_gameUI.IsOnline;
 
         public InGameUI_LoadState(InGameUI gameUI) : base("∂¡»°øÏ’’", null)
         {

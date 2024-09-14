@@ -62,6 +62,54 @@ namespace AxibugEmuOnline.Client
             MenuRoot.anchoredPosition = temp;
         }
 
+        protected override void Update()
+        {
+            UpdateMenuState();
+        }
+
+        private void UpdateMenuState()
+        {
+            bool dirty = false;
+            foreach (var menuItem in m_runtimeMenuItems)
+            {
+                if (menuItem.gameObject.activeSelf != menuItem.Visible)
+                {
+                    dirty = true;
+                    menuItem.gameObject.SetActive(menuItem.Visible);
+                }
+            }
+            if (dirty)
+            {
+                if (m_runtimeMenuItems[SelectIndex].Visible == false)
+                {
+                    bool find = false;
+                    int currentSelect = SelectIndex;
+                    while (currentSelect >= 0)
+                    {
+                        currentSelect--;
+                        if (m_runtimeMenuItems[currentSelect].Visible)
+                        {
+                            find = true;
+                        }
+                    }
+                    if (!find)
+                    {
+                        currentSelect = SelectIndex;
+                        while (currentSelect < m_runtimeMenuItems.Count)
+                        {
+                            if (m_runtimeMenuItems[currentSelect].Visible)
+                            {
+                                find = true;
+                            }
+                        }
+                    }
+
+                    if (find)
+                        SelectIndex = currentSelect;
+                }
+            }
+        }
+
         public void Pop(List<OptionMenu> menus, int defaultIndex = 0)
         {
             ReleaseRuntimeMenus();
