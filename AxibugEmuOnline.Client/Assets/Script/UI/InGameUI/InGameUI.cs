@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client
         public override bool Enable => gameObject.activeInHierarchy;
 
         /// <summary> 指示该游戏实例是否处于联网模式 </summary>
-        public bool IsOnline { get; private set; }
+        public bool IsOnline => App.roomMgr.RoomState <= AxibugProtobuf.RoomGameState.OnlyHost;
 
         private RomFile m_rom;
         private object m_core;
@@ -74,6 +74,11 @@ namespace AxibugEmuOnline.Client
             m_rom = currentRom;
             m_core = core;
 
+            if (App.user.IsLoggedIn)
+            {
+                App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
+            }
+
             gameObject.SetActiveEx(true);
         }
 
@@ -91,6 +96,7 @@ namespace AxibugEmuOnline.Client
 
         public void QuitGame()
         {
+            App.roomMgr.SendLeavnRoom();
             App.emu.StopGame();
         }
     }
