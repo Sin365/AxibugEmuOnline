@@ -1,11 +1,15 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AxibugEmuOnline.Client
 {
     public class InGameUI_SaveState : ExecuteMenu
     {
         private InGameUI m_gameUI;
+
+        public override bool Visible => !m_gameUI.IsOnline;
 
         public InGameUI_SaveState(InGameUI gameUI) : base("保存快照", null)
         {
@@ -20,7 +24,6 @@ namespace AxibugEmuOnline.Client
                 case EnumPlatform.NES:
                     var state = m_gameUI.GetCore<NesEmulator>().NesCore.GetState();
                     m_gameUI.SaveQuickState(state);
-                    App.log.Info($"{m_gameUI.RomFile.Platform}===>快照大小{state.ToBytes().Length}");
                     break;
             }
             sw.Stop();

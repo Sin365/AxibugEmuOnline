@@ -275,7 +275,7 @@ namespace AxibugEmuOnline.Server
             ServerInputSnapShot temp = new ServerInputSnapShot();
             temp.all = msg.InputData;
 
-            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp.p1);
+            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp.p1_byte);
         }
 
         public void OnCmdScreen(Socket sk, byte[] reqData)
@@ -560,10 +560,10 @@ namespace AxibugEmuOnline.Server
         {
             switch (PlayerIdx)
             {
-                case 0: mCurrInputData.p1 = 0; break;
-                case 1: mCurrInputData.p2 = 0; break;
-                case 2: mCurrInputData.p3 = 0; break;
-                case 3: mCurrInputData.p4 = 0; break;
+                case 0: mCurrInputData.p1_byte = 0; break;
+                case 1: mCurrInputData.p2_byte = 0; break;
+                case 2: mCurrInputData.p3_byte = 0; break;
+                case 3: mCurrInputData.p4_byte = 0; break;
             }
         }
 

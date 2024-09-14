@@ -26,7 +26,7 @@ namespace AxibugEmuOnline.Client.Manager
         public void RecvChatMsg(byte[] reqData)
         {
             Protobuf_ChatMsg_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_ChatMsg_RESP>(reqData);
-            EventSystem.Instance.PostEvent(EEvent.OnChatMsg, msg.NickName, msg.ChatMsg);
+            Eventer.Instance.PostEvent(EEvent.OnChatMsg, msg.NickName, msg.ChatMsg);
         }
     }
 }

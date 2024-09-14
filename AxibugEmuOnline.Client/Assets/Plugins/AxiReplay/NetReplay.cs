@@ -4,7 +4,7 @@ namespace AxiReplay
 {
     public class NetReplay
     {
-        int mCurrPlayFrame = -1;
+        public int mCurrPlayFrame = -1;
         Queue<ReplayStep> mQueueReplay;
         ReplayStep mNextReplay;
         ReplayStep mCurrReplay;
