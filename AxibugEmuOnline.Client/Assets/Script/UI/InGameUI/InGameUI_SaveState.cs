@@ -1,5 +1,7 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AxibugEmuOnline.Client
 {
@@ -20,7 +22,6 @@ namespace AxibugEmuOnline.Client
                 case EnumPlatform.NES:
                     var state = m_gameUI.GetCore<NesEmulator>().NesCore.GetState();
                     m_gameUI.SaveQuickState(state);
-                    App.log.Info($"{m_gameUI.RomFile.Platform}===>øÏ’’¥Û–°{state.ToBytes().Length}");
                     break;
             }
             sw.Stop();

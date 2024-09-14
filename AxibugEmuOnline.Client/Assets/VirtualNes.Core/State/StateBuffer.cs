@@ -85,6 +85,9 @@ namespace VirtualNes.Core
     public class StateReader
     {
         private MemoryStream m_dataStream;
+
+        public long Remain => m_dataStream.Length - 1 - m_dataStream.Position;
+
         public StateReader(byte[] bytes)
         {
             m_dataStream = new MemoryStream(bytes);
@@ -125,10 +128,10 @@ namespace VirtualNes.Core
             ushort[] result = new ushort[length];
             for (int i = 0; i < length; i++)
             {
-                int byte1 = m_dataStream.ReadByte();
-                int byte2 = m_dataStream.ReadByte();
+                TEMP[0] = (byte)m_dataStream.ReadByte();
+                TEMP[1] = (byte)m_dataStream.ReadByte();
 
-                result[i] = (ushort)(byte1 << 8 | byte2);
+                result[i] = BitConverter.ToUInt16(TEMP, 0);
             }
 
             return result;
@@ -138,12 +141,12 @@ namespace VirtualNes.Core
             int[] result = new int[length];
             for (int i = 0; i < length; i++)
             {
-                int byte1 = m_dataStream.ReadByte();
-                int byte2 = m_dataStream.ReadByte();
-                int byte3 = m_dataStream.ReadByte();
-                int byte4 = m_dataStream.ReadByte();
+                TEMP[0] = (byte)m_dataStream.ReadByte();
+                TEMP[1] = (byte)m_dataStream.ReadByte();
+                TEMP[2] = (byte)m_dataStream.ReadByte();
+                TEMP[3] = (byte)m_dataStream.ReadByte();
 
-                result[i] = byte1 << 24 | byte2 << 16 | byte3 << 8 | byte4;
+                result[i] = BitConverter.ToInt32(TEMP, 0);
             }
 
             return result;
@@ -160,21 +163,23 @@ namespace VirtualNes.Core
             var result = Read_bytes(4);
             return BitConverter.ToDouble(result, 0);
         }
+
+        byte[] TEMP = new byte[8];
+
         public ushort Read_ushort()
         {
-            var b1 = Read_byte();
-            var b2 = Read_byte();
-            return (ushort)(b1 << 8 | b2);
+            TEMP[0] = Read_byte();
+            TEMP[1] = Read_byte();
+            return BitConverter.ToUInt16(TEMP, 0);
         }
 
         public int Read_int()
         {
-            var b1 = Read_byte();
-            var b2 = Read_byte();
-            var b3 = Read_byte();
-            var b4 = Read_byte();
-
-            return b1 << 24 | b2 << 16 | b3 << 8 | b4;
+            TEMP[0] = Read_byte();
+            TEMP[1] = Read_byte();
+            TEMP[2] = Read_byte();
+            TEMP[3] = Read_byte();
+            return BitConverter.ToInt32(TEMP, 0);
         }
 
         public sbyte Read_sbyte(sbyte value)
@@ -183,21 +188,31 @@ namespace VirtualNes.Core
         }
         public long Read_long()
         {
-            var b1 = Read_byte();
-            var b2 = Read_byte();
-            var b3 = Read_byte();
-            var b4 = Read_byte();
-            var b5 = Read_byte();
-            var b6 = Read_byte();
-            var b7 = Read_byte();
-            var b8 = Read_byte();
+            TEMP[0] = Read_byte();
+            TEMP[1] = Read_byte();
+            TEMP[2] = Read_byte();
+            TEMP[3] = Read_byte();
+            TEMP[4] = Read_byte();
+            TEMP[5] = Read_byte();
+            TEMP[6] = Read_byte();
+            TEMP[7] = Read_byte();
 
-            return b1 << 56 | b2 << 48 | b3 << 40 | b4 << 32 | b5 << 24 | b6 << 16 | b7 << 8 | b8;
+            return BitConverter.ToInt64(TEMP, 0);
         }
 
         public uint Read_uint()
         {
             return (uint)Read_int();
+        }
+
+        public uint[] Read_uints(int length)
+        {
+            uint[] ret = new uint[length];
+            for (int i = 0; i < length; i++)
+            {
+                ret[i] = Read_uint();
+            }
+            return ret;
         }
     }
 
