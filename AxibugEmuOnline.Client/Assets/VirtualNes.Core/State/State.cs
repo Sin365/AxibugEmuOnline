@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VirtualNes.Core
 {
@@ -42,19 +46,24 @@ namespace VirtualNes.Core
 
             HEADER.SaveState(buffer);
 
+            buffer.Write(WRAM != null ? WRAM.Length : 0);
+            buffer.Write(CPU_MEM_BANK != null ? CPU_MEM_BANK.Count : 0);
+            buffer.Write(VRAM != null ? VRAM.Length : 0);
+            buffer.Write(CRAM != null ? CRAM.Count : 0);
+            buffer.Write(dskdata != null ? dskdata.Count : 0);
+
             if (regBLOCK.Valid)
             {
                 regBLOCK.SaveState(buffer);
                 reg.SaveState(buffer);
             }
 
-            if (regBLOCK.Valid)
+            if (ramBLOCK.Valid)
             {
                 ramBLOCK.SaveState(buffer);
                 ram.SaveState(buffer);
+                if (WRAM != null) buffer.Write(WRAM);
             }
-
-            if (WRAM != null) buffer.Write(WRAM);
 
             if (mmuBLOCK.Valid)
             {
@@ -100,6 +109,70 @@ namespace VirtualNes.Core
             }
 
             return buffer.Data.ToArray();
+        }
+        public void FromByte(byte[] data)
+        {
+            StateReader buffer = new StateReader(data);
+
+            HEADER.LoadState(buffer);
+
+            var WRAM_Length = buffer.Read_int();
+            var CPU_MEM_BANK_Length = buffer.Read_int();
+            var VRAM_Length = buffer.Read_int();
+            var CRAM_Length = buffer.Read_int();
+            var dskdata_Length = buffer.Read_int();
+
+            while (buffer.Remain > 0)
+            {
+                BLOCKHDR block = new BLOCKHDR();
+                block.LoadState(buffer);
+
+                switch (block.ID)
+                {
+                    case "REG DATA":
+                        regBLOCK = block;
+                        reg.LoadState(buffer);
+                        break;
+                    case "RAM DATA":
+                        ramBLOCK = block;
+                        ram.LoadState(buffer);
+                        if (WRAM_Length > 0)
+                            WRAM = buffer.Read_bytes(WRAM_Length);
+                        break;
+                    case "MMU DATA":
+                        mmuBLOCK = block;
+                        mmu.LoadState(buffer);
+                        if (CPU_MEM_BANK_Length > 0)
+                            CPU_MEM_BANK = new List<byte>(buffer.Read_bytes(CPU_MEM_BANK_Length));
+                        if (VRAM_Length > 0)
+                            VRAM = buffer.Read_bytes(VRAM_Length);
+                        if (CRAM_Length > 0)
+                            CRAM = new List<byte>(buffer.Read_bytes(CRAM_Length));
+                        break;
+                    case "MMC DATA":
+                        mmcBLOCK = block;
+                        mmc.LoadState(buffer);
+                        break;
+                    case "CTR DATA":
+                        ctrBLOCK = block;
+                        ctr.LoadState(buffer);
+                        break;
+                    case "SND DATA":
+                        sndBLOCK = block;
+                        snd.LoadState(buffer);
+                        break;
+                    case "DISKDATA":
+                        dskBLOCK = block;
+                        dsk.LoadState(buffer);
+                        if (dskdata_Length > 0)
+                            dskdata = new List<uint>(buffer.Read_uints(dskdata_Length));
+                        break;
+                    case "EXCTRDAT":
+                        exctrBLOCK = block;
+                        exctr.LoadState(buffer);
+                        break;
+                }
+            }
         }
     }
 }
