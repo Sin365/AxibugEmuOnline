@@ -131,6 +131,7 @@ namespace AxibugEmuOnline.Client
             if (!m_bPoped)
             {
                 m_bPoped = true;
+
                 DOTween.To(
                     () => MenuRoot.anchoredPosition.x,
                     (value) =>
@@ -142,6 +143,7 @@ namespace AxibugEmuOnline.Client
                     0,
                     0.3f
                     ).SetEase(Ease.OutCubic);
+
             }
         }
 
@@ -149,10 +151,11 @@ namespace AxibugEmuOnline.Client
         {
             if (m_bPoped)
             {
+                m_runtimeMenuItems.Clear();
+
                 SelectBorder.gameObject.SetActiveEx(false);
 
                 CommandDispatcher.Instance.UnRegistController(this);
-                m_bPoped = false;
                 Canvas.ForceUpdateCanvases();
                 var width = MenuRoot.rect.width;
                 DOTween.To(
@@ -166,6 +169,8 @@ namespace AxibugEmuOnline.Client
                     width,
                     0.3f
                     ).SetEase(Ease.OutCubic);
+
+                m_bPoped = false;
             }
         }
 
