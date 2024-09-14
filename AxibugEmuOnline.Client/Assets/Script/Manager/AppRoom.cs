@@ -7,7 +7,6 @@ using AxiReplay;
 using Google.Protobuf;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
 {
@@ -96,10 +95,11 @@ namespace AxibugEmuOnline.Client.Manager
         public void InitRePlay()
         {
             netReplay = new NetReplay();
+            netReplay.ResetData();
         }
         public void ReleaseRePlay()
         {
-
+            netReplay.ResetData();
         }
         #endregion
 
@@ -302,7 +302,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// 上报即时存档
         /// </summary>
         /// <param name="RoomID"></param>
-        public void SendLeavnRoom(byte[] RawData)
+        public void SendHostRaw(byte[] RawData)
         {
             //压缩
             byte[] compressRawData = Helper.CompressByteArray(RawData);
@@ -354,7 +354,6 @@ namespace AxibugEmuOnline.Client.Manager
             _Protobuf_Room_SinglePlayerInputData.InputData = InputData;
             App.network.SendToServer((int)CommandID.CmdRoomSingelPlayerInput, ProtoBufHelper.Serizlize(_Protobuf_Room_SinglePlayerInputData));
         }
-
 
         void RecvHostSyn_RoomFrameAllInputData(byte[] reqData)
         {

@@ -4,7 +4,6 @@ namespace AxiReplay
 {
     public class NetReplay
     {
-        int MaxInFrame = 0;
         int mCurrPlayFrame = -1;
         Queue<ReplayStep> mQueueReplay;
         ReplayStep mNextReplay;
@@ -13,20 +12,28 @@ namespace AxiReplay
         /// <summary>
         /// 服务器远端当前帧
         /// </summary>
-        public int remoteFrameIdx { get; private set; }
+        public int mRemoteFrameIdx { get; private set; }
         /// <summary>
         /// 当前帧和服务器帧相差数量
         /// </summary>
-        public int remoteFrameDiff => remoteFrameIdx - mCurrPlayFrame;
+        public int remoteFrameDiff => mRemoteFrameIdx - mCurrPlayFrame;
         public NetReplay()
         {
             mQueueReplay = new Queue<ReplayStep>();
         }
+
+        public void ResetData()
+        {
+            mQueueReplay.Clear();
+            mRemoteFrameIdx = 0;
+            byFrameIdx = 0;
+            mNextReplay = default(ReplayStep);
+            mCurrReplay = default(ReplayStep);
+        }
         public void InData(ReplayStep inputData,int ServerFrameIdx)
         {
             mQueueReplay.Enqueue(inputData);
-            MaxInFrame = inputData.FrameStartID;
-            remoteFrameIdx = ServerFrameIdx;
+            mRemoteFrameIdx = inputData.FrameStartID;
         }
         public bool NextFrame(out ReplayStep data, out int FrameDiff)
         {
@@ -55,17 +62,17 @@ namespace AxiReplay
             else
             {
                 data = mCurrReplay;
-                FrameDiff = MaxInFrame - mCurrPlayFrame;
+                FrameDiff = mRemoteFrameIdx - mCurrPlayFrame;
             }
             return Changed;
         }
         void UpdateNextFrame(int targetFrame,out int FrameDiff)
         {
-            FrameDiff = MaxInFrame - targetFrame;
+            FrameDiff = mRemoteFrameIdx - targetFrame;
             //如果已经超过
             while (targetFrame > mNextReplay.FrameStartID)
             {
-                if (mNextReplay.FrameStartID >= MaxInFrame)
+                if (mNextReplay.FrameStartID >= mRemoteFrameIdx)
                 {
                     //TODO
                     //bEnd = true;
