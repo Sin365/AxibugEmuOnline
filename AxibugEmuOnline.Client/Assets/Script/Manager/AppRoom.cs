@@ -5,9 +5,9 @@ using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using AxiReplay;
 using Google.Protobuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
 {
@@ -182,7 +182,7 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_List_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_List_RESP>(reqData);
             for (int i = 0; i < msg.RoomMiniInfoList.Count; i++)
                 AddOrUpdateRoomList(msg.RoomMiniInfoList[i]);
-            EventSystem.Instance.PostEvent(EEvent.OnRoomListAllUpdate);
+            Eventer.Instance.PostEvent(EEvent.OnRoomListAllUpdate);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace AxibugEmuOnline.Client.Manager
             App.log.Debug("单个房间状态更新");
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
             AddOrUpdateRoomList(msg.RoomMiniInfo);
-            EventSystem.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+            Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
         }
 
         /// <summary>
@@ -247,16 +247,18 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Join_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Join_RESP>(reqData);
             mineRoomMiniInfo = msg.RoomMiniInfo;
             InitRePlay();
-            EventSystem.Instance.PostEvent(EEvent.OnMineJoinRoom);
+            Eventer.Instance.PostEvent(EEvent.OnMineJoinRoom);
         }
 
         /// <summary>
         /// 离开房间
         /// </summary>
         /// <param name="RoomID"></param>
-        public void SendLeavnRoom(int RoomID)
+        public void SendLeavnRoom()
         {
-            _Protobuf_Room_Leave.RoomID = RoomID;
+            if (!InRoom)
+                return;
+            _Protobuf_Room_Leave.RoomID = mineRoomMiniInfo.RoomID;
             App.log.Info($"创建房间");
             App.network.SendToServer((int)CommandID.CmdRoomLeave, ProtoBufHelper.Serizlize(_Protobuf_Room_Leave));
         }
@@ -271,7 +273,7 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Leave_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Leave_RESP>(reqData);
             ReleaseRePlay();
             mineRoomMiniInfo = null;
-            EventSystem.Instance.PostEvent(EEvent.OnMineLeavnRoom);
+            Eventer.Instance.PostEvent(EEvent.OnMineLeavnRoom);
         }
 
         void RecvRoomMyRoomStateChange(byte[] reqData)
@@ -289,12 +291,12 @@ namespace AxibugEmuOnline.Client.Manager
                 //位置之前有人，但是离开了
                 if (OldPlayer > 0)
                 {
-                    EventSystem.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
+                    Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
                     if (NewPlayer > 0)//而且害换了一个玩家
-                        EventSystem.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+                        Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
                 }
                 else //之前没人
-                    EventSystem.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+                    Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
             }
         }
 
@@ -320,7 +322,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (WaitStep != msg.WaitStep)
             {
                 WaitStep = msg.WaitStep;
-                EventSystem.Instance.PostEvent(EEvent.OnRoomWaitStepChange, WaitStep);
+                Eventer.Instance.PostEvent(EEvent.OnRoomWaitStepChange, WaitStep);
                 if (WaitStep == 1)
                 {
                     byte[] decompressRawData = Helper.DecompressByteArray(msg.LoadStateRaw.ToByteArray());
@@ -376,6 +378,11 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Screnn_Frame msg = ProtoBufHelper.DeSerizlize<Protobuf_Screnn_Frame>(reqData);
             //解压
             byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
+        }
+
+        internal void SendHostRaw(byte[] stateRaw)
+        {
+            throw new NotImplementedException();
         }
     }
 }

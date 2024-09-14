@@ -5,34 +5,33 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppEmu
     {
+        private GameObject m_emuInstance;
+
         public void BeginGame(RomFile romFile)
         {
-            if (InGameUI.Instance.Enable) return;
+            if (m_emuInstance != null) return;
 
             switch (romFile.Platform)
             {
                 case EnumPlatform.NES:
-                    App.SceneLoader.BeginLoad("Scene/Emu_NES", () =>
-                    {
-                        var nesEmu = GameObject.FindObjectOfType<NesEmulator>();
-                        nesEmu.StartGame(romFile);
+                    var nesEmu = GameObject.Instantiate(Resources.Load<GameObject>("NES/NesEmulator")).GetComponent<NesEmulator>();
+                    m_emuInstance = nesEmu.gameObject;
 
-                        LaunchUI.Instance.HideMainMenu();
-                        InGameUI.Instance.Show(romFile, nesEmu);
-                    });
+                    nesEmu.StartGame(romFile);
+                    LaunchUI.Instance.HideMainMenu();
+                    InGameUI.Instance.Show(romFile, nesEmu);
                     break;
             }
         }
 
         public void StopGame()
         {
-            if (!InGameUI.Instance.enabled) return;
+            if (m_emuInstance == null) return;
+            GameObject.Destroy(m_emuInstance);
+            m_emuInstance = null;
 
-            App.SceneLoader.BeginLoad("Scene/AxibugEmuOnline.Client", () =>
-            {
-                InGameUI.Instance.Hide();
-                LaunchUI.Instance.ShowMainMenu();
-            });
+            InGameUI.Instance.Hide();
+            LaunchUI.Instance.ShowMainMenu();
         }
     }
 }
