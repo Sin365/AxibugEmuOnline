@@ -1,3 +1,5 @@
+using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Manager;
 using System;
 using System.Collections.Generic;
 
@@ -9,17 +11,24 @@ namespace AxibugEmuOnline.Client
 
         public RomFile RomFile => m_rom;
         public override bool Enable => gameObject.activeInHierarchy;
+
+        /// <summary> 指示该游戏实例是否处于联网模式 </summary>
+        public bool IsOnline { get; private set; }
+
         private RomFile m_rom;
         private object m_core;
         private object m_state;
 
-        private InGameUI_SaveState m_saveStateMenu;
-        private InGameUI_LoadState m_loadStateMenu;
+        private List<OptionMenu> menus = new List<OptionMenu>();
+
 
         protected override void Awake()
         {
             Instance = this;
             gameObject.SetActiveEx(false);
+            menus.Add(new InGameUI_SaveState(this));
+            menus.Add(new InGameUI_LoadState(this));
+            menus.Add(new InGameUI_QuitGame(this));
             base.Awake();
         }
 
@@ -56,15 +65,11 @@ namespace AxibugEmuOnline.Client
             {
                 return false;
             }
-
         }
 
         public void Show(RomFile currentRom, object core)
         {
             CommandDispatcher.Instance.RegistController(this);
-
-            m_saveStateMenu = new InGameUI_SaveState(this);
-            m_loadStateMenu = new InGameUI_LoadState(this);
 
             m_rom = currentRom;
             m_core = core;
@@ -81,7 +86,12 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdOptionMenu()
         {
-            OptionUI.Instance.Pop(new List<OptionMenu> { m_saveStateMenu, m_loadStateMenu });
+            OptionUI.Instance.Pop(menus);
+        }
+
+        public void QuitGame()
+        {
+            App.emu.StopGame();
         }
     }
 }

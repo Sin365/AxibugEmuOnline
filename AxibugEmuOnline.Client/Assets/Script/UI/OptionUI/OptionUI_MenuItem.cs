@@ -12,6 +12,8 @@ namespace AxibugEmuOnline.Client
         [SerializeField] Text m_MenuNameTxt;
         [SerializeField] Image m_Icon;
 
+        public bool Visible => m_Menu.Visible;
+
         protected OptionMenu m_Menu;
 
         public void SetData(OptionMenu menuData)

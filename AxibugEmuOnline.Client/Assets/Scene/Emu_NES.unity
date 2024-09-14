@@ -174,53 +174,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4232056521131536012, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: RomName
-      value: mario.nes
-      objectReference: {fileID: 0}
     - target: {fileID: 4232056521131536013, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
       propertyPath: m_Name
       value: NesEmulator
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880274, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880274, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_Texture
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880274, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: 07e28fcb992bc124e986f9d8ff3beb97, type: 2}
-    - target: {fileID: 4232056521759880275, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880275, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880275, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880275, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880275, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880275, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4232056521759880276, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8bea3f8aa351bb46ada33b2274729ea, type: 3}
