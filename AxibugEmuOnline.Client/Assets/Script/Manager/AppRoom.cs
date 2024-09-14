@@ -114,6 +114,10 @@ namespace AxibugEmuOnline.Client.Manager
                 return 0;
             if (mineRoomMiniInfo.Player2UID == App.user.userdata.UID)
                 return 1;
+            if (mineRoomMiniInfo.Player3UID == App.user.userdata.UID)
+                return 2;
+            if (mineRoomMiniInfo.Player4UID == App.user.userdata.UID)
+                return 3;
             return -1;
         }
 
