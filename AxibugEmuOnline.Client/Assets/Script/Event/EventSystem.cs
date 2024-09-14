@@ -29,14 +29,14 @@ namespace AxibugEmuOnline.Client.Event
         }
     }
 
-    public class EventSystem
+    public class Eventer
     {
-        private static EventSystem instance = new EventSystem();
-        public static EventSystem Instance { get { return instance; } }
+        private static Eventer instance = new Eventer();
+        public static Eventer Instance { get { return instance; } }
 
         private Dictionary<EEvent, List<Delegate>> eventDic = new Dictionary<EEvent, List<Delegate>>(128);
 
-        private EventSystem() { }
+        private Eventer() { }
 
 
         #region RegisterEvent

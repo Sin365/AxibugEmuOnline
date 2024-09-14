@@ -4,10 +4,12 @@ namespace VirtualNes.Core
 {
     public struct ControllerState
     {
-        private uint raw0;
-        private uint raw1;
-        private uint raw2;
-        private uint raw3;
+        public uint raw0;
+        public uint raw1;
+        public uint raw2;
+        public uint raw3;
+
+        public bool valid;
 
         public ControllerState(
             EnumButtonType player0_buttons,
@@ -19,6 +21,7 @@ namespace VirtualNes.Core
             raw1 = (uint)player1_buttons;
             raw2 = (uint)player2_buttons;
             raw3 = (uint)player3_buttons;
+            valid = true;
         }
 
         public bool HasButton(int player, EnumButtonType button)

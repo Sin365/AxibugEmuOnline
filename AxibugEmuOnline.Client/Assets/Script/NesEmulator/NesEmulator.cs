@@ -8,14 +8,13 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
-
     public class NesEmulator : MonoBehaviour
-    { 
+    {
         public NES NesCore { get; private set; }
 
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
-        
+        public bool m_bPause;
 
         private void Start()
         {
@@ -50,9 +49,16 @@ namespace AxibugEmuOnline.Client
 
         private void Update()
         {
+            if (m_bPause) return;
+
             if (NesCore != null)
             {
+                Supporter.SampleInput();
                 var controlState = Supporter.GetControllerState();
+
+                //如果未收到Input数据,核心帧不推进
+                if (!controlState.valid) return;
+
                 NesCore.pad.Sync(controlState);
                 NesCore.EmulateFrame(true);
 
@@ -60,6 +66,17 @@ namespace AxibugEmuOnline.Client
                 var lineColorMode = NesCore.ppu.GetLineColorMode();
                 VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
             }
+        }
+
+
+        public void Pause()
+        {
+            m_bPause = true;
+        }
+
+        public void Resume()
+        {
+            m_bPause = false;
         }
 
 #if UNITY_EDITOR
