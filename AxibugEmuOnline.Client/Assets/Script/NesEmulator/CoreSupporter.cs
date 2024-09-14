@@ -95,15 +95,7 @@ namespace AxibugEmuOnline.Client
         private ControllerState m_sampledState;
         public ControllerState GetControllerState()
         {
-            if (!InGameUI.Instance.IsOnline)
-            {
-                return m_sampledState;
-            }
-            else
-            {
-                //todo : 从服务器获取帧输入数据
-                return default;
-            }
+            return m_sampledState;
         }
 
         public void SampleInput()
