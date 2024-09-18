@@ -200,8 +200,16 @@ namespace AxibugEmuOnline.Client.Manager
         {
             App.log.Debug("单个房间状态更新");
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
-            AddOrUpdateRoomList(msg.RoomMiniInfo);
-            Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+            if (msg.UpdateType == 0)
+            {
+                AddOrUpdateRoomList(msg.RoomMiniInfo);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+            }
+            else
+            {
+                RemoveRoomList(msg.RoomMiniInfo.GameRomID);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleClose, msg.RoomMiniInfo.GameRomID);
+            }
         }
 
         /// <summary>
