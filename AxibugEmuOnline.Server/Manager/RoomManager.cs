@@ -20,6 +20,7 @@ namespace AxibugEmuOnline.Server
         public RoomManager()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomList, OnCmdRoomList);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomGetScreen, CmdRoomGetScreen);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomCreate, OnCmdRoomCreate);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomJoin, OnCmdRoomJoin);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomLeave, OnCmdRoomLeave);
@@ -131,6 +132,27 @@ namespace AxibugEmuOnline.Server
             foreach (var room in temp)
                 resp.RoomMiniInfoList.Add(GetProtoDataRoom(room));
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdChatmsg, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+        }
+        public void CmdRoomGetScreen(Socket sk, byte[] reqData)
+        {
+            AppSrv.g_Log.Debug($"OnCmdRoomList ");
+            ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
+            Protobuf_Room_Get_Screen msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Get_Screen>(reqData);
+
+            Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
+            bool bHadRoomStateChange = false;
+            ErrorCode Errcode = ErrorCode.ErrorOk;
+            Protobuf_Room_Get_Screen_RESP resp = new Protobuf_Room_Get_Screen_RESP();
+            if (room == null)
+                Errcode = ErrorCode.ErrorRoomNotFound;
+            else
+            {
+                resp.FrameID = (int)room.mCurrFrameId;
+                resp.RoomID = room.RoomID;
+                resp.RawBitmap = room.ScreenRaw;
+            }
+
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomGetScreen, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
         }
 
         /// <summary>

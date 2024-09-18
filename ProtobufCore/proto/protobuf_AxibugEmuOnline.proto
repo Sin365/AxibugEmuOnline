@@ -17,6 +17,7 @@ enum CommandID
 	//房间列表相关（仅用于列表显示）
 	CMD_Room_List = 5001;  //房间列表 上行 | 下行 对应 Protobuf_Room_List | Protobuf_Room_List_RESP
 	CMD_Room_List_Update = 5002;  //房间单个房间信息更新 对应 Protobuf_Room_Update_RESP
+	CMD_Room_Get_Screen = 5011;  //房间列表 上行 | 下行 对应 Protobuf_Room_Get_Screen | Protobuf_Room_Get_Screen_RESP
 	
 	//房间内相关
 	CMD_Room_Create = 5101;  //房间创建 对应 Protobuf_Room_Create | Protobuf_Room_Create_RESP
@@ -263,4 +264,16 @@ message Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
 
 message Protobuf_Room_Player_Ready
 {
+}
+
+message Protobuf_Room_Get_Screen
+{
+	int32 RoomID = 1;//房间ID
+}
+
+message Protobuf_Room_Get_Screen_RESP
+{
+	int32 RoomID = 1;//房间ID
+	int32 FrameID = 2;//帧编号
+    bytes RawBitmap = 3;//渲染层画面
 }
