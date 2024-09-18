@@ -28,7 +28,7 @@ namespace AxibugEmuOnline.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult NesRomList(string SearchKey,int Ptype,int GType,int Page, int PageSize)
+        public JsonResult NesRomList(string SearchKey, int Ptype, int GType, int Page, int PageSize)
         {
             string searchPattern = $"%{SearchKey}%";
             Resp_GameList resp = new Resp_GameList();
@@ -103,6 +103,40 @@ namespace AxibugEmuOnline.Web.Controllers
             return new JsonResult(resp);
         }
 
+
+        [HttpGet]
+        public JsonResult RomInfo(int Ptype, int RomID)
+        {
+            string searchPattern = $"%{RomInfo}%";
+            Resp_RomInfo resp = new Resp_RomInfo();
+            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("NesRomList");
+            {
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist_nes where id = ?romid;";
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    // 设置参数值  
+                    command.Parameters.AddWithValue("?romid", RomID);
+                    // 执行查询并处理结果  
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            resp.id = reader.GetInt32(0);
+                            resp.romName = !reader.IsDBNull(1) ? reader.GetString(1) : string.Empty;
+                            resp.gType = !reader.IsDBNull(2) ? reader.GetString(2) : string.Empty;
+                            resp.desc = !reader.IsDBNull(3) ? reader.GetString(3) : string.Empty;
+                            resp.url = !reader.IsDBNull(4) ? reader.GetString(4) : string.Empty;
+                            resp.imgUrl = !reader.IsDBNull(5) ? reader.GetString(5) : string.Empty;
+                            resp.hash = !reader.IsDBNull(6) ? reader.GetString(6) : string.Empty;
+                            resp.stars = 0;
+                        }
+                    }
+                }
+                Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+            }
+            return new JsonResult(resp);
+        }
+
         enum PlatformType : byte
         {
             All = 0,
@@ -153,7 +187,7 @@ namespace AxibugEmuOnline.Web.Controllers
         {
             public int orderid { get; set; }
             public int id { get; set; }
-            public string romName { get; set;}
+            public string romName { get; set; }
             public string gType { get; set; }
             public string desc { get; set; }
             public string url { get; set; }

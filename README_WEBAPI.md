@@ -2,6 +2,24 @@
 
 这里说明，WebApi类的接口
 
+
+### 基本通用参数
+
+```
+platform 模拟器所在平台
+[0] 通用
+[1] PC
+
+PType Rom所属平台
+
+	enum PlatformType : byte
+      {
+          All = 0,
+          Nes = 1,
+      }
+
+```
+
 ### 基本信息检查
 
 ```
@@ -120,33 +138,7 @@ Response:
 序列化C#实体类示例
 
 ```
-      enum PlatformType : byte
-      {
-          All = 0,
-          Nes,
-      }
-
-      enum GameType : byte
-      {
-          NONE = 0,
-          ACT,
-          ARPG,
-          AVG,
-          ETC,
-          FTG,
-          PUZ,
-          RAC,
-          RPG,
-          SLG,
-          SPG,
-          SRPG,
-          STG,
-          TAB,
-          /// <summary>
-          /// 合卡
-          /// </summary>
-          ALLINONE,
-      }
+      
 
       class Resp_GameList
       {
@@ -169,3 +161,35 @@ Response:
           public int stars { get; set; }
       }
 ```
+
+
+### 单个Rom游戏详情
+
+```
+{WebHost}/api/RomInfo?PType=<平台枚举（int）>&RomID=<RomID>
+```
+
+Request:
+
+```
+http://emu.axibug.com/api/RomInfo?PType=1&RomID=5
+```
+
+Response:
+
+```
+{
+    "orderid": 0,//单个查询就没有排序id了
+    "id": 5,
+    "romName": "1999强手棋",
+    "gType": "TAB",
+    "desc": "以世纪末地球危机为题材的桌棋冒险节目。游戏者要存储宇宙能量帮助地球摆脱各方面危机最多可4人同时进行",
+    "url": "roms/fcrom/1999%20-%20Hore,%20Mitakotoka!%20Seikimatsu%20(J).zip",
+    "imgUrl": "images/fcrom/1999%20-%20Hore,%20Mitakotoka!%20Seikimatsu%20(J).JPG",
+    "hash": "",
+    "stars": 0
+}
+```
+
+
+序列化Class 参照如上 Resp_RomInfo
