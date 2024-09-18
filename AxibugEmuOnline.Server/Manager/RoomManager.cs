@@ -270,7 +270,12 @@ namespace AxibugEmuOnline.Server
             Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
             if (room == null)
                 return;
-            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, (ushort)msg.InputData);
+
+            //取玩家操作数据中的第一个
+            ServerInputSnapShot temp = new ServerInputSnapShot();
+            temp.all = msg.InputData;
+
+            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp.p1_byte);
         }
 
         public void OnCmdScreen(Socket sk, byte[] reqData)
@@ -540,14 +545,14 @@ namespace AxibugEmuOnline.Server
             return list;
         }
 
-        public void SetPlayerInput(int PlayerIdx, long mFrameID, ushort input)
+        public void SetPlayerInput(int PlayerIdx, long mFrameID, byte input)
         {
             switch (PlayerIdx)
             {
-                case 0: mCurrInputData.p1 = input; break;
-                case 1: mCurrInputData.p2 = input; break;
-                case 2: mCurrInputData.p3 = input; break;
-                case 3: mCurrInputData.p4 = input; break;
+                case 0: mCurrInputData.p1_byte = input; break;
+                case 1: mCurrInputData.p2_byte = input; break;
+                case 2: mCurrInputData.p3_byte = input; break;
+                case 3: mCurrInputData.p4_byte = input; break;
             }
         }
 
@@ -555,10 +560,10 @@ namespace AxibugEmuOnline.Server
         {
             switch (PlayerIdx)
             {
-                case 0: mCurrInputData.p1 = 0; break;
-                case 1: mCurrInputData.p2 = 0; break;
-                case 2: mCurrInputData.p3 = 0; break;
-                case 3: mCurrInputData.p4 = 0; break;
+                case 0: mCurrInputData.p1_byte = 0; break;
+                case 1: mCurrInputData.p2_byte = 0; break;
+                case 2: mCurrInputData.p3_byte = 0; break;
+                case 3: mCurrInputData.p4_byte = 0; break;
             }
         }
 
@@ -753,18 +758,28 @@ namespace AxibugEmuOnline.Server
         }
     }
 
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Size = 8)]
     public struct ServerInputSnapShot
     {
         [FieldOffset(0)]
         public UInt64 all;
+
         [FieldOffset(0)]
-        public ushort p1;
+        public byte p1_byte;
+        [FieldOffset(1)]
+        public byte p2_byte;
         [FieldOffset(2)]
-        public ushort p2;
+        public byte p3_byte;
+        [FieldOffset(3)]
+        public byte p4_byte;
+
+        [FieldOffset(0)]
+        public ushort p1_ushort;
+        [FieldOffset(2)]
+        public ushort p2_ushort;
         [FieldOffset(4)]
-        public ushort p3;
+        public ushort p3_ushort;
         [FieldOffset(6)]
-        public ushort p4;
+        public ushort p4_ushort;
     }
 }

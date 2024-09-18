@@ -16,7 +16,6 @@ namespace AxibugEmuOnline.Server.Manager
         public DateTime LogOutDT { get; set; }
         public DateTime LogInDT { get; set; }
         public UserRoomState RoomState { get; set; } = new UserRoomState();
-
         public TimeSpan LastStartPingTime { get; set; }
         public int LastPingSeed { get; set; }
         public double AveNetDelay { get; set; }
@@ -34,13 +33,11 @@ namespace AxibugEmuOnline.Server.Manager
         {
             ClearRoomData();
         }
-
         public void SetRoomData(int roomID, int playerIdx)
         {
             RoomID = roomID;
             PlayerIdx = playerIdx;
         }
-
         public void ClearRoomData()
         {
             RoomID = -1;
