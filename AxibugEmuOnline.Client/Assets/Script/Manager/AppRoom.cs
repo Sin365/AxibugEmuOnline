@@ -16,6 +16,7 @@ namespace AxibugEmuOnline.Client.Manager
         public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; } = null;
         public bool InRoom => mineRoomMiniInfo != null;
         public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == App.user.userdata.UID;
+        public bool IsScreenProviderUID => mineRoomMiniInfo?.ScreenProviderUID == App.user.userdata.UID;
         public RoomGameState RoomState => mineRoomMiniInfo.GameState;
         public int MinePlayerIdx => GetMinePlayerIndex();
         public int WaitStep { get; private set; } = -1;
