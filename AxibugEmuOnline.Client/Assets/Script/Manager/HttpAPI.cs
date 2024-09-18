@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
             callback.Invoke(resp);
         }
 
-        private IEnumerator GetNesRomInfo(int RomID, Action<Resp_RomInfo> callback)
+        public IEnumerator GetNesRomInfo(int RomID, Action<Resp_RomInfo> callback)
         {
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/RomInfo?PType={PlatformType.Nes}&RomID={RomID}");
             yield return request.SendWebRequest();

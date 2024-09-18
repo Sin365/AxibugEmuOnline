@@ -20,6 +20,8 @@ namespace AxibugEmuOnline.Client.UI
         List<MenuData> MenuSetting;
         [SerializeField]
         float HoriRollSpd = 1f;
+        [SerializeField]
+        int InitSelect = -1;
 
         private RectTransform groupRootRect => m_menuItemRoot as RectTransform;
 
@@ -27,16 +29,21 @@ namespace AxibugEmuOnline.Client.UI
         private List<CanvasGroup> m_runtimeMenuUICanvas;
         private Sequence seq;
 
+
         protected override void Start()
         {
             base.Start();
 
             m_runtimeMenuUICanvas = m_runtimeMenuUI.Select(menu => menu.gameObject.AddComponent<CanvasGroup>()).ToList();
             m_runtimeMenuUICanvas.ForEach(canv => canv.gameObject.AddComponent<AutoRaycastCanvasGroup>());
+
+            if (InitSelect != -1)
+            {
+                m_selectIndex = InitSelect;
+                PlaySelectItemAnim(false);
+            }
         }
-        public override void Init(List<MenuData> menuDataList)
-        {
-        }
+        public override void Init(List<MenuData> menuDataList) { }
 
         public void EnterDetailState()
         {
@@ -58,7 +65,6 @@ namespace AxibugEmuOnline.Client.UI
             );
 
             seq.Play();
-
         }
 
         public void ExitDetailState()
@@ -85,6 +91,11 @@ namespace AxibugEmuOnline.Client.UI
 
         protected override void OnSelectMenuChanged()
         {
+            PlaySelectItemAnim(true);
+        }
+
+        private void PlaySelectItemAnim(bool useAnim)
+        {
             var step = GroupRoot.spacing;
             var needSelectItem = m_runtimeMenuUI[SelectIndex];
             var offset = needSelectItem.Rect.anchoredPosition.x;
@@ -100,12 +111,19 @@ namespace AxibugEmuOnline.Client.UI
                 item.SetSelectState(i == SelectIndex);
             }
 
-            rollTween = DOTween.To(
-                () => groupRootRect.anchoredPosition,
-                (x) => groupRootRect.anchoredPosition = x,
-                targetPosition,
-                HoriRollSpd)
-                .SetSpeedBased();
+            if (useAnim)
+            {
+                rollTween = DOTween.To(
+                    () => groupRootRect.anchoredPosition,
+                    (x) => groupRootRect.anchoredPosition = x,
+                    targetPosition,
+                    HoriRollSpd)
+                    .SetSpeedBased();
+            }
+            else
+            {
+                groupRootRect.anchoredPosition = targetPosition;
+            }
         }
 
         protected override void OnCmdSelectItemLeft()
