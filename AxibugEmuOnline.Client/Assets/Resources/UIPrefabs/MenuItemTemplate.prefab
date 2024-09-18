@@ -301,7 +301,7 @@ MonoBehaviour:
   m_menuItemRoot: {fileID: 3226730524206505336}
   SubMenuItemTemplate: {fileID: 2502609279043838113, guid: 01f3c5497992f944eae9b9efa15a19c2, type: 3}
   alphaGroup: {fileID: 6355204462360987243}
-  m_selectItemPosition: {x: -50, y: -51}
+  m_selectItemPosition: {x: -72, y: -51}
   step: 120
   splitStep: 280
 --- !u!225 &6355204462360987243
