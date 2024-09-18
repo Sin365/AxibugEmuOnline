@@ -71,26 +71,30 @@ namespace AxibugProtobuf {
             "KAwiPwonUHJvdG9idWZfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3",
             "EhQKDExvYWRTdGF0ZVJhdxgBIAEoDCIuCixQcm90b2J1Zl9Sb29tX0hvc3RQ",
             "bGF5ZXJfVXBkYXRlU3RhdGVSYXdfUkVTUCIcChpQcm90b2J1Zl9Sb29tX1Bs",
-            "YXllcl9SZWFkeSqaAwoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghD",
-            "TURfUElORxABEgwKCENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhAKC0NN",
-            "RF9DSEFUTVNHEKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01EX1Jvb21f",
-            "TGlzdF9VcGRhdGUQiicSFAoPQ01EX1Jvb21fQ3JlYXRlEO0nEhIKDUNNRF9S",
-            "b29tX0pvaW4Q8ScSEwoOQ01EX1Jvb21fTGVhdmUQ8icSIgodQ01EX1Jvb21f",
-            "TXlSb29tX1N0YXRlX0NoYW5nZWQQ9icSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ",
-            "0SgSJwoiQ01EX1Jvb21fSG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIa",
-            "ChVDTURfUm9vbV9QbGF5ZXJfUmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2Vs",
-            "X1BsYXllcklucHV0EPouEh0KGENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/",
-            "LhIPCgpDTURfU2NyZWVuENk2Ko8BCglFcnJvckNvZGUSEAoMRVJST1JfREVG",
-            "QVVMEAASDAoIRVJST1JfT0sQARIYChRFUlJPUl9ST09NX05PVF9GT1VORBAK",
-            "EiUKIUVSUk9SX1JPT01fU0xPVF9SRUFETFlfSEFEX1BMQVlFUhALEiEKHUVS",
-            "Uk9SX1JPT01fQ0FOVF9ET19DVVJSX1NUQVRFEDIqHAoJTG9naW5UeXBlEg8K",
-            "C0Jhc2VEZWZhdWx0EAAqSwoKRGV2aWNlVHlwZRIWChJEZXZpY2VUeXBlX0Rl",
-            "ZmF1bHQQABIGCgJQQxABEgsKB0FuZHJvaWQQAhIHCgNJT1MQAxIHCgNQU1YQ",
-            "BCpwCg1Sb29tR2FtZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25s",
-            "eUhvc3QQARIRCg1XYWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoF",
-            "UGF1c2UQBBIQCgxJbk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1",
-            "cxIhCh1Mb2dpblJlc3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAES",
-            "DgoKQWNjb3VudEVychACQgJIAWIGcHJvdG8z"));
+            "YXllcl9SZWFkeSIqChhQcm90b2J1Zl9Sb29tX0dldF9TY3JlZW4SDgoGUm9v",
+            "bUlEGAEgASgFIlMKHVByb3RvYnVmX1Jvb21fR2V0X1NjcmVlbl9SRVNQEg4K",
+            "BlJvb21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgD",
+            "IAEoDCq0AwoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElO",
+            "RxABEgwKCENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhAKC0NNRF9DSEFU",
+            "TVNHEKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01EX1Jvb21fTGlzdF9V",
+            "cGRhdGUQiicSGAoTQ01EX1Jvb21fR2V0X1NjcmVlbhCTJxIUCg9DTURfUm9v",
+            "bV9DcmVhdGUQ7ScSEgoNQ01EX1Jvb21fSm9pbhDxJxITCg5DTURfUm9vbV9M",
+            "ZWF2ZRDyJxIiCh1DTURfUm9vbV9NeVJvb21fU3RhdGVfQ2hhbmdlZBD2JxIW",
+            "ChFDTURfUm9vbV9XYWl0U3RlcBDRKBInCiJDTURfUm9vbV9Ib3N0UGxheWVy",
+            "X1VwZGF0ZVN0YXRlUmF3ENQoEhoKFUNNRF9Sb29tX1BsYXllcl9SZWFkeRDY",
+            "KBIgChtDTURfUm9vbV9TaW5nZWxfUGxheWVySW5wdXQQ+i4SHQoYQ01EX1JP",
+            "T01fU1lOX1BsYXllcklucHV0EP8uEg8KCkNNRF9TY3JlZW4Q2TYqjwEKCUVy",
+            "cm9yQ29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVS",
+            "Uk9SX1JPT01fTk9UX0ZPVU5EEAoSJQohRVJST1JfUk9PTV9TTE9UX1JFQURM",
+            "WV9IQURfUExBWUVSEAsSIQodRVJST1JfUk9PTV9DQU5UX0RPX0NVUlJfU1RB",
+            "VEUQMiocCglMb2dpblR5cGUSDwoLQmFzZURlZmF1bHQQACpLCgpEZXZpY2VU",
+            "eXBlEhYKEkRldmljZVR5cGVfRGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9p",
+            "ZBACEgcKA0lPUxADEgcKA1BTVhAEKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9u",
+            "ZV9HYW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQ",
+            "AhINCglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAF",
+            "Kk4KEUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jh",
+            "c2VEZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -117,7 +121,9 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP), global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP.Parser, new[]{ "WaitStep", "LoadStateRaw" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw.Parser, new[]{ "LoadStateRaw" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, null, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen), global::AxibugProtobuf.Protobuf_Room_Get_Screen.Parser, new[]{ "RoomID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null)
           }));
     }
     #endregion
@@ -154,6 +160,10 @@ namespace AxibugProtobuf {
     /// </summary>
     [pbr::OriginalName("CMD_Room_List_Update")] CmdRoomListUpdate = 5002,
     /// <summary>
+    ///房间列表 上行 | 下行 对应 Protobuf_Room_Get_Screen | Protobuf_Room_Get_Screen_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_Get_Screen")] CmdRoomGetScreen = 5011,
+    /// <summary>
     ///房间内相关
     /// </summary>
     [pbr::OriginalName("CMD_Room_Create")] CmdRoomCreate = 5101,
@@ -180,7 +190,7 @@ namespace AxibugProtobuf {
     /// 			主机玩家 上行 CMD_Room_HostPlayer_UpdateStateRaw消息，上传即时存档
     /// 			主机玩家上传完毕之后，服务器会通知进入Step1
     ///
-    /// Step1：服务器广播"等待-全员加载即时存档" CMD_Room_WaitStep WaitStep=[1] 附带即时存档 ---> 客户端：全员等待（主机玩家一人上传)
+    /// Step1：服务器广播"等待-全员加载即时存档" CMD_Room_WaitStep WaitStep=[1] 附带即时存档 ---> 客户端：全员等待
     ///			所有玩家确保加载ROM和即时存档，并保持模拟器暂停，准备完毕后 发送 CMD_Room_Player_Ready
     ///			所有玩家Ready之后，服务器会根据所有玩家延迟提前跑若干Frame，通知进入Step2 
     ///			
@@ -5720,6 +5730,434 @@ namespace AxibugProtobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Get_Screen : pb::IMessage<Protobuf_Room_Get_Screen>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Get_Screen> _parser = new pb::MessageParser<Protobuf_Room_Get_Screen>(() => new Protobuf_Room_Get_Screen());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Get_Screen> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[24]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Get_Screen() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Get_Screen(Protobuf_Room_Get_Screen other) : this() {
+      roomID_ = other.roomID_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Get_Screen Clone() {
+      return new Protobuf_Room_Get_Screen(this);
+    }
+
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Get_Screen);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Get_Screen other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomID != other.RoomID) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Get_Screen other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Get_Screen_RESP : pb::IMessage<Protobuf_Room_Get_Screen_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Get_Screen_RESP> _parser = new pb::MessageParser<Protobuf_Room_Get_Screen_RESP>(() => new Protobuf_Room_Get_Screen_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Get_Screen_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[25]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Get_Screen_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Get_Screen_RESP(Protobuf_Room_Get_Screen_RESP other) : this() {
+      roomID_ = other.roomID_;
+      frameID_ = other.frameID_;
+      rawBitmap_ = other.rawBitmap_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Get_Screen_RESP Clone() {
+      return new Protobuf_Room_Get_Screen_RESP(this);
+    }
+
+    /// <summary>Field number for the "RoomID" field.</summary>
+    public const int RoomIDFieldNumber = 1;
+    private int roomID_;
+    /// <summary>
+    ///房间ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RoomID {
+      get { return roomID_; }
+      set {
+        roomID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "FrameID" field.</summary>
+    public const int FrameIDFieldNumber = 2;
+    private int frameID_;
+    /// <summary>
+    ///帧编号
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int FrameID {
+      get { return frameID_; }
+      set {
+        frameID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "RawBitmap" field.</summary>
+    public const int RawBitmapFieldNumber = 3;
+    private pb::ByteString rawBitmap_ = pb::ByteString.Empty;
+    /// <summary>
+    ///渲染层画面
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString RawBitmap {
+      get { return rawBitmap_; }
+      set {
+        rawBitmap_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Get_Screen_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Get_Screen_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomID != other.RoomID) return false;
+      if (FrameID != other.FrameID) return false;
+      if (RawBitmap != other.RawBitmap) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomID != 0) hash ^= RoomID.GetHashCode();
+      if (FrameID != 0) hash ^= FrameID.GetHashCode();
+      if (RawBitmap.Length != 0) hash ^= RawBitmap.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (FrameID != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(FrameID);
+      }
+      if (RawBitmap.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(RawBitmap);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomID);
+      }
+      if (FrameID != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(FrameID);
+      }
+      if (RawBitmap.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(RawBitmap);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
+      }
+      if (FrameID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(FrameID);
+      }
+      if (RawBitmap.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(RawBitmap);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Get_Screen_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomID != 0) {
+        RoomID = other.RoomID;
+      }
+      if (other.FrameID != 0) {
+        FrameID = other.FrameID;
+      }
+      if (other.RawBitmap.Length != 0) {
+        RawBitmap = other.RawBitmap;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            FrameID = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            RawBitmap = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            FrameID = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            RawBitmap = input.ReadBytes();
+            break;
+          }
         }
       }
     }

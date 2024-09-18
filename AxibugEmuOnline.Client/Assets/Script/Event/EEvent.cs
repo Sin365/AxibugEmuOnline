@@ -8,6 +8,7 @@
 
         OnRoomListAllUpdate,//房间列表全量刷新
         OnRoomListSingleUpdate,//房间列表中单个更新
+        OnRoomGetRoomScreen,//获取到房间数据
 
         /// <summary>
         /// 我进入房间
