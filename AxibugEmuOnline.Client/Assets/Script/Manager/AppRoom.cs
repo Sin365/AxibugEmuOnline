@@ -16,6 +16,7 @@ namespace AxibugEmuOnline.Client.Manager
         public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; } = null;
         public bool InRoom => mineRoomMiniInfo != null;
         public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == App.user.userdata.UID;
+        public bool IsScreenProviderUID => mineRoomMiniInfo?.ScreenProviderUID == App.user.userdata.UID;
         public RoomGameState RoomState => mineRoomMiniInfo.GameState;
         public int MinePlayerIdx => GetMinePlayerIndex();
         public int WaitStep { get; private set; } = -1;
@@ -200,8 +201,16 @@ namespace AxibugEmuOnline.Client.Manager
         {
             App.log.Debug("单个房间状态更新");
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
-            AddOrUpdateRoomList(msg.RoomMiniInfo);
-            Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+            if (msg.UpdateType == 0)
+            {
+                AddOrUpdateRoomList(msg.RoomMiniInfo);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+            }
+            else
+            {
+                RemoveRoomList(msg.RoomMiniInfo.GameRomID);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleClose, msg.RoomMiniInfo.GameRomID);
+            }
         }
 
         /// <summary>
