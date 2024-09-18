@@ -31,6 +31,7 @@ namespace AxibugEmuOnline.Client.Manager
         }
 
         Protobuf_Room_List _Protobuf_Room_List = new Protobuf_Room_List();
+        Protobuf_Room_Get_Screen _Protobuf_Room_Get_Screen = new Protobuf_Room_Get_Screen();
         Protobuf_Room_Create _Protobuf_Room_Create = new Protobuf_Room_Create();
         Protobuf_Room_Join _Protobuf_Room_Join = new Protobuf_Room_Join();
         Protobuf_Room_Leave _Protobuf_Room_Leave = new Protobuf_Room_Leave();
@@ -41,6 +42,7 @@ namespace AxibugEmuOnline.Client.Manager
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomList, RecvGetRoomList);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomListUpdate, RecvGetRoomListUpdate);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomGetScreen, RecvRoomGetScreen);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomCreate, RecvCreateRoom);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomJoin, RecvJoinRoom);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomLeave, RecvLeavnRoom);
@@ -200,6 +202,29 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
             AddOrUpdateRoomList(msg.RoomMiniInfo);
             Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+        }
+
+        /// <summary>
+        /// 获取房间画面快照
+        /// </summary>
+        /// <param name="RoomID"></param>
+        public void SendGetRoomScreen(int RoomID)
+        {
+            _Protobuf_Room_Get_Screen.RoomID = RoomID;
+            App.log.Info($"获取房间画面快照");
+            App.network.SendToServer((int)CommandID.CmdRoomGetScreen, ProtoBufHelper.Serizlize(_Protobuf_Room_Get_Screen));
+        }
+        /// <summary>
+        /// 获取单个房间画面
+        /// </summary>
+        /// <param name="reqData"></param>
+        void RecvRoomGetScreen(byte[] reqData)
+        {
+            App.log.Debug("单个房间状态更新");
+            Protobuf_Room_Get_Screen_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Get_Screen_RESP>(reqData);
+            //解压
+            byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
+            Eventer.Instance.PostEvent(EEvent.OnRoomGetRoomScreen, msg.RoomID, data);
         }
 
         /// <summary>
