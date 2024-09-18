@@ -34,6 +34,27 @@ namespace AxibugEmuOnline.Client
             callback.Invoke(resp);
         }
 
+        private IEnumerator GetNesRomInfo(int RomID, Action<Resp_RomInfo> callback)
+        {
+            UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/RomInfo?PType={PlatformType.Nes}&RomID={RomID}");
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                callback.Invoke(null);
+                yield break;
+            }
+
+            var resp = JsonUtility.FromJson<Resp_RomInfo>(request.downloadHandler.text);
+            callback.Invoke(resp);
+        }
+
+        enum PlatformType : byte
+        {
+            All = 0,
+            Nes = 1,
+        }
+
         enum GameType : byte
         {
             NONE = 0,
