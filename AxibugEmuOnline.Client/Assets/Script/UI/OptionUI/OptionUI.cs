@@ -151,6 +151,7 @@ namespace AxibugEmuOnline.Client
         {
             if (m_bPoped)
             {
+                ReleaseRuntimeMenus();
                 m_runtimeMenuItems.Clear();
 
                 SelectBorder.gameObject.SetActiveEx(false);

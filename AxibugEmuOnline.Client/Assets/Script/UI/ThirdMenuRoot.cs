@@ -86,8 +86,8 @@ namespace AxibugEmuOnline.Client
         {
             Vector2 itemPos = itemGroup.GetItemAnchorePos(index);
 
-            Vector3[] corners = new Vector3[4];
             Vector2 targetPos = itemGroup.transform.InverseTransformPoint(m_selectArrow.position);
+            Vector3[] corners = new Vector3[4];
             itemGroup.RectTransform.GetLocalCorners(corners);
             targetPos = targetPos - (Vector2)corners[1];
 
