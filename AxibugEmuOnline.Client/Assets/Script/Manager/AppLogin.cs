@@ -3,9 +3,6 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Client.Manager
 {
@@ -40,6 +37,9 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 App.log.Info("登录成功");
                 App.user.InitMainUserData(App.user.userdata.Account, msg.UID);
+
+                App.log.Info("获取服务器列表");
+                App.roomMgr.SendGetRoomList();
             }
             else
             {

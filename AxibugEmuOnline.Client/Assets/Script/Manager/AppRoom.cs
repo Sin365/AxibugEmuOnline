@@ -96,10 +96,11 @@ namespace AxibugEmuOnline.Client.Manager
         public void InitRePlay()
         {
             netReplay = new NetReplay();
+            netReplay.ResetData();
         }
         public void ReleaseRePlay()
         {
-
+            netReplay.ResetData();
         }
         #endregion
 
@@ -113,6 +114,10 @@ namespace AxibugEmuOnline.Client.Manager
                 return 0;
             if (mineRoomMiniInfo.Player2UID == App.user.userdata.UID)
                 return 1;
+            if (mineRoomMiniInfo.Player3UID == App.user.userdata.UID)
+                return 2;
+            if (mineRoomMiniInfo.Player4UID == App.user.userdata.UID)
+                return 3;
             return -1;
         }
 
@@ -304,7 +309,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// 上报即时存档
         /// </summary>
         /// <param name="RoomID"></param>
-        public void SendLeavnRoom(byte[] RawData)
+        public void SendHostRaw(byte[] RawData)
         {
             //压缩
             byte[] compressRawData = Helper.CompressByteArray(RawData);
@@ -357,7 +362,6 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdRoomSingelPlayerInput, ProtoBufHelper.Serizlize(_Protobuf_Room_SinglePlayerInputData));
         }
 
-
         void RecvHostSyn_RoomFrameAllInputData(byte[] reqData)
         {
             Protobuf_Room_Syn_RoomFrameAllInputData msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Syn_RoomFrameAllInputData>(reqData);
@@ -378,11 +382,6 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Screnn_Frame msg = ProtoBufHelper.DeSerizlize<Protobuf_Screnn_Frame>(reqData);
             //解压
             byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
-        }
-
-        internal void SendHostRaw(byte[] stateRaw)
-        {
-            throw new NotImplementedException();
         }
     }
 }

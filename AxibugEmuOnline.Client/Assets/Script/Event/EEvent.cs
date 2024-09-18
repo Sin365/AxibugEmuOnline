@@ -32,10 +32,5 @@
         /// 服务器等待Step更新
         /// </summary>
         OnRoomWaitStepChange,
-
-        /// <summary>
-        /// 要求加载即时存档
-        /// </summary>
-        OnRoomNeedLoadRawData,
     }
 }

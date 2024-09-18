@@ -29,10 +29,10 @@ namespace AxibugEmuOnline.Server
                                 AppSrv.g_Log.Info($"HostUID:{room.HostUID}");
                                 AppSrv.g_Log.Info($"mCurrFrameId:{room.mCurrFrameId}");
                                 AppSrv.g_Log.Info($"input all:{room.mCurrInputData.all}");
-                                AppSrv.g_Log.Info($"input p1:{room.mCurrInputData.p1}");
-                                AppSrv.g_Log.Info($"input p2:{room.mCurrInputData.p2}");
-                                AppSrv.g_Log.Info($"input p3:{room.mCurrInputData.p3}");
-                                AppSrv.g_Log.Info($"input p4:{room.mCurrInputData.p4}");
+                                AppSrv.g_Log.Info($"input p1:{room.mCurrInputData.p1_byte}");
+                                AppSrv.g_Log.Info($"input p2:{room.mCurrInputData.p2_byte}");
+                                AppSrv.g_Log.Info($"input p3:{room.mCurrInputData.p3_byte}");
+                                AppSrv.g_Log.Info($"input p4:{room.mCurrInputData.p4_byte}");
                                 AppSrv.g_Log.Info($"GetPlayerCount:{room.GetPlayerCount()}");
                                 for (int i = 0; i < 4; i++)
                                 {
