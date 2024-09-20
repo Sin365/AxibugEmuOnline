@@ -57,7 +57,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             coRunner = go.AddComponent<CoroutineRunner>();
 
             var importNode = GameObject.Find("IMPORTENT");
-            GameObject.DontDestroyOnLoad(importNode);
+            if (importNode != null) GameObject.DontDestroyOnLoad(importNode);
 
             StartCoroutine(AppTickFlow());
             RePullNetInfo();
@@ -79,7 +79,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 
         static IEnumerator StartNetInit()
         {
-            if (App.network.isConnected) 
+            if (App.network.isConnected)
                 yield break;
 
             int platform = 0;

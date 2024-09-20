@@ -11,12 +11,17 @@ namespace AxibugEmuOnline.Client
     {
         private HttpAPI.Resp_RomInfo webData;
         private bool hasLocalFile;
-        private string fileName;
         private EnumPlatform platform;
         private UnityWebRequest downloadRequest;
 
+        public bool IsUserRom { get; private set; }
+
         /// <summary> 指示该Rom文件的存放路径 </summary>
-        public string LocalFilePath => $"{App.PersistentDataPath}/RemoteRoms/{platform}/{fileName}";
+        public string LocalFilePath =>
+                                    IsUserRom ?
+                                    $"{App.PersistentDataPath}/UserRoms/{platform}/{FileName}" :
+                                    $"{App.PersistentDataPath}/RemoteRoms/{platform}/{FileName}";
+
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;
         /// <summary> 指示是否正在下载Rom文件 </summary>
@@ -29,14 +34,14 @@ namespace AxibugEmuOnline.Client
         /// <summary> 唯一标识 </summary>
         public int ID => webData != null ? webData.id : -1;
         /// <summary> 别名 </summary>
-        public string Alias => webData.romName;
+        public string Alias => IsUserRom ? Path.GetFileNameWithoutExtension(FileName) : webData.romName;
         /// <summary> 描述 </summary>
-        public string Descript => webData.desc;
+        public string Descript => IsUserRom ? string.Empty : webData.desc;
         /// <summary> 小图URL </summary>
-        public string ImageURL => webData.imgUrl;
+        public string ImageURL => IsUserRom ? string.Empty : webData.imgUrl;
 
         /// <summary> 文件名 </summary>
-        public string FileName => fileName;
+        public string FileName { get; private set; }
         /// <summary> 在查询结果中的索引 </summary>
         public int Index { get; private set; }
         /// <summary> 在查询结果中的所在页 </summary>
@@ -74,7 +79,7 @@ namespace AxibugEmuOnline.Client
 
         public byte[] GetRomFileData()
         {
-            if (webData == null) throw new Exception("Not Valid Rom");
+            if (!IsUserRom && webData == null) throw new Exception("Not Valid Rom");
             if (!RomReady) throw new Exception("Rom File Not Downloaded");
 
             var bytes = File.ReadAllBytes(LocalFilePath);
@@ -123,8 +128,8 @@ namespace AxibugEmuOnline.Client
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
             webData = resp_RomInfo;
-            fileName = Path.GetFileName(webData.url);
-            fileName = System.Net.WebUtility.UrlDecode(fileName);
+            FileName = Path.GetFileName(webData.url);
+            FileName = System.Net.WebUtility.UrlDecode(FileName);
 
             if (File.Exists(LocalFilePath))
             {
@@ -141,6 +146,16 @@ namespace AxibugEmuOnline.Client
             }
 
             OnInfoFilled?.Invoke();
+        }
+
+        private RomFile() { }
+        public static RomFile CreateExistRom(EnumPlatform platform, string fileName)
+        {
+            var res = new RomFile();
+            res.IsUserRom = true;
+            res.FileName = fileName;
+            res.hasLocalFile = File.Exists(res.LocalFilePath);
+            return res;
         }
     }
 }

@@ -30,6 +30,15 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public RomFile GetExistRom(string fileName)
+        {
+            var res = RomFile.CreateExistRom(m_platform, fileName);
+
+            nesRomFileNameMapper[res.FileName] = res;
+
+            return res;
+        }
+
         public RomFile GetRomFile(string romFileName)
         {
             RomFile romFile;
