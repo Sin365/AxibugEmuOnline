@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AxibugEmuOnline.Client.Common
 {
@@ -40,6 +42,21 @@ namespace AxibugEmuOnline.Client.Common
             {
                 gzipStream.CopyTo(resultMemoryStream);
                 return resultMemoryStream.ToArray();
+            }
+        }
+
+        public static string FileMD5Hash(string filePath)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filePath))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    var sb = new StringBuilder(hash.Length * 2);
+                    foreach (var b in hash)
+                        sb.AppendFormat("{0:x2}", b);
+                    return sb.ToString();
+                }
             }
         }
     }
