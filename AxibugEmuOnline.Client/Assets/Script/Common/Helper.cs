@@ -59,5 +59,19 @@ namespace AxibugEmuOnline.Client.Common
                 }
             }
         }
+        public static string FileMD5Hash(byte[] data)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = new MemoryStream(data))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    var sb = new StringBuilder(hash.Length * 2);
+                    foreach (var b in hash)
+                        sb.AppendFormat("{0:x2}", b);
+                    return sb.ToString();
+                }
+            }
+        }
     }
 }
