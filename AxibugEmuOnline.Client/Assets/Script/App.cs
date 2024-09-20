@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
 using System.Collections;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -31,8 +32,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static CoroutineRunner coRunner;
         #endregion
 
-
+#if UNITY_PSP2
+        public static string PersistentDataPath => "ux0:data/AxibugEmu";
+#else
         public static string PersistentDataPath => Application.persistentDataPath;
+#endif
 
         [RuntimeInitializeOnLoadMethod]
         static void Init()
@@ -56,11 +60,25 @@ namespace AxibugEmuOnline.Client.ClientCore
             tickLoop = go.AddComponent<TickLoop>();
             coRunner = go.AddComponent<CoroutineRunner>();
 
+            if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
+            {
+                //PSV 等平台需要手动创建目录
+                PersistentDataPathDir();
+            }
+
             var importNode = GameObject.Find("IMPORTENT");
             if (importNode != null) GameObject.DontDestroyOnLoad(importNode);
 
             StartCoroutine(AppTickFlow());
             RePullNetInfo();
+        }
+
+        private static void PersistentDataPathDir()
+        {
+            if (!Directory.Exists(PersistentDataPath))
+            {
+                Directory.CreateDirectory(PersistentDataPath);
+            }
         }
 
         private static IEnumerator AppTickFlow()
