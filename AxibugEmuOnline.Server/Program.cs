@@ -1,4 +1,6 @@
-﻿using AxibugEmuOnline.Server.Manager;
+﻿using AxibugEmuOnline.Server.Common;
+using AxibugEmuOnline.Server.Manager;
+using MySql.Data.MySqlClient;
 
 namespace AxibugEmuOnline.Server
 {
@@ -62,11 +64,74 @@ namespace AxibugEmuOnline.Server
                             }
                         }
                         break;
+                    case "updatehash":
+                        {
+                            UpdateRomHash();
+                        }
+                        break;
                     default:
                         Console.WriteLine("未知命令" + CommandStr);
                         break;
                 }
             }
+        }
+
+
+        static void UpdateRomHash()
+        {
+            AppSrv.g_Log.Info("UpdateRomHash");
+            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("UpdateRomHash");
+            try
+            {
+                List<(int id, string romurl, string name)> list = new List<(int id, string romurl, string name)>();
+                List<(int id, string romurl, string name)> Nonelist = new List<(int id, string romurl, string name)>();
+
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist_nes";
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    // 执行查询并处理结果  
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(
+                                (reader.GetInt32(0),
+                                !reader.IsDBNull(4) ? reader.GetString(4) : string.Empty,
+                                !reader.IsDBNull(1) ? reader.GetString(1) : string.Empty
+                                ));
+                        }
+                    }
+                }
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    string rompath = Config.cfg.RomDir + "/" + list[i].romurl;
+                    rompath = System.Net.WebUtility.UrlDecode(rompath);
+                    if (!File.Exists(rompath))
+                    {
+                        Nonelist.Add(list[i]);
+                        continue;
+                    }
+                    string romhash = Helper.FileMD5Hash(rompath);
+                    AppSrv.g_Log.Info($"第{i}个，Name->{list[i].name},Hash->{romhash}");
+                    query = $"update romlist_nes SET `Hash` = '{romhash}' where Id ={list[i].id}";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        // 执行查询并处理结果  
+                        int reader = command.ExecuteNonQuery();
+                        if (reader > 0)
+                            AppSrv.g_Log.Info($"第{i}个，处理成功");
+                        else
+                            AppSrv.g_Log.Info($"第{i}个，处理失败");
+                    }
+                }
+                AppSrv.g_Log.Info($"处理完毕，共{Nonelist.Count}个文件没有找到");
+            }
+            catch (Exception e)
+            {
+                AppSrv.g_Log.Info($"err:{e.ToString()}");
+            }
+            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
         }
     }
 }
