@@ -13,7 +13,9 @@ namespace AxibugEmuOnline.Client
             {
                 m_current = value;
 
-                m_current.SetUIKeys(CommandDispatcher.Instance.GetKeyMapper());
+                Dictionary<KeyCode, EnumCommand> mapper = new Dictionary<KeyCode, EnumCommand>();
+                m_current.SetUIKeys(mapper);
+                CommandDispatcher.Instance.SetKeyMapper(mapper);
             }
         }
 
@@ -21,8 +23,6 @@ namespace AxibugEmuOnline.Client
 
         public virtual void SetUIKeys(Dictionary<KeyCode, EnumCommand> uiKeyMapper)
         {
-            uiKeyMapper.Clear();
-
             uiKeyMapper[KeyCode.A] = EnumCommand.SelectItemLeft;
             uiKeyMapper[KeyCode.D] = EnumCommand.SelectItemRight;
             uiKeyMapper[KeyCode.W] = EnumCommand.SelectItemUp;
@@ -39,6 +39,17 @@ namespace AxibugEmuOnline.Client
             uiKeyMapper[KeyCode.Escape] = EnumCommand.Back;
             uiKeyMapper[KeyCode.RightShift] = EnumCommand.OptionMenu;
             uiKeyMapper[KeyCode.LeftShift] = EnumCommand.OptionMenu;
+
+            if (Application.platform == RuntimePlatform.PSP2)
+            {
+                uiKeyMapper[Common.PSVitaKey.Left] = EnumCommand.SelectItemLeft;
+                uiKeyMapper[Common.PSVitaKey.Right] = EnumCommand.SelectItemRight;
+                uiKeyMapper[Common.PSVitaKey.Up] = EnumCommand.SelectItemUp;
+                uiKeyMapper[Common.PSVitaKey.Down] = EnumCommand.SelectItemDown;
+                uiKeyMapper[Common.PSVitaKey.Circle] = EnumCommand.Enter;
+                uiKeyMapper[Common.PSVitaKey.Cross] = EnumCommand.Back;
+                uiKeyMapper[Common.PSVitaKey.Triangle] = EnumCommand.OptionMenu;
+            }
         }
     }
 }

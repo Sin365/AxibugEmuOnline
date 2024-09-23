@@ -7,7 +7,13 @@ namespace AxibugEmuOnline.Client
     {
         public override void SetUIKeys(Dictionary<KeyCode, EnumCommand> uiKeyMapper)
         {
-            base.SetUIKeys(uiKeyMapper);
+            uiKeyMapper[KeyCode.Escape] = EnumCommand.OptionMenu;
+
+            if (Application.platform == RuntimePlatform.PSP2)
+            {
+                uiKeyMapper[Common.PSVitaKey.L] = EnumCommand.OptionMenu;
+                uiKeyMapper[Common.PSVitaKey.R] = EnumCommand.OptionMenu;
+            }
         }
     }
 

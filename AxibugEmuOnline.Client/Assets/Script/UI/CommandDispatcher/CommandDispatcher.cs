@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,8 +14,6 @@ namespace AxibugEmuOnline.Client
         List<CommandExecuter> m_registerHigh = new List<CommandExecuter>();
 
         Dictionary<KeyCode, EnumCommand> m_keyMapper = new Dictionary<KeyCode, EnumCommand>();
-
-        public Dictionary<KeyCode, EnumCommand> GetKeyMapper() => m_keyMapper;
 
         private void Awake()
         {
@@ -74,6 +73,15 @@ namespace AxibugEmuOnline.Client
                     }
                 }
             }
+
+            if (m_waitMapperSetting != null)
+                m_keyMapper = m_waitMapperSetting;
+        }
+
+        private Dictionary<KeyCode, EnumCommand> m_waitMapperSetting = null;
+        public void SetKeyMapper(Dictionary<KeyCode, EnumCommand> mapper)
+        {
+            m_waitMapperSetting = mapper;
         }
 
         private List<CommandExecuter> peekRegister(List<CommandExecuter> results)
@@ -103,12 +111,14 @@ namespace AxibugEmuOnline.Client
             return results;
         }
 
+
 #if UNITY_EDITOR
         public void GetRegisters(out IReadOnlyList<CommandExecuter> normal, out IReadOnlyList<CommandExecuter> alone)
         {
             normal = m_register;
             alone = m_registerHigh;
         }
+
 #endif
     }
 }
