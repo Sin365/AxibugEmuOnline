@@ -17,15 +17,7 @@ namespace AxibugEmuOnline.Client
         public override void OnExcute()
         {
             Stopwatch sw = Stopwatch.StartNew();
-            switch (m_gameUI.RomFile.Platform)
-            {
-                case EnumPlatform.NES:
-                    if (m_gameUI.GetQuickState<State>(out var quickState))
-                    {
-                        m_gameUI.GetCore<NesEmulator>().NesCore.LoadState(quickState);
-                    }
-                    break;
-            }
+            m_gameUI.Core.LoadState(m_gameUI.GetQuickState());
             sw.Stop();
             App.log.Info($"{m_gameUI.RomFile.Platform}====>øÏ’’º”‘ÿ∫ƒ ±:{sw.Elapsed.TotalMilliseconds}ms");
         }

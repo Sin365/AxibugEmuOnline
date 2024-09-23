@@ -14,26 +14,11 @@ namespace AxibugEmuOnline.Client
 
         Dictionary<KeyCode, EnumCommand> m_keyMapper = new Dictionary<KeyCode, EnumCommand>();
 
+        public Dictionary<KeyCode, EnumCommand> GetKeyMapper() => m_keyMapper;
+
         private void Awake()
         {
             Instance = this;
-
-            m_keyMapper.Add(KeyCode.A, EnumCommand.SelectItemLeft);
-            m_keyMapper.Add(KeyCode.D, EnumCommand.SelectItemRight);
-            m_keyMapper.Add(KeyCode.W, EnumCommand.SelectItemUp);
-            m_keyMapper.Add(KeyCode.S, EnumCommand.SelectItemDown);
-            m_keyMapper.Add(KeyCode.K, EnumCommand.Enter);
-            m_keyMapper.Add(KeyCode.L, EnumCommand.Back);
-            m_keyMapper.Add(KeyCode.I, EnumCommand.OptionMenu);
-
-            m_keyMapper.Add(KeyCode.LeftArrow, EnumCommand.SelectItemLeft);
-            m_keyMapper.Add(KeyCode.RightArrow, EnumCommand.SelectItemRight);
-            m_keyMapper.Add(KeyCode.UpArrow, EnumCommand.SelectItemUp);
-            m_keyMapper.Add(KeyCode.DownArrow, EnumCommand.SelectItemDown);
-            m_keyMapper.Add(KeyCode.Return, EnumCommand.Enter);
-            m_keyMapper.Add(KeyCode.Escape, EnumCommand.Back);
-            m_keyMapper.Add(KeyCode.RightShift, EnumCommand.OptionMenu);
-            m_keyMapper.Add(KeyCode.LeftShift, EnumCommand.OptionMenu);
         }
 
         private void OnDestroy()

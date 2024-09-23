@@ -1,5 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Linq;
 using UnityEngine;
@@ -8,7 +9,7 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
-    public class NesEmulator : MonoBehaviour
+    public class NesEmulator : MonoBehaviour, IEmuCore
     {
         public NES NesCore { get; private set; }
 
@@ -37,7 +38,7 @@ namespace AxibugEmuOnline.Client
             catch (Exception ex)
             {
                 NesCore = null;
-                Debug.LogError(ex);
+                App.log.Error(ex.ToString());
             }
         }
 
@@ -79,7 +80,9 @@ namespace AxibugEmuOnline.Client
             m_bPause = false;
         }
 
-#if UNITY_EDITOR
+
+
+        [Conditional("UNITY_EDITOR")]
         [ContextMenu("ImportNesDB")]
         public void ImportNesDB()
         {
@@ -103,6 +106,32 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
-#endif
+
+        public void SetupScheme()
+        {
+            ControlScheme.Current = ControlSchemeSetts.NES;
+        }
+
+        public void LoadState(object state)
+        {
+            NesCore.LoadState((State)state);
+        }
+
+        public object GetState()
+        {
+            return NesCore.GetState();
+        }
+
+        public byte[] GetStateBytes()
+        {
+            return NesCore.GetState().ToBytes();
+        }
+
+        public void LoadStateFromBytes(byte[] data)
+        {
+            State st = new State();
+            st.FromByte(data);
+            NesCore.LoadState(st);
+        }
     }
 }

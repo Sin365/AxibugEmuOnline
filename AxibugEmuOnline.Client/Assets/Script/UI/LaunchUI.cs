@@ -33,6 +33,11 @@ namespace AxibugEmuOnline.Client
             MainMenu.ListenControlAction = true;
         }
 
+        private void Start()
+        {
+            ControlScheme.Current = ControlSchemeSetts.Normal;
+        }
+
         public void HideMainMenu()
         {
             BG.gameObject.SetActiveEx(false);
