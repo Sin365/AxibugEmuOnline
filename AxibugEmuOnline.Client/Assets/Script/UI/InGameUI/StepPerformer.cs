@@ -26,22 +26,14 @@ namespace AxibugEmuOnline.Client
                     PauseCore();
                     if (App.roomMgr.IsHost)
                     {
-                        if (m_inGameUI.RomFile.Platform == EnumPlatform.NES)
-                        {
-                            var stateRaw = m_inGameUI.GetCore<NesEmulator>().NesCore.GetState().ToBytes();
-                            App.roomMgr.SendHostRaw(stateRaw);
-                        }
+                        var stateRaw = m_inGameUI.Core.GetStateBytes();
+                        App.roomMgr.SendHostRaw(stateRaw);
                     }
                     break;
                 //加载存档并发送Ready通知
                 case 1:
                     PauseCore();
-                    var state = new State();
-                    state.FromByte(App.roomMgr.RawData);
-                    if (m_inGameUI.RomFile.Platform == EnumPlatform.NES)
-                    {
-                        m_inGameUI.GetCore<NesEmulator>().NesCore.LoadState(state);
-                    }
+                    m_inGameUI.Core.LoadStateFromBytes(App.roomMgr.RawData);
                     App.roomMgr.SendRoomPlayerReady();
                     break;
                 case 2:
@@ -53,18 +45,12 @@ namespace AxibugEmuOnline.Client
 
         private void PauseCore()
         {
-            if (m_inGameUI.RomFile.Platform == EnumPlatform.NES)
-            {
-                m_inGameUI.GetCore<NesEmulator>().Pause();
-            }
+            m_inGameUI.Core.Pause();
         }
 
         private void ResumeCore()
         {
-            if (m_inGameUI.RomFile.Platform == EnumPlatform.NES)
-            {
-                m_inGameUI.GetCore<NesEmulator>().Resume();
-            }
+            m_inGameUI.Core.Resume();
         }
 
         internal void Reset()
