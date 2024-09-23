@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Server.Manager;
+﻿using AxibugEmuOnline.Server.Common;
+using AxibugEmuOnline.Server.Manager;
 using AxibugEmuOnline.Server.NetWork;
 using System.Net;
 
@@ -17,6 +18,8 @@ namespace AxibugEmuOnline.Server
 
         public static void InitServer(int port)
         {
+            Config.LoadConfig();
+            Haoyue_SQLPoolManager.InitConnMgr();
             g_Tick = new TickManager();
             g_ClientMgr = new ClientManager();
             g_ClientMgr.Init(45000, 120);

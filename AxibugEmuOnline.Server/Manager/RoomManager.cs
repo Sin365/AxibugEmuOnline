@@ -224,10 +224,13 @@ namespace AxibugEmuOnline.Server
 
             if (joinErrcode == ErrorCode.ErrorOk && bHadRoomStateChange)
                 SendRoomStateChange(room);
+
+
+            SendRoomUpdateToAll(room.RoomID, 0);
         }
         public void OnCmdRoomLeave(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdRoomJoin ");
+            AppSrv.g_Log.Debug($"OnCmdRoomLeave ");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Leave msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Leave>(reqData);
             Protobuf_Room_Leave_RESP resp = new Protobuf_Room_Leave_RESP();
@@ -248,6 +251,12 @@ namespace AxibugEmuOnline.Server
 
             if (errcode == ErrorCode.ErrorOk && bHadRoomStateChange)
                 SendRoomStateChange(room);
+
+            SendRoomUpdateToAll(room.RoomID, 1);
+            if (room.GetPlayerCount() < 1)
+                RemoveRoom(room.RoomID);
+
+
         }
 
         public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)
