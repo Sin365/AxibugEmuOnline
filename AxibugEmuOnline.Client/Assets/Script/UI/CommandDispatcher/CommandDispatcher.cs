@@ -18,22 +18,38 @@ namespace AxibugEmuOnline.Client
         {
             Instance = this;
 
-            m_keyMapper.Add(KeyCode.A, EnumCommand.SelectItemLeft);
-            m_keyMapper.Add(KeyCode.D, EnumCommand.SelectItemRight);
-            m_keyMapper.Add(KeyCode.W, EnumCommand.SelectItemUp);
-            m_keyMapper.Add(KeyCode.S, EnumCommand.SelectItemDown);
-            m_keyMapper.Add(KeyCode.K, EnumCommand.Enter);
-            m_keyMapper.Add(KeyCode.L, EnumCommand.Back);
-            m_keyMapper.Add(KeyCode.I, EnumCommand.OptionMenu);
+            m_keyMapper[KeyCode.A] = EnumCommand.SelectItemLeft;
+            m_keyMapper[KeyCode.D] = EnumCommand.SelectItemRight;
+            m_keyMapper[KeyCode.W] = EnumCommand.SelectItemUp;
+            m_keyMapper[KeyCode.S] = EnumCommand.SelectItemDown;
+            m_keyMapper[KeyCode.K] = EnumCommand.Enter;
+            m_keyMapper[KeyCode.L] = EnumCommand.Back;
+            m_keyMapper[KeyCode.I] = EnumCommand.OptionMenu;
+            m_keyMapper[KeyCode.LeftArrow] = EnumCommand.SelectItemLeft;
+            m_keyMapper[KeyCode.RightArrow] = EnumCommand.SelectItemRight;
+            m_keyMapper[KeyCode.UpArrow] = EnumCommand.SelectItemUp;
+            m_keyMapper[KeyCode.DownArrow] = EnumCommand.SelectItemDown;
+            m_keyMapper[KeyCode.Return] = EnumCommand.Enter;
+            m_keyMapper[KeyCode.Escape] = EnumCommand.Back;
+            m_keyMapper[KeyCode.RightShift] = EnumCommand.OptionMenu;
+            m_keyMapper[KeyCode.LeftShift] = EnumCommand.OptionMenu;
 
-            m_keyMapper.Add(KeyCode.LeftArrow, EnumCommand.SelectItemLeft);
-            m_keyMapper.Add(KeyCode.RightArrow, EnumCommand.SelectItemRight);
-            m_keyMapper.Add(KeyCode.UpArrow, EnumCommand.SelectItemUp);
-            m_keyMapper.Add(KeyCode.DownArrow, EnumCommand.SelectItemDown);
-            m_keyMapper.Add(KeyCode.Return, EnumCommand.Enter);
-            m_keyMapper.Add(KeyCode.Escape, EnumCommand.Back);
-            m_keyMapper.Add(KeyCode.RightShift, EnumCommand.OptionMenu);
-            m_keyMapper.Add(KeyCode.LeftShift, EnumCommand.OptionMenu);
+
+            if (Application.platform == RuntimePlatform.PSP2)
+            {
+                m_keyMapper[Common.PSVitaKey.Left] = EnumCommand.SelectItemLeft;
+                m_keyMapper[Common.PSVitaKey.Right] = EnumCommand.SelectItemRight;
+                m_keyMapper[Common.PSVitaKey.Up] = EnumCommand.SelectItemUp;
+                m_keyMapper[Common.PSVitaKey.Down] = EnumCommand.SelectItemDown;
+                m_keyMapper[Common.PSVitaKey.Circle] = EnumCommand.Enter;
+                m_keyMapper[Common.PSVitaKey.Cross] = EnumCommand.Back;
+                m_keyMapper[Common.PSVitaKey.Triangle] = EnumCommand.OptionMenu;
+            }
+            //ÊÖ±ú
+            else
+            {
+                
+            }
         }
 
         private void OnDestroy()
