@@ -110,6 +110,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        ControlScheme m_lastCS;
         public void Pop(List<OptionMenu> menus, int defaultIndex = 0)
         {
             ReleaseRuntimeMenus();
@@ -144,13 +145,17 @@ namespace AxibugEmuOnline.Client
                     0.3f
                     ).SetEase(Ease.OutCubic);
 
+                m_lastCS = ControlScheme.Current;
+                ControlScheme.Current = ControlSchemeSetts.Normal;
             }
+
         }
 
         public void Hide()
         {
             if (m_bPoped)
             {
+                ReleaseRuntimeMenus();
                 m_runtimeMenuItems.Clear();
 
                 SelectBorder.gameObject.SetActiveEx(false);
@@ -171,6 +176,8 @@ namespace AxibugEmuOnline.Client
                     ).SetEase(Ease.OutCubic);
 
                 m_bPoped = false;
+
+                ControlScheme.Current = m_lastCS;
             }
         }
 

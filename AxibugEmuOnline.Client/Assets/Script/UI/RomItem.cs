@@ -82,6 +82,8 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
+                //加载一个用户自己提供的Rom时,使用这个方法
+                //App.emu.BeginGame(App.nesRomLib.GetExistRom("bad_apple_2_5.nes"));
                 App.emu.BeginGame(m_romfile);
 
                 return false;

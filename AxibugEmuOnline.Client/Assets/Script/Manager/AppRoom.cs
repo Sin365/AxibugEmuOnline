@@ -298,7 +298,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (!InRoom)
                 return;
             _Protobuf_Room_Leave.RoomID = mineRoomMiniInfo.RoomID;
-            App.log.Info($"创建房间");
+            App.log.Info($"LeavnRoom");
             App.network.SendToServer((int)CommandID.CmdRoomLeave, ProtoBufHelper.Serizlize(_Protobuf_Room_Leave));
         }
 
