@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,6 +29,15 @@ namespace AxibugEmuOnline.Client
                     m_romGetFunc = App.httpAPI.GetNesRomList;
                     break;
             }
+        }
+
+        public RomFile GetExistRom(string fileName)
+        {
+            var res = RomFile.CreateExistRom(m_platform, fileName);
+
+            nesRomFileNameMapper[res.FileName] = res;
+
+            return res;
         }
 
         public RomFile GetRomFile(string romFileName)
@@ -107,15 +117,7 @@ namespace AxibugEmuOnline.Client
 
         public static string CalcHash(byte[] data)
         {
-            return string.Empty; //todo : 等待远程仓库敲定hash算法
-            //var hashBytes = MD5.Create().ComputeHash(data);
-            //StringBuilder sb = new StringBuilder();
-            //foreach (byte b in hashBytes)
-            //{
-            //    sb.Append(b.ToString("x2"));
-            //}
-
-            //return sb.ToString();
+            return Helper.FileMD5Hash(data);
         }
     }
 }

@@ -1,9 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
-using AxibugEmuOnline.Client.Manager;
-using System;
 using System.Collections.Generic;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
@@ -18,7 +15,7 @@ namespace AxibugEmuOnline.Client
         public bool IsOnline => App.roomMgr.RoomState > AxibugProtobuf.RoomGameState.OnlyHost;
 
         private RomFile m_rom;
-        private object m_core;
+        public IEmuCore Core { get; private set; }
         private object m_state;
 
         private List<OptionMenu> menus = new List<OptionMenu>();
@@ -43,11 +40,6 @@ namespace AxibugEmuOnline.Client
             Instance = null;
         }
 
-        /// <summary>
-        /// 获取模拟器核心对象
-        /// </summary>
-        /// <typeparam name="T">模拟器核心对象类型</typeparam>
-        public T GetCore<T>() => (T)m_core;
         /// <summary> 保存快速快照 </summary>
         public void SaveQuickState(object state)
         {
@@ -58,27 +50,17 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool GetQuickState<T>(out T state)
+        public object GetQuickState()
         {
-            state = default(T);
-
-            if (m_state is T)
-            {
-                state = (T)m_state;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return m_state;
         }
 
-        public void Show(RomFile currentRom, object core)
+        public void Show(RomFile currentRom, IEmuCore core)
         {
             CommandDispatcher.Instance.RegistController(this);
 
             m_rom = currentRom;
-            m_core = core;
+            Core = core;
             m_stepPerformer.Reset();
 
             if (App.user.IsLoggedIn)
@@ -113,6 +95,8 @@ namespace AxibugEmuOnline.Client
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
             App.roomMgr.SendLeavnRoom();
             App.emu.StopGame();
+
+            ControlScheme.Current = ControlSchemeSetts.Normal;
         }
     }
 }

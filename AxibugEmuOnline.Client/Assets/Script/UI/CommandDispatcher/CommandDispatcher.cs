@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,39 +18,6 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
             Instance = this;
-
-            m_keyMapper[KeyCode.A] = EnumCommand.SelectItemLeft;
-            m_keyMapper[KeyCode.D] = EnumCommand.SelectItemRight;
-            m_keyMapper[KeyCode.W] = EnumCommand.SelectItemUp;
-            m_keyMapper[KeyCode.S] = EnumCommand.SelectItemDown;
-            m_keyMapper[KeyCode.K] = EnumCommand.Enter;
-            m_keyMapper[KeyCode.L] = EnumCommand.Back;
-            m_keyMapper[KeyCode.I] = EnumCommand.OptionMenu;
-            m_keyMapper[KeyCode.LeftArrow] = EnumCommand.SelectItemLeft;
-            m_keyMapper[KeyCode.RightArrow] = EnumCommand.SelectItemRight;
-            m_keyMapper[KeyCode.UpArrow] = EnumCommand.SelectItemUp;
-            m_keyMapper[KeyCode.DownArrow] = EnumCommand.SelectItemDown;
-            m_keyMapper[KeyCode.Return] = EnumCommand.Enter;
-            m_keyMapper[KeyCode.Escape] = EnumCommand.Back;
-            m_keyMapper[KeyCode.RightShift] = EnumCommand.OptionMenu;
-            m_keyMapper[KeyCode.LeftShift] = EnumCommand.OptionMenu;
-
-
-            if (Application.platform == RuntimePlatform.PSP2)
-            {
-                m_keyMapper[Common.PSVitaKey.Left] = EnumCommand.SelectItemLeft;
-                m_keyMapper[Common.PSVitaKey.Right] = EnumCommand.SelectItemRight;
-                m_keyMapper[Common.PSVitaKey.Up] = EnumCommand.SelectItemUp;
-                m_keyMapper[Common.PSVitaKey.Down] = EnumCommand.SelectItemDown;
-                m_keyMapper[Common.PSVitaKey.Circle] = EnumCommand.Enter;
-                m_keyMapper[Common.PSVitaKey.Cross] = EnumCommand.Back;
-                m_keyMapper[Common.PSVitaKey.Triangle] = EnumCommand.OptionMenu;
-            }
-            //ÊÖ±ú
-            else
-            {
-                
-            }
         }
 
         private void OnDestroy()
@@ -105,6 +73,15 @@ namespace AxibugEmuOnline.Client
                     }
                 }
             }
+
+            if (m_waitMapperSetting != null)
+                m_keyMapper = m_waitMapperSetting;
+        }
+
+        private Dictionary<KeyCode, EnumCommand> m_waitMapperSetting = null;
+        public void SetKeyMapper(Dictionary<KeyCode, EnumCommand> mapper)
+        {
+            m_waitMapperSetting = mapper;
         }
 
         private List<CommandExecuter> peekRegister(List<CommandExecuter> results)
@@ -134,12 +111,14 @@ namespace AxibugEmuOnline.Client
             return results;
         }
 
+
 #if UNITY_EDITOR
         public void GetRegisters(out IReadOnlyList<CommandExecuter> normal, out IReadOnlyList<CommandExecuter> alone)
         {
             normal = m_register;
             alone = m_registerHigh;
         }
+
 #endif
     }
 }
