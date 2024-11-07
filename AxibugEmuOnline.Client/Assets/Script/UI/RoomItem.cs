@@ -32,6 +32,20 @@ namespace AxibugEmuOnline.Client
             UpdateUI(roomInfo);
         }
 
+        public override bool OnEnterItem()
+        {
+            if (!m_romFile.RomReady)
+            {
+                m_romFile.BeginDownload();
+                return false;
+            }
+            else
+            {
+                App.roomMgr.SendJoinRoom(roomID, 1);
+                return true;
+            }
+        }
+
         private void UpdateUI(Protobuf_Room_MiniInfo roomInfo)
         {
             var hostNick = roomInfo.GetHostNickName();
