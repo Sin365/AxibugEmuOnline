@@ -74,8 +74,12 @@ namespace AxibugEmuOnline.Client
                 }
             }
 
+            //键位映射表需要在按键响应的堆栈结束后处理,防止迭代器修改问题
             if (m_waitMapperSetting != null)
+            {
                 m_keyMapper = m_waitMapperSetting;
+                m_waitMapperSetting = null;
+            }
         }
 
         private Dictionary<KeyCode, EnumCommand> m_waitMapperSetting = null;
