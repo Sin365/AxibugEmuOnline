@@ -204,12 +204,12 @@ namespace AxibugEmuOnline.Client.Manager
             if (msg.UpdateType == 0)
             {
                 AddOrUpdateRoomList(msg.RoomMiniInfo);
-                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.RoomID);
             }
             else
             {
-                RemoveRoomList(msg.RoomMiniInfo.GameRomID);
-                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleClose, msg.RoomMiniInfo.GameRomID);
+                RemoveRoomList(msg.RoomMiniInfo.RoomID);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleClose, msg.RoomMiniInfo.RoomID);
             }
         }
 

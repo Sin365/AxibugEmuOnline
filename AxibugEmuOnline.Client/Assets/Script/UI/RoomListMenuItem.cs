@@ -11,12 +11,15 @@ namespace AxibugEmuOnline.Client
         protected override void Awake()
         {
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListAllUpdate, OnRoomListUpdateAll);
+            Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleClose, OnRoomClosed);
             base.Awake();
         }
+
 
         protected override void OnDestroy()
         {
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListAllUpdate, OnRoomListUpdateAll);
+            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListSingleClose, OnRoomClosed);
         }
 
         public override bool OnEnterItem()
@@ -34,6 +37,13 @@ namespace AxibugEmuOnline.Client
         }
 
         private void OnRoomListUpdateAll(int obj)
+        {
+            if (m_entering)
+            {
+                RefreshUI();
+            }
+        }
+        private void OnRoomClosed(int obj)
         {
             if (m_entering)
             {
