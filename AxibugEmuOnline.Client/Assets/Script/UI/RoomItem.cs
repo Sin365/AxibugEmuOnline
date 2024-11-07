@@ -23,27 +23,6 @@ namespace AxibugEmuOnline.Client
         public int Index { get; set; }
         public int roomID { get; private set; }
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleUpdate);
-        }
-
-        protected override void OnDestroy()
-        {
-            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleUpdate);
-        }
-
-        private void OnRoomSingleUpdate(int roomId)
-        {
-            if (roomId != roomID) return;
-
-            if (App.roomMgr.GetRoomListMiniInfo(roomId, out var roomInfo))
-            {
-                UpdateUI(roomInfo);
-            }
-        }
 
         public void SetData(object data)
         {
