@@ -11,6 +11,12 @@ namespace AxibugEmuOnline.Client
         protected override void Awake()
         {
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListAllUpdate, OnRoomListUpdateAll);
+            base.Awake();
+        }
+
+        protected override void OnDestroy()
+        {
+            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListAllUpdate, OnRoomListUpdateAll);
         }
 
         public override bool OnEnterItem()
