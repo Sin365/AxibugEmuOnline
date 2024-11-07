@@ -47,7 +47,7 @@ namespace AxibugEmuOnline.Client
 
         protected override MenuItem GetItemUIByIndex(int index)
         {
-            return itemGroup.GetItemUIByDataIndex(index).GetComponent<MenuItem>();
+            return itemGroup.GetItemUIByDataIndex(index)?.GetComponent<MenuItem>();
         }
 
         protected override void Awake()
@@ -63,13 +63,16 @@ namespace AxibugEmuOnline.Client
         protected override bool OnCmdEnter()
         {
             var item = GetItemUIByIndex(SelectIndex);
-            return item.OnEnterItem();
+            if (item != null)
+                return item.OnEnterItem();
+            else
+                return true;
         }
 
         protected override void OnCmdBack()
         {
             var item = GetItemUIByIndex(SelectIndex);
-            item.OnExitItem();
+            item?.OnExitItem();
         }
 
         private void LateUpdate()

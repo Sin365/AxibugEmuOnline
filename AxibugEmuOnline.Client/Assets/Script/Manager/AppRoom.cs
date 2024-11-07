@@ -89,7 +89,7 @@ namespace AxibugEmuOnline.Client.Manager
             List<Protobuf_Room_MiniInfo> result = new List<Protobuf_Room_MiniInfo>();
             foreach (var item in dictRoomListID2Info)
             {
-                result.Add(new Protobuf_Room_MiniInfo());
+                result.Add(item.Value);
             }
             return result;
         }
@@ -204,12 +204,12 @@ namespace AxibugEmuOnline.Client.Manager
             if (msg.UpdateType == 0)
             {
                 AddOrUpdateRoomList(msg.RoomMiniInfo);
-                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.GameRomID);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.RoomID);
             }
             else
             {
-                RemoveRoomList(msg.RoomMiniInfo.GameRomID);
-                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleClose, msg.RoomMiniInfo.GameRomID);
+                RemoveRoomList(msg.RoomMiniInfo.RoomID);
+                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleClose, msg.RoomMiniInfo.RoomID);
             }
         }
 

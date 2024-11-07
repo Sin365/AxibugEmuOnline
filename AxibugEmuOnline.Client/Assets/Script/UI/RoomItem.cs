@@ -1,7 +1,7 @@
 using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,28 +21,55 @@ namespace AxibugEmuOnline.Client
         private RomFile m_romFile;
 
         public int Index { get; set; }
+        public int roomID { get; private set; }
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleUpdate);
+        }
+
+        protected override void OnDestroy()
+        {
+            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleUpdate);
+        }
+
+        private void OnRoomSingleUpdate(int roomId)
+        {
+            if (roomId != roomID) return;
+
+            if (App.roomMgr.GetRoomListMiniInfo(roomId, out var roomInfo))
+            {
+                UpdateUI(roomInfo);
+            }
+        }
 
         public void SetData(object data)
         {
-            if (data is Protobuf_Room_MiniInfo roomInfo)
+            var roomInfo = data as Protobuf_Room_MiniInfo;
+            roomID = roomInfo.RoomID;
+
+            UpdateUI(roomInfo);
+        }
+
+        private void UpdateUI(Protobuf_Room_MiniInfo roomInfo)
+        {
+            var hostNick = roomInfo.GetHostNickName();
+            roomInfo.GetRoomPlayers(out var cur, out var max);
+            SetBaseInfo(string.Empty, $"<b>{hostNick}</b>的房间 - {cur}/{max}");
+            SetIcon(null);
+
+            roomInfo.FetchRomFileInRoomInfo(EnumPlatform.NES, (romFile) =>
             {
-                var hostNick = roomInfo.GetHostNickName();
-                roomInfo.GetRoomPlayers(out var cur, out var max);
-                SetBaseInfo(string.Empty, $"<b>{hostNick}</b>的房间 - {cur}/{max}");
-                SetIcon(null);
+                m_romFile = romFile;
 
-                roomInfo.FetchRomFileInRoomInfo(EnumPlatform.NES, (romFile) =>
-                {
-                    m_romFile = romFile;
+                if (romFile.ID == roomInfo.GameRomID)
+                    Txt.text = romFile.Alias;
 
-                    if (romFile.ID == roomInfo.GameRomID)
-                        Txt.text = romFile.Alias;
-
-                    UpdateRomInfoView();
-                    App.CacheMgr.GetSpriteCache(romFile.ImageURL, OnGetRomImage);
-                });
-            }
+                UpdateRomInfoView();
+                App.CacheMgr.GetSpriteCache(romFile.ImageURL, OnGetRomImage);
+            });
         }
 
         private void Update()
