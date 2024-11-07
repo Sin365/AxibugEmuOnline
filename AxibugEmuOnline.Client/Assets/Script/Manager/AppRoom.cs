@@ -89,7 +89,7 @@ namespace AxibugEmuOnline.Client.Manager
             List<Protobuf_Room_MiniInfo> result = new List<Protobuf_Room_MiniInfo>();
             foreach (var item in dictRoomListID2Info)
             {
-                result.Add(new Protobuf_Room_MiniInfo());
+                result.Add(item.Value);
             }
             return result;
         }

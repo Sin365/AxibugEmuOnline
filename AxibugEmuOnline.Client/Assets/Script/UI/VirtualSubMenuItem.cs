@@ -3,11 +3,7 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using VirtualNes.Core;
-using App = AxibugEmuOnline.Client.ClientCore.App;
 
 namespace AxibugEmuOnline.Client
 {
@@ -15,7 +11,7 @@ namespace AxibugEmuOnline.Client
     {
         [SerializeField]
         protected CanvasGroup RomGroupRoot;
-        
+
 
         private TweenerCore<float, float, FloatOptions> m_showTween;
 
@@ -60,7 +56,16 @@ namespace AxibugEmuOnline.Client
 
             var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
             thirdMenuGroup.itemGroup.Clear();
-            
+
+            RefreshUI();
+
+            if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(true);
+
+            return true;
+        }
+
+        protected void RefreshUI()
+        {
             GetVirtualListDatas((datas) =>
             {
                 var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
@@ -69,10 +74,6 @@ namespace AxibugEmuOnline.Client
                 thirdMenuGroup.itemGroup.UpdateProxyVisualState();
                 thirdMenuGroup.ResetToFirst();
             });
-
-            if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(true);
-
-            return true;
         }
 
         protected abstract void GetVirtualListDatas(Action<object> datas);

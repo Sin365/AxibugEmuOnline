@@ -1,6 +1,5 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System.Diagnostics;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
@@ -16,10 +15,14 @@ namespace AxibugEmuOnline.Client
 
         public override void OnExcute()
         {
+            object state = m_gameUI.GetQuickState();
             Stopwatch sw = Stopwatch.StartNew();
-            m_gameUI.Core.LoadState(m_gameUI.GetQuickState());
-            sw.Stop();
-            App.log.Info($"{m_gameUI.RomFile.Platform}====>快照加载耗时:{sw.Elapsed.TotalMilliseconds}ms");
+            if (state != null)
+            {
+                m_gameUI.Core.LoadState(state);
+                sw.Stop();
+                App.log.Info($"{m_gameUI.RomFile.Platform}====>快照加载耗时:{sw.Elapsed.TotalMilliseconds}ms");
+            }
         }
     }
 }
