@@ -24,6 +24,8 @@ namespace AxibugEmuOnline.Client
         private bool m_bPoped = false;
         private List<OptionUI_MenuItem> m_runtimeMenuItems = new List<OptionUI_MenuItem>();
 
+        public event Action OnHide;
+
         private int m_selectIndex = -1;
         public int SelectIndex
         {
@@ -178,6 +180,8 @@ namespace AxibugEmuOnline.Client
                 m_bPoped = false;
 
                 ControlScheme.Current = m_lastCS;
+
+                OnHide?.Invoke();
             }
         }
 

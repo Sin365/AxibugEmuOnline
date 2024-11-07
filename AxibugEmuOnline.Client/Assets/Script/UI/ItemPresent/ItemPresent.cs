@@ -517,6 +517,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
     }
     public RectTransform GetItemUIIfExist(int index)
     {
+        if (index < 0) return null;
         if (children.Count <= index) return null;
 
         var proxy = children[index];
