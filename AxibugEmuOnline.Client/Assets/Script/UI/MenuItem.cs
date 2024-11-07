@@ -37,6 +37,11 @@ namespace AxibugEmuOnline.Client.UI
             Reset();
         }
 
+        protected virtual void OnDestroy()
+        {
+            
+        }
+
         public void SetData(MenuData data)
         {
             Reset();
