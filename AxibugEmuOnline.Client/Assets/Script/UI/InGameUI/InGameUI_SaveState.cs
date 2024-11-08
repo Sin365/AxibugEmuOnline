@@ -19,6 +19,8 @@ namespace AxibugEmuOnline.Client
 
         public override void OnExcute()
         {
+            if (m_gameUI.IsOnline) return;
+
             Stopwatch sw = Stopwatch.StartNew();
             object state = m_gameUI.Core.GetState();
             m_gameUI.SaveQuickState(state);
