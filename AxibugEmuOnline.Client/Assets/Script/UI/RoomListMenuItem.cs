@@ -12,7 +12,7 @@ namespace AxibugEmuOnline.Client
         {
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListAllUpdate, OnRoomListUpdateAll);
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleClose, OnRoomClosed);
-            Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleUpdate);
+            Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleAdd, OnRoomSingleAdd);
             base.Awake();
         }
 
@@ -20,7 +20,7 @@ namespace AxibugEmuOnline.Client
         protected override void OnDestroy()
         {
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListAllUpdate, OnRoomListUpdateAll);
-            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleUpdate);
+            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSingleAdd);
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomListSingleClose, OnRoomClosed);
         }
 
@@ -38,7 +38,7 @@ namespace AxibugEmuOnline.Client
             return res;
         }
 
-        private void OnRoomSingleUpdate(int obj)
+        private void OnRoomSingleAdd(int obj)
         {
             if (m_entering)
             {

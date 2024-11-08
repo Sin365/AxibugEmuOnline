@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -16,5 +14,14 @@ namespace AxibugEmuOnline.Client
         void Resume();
         void SetupScheme();
         void StartGame(RomFile romFile);
+    }
+
+    public static class IEnumCoreTool
+    {
+        public static bool IsNull(this IEmuCore core)
+        {
+            if (core == null) return true;
+            return core.Equals(null);
+        }
     }
 }

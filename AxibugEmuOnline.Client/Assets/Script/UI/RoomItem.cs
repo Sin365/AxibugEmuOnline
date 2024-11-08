@@ -2,6 +2,7 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,20 @@ namespace AxibugEmuOnline.Client
         public int Index { get; set; }
         public int roomID { get; private set; }
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSignelUpdate);
+        }
+
+        private void OnRoomSignelUpdate(int roomID)
+        {
+            if (this.roomID != roomID) return;
+
+            if (App.roomMgr.GetRoomListMiniInfo(roomID, out var roomInfo))
+                UpdateUI(roomInfo);
+        }
 
         public void SetData(object data)
         {
@@ -53,12 +68,12 @@ namespace AxibugEmuOnline.Client
             SetBaseInfo(string.Empty, $"<b>{hostNick}</b>µÄ·¿¼ä - {cur}/{max}");
             SetIcon(null);
 
-            roomInfo.FetchRomFileInRoomInfo(EnumPlatform.NES, (romFile) =>
+            roomInfo.FetchRomFileInRoomInfo(EnumPlatform.NES, (room, romFile) =>
             {
-                m_romFile = romFile;
+                if (room.RoomID != roomID) return;
 
-                if (romFile.ID == roomInfo.GameRomID)
-                    Txt.text = romFile.Alias;
+                m_romFile = romFile;
+                Txt.text = romFile.Alias;
 
                 UpdateRomInfoView();
                 App.CacheMgr.GetSpriteCache(romFile.ImageURL, OnGetRomImage);

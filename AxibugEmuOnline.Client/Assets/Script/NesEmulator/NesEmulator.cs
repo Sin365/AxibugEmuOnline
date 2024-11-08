@@ -69,7 +69,6 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-
         public void Pause()
         {
             m_bPause = true;
