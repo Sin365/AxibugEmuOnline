@@ -38,11 +38,11 @@ namespace AxibugEmuOnline.Client
         }
 
         private static Dictionary<int, RomFile> s_RomFileCahcesInRoomInfo = new Dictionary<int, RomFile>();
-        public static void FetchRomFileInRoomInfo(this Protobuf_Room_MiniInfo roomInfo, EnumPlatform platform, Action<RomFile> callback)
+        public static void FetchRomFileInRoomInfo(this Protobuf_Room_MiniInfo roomInfo, EnumPlatform platform, Action<Protobuf_Room_MiniInfo, RomFile> callback)
         {
             if (s_RomFileCahcesInRoomInfo.TryGetValue(roomInfo.GameRomID, out RomFile romFile))
             {
-                callback.Invoke(romFile);
+                callback.Invoke(roomInfo,romFile);
                 return;
             }
             switch (platform)
@@ -52,9 +52,9 @@ namespace AxibugEmuOnline.Client
                     {
                         RomFile romFile = new RomFile(EnumPlatform.NES, 0, 0);
                         romFile.SetWebData(romWebData);
-                        callback.Invoke(romFile);
-
                         s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = romFile;
+
+                        callback.Invoke(roomInfo,romFile);
                     }));
                     break;
             }

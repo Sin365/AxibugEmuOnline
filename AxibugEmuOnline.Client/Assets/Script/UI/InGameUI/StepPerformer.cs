@@ -18,7 +18,6 @@ namespace AxibugEmuOnline.Client
         {
             m_step = step;
 
-
             switch (m_step)
             {
                 //等待主机上报快照

@@ -48,7 +48,7 @@ namespace AxibugEmuOnline.Client
         public int Page { get; private set; }
         public string Hash => webData != null ? webData.hash : string.Empty;
 
-        public event Action OnDownloadOver;
+        public event Action<RomFile> OnDownloadOver;
         public event Action OnInfoFilled;
 
         public RomFile(EnumPlatform platform, int index, int insidePage)
@@ -73,7 +73,7 @@ namespace AxibugEmuOnline.Client
                     File.WriteAllBytes(LocalFilePath, bytes);
                     hasLocalFile = true;
                 }
-                OnDownloadOver?.Invoke();
+                OnDownloadOver?.Invoke(this);
             }));
         }
 
@@ -115,13 +115,16 @@ namespace AxibugEmuOnline.Client
             downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
             yield return downloadRequest.SendWebRequest();
 
-            if (downloadRequest.result != UnityWebRequest.Result.Success)
+            var request = downloadRequest;
+            downloadRequest = null;
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
                 callback(null);
             }
             else
             {
-                callback(downloadRequest.downloadHandler.data);
+                callback(request.downloadHandler.data);
             }
         }
 
