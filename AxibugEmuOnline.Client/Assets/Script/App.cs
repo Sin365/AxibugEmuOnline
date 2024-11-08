@@ -101,6 +101,13 @@ namespace AxibugEmuOnline.Client.ClientCore
                 yield break;
 
             int platform = 0;
+            bool bTest = true;
+            if (bTest)
+            {
+                yield return null;
+                Connect("192.168.0.47", 10492);
+                yield break;
+            }
 
             UnityWebRequest request = UnityWebRequest.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
             yield return request.SendWebRequest();
