@@ -11,8 +11,18 @@ namespace AxibugEmuOnline.Client
         public RomFile RomFile => m_rom;
         public override bool Enable => gameObject.activeInHierarchy;
 
-        /// <summary> 指示该游戏实例是否处于联网模式 </summary>
-        public bool IsOnline => App.user.IsLoggedIn ? App.roomMgr.RoomState > AxibugProtobuf.RoomGameState.OnlyHost : false;
+        /// <summary> 指示该游戏实例是否处于联机模式 </summary>
+        public bool IsNetPlay
+        {
+            get
+            {
+                if (!App.user.IsLoggedIn) return false;
+                if (App.roomMgr.mineRoomMiniInfo == null) return false;
+                if (App.roomMgr.RoomState <= AxibugProtobuf.RoomGameState.OnlyHost) return false;
+
+                return true;
+            }
+        }
 
         private RomFile m_rom;
         public IEmuCore Core { get; private set; }
@@ -92,7 +102,7 @@ namespace AxibugEmuOnline.Client
         {
             OptionUI.Instance.Pop(menus);
 
-            if (!IsOnline)//单人模式暂停模拟器
+            if (!IsNetPlay)//单人模式暂停模拟器
             {
                 Core.Pause();
             }
@@ -101,7 +111,7 @@ namespace AxibugEmuOnline.Client
         //菜单关闭时候
         private void PopMenu_OnHide()
         {
-            if (!IsOnline)//单人模式恢复模拟器的暂停
+            if (!IsNetPlay)//单人模式恢复模拟器的暂停
                 Core.Resume();
         }
 

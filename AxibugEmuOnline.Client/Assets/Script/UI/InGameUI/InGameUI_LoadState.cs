@@ -6,7 +6,7 @@ namespace AxibugEmuOnline.Client
     public class InGameUI_LoadState : ExecuteMenu
     {
         private InGameUI m_gameUI;
-        public override bool Visible => !m_gameUI.IsOnline;
+        public override bool Visible => !m_gameUI.IsNetPlay;
 
         public InGameUI_LoadState(InGameUI gameUI) : base("∂¡»°øÏ’’", null)
         {
@@ -15,7 +15,7 @@ namespace AxibugEmuOnline.Client
 
         public override void OnExcute()
         {
-            if (m_gameUI.IsOnline) return;
+            if (m_gameUI.IsNetPlay) return;
 
             object state = m_gameUI.GetQuickState();
             Stopwatch sw = Stopwatch.StartNew();
