@@ -23,6 +23,7 @@ namespace AxibugEmuOnline.Client
 
             Stopwatch sw = Stopwatch.StartNew();
             object state = m_gameUI.Core.GetState();
+
             m_gameUI.SaveQuickState(state);
             sw.Stop();
             App.log.Info($"{m_gameUI.RomFile.Platform}====>获取快照耗时:{sw.Elapsed.TotalMilliseconds}ms");

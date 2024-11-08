@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Collections.Generic;
 
 namespace VirtualNes.Core
 {
@@ -138,16 +134,25 @@ namespace VirtualNes.Core
                         ram.LoadState(buffer);
                         if (WRAM_Length > 0)
                             WRAM = buffer.Read_bytes(WRAM_Length);
+                        else
+                            WRAM = new byte[0];
                         break;
                     case "MMU DATA":
                         mmuBLOCK = block;
                         mmu.LoadState(buffer);
                         if (CPU_MEM_BANK_Length > 0)
                             CPU_MEM_BANK = new List<byte>(buffer.Read_bytes(CPU_MEM_BANK_Length));
+                        else
+                            CPU_MEM_BANK = new List<byte>();
+
                         if (VRAM_Length > 0)
                             VRAM = buffer.Read_bytes(VRAM_Length);
+                        else
+                            VRAM = new byte[0];
                         if (CRAM_Length > 0)
                             CRAM = new List<byte>(buffer.Read_bytes(CRAM_Length));
+                        else
+                            CRAM = new List<byte>();
                         break;
                     case "MMC DATA":
                         mmcBLOCK = block;
@@ -166,6 +171,8 @@ namespace VirtualNes.Core
                         dsk.LoadState(buffer);
                         if (dskdata_Length > 0)
                             dskdata = new List<uint>(buffer.Read_uints(dskdata_Length));
+                        else
+                            dskdata = new List<uint>();
                         break;
                     case "EXCTRDAT":
                         exctrBLOCK = block;
