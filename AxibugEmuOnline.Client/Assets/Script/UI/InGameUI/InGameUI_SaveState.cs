@@ -10,7 +10,7 @@ namespace AxibugEmuOnline.Client
     {
         private InGameUI m_gameUI;
 
-        public override bool Visible => !m_gameUI.IsOnline;
+        public override bool Visible => !m_gameUI.IsNetPlay;
 
         public InGameUI_SaveState(InGameUI gameUI) : base("±£´æ¿ìÕÕ", null)
         {
@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client
 
         public override void OnExcute()
         {
-            if (m_gameUI.IsOnline) return;
+            if (m_gameUI.IsNetPlay) return;
 
             Stopwatch sw = Stopwatch.StartNew();
             object state = m_gameUI.Core.GetState();
