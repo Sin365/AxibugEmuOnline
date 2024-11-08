@@ -11,18 +11,12 @@ public class XMBTopGroup : MonoBehaviour
     public Image imgPower1;
     public Image imgPower2;
     public Image imgPower3;
-    void Awake()
-    {
-        txtDateTime = this.transform.Find("txtDateTime").GetComponent<Text>();
-        imgPowerRoot = this.transform.Find("imgPowerRoot").GetComponent<Image>();
-        imgPower1 = imgPowerRoot.transform.Find("PowerGroup/imgPower1").GetComponent<Image>();
-        imgPower2 = imgPowerRoot.transform.Find("PowerGroup/imgPower1").GetComponent<Image>();
-        imgPower3 = imgPowerRoot.transform.Find("PowerGroup/imgPower1").GetComponent<Image>();
-    }
+    public Text DelayValue;
 
     void OnEnable()
     {
         TickLoop.LoopAction_1s += RefreshAll;
+        RefreshAll();
     }
 
     void OnDisable()
@@ -34,6 +28,20 @@ public class XMBTopGroup : MonoBehaviour
     {
         RefreshTime();
         RefreshPower();
+        RefreshDelay();
+    }
+
+    private void RefreshDelay()
+    {
+        if (App.user == null)
+        {
+            DelayValue.text = $"-";
+            return;
+        }
+        if (App.user.IsLoggedIn)
+            DelayValue.text = $"{App.tickLoop.AveNetDelay * 1000:0}ms";
+        else
+            DelayValue.text = "-";
     }
 
     void RefreshTime()

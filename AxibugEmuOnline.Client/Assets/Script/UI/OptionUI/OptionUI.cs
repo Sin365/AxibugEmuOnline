@@ -222,8 +222,9 @@ namespace AxibugEmuOnline.Client
 
         protected override bool OnCmdEnter()
         {
-            m_runtimeMenuItems[SelectIndex].OnExecute();
+            var executer = m_runtimeMenuItems[SelectIndex];
             Hide();
+            executer.OnExecute();
             return true;
         }
     }

@@ -1832,11 +1832,11 @@ namespace VirtualNes.Core
                 state.ctrBLOCK.BlockVersion = 0x0100;
                 state.ctrBLOCK.BlockSize = state.ctr.GetSize();
 
-                state.ctr.pad1bit = pad.pad1bit;
-                state.ctr.pad2bit = pad.pad2bit;
-                state.ctr.pad3bit = pad.pad3bit;
-                state.ctr.pad4bit = pad.pad4bit;
-                state.ctr.strobe = (byte)(pad.GetStrobe() ? 0xFF : 0);
+                state.ctr.pad1bit = 0;
+                state.ctr.pad2bit = 0;
+                state.ctr.pad3bit = 0;
+                state.ctr.pad4bit = 0;
+                state.ctr.strobe = 0;
             }
 
             //SND STATE

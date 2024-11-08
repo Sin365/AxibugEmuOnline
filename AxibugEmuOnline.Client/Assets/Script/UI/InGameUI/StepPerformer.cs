@@ -1,4 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
@@ -24,12 +26,14 @@ namespace AxibugEmuOnline.Client
                     if (App.roomMgr.IsHost)
                     {
                         var stateRaw = m_inGameUI.Core.GetStateBytes();
+                        Debug.Log($"快照上报:{Helper.FileMD5Hash(stateRaw)}");
                         App.roomMgr.SendHostRaw(stateRaw);
                     }
                     break;
                 //加载存档并发送Ready通知
                 case 1:
                     PauseCore();
+                    Debug.Log($"快照加载:{Helper.FileMD5Hash(App.roomMgr.RawData)}");
                     m_inGameUI.Core.LoadStateFromBytes(App.roomMgr.RawData);
                     App.roomMgr.SendRoomPlayerReady();
                     break;
