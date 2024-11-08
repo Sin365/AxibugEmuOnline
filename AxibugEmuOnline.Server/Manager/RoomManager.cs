@@ -131,7 +131,7 @@ namespace AxibugEmuOnline.Server
             List<Data_RoomData> temp = GetRoomList();
             foreach (var room in temp)
                 resp.RoomMiniInfoList.Add(GetProtoDataRoom(room));
-            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdChatmsg, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomList, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
         }
         public void CmdRoomGetScreen(Socket sk, byte[] reqData)
         {
@@ -196,6 +196,8 @@ namespace AxibugEmuOnline.Server
 
             if (joinErrcode == ErrorCode.ErrorOk && bHadRoomStateChange)
                 SendRoomStateChange(newRoom);
+
+            SendRoomUpdateToAll(newRoom.RoomID, 0);
         }
 
         public void OnCmdRoomJoin(Socket sk, byte[] reqData)
@@ -233,6 +235,33 @@ namespace AxibugEmuOnline.Server
             AppSrv.g_Log.Debug($"OnCmdRoomLeave ");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Leave msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Leave>(reqData);
+            LeaveRoom(_c, msg.RoomID);
+            //Protobuf_Room_Leave_RESP resp = new Protobuf_Room_Leave_RESP();
+            //ErrorCode errcode;
+            //Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
+            //bool bHadRoomStateChange = false;
+            //if (room == null)
+            //    errcode = ErrorCode.ErrorRoomNotFound;
+            //else
+            //{
+            //    if (room.Leave(_c, out errcode, out bHadRoomStateChange))
+            //    {
+            //        resp.RoomID = msg.RoomID;
+            //    }
+            //}
+            //AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomLeave, (int)errcode, ProtoBufHelper.Serizlize(resp));
+            //Protobuf_Room_MyRoom_State_Change(msg.RoomID);
+
+            //if (errcode == ErrorCode.ErrorOk && bHadRoomStateChange)
+            //    SendRoomStateChange(room);
+
+            //SendRoomUpdateToAll(room.RoomID, 1);
+            //if (room.GetPlayerCount() < 1)
+            //    RemoveRoom(room.RoomID);
+        }
+
+        public void LeaveRoom(ClientInfo _c,int RoomID)
+        {
             Protobuf_Room_Leave_RESP resp = new Protobuf_Room_Leave_RESP();
             ErrorCode errcode;
             Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
@@ -243,20 +272,22 @@ namespace AxibugEmuOnline.Server
             {
                 if (room.Leave(_c, out errcode, out bHadRoomStateChange))
                 {
-                    resp.RoomID = msg.RoomID;
+                    resp.RoomID = RoomID;
                 }
             }
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomLeave, (int)errcode, ProtoBufHelper.Serizlize(resp));
-            Protobuf_Room_MyRoom_State_Change(msg.RoomID);
+            Protobuf_Room_MyRoom_State_Change(RoomID);
 
             if (errcode == ErrorCode.ErrorOk && bHadRoomStateChange)
                 SendRoomStateChange(room);
 
-            SendRoomUpdateToAll(room.RoomID, 1);
             if (room.GetPlayerCount() < 1)
+            { 
                 RemoveRoom(room.RoomID);
-
-
+                SendRoomUpdateToAll(room.RoomID, 1);
+            }
+            else
+                SendRoomUpdateToAll(room.RoomID, 0);
         }
 
         public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)
