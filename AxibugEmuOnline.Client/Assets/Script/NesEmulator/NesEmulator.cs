@@ -31,6 +31,8 @@ namespace AxibugEmuOnline.Client
             Supporter.Setup(new CoreSupporter());
             Debuger.Setup(new CoreDebuger());
 
+            App.nesRomLib.AddRomFile(rom);
+
             try
             {
                 NesCore = new NES(rom.FileName);
