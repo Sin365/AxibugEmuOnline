@@ -55,9 +55,11 @@ namespace AxibugEmuOnline.Client.Manager
         }
 
         #region 房间列表管理
-        void AddOrUpdateRoomList(Protobuf_Room_MiniInfo roomInfo)
+        bool AddOrUpdateRoomList(Protobuf_Room_MiniInfo roomInfo)
         {
+            bool bNew = !dictRoomListID2Info.ContainsKey(roomInfo.RoomID);
             dictRoomListID2Info[roomInfo.RoomID] = roomInfo;
+            return bNew;
         }
         bool RemoveRoomList(int roomId)
         {
@@ -203,8 +205,14 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
             if (msg.UpdateType == 0)
             {
-                AddOrUpdateRoomList(msg.RoomMiniInfo);
-                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.RoomID);
+                if (AddOrUpdateRoomList(msg.RoomMiniInfo))
+                {
+                    Eventer.Instance.PostEvent(EEvent.OnRoomListSingleAdd, msg.RoomMiniInfo.RoomID);
+                }
+                else
+                {
+                    Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.RoomID);
+                }
             }
             else
             {
@@ -416,6 +424,26 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Screnn_Frame msg = ProtoBufHelper.DeSerizlize<Protobuf_Screnn_Frame>(reqData);
             //解压
             byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
+        }
+    }
+
+    public static class RoomEX
+    {
+        /// <summary>
+        /// 获取房间空闲席位下标 (返回True表示由余位）
+        /// </summary>
+        /// <param name="roomMiniInfo"></param>
+        /// <param name="freeSlots"></param>
+        /// <returns></returns>
+        public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo,out int[] freeSlots)
+        {
+            List<int> temp = new List<int>();
+            if (roomMiniInfo.Player1UID > 0) temp.Add(0);
+            if (roomMiniInfo.Player2UID > 1) temp.Add(1);
+            if (roomMiniInfo.Player3UID > 2) temp.Add(2);
+            if (roomMiniInfo.Player4UID > 3) temp.Add(3);
+            freeSlots = temp.ToArray();
+            return freeSlots.Length > 0;
         }
     }
 }
