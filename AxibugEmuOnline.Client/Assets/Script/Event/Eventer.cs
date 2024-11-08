@@ -214,7 +214,7 @@ namespace AxibugEmuOnline.Client.Event
                     }
                     catch (Exception e)
                     {
-                        App.log.Error(e.Message);
+                        App.log.Error(e.ToString());
                     }
                 }
             }
