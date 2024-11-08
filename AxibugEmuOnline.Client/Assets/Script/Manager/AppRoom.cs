@@ -369,13 +369,13 @@ namespace AxibugEmuOnline.Client.Manager
             if (WaitStep != msg.WaitStep)
             {
                 WaitStep = msg.WaitStep;
-                Eventer.Instance.PostEvent(EEvent.OnRoomWaitStepChange, WaitStep);
                 if (WaitStep == 1)
                 {
                     byte[] decompressRawData = Helper.DecompressByteArray(msg.LoadStateRaw.ToByteArray());
                     App.log.Info($"收到即时存档数据 解压后;{decompressRawData.Length}");
                     RawData = decompressRawData;
                 }
+                Eventer.Instance.PostEvent(EEvent.OnRoomWaitStepChange, WaitStep);
             }
         }
 
