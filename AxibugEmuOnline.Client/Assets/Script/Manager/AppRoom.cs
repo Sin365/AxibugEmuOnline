@@ -426,4 +426,24 @@ namespace AxibugEmuOnline.Client.Manager
             byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
         }
     }
+
+    public static class RoomEX
+    {
+        /// <summary>
+        /// 获取房间空闲席位下标 (返回True表示由余位）
+        /// </summary>
+        /// <param name="roomMiniInfo"></param>
+        /// <param name="freeSlots"></param>
+        /// <returns></returns>
+        public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo,out int[] freeSlots)
+        {
+            List<int> temp = new List<int>();
+            if (roomMiniInfo.Player1UID > 0) temp.Add(0);
+            if (roomMiniInfo.Player2UID > 1) temp.Add(1);
+            if (roomMiniInfo.Player3UID > 2) temp.Add(2);
+            if (roomMiniInfo.Player4UID > 3) temp.Add(3);
+            freeSlots = temp.ToArray();
+            return freeSlots.Length > 0;
+        }
+    }
 }
