@@ -2,7 +2,6 @@
 {
     Properties
     {
-        _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
 
         _StencilComp ("Stencil Comparison", Float) = 8
@@ -75,12 +74,9 @@
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
-            sampler2D _MainTex;
             fixed4 _Color;
             fixed4 _TextureSampleAdd;
-            float4 _ClipRect;
-            float4 _MainTex_ST;           
-            float4 _MainTex_TexelSize;           
+            float4 _ClipRect;        
 
             float wave(float x, float frequency, float speed, float midHeight, float maxHeight)
             {
@@ -105,7 +101,7 @@
                 OUT.worldPosition = v.vertex;
                 OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
-                OUT.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
+                OUT.texcoord =v.texcoord;
 
                 OUT.color = v.color * _Color;
                 return OUT;

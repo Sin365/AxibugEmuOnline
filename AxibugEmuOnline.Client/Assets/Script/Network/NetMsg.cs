@@ -86,7 +86,7 @@ namespace AxibugEmuOnline.Client.Network
                     }
                     catch (Exception e)
                     {
-                        App.log.Error(e.Message);
+                        App.log.Error(e.ToString());
                     }
                 }
             }

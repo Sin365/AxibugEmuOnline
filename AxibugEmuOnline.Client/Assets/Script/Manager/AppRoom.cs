@@ -435,7 +435,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="roomMiniInfo"></param>
         /// <param name="freeSlots"></param>
         /// <returns></returns>
-        public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo,out int[] freeSlots)
+        public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo, out int[] freeSlots)
         {
             List<int> temp = new List<int>();
             if (roomMiniInfo.Player1UID > 0) temp.Add(0);

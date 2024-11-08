@@ -53,7 +53,7 @@ namespace AxibugEmuOnline.Client
                         RomFile romFile = new RomFile(EnumPlatform.NES, 0, 0);
                         romFile.SetWebData(romWebData);
                         s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = romFile;
-
+                        
                         callback.Invoke(roomInfo,romFile);
                     }));
                     break;
