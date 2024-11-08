@@ -55,9 +55,11 @@ namespace AxibugEmuOnline.Client.Manager
         }
 
         #region 房间列表管理
-        void AddOrUpdateRoomList(Protobuf_Room_MiniInfo roomInfo)
+        bool AddOrUpdateRoomList(Protobuf_Room_MiniInfo roomInfo)
         {
+            bool bNew = !dictRoomListID2Info.ContainsKey(roomInfo.RoomID);
             dictRoomListID2Info[roomInfo.RoomID] = roomInfo;
+            return bNew;
         }
         bool RemoveRoomList(int roomId)
         {
@@ -203,8 +205,14 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Update_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Update_RESP>(reqData);
             if (msg.UpdateType == 0)
             {
-                AddOrUpdateRoomList(msg.RoomMiniInfo);
-                Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.RoomID);
+                if (AddOrUpdateRoomList(msg.RoomMiniInfo))
+                {
+                    Eventer.Instance.PostEvent(EEvent.OnRoomListSingleAdd, msg.RoomMiniInfo.RoomID);
+                }
+                else
+                {
+                    Eventer.Instance.PostEvent(EEvent.OnRoomListSingleUpdate, msg.RoomMiniInfo.RoomID);
+                }
             }
             else
             {

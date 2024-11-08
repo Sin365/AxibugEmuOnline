@@ -221,6 +221,8 @@ namespace AxibugEmuOnline.Server.Manager
             Console.WriteLine("标记玩家UID" + cinfo.UID + "为离线");
             cinfo.IsOffline = true;
             cinfo.LogOutDT = DateTime.Now;
+
+            AppSrv.g_Room.LeaveRoom(cinfo, cinfo.RoomState.RoomID);
         }
 
         public void RemoveClientForSocket(Socket sk)

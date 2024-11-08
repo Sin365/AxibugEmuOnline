@@ -90,7 +90,7 @@ namespace AxibugEmuOnline.Client
 
         public void OnCmdPing(byte[] reqData)
         {
-            App.log.Debug($"OnCmdPing");
+            //App.log.Debug($"OnCmdPing");
             Protobuf_Ping msg = ProtoBufHelper.DeSerizlize<Protobuf_Ping>(reqData);
             Protobuf_Pong resp = new Protobuf_Pong()
             {
@@ -101,7 +101,7 @@ namespace AxibugEmuOnline.Client
 
         public void OnCmdPong(byte[] reqData)
         {
-            App.log.Debug($"OnCmdPong");
+            //App.log.Debug($"OnCmdPong");
             Protobuf_Pong msg = ProtoBufHelper.DeSerizlize<Protobuf_Pong>(reqData);
 
             if (LastPingSeed == msg.Seed)
