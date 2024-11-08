@@ -1,6 +1,4 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using System;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {

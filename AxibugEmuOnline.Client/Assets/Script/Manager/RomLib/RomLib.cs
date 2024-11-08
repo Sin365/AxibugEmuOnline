@@ -47,6 +47,8 @@ namespace AxibugEmuOnline.Client
             return romFile;
         }
 
+
+
         /// <summary> 清除所有下载的Rom文件 </summary>
         public void ClearRomFile()
         {
@@ -118,6 +120,11 @@ namespace AxibugEmuOnline.Client
         public static string CalcHash(byte[] data)
         {
             return Helper.FileMD5Hash(data);
+        }
+
+        public void AddRomFile(RomFile rom)
+        {
+            nesRomFileNameMapper[rom.FileName] = rom;
         }
     }
 }
