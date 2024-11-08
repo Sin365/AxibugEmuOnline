@@ -100,7 +100,7 @@ namespace AxibugEmuOnline.Client
 
         public void SampleInput()
         {
-            if (InGameUI.Instance.IsOnline)
+            if (InGameUI.Instance.IsNetPlay)
             {
                 if (App.roomMgr.netReplay.NextFrame(out var replayData, out int _))
                 {
