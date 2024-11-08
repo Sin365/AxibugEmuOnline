@@ -41,7 +41,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void BeginGame(RomFile romFile)
         {
-            if (!m_emuCore.Equals(null)) return;
+            if (!m_emuCore.IsNull()) return;
 
             switch (romFile.Platform)
             {
