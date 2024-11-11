@@ -57,6 +57,7 @@ namespace AxibugEmuOnline.Client.UI
             m_progress = 0f;
 
             Root.localScale = Vector3.one * UnSelectScale;
+            
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);

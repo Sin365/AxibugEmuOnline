@@ -188,11 +188,14 @@ namespace AxibugEmuOnline.Client
 #if UNITY_EDITOR
             if (Application.isPlaying)
             {
-                return GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
+                var item= GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
+                item.transform.localPosition = Vector3.zero;
+                return item;
             }
             else
             {
                 var clone = UnityEditor.PrefabUtility.InstantiatePrefab(template.gameObject, parent) as GameObject;
+                clone.transform.localPosition = Vector3.zero;
                 return clone.GetComponent<MenuItem>();
             }
 #else
