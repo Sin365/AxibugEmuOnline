@@ -31,9 +31,15 @@ namespace AxibugEmuOnline.Server
 
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdScreen, OnCmdScreen);
 
-            roomTickARE = AppSrv.g_Tick.AddNewARE(TickManager.TickType.Interval_16MS);
-            threadRoomTick = new Thread(UpdateLoopTick);
-            threadRoomTick.Start();
+            //roomTickARE = AppSrv.g_Tick.AddNewARE(TickManager.TickType.Interval_16MS);
+            //threadRoomTick = new Thread(UpdateLoopTick);
+            //threadRoomTick.Start();
+
+            System.Timers.Timer mTimer16ms = new System.Timers.Timer(16);//实例化Timer类
+            mTimer16ms.Elapsed += new System.Timers.ElapsedEventHandler((source, e) => { UpdateAllRoomLogic(); });//到达时间的时候执行事件；
+            mTimer16ms.AutoReset = true;//设置是执行一次（false）还是一直执行(true)；
+            mTimer16ms.Enabled = true;//是否执行System.Timers.Timer.Elapsed事件；
+            mTimer16ms.Start();
         }
 
         #region 房间管理
@@ -123,7 +129,7 @@ namespace AxibugEmuOnline.Server
 
         public void OnCmdRoomList(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdRoomList ");
+            AppSrv.g_Log.DebugCmd($"OnCmdRoomList");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_List msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_List>(reqData);
 
@@ -135,7 +141,7 @@ namespace AxibugEmuOnline.Server
         }
         public void CmdRoomGetScreen(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdRoomList ");
+            AppSrv.g_Log.DebugCmd($"CmdRoomGetScreen");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Get_Screen msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Get_Screen>(reqData);
 
@@ -177,7 +183,7 @@ namespace AxibugEmuOnline.Server
 
         public void OnCmdRoomCreate(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdRoomCreate ");
+            AppSrv.g_Log.DebugCmd($"OnCmdRoomCreate");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Create msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Create>(reqData);
             Protobuf_Room_Create_RESP resp = new Protobuf_Room_Create_RESP();
@@ -202,16 +208,21 @@ namespace AxibugEmuOnline.Server
 
         public void OnCmdRoomJoin(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdRoomJoin ");
+            AppSrv.g_Log.DebugCmd($"OnCmdRoomJoin");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Join msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Join>(reqData);
             Protobuf_Room_Create_RESP resp = new Protobuf_Room_Create_RESP();
             ErrorCode joinErrcode;
-            Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
+            Data_RoomData room = GetRoomData(msg.RoomID);
             bool bHadRoomStateChange = false;
             if (room == null)
+            {
                 joinErrcode = ErrorCode.ErrorRoomNotFound;
-            else
+
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
+                return;
+            }
+            lock (room)
             {
                 //加入
                 if (room.Join(msg.PlayerNum, _c, out joinErrcode, out bHadRoomStateChange))
@@ -219,20 +230,22 @@ namespace AxibugEmuOnline.Server
                     Data_RoomData roomData = GetRoomData(msg.RoomID);
                     resp.RoomMiniInfo = GetProtoDataRoom(roomData);
                 }
+
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
+                Protobuf_Room_MyRoom_State_Change(msg.RoomID);
+
+                if (joinErrcode == ErrorCode.ErrorOk && bHadRoomStateChange)
+                    SendRoomStateChange(room);
+
+                if (room != null)
+                {
+                    SendRoomUpdateToAll(room.RoomID, 0);
+                }
             }
-
-            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
-            Protobuf_Room_MyRoom_State_Change(msg.RoomID);
-
-            if (joinErrcode == ErrorCode.ErrorOk && bHadRoomStateChange)
-                SendRoomStateChange(room);
-
-
-            SendRoomUpdateToAll(room.RoomID, 0);
         }
         public void OnCmdRoomLeave(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdRoomLeave ");
+            AppSrv.g_Log.DebugCmd($"OnCmdRoomLeave");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Leave msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Leave>(reqData);
             LeaveRoom(_c, msg.RoomID);
@@ -260,20 +273,25 @@ namespace AxibugEmuOnline.Server
             //    RemoveRoom(room.RoomID);
         }
 
-        public void LeaveRoom(ClientInfo _c,int RoomID)
+        public void LeaveRoom(ClientInfo _c, int RoomID)
         {
+            AppSrv.g_Log.Debug($"LeaveRoom");
+            if (RoomID < 0)
+                return;
             Protobuf_Room_Leave_RESP resp = new Protobuf_Room_Leave_RESP();
             ErrorCode errcode;
             Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
             bool bHadRoomStateChange = false;
             if (room == null)
+            { 
                 errcode = ErrorCode.ErrorRoomNotFound;
-            else
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomLeave, (int)errcode, ProtoBufHelper.Serizlize(resp));
+                return;
+            }
+
+            if (room.Leave(_c, out errcode, out bHadRoomStateChange))
             {
-                if (room.Leave(_c, out errcode, out bHadRoomStateChange))
-                {
-                    resp.RoomID = RoomID;
-                }
+                resp.RoomID = RoomID;
             }
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomLeave, (int)errcode, ProtoBufHelper.Serizlize(resp));
             Protobuf_Room_MyRoom_State_Change(RoomID);
@@ -282,7 +300,7 @@ namespace AxibugEmuOnline.Server
                 SendRoomStateChange(room);
 
             if (room.GetPlayerCount() < 1)
-            { 
+            {
                 RemoveRoom(room.RoomID);
                 SendRoomUpdateToAll(room.RoomID, 1);
             }
@@ -293,6 +311,7 @@ namespace AxibugEmuOnline.Server
         public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)
         {
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
+            AppSrv.g_Log.DebugCmd($"OnHostPlayerUpdateStateRaw 上报即时存档 UID->{_c.UID}");
             Protobuf_Room_HostPlayer_UpdateStateRaw msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_HostPlayer_UpdateStateRaw>(reqData);
             Protobuf_Room_HostPlayer_UpdateStateRaw_RESP resp = new Protobuf_Room_HostPlayer_UpdateStateRaw_RESP();
             ErrorCode errcode = ErrorCode.ErrorOk;
@@ -307,7 +326,6 @@ namespace AxibugEmuOnline.Server
             if (errcode == ErrorCode.ErrorOk)
             {
                 room.SetLoadRaw(msg.LoadStateRaw, out bool bHadRoomStateChange);
-
                 if (bHadRoomStateChange)
                     SendRoomStateChange(room);
             }
@@ -316,14 +334,24 @@ namespace AxibugEmuOnline.Server
         public void OnRoomPlayerReady(Socket sk, byte[] reqData)
         {
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
+            AppSrv.g_Log.DebugCmd($"OnRoomPlayerReady _c->{_c.UID}");
             Protobuf_Room_Player_Ready msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Player_Ready>(reqData);
             ErrorCode errcode = ErrorCode.ErrorOk;
             Data_RoomData room = GetRoomData(_c.RoomState.RoomID);
             if (room == null)
                 return;
-
+            lock (room)
+            {
+                AppSrv.g_Log.Debug($"SetRePlayerReady RoomID->{room.RoomID},UID->{_c.UID}, PlayerIdx->{_c.RoomState.PlayerIdx}");
+                room.SetRePlayerReady(_c.RoomState.PlayerIdx, out errcode, out bool bHadRoomStateChange);
+                if (bHadRoomStateChange)
+                {
+                    SendRoomStateChange(room);
+                }
+            }
         }
 
+        ulong LastTestRecv = 0;
         public void OnSingelPlayerInput(Socket sk, byte[] reqData)
         {
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
@@ -336,13 +364,19 @@ namespace AxibugEmuOnline.Server
             //取玩家操作数据中的第一个
             ServerInputSnapShot temp = new ServerInputSnapShot();
             temp.all = msg.InputData;
+            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp);
 
-            room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp.p1_byte);
+            if (LastTestRecv != room.mCurrInputData.all)
+            {
+                LastTestRecv = room.mCurrInputData.all;
+                AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynTestRecv=> UID->{_c.UID} roomId->{room.mCurrFrameId} input->{msg.InputData}");
+            }
+
         }
 
         public void OnCmdScreen(Socket sk, byte[] reqData)
         {
-            AppSrv.g_Log.Debug($"OnCmdScreen lenght:{reqData.Length}");
+            AppSrv.g_Log.DebugCmd($"OnCmdScreen lenght:{reqData.Length}");
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Screnn_Frame msg = ProtoBufHelper.DeSerizlize<Protobuf_Screnn_Frame>(reqData);
             Data_RoomData room = AppSrv.g_Room.GetRoomData(msg.RoomID);
@@ -383,6 +417,7 @@ namespace AxibugEmuOnline.Server
                         {
                             WaitStep = 0
                         };
+                        AppSrv.g_Log.Debug($"Step=>{0} WaitRawUpdate 广播等待主机上报即时存档");
                         AppSrv.g_ClientMgr.ClientSend(roomClient, (int)CommandID.CmdRoomWaitStep, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
                     }
                     break;
@@ -393,6 +428,8 @@ namespace AxibugEmuOnline.Server
                             WaitStep = 1,
                             LoadStateRaw = room.NextStateRaw
                         };
+                        AppSrv.g_Log.Debug($"Step=>{1} WaitReady 广播即时存档");
+
                         AppSrv.g_ClientMgr.ClientSend(roomClient, (int)CommandID.CmdRoomWaitStep, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
                     }
                     break;
@@ -402,6 +439,8 @@ namespace AxibugEmuOnline.Server
                         {
                             WaitStep = 2,
                         };
+                        AppSrv.g_Log.Debug($"Step=>{2} 广播开始游戏");
+
                         AppSrv.g_ClientMgr.ClientSend(roomClient, (int)CommandID.CmdRoomWaitStep, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
                     }
                     break;
@@ -421,12 +460,12 @@ namespace AxibugEmuOnline.Server
         }
         void UpdateAllRoomLogic()
         {
+            if (mKeyRoomList.Count < 1)
+                return;
             for (int i = 0; i < mKeyRoomList.Count; i++)
             {
                 int roomid = mKeyRoomList[i];
-                if (!mDictRoom.TryGetValue(roomid, out Data_RoomData room))
-                    continue;
-                if (room.GameState < RoomGameState.InOnlineGame)
+                if (!mDictRoom.TryGetValue(roomid, out Data_RoomData room) || room.GameState < RoomGameState.InOnlineGame)
                     continue;
                 //更新帧
                 room.TakeFrame();
@@ -531,6 +570,7 @@ namespace AxibugEmuOnline.Server
             if (oldUID >= 0)
                 SynUIDs.Remove(oldUID);
             SynUIDs.Add(_c.UID);
+            AppSrv.g_Log.Debug($"SetPlayerUID RoomID->{RoomID} _c.UID->{_c.UID}  PlayerIdx->{PlayerIdx}");
             _c.RoomState.SetRoomData(this.RoomID, PlayerIdx);
         }
 
@@ -607,14 +647,14 @@ namespace AxibugEmuOnline.Server
             return list;
         }
 
-        public void SetPlayerInput(int PlayerIdx, long mFrameID, byte input)
+        public void SetPlayerInput(int PlayerIdx, long mFrameID, ServerInputSnapShot allinput)
         {
             switch (PlayerIdx)
             {
-                case 0: mCurrInputData.p1_byte = input; break;
-                case 1: mCurrInputData.p2_byte = input; break;
-                case 2: mCurrInputData.p3_byte = input; break;
-                case 3: mCurrInputData.p4_byte = input; break;
+                case 0: mCurrInputData.p1_byte = allinput.p1_byte; break;
+                case 1: mCurrInputData.p2_byte = allinput.p2_byte; break;
+                case 2: mCurrInputData.p3_byte = allinput.p3_byte; break;
+                case 3: mCurrInputData.p4_byte = allinput.p4_byte; break;
             }
         }
 
@@ -651,10 +691,14 @@ namespace AxibugEmuOnline.Server
                 ClientInfo player = playerlist[i];
                 maxNetDelay = Math.Max(maxNetDelay, player.AveNetDelay);
             }
+
             mCurrFrameId = 0;
+            mCurrInputData.all = 1;
 
             int TaskFrameCount = (int)((maxNetDelay / 0.016f) + 5f);
 
+            AppSrv.g_Log.Debug($"服务器提前跑帧数：({maxNetDelay} / {0.016f}) + {5f} = {TaskFrameCount}");
+            TaskFrameCount = 0;
             for (int i = 0; i < TaskFrameCount; i++)
             {
                 TakeFrame();
@@ -667,6 +711,7 @@ namespace AxibugEmuOnline.Server
             mCurrFrameId++;
         }
 
+        ulong LastTestSend = 0;
         /// <summary>
         /// 广播数据
         /// </summary>
@@ -681,10 +726,15 @@ namespace AxibugEmuOnline.Server
                     InputData = data.inputdata.all,
                     ServerFrameID = mCurrFrameId
                 };
+
+                if (LastTestSend != data.inputdata.all)
+                {
+                    LastTestSend = data.inputdata.all;
+                    AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynInput=> RoomID->{RoomID} ServerFrameID->{mCurrFrameId} SynUIDs=>{string.Join(",", SynUIDs)} ");
+                }
                 AppSrv.g_ClientMgr.ClientSend(SynUIDs, (int)CommandID.CmdRoomSynPlayerInput, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
             }
         }
-
 
         #region 房间进出
         /// <summary>
@@ -704,6 +754,7 @@ namespace AxibugEmuOnline.Server
                 errcode = ErrorCode.ErrorRoomSlotReadlyHadPlayer;
                 return false;
             }
+            AppSrv.g_Log.Debug($"Join _c.UID->{_c.UID} RoomID->{RoomID}");
             SetPlayerUID(PlayerNum, _c);
             int newPlayerCount = GetPlayerCount();
             errcode = ErrorCode.ErrorOk;
@@ -729,6 +780,16 @@ namespace AxibugEmuOnline.Server
             return true;
         }
         #endregion
+
+        public bool SetRePlayerReady(int PlayerIdx, out ErrorCode errcode, out bool bHadRoomStateChange)
+        {
+            int oldPlayerCount = GetPlayerCount();
+            PlayerReadyState[PlayerIdx] = true;
+            int newPlayerCount = GetPlayerCount();
+            errcode = ErrorCode.ErrorOk;
+            bHadRoomStateChange = CheckRoomStateChange(oldPlayerCount, newPlayerCount);
+            return true;
+        }
 
         bool CheckRoomStateChange(int oldPlayerCount, int newPlayerCount)
         {
@@ -773,14 +834,13 @@ namespace AxibugEmuOnline.Server
                         bChanged = true;
                         break;
                     }
-                    //没有为准备的
+                    //没有未准备的
                     bool bAllReady = IsAllReady();
                     if (bAllReady)
                     {
+                        this.GameState = RoomGameState.InOnlineGame;
                         //新开Tick
                         StartNewTick();
-
-                        this.GameState = RoomGameState.InOnlineGame;
                         bChanged = true;
                         break;
                     }
@@ -797,7 +857,6 @@ namespace AxibugEmuOnline.Server
                     if (bMorePlayer)//加入更多玩家
                     {
                         this.GameState = RoomGameState.WaitRawUpdate;
-                        //TODO 服务器Tick提前跑帧
                         bChanged = true;
                         break;
                     }
@@ -809,6 +868,7 @@ namespace AxibugEmuOnline.Server
         public void SetLoadRaw(Google.Protobuf.ByteString NextStateRaw, out bool bHadRoomStateChange)
         {
             int oldPlayerCount = GetPlayerCount();
+            AppSrv.g_Log.Debug($"SetLoadRaw proto Lenght->{NextStateRaw.Length}");
             this.NextStateRaw = NextStateRaw;
             int newPlayerCount = GetPlayerCount();
             bHadRoomStateChange = CheckRoomStateChange(oldPlayerCount, newPlayerCount);

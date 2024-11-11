@@ -98,17 +98,27 @@ namespace AxibugEmuOnline.Client
             return m_sampledState;
         }
 
+        uint LastTestInput = 0;
         public void SampleInput()
         {
             if (InGameUI.Instance.IsNetPlay)
             {
                 if (App.roomMgr.netReplay.TryGetNextFrame(out var replayData, out int frameDiff, out bool inputDiff))
                 {
-                    App.log.Debug($"TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                        $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
+                    if (inputDiff)
+                    { 
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
+                            $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
+                    }
+
                     m_sampledState = FromNet(replayData);
                     var localState = NesControllerMapper.Get().CreateState();
                     var rawData = ToNet(localState);
+                    if (LastTestInput != rawData)
+                    {
+                        LastTestInput = rawData;
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
+                    }
                     App.roomMgr.SendRoomSingelPlayerInput((uint)App.roomMgr.netReplay.mCurrClientFrameIdx, rawData);
                 }
                 else

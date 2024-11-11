@@ -404,10 +404,15 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdRoomSingelPlayerInput, ProtoBufHelper.Serizlize(_Protobuf_Room_SinglePlayerInputData));
         }
 
+        ulong TestAllData = 0;
         void RecvHostSyn_RoomFrameAllInputData(byte[] reqData)
         {
             Protobuf_Room_Syn_RoomFrameAllInputData msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Syn_RoomFrameAllInputData>(reqData);
-            //App.log.Debug($"ServerFrameID->{msg.ServerFrameID} FrameID->{msg.FrameID} ClientFrame->{netReplay.mCurrClientFrameIdx} InputData->{msg.InputData}");
+            if (TestAllData != msg.InputData)
+            {
+                TestAllData = msg.InputData;
+                App.log.Debug($"ServerFrameID->{msg.ServerFrameID} FrameID->{msg.FrameID} ClientFrame->{netReplay.mCurrClientFrameIdx} InputData->{msg.InputData}");
+            }
             netReplay.InData(new ReplayStep() { FrameStartID = (int)msg.FrameID, InPut = msg.InputData }, (int)msg.ServerFrameID);
         }
 
