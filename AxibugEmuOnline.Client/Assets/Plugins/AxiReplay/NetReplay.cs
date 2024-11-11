@@ -30,11 +30,13 @@ namespace AxiReplay
             mNextReplay = default(ReplayStep);
             mCurrReplay = default(ReplayStep);
         }
-        public void InData(ReplayStep inputData,int ServerFrameIdx)
+
+        public void InData(ReplayStep inputData, int ServerFrameIdx)
         {
             mQueueReplay.Enqueue(inputData);
             mRemoteFrameIdx = inputData.FrameStartID;
         }
+
         public bool NextFrame(out ReplayStep data, out int FrameDiff)
         {
             return TakeFrame(0, out data, out FrameDiff);
@@ -66,7 +68,7 @@ namespace AxiReplay
             }
             return Changed;
         }
-        void UpdateNextFrame(int targetFrame,out int FrameDiff)
+        void UpdateNextFrame(int targetFrame, out int FrameDiff)
         {
             FrameDiff = mRemoteFrameIdx - targetFrame;
             //如果已经超过
