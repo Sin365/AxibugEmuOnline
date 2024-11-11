@@ -104,6 +104,8 @@ namespace AxibugEmuOnline.Client
             {
                 if (App.roomMgr.netReplay.TryGetNextFrame(out var replayData, out int frameDiff, out bool inputDiff))
                 {
+                    App.log.Debug($"TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
+                        $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
                     m_sampledState = FromNet(replayData);
                     var localState = NesControllerMapper.Get().CreateState();
                     var rawData = ToNet(localState);
@@ -111,6 +113,8 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
+                    App.log.Error($"Server Lag remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
+                        $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
                     m_sampledState = default;
                 }
             }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using static AxibugEmuOnline.Client.HttpAPI;
+using static AxibugEmuOnline.Client.Manager.LogManager;
 
 namespace AxibugEmuOnline.Client.ClientCore
 {
@@ -158,7 +159,20 @@ namespace AxibugEmuOnline.Client.ClientCore
         }
         static void OnNoSugarNetLog(int LogLevel, string msg)
         {
-            Debug.Log("[AxibugEmuOnline]:" + msg);
+            E_LogType logType =(E_LogType)LogLevel;
+            switch (logType)
+            {
+                case E_LogType.Debug:
+                case E_LogType.Info:
+                    Debug.Log("[AxiEmu]:" + msg);
+                    break;
+                case E_LogType.Warning:
+                    Debug.LogWarning("[AxiEmu]:" + msg);
+                    break;
+                case E_LogType.Error:
+                    Debug.LogError("[AxiEmu]:" + msg);
+                    break;
+            }
         }
 
     }
