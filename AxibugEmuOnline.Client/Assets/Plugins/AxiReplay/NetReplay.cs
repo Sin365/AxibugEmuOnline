@@ -60,6 +60,7 @@ namespace AxiReplay
                     inputDiff = true;
                 mNextReplay = mNetReplayQueue.Dequeue();
             }
+
             bFrameDiff = mRemoteFrameIdx - mCurrClientFrameIdx;
             data = mCurrReplay;
         }

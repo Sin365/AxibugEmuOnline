@@ -91,10 +91,10 @@ namespace AxibugEmuOnline.Server.Manager
             DateTime CheckDT = DateTime.Now.AddMinutes(-1 * _RemoveOfflineCacheMin);
             ClientInfo[] OfflineClientlist = ClientList.Where(w => w.IsOffline == true && w.LogOutDT < CheckDT).ToArray();
 
-            Console.WriteLine("开始清理离线过久的玩家的缓存");
             for (int i = 0; i < OfflineClientlist.Length; i++)
             {
-                //to do 掉线处理
+                Console.WriteLine($"清理离线过久玩家 UID->{OfflineClientlist[i].UID} Name->{OfflineClientlist[i].NickName}");
+                //掉线处理
                 RemoveClient(OfflineClientlist[i]);
             }
             GC.Collect();

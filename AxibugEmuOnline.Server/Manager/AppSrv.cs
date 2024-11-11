@@ -26,7 +26,7 @@ namespace AxibugEmuOnline.Server
             g_Log = new LogManager();
             g_Login = new LoginManager();
             g_Chat = new ChatManager();
-            g_SocketMgr = new IOCPNetWork(1024, 4096);
+            g_SocketMgr = new IOCPNetWork(1024, 4096*2);
             g_Room = new RoomManager();
 
             g_SocketMgr.Init();
