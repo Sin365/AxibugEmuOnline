@@ -82,7 +82,6 @@ namespace AxibugEmuOnline.Client.Network
             try
             {
                 //抛出网络数据
-
                 //网络线程直接抛
                 if (CMDID == (int)CommandID.CmdPing || CMDID == (int)CommandID.CmdPong)
                     NetMsg.Instance.PostNetMsgEvent(CMDID, ERRCODE, data);

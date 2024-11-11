@@ -6,9 +6,17 @@
         {
             Console.WriteLine(str);
         }
+        public void DebugCmd(string str)
+        {
+            ConsoleColor srcColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"[{DateTime.Now.ToString("hh:mm:ss.fff")}][{str}]");
+            Console.ForegroundColor = srcColor;
+        }
         public void Debug(string str)
         {
-            Console.WriteLine(str);
+            Console.WriteLine($"[{DateTime.Now.ToString("hh:mm:ss.fff")}][{str}]");
+            //Console.WriteLine(str);
         }
 
         public void Warning(string str)
