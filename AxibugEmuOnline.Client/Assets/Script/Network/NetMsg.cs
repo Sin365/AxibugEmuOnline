@@ -66,7 +66,7 @@ namespace AxibugEmuOnline.Client.Network
 
         public void DequeueNesMsg()
         {
-            if (queueNetMsg.Count > 0)
+            while (queueNetMsg.Count > 0)
             {
                 (int, int, byte[]) msgData = queueNetMsg.Dequeue();
                 PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
