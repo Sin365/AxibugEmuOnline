@@ -86,7 +86,7 @@ namespace AxibugEmuOnline.Client
                 {
                     bool find = false;
                     int currentSelect = SelectIndex;
-                    while (currentSelect >= 0)
+                    while (currentSelect > 0)
                     {
                         currentSelect--;
                         if (m_runtimeMenuItems[currentSelect].Visible)
