@@ -7,7 +7,8 @@ namespace AxiReplay
         /// <summary>
         /// 客户端当前帧
         /// </summary>
-        public int mCurrClientFrameIdx { get; private set; } = -1;
+        public int mCurrClientFrameIdx => mCurrReplay.FrameStartID;
+        //public int mCurrClientFrameIdx 
         /// <summary>
         /// 服务器远端当前帧
         /// </summary>
@@ -20,6 +21,10 @@ namespace AxiReplay
         /// 当前数据
         /// </summary>
         ReplayStep mCurrReplay;
+        /// <summary>
+        /// 下一个数据数据
+        /// </summary>
+        ReplayStep mNextReplay;
         public NetReplay()
         {
             ResetData();
@@ -29,6 +34,9 @@ namespace AxiReplay
             mNetReplayQueue.Clear();
             mRemoteFrameIdx = 0;
             mCurrReplay = default(ReplayStep);
+            mCurrReplay.FrameStartID = 0;
+            mNextReplay = default(ReplayStep);
+            mNextReplay.FrameStartID = -1;
         }
         public void InData(ReplayStep inputData, int ServerFrameIdx)
         {
@@ -43,15 +51,16 @@ namespace AxiReplay
         void TakeFrame(int addFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
         {
             inputDiff = false;
-            int targetFrame = mCurrClientFrameIdx += addFrame;
-            if (targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
+            int targetFrame = mCurrClientFrameIdx + addFrame;
+            if (targetFrame >= mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
             {
                 //当前帧追加
-                mCurrClientFrameIdx = targetFrame;
+                //mCurrClientFrameIdx = targetFrame;
                 ulong oldInput = mCurrReplay.InPut;
-                mCurrReplay = mNetReplayQueue.Dequeue();
+                mCurrReplay = mNextReplay;
                 if (oldInput != mCurrReplay.InPut)
                     inputDiff = true;
+                mNextReplay = mNetReplayQueue.Dequeue();
             }
             bFrameDiff = mRemoteFrameIdx - mCurrClientFrameIdx;
             data = mCurrReplay;
