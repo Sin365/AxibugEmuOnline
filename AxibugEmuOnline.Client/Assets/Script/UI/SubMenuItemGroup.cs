@@ -119,6 +119,12 @@ namespace AxibugEmuOnline.Client
             ListenControlAction = m_selected;
         }
 
+        protected override void OnCmdSelectItemLeft()
+        {
+            base.OnCmdSelectItemLeft();
+
+            OnCmdBack();
+        }
 
         protected override void OnSelectMenuChanged()
         {
