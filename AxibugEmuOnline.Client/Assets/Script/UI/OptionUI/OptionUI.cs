@@ -103,6 +103,7 @@ namespace AxibugEmuOnline.Client
                             {
                                 find = true;
                             }
+                            currentSelect++;
                         }
                     }
 

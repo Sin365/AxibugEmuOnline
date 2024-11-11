@@ -12,7 +12,7 @@ namespace AxibugEmuOnline.Client
         private RectTransform m_parent;
 
         [SerializeField]
-        private RectTransform m_selectArrow;
+        private RectTransform m_selectArrow; 
         [SerializeField]
         float ArrowOffset = 50;
         [SerializeField]
@@ -87,6 +87,7 @@ namespace AxibugEmuOnline.Client
 
         void RollToIndex(int index, bool useAnim = false)
         {
+            SyncRectToLaunchUI();
             Vector2 itemPos = itemGroup.GetItemAnchorePos(index);
 
             Vector2 targetPos = itemGroup.transform.InverseTransformPoint(m_selectArrow.position);

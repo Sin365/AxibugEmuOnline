@@ -9,7 +9,6 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         protected Transform m_menuItemRoot;
         protected List<MenuItem> m_runtimeMenuUI = new List<MenuItem>();
-        public override bool Enable => enabled;
 
         protected MenuItem m_enteredItem = null;
 
@@ -78,6 +77,8 @@ namespace AxibugEmuOnline.Client
 
     public abstract class MenuItemController<T> : MenuItemController
     {
+        public override bool Enable => enabled && ListenControlAction;
+
         private bool m_listenControlAction;
         public bool ListenControlAction
         {
@@ -90,6 +91,9 @@ namespace AxibugEmuOnline.Client
                     CommandDispatcher.Instance.RegistController(this);
                 else
                     CommandDispatcher.Instance.UnRegistController(this);
+
+                if(!value)
+                    ResetPulsInvoker();
             }
         }
 

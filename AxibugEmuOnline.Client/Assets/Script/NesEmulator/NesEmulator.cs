@@ -56,19 +56,46 @@ namespace AxibugEmuOnline.Client
 
             if (NesCore != null)
             {
-                Supporter.SampleInput();
-                var controlState = Supporter.GetControllerState();
-
-                //如果未收到Input数据,核心帧不推进
-                if (!controlState.valid) return;
-
-                NesCore.pad.Sync(controlState);
-                NesCore.EmulateFrame(true);
+                PushEmulatorFrame();
+                if (InGameUI.Instance.IsNetPlay)
+                    FixEmulatorFrame();
 
                 var screenBuffer = NesCore.ppu.GetScreenPtr();
                 var lineColorMode = NesCore.ppu.GetLineColorMode();
                 VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
             }
+        }
+
+        private void FixEmulatorFrame()
+        {
+            int skipFrameCount = 0;
+            var frameGap = App.roomMgr.netReplay.mDiffFrameCount;
+            if (frameGap > 10000) return;
+
+            if (frameGap > 3 && frameGap < 6) skipFrameCount = 1;
+            else if (frameGap > 7 && frameGap < 12) skipFrameCount = 2;
+            else if (frameGap > 13 && frameGap < 20) skipFrameCount = 3;
+            else skipFrameCount = frameGap - 3;
+
+            if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
+            for (int i = 0; i < skipFrameCount; i++)
+            {
+                if (!PushEmulatorFrame()) break;
+            }
+        }
+
+        private bool PushEmulatorFrame()
+        {
+            Supporter.SampleInput();
+            var controlState = Supporter.GetControllerState();
+
+            //如果未收到Input数据,核心帧不推进
+            if (!controlState.valid) return false;
+
+            NesCore.pad.Sync(controlState);
+            NesCore.EmulateFrame(true);
+
+            return true;
         }
 
         public void Pause()
