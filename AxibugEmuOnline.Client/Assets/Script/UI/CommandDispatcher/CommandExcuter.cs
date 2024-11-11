@@ -36,6 +36,14 @@ namespace AxibugEmuOnline.Client
             m_pulsInvoker_Down.Update(Time.deltaTime);
         }
 
+        public void ResetPulsInvoker()
+        {
+            m_pulsInvoker_Left.DisActive();
+            m_pulsInvoker_Right.DisActive();
+            m_pulsInvoker_Up.DisActive();
+            m_pulsInvoker_Down.DisActive();
+        }
+
         public void ExecuteCommand(EnumCommand cmd, bool cancel)
         {
             if (!cancel)
