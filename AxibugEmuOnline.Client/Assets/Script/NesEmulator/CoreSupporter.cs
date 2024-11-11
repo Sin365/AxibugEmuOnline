@@ -102,12 +102,12 @@ namespace AxibugEmuOnline.Client
         {
             if (InGameUI.Instance.IsNetPlay)
             {
-                if (App.roomMgr.netReplay.NextFrame(out var replayData, out int _))
+                if (App.roomMgr.netReplay.TryGetNextFrame(out var replayData, out int frameDiff, out bool inputDiff))
                 {
                     m_sampledState = FromNet(replayData);
                     var localState = NesControllerMapper.Get().CreateState();
                     var rawData = ToNet(localState);
-                    App.roomMgr.SendRoomSingelPlayerInput((uint)App.roomMgr.netReplay.mCurrPlayFrame, rawData);
+                    App.roomMgr.SendRoomSingelPlayerInput((uint)App.roomMgr.netReplay.mCurrClientFrameIdx, rawData);
                 }
                 else
                 {
