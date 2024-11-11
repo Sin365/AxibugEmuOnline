@@ -4,89 +4,57 @@ namespace AxiReplay
 {
     public class NetReplay
     {
-        public int mCurrPlayFrame = -1;
-        Queue<ReplayStep> mQueueReplay;
-        ReplayStep mNextReplay;
-        ReplayStep mCurrReplay;
-        int byFrameIdx = 0;
+        /// <summary>
+        /// 客户端当前帧
+        /// </summary>
+        public int mCurrClientFrameIdx { get; private set; } = -1;
         /// <summary>
         /// 服务器远端当前帧
         /// </summary>
-        public int mRemoteFrameIdx { get; private set; }
+        public int mRemoteFrameIdx { get; private set; } = -1;
         /// <summary>
-        /// 当前帧和服务器帧相差数量
+        /// 网络数据队列
         /// </summary>
-        public int remoteFrameDiff => mRemoteFrameIdx - mCurrPlayFrame;
+        Queue<ReplayStep> mNetReplayQueue = new Queue<ReplayStep>();
+        /// <summary>
+        /// 当前数据
+        /// </summary>
+        ReplayStep mCurrReplay;
         public NetReplay()
         {
-            mQueueReplay = new Queue<ReplayStep>();
+            ResetData();
         }
-
         public void ResetData()
         {
-            mQueueReplay.Clear();
+            mNetReplayQueue.Clear();
             mRemoteFrameIdx = 0;
-            byFrameIdx = 0;
-            mNextReplay = default(ReplayStep);
             mCurrReplay = default(ReplayStep);
         }
-
         public void InData(ReplayStep inputData, int ServerFrameIdx)
         {
-            mQueueReplay.Enqueue(inputData);
+            mNetReplayQueue.Enqueue(inputData);
             mRemoteFrameIdx = inputData.FrameStartID;
         }
-
-        public bool NextFrame(out ReplayStep data, out int FrameDiff)
+        public bool TryGetNextFrame(out ReplayStep data, out int frameDiff, out bool inputDiff)
         {
-            return TakeFrame(0, out data, out FrameDiff);
+            TakeFrame(1, out data, out frameDiff, out inputDiff);
+            return frameDiff > 0;
         }
-        /// <summary>
-        /// 往前推进帧的,指定帧下标
-        /// </summary>
-        public bool NextFramebyFrameIdx(int FrameID, out ReplayStep data, out int FrameDiff)
+        void TakeFrame(int addFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
         {
-            bool res = TakeFrame(FrameID - byFrameIdx, out data, out FrameDiff);
-            byFrameIdx = FrameID;
-            return res;
-        }
-        public bool TakeFrame(int addFrame, out ReplayStep data, out int FrameDiff)
-        {
-            bool Changed = false;
-            mCurrPlayFrame += addFrame;
-            if (mCurrPlayFrame >= mNextReplay.FrameStartID)
+            inputDiff = false;
+            int targetFrame = mCurrClientFrameIdx += addFrame;
+            if (targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
             {
-                Changed = mCurrReplay.InPut != mNextReplay.InPut;
-                mCurrReplay = mNextReplay;
-                data = mCurrReplay;
-                UpdateNextFrame(mCurrPlayFrame, out FrameDiff);
+                //当前帧追加
+                mCurrClientFrameIdx = targetFrame;
+                ulong oldInput = mCurrReplay.InPut;
+                mCurrReplay = mNetReplayQueue.Dequeue();
+                if (oldInput != mCurrReplay.InPut)
+                    inputDiff = true;
             }
-            else
-            {
-                data = mCurrReplay;
-                FrameDiff = mRemoteFrameIdx - mCurrPlayFrame;
-            }
-            return Changed;
-        }
-        void UpdateNextFrame(int targetFrame, out int FrameDiff)
-        {
-            FrameDiff = mRemoteFrameIdx - targetFrame;
-            //如果已经超过
-            while (targetFrame > mNextReplay.FrameStartID)
-            {
-                if (mNextReplay.FrameStartID >= mRemoteFrameIdx)
-                {
-                    //TODO
-                    //bEnd = true;
-                    break;
-                }
-
-                if (mQueueReplay.Count > 0)
-                {
-                    mNextReplay = mQueueReplay.Dequeue();
-                }
-                targetFrame++;
-            }
+            bFrameDiff = mRemoteFrameIdx - mCurrClientFrameIdx;
+            data = mCurrReplay;
         }
     }
 }
