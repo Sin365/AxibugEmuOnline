@@ -74,7 +74,7 @@ namespace AxibugEmuOnline.Client
             Core = core;
             m_stepPerformer.Reset();
 
-            if (App.user.IsLoggedIn)
+            if (App.user.IsLoggedIn && !App.roomMgr.InRoom)
             {
                 App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
             }
