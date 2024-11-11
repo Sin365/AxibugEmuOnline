@@ -267,6 +267,7 @@ namespace AxibugEmuOnline.Client.Manager
             App.log.Debug("创建房间成功");
             Protobuf_Room_Create_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Create_RESP>(reqData);
             mineRoomMiniInfo = msg.RoomMiniInfo;
+            InitRePlay();
         }
 
         /// <summary>
