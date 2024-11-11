@@ -13,6 +13,10 @@ namespace AxiReplay
         /// </summary>
         public int mRemoteFrameIdx { get; private set; } = int.MinValue;
         /// <summary>
+        /// Remote 2 Client Frame Gap
+        /// </summary>
+        public int mDiffFrameCount => mRemoteFrameIdx - mCurrClientFrameIdx;
+        /// <summary>
         /// 网络数据队列
         /// </summary>
         Queue<ReplayStep> mNetReplayQueue = new Queue<ReplayStep>();
