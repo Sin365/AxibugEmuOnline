@@ -28,6 +28,6 @@ namespace AxibugEmuOnline.Client
         protected override void GetVirtualListDatas(Action<object> datas)
         {
             RomLib.FetchRomCount((roms) => datas.Invoke(roms));
-        }
+        }        
     }
 }
