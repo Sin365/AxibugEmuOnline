@@ -155,9 +155,10 @@ namespace AxibugEmuOnline.Client.UI
                 itemScript = prefabClone.GetComponent<MenuItem>();
                 itemScript.gameObject.SetActive(true);
                 itemScript.transform.SetParent(GroupRoot.transform);
-                itemScript.transform.localScale = Vector3.one;
 
                 itemScript.SetData(settingData);
+
+                itemScript.transform.localScale = Vector3.one;
             }
 
             UnityEditor.EditorUtility.SetDirty(this);
