@@ -33,7 +33,7 @@ namespace AxiReplay
             mNetReplayQueue.Clear();
             mRemoteFrameIdx = 0;
             mCurrReplay = default(ReplayStep);
-            mCurrReplay.FrameStartID = 0;
+            mCurrReplay.FrameStartID = int.MinValue;
             mNextReplay = default(ReplayStep);
             mNextReplay.FrameStartID = 0;
         }
@@ -51,7 +51,7 @@ namespace AxiReplay
         {
             inputDiff = false;
             int targetFrame = mCurrClientFrameIdx + addFrame;
-            if (targetFrame <= mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
+            if (targetFrame <= mNextReplay.FrameStartID + 1 && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
             {
                 //当前帧追加
                 ulong oldInput = mCurrReplay.InPut;
