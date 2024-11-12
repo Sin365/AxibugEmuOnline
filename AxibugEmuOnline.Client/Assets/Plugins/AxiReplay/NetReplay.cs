@@ -11,7 +11,7 @@ namespace AxiReplay
         /// <summary>
         /// 服务器远端当前帧
         /// </summary>
-        public int mRemoteFrameIdx { get; private set; } = int.MinValue;
+        public int mRemoteFrameIdx { get; private set; }
         /// <summary>
         /// Remote 2 Client Frame Gap
         /// </summary>
@@ -40,6 +40,7 @@ namespace AxiReplay
             mCurrReplay.FrameStartID = int.MinValue;
             mNextReplay = default(ReplayStep);
             mNextReplay.FrameStartID = 0;
+            mRemoteFrameIdx = 0;
         }
         public void InData(ReplayStep inputData, int ServerFrameIdx)
         {
