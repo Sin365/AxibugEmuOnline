@@ -99,7 +99,7 @@ namespace AxibugEmuOnline.Client
         }
 
         uint LastTestInput = 0;
-        public void SampleInput()
+        public void SampleInput(uint frameIndex)
         {
             if (InGameUI.Instance.IsNetPlay)
             {
