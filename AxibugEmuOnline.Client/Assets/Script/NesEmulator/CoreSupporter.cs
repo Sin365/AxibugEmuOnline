@@ -119,7 +119,7 @@ namespace AxibugEmuOnline.Client
                         LastTestInput = rawData;
                         App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
                     }
-                    App.roomMgr.SendRoomSingelPlayerInput((uint)App.roomMgr.netReplay.mCurrClientFrameIdx, rawData);
+                    App.roomMgr.SendRoomSingelPlayerInput(frameIndex, rawData);
                 }
                 else
                 {

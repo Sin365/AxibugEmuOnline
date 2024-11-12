@@ -72,9 +72,10 @@ namespace AxibugEmuOnline.Client
             var frameGap = App.roomMgr.netReplay.mDiffFrameCount;
             if (frameGap > 10000) return;
 
-            if (frameGap > 2 && frameGap < 6) skipFrameCount = 1;
-            else if (frameGap > 7 && frameGap < 12) skipFrameCount = 2;
-            else if (frameGap > 13 && frameGap < 20) skipFrameCount = 3;
+            if (frameGap <= 2) skipFrameCount = 0;
+            if (frameGap > 2 && frameGap < 6) skipFrameCount = 1 + 1;
+            else if (frameGap > 7 && frameGap < 12) skipFrameCount = 2 + 1;
+            else if (frameGap > 13 && frameGap < 20) skipFrameCount = 3 + 1;
             else skipFrameCount = frameGap - 2;
 
             if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
