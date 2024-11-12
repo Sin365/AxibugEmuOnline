@@ -24,6 +24,25 @@ namespace VirtualNes.Core
             valid = true;
         }
 
+        public static bool operator ==(ControllerState left, ControllerState right)
+        {
+            return
+                left.raw0 == right.raw0 &&
+                left.raw1 == right.raw1 &&
+                left.raw2 == right.raw2 &&
+                left.raw3 == right.raw3;
+        }
+
+        public static bool operator !=(ControllerState left, ControllerState right)
+        {
+            return !(left == right);
+        }
+
+        public override string ToString()
+        {
+            return $"{raw0}|{raw1}|{raw2}|{raw3}";
+        }
+
         public bool HasButton(int player, EnumButtonType button)
         {
             uint raw = 0;
