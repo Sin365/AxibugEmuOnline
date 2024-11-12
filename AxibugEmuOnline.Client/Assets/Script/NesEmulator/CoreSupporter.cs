@@ -103,10 +103,10 @@ namespace AxibugEmuOnline.Client
         {
             if (InGameUI.Instance.IsNetPlay)
             {
-                if (App.roomMgr.netReplay.TryGetNextFrame(out var replayData, out int frameDiff, out bool inputDiff))
+                if (App.roomMgr.netReplay.TryGetNextFrame((int)frameIndex, out var replayData, out int frameDiff, out bool inputDiff))
                 {
                     if (inputDiff)
-                    { 
+                    {
                         App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
                             $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
                     }
