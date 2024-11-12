@@ -459,11 +459,9 @@ namespace VirtualNes.Core
             m_CheatCode.Clear();
         }
 
-        private int FrameCount = 0;
+        public uint FrameCount { get; private set; }
         public void EmulateFrame(bool bDraw)
         {
-            FrameCount++;
-
             int scanline = 0;
             if (rom.IsNSF())
             {
@@ -772,6 +770,8 @@ namespace VirtualNes.Core
             {
                 DrawPad();
             }
+
+            FrameCount++;
         }
 
         private void DrawPad()
@@ -1901,6 +1901,7 @@ namespace VirtualNes.Core
 
         public void LoadState(State state)
         {
+            FrameCount = 0;
             //HEADER
             {
                 state.HEADER.ID = "VirtuaNES ST";

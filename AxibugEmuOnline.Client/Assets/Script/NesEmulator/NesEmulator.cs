@@ -84,16 +84,26 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        ControllerState lastState;
         private bool PushEmulatorFrame()
         {
-            Supporter.SampleInput();
+            Supporter.SampleInput(NesCore.FrameCount);
             var controlState = Supporter.GetControllerState();
 
             //如果未收到Input数据,核心帧不推进
             if (!controlState.valid) return false;
 
+#if UNITY_EDITOR
+            if (controlState != lastState)
+            {
+                App.log.Info($"[LOCALDEBUG]{NesCore.FrameCount}-->{controlState}");
+            }
+#endif
+
             NesCore.pad.Sync(controlState);
             NesCore.EmulateFrame(true);
+
+            lastState = controlState;
 
             return true;
         }

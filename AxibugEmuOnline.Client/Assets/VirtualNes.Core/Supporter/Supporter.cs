@@ -59,9 +59,9 @@ namespace VirtualNes.Core
             return s_support.GetControllerState();
         }
 
-        public static void SampleInput()
+        public static void SampleInput(uint frameCount)
         {
-            s_support.SampleInput();
+            s_support.SampleInput(frameCount);
         }
 
         public static EmulatorConfig Config => s_support.Config;
@@ -81,6 +81,6 @@ namespace VirtualNes.Core
         Stream OpenFile(string directPath, string fileName);
         bool TryGetMapperNo(ROM rom, out int mapperNo);
         ControllerState GetControllerState();
-        void SampleInput();
+        void SampleInput(uint frameCount);
     }
 }
