@@ -51,10 +51,22 @@ namespace AxiReplay
             TakeFrame(1, out data, out frameDiff, out inputDiff);
             return frameDiff > 0;
         }
+
+        public bool TryGetNextFrame(int targetFrame, out ReplayStep data, out int frameDiff, out bool inputDiff)
+        {
+            TakeFrameToTargetFrame(targetFrame, out data, out frameDiff, out inputDiff);
+            return frameDiff > 0;
+        }
+
         void TakeFrame(int addFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
         {
-            inputDiff = false;
             int targetFrame = mCurrClientFrameIdx + addFrame;
+            TakeFrameToTargetFrame(targetFrame, out data, out bFrameDiff, out inputDiff);
+        }
+
+        void TakeFrameToTargetFrame(int targetFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
+        {
+            inputDiff = false;
             if (targetFrame <= mNextReplay.FrameStartID + 1 && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
             {
                 //当前帧追加
