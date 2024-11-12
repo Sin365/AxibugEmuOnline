@@ -7,7 +7,7 @@ namespace AxiReplay
         /// <summary>
         /// 客户端当前帧
         /// </summary>
-        public int mCurrClientFrameIdx => mCurrReplay.FrameStartID;
+        public int mCurrClientFrameIdx = int.MinValue;
         /// <summary>
         /// 服务器远端当前帧
         /// </summary>
@@ -28,6 +28,8 @@ namespace AxiReplay
         /// 下一个数据数据
         /// </summary>
         ReplayStep mNextReplay;
+
+        bool bNetInit = false;
         public NetReplay()
         {
             ResetData();
@@ -35,28 +37,43 @@ namespace AxiReplay
         public void ResetData()
         {
             mNetReplayQueue.Clear();
-            mRemoteFrameIdx = 0;
             mCurrReplay = default(ReplayStep);
             mCurrReplay.FrameStartID = int.MinValue;
-            mNextReplay = default(ReplayStep);
-            mNextReplay.FrameStartID = 0;
-            mRemoteFrameIdx = 0;
+            bNetInit = false;
         }
         public void InData(ReplayStep inputData, int ServerFrameIdx)
         {
             mNetReplayQueue.Enqueue(inputData);
             mRemoteFrameIdx = inputData.FrameStartID;
+            if (!bNetInit)
+            {
+                bNetInit = true;
+                mNextReplay = mNetReplayQueue.Dequeue();
+            }
         }
         public bool TryGetNextFrame(out ReplayStep data, out int frameDiff, out bool inputDiff)
         {
+            if (!bNetInit)
+            {
+                data = default(ReplayStep);
+                frameDiff = default;
+                inputDiff = false;
+                return false;
+            }
             TakeFrame(1, out data, out frameDiff, out inputDiff);
             return frameDiff > 0;
         }
 
         public bool TryGetNextFrame(int targetFrame, out ReplayStep data, out int frameDiff, out bool inputDiff)
         {
-            TakeFrameToTargetFrame(targetFrame, out data, out frameDiff, out inputDiff);
-            return frameDiff > 0;
+            if (!bNetInit)
+            {
+                data = default(ReplayStep);
+                frameDiff = default;
+                inputDiff = false;
+                return false;
+            }
+            return TakeFrameToTargetFrame(targetFrame, out data, out frameDiff, out inputDiff);
         }
 
         void TakeFrame(int addFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
@@ -65,21 +82,28 @@ namespace AxiReplay
             TakeFrameToTargetFrame(targetFrame, out data, out bFrameDiff, out inputDiff);
         }
 
-        void TakeFrameToTargetFrame(int targetFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
+        bool TakeFrameToTargetFrame(int targetFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
         {
+            bool result;
             inputDiff = false;
-            if (targetFrame <= mNextReplay.FrameStartID + 1 && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
+            if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
             {
                 //当前帧追加
+                mCurrClientFrameIdx = targetFrame;
                 ulong oldInput = mCurrReplay.InPut;
                 mCurrReplay = mNextReplay;
                 if (oldInput != mCurrReplay.InPut)
                     inputDiff = true;
                 mNextReplay = mNetReplayQueue.Dequeue();
+                result = true;
             }
+            else
+                result = false;
 
             bFrameDiff = mRemoteFrameIdx - mCurrClientFrameIdx;
             data = mCurrReplay;
+
+            return result;
         }
     }
 }
