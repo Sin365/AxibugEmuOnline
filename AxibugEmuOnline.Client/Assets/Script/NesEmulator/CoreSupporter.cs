@@ -123,8 +123,8 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
-                    App.log.Error($"Server Lag remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                        $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
+                    //App.log.Error($"Server Lag remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
+                    //    $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
                     m_sampledState = default;
                 }
             }
