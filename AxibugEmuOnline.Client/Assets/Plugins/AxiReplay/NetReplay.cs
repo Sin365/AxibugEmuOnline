@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AxiReplay
 {
@@ -104,6 +105,23 @@ namespace AxiReplay
             data = mCurrReplay;
 
             return result;
+        }
+
+        public int GetSkipFrameCount()
+        {
+            var frameGap = mDiffFrameCount;
+            if (frameGap > 10000) return 0;
+
+            int skip = 0;
+
+            if (frameGap <= 2) skip = 0;
+            if (frameGap > 2 && frameGap < 6) skip = 1 + 1;
+            else if (frameGap > 7 && frameGap < 12) skip = 2 + 1;
+            else if (frameGap > 13 && frameGap < 20) skip = 3 + 1;
+            else skip = frameGap - 2;
+
+
+            return skip;
         }
     }
 }
