@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -32,12 +33,13 @@ namespace AxibugEmuOnline.Client
             get { return m_selectIndex; }
             set
             {
-                value = Mathf.Clamp(value, 0, m_runtimeMenuItems.Count - 1);
+                var selectableItems = m_runtimeMenuItems.Where(t => t.Visible).ToList();
+                value = Mathf.Clamp(value, 0, selectableItems.Count - 1);
                 if (m_selectIndex == value) return;
-                
+
                 m_selectIndex = value;
 
-                OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
+                OptionUI_MenuItem optionUI_MenuItem = selectableItems[m_selectIndex];
                 optionUI_MenuItem.OnFocus();
                 var itemUIRect = optionUI_MenuItem.transform as RectTransform;
                 SelectBorder.pivot = itemUIRect.pivot;
