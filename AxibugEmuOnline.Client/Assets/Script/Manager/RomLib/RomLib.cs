@@ -18,6 +18,7 @@ namespace AxibugEmuOnline.Client
         private Dictionary<int, RomFile> nesRomFileIdMapper = new Dictionary<int, RomFile>();
         private Dictionary<string, RomFile> nesRomFileNameMapper = new Dictionary<string, RomFile>();
         private HttpAPI.GetRomListAPI m_romGetFunc;
+        private HttpAPI.SearchRomListAPI m_romSearchFunc;
         private EnumPlatform m_platform;
 
         public RomLib(EnumPlatform platform)
@@ -27,6 +28,7 @@ namespace AxibugEmuOnline.Client
             {
                 case EnumPlatform.NES:
                     m_romGetFunc = App.httpAPI.GetNesRomList;
+                    m_romSearchFunc = App.httpAPI.SearchNesRomList;
                     break;
             }
         }
@@ -67,23 +69,44 @@ namespace AxibugEmuOnline.Client
         /// 获得所有Rom文件
         /// </summary>
         /// <param name="callback"></param>
-        public void FetchRomCount(Action<RomFile[]> callback)
+        public void FetchRomCount(Action<RomFile[]> callback, string searchKey = null)
         {
-            m_romGetFunc((romList) =>
+            if (string.IsNullOrWhiteSpace(searchKey))
             {
-                FetchPageCmd.Clear();
-                nesRomFileIdMapper.Clear();
-                nesRomFileNameMapper.Clear();
-                nesRomFetchList = new RomFile[romList.resultAllCount];
-                for (int i = 0; i < nesRomFetchList.Length; i++)
+                m_romGetFunc((romList) =>
                 {
-                    //以后考虑用对象池实例化RomFile
-                    nesRomFetchList[i] = new RomFile(m_platform, i, i / PAGE_SIZE);
-                }
-                SaveRomInfoFromWeb(romList);
+                    FetchPageCmd.Clear();
+                    nesRomFileIdMapper.Clear();
+                    nesRomFileNameMapper.Clear();
+                    nesRomFetchList = new RomFile[romList.resultAllCount];
+                    for (int i = 0; i < nesRomFetchList.Length; i++)
+                    {
+                        //以后考虑用对象池实例化RomFile
+                        nesRomFetchList[i] = new RomFile(m_platform, i, i / PAGE_SIZE);
+                    }
+                    SaveRomInfoFromWeb(romList);
 
-                callback.Invoke(nesRomFetchList);
-            }, 0, PAGE_SIZE);
+                    callback.Invoke(nesRomFetchList);
+                }, 0, PAGE_SIZE);
+            }
+            else
+            {
+                m_romSearchFunc((romList) =>
+                {
+                    FetchPageCmd.Clear();
+                    nesRomFileIdMapper.Clear();
+                    nesRomFileNameMapper.Clear();
+                    nesRomFetchList = new RomFile[romList.resultAllCount];
+                    for (int i = 0; i < nesRomFetchList.Length; i++)
+                    {
+                        //以后考虑用对象池实例化RomFile
+                        nesRomFetchList[i] = new RomFile(m_platform, i, i / PAGE_SIZE);
+                    }
+                    SaveRomInfoFromWeb(romList);
+
+                    callback.Invoke(nesRomFetchList);
+                }, searchKey, 0, PAGE_SIZE);
+            }
         }
 
         public void BeginFetchRomInfo(RomFile romFile)

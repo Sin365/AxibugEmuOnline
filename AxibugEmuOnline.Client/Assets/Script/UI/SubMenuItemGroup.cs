@@ -1,9 +1,7 @@
 using AxibugEmuOnline.Client.UI;
-using Codice.Utils;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -188,7 +186,7 @@ namespace AxibugEmuOnline.Client
 #if UNITY_EDITOR
             if (Application.isPlaying)
             {
-                var item= GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
+                var item = GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
                 item.transform.localPosition = Vector3.zero;
                 return item;
             }

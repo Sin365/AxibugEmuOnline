@@ -28,6 +28,10 @@ namespace AxibugEmuOnline.Client
             m_pulsInvoker_Down = new PulseInvoker(OnCmdSelectItemDown, PulseInvoke_Delay, PulseInvoke_Interval);
         }
 
+        protected virtual void OnEnable() { }
+        protected virtual void OnDisable() { }
+        protected virtual void OnDestroy() { }
+
         protected virtual void Update()
         {
             m_pulsInvoker_Left.Update(Time.deltaTime);
@@ -35,6 +39,7 @@ namespace AxibugEmuOnline.Client
             m_pulsInvoker_Up.Update(Time.deltaTime);
             m_pulsInvoker_Down.Update(Time.deltaTime);
         }
+
 
         public void ResetPulsInvoker()
         {
