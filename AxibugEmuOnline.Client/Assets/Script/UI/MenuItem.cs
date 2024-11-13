@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.UI
 {
-    public class MenuItem : MonoBehaviour
+    public class MenuItem : CommandExecuter
     {
         [SerializeField]
         protected Image Icon;
@@ -32,14 +32,10 @@ namespace AxibugEmuOnline.Client.UI
         protected TweenerCore<float, float, FloatOptions> progressTween;
         protected float m_progress;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Reset();
-        }
-
-        protected virtual void OnDestroy()
-        {
-            
         }
 
         public void SetData(MenuData data)
@@ -57,7 +53,7 @@ namespace AxibugEmuOnline.Client.UI
             m_progress = 0f;
 
             Root.localScale = Vector3.one * UnSelectScale;
-            
+
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);
@@ -107,5 +103,7 @@ namespace AxibugEmuOnline.Client.UI
         public virtual bool OnEnterItem() => true;
 
         public virtual bool OnExitItem() => true;
+
+        public override bool Enable => true;
     }
 }

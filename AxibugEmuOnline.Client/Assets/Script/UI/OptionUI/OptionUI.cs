@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
             {
                 value = Mathf.Clamp(value, 0, m_runtimeMenuItems.Count - 1);
                 if (m_selectIndex == value) return;
-
+                
                 m_selectIndex = value;
 
                 OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
@@ -82,6 +82,8 @@ namespace AxibugEmuOnline.Client
             }
             if (dirty)
             {
+                Canvas.ForceUpdateCanvases();
+
                 if (m_runtimeMenuItems[SelectIndex].Visible == false)
                 {
                     bool find = false;
@@ -109,6 +111,14 @@ namespace AxibugEmuOnline.Client
 
                     if (find)
                         SelectIndex = currentSelect;
+                }
+                else
+                {
+                    var selectItem = m_runtimeMenuItems[SelectIndex];
+                    var itemUIRect = selectItem.transform as RectTransform;
+                    SelectBorder.pivot = itemUIRect.pivot;
+                    SelectBorder.position = itemUIRect.position;
+                    SelectBorder.sizeDelta = itemUIRect.rect.size;
                 }
             }
         }
@@ -195,6 +205,10 @@ namespace AxibugEmuOnline.Client
                 menuUI.SetData(executeMenu);
                 m_runtimeMenuItems.Add(menuUI);
             }
+            else
+            {
+                throw new NotImplementedException($"暂不支持的菜单类型{menuData.GetType().Name}");
+            }
         }
 
         private void ReleaseRuntimeMenus()
@@ -244,11 +258,11 @@ namespace AxibugEmuOnline.Client
         }
     }
 
-    public class ExecuteMenu : OptionMenu
+    public abstract class ExecuteMenu : OptionMenu
     {
         public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
-        public virtual void OnExcute() { }
+        public abstract void OnExcute();
     }
 
     public abstract class ValueSetMenu : OptionMenu
