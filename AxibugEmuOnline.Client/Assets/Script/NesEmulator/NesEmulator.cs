@@ -1,4 +1,5 @@
 using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -112,30 +113,9 @@ namespace AxibugEmuOnline.Client
         }
 
 
-
-        [Conditional("UNITY_EDITOR")]
-        [ContextMenu("ImportNesDB")]
-        public void ImportNesDB()
+        public void DoReset()
         {
-            var db = Resources.Load<RomDB>("NES/ROMDB");
-            db.Clear();
-
-            var xmlStr = File.ReadAllText("nes20db.xml");
-            var xml = XDocument.Parse(xmlStr);
-            var games = xml.Element("nes20db").Elements("game");
-            foreach (var game in games)
-            {
-                var crcStr = game.Element("rom").Attribute("crc32").Value;
-                var crc = uint.Parse($"{crcStr}", System.Globalization.NumberStyles.HexNumber);
-
-                var mapper = int.Parse($"{game.Element("pcb").Attribute("mapper").Value}");
-
-                if (mapper > 255) continue;
-                db.AddInfo(new RomDB.RomInfo { CRC = crc, Mapper = mapper });
-            }
-
-            UnityEditor.EditorUtility.SetDirty(db);
-            UnityEditor.AssetDatabase.SaveAssets();
+            NesCore.Reset();
         }
 
         public void SetupScheme()
@@ -163,6 +143,32 @@ namespace AxibugEmuOnline.Client
             State st = new State();
             st.FromByte(data);
             NesCore.LoadState(st);
+        }
+
+
+        [Conditional("UNITY_EDITOR")]
+        [ContextMenu("ImportNesDB")]
+        public void ImportNesDB()
+        {
+            var db = Resources.Load<RomDB>("NES/ROMDB");
+            db.Clear();
+
+            var xmlStr = File.ReadAllText("nes20db.xml");
+            var xml = XDocument.Parse(xmlStr);
+            var games = xml.Element("nes20db").Elements("game");
+            foreach (var game in games)
+            {
+                var crcStr = game.Element("rom").Attribute("crc32").Value;
+                var crc = uint.Parse($"{crcStr}", System.Globalization.NumberStyles.HexNumber);
+
+                var mapper = int.Parse($"{game.Element("pcb").Attribute("mapper").Value}");
+
+                if (mapper > 255) continue;
+                db.AddInfo(new RomDB.RomInfo { CRC = crc, Mapper = mapper });
+            }
+
+            UnityEditor.EditorUtility.SetDirty(db);
+            UnityEditor.AssetDatabase.SaveAssets();
         }
     }
 }
