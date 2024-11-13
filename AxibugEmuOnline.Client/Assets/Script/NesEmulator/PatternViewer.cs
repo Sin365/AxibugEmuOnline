@@ -1,7 +1,5 @@
-﻿using AxibugEmuOnline.Client.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using VirtualNes;
 using VirtualNes.Core;
@@ -76,11 +74,6 @@ namespace AxibugEmuOnline.Client
             for (int i = 0; i < 8; i++)
             {
                 var Ptn = MMU.PPU_MEM_BANK[i];
-
-                if (Input.GetKeyDown(KeyCode.T))
-                {
-                    Debug.Log($"{i}:{Ptn.Offset}\t{Helper.FileMD5Hash(Ptn.RawArray)}");
-                }
 
                 int lpPtn = 0;
                 for (int p = 0; p < 64; p++)
