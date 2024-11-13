@@ -38,16 +38,18 @@ namespace AxibugEmuOnline.Client
 
             m_stepPerformer = new StepPerformer(this);
 
+            menus.Add(new InGameUI_Reset(this));
             menus.Add(new InGameUI_SaveState(this));
             menus.Add(new InGameUI_LoadState(this));
             menus.Add(new InGameUI_QuitGame(this));
 
             base.Awake();
         }
-
-        private void OnDestroy()
+        
+        protected override void OnDestroy()
         {
             Instance = null;
+            base.OnDestroy();
         }
 
         /// <summary> 保存快速快照 </summary>

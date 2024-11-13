@@ -10,8 +10,7 @@ namespace VirtualNes.Core
 {
     public class Mapper001 : Mapper
     {
-
-        uint last_addr;
+        ushort last_addr;
 
         BYTE patch;
         BYTE wram_patch;
@@ -131,7 +130,6 @@ namespace VirtualNes.Core
             }
         }
 
-        private ArrayRef<byte> _PROM_BANK = new ArrayRef<byte>();
         //void Mapper001::Write(WORD addr, BYTE data)
         public override void Write(ushort addr, byte data)
         {
@@ -145,13 +143,11 @@ namespace VirtualNes.Core
                 {
                     if (wram_bank != 0)
                     {
-                        _PROM_BANK.SetArray(WRAM, 0x2000);
-                        SetPROM_Bank(3, _PROM_BANK, BANKTYPE_RAM);
+                        SetPROM_Bank(3, new ArrayRef<byte>(WRAM, 0x2000), BANKTYPE_RAM);
                     }
                     else
                     {
-                        _PROM_BANK.SetArray(WRAM, 0x0000);
-                        SetPROM_Bank(3, _PROM_BANK, BANKTYPE_RAM);
+                        SetPROM_Bank(3, new ArrayRef<byte>(WRAM, 0x0000), BANKTYPE_RAM);
                     }
                     wram_bank = wram_count = 0;
                 }
@@ -292,13 +288,11 @@ namespace VirtualNes.Core
                 {
                     if (((reg[1] & 0x18) == 0))
                     {
-                        _PROM_BANK.SetArray(WRAM, 0x0000);
-                        SetPROM_Bank(3, _PROM_BANK, BANKTYPE_RAM);
+                        SetPROM_Bank(3, new ArrayRef<byte>(WRAM, 0x0000), BANKTYPE_RAM);
                     }
                     else
                     {
-                        _PROM_BANK.SetArray(WRAM, 0x2000);
-                        SetPROM_Bank(3, _PROM_BANK, BANKTYPE_RAM);
+                        SetPROM_Bank(3, new ArrayRef<byte>(WRAM, 0x2000), BANKTYPE_RAM);
                     }
                 }
 
