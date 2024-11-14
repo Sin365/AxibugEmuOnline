@@ -119,9 +119,9 @@ namespace VirtualNes.Core
         private ushort loopy_shift;
 
         private GCHandle lpScreenGCH;
-        private byte* lpScreen;
+        private uint* lpScreen;
         /// <summary> 作为lpScreen数组的索引 </summary>
-        private byte* lpScanline;
+        private uint* lpScanline;
         private int ScanlineNo;
         private byte[] lpColormode;
 
@@ -479,7 +479,7 @@ namespace VirtualNes.Core
                     if (!bExtLatch)
                     {
                         // Without Extension Latch
-                        byte* pScn = lpScanline + (8 - loopy_shift);
+                        uint* pScn = lpScanline + (8 - loopy_shift);
                         byte* pBGw = BGwrite;
                         int tileofs = (MMU.PPUREG[0] & PPU_BGTBL_BIT) << 8;
                         int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
@@ -503,8 +503,8 @@ namespace VirtualNes.Core
 
                             if (cache_tile == tileadr && cache_attr == attr)
                             {
-                                *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
-                                *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                *(UInt128*)(pScn + 0) = *(UInt128*)(pScn - 8);
+                                *(UInt128*)(pScn + 4) = *(UInt128*)(pScn - 4);
                                 *(pBGw + 0) = *(pBGw - 1);
                             }
                             else
@@ -554,7 +554,7 @@ namespace VirtualNes.Core
                     else
                     {
                         // With Extension Latch(For MMC5)
-                        byte* pScn = lpScanline + (8 - loopy_shift);
+                        uint* pScn = lpScanline + (8 - loopy_shift);
                         byte* pBGw = BGwrite;
 
                         int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
@@ -594,8 +594,8 @@ namespace VirtualNes.Core
                             }
                             else
                             {
-                                *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
-                                *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                *(UInt128*)(pScn + 0) = *(UInt128*)(pScn - 8);
+                                *(UInt128*)(pScn + 4) = *(UInt128*)(pScn - 4);
                                 *(pBGw + 0) = *(pBGw - 1);
                             }
                             pScn += 8;
@@ -620,7 +620,7 @@ namespace VirtualNes.Core
                         // Without Extension Latch
                         if (!bExtNameTable)
                         {
-                            byte* pScn = lpScanline + (8 - loopy_shift);
+                            uint* pScn = lpScanline + (8 - loopy_shift);
                             byte* pBGw = BGwrite;
 
                             int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
@@ -671,8 +671,8 @@ namespace VirtualNes.Core
                                 }
                                 else
                                 {
-                                    *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
-                                    *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                    *(UInt128*)(pScn + 0) = *(UInt128*)(pScn - 8);
+                                    *(UInt128*)(pScn + 4) = *(UInt128*)(pScn - 4);
                                     *(pBGw + 0) = *(pBGw - 1);
                                 }
                                 pScn += 8;
@@ -699,7 +699,7 @@ namespace VirtualNes.Core
                         }
                         else
                         {
-                            byte* pScn = lpScanline + (8 - loopy_shift);
+                            uint* pScn = lpScanline + (8 - loopy_shift);
                             byte* pBGw = BGwrite;
 
                             int ntbladr;
@@ -747,8 +747,8 @@ namespace VirtualNes.Core
                                 }
                                 else
                                 {
-                                    *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
-                                    *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                    *(UInt128*)(pScn + 0) = *(UInt128*)(pScn - 8);
+                                    *(UInt128*)(pScn + 4) = *(UInt128*)(pScn - 4);
                                     *(pBGw + 0) = *(pBGw - 1);
                                 }
                                 pScn += 8;
@@ -775,7 +775,7 @@ namespace VirtualNes.Core
                     else
                     {
                         // With Extension Latch(For MMC5)
-                        byte* pScn = lpScanline + (8 - loopy_shift);
+                        uint* pScn = lpScanline + (8 - loopy_shift);
                         byte* pBGw = BGwrite;
 
                         int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
@@ -819,8 +819,8 @@ namespace VirtualNes.Core
                             }
                             else
                             {
-                                *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
-                                *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                *(UInt128*)(pScn + 0) = *(UInt128*)(pScn - 8);
+                                *(UInt128*)(pScn + 4) = *(UInt128*)(pScn - 4);
                                 *(pBGw + 0) = *(pBGw - 1);
                             }
                             pScn += 8;
@@ -840,7 +840,7 @@ namespace VirtualNes.Core
                 }
                 if ((MMU.PPUREG[1] & PPU_BGCLIP_BIT) == 0 && bLeftClip)
                 {
-                    byte* pScn = lpScanline + 8;
+                    uint* pScn = lpScanline + 8;
                     for (int i = 0; i < 8; i++)
                     {
                         pScn[i] = MMU.BGPAL[0];
@@ -960,7 +960,7 @@ namespace VirtualNes.Core
                     fixed (byte* pSPPAL = &MMU.SPPAL[(sp.attr & SP_COLOR_BIT) << 2])
                     {
                         // Ptr
-                        byte* pScn = lpScanline + sp.x + 8;
+                        uint* pScn = lpScanline + sp.x + 8;
 
                         if (!bExtMono)
                         {
@@ -982,13 +982,13 @@ namespace VirtualNes.Core
 
                             int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
                             int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                            if ((SPpat & 0x80) != 0) pScn[0] = (byte)(pSPPAL[c1>>6]	|mono);
-                            if ((SPpat & 0x08) != 0) pScn[4] = (byte)(pSPPAL[(c1>>2)&3]	|mono);
-                            if ((SPpat & 0x40) != 0) pScn[1] = (byte)(pSPPAL[c2>>6]	|mono);
-                            if ((SPpat & 0x04) != 0) pScn[5] = (byte)(pSPPAL[(c2>>2)&3]	|mono);
-                            if ((SPpat & 0x20) != 0) pScn[2] = (byte)(pSPPAL[(c1>>4)&3]	|mono);
-                            if ((SPpat & 0x02) != 0) pScn[6] = (byte)(pSPPAL[c1&3]		|mono);
-                            if ((SPpat & 0x10) != 0) pScn[3] = (byte)(pSPPAL[(c2>>4)&3]	|mono);
+                            if ((SPpat & 0x80) != 0) pScn[0] = (byte)(pSPPAL[c1 >> 6] | mono);
+                            if ((SPpat & 0x08) != 0) pScn[4] = (byte)(pSPPAL[(c1 >> 2) & 3] | mono);
+                            if ((SPpat & 0x40) != 0) pScn[1] = (byte)(pSPPAL[c2 >> 6] | mono);
+                            if ((SPpat & 0x04) != 0) pScn[5] = (byte)(pSPPAL[(c2 >> 2) & 3] | mono);
+                            if ((SPpat & 0x20) != 0) pScn[2] = (byte)(pSPPAL[(c1 >> 4) & 3] | mono);
+                            if ((SPpat & 0x02) != 0) pScn[6] = (byte)(pSPPAL[c1 & 3] | mono);
+                            if ((SPpat & 0x10) != 0) pScn[3] = (byte)(pSPPAL[(c2 >> 4) & 3] | mono);
                             if ((SPpat & 0x01) != 0) pScn[7] = (byte)(pSPPAL[c2 & 3] | mono);
                         }
                     }
@@ -1082,7 +1082,7 @@ namespace VirtualNes.Core
             MMU.PPUREG[2] |= PPU_VBLANK_FLAG;
         }
 
-        public byte* GetScreenPtr()
+        public uint* GetScreenPtr()
         {
             return lpScreen;
         }
@@ -1092,10 +1092,10 @@ namespace VirtualNes.Core
             return lpColormode;
         }
 
-        internal void SetScreenPtr(byte[] screenBuffer, byte[] colormode)
+        internal void SetScreenPtr(uint[] screenBuffer, byte[] colormode)
         {
             lpScreenGCH = GCHandle.Alloc(screenBuffer, GCHandleType.Pinned);
-            lpScreen = (byte*)lpScreenGCH.AddrOfPinnedObject();
+            lpScreen = (uint*)lpScreenGCH.AddrOfPinnedObject();
             lpColormode = colormode;
         }
 
@@ -1178,5 +1178,13 @@ namespace VirtualNes.Core
                 this.offset += offset * 4;
             }
         }
+    }
+
+    public struct UInt128
+    {
+        public UInt32 a;
+        public UInt32 b;
+        public UInt32 c;
+        public UInt32 d;
     }
 }
