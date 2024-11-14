@@ -1,5 +1,8 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System.Linq;
 using UnityEngine;
 
@@ -66,9 +69,28 @@ namespace AxibugEmuOnline.Client
                 ui.IconUI.GetMaterial().SetColor("_Color2", Color.color2);
             }
 
+            private static TweenerCore<float, float, FloatOptions> s_colorChangeTween;
             public override void OnFocus()
             {
-                App.settings.BgColor.CurrentColor = Color;
+                float progress = 0;
+                XMBColor start = App.settings.BgColor.CurrentColor;
+                XMBColor endColor = Color;
+
+                if (s_colorChangeTween != null)
+                {
+                    s_colorChangeTween.Kill();
+                    s_colorChangeTween = null;
+                }
+                s_colorChangeTween = DOTween.To(() => progress, (x) =>
+                {
+                    progress = x;
+                    var lerpColor = XMBColor.Lerp(start, endColor, x);
+                    App.settings.BgColor.CurrentColor = lerpColor;
+                }, 1, 1f).SetEase(Ease.OutCubic);
+                s_colorChangeTween.onComplete = () =>
+                {
+                    s_colorChangeTween = null;
+                };
             }
 
             public override void OnExcute()
