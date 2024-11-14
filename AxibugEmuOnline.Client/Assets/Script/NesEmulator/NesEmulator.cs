@@ -51,7 +51,7 @@ namespace AxibugEmuOnline.Client
             NesCore = null;
         }
 
-        private void Update()
+        private unsafe void Update()
         {
             if (m_bPause) return;
 
@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client
 
                 var screenBuffer = NesCore.ppu.GetScreenPtr();
                 var lineColorMode = NesCore.ppu.GetLineColorMode();
-                VideoProvider.SetDrawData(screenBuffer, lineColorMode, 256, 240);
+                VideoProvider.SetDrawData(screenBuffer, lineColorMode, 277, 240);
             }
         }
 

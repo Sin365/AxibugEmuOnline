@@ -221,7 +221,7 @@ namespace VirtualNes.Core
                 Debuger.Log("Allocating PPU...");
                 ppu = new PPU(this);
 
-                var screenBuffer = new uint[PPU.SCREEN_WIDTH * PPU.SCREEN_HEIGHT];
+                var screenBuffer = new byte[PPU.SCREEN_WIDTH * PPU.SCREEN_HEIGHT];
                 var colormode = new byte[PPU.SCREEN_HEIGHT];
 
                 ppu.SetScreenPtr(screenBuffer, colormode);
@@ -840,7 +840,7 @@ namespace VirtualNes.Core
             }
         }
 
-        internal void DrawFont(int x, int y, byte chr, byte col)
+        internal unsafe void DrawFont(int x, int y, byte chr, byte col)
         {
             int i;
             int pFnt;
@@ -866,7 +866,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private void DrawBitmap(int x, int y, byte[] bitMap)
+        private unsafe void DrawBitmap(int x, int y, byte[] bitMap)
         {
             int i, j;
             int h, v;

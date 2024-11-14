@@ -1,9 +1,23 @@
-﻿namespace VirtualNes.Core
+﻿using Codice.CM.Client.Differences;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using UnityEngine.UIElements;
+
+namespace VirtualNes.Core
 {
-    public class PPU
+    public unsafe class PPU
     {
-        public const int SCREEN_WIDTH = 256 + 16;
+        public const int SCREEN_WIDTH = 272;
         public const int SCREEN_HEIGHT = 240;
+
+        private GCHandle BGwriteGCH;
+        private GCHandle BGmonoGCH;
+        private GCHandle SPwriteGCH;
+
+        private byte* BGwrite;
+        private byte* BGmono;
+        private byte* SPwrite;
 
         private static byte[][] CreateCOLORMAP()
         {
@@ -104,9 +118,10 @@
         private ushort loopy_y;
         private ushort loopy_shift;
 
-        private uint[] lpScreen;
+        private GCHandle lpScreenGCH;
+        private byte* lpScreen;
         /// <summary> 作为lpScreen数组的索引 </summary>
-        private int lpScanline;
+        private byte* lpScanline;
         private int ScanlineNo;
         private byte[] lpColormode;
 
@@ -137,9 +152,22 @@
                 }
                 Bit2Rev[i] = c;
             }
+
+            BGwriteGCH = GCHandle.Alloc(new byte[33 + 1], GCHandleType.Pinned);
+            BGmonoGCH = GCHandle.Alloc(new byte[33 + 1], GCHandleType.Pinned);
+            SPwriteGCH = GCHandle.Alloc(new byte[33 + 1], GCHandleType.Pinned);
+            BGwrite = (byte*)BGwriteGCH.AddrOfPinnedObject();
+            BGmono = (byte*)BGmonoGCH.AddrOfPinnedObject();
+            SPwrite = (byte*)SPwriteGCH.AddrOfPinnedObject();
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            lpScreenGCH.Free();
+            BGwriteGCH.Free();
+            BGmonoGCH.Free();
+            SPwriteGCH.Free();
+        }
 
         internal byte Read(ushort addr)
         {
@@ -199,7 +227,7 @@
             ScanlineNo = scanline;
             if (scanline < 240)
             {
-                lpScanline = (SCREEN_WIDTH) * scanline;
+                lpScanline = lpScreen + SCREEN_WIDTH * scanline;
             }
         }
 
@@ -358,7 +386,7 @@
             loopy_shift = 0;
 
             if (lpScreen != null)
-                MemoryUtility.memset(lpScreen, 0, 0x3F, SCREEN_WIDTH * SCREEN_HEIGHT);
+                Unsafe.InitBlockUnaligned(lpScreen, 0, SCREEN_WIDTH * SCREEN_HEIGHT);
             if (lpColormode != null)
                 MemoryUtility.memset(lpColormode, 0, SCREEN_HEIGHT);
         }
@@ -374,7 +402,7 @@
 
             if (lpScreen != null)
             {
-                MemoryUtility.memset(lpScreen, 0, 0x3F, SCREEN_WIDTH);
+                Unsafe.InitBlockUnaligned(lpScreen, 0x3F, SCREEN_WIDTH);
             }
             if (lpColormode != null)
             {
@@ -425,18 +453,12 @@
             }
         }
 
-        private byte[] BGwrite = new byte[33 + 1];
-        private byte[] BGmono = new byte[33 + 1];
-        private byte[] SPwrite = new byte[33 + 1];
-
         internal void Scanline(int scanline, bool bMax, bool bLeftClip)
         {
-            int pScn = 0;
-            int pBGw = 0;
             byte chr_h = 0, chr_l = 0, attr = 0;
 
-            MemoryUtility.ZEROMEMORY(BGwrite, BGwrite.Length);
-            MemoryUtility.ZEROMEMORY(BGmono, BGmono.Length);
+            Unsafe.InitBlockUnaligned(BGwrite, 0, 34);
+            Unsafe.InitBlockUnaligned(BGmono, 0, 34);
 
             // Linecolor mode
             lpColormode[scanline] = (byte)(((MMU.PPUREG[1] & PPU_BGCOLOR_BIT) >> 5) | ((MMU.PPUREG[1] & PPU_COLORMODE_BIT) << 7));
@@ -444,7 +466,7 @@
             // Render BG
             if ((MMU.PPUREG[1] & PPU_BGDISP_BIT) == 0)
             {
-                MemoryUtility.memset(lpScreen, lpScanline, MMU.BGPAL[0], SCREEN_WIDTH);
+                Unsafe.InitBlockUnaligned(lpScanline, MMU.BGPAL[0], SCREEN_WIDTH);
                 if (nes.GetRenderMethod() == EnumRenderMethod.TILE_RENDER)
                 {
                     nes.EmulationCPU(NES.FETCH_CYCLES * 4 * 32);
@@ -457,9 +479,8 @@
                     if (!bExtLatch)
                     {
                         // Without Extension Latch
-                        pScn = lpScanline + (8 - loopy_shift);
-                        pBGw = 0;
-
+                        byte* pScn = lpScanline + (8 - loopy_shift);
+                        byte* pBGw = BGwrite;
                         int tileofs = (MMU.PPUREG[0] & PPU_BGTBL_BIT) << 8;
                         int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
                         int attradr = 0x23C0 + (MMU.loopy_v & 0x0C00) + ((MMU.loopy_v & 0x0380) >> 4);
@@ -475,7 +496,6 @@
 
                         attradr &= 0x3FF;
 
-
                         for (int i = 0; i < 33; i++)
                         {
                             tileadr = tileofs + pNTBL[ntbladr & 0x03FF] * 0x10 + loopy_y;
@@ -483,17 +503,9 @@
 
                             if (cache_tile == tileadr && cache_attr == attr)
                             {
-                                lpScreen[pScn + 0] = lpScreen[pScn - 8];
-                                lpScreen[pScn + 0 + 1] = lpScreen[pScn - 8 + 1];
-                                lpScreen[pScn + 0 + 2] = lpScreen[pScn - 8 + 2];
-                                lpScreen[pScn + 0 + 3] = lpScreen[pScn - 8 + 3];
-
-                                lpScreen[pScn + 4] = lpScreen[pScn - 4];
-                                lpScreen[pScn + 4 + 1] = lpScreen[pScn - 4 + 1];
-                                lpScreen[pScn + 4 + 2] = lpScreen[pScn - 4 + 2];
-                                lpScreen[pScn + 4 + 3] = lpScreen[pScn - 4 + 3];
-
-                                BGwrite[pBGw + 0] = BGwrite[pBGw - 1];
+                                *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
+                                *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                *(pBGw + 0) = *(pBGw - 1);
                             }
                             else
                             {
@@ -501,20 +513,20 @@
                                 cache_attr = attr;
                                 chr_l = MMU.PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
                                 chr_h = MMU.PPU_MEM_BANK[tileadr >> 10][(tileadr & 0x03FF) + 8];
-                                BGwrite[pBGw] = (byte)(chr_h | chr_l);
+                                *pBGw = (byte)(chr_h | chr_l);
 
-                                int pBGPAL = attr;
+                                fixed (byte* pBGPAL = &MMU.BGPAL[attr])
                                 {
                                     int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
                                     int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                                    lpScreen[pScn + 0] = MMU.BGPAL[pBGPAL + (c1 >> 6)];
-                                    lpScreen[pScn + 4] = MMU.BGPAL[pBGPAL + ((c1 >> 2) & 3)];
-                                    lpScreen[pScn + 1] = MMU.BGPAL[pBGPAL + ((c1 >> 6))];
-                                    lpScreen[pScn + 5] = MMU.BGPAL[pBGPAL + ((c2 >> 2) & 3)];
-                                    lpScreen[pScn + 2] = MMU.BGPAL[pBGPAL + ((c1 >> 4) & 3)];
-                                    lpScreen[pScn + 6] = MMU.BGPAL[pBGPAL + (c1 & 3)];
-                                    lpScreen[pScn + 3] = MMU.BGPAL[pBGPAL + ((c2 >> 4) & 3)];
-                                    lpScreen[pScn + 7] = MMU.BGPAL[pBGPAL + (c2 & 3)];
+                                    pScn[0] = pBGPAL[(c1 >> 6)];
+                                    pScn[4] = pBGPAL[(c1 >> 2) & 3];
+                                    pScn[1] = pBGPAL[(c2 >> 6)];
+                                    pScn[5] = pBGPAL[(c2 >> 2) & 3];
+                                    pScn[2] = pBGPAL[(c1 >> 4) & 3];
+                                    pScn[6] = pBGPAL[c1 & 3];
+                                    pScn[3] = pBGPAL[(c2 >> 4) & 3];
+                                    pScn[7] = pBGPAL[c2 & 3];
                                 }
                             }
                             pScn += 8;
@@ -542,8 +554,8 @@
                     else
                     {
                         // With Extension Latch(For MMC5)
-                        pScn = lpScanline + (8 - loopy_shift);
-                        pBGw = 0;
+                        byte* pScn = lpScanline + (8 - loopy_shift);
+                        byte* pBGw = BGwrite;
 
                         int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
                         int ntbl_x = ntbladr & 0x1F;
@@ -564,35 +576,27 @@
                             {
                                 cache_tile = ((chr_h << 8) + chr_l);
                                 cache_attr = attr;
-                                BGwrite[pBGw] = (byte)(chr_h | chr_l);
+                                *pBGw = (byte)(chr_h | chr_l);
 
-                                int pBGPAL = attr;
+                                fixed (byte* pBGPAL = &MMU.BGPAL[attr])
                                 {
                                     int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
                                     int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                                    lpScreen[pScn + 0] = MMU.BGPAL[pBGPAL + (c1 >> 6)];
-                                    lpScreen[pScn + 4] = MMU.BGPAL[pBGPAL + ((c1 >> 2) & 3)];
-                                    lpScreen[pScn + 1] = MMU.BGPAL[pBGPAL + (c2 >> 6)];
-                                    lpScreen[pScn + 5] = MMU.BGPAL[pBGPAL + ((c2 >> 2) & 3)];
-                                    lpScreen[pScn + 2] = MMU.BGPAL[pBGPAL + ((c1 >> 4) & 3)];
-                                    lpScreen[pScn + 6] = MMU.BGPAL[pBGPAL + (c1 & 3)];
-                                    lpScreen[pScn + 3] = MMU.BGPAL[pBGPAL + ((c2 >> 4) & 3)];
-                                    lpScreen[pScn + 7] = MMU.BGPAL[pBGPAL + (c2 & 3)];
+                                    pScn[0] = pBGPAL[(c1 >> 6)];
+                                    pScn[4] = pBGPAL[(c1 >> 2) & 3];
+                                    pScn[1] = pBGPAL[(c2 >> 6)];
+                                    pScn[5] = pBGPAL[(c2 >> 2) & 3];
+                                    pScn[2] = pBGPAL[(c1 >> 4) & 3];
+                                    pScn[6] = pBGPAL[c1 & 3];
+                                    pScn[3] = pBGPAL[(c2 >> 4) & 3];
+                                    pScn[7] = pBGPAL[c2 & 3];
                                 }
                             }
                             else
                             {
-                                lpScreen[pScn + 0] = lpScreen[pScn - 8];
-                                lpScreen[pScn + 0 + 1] = lpScreen[pScn - 8 + 1];
-                                lpScreen[pScn + 0 + 2] = lpScreen[pScn - 8 + 2];
-                                lpScreen[pScn + 0 + 3] = lpScreen[pScn - 8 + 3];
-
-                                lpScreen[pScn + 4] = lpScreen[pScn - 4];
-                                lpScreen[pScn + 4 + 1] = lpScreen[pScn - 4 + 1];
-                                lpScreen[pScn + 4 + 2] = lpScreen[pScn - 4 + 2];
-                                lpScreen[pScn + 4 + 3] = lpScreen[pScn - 4 + 3];
-
-                                BGwrite[pBGw + 0] = BGwrite[pBGw - 1];
+                                *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
+                                *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                *(pBGw + 0) = *(pBGw - 1);
                             }
                             pScn += 8;
                             pBGw++;
@@ -616,8 +620,8 @@
                         // Without Extension Latch
                         if (!bExtNameTable)
                         {
-                            pScn = lpScanline + (8 - loopy_shift);
-                            pBGw = 0;
+                            byte* pScn = lpScanline + (8 - loopy_shift);
+                            byte* pBGw = BGwrite;
 
                             int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
                             int attradr = 0x03C0 + ((MMU.loopy_v & 0x0380) >> 4);
@@ -649,35 +653,27 @@
 
                                     chr_l = MMU.PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
                                     chr_h = MMU.PPU_MEM_BANK[tileadr >> 10][(tileadr & 0x03FF) + 8];
-                                    lpScreen[pBGw] = (byte)(chr_l | chr_h);
+                                    *pBGw = (byte)(chr_l | chr_h);
 
-                                    int pBGPAL = attr;
+                                    fixed (byte* pBGPAL = &MMU.BGPAL[attr])
                                     {
                                         int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
                                         int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                                        lpScreen[pScn + 0] = MMU.BGPAL[pBGPAL + (c1 >> 6)];
-                                        lpScreen[pScn + 4] = MMU.BGPAL[pBGPAL + ((c1 >> 2) & 3)];
-                                        lpScreen[pScn + 1] = MMU.BGPAL[pBGPAL + ((c2 >> 6))];
-                                        lpScreen[pScn + 5] = MMU.BGPAL[pBGPAL + ((c2 >> 2) & 3)];
-                                        lpScreen[pScn + 2] = MMU.BGPAL[pBGPAL + ((c1 >> 4) & 3)];
-                                        lpScreen[pScn + 6] = MMU.BGPAL[pBGPAL + (c1 & 3)];
-                                        lpScreen[pScn + 3] = MMU.BGPAL[pBGPAL + ((c2 >> 4) & 3)];
-                                        lpScreen[pScn + 7] = MMU.BGPAL[pBGPAL + (c2 & 3)];
+                                        pScn[0] = pBGPAL[(c1 >> 6)];
+                                        pScn[4] = pBGPAL[(c1 >> 2) & 3];
+                                        pScn[1] = pBGPAL[(c2 >> 6)];
+                                        pScn[5] = pBGPAL[(c2 >> 2) & 3];
+                                        pScn[2] = pBGPAL[(c1 >> 4) & 3];
+                                        pScn[6] = pBGPAL[c1 & 3];
+                                        pScn[3] = pBGPAL[(c2 >> 4) & 3];
+                                        pScn[7] = pBGPAL[c2 & 3];
                                     }
                                 }
                                 else
                                 {
-                                    lpScreen[pScn + 0] = lpScreen[pScn - 8];
-                                    lpScreen[pScn + 0 + 1] = lpScreen[pScn - 8 + 1];
-                                    lpScreen[pScn + 0 + 2] = lpScreen[pScn - 8 + 2];
-                                    lpScreen[pScn + 0 + 3] = lpScreen[pScn - 8 + 3];
-
-                                    lpScreen[pScn + 4] = lpScreen[pScn - 4];
-                                    lpScreen[pScn + 4 + 1] = lpScreen[pScn - 4 + 1];
-                                    lpScreen[pScn + 4 + 2] = lpScreen[pScn - 4 + 2];
-                                    lpScreen[pScn + 4 + 3] = lpScreen[pScn - 4 + 3];
-
-                                    BGwrite[pBGw + 0] = BGwrite[pBGw - 1];
+                                    *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
+                                    *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                    *(pBGw + 0) = *(pBGw - 1);
                                 }
                                 pScn += 8;
                                 pBGw++;
@@ -703,8 +699,8 @@
                         }
                         else
                         {
-                            pScn = lpScanline + (8 - loopy_shift);
-                            pBGw = 0;
+                            byte* pScn = lpScanline + (8 - loopy_shift);
+                            byte* pBGw = BGwrite;
 
                             int ntbladr;
                             int tileadr;
@@ -733,35 +729,27 @@
 
                                     chr_l = MMU.PPU_MEM_BANK[tileadr >> 10][tileadr & 0x03FF];
                                     chr_h = MMU.PPU_MEM_BANK[tileadr >> 10][(tileadr & 0x03FF) + 8];
-                                    BGwrite[pBGw] = (byte)(chr_l | chr_h);
+                                    *pBGw = (byte)(chr_l | chr_h);
 
-                                    int pBGPAL = attr;
+                                    fixed (byte* pBGPAL = &MMU.BGPAL[attr])
                                     {
                                         int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
                                         int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                                        lpScreen[pScn + 0] = MMU.BGPAL[pBGPAL + (c1 >> 6)];
-                                        lpScreen[pScn + 4] = MMU.BGPAL[pBGPAL + ((c1 >> 2) & 3)];
-                                        lpScreen[pScn + 1] = MMU.BGPAL[pBGPAL + (c2 >> 6)];
-                                        lpScreen[pScn + 5] = MMU.BGPAL[pBGPAL + ((c2 >> 2) & 3)];
-                                        lpScreen[pScn + 2] = MMU.BGPAL[pBGPAL + ((c1 >> 4) & 3)];
-                                        lpScreen[pScn + 6] = MMU.BGPAL[pBGPAL + (c1 & 3)];
-                                        lpScreen[pScn + 3] = MMU.BGPAL[pBGPAL + ((c2 >> 4) & 3)];
-                                        lpScreen[pScn + 7] = MMU.BGPAL[pBGPAL + (c2 & 3)];
+                                        pScn[0] = pBGPAL[(c1 >> 6)];
+                                        pScn[4] = pBGPAL[(c1 >> 2) & 3];
+                                        pScn[1] = pBGPAL[(c2 >> 6)];
+                                        pScn[5] = pBGPAL[(c2 >> 2) & 3];
+                                        pScn[2] = pBGPAL[(c1 >> 4) & 3];
+                                        pScn[6] = pBGPAL[c1 & 3];
+                                        pScn[3] = pBGPAL[(c2 >> 4) & 3];
+                                        pScn[7] = pBGPAL[c2 & 3];
                                     }
                                 }
                                 else
                                 {
-                                    lpScreen[pScn + 0] = lpScreen[pScn - 8];
-                                    lpScreen[pScn + 0 + 1] = lpScreen[pScn - 8 + 1];
-                                    lpScreen[pScn + 0 + 2] = lpScreen[pScn - 8 + 2];
-                                    lpScreen[pScn + 0 + 3] = lpScreen[pScn - 8 + 3];
-
-                                    lpScreen[pScn + 4] = lpScreen[pScn - 4];
-                                    lpScreen[pScn + 4 + 1] = lpScreen[pScn - 4 + 1];
-                                    lpScreen[pScn + 4 + 2] = lpScreen[pScn - 4 + 2];
-                                    lpScreen[pScn + 4 + 3] = lpScreen[pScn - 4 + 3];
-
-                                    BGwrite[pBGw + 0] = BGwrite[pBGw - 1];
+                                    *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
+                                    *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                    *(pBGw + 0) = *(pBGw - 1);
                                 }
                                 pScn += 8;
                                 pBGw++;
@@ -787,8 +775,8 @@
                     else
                     {
                         // With Extension Latch(For MMC5)
-                        pScn = lpScanline + (8 - loopy_shift);
-                        pBGw = 0;
+                        byte* pScn = lpScanline + (8 - loopy_shift);
+                        byte* pBGw = BGwrite;
 
                         int ntbladr = 0x2000 + (MMU.loopy_v & 0x0FFF);
                         int ntbl_x = ntbladr & 0x1F;
@@ -813,35 +801,27 @@
                             {
                                 cache_tile = ((chr_h << 8) + chr_l);
                                 cache_attr = attr;
-                                BGwrite[pBGw] = (byte)(chr_l | chr_h);
+                                *pBGw = (byte)(chr_l | chr_h);
 
-                                int pBGPAL = attr;
+                                fixed (byte* pBGPAL = &MMU.BGPAL[attr])
                                 {
                                     int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
                                     int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                                    lpScreen[pScn + 0] = MMU.BGPAL[pBGPAL + ((c1 >> 6))];
-                                    lpScreen[pScn + 4] = MMU.BGPAL[pBGPAL + ((c1 >> 2) & 3)];
-                                    lpScreen[pScn + 1] = MMU.BGPAL[pBGPAL + ((c2 >> 6))];
-                                    lpScreen[pScn + 5] = MMU.BGPAL[pBGPAL + ((c2 >> 2) & 3)];
-                                    lpScreen[pScn + 2] = MMU.BGPAL[pBGPAL + ((c1 >> 4) & 3)];
-                                    lpScreen[pScn + 6] = MMU.BGPAL[pBGPAL + (c1 & 3)];
-                                    lpScreen[pScn + 3] = MMU.BGPAL[pBGPAL + ((c2 >> 4) & 3)];
-                                    lpScreen[pScn + 7] = MMU.BGPAL[pBGPAL + (c2 & 3)];
+                                    pScn[0] = pBGPAL[(c1 >> 6)];
+                                    pScn[4] = pBGPAL[(c1 >> 2) & 3];
+                                    pScn[1] = pBGPAL[(c2 >> 6)];
+                                    pScn[5] = pBGPAL[(c2 >> 2) & 3];
+                                    pScn[2] = pBGPAL[(c1 >> 4) & 3];
+                                    pScn[6] = pBGPAL[c1 & 3];
+                                    pScn[3] = pBGPAL[(c2 >> 4) & 3];
+                                    pScn[7] = pBGPAL[c2 & 3];
                                 }
                             }
                             else
                             {
-                                lpScreen[pScn + 0] = lpScreen[pScn - 8];
-                                lpScreen[pScn + 0 + 1] = lpScreen[pScn - 8 + 1];
-                                lpScreen[pScn + 0 + 2] = lpScreen[pScn - 8 + 2];
-                                lpScreen[pScn + 0 + 3] = lpScreen[pScn - 8 + 3];
-
-                                lpScreen[pScn + 4] = lpScreen[pScn - 4];
-                                lpScreen[pScn + 4 + 1] = lpScreen[pScn - 4 + 1];
-                                lpScreen[pScn + 4 + 2] = lpScreen[pScn - 4 + 2];
-                                lpScreen[pScn + 4 + 3] = lpScreen[pScn - 4 + 3];
-
-                                BGwrite[pBGw + 0] = BGwrite[pBGw - 1];
+                                *(uint*)(pScn + 0) = *(uint*)(pScn - 8);
+                                *(uint*)(pScn + 4) = *(uint*)(pScn - 4);
+                                *(pBGw + 0) = *(pBGw - 1);
                             }
                             pScn += 8;
                             pBGw++;
@@ -860,17 +840,17 @@
                 }
                 if ((MMU.PPUREG[1] & PPU_BGCLIP_BIT) == 0 && bLeftClip)
                 {
-                    pScn = lpScanline + 8;
+                    byte* pScn = lpScanline + 8;
                     for (int i = 0; i < 8; i++)
                     {
-                        lpScreen[i] = MMU.BGPAL[0];
+                        pScn[i] = MMU.BGPAL[0];
                     }
                 }
             }
 
             // Render sprites
             var temp = ~PPU_SPMAX_FLAG;
-            MMU.PPUREG[2] = (byte)(MMU.PPUREG[2] & temp);
+            MMU.PPUREG[2] &= (byte)(MMU.PPUREG[2] & temp);
 
             // 昞帵婜娫奜偱偁傟偽僉儍儞僙儖
             if (scanline > 239)
@@ -885,145 +865,144 @@
             int spraddr = 0, sp_y = 0, sp_h = 0;
             chr_h = chr_l = 0;
 
-
-            pBGw = 0;
-            int pSPw = 0;
-            int pBit2Rev = 0;
-
-            MemoryUtility.ZEROMEMORY(SPwrite, SPwrite.Length);
-
-            spmax = 0;
-            Sprite sp = new Sprite(MMU.SPRAM, 0);
-            sp_h = (MMU.PPUREG[0] & PPU_SP16_BIT) != 0 ? 15 : 7;
-
-            // Left clip
-            if (bLeftClip && ((MMU.PPUREG[1] & PPU_SPCLIP_BIT) == 0))
+            fixed (byte* pBit2Rev = &Bit2Rev[0])
             {
-                SPwrite[0] = 0xFF;
-            }
+                byte* pBGw = BGwrite;
+                byte* pSPw = SPwrite;
+                Unsafe.InitBlockUnaligned(pSPw, 0, 34);
 
-            for (int i = 0; i < 64; i++, sp.AddOffset(1))
-            {
-                sp_y = scanline - (sp.y + 1);
-                // 僗僉儍儞儔僀儞撪偵SPRITE偑懚嵼偡傞偐傪僠僃僢僋
-                if (sp_y != (sp_y & sp_h))
-                    continue;
+                spmax = 0;
+                Sprite sp = new Sprite(MMU.SPRAM, 0);
+                sp_h = (MMU.PPUREG[0] & PPU_SP16_BIT) != 0 ? 15 : 7;
 
-                if ((MMU.PPUREG[0] & PPU_SP16_BIT) == 0)
+                // Left clip
+                if (bLeftClip && ((MMU.PPUREG[1] & PPU_SPCLIP_BIT) == 0))
                 {
-                    // 8x8 Sprite
-                    spraddr = ((MMU.PPUREG[0] & PPU_SPTBL_BIT) << 9) + (sp.tile << 4);
-                    if ((sp.attr & SP_VMIRROR_BIT) == 0)
-                        spraddr += sp_y;
-                    else
-                        spraddr += 7 - sp_y;
-                }
-                else
-                {
-                    // 8x16 Sprite
-                    spraddr = ((sp.tile & 1) << 12) + ((sp.tile & 0xFE) << 4);
-                    if ((sp.attr & SP_VMIRROR_BIT) == 0)
-                        spraddr += ((sp_y & 8) << 1) + (sp_y & 7);
-                    else
-                        spraddr += ((~sp_y & 8) << 1) + (7 - (sp_y & 7));
-                }
-                // Character pattern
-                chr_l = MMU.PPU_MEM_BANK[spraddr >> 10][spraddr & 0x3FF];
-                chr_h = MMU.PPU_MEM_BANK[spraddr >> 10][(spraddr & 0x3FF) + 8];
-
-                // Character latch(For MMC2/MMC4)
-                if (bChrLatch)
-                {
-                    nes.mapper.PPU_ChrLatch((ushort)spraddr);
+                    SPwrite[0] = 0xFF;
                 }
 
-                // pattern mask
-                if ((sp.attr & SP_HMIRROR_BIT) != 0)
+                for (int i = 0; i < 64; i++, sp.AddOffset(1))
                 {
-                    chr_l = Bit2Rev[pBit2Rev + chr_l];
-                    chr_h = Bit2Rev[pBit2Rev + chr_h];
-                }
-                byte SPpat = (byte)(chr_l | chr_h);
+                    sp_y = scanline - (sp.y + 1);
+                    // 僗僉儍儞儔僀儞撪偵SPRITE偑懚嵼偡傞偐傪僠僃僢僋
+                    if (sp_y != (sp_y & sp_h))
+                        continue;
 
-                // Sprite hitcheck
-                if (i == 0 && (MMU.PPUREG[2] & PPU_SPHIT_FLAG) == 0)
-                {
-                    int BGpos = ((sp.x & 0xF8) + ((loopy_shift + (sp.x & 7)) & 8)) >> 3;
-                    int BGsft = 8 - ((loopy_shift + sp.x) & 7);
-
-                    var temp1 = BGwrite[pBGw + BGpos + 0] << 8;
-                    var temp2 = BGwrite[pBGw + BGpos + 1];
-                    byte BGmsk = (byte)((temp1 | temp2) >> BGsft);
-
-                    if ((SPpat & BGmsk) != 0)
+                    if ((MMU.PPUREG[0] & PPU_SP16_BIT) == 0)
                     {
-                        MMU.PPUREG[2] |= PPU_SPHIT_FLAG;
+                        // 8x8 Sprite
+                        spraddr = ((MMU.PPUREG[0] & PPU_SPTBL_BIT) << 9) + (sp.tile << 4);
+                        if ((sp.attr & SP_VMIRROR_BIT) == 0)
+                            spraddr += sp_y;
+                        else
+                            spraddr += 7 - sp_y;
+                    }
+                    else
+                    {
+                        // 8x16 Sprite
+                        spraddr = ((sp.tile & 1) << 12) + ((sp.tile & 0xFE) << 4);
+                        if ((sp.attr & SP_VMIRROR_BIT) == 0)
+                            spraddr += ((sp_y & 8) << 1) + (sp_y & 7);
+                        else
+                            spraddr += ((~sp_y & 8) << 1) + (7 - (sp_y & 7));
+                    }
+                    // Character pattern
+                    chr_l = MMU.PPU_MEM_BANK[spraddr >> 10][spraddr & 0x3FF];
+                    chr_h = MMU.PPU_MEM_BANK[spraddr >> 10][(spraddr & 0x3FF) + 8];
+
+                    // Character latch(For MMC2/MMC4)
+                    if (bChrLatch)
+                    {
+                        nes.mapper.PPU_ChrLatch((ushort)spraddr);
+                    }
+
+                    // pattern mask
+                    if ((sp.attr & SP_HMIRROR_BIT) != 0)
+                    {
+                        chr_l = pBit2Rev[chr_l];
+                        chr_h = pBit2Rev[chr_h];
+                    }
+                    byte SPpat = (byte)(chr_l | chr_h);
+
+                    // Sprite hitcheck
+                    if (i == 0 && (MMU.PPUREG[2] & PPU_SPHIT_FLAG) == 0)
+                    {
+                        int BGpos = ((sp.x & 0xF8) + ((loopy_shift + (sp.x & 7)) & 8)) >> 3;
+                        int BGsft = 8 - ((loopy_shift + sp.x) & 7);
+                        byte BGmsk = (byte)(((pBGw[BGpos + 0] << 8) | pBGw[BGpos + 1]) >> BGsft);
+
+                        if ((SPpat & BGmsk) != 0)
+                        {
+                            MMU.PPUREG[2] |= PPU_SPHIT_FLAG;
+                        }
+                    }
+
+                    // Sprite mask
+                    int SPpos = sp.x / 8;
+                    int SPsft = 8 - (sp.x & 7);
+                    byte SPmsk = (byte)(((pSPw[SPpos + 0] << 8) | pSPw[SPpos + 1]) >> SPsft);
+                    ushort SPwrt = (ushort)(SPpat << SPsft);
+                    pSPw[SPpos + 0] = (byte)((pSPw[SPpos + 0]) | (SPwrt >> 8));
+                    pSPw[SPpos + 1] = (byte)((pSPw[SPpos + 1]) | (SPwrt & 0xFF));
+                    SPpat = (byte)(SPpat & ~SPmsk);
+
+                    if ((sp.attr & SP_PRIORITY_BIT) != 0)
+                    {
+                        // BG > SP priority
+                        int BGpos = ((sp.x & 0xF8) + ((loopy_shift + (sp.x & 7)) & 8)) >> 3;
+                        int BGsft = 8 - ((loopy_shift + sp.x) & 7);
+                        byte BGmsk = (byte)(((pBGw[BGpos + 0] << 8) | pBGw[BGpos + 1]) >> BGsft);
+
+                        SPpat = (byte)(SPpat & ~BGmsk);
+                    }
+
+                    // Attribute
+                    fixed (byte* pSPPAL = &MMU.SPPAL[(sp.attr & SP_COLOR_BIT) << 2])
+                    {
+                        // Ptr
+                        byte* pScn = lpScanline + sp.x + 8;
+
+                        if (!bExtMono)
+                        {
+                            int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
+                            int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
+                            if ((SPpat & 0x80) != 0) pScn[0] = pSPPAL[(c1 >> 6)];
+                            if ((SPpat & 0x08) != 0) pScn[4] = pSPPAL[(c1 >> 2) & 3];
+                            if ((SPpat & 0x40) != 0) pScn[1] = pSPPAL[(c2 >> 6)];
+                            if ((SPpat & 0x04) != 0) pScn[5] = pSPPAL[(c2 >> 2) & 3];
+                            if ((SPpat & 0x20) != 0) pScn[2] = pSPPAL[(c1 >> 4) & 3];
+                            if ((SPpat & 0x02) != 0) pScn[6] = pSPPAL[c1 & 3];
+                            if ((SPpat & 0x10) != 0) pScn[3] = pSPPAL[(c2 >> 4) & 3];
+                            if ((SPpat & 0x01) != 0) pScn[7] = pSPPAL[c2 & 3];
+                        }
+                        else
+                        {
+                            // Monocrome effect (for Final Fantasy)
+                            byte mono = BGmono[((sp.x & 0xF8) + ((loopy_shift + (sp.x & 7)) & 8)) >> 3];
+
+                            int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
+                            int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
+                            if ((SPpat & 0x80) != 0) pScn[0] = (byte)(pSPPAL[c1>>6]	|mono);
+                            if ((SPpat & 0x08) != 0) pScn[4] = (byte)(pSPPAL[(c1>>2)&3]	|mono);
+                            if ((SPpat & 0x40) != 0) pScn[1] = (byte)(pSPPAL[c2>>6]	|mono);
+                            if ((SPpat & 0x04) != 0) pScn[5] = (byte)(pSPPAL[(c2>>2)&3]	|mono);
+                            if ((SPpat & 0x20) != 0) pScn[2] = (byte)(pSPPAL[(c1>>4)&3]	|mono);
+                            if ((SPpat & 0x02) != 0) pScn[6] = (byte)(pSPPAL[c1&3]		|mono);
+                            if ((SPpat & 0x10) != 0) pScn[3] = (byte)(pSPPAL[(c2>>4)&3]	|mono);
+                            if ((SPpat & 0x01) != 0) pScn[7] = (byte)(pSPPAL[c2 & 3] | mono);
+                        }
+                    }
+
+                    if (++spmax > 8 - 1)
+                    {
+                        if (!bMax)
+                            break;
                     }
                 }
-
-                // Sprite mask
-                int SPpos = sp.x / 8;
-                int SPsft = 8 - (sp.x & 7);
-                byte SPmsk = (byte)((SPwrite[pSPw + SPpos + 0] << 8 | SPwrite[pSPw + SPpos + 1]) >> SPsft);
-                ushort SPwrt = (ushort)(SPpat << SPsft);
-                SPwrite[pSPw + SPpos + 0] = (byte)(SPwrite[pSPw + SPpos + 0] | SPwrt >> 8);
-                SPwrite[pSPw + SPpos + 1] = (byte)(SPwrite[pSPw + SPpos + 1] | SPwrt & 0xFF);
-                SPpat = (byte)(SPpat & ~SPmsk);
-
-                if ((sp.attr & SP_PRIORITY_BIT) != 0)
+                if (spmax > 8 - 1)
                 {
-                    // BG > SP priority
-                    int BGpos = ((sp.x & 0xF8) + ((loopy_shift + (sp.x & 7)) & 8)) >> 3;
-                    int BGsft = 8 - ((loopy_shift + sp.x) & 7);
-                    byte BGmsk = (byte)(((BGwrite[pBGw + BGpos + 0] << 8) | BGwrite[pBGw + BGpos + 1]) >> BGsft);
-
-                    SPpat = (byte)(SPpat & ~BGmsk);
+                    MMU.PPUREG[2] |= PPU_SPMAX_FLAG;
                 }
-
-                // Attribute
-                int pSPPAL = (sp.attr & SP_COLOR_BIT) << 2;
-                // Ptr
-                pScn = lpScanline + sp.x + 8;
-
-                if (!bExtMono)
-                {
-                    int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
-                    int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                    if ((SPpat & 0x80) != 0) lpScreen[pScn + 0] = MMU.SPPAL[pSPPAL + (c1 >> 6)];
-                    if ((SPpat & 0x08) != 0) lpScreen[pScn + 4] = MMU.SPPAL[pSPPAL + ((c1 >> 2) & 3)];
-                    if ((SPpat & 0x40) != 0) lpScreen[pScn + 1] = MMU.SPPAL[pSPPAL + ((c2 >> 6))];
-                    if ((SPpat & 0x04) != 0) lpScreen[pScn + 5] = MMU.SPPAL[pSPPAL + ((c2 >> 2) & 3)];
-                    if ((SPpat & 0x20) != 0) lpScreen[pScn + 2] = MMU.SPPAL[pSPPAL + ((c1 >> 4) & 3)];
-                    if ((SPpat & 0x02) != 0) lpScreen[pScn + 6] = MMU.SPPAL[pSPPAL + (c1 & 3)];
-                    if ((SPpat & 0x10) != 0) lpScreen[pScn + 3] = MMU.SPPAL[pSPPAL + ((c2 >> 4) & 3)];
-                    if ((SPpat & 0x01) != 0) lpScreen[pScn + 7] = MMU.SPPAL[pSPPAL + (c2 & 3)];
-                }
-                else
-                {
-                    // Monocrome effect (for Final Fantasy)
-                    byte mono = BGmono[((sp.x & 0xF8) + ((loopy_shift + (sp.x & 7)) & 8)) >> 3];
-
-                    int c1 = ((chr_l >> 1) & 0x55) | (chr_h & 0xAA);
-                    int c2 = (chr_l & 0x55) | ((chr_h << 1) & 0xAA);
-                    if ((SPpat & 0x80) != 0) lpScreen[pScn + 0] = (byte)(MMU.SPPAL[pSPPAL + (c1 >> 6)] | mono);
-                    if ((SPpat & 0x08) != 0) lpScreen[pScn + 4] = (byte)(MMU.SPPAL[pSPPAL + ((c1 >> 2) & 3)] | mono);
-                    if ((SPpat & 0x40) != 0) lpScreen[pScn + 1] = (byte)(MMU.SPPAL[pSPPAL + (c2 >> 6)] | mono);
-                    if ((SPpat & 0x04) != 0) lpScreen[pScn + 5] = (byte)(MMU.SPPAL[pSPPAL + ((c2 >> 2) & 3)] | mono);
-                    if ((SPpat & 0x20) != 0) lpScreen[pScn + 2] = (byte)(MMU.SPPAL[pSPPAL + ((c1 >> 4) & 3)] | mono);
-                    if ((SPpat & 0x02) != 0) lpScreen[pScn + 6] = (byte)(MMU.SPPAL[pSPPAL + (c1 & 3)] | mono);
-                    if ((SPpat & 0x10) != 0) lpScreen[pScn + 3] = (byte)(MMU.SPPAL[pSPPAL + ((c2 >> 4) & 3)] | mono);
-                    if ((SPpat & 0x01) != 0) lpScreen[pScn + 7] = (byte)(MMU.SPPAL[pSPPAL + (c2 & 3)] | mono);
-                }
-
-                if (++spmax > 8 - 1)
-                {
-                    if (!bMax)
-                        break;
-                }
-            }
-            if (spmax > 8 - 1)
-            {
-                MMU.PPUREG[2] |= PPU_SPMAX_FLAG;
             }
         }
 
@@ -1103,7 +1082,7 @@
             MMU.PPUREG[2] |= PPU_VBLANK_FLAG;
         }
 
-        public uint[] GetScreenPtr()
+        public byte* GetScreenPtr()
         {
             return lpScreen;
         }
@@ -1113,9 +1092,10 @@
             return lpColormode;
         }
 
-        internal void SetScreenPtr(uint[] screenBuffer, byte[] colormode)
+        internal void SetScreenPtr(byte[] screenBuffer, byte[] colormode)
         {
-            lpScreen = screenBuffer;
+            lpScreenGCH = GCHandle.Alloc(screenBuffer, GCHandleType.Pinned);
+            lpScreen = (byte*)lpScreenGCH.AddrOfPinnedObject();
             lpColormode = colormode;
         }
 
