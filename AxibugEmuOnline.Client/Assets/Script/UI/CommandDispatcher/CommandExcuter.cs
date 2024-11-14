@@ -12,9 +12,7 @@ namespace AxibugEmuOnline.Client
         private PulseInvoker m_pulsInvoker_Up;
         private PulseInvoker m_pulsInvoker_Down;
 
-        [SerializeField]
         float PulseInvoke_Delay = 0.4f;
-        [SerializeField]
         float PulseInvoke_Interval = 0.05f;
 
         public abstract bool Enable { get; }
