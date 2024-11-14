@@ -25,9 +25,8 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static RomLib nesRomLib;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
-        public static AppSceneLoader SceneLoader;
         public static AppRoom roomMgr;
-
+        public static AppSettings settings;
         #region Mono
         public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
@@ -39,9 +38,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
 
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         static void Init()
         {
+            settings = new AppSettings();
+
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
             network = new NetworkHelper();
@@ -53,9 +54,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             httpAPI = new HttpAPI();
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
-            SceneLoader = new AppSceneLoader();
             roomMgr = new AppRoom();
-
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             tickLoop = go.AddComponent<TickLoop>();

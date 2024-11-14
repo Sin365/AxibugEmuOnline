@@ -961,6 +961,7 @@ GameObject:
   - component: {fileID: 8865437771338118001}
   - component: {fileID: 6055880809428073973}
   - component: {fileID: 1286529697012677180}
+  - component: {fileID: 1434074089467284101}
   m_Layer: 5
   m_Name: SettingGroup
   m_TagString: Untagged
@@ -1011,7 +1012,7 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 20}
   m_Constraint: 1
   m_ConstraintCount: 1
-  ItemTemplate: {fileID: 1998281097548910301, guid: 2e8fa6342641dc4418cd5c71f89d112c, type: 3}
+  ItemTemplate: {fileID: 0}
   ViewRect: {fileID: 2303118795734916657}
   PauseUpdateView: 0
 --- !u!114 &1286529697012677180
@@ -1028,6 +1029,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1434074089467284101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6164337287601107676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e7f64bad63ce024eadbd9ddff940eee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemList:
+  - {fileID: 1998281097548910301, guid: 2e8fa6342641dc4418cd5c71f89d112c, type: 3}
 --- !u!1 &8290338740711049006
 GameObject:
   m_ObjectHideFlags: 0

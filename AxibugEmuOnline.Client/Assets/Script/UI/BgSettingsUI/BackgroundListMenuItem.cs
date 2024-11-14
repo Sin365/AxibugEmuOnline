@@ -1,4 +1,6 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System;
+using System.Collections.Generic;
 
 namespace AxibugEmuOnline.Client
 {
@@ -6,7 +8,11 @@ namespace AxibugEmuOnline.Client
     {
         protected override void GetVirtualListDatas(Action<object> datas)
         {
-            return;
+            List<object> list = new List<object>()
+            {
+                App.settings.BgColor,
+            };
+            datas.Invoke(list);
         }
     }
 }

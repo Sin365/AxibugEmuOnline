@@ -375,8 +375,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: 20
     m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 3
   m_Spacing: 12
   m_ChildForceExpandWidth: 0
@@ -550,8 +550,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9077edba700447499a21395109542df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PulseInvoke_Delay: 0.4
-  PulseInvoke_Interval: 0.05
   MenuRoot: {fileID: 5397686940312333149}
   SelectBorder: {fileID: 2404013603202822047}
   TEMPLATE_EXECUTEITEM: {fileID: 3721725547312714320}

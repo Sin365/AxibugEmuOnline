@@ -6,9 +6,5 @@ namespace AxibugEmuOnline.Client
         {
             MenuData.OnExcute();
         }
-
-        public override void OnFocus()
-        {
-        }
     }
 }

@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEditor.Graphs.Styles;
 
 namespace AxibugEmuOnline.Client
 {
@@ -126,7 +128,7 @@ namespace AxibugEmuOnline.Client
         }
 
         ControlScheme m_lastCS;
-        public void Pop(List<OptionMenu> menus, int defaultIndex = 0)
+        public void Pop<T>(List<T> menus, int defaultIndex = 0) where T : OptionMenu
         {
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
@@ -258,6 +260,9 @@ namespace AxibugEmuOnline.Client
             Name = name;
             Icon = icon;
         }
+
+        public virtual void OnFocus() { }
+        public virtual void OnShow(OptionUI_MenuItem ui) { }
     }
 
     public abstract class ExecuteMenu : OptionMenu
@@ -265,15 +270,6 @@ namespace AxibugEmuOnline.Client
         public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
         public abstract void OnExcute();
-    }
-
-    public abstract class ValueSetMenu : OptionMenu
-    {
-        public ValueSetMenu(string name) : base(name) { }
-
-        public abstract Type ValueType { get; }
-        public abstract object ValueRaw { get; }
-        public abstract void OnValueChanged(object newValue);
     }
 
     public class ValueSetMenu<T> : ValueSetMenu
@@ -290,4 +286,15 @@ namespace AxibugEmuOnline.Client
         }
         protected ValueSetMenu(string name) : base(name) { }
     }
+
+    public abstract class ValueSetMenu : OptionMenu
+    {
+        public ValueSetMenu(string name) : base(name) { }
+
+        public abstract Type ValueType { get; }
+        public abstract object ValueRaw { get; }
+        public abstract void OnValueChanged(object newValue);
+    }
+
+
 }
