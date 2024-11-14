@@ -164,9 +164,13 @@
                 float waveHeight2 = wave(uv.x, frequency2, speed2, midHeight2, maxHeight2);
                 float waveCol2 = waveColor(uv, waveHeight2, maxHeight2, frequency2, power2);
     
-                float3 col = bg;
-                col = lerp(col, waveCol1 * col, step(uv.y, waveHeight1));
-                col = lerp(col, waveCol2 * col, step(uv.y, waveHeight2));
+                float3 col = bg;  
+                
+                float3 waveCol1_temp=col/waveCol1;
+                col = lerp(col,waveCol1_temp, step(uv.y, waveHeight1));
+
+                float3 waveCol2_temp=col/waveCol2;
+                col = lerp(col,waveCol2_temp, step(uv.y, waveHeight2));
 
                 // Output to screen
                 fixed4 fragColor = float4(col,1.0);

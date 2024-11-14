@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client
         {
             DEFAULT,
             new XMBColor("白","#8a9fb2","#4e9eb6"),
-            new XMBColor("黄","#d5a916","#d1a813"),
+            new XMBColor("黄","#987500","#d1a813"),
             new XMBColor("绿","#3e962b","#7ac25e"),
             new XMBColor("粉","#e65a8b","#c7acc6"),
             new XMBColor("墨绿","#00421a","#1c951f"),

@@ -137,7 +137,7 @@ namespace AxibugEmuOnline.Client
 
             Canvas.ForceUpdateCanvases();
 
-            m_selectIndex = 0;
+            m_selectIndex = defaultIndex;
             OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[defaultIndex];
             optionUI_MenuItem.OnFocus();
             var itemUIRect = optionUI_MenuItem.transform as RectTransform;
