@@ -221,7 +221,7 @@ namespace VirtualNes.Core
                 Debuger.Log("Allocating PPU...");
                 ppu = new PPU(this);
 
-                var screenBuffer = new byte[PPU.SCREEN_WIDTH * PPU.SCREEN_HEIGHT];
+                var screenBuffer = new uint[PPU.SCREEN_WIDTH * PPU.SCREEN_HEIGHT];
                 var colormode = new byte[PPU.SCREEN_HEIGHT];
 
                 ppu.SetScreenPtr(screenBuffer, colormode);
