@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DG.Tweening;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -58,6 +60,16 @@ namespace AxibugEmuOnline.Client
             Name = name;
             ColorUtility.TryParseHtmlString(colorCodeStr1, out color1);
             ColorUtility.TryParseHtmlString(colorCodeStr2, out color2);
+        }
+
+        public static XMBColor Lerp(XMBColor start, XMBColor endColor, float t)
+        {
+            var result = new XMBColor();
+            result.Name = endColor.Name;
+            result.color1 = Color.Lerp(start.color1, endColor.color1, t);
+            result.color2 = Color.Lerp(start.color2, endColor.color2, t);
+
+            return result;
         }
 
         public override int GetHashCode()
