@@ -59,11 +59,11 @@ namespace AxibugEmuOnline.Client
         {
             if (!m_romfile.InfoReady)
             {
-                SetBaseInfo(string.Empty, string.Empty);
+                SetBaseInfo("正在拉取", "---", "---");
             }
             else
             {
-                SetBaseInfo(m_romfile.Alias, m_romfile.Descript);
+                SetBaseInfo(m_romfile.Alias, m_romfile.Descript, m_romfile.GameTypeDes);
                 App.CacheMgr.GetSpriteCache(m_romfile.ImageURL, (img, url) =>
                 {
                     if (url != m_romfile.ImageURL) return;
@@ -90,7 +90,8 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private void Update()
+
+        protected override void Update()
         {
             DownloadingFlag.SetActiveEx(false);
             FileReadyFlag.SetActiveEx(false);
@@ -107,6 +108,8 @@ namespace AxibugEmuOnline.Client
             {
                 FileReadyFlag.SetActiveEx(true);
             }
+
+            base.Update();
         }
     }
 }

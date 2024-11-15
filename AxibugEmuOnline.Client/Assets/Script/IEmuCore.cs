@@ -14,6 +14,7 @@ namespace AxibugEmuOnline.Client
         void Resume();
         void SetupScheme();
         void StartGame(RomFile romFile);
+        void DoReset();
     }
 
     public static class IEnumCoreTool

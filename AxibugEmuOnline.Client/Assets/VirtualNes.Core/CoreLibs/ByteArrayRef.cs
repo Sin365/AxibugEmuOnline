@@ -4,6 +4,7 @@ namespace VirtualNes.Core
 {
     public class ArrayRef<T>
     {
+        public T[] RawArray => m_rawArray;
         private T[] m_rawArray;
         private int m_offset;
         private int m_length;

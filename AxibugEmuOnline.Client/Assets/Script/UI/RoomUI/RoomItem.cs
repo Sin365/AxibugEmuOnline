@@ -65,7 +65,7 @@ namespace AxibugEmuOnline.Client
         {
             var hostNick = roomInfo.GetHostNickName();
             roomInfo.GetRoomPlayers(out var cur, out var max);
-            SetBaseInfo(string.Empty, $"<b>{hostNick}</b>的房间 - {cur}/{max}");
+            SetBaseInfo("--", $"<b>{hostNick}</b>的房间", $"{cur}/{max}");
             SetIcon(null);
 
             roomInfo.FetchRomFileInRoomInfo(EnumPlatform.NES, (room, romFile) =>
@@ -80,9 +80,10 @@ namespace AxibugEmuOnline.Client
             });
         }
 
-        private void Update()
+        protected override void Update()
         {
             UpdateRomInfoView();
+            base.Update();
         }
 
         private void UpdateRomInfoView()
