@@ -2,7 +2,9 @@
 {
     Properties
     {
-        _MainTex ("Sprite Texture", 2D) = "white" {}
+        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _Color ("Tint", Color) = (1,1,1,1)
+
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -10,7 +12,6 @@
         _StencilReadMask ("Stencil Read Mask", Float) = 255
 
         _ColorMask ("Color Mask", Float) = 15
-
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
 
@@ -88,6 +89,7 @@
                 fixed4 color    : COLOR;
                 float2 texcoord  : TEXCOORD0;
                 float4 worldPosition : TEXCOORD1;
+                float4  mask : TEXCOORD2;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
 
@@ -95,6 +97,9 @@
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;     
             sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float _UIMaskSoftnessX;
+            float _UIMaskSoftnessY;
 
             float wave(float x, float frequency, float speed, float midHeight, float maxHeight)
             {
@@ -116,10 +121,17 @@
                 v2f OUT;
                 UNITY_SETUP_INSTANCE_ID(v);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
+                float4 vPosition = UnityObjectToClipPos(v.vertex);
                 OUT.worldPosition = v.vertex;
-                OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
+                OUT.vertex = vPosition;
 
-                OUT.texcoord =v.texcoord;
+                float2 pixelSize = vPosition.w;
+                pixelSize /= float2(1, 1) * abs(mul((float2x2)UNITY_MATRIX_P, _ScreenParams.xy));
+
+                float4 clampedRect = clamp(_ClipRect, -2e10, 2e10);
+                float2 maskUV = (v.vertex.xy - clampedRect.xy) / (clampedRect.zw - clampedRect.xy);
+                OUT.texcoord = TRANSFORM_TEX(v.texcoord.xy, _MainTex);
+                OUT.mask = float4(v.vertex.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize.xy)));
 
                 OUT.color = v.color * _Color;
                 return OUT;
@@ -142,8 +154,8 @@
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                float2 uv= IN.texcoord;
-                // Lerped background
+                 float2 uv= IN.texcoord;
+                 // Lerped background
                 
                 float amount = (uv.x + uv.y) / 2.0;
                 float3 bg = lerp(_Color2, _Color1, amount);
@@ -165,14 +177,19 @@
                 float waveCol2 = waveColor(uv, waveHeight2, maxHeight2, frequency2, power2);
     
                 float3 col = bg;
-                col = lerp(col, col/waveCol1, step(uv.y, waveHeight1));
-                col = lerp(col, col/waveCol2, step(uv.y, waveHeight2));
+                
+                float3 waveCol1_temp=col/waveCol1;
+                col = lerp(col,waveCol1_temp, step(uv.y, waveHeight1));
+
+                float3 waveCol2_temp=col/waveCol2;
+                col = lerp(col,waveCol2_temp, step(uv.y, waveHeight2));
 
                 // Output to screen
-                fixed4 fragColor = float4(col,1.0);
+                fixed4 fragColor = float4(col,1.0)*IN.color;
 
                 #ifdef UNITY_UI_CLIP_RECT
-                fragColor.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
+                fragColor.a *= m.x * m.y;
                 #endif
 
                 #ifdef UNITY_UI_ALPHACLIP

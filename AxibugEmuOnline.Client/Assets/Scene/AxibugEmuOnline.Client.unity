@@ -2499,7 +2499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639091784002085428, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1639091784002085428, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13645,7 +13645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1963501579241001456, guid: 334eee9f85f308347844f8f5e99167c3, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1963501579241001456, guid: 334eee9f85f308347844f8f5e99167c3, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13723,6 +13723,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InGameUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1963501579241001457, guid: 334eee9f85f308347844f8f5e99167c3, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 334eee9f85f308347844f8f5e99167c3, type: 3}
 --- !u!1001 &3531919738450164441
@@ -13736,6 +13740,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Overlay
       objectReference: {fileID: 0}
+    - target: {fileID: 3531919739338806916, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3531919739338806919, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13746,7 +13754,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3531919739338806919, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3531919739338806919, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13885,6 +13893,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4478785627166277609, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4478785627166277610, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13895,7 +13907,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4478785627166277610, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4478785627166277610, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_AnchorMax.x
