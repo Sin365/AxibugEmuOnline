@@ -11,7 +11,7 @@ public interface IVirtualLayout
     public List<object> DataList { get; }
     public object DependencyProperty { get; }
     public RectTransform RectTransform { get; }
-
+    public RectTransform GetTemplate(object data);
     public Vector2 GetItemAnchorePos(int index);
     public RectTransform GetItemUIIfExist(int index);
 
@@ -36,7 +36,7 @@ public class ItemProxy
 
     private IVirtualLayout _parent;
 
-    private RectTransform _template;
+    private RectTransform _template => _parent.GetTemplate(_parent.DataList[Index]);
     private RectTransform _runtimeInstance;
     private LayoutGroup _layoutElement;
 
@@ -71,14 +71,10 @@ public class ItemProxy
         return lfi;
     }
 
-    private Vector2? _forcePivot;
-    public ItemProxy(RectTransform Template, IVirtualLayout parent, Vector2? forcePivot = null)
+    public ItemProxy(IVirtualLayout parent)
     {
-        _template = Template;
         _parent = parent;
-        _forcePivot = forcePivot;
     }
-
 
     public void Dispose()
     {
@@ -140,10 +136,6 @@ public class ItemProxy
             _runtimeInstance.gameObject.SetActive(true);
             _runtimeInstance.anchorMax = Vector2.up;
             _runtimeInstance.anchorMin = Vector2.up;
-            if (_forcePivot != null)
-            {
-                _runtimeInstance.pivot = _forcePivot.Value;
-            }
             _runtimeInstance.anchoredPosition = AnchoredPosition;
             _runtimeInstance.sizeDelta = new Vector2(Width, Height);
         }

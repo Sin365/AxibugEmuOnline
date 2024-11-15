@@ -840,7 +840,7 @@ namespace VirtualNes.Core
             }
         }
 
-        internal void DrawFont(int x, int y, byte chr, byte col)
+        internal unsafe void DrawFont(int x, int y, byte chr, byte col)
         {
             int i;
             int pFnt;
@@ -866,7 +866,7 @@ namespace VirtualNes.Core
             }
         }
 
-        private void DrawBitmap(int x, int y, byte[] bitMap)
+        private unsafe void DrawBitmap(int x, int y, byte[] bitMap)
         {
             int i, j;
             int h, v;
@@ -911,7 +911,7 @@ namespace VirtualNes.Core
             CPU_CALL_COUNT++;
         }
 
-        internal void Reset()
+        public void Reset()
         {
             SaveSRAM();
             SaveDISK();
@@ -1024,7 +1024,7 @@ namespace VirtualNes.Core
 
 
 
-        internal void SoftReset()
+        public void SoftReset()
         {
             pad.Reset();
             cpu.Reset();
@@ -1974,22 +1974,44 @@ namespace VirtualNes.Core
                 // BANK0,1,2¤Ï¥Ð¥ó¥¯¥»©`¥Ö¤Ëév‚S¤Ê¤·
                 // VirtuaNES0.30¤«¤é
                 // ¥Ð¥ó¥¯£³¤ÏSRAMÊ¹ÓÃ¤Ëév¤ï¤é¤º¥»©`¥Ö
-                for (int i = 3; i < 8; i++)
+                for (byte i = 3; i < 8; i++)
                 {
                     MMU.CPU_MEM_TYPE[i] = state.mmu.CPU_MEM_TYPE[i];
                     MMU.CPU_MEM_PAGE[i] = state.mmu.CPU_MEM_PAGE[i];
+                    if (MMU.CPU_MEM_TYPE[i] == MMU.BANKTYPE_ROM)
+                        MMU.SetPROM_8K_Bank(i, MMU.CPU_MEM_PAGE[i]);
+                    else
+                    {
+                        MMU.CPU_MEM_BANK[i].SetArray(state.CPU_MEM_BANK.ToArray(), 0);
+                    }
                 }
 
-                // SAVE VRAM MEMORY DATA
-                for (int i = 0; i < 12; i++)
-                {
-                    MMU.PPU_MEM_TYPE[i] = state.mmu.PPU_MEM_TYPE[i];
-                    MMU.PPU_MEM_PAGE[i] = state.mmu.PPU_MEM_PAGE[i];
-                }
-
+                // VRAM
+                MemoryUtility.memcpy(MMU.VRAM, state.VRAM, 4 * 1024);
+                // CRAM
                 for (int i = 0; i < 8; i++)
                 {
                     MMU.CRAM_USED[i] = state.mmu.CRAM_USED[i];
+                }
+                // SAVE VRAM MEMORY DATA
+                for (byte i = 0; i < 12; i++)
+                {
+                    if (state.mmu.PPU_MEM_TYPE[i] == MMU.BANKTYPE_VROM)
+                    {
+                        MMU.SetVROM_1K_Bank(i, state.mmu.PPU_MEM_PAGE[i]);
+                    }
+                    else if (state.mmu.PPU_MEM_TYPE[i] == MMU.BANKTYPE_CRAM)
+                    {
+                        MMU.SetCRAM_1K_Bank(i, state.mmu.PPU_MEM_PAGE[i]);
+                    }
+                    else if (state.mmu.PPU_MEM_TYPE[i] == MMU.BANKTYPE_VRAM)
+                    {
+                        MMU.SetVRAM_1K_Bank(i, state.mmu.PPU_MEM_PAGE[i]);
+                    }
+                    else
+                    {
+                        throw new Exception("Unknown bank types.");
+                    }
                 }
 
                 // WRITE CPU RAM MEMORY BANK
@@ -2024,17 +2046,7 @@ namespace VirtualNes.Core
 
             // MMC STATE
             {
-                state.mmc = MMCSTAT.GetDefault();
-
-                // Create Header
-                state.mmcBLOCK.ID = "MMC DATA";
-                state.mmcBLOCK.BlockVersion = 0x0100;
-                state.mmcBLOCK.BlockSize = state.mmc.GetSize();
-
-                if (mapper.IsStateSave())
-                {
-                    mapper.LoadState(state.mmc.mmcdata);
-                }
+                mapper.LoadState(state.mmc.mmcdata);
             }
 
             //CONTROLLER STATE
@@ -2048,8 +2060,6 @@ namespace VirtualNes.Core
 
             //SND STATE
             {
-                state.snd = SNDSTAT.GetDefault();
-
                 var buffer = new StateReader(state.snd.snddata);
                 apu.LoadState(buffer);
             }

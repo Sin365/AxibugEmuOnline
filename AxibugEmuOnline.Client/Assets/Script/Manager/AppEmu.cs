@@ -68,5 +68,12 @@ namespace AxibugEmuOnline.Client.Manager
 
             ControlScheme.Current = ControlSchemeSetts.Normal;
         }
+
+        public void ResetGame()
+        {
+            if(m_emuCore.IsNull()) return;
+
+            m_emuCore.DoReset();
+        }
     }
 }

@@ -85,8 +85,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4f275956ba18440b061e92278f13cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PulseInvoke_Delay: 0.4
-  PulseInvoke_Interval: 0.05
   m_menuItemRoot: {fileID: 7102897325704768026}
   GroupRoot: {fileID: 5247317738185020566}
   Template: {fileID: 2502609279043838113, guid: ece591129eb9bcc48bd83ec153c98018, type: 3}
@@ -134,6 +132,7 @@ GameObject:
   - component: {fileID: 1639091783724093883}
   - component: {fileID: 1639091783724093861}
   - component: {fileID: 1639091783724093860}
+  - component: {fileID: 3473513813641582791}
   m_Layer: 5
   m_Name: bg
   m_TagString: Untagged
@@ -198,6 +197,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3473513813641582791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639091783724093882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34f3a870b3a425c4daead53193dcd9c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgUI: {fileID: 1639091783724093860}
 --- !u!1 &1639091784002085451
 GameObject:
   m_ObjectHideFlags: 0

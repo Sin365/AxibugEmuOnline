@@ -13,12 +13,31 @@ namespace AxibugEmuOnline.Client
         public string WebSiteApi => WebHost + "/api";
 
         public delegate void GetRomListAPI(Action<Resp_GameList> callback, int page, int pageSize = 10);
+        public delegate void SearchRomListAPI(Action<Resp_GameList> callback, string searchKey, int page, int pageSize = 10);
 
         public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
         {
             App.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
         }
 
+        public void SearchNesRomList(Action<Resp_GameList> callback, string searchKey, int page, int pageSize = 10)
+        {
+            App.StartCoroutine(SearchNesRomListFlow(searchKey, page, pageSize, callback));
+        }
+        private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<Resp_GameList> callback)
+        {
+            UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                callback.Invoke(null);
+                yield break;
+            }
+
+            var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
+            callback.Invoke(resp);
+        }
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
         {
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");

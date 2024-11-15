@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using VirtualNes;
+using VirtualNes.Core;
 using static AxibugEmuOnline.Client.PaletteDefine;
 
 namespace AxibugEmuOnline.Client
@@ -9,24 +10,40 @@ namespace AxibugEmuOnline.Client
     public class PatternViewer : MonoBehaviour
     {
         public RawImage img;
+        public Text select;
 
         private Color32[] m_lpPattern = new Color32[128 * 256];
         private Texture2D m_texture;
         private Dictionary<byte, RGBQUAD> colors = new Dictionary<byte, RGBQUAD>();
 
+        private int selectPal = 0;
+
         private void Awake()
         {
             m_texture = new Texture2D(128, 256);
+            m_texture.filterMode = FilterMode.Point;
         }
 
         private void Update()
         {
+            if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.T))
+            {
+                SwitchSelectPal();
+            }
             Paint();
         }
 
         private void OnEnable()
         {
             img.gameObject.SetActive(true);
+            if (selectPal < 4)
+            {
+                select.text = $"PatternView BG{(selectPal & 3):00}";
+            }
+            else
+            {
+                select.text = $"PatternView SP{(selectPal & 3):00}";
+            }
         }
 
         private void OnDisable()
@@ -38,7 +55,16 @@ namespace AxibugEmuOnline.Client
         {
             img.texture = m_texture;
 
-            var pal = MMU.SPPAL;
+            ArrayRef<byte> pal = null;
+            if (selectPal < 4)
+            {
+                pal = new ArrayRef<byte>(MMU.BGPAL, selectPal * 4);
+            }
+            else
+            {
+                pal = new ArrayRef<byte>(MMU.SPPAL, (selectPal & 3) * 4);
+            }
+
             var palette = PaletteDefine.GetPaletteData();
             colors[0] = palette[pal[0]];
             colors[1] = palette[pal[1]];
@@ -48,6 +74,7 @@ namespace AxibugEmuOnline.Client
             for (int i = 0; i < 8; i++)
             {
                 var Ptn = MMU.PPU_MEM_BANK[i];
+
                 int lpPtn = 0;
                 for (int p = 0; p < 64; p++)
                 {
@@ -80,6 +107,19 @@ namespace AxibugEmuOnline.Client
         {
             var raw = map[(byte)v];
             return new Color32(raw.rgbRed, raw.rgbGreen, raw.rgbBlue, 255);
+        }
+
+        void SwitchSelectPal()
+        {
+            selectPal = (selectPal + 1) & 7;
+            if (selectPal < 4)
+            {
+                select.text = $"PatternView BG{(selectPal & 3):00}";
+            }
+            else
+            {
+                select.text = $"PatternView SP{(selectPal & 3):00}";
+            }
         }
     }
 }

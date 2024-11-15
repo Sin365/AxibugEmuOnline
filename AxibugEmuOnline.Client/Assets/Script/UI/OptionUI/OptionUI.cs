@@ -1,7 +1,10 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEditor.Graphs.Styles;
 
 namespace AxibugEmuOnline.Client
 {
@@ -32,12 +35,13 @@ namespace AxibugEmuOnline.Client
             get { return m_selectIndex; }
             set
             {
-                value = Mathf.Clamp(value, 0, m_runtimeMenuItems.Count - 1);
+                var selectableItems = m_runtimeMenuItems.Where(t => t.Visible).ToList();
+                value = Mathf.Clamp(value, 0, selectableItems.Count - 1);
                 if (m_selectIndex == value) return;
 
                 m_selectIndex = value;
 
-                OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
+                OptionUI_MenuItem optionUI_MenuItem = selectableItems[m_selectIndex];
                 optionUI_MenuItem.OnFocus();
                 var itemUIRect = optionUI_MenuItem.transform as RectTransform;
                 SelectBorder.pivot = itemUIRect.pivot;
@@ -82,6 +86,8 @@ namespace AxibugEmuOnline.Client
             }
             if (dirty)
             {
+                Canvas.ForceUpdateCanvases();
+
                 if (m_runtimeMenuItems[SelectIndex].Visible == false)
                 {
                     bool find = false;
@@ -110,11 +116,19 @@ namespace AxibugEmuOnline.Client
                     if (find)
                         SelectIndex = currentSelect;
                 }
+                else
+                {
+                    var selectItem = m_runtimeMenuItems[SelectIndex];
+                    var itemUIRect = selectItem.transform as RectTransform;
+                    SelectBorder.pivot = itemUIRect.pivot;
+                    SelectBorder.position = itemUIRect.position;
+                    SelectBorder.sizeDelta = itemUIRect.rect.size;
+                }
             }
         }
 
         ControlScheme m_lastCS;
-        public void Pop(List<OptionMenu> menus, int defaultIndex = 0)
+        public void Pop<T>(List<T> menus, int defaultIndex = 0) where T : OptionMenu
         {
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
@@ -123,7 +137,7 @@ namespace AxibugEmuOnline.Client
 
             Canvas.ForceUpdateCanvases();
 
-            m_selectIndex = 0;
+            m_selectIndex = defaultIndex;
             OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[defaultIndex];
             optionUI_MenuItem.OnFocus();
             var itemUIRect = optionUI_MenuItem.transform as RectTransform;
@@ -195,6 +209,10 @@ namespace AxibugEmuOnline.Client
                 menuUI.SetData(executeMenu);
                 m_runtimeMenuItems.Add(menuUI);
             }
+            else
+            {
+                throw new NotImplementedException($"暂不支持的菜单类型{menuData.GetType().Name}");
+            }
         }
 
         private void ReleaseRuntimeMenus()
@@ -242,22 +260,16 @@ namespace AxibugEmuOnline.Client
             Name = name;
             Icon = icon;
         }
+
+        public virtual void OnFocus() { }
+        public virtual void OnShow(OptionUI_MenuItem ui) { }
     }
 
-    public class ExecuteMenu : OptionMenu
+    public abstract class ExecuteMenu : OptionMenu
     {
         public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
-        public virtual void OnExcute() { }
-    }
-
-    public abstract class ValueSetMenu : OptionMenu
-    {
-        public ValueSetMenu(string name) : base(name) { }
-
-        public abstract Type ValueType { get; }
-        public abstract object ValueRaw { get; }
-        public abstract void OnValueChanged(object newValue);
+        public abstract void OnExcute();
     }
 
     public class ValueSetMenu<T> : ValueSetMenu
@@ -274,4 +286,15 @@ namespace AxibugEmuOnline.Client
         }
         protected ValueSetMenu(string name) : base(name) { }
     }
+
+    public abstract class ValueSetMenu : OptionMenu
+    {
+        public ValueSetMenu(string name) : base(name) { }
+
+        public abstract Type ValueType { get; }
+        public abstract object ValueRaw { get; }
+        public abstract void OnValueChanged(object newValue);
+    }
+
+
 }

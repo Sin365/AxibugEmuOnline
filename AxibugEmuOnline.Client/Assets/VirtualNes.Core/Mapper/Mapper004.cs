@@ -26,6 +26,11 @@ namespace VirtualNes.Core
         protected byte vs_patch;
         protected byte vs_index;
 
+        public override bool IsStateSave()
+        {
+            return true;
+        }
+
         private byte[] VS_TKO_Security = new byte[32]
         {
             0xff, 0xbf, 0xb7, 0x97, 0x97, 0x17, 0x57, 0x4f,

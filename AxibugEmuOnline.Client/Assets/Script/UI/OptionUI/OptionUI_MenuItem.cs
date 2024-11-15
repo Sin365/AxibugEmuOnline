@@ -12,6 +12,8 @@ namespace AxibugEmuOnline.Client
         [SerializeField] Text m_MenuNameTxt;
         [SerializeField] Image m_Icon;
 
+        public Image IconUI => m_Icon;
+
         public bool Visible => m_Menu.Visible;
 
         protected OptionMenu m_Menu;
@@ -24,13 +26,14 @@ namespace AxibugEmuOnline.Client
             else
             {
                 m_Icon.gameObject.SetActiveEx(true);
+                m_Icon.SetMaterial(null);
                 m_Icon.sprite = menuData.Icon;
             }
 
             OnSetData(menuData);
         }
 
-        protected virtual void OnSetData(OptionMenu menuData) { }
+        protected abstract void OnSetData(OptionMenu menuData);
 
         public abstract void OnExecute();
         public abstract void OnFocus();
@@ -40,5 +43,15 @@ namespace AxibugEmuOnline.Client
         where T : OptionMenu
     {
         protected T MenuData => m_Menu as T;
+
+        protected override void OnSetData(OptionMenu menuData)
+        {
+            MenuData.OnShow(this);
+        }
+
+        public override void OnFocus()
+        {
+            MenuData.OnFocus();
+        }
     }
 }

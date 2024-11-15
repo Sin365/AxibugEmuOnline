@@ -49,7 +49,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
                 {
                     for (int i = 0; i < gap; i++)
                     {
-                        ItemProxy item = new ItemProxy(ItemTemplate, this);
+                        ItemProxy item = new ItemProxy(this);
                         children.Add(item);
                         item.Width = cellSize.x;
                         item.Height = cellSize.y;
@@ -74,6 +74,11 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
 
     private List<ItemProxy> handleChildren = new List<ItemProxy>();
     private bool m_dataDirty;
+    private ItemSelector m_itemSelector;
+    protected override void Awake()
+    {
+        m_itemSelector = gameObject.GetComponent<ItemSelector>();
+    }
 
     public override void CalculateLayoutInputHorizontal()
     {
@@ -502,7 +507,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
             proxy.UpdateDP();
         }
 
-        m_dataDirty = true;
+        //m_dataDirty = true;
     }
 
     public Dictionary<GameObject, ScripteInterface> CacheItemScripts => _cacheItemScripts;
@@ -539,5 +544,11 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
         //if (_scrollRect != null) MoveToScrollViewCenter(_scrollRect, dataIndex);
 
         return this.GetItemUIIfExist(dataIndex);
+    }
+
+    public RectTransform GetTemplate(object data)
+    {
+        if (m_itemSelector == null) return ItemTemplate;
+        else return m_itemSelector.GetItemTemplate(data);
     }
 }

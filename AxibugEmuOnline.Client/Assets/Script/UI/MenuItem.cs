@@ -6,12 +6,16 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.UI
 {
-    public class MenuItem : MonoBehaviour
+    public class MenuItem : CommandExecuter
     {
         [SerializeField]
         protected Image Icon;
         [SerializeField]
         protected Text Txt;
+        [SerializeField]
+        protected Text SubTitle;
+        [SerializeField]
+        protected Image spline;
         [SerializeField]
         protected Text Descript;
         [SerializeField]
@@ -32,21 +36,17 @@ namespace AxibugEmuOnline.Client.UI
         protected TweenerCore<float, float, FloatOptions> progressTween;
         protected float m_progress;
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             Reset();
-        }
-
-        protected virtual void OnDestroy()
-        {
-            
         }
 
         public void SetData(MenuData data)
         {
             Reset();
 
-            SetBaseInfo(data.Name, data.Description);
+            SetBaseInfo(data.Name, data.Description, data.SubTitle);
             SetIcon(data.Icon);
             if (SubMenuItemGroup != null) SubMenuItemGroup.Init(data.SubMenus);
         }
@@ -57,21 +57,23 @@ namespace AxibugEmuOnline.Client.UI
             m_progress = 0f;
 
             Root.localScale = Vector3.one * UnSelectScale;
-            
+
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);
 
             if (InfoNode != null) InfoNode.alpha = 0;
+            if (spline != null) spline.SetAlpha(0);
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActiveEx(false);
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(false);
         }
 
-        protected void SetBaseInfo(string name, string descript)
+        protected void SetBaseInfo(string name, string descript, string subTitle)
         {
             this.name = name;
 
             if (Txt != null) Txt.text = name;
+            if (SubTitle != null) SubTitle.text = subTitle;
             if (Descript != null) Descript.text = descript;
         }
 
@@ -95,11 +97,11 @@ namespace AxibugEmuOnline.Client.UI
 
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
-            progressTween = DOTween.To(() => m_progress, (x) => m_progress = x, m_select ? 1 : 0, 5)
-                .SetSpeedBased().OnUpdate(() =>
+            progressTween = DOTween.To(() => m_progress, (x) => m_progress = x, m_select ? 1 : 0, 0.3f)
+                .OnUpdate(() =>
                 {
                     if (InfoNode != null) InfoNode.alpha = m_progress;
-
+                    if (spline != null) spline.SetAlpha(m_progress);
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });
         }
@@ -107,5 +109,7 @@ namespace AxibugEmuOnline.Client.UI
         public virtual bool OnEnterItem() => true;
 
         public virtual bool OnExitItem() => true;
+
+        public override bool Enable => true;
     }
 }

@@ -171,6 +171,7 @@ namespace AxibugEmuOnline.Client.UI
     {
         public Sprite Icon;
         public string Name;
+        public string SubTitle;
         public string Description;
         public MenuItem OverrideTemplate;
         public List<MenuData> SubMenus;
