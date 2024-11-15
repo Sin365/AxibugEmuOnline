@@ -507,7 +507,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
             proxy.UpdateDP();
         }
 
-        m_dataDirty = true;
+        //m_dataDirty = true;
     }
 
     public Dictionary<GameObject, ScripteInterface> CacheItemScripts => _cacheItemScripts;

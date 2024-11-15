@@ -76,7 +76,7 @@ namespace AxibugEmuOnline.Client
 
             public override void OnExcute()
             {
-                OverlayManager.Input((OnSearchCommit, "输入Rom名称", null));
+                OverlayManager.Input((OnSearchCommit, "输入Rom名称", m_romListUI.SearchKey));
             }
 
             private void OnSearchCommit(string text)
@@ -92,7 +92,7 @@ namespace AxibugEmuOnline.Client
 
             public override bool Visible => !string.IsNullOrWhiteSpace(m_ui.SearchKey);
 
-            public OptMenu_ShowAll(RomListMenuItem romListUI,Sprite icon = null) : base("显示全部", icon)
+            public OptMenu_ShowAll(RomListMenuItem romListUI, Sprite icon = null) : base("显示全部", icon)
             {
                 m_ui = romListUI;
             }

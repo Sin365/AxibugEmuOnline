@@ -31,7 +31,7 @@ namespace AxibugEmuOnline.Client
             var color = Datacontext.CurrentColor;
             Icon.GetMaterial().SetColor("_Color1", color.color1);
             Icon.GetMaterial().SetColor("_Color2", color.color2);
-            SetBaseInfo("背景颜色", color.Name);
+            SetBaseInfo("主题色", "设置主题色", color.Name);
         }
 
         public void SetDependencyProperty(object data)
