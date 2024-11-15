@@ -541,10 +541,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ffb0963e9596ce489953bcef1bf3d86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PulseInvoke_Delay: 0.4
-  PulseInvoke_Interval: 0.05
   Icon: {fileID: 6771349210554360888}
   Txt: {fileID: 991446423622995247}
+  SubTitle: {fileID: 0}
+  spline: {fileID: 0}
   Descript: {fileID: 3380485461544738227}
   Root: {fileID: 8754483333502849411}
   ShadowIcon: {fileID: 2619187604372594158}
@@ -731,8 +731,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d1e3e91ac34bc8468f357ee247ffb6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PulseInvoke_Delay: 0.4
-  PulseInvoke_Interval: 0.05
   m_menuItemRoot: {fileID: 0}
   SubMenuItemTemplate: {fileID: 0}
   alphaGroup: {fileID: 0}
@@ -1008,7 +1006,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 500, y: 200}
+  m_CellSize: {x: 500, y: 100}
   m_Spacing: {x: 0, y: 20}
   m_Constraint: 1
   m_ConstraintCount: 1

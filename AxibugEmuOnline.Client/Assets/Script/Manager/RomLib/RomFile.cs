@@ -37,6 +37,8 @@ namespace AxibugEmuOnline.Client
         public string Alias => IsUserRom ? Path.GetFileNameWithoutExtension(FileName) : webData.romName;
         /// <summary> 描述 </summary>
         public string Descript => IsUserRom ? string.Empty : webData.desc;
+        /// <summary> 游戏类型 </summary>
+        public string GameTypeDes => IsUserRom ? string.Empty : webData.gType;
         /// <summary> 小图URL </summary>
         public string ImageURL => IsUserRom ? string.Empty : webData.imgUrl;
 

@@ -8,7 +8,6 @@ namespace AxibugEmuOnline.Client
     public static class UITool
     {
         private static Dictionary<Graphic, Material> _caches = new Dictionary<Graphic, Material>();
-
         public static Material GetMaterial(this Graphic graphic)
         {
             if (_caches.TryGetValue(graphic, out var material))
@@ -23,11 +22,17 @@ namespace AxibugEmuOnline.Client
                 return cloneMat;
             }
         }
-
         public static void SetMaterial(this Graphic graphic, Material material)
         {
             graphic.material = material;
             _caches.Remove(graphic);
+        }
+
+        public static void SetAlpha(this Graphic graphic, float alpha)
+        {
+            var temp = graphic.color;
+            temp.a = alpha;
+            graphic.color = temp;
         }
     }
 }

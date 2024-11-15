@@ -13,6 +13,10 @@ namespace AxibugEmuOnline.Client.UI
         [SerializeField]
         protected Text Txt;
         [SerializeField]
+        protected Text SubTitle;
+        [SerializeField]
+        protected Image spline;
+        [SerializeField]
         protected Text Descript;
         [SerializeField]
         protected Transform Root;
@@ -42,7 +46,7 @@ namespace AxibugEmuOnline.Client.UI
         {
             Reset();
 
-            SetBaseInfo(data.Name, data.Description);
+            SetBaseInfo(data.Name, data.Description, data.SubTitle);
             SetIcon(data.Icon);
             if (SubMenuItemGroup != null) SubMenuItemGroup.Init(data.SubMenus);
         }
@@ -59,15 +63,17 @@ namespace AxibugEmuOnline.Client.UI
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActive(false);
 
             if (InfoNode != null) InfoNode.alpha = 0;
+            if (spline != null) spline.SetAlpha(0);
             if (ShadowIcon != null) ShadowIcon.gameObject.SetActiveEx(false);
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(false);
         }
 
-        protected void SetBaseInfo(string name, string descript)
+        protected void SetBaseInfo(string name, string descript, string subTitle)
         {
             this.name = name;
 
             if (Txt != null) Txt.text = name;
+            if (SubTitle != null) SubTitle.text = subTitle;
             if (Descript != null) Descript.text = descript;
         }
 
@@ -91,11 +97,11 @@ namespace AxibugEmuOnline.Client.UI
 
             if (progressTween != null) { progressTween.Kill(); progressTween = null; }
 
-            progressTween = DOTween.To(() => m_progress, (x) => m_progress = x, m_select ? 1 : 0, 5)
-                .SetSpeedBased().OnUpdate(() =>
+            progressTween = DOTween.To(() => m_progress, (x) => m_progress = x, m_select ? 1 : 0, 0.3f)
+                .OnUpdate(() =>
                 {
                     if (InfoNode != null) InfoNode.alpha = m_progress;
-
+                    if (spline != null) spline.SetAlpha(m_progress);
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });
         }
