@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="9.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Google.Protobuf">
       <HintPath>..\Lib\Google.Protobuf.dll</HintPath>
     </Reference>
