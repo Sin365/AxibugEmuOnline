@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
+    /// <summary> 颜色设置 </summary>
     public class BgColorSettings
     {
         public delegate void OnColorChangedHandle(XMBColor color);

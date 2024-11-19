@@ -386,7 +386,7 @@ namespace VirtualNes.Core
             loopy_shift = 0;
 
             if (lpScreen != null)
-                Unsafe.InitBlockUnaligned(lpScreen, 0, SCREEN_WIDTH * SCREEN_HEIGHT);
+                MemoryUtility.memset(lpScreen, 0, 0, SCREEN_WIDTH * SCREEN_HEIGHT);
             if (lpColormode != null)
                 MemoryUtility.memset(lpColormode, 0, SCREEN_HEIGHT);
         }
@@ -402,7 +402,7 @@ namespace VirtualNes.Core
 
             if (lpScreen != null)
             {
-                Unsafe.InitBlockUnaligned(lpScreen, 0x3F, SCREEN_WIDTH);
+                MemoryUtility.memset(lpScreen, 0, 0x3f, SCREEN_WIDTH);
             }
             if (lpColormode != null)
             {
@@ -457,8 +457,8 @@ namespace VirtualNes.Core
         {
             byte chr_h = 0, chr_l = 0, attr = 0;
 
-            Unsafe.InitBlockUnaligned(BGwrite, 0, 34);
-            Unsafe.InitBlockUnaligned(BGmono, 0, 34);
+            MemoryUtility.memset(BGwrite, 0, 34);
+            MemoryUtility.memset(BGmono, 0, 34);
 
             // Linecolor mode
             lpColormode[scanline] = (byte)(((MMU.PPUREG[1] & PPU_BGCOLOR_BIT) >> 5) | ((MMU.PPUREG[1] & PPU_COLORMODE_BIT) << 7));
@@ -466,7 +466,7 @@ namespace VirtualNes.Core
             // Render BG
             if ((MMU.PPUREG[1] & PPU_BGDISP_BIT) == 0)
             {
-                Unsafe.InitBlockUnaligned(lpScanline, MMU.BGPAL[0], SCREEN_WIDTH);
+                MemoryUtility.memset(lpScanline, MMU.BGPAL[0], SCREEN_WIDTH);
                 if (nes.GetRenderMethod() == EnumRenderMethod.TILE_RENDER)
                 {
                     nes.EmulationCPU(NES.FETCH_CYCLES * 4 * 32);
@@ -869,7 +869,7 @@ namespace VirtualNes.Core
             {
                 byte* pBGw = BGwrite;
                 byte* pSPw = SPwrite;
-                Unsafe.InitBlockUnaligned(pSPw, 0, 34);
+                MemoryUtility.memset(pSPw, 0, 34);
 
                 spmax = 0;
                 Sprite sp = new Sprite(MMU.SPRAM, 0);
@@ -1092,8 +1092,11 @@ namespace VirtualNes.Core
             return lpColormode;
         }
 
-        internal void SetScreenPtr(uint[] screenBuffer, byte[] colormode)
+        internal void InitBuffer()
         {
+            var screenBuffer = new uint[SCREEN_WIDTH * SCREEN_HEIGHT];
+            var colormode = new byte[SCREEN_HEIGHT];
+
             lpScreenGCH = GCHandle.Alloc(screenBuffer, GCHandleType.Pinned);
             lpScreen = (uint*)lpScreenGCH.AddrOfPinnedObject();
             lpColormode = colormode;
@@ -1180,11 +1183,16 @@ namespace VirtualNes.Core
         }
     }
 
+    [StructLayout(LayoutKind.Explicit, Size = 16)]
     public struct UInt128
     {
+        [FieldOffset(0)]
         public UInt32 a;
+        [FieldOffset(4)]
         public UInt32 b;
+        [FieldOffset(8)]
         public UInt32 c;
+        [FieldOffset(12)]
         public UInt32 d;
     }
 }

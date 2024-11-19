@@ -112,21 +112,17 @@ namespace AxibugEmuOnline.Client
                     }
 
                     m_sampledState = FromNet(replayData);
-                    var localState = NesControllerMapper.Get().CreateState();
-                    var rawData = ToNet(localState);
-                    if (LastTestInput != rawData)
-                    {
-                        LastTestInput = rawData;
-                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
-                    }
-                    App.roomMgr.SendRoomSingelPlayerInput(frameIndex, rawData);
                 }
-                else
+                else m_sampledState = default;
+
+                var localState = NesControllerMapper.Get().CreateState();
+                var rawData = ToNet(localState);
+                if (LastTestInput != rawData)
                 {
-                    //App.log.Error($"Server Lag remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                    //    $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
-                    m_sampledState = default;
+                    LastTestInput = rawData;
+                    App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
                 }
+                App.roomMgr.SendRoomSingelPlayerInput(frameIndex, rawData);
             }
             else
             {

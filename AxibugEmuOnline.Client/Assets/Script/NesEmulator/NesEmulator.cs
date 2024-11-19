@@ -62,8 +62,7 @@ namespace AxibugEmuOnline.Client
                     FixEmulatorFrame();
 
                 var screenBuffer = NesCore.ppu.GetScreenPtr();
-                var lineColorMode = NesCore.ppu.GetLineColorMode();
-                VideoProvider.SetDrawData(screenBuffer, lineColorMode, 277, 240);
+                VideoProvider.SetDrawData(screenBuffer);
             }
         }
 
