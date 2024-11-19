@@ -12,10 +12,14 @@ namespace AxibugEmuOnline.Client
 {
     public class NesEmulator : MonoBehaviour, IEmuCore
     {
+        //模拟器核心实例化对象
         public NES NesCore { get; private set; }
 
+        //视频驱动（这里是Unity接收模拟器画面数据的并渲染出来的实现）
         public VideoProvider VideoProvider;
+        //音频驱动（这里是Unity接收模拟器音频数据的并播放出来的实现）
         public AudioProvider AudioProvider;
+        //是否暂停
         public bool m_bPause;
 
         private void Start()
@@ -25,6 +29,10 @@ namespace AxibugEmuOnline.Client
             AudioProvider.NesEmu = this;
         }
 
+        /// <summary>
+        /// 指定ROM开始游戏
+        /// </summary>
+        /// <param name="rom"></param>
         public void StartGame(RomFile rom)
         {
             StopGame();
@@ -45,12 +53,18 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        /// <summary>
+        /// 停止游戏
+        /// </summary>
         public void StopGame()
         {
             NesCore?.Dispose();
             NesCore = null;
         }
 
+        /// <summary>
+        /// Unity的逐帧驱动
+        /// </summary>
         private unsafe void Update()
         {
             if (m_bPause) return;
@@ -67,6 +81,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        //是否跳帧，单机无效
         private void FixEmulatorFrame()
         {
             var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
@@ -79,6 +94,7 @@ namespace AxibugEmuOnline.Client
         }
 
         ControllerState lastState;
+        //往服务器推送帧数（单机不需要）
         private bool PushEmulatorFrame()
         {
             Supporter.SampleInput(NesCore.FrameCount);
@@ -133,11 +149,19 @@ namespace AxibugEmuOnline.Client
             return NesCore.GetState();
         }
 
+        /// <summary>
+        /// 获取即时存档
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetStateBytes()
         {
             return NesCore.GetState().ToBytes();
         }
 
+        /// <summary>
+        /// 加载即时存档
+        /// </summary>
+        /// <param name="data"></param>
         public void LoadStateFromBytes(byte[] data)
         {
             State st = new State();
@@ -146,6 +170,9 @@ namespace AxibugEmuOnline.Client
         }
 
 
+        /// <summary>
+        /// 编辑器用
+        /// </summary>
         [Conditional("UNITY_EDITOR")]
         [ContextMenu("ImportNesDB")]
         public void ImportNesDB()
