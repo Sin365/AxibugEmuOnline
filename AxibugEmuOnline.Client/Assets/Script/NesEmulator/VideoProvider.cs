@@ -1,5 +1,7 @@
+using AxibugEmuOnline.Client.Common;
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,11 +25,10 @@ namespace AxibugEmuOnline.Client
             DrawCanvas.worldCamera = Camera.main;
         }
 
-        public unsafe void SetDrawData(uint* screenData, byte[] lineColorMode, int screenWidth, int screenHeight)
+        public unsafe void SetDrawData(uint* screenData)
         {
             if (wrapTex == null)
             {
-                //wrapTex = new Texture2D(272, 240, TextureFormat.BGRA32, false);
                 wrapTex = new Texture2D(272, 240, TextureFormat.RGBA32, false);
                 wrapTex.filterMode = FilterMode.Point;
 
@@ -36,7 +37,7 @@ namespace AxibugEmuOnline.Client
                 Image.texture = wrapTex;
                 Image.material.SetTexture("_MainTex", wrapTex);
 
-                TexBufferSize = screenWidth * screenHeight * 4;
+                TexBufferSize = wrapTex.width * wrapTex.height * 4;
 
                 var palRaw = PaletteDefine.m_cnPalette[0];
                 pPal = new Texture2D(palRaw.Length, 1, TextureFormat.RGBA32, false);

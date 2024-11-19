@@ -41,6 +41,34 @@ namespace VirtualNes.Core
             }
         }
 
+        public unsafe static void memset(byte* ptr, int offset, byte value, int length)
+        {
+            var offsetptr = ptr + offset;
+            for (int i = 0; i < length; i++)
+            {
+                offsetptr[i] = value;
+            }
+        }
+
+        public unsafe static void memset(byte* ptr, byte value, int length)
+        {
+            memset(ptr, 0, value, length);
+        }
+
+        public unsafe static void memset(uint* ptr, int offset, uint value, int length)
+        {
+            var offsetptr = ptr + offset;
+            for (int i = 0; i < length; i++)
+            {
+                offsetptr[i] = value;
+            }
+        }
+
+        public unsafe static void memset(uint* ptr, uint value, int length)
+        {
+            memset(ptr, 0, value, length);
+        }
+
         public static void memcpy(Array dst, Array src, int length)
         {
             Array.Copy(src, dst, length);
