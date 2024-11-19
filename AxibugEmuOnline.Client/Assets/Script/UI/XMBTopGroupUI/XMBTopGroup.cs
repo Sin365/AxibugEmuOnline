@@ -12,6 +12,7 @@ public class XMBTopGroup : MonoBehaviour
     public Image imgPower2;
     public Image imgPower3;
     public Text DelayValue;
+    public Text FPS;
 
     void OnEnable()
     {
@@ -29,6 +30,25 @@ public class XMBTopGroup : MonoBehaviour
         RefreshTime();
         RefreshPower();
         RefreshDelay();
+        RefreshFps();
+    }
+
+    (uint lastFrame, float lastTime) m_lastFrameInfo;
+    private void RefreshFps()
+    {
+        if (App.emu.Core.IsNull())
+            FPS.gameObject.SetActiveEx(false);
+        else
+        {
+            FPS.gameObject.SetActiveEx(true);
+            var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
+            var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
+            var fps = gap / time;
+            FPS.text = $"FPS:{fps:.#}";
+
+            m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
+            m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
+        }
     }
 
     private void RefreshDelay()
