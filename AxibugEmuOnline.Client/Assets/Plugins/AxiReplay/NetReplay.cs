@@ -111,7 +111,7 @@ namespace AxiReplay
         public int GetSkipFrameCount()
         {
             var frameGap = mDiffFrameCount;
-            if (frameGap <= 0) return 0;
+            if (frameGap > 10000) return 0;
 
             int skip = 0;
 
