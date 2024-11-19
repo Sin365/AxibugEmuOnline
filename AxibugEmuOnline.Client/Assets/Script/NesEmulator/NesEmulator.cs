@@ -169,5 +169,7 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
+
+        public uint Frame => NesCore.FrameCount;
     }
 }

@@ -114,7 +114,7 @@ namespace AxiReplay
             if (frameGap > 10000) return 0;
 
             int skip = 0;
-
+            
             if (frameGap <= 2) skip = 0;
             if (frameGap > 2 && frameGap < 6) skip = 1 + 1;
             else if (frameGap > 7 && frameGap < 12) skip = 2 + 1;
