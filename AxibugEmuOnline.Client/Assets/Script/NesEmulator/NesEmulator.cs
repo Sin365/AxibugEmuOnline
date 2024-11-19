@@ -94,7 +94,7 @@ namespace AxibugEmuOnline.Client
         }
 
         ControllerState lastState;
-        //往服务器推送帧数（单机不需要）
+        //推进帧
         private bool PushEmulatorFrame()
         {
             Supporter.SampleInput(NesCore.FrameCount);
