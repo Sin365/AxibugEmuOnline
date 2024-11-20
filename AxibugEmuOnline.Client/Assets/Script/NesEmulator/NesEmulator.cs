@@ -76,8 +76,7 @@ namespace AxibugEmuOnline.Client
                     FixEmulatorFrame();
 
                 var screenBuffer = NesCore.ppu.GetScreenPtr();
-                var lineColorMode = NesCore.ppu.GetLineColorMode();
-                VideoProvider.SetDrawData(screenBuffer, lineColorMode, 277, 240);
+                VideoProvider.SetDrawData(screenBuffer);
             }
         }
 
@@ -197,5 +196,7 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
+
+        public uint Frame => NesCore.FrameCount;
     }
 }
