@@ -221,10 +221,7 @@ namespace VirtualNes.Core
                 Debuger.Log("Allocating PPU...");
                 ppu = new PPU(this);
 
-                var screenBuffer = new uint[PPU.SCREEN_WIDTH * PPU.SCREEN_HEIGHT];
-                var colormode = new byte[PPU.SCREEN_HEIGHT];
-
-                ppu.SetScreenPtr(screenBuffer, colormode);
+                ppu.InitBuffer();
 
                 Debuger.Log("Allocating APU...");
                 apu = new APU(this);
@@ -766,69 +763,7 @@ namespace VirtualNes.Core
                 }
             }
 
-            if (bDraw)
-            {
-                DrawPad();
-            }
-
             FrameCount++;
-        }
-
-        private void DrawPad()
-        {
-            if (m_bMoviePlay)
-            {
-                int offset_h = 12;
-                int offset_v = Supporter.Config.graphics.bAllLine ? (240 - 18) : (240 - 22);
-
-                if (Supporter.Config.movie.bPadDisplay)
-                {
-                    uint dwData = pad.GetSyncData();
-                    for (int i = 0; i < 4; i++)
-                    {
-                        byte Data = (byte)(dwData >> (i * 8));
-                        if ((m_MovieControl & (1 << i)) != 0)
-                        {
-                            DrawBitmap(offset_h, offset_v, m_PadImg);
-
-                            // KEY
-                            if ((Data & (1 << 4)) != 0) DrawBitmap(offset_h + 3, offset_v + 1, m_KeyImg0); // U
-                            if ((Data & (1 << 5)) != 0) DrawBitmap(offset_h + 3, offset_v + 5, m_KeyImg0); // D
-                            if ((Data & (1 << 6)) != 0) DrawBitmap(offset_h + 1, offset_v + 3, m_KeyImg0); // L
-                            if ((Data & (1 << 7)) != 0) DrawBitmap(offset_h + 5, offset_v + 3, m_KeyImg0); // R
-
-                            // START,SELECT
-                            if ((Data & (1 << 2)) != 0) DrawBitmap(offset_h + 9, offset_v + 5, m_KeyImg1); // SELECT
-                            if ((Data & (1 << 3)) != 0) DrawBitmap(offset_h + 13, offset_v + 5, m_KeyImg1); // START
-
-                            // A,B
-                            if ((Data & (1 << 0)) != 0) DrawBitmap(offset_h + 23, offset_v + 3, m_KeyImg2); // A
-                            if ((Data & (1 << 1)) != 0) DrawBitmap(offset_h + 18, offset_v + 3, m_KeyImg2); // B
-
-                            offset_h += 30;
-                        }
-                    }
-                }
-
-                if (Supporter.Config.movie.bTimeDisplay)
-                {
-                    // Time display
-                    int t = m_MovieStep;
-                    int h = t / 216000;
-                    t -= h * 216000;
-                    int m = t / 3600;
-                    t -= m * 3600;
-                    int s = t / 60;
-                    t -= s * 60;
-
-                    string szTemp = $"{h:00}:{m:00}:{s:00}.{t * 100 / 60:00}";
-                    DrawString(256 - 80 + 0, offset_v - 1, szTemp, 0x1F);
-                    DrawString(256 - 80 + 0, offset_v + 1, szTemp, 0x1F);
-                    DrawString(256 - 80 - 1, offset_v + 0, szTemp, 0x1F);
-                    DrawString(256 - 80 + 1, offset_v + 0, szTemp, 0x1F);
-                    DrawString(256 - 80, offset_v, szTemp, 0x30);
-                }
-            }
         }
 
         internal void DrawString(int x, int y, string str, byte col)
@@ -866,33 +801,6 @@ namespace VirtualNes.Core
             }
         }
 
-        private unsafe void DrawBitmap(int x, int y, byte[] bitMap)
-        {
-            int i, j;
-            int h, v;
-            var Scn = ppu.GetScreenPtr();
-            int pScn = 8 + (256 + 16) * y + x;
-            int pPtr;
-
-            int lpBitmap = 0;
-            h = bitMap[lpBitmap++];
-            v = bitMap[lpBitmap++];
-
-            for (j = 0; j < v; j++)
-            {
-                pPtr = pScn;
-                for (i = 0; i < h; i++)
-                {
-                    if (bitMap[lpBitmap] != 0xFF)
-                    {
-                        Scn[pPtr] = bitMap[lpBitmap];
-                    }
-                    lpBitmap++;
-                    pPtr++;
-                }
-                pScn += 256 + 16;
-            }
-        }
 
         int CPU_CALL_COUNT = 0;
         internal void EmulationCPU(int basecycles)

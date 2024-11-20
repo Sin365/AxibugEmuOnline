@@ -13,6 +13,11 @@ namespace AxibugEmuOnline.Client.Manager
         /// 但是Equals方法可以,所以,这个接口判断为空请使用Equals
         /// </summary>
         private IEmuCore m_emuCore;
+        /// <summary>
+        /// unity的c#实现有bug,以接口类型保存的monobehaviour引用,!=和==运算符没有调用到monobehaviour重写过的运算符
+        /// 但是Equals方法可以,所以,这个接口判断为空请使用Equals
+        /// </summary>
+        public IEmuCore Core => m_emuCore;
 
         public AppEmu()
         {
