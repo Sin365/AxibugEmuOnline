@@ -91,7 +91,7 @@ namespace VirtualNes.Core
                     irq_repeat = (byte)(data & 0x01);
                     irq_enable = (byte)(data & 0x02);
                     irq_occur = 0;
-                    if (irq_enable!= null)
+                    if (irq_enable != null)
                     {
                         irq_counter = irq_latch;
                     }
@@ -108,7 +108,7 @@ namespace VirtualNes.Core
                 case 0x4035:
                     reg[7] = data;
 
-                    irq_latch = (irq_latch & 0x00FF) | ((ushort)data << 8);
+                    irq_latch = (irq_latch & 0x00FF) | (data << 8);
                     break;
                 case 0x4040:
                     SetPROM_4K_Bank(0x8000, data & 0x7F);
@@ -163,20 +163,20 @@ namespace VirtualNes.Core
 
         public override void HSync(int scanline)
         {
-        //	if( (scanline >= 0 && scanline <= 239) ) {
-        //		if( nes.ppu.IsDispON() ) {
-        //			if( irq_enable ) {
-        //				irq_enable = 0;
-        ///				nes.cpu.SetIRQ( IRQ_MAPPER );
-        //			}
-        //		}
-        //	}
-    }
+            //	if( (scanline >= 0 && scanline <= 239) ) {
+            //		if( nes.ppu.IsDispON() ) {
+            //			if( irq_enable ) {
+            //				irq_enable = 0;
+            ///				nes.cpu.SetIRQ( IRQ_MAPPER );
+            //			}
+            //		}
+            //	}
+        }
 
         public override void Clock(int cycles)
         {
 
-            if (irq_enable!= 0)
+            if (irq_enable != 0)
             {
                 irq_counter -= cycles;
                 if (irq_counter <= 0)

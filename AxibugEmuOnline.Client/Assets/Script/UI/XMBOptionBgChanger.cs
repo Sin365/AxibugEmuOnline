@@ -1,7 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using Coffee.UIExtensions;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {

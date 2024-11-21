@@ -139,7 +139,7 @@
                 int temp = channel_use * (8 - ch.databuf) * 4 * 45;
                 if (temp == 0)
                     return 0;
-                return (int)(256.0 * (double)cpu_clock * 12.0 * ch.freq / ((double)0x40000 * temp));
+                return (int)(256.0 * cpu_clock * 12.0 * ch.freq / ((double)0x40000 * temp));
             }
 
             return 0;
