@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Scripting;
 using static AxibugEmuOnline.Client.HttpAPI;
 using static AxibugEmuOnline.Client.Manager.LogManager;
 
@@ -38,6 +39,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
 
+        [Preserve]
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         static void Init()
         {
