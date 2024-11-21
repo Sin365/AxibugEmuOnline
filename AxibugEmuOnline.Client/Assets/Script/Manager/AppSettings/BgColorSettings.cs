@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client
                 var color1 = PlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color1)}", null);
                 var color2 = PlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color2)}", null);
                 var name = PlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.Name)}", null);
-                if (color1 == null || color2 == null || name == null)
+                if (string.IsNullOrWhiteSpace(color1) || string.IsNullOrWhiteSpace(color2) || string.IsNullOrWhiteSpace(name))
                     return DEFAULT;
                 else
                     return new XMBColor(name, color1, color2);

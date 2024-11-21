@@ -8,7 +8,10 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class BgSetting_Color : MenuItem, IVirtualItem
+    /// <summary>
+    /// ±≥æ∞—’…´…Ë÷√UI
+    /// </summary>
+    public class UI_BgSettingItem_Color : MenuItem, IVirtualItem
     {
         public int Index { get; set; }
         public BgColorSettings Datacontext { get; private set; }
