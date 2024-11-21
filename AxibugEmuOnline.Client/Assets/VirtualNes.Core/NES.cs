@@ -1,12 +1,7 @@
-using Codice.CM.Client.Differences;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography;
 using System.Text;
-using UnityEngine;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core

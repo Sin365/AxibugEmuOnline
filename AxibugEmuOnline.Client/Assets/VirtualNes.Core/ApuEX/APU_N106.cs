@@ -1,9 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-using RECTANGLE = VirtualNes.Core.APU_VRC6.RECTANGLE;
-using SAWTOOTH = VirtualNes.Core.APU_VRC6.SAWTOOTH;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public class APU_N106 : APU_INTERFACE
     {
