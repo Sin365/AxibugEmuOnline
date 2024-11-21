@@ -92,7 +92,7 @@ namespace AxibugEmuOnline.Client
                 else
                     CommandDispatcher.Instance.UnRegistController(this);
 
-                if(!value)
+                if (!value)
                     ResetPulsInvoker();
             }
         }
@@ -100,7 +100,7 @@ namespace AxibugEmuOnline.Client
         public abstract void Init(List<T> menuDataList);
 
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             if (CommandDispatcher.Instance != null)
                 CommandDispatcher.Instance.UnRegistController(this);
