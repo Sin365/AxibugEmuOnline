@@ -87,8 +87,6 @@ namespace AxibugEmuOnline.Client
             public Mapper START = new Mapper(EnumButtonType.START);
             public Mapper MIC = new Mapper(EnumButtonType.MIC);
 
-
-
             public EnumButtonType GetButtons()
             {
                 EnumButtonType res = 0;

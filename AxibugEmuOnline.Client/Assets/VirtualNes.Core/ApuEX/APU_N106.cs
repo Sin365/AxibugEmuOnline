@@ -1,9 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-using RECTANGLE = VirtualNes.Core.APU_VRC6.RECTANGLE;
-using SAWTOOTH = VirtualNes.Core.APU_VRC6.SAWTOOTH;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public class APU_N106 : APU_INTERFACE
     {
@@ -144,7 +139,7 @@ namespace VirtualNes.Core
                 int temp = channel_use * (8 - ch.databuf) * 4 * 45;
                 if (temp == 0)
                     return 0;
-                return (int)(256.0 * (double)cpu_clock * 12.0 * ch.freq / ((double)0x40000 * temp));
+                return (int)(256.0 * cpu_clock * 12.0 * ch.freq / ((double)0x40000 * temp));
             }
 
             return 0;
