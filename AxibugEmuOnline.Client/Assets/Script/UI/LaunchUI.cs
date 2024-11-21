@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
@@ -28,6 +29,7 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
+            App.Init();
             Instance = this;
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;

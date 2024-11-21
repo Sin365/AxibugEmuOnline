@@ -50,6 +50,16 @@ namespace AxibugEmuOnline.Client
                 uiKeyMapper[Common.PSVitaKey.Cross] = EnumCommand.Back;
                 uiKeyMapper[Common.PSVitaKey.Triangle] = EnumCommand.OptionMenu;
             }
+
+            //PC XBOX
+
+            //uiKeyMapper[Common.PC_XBOXKEY.Left] = EnumCommand.SelectItemLeft;
+            //uiKeyMapper[Common.PSVitaKey.Right] = EnumCommand.SelectItemRight;
+            //uiKeyMapper[Common.PSVitaKey.Up] = EnumCommand.SelectItemUp;
+            //uiKeyMapper[Common.PSVitaKey.Down] = EnumCommand.SelectItemDown;
+            uiKeyMapper[Common.PC_XBOXKEY.MenuBtn] = EnumCommand.Enter;
+            uiKeyMapper[Common.PC_XBOXKEY.ViewBtn] = EnumCommand.Back;
+            uiKeyMapper[Common.PC_XBOXKEY.Y] = EnumCommand.OptionMenu;
         }
     }
 }
