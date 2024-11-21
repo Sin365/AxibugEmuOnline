@@ -12,11 +12,47 @@ namespace AxibugEmuOnline.Client
         /// <summary> 独占注册对象,指令会被列表中最后一个对象独占 </summary>
         List<CommandExecuter> m_registerHigh = new List<CommandExecuter>();
 
-        Dictionary<KeyCode, EnumCommand> m_keyMapper = new Dictionary<KeyCode, EnumCommand>();
+        ICommandListener m_listener;
+        /// <summary> 标准UI操作 </summary>
+        public IKeyMapperChanger Normal { get; private set; }
+        /// <summary> 游戏中UI操作 </summary>
+        public IKeyMapperChanger Gaming { get; private set; }
+
+        public bool LegacyInput;
+
+        private IKeyMapperChanger m_current;
+        public IKeyMapperChanger Current
+        {
+            get => m_current;
+            set
+            {
+                m_current = value;
+
+                SetKeyMapper(m_current);
+            }
+        }
 
         private void Awake()
         {
             Instance = this;
+
+            //初始化command监视器
+            if (LegacyInput)
+                m_listener = new CommandListener_Legacy();
+            else
+                m_listener = new CommandListener();
+
+            //初始化键位修改器
+            if (LegacyInput)
+            {
+                Normal = new NormalChanger_Legacy();
+                Gaming = new GamingChanger_Legacy();
+            }
+            else
+            {
+                Normal = new NormalChanger();
+                Gaming = new GamingChanger();
+            }
         }
 
         private void OnDestroy()
@@ -51,40 +87,21 @@ namespace AxibugEmuOnline.Client
         readonly List<CommandExecuter> oneFrameRegister = new List<CommandExecuter>();
         private void Update()
         {
-            foreach (var item in m_keyMapper)
-            {
-                peekRegister(oneFrameRegister);
+            peekRegister(oneFrameRegister);
+            m_listener.Update(oneFrameRegister);
 
-                if (Input.GetKeyDown(item.Key))
-                {
-                    foreach (var controller in oneFrameRegister)
-                    {
-                        if (!controller.Enable) continue;
-                        controller.ExecuteCommand(item.Value, false);
-                    }
-                }
-                if (Input.GetKeyUp(item.Key))
-                {
-                    foreach (var controller in oneFrameRegister)
-                    {
-                        if (!controller.Enable) continue;
-                        controller.ExecuteCommand(item.Value, true);
-                    }
-                }
-            }
-
-            //键位映射表需要在按键响应的堆栈结束后处理,防止迭代器修改问题
+            //键位映射在按键响应的堆栈结束后处理,防止迭代器修改问题
             if (m_waitMapperSetting != null)
             {
-                m_keyMapper = m_waitMapperSetting;
+                m_listener.ApplyKeyMapper(m_waitMapperSetting);
                 m_waitMapperSetting = null;
             }
         }
 
-        private Dictionary<KeyCode, EnumCommand> m_waitMapperSetting = null;
-        public void SetKeyMapper(Dictionary<KeyCode, EnumCommand> mapper)
+        IKeyMapperChanger m_waitMapperSetting = null;
+        void SetKeyMapper(IKeyMapperChanger keyMapChanger)
         {
-            m_waitMapperSetting = mapper;
+            m_waitMapperSetting = keyMapChanger;
         }
 
         private List<CommandExecuter> peekRegister(List<CommandExecuter> results)
@@ -113,7 +130,6 @@ namespace AxibugEmuOnline.Client
 
             return results;
         }
-
 
 #if UNITY_EDITOR
         public void GetRegisters(out IReadOnlyList<CommandExecuter> normal, out IReadOnlyList<CommandExecuter> alone)

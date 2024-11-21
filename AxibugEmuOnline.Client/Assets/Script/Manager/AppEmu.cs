@@ -71,7 +71,7 @@ namespace AxibugEmuOnline.Client.Manager
             InGameUI.Instance.Hide();
             LaunchUI.Instance.ShowMainMenu();
 
-            ControlScheme.Current = ControlSchemeSetts.Normal;
+            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
         }
 
         public void ResetGame()

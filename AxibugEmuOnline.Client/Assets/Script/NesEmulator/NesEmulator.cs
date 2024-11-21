@@ -135,7 +135,7 @@ namespace AxibugEmuOnline.Client
 
         public void SetupScheme()
         {
-            ControlScheme.Current = ControlSchemeSetts.NES;
+            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Gaming;
         }
 
         public void LoadState(object state)

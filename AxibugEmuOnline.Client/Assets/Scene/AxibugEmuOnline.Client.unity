@@ -150,16 +150,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 74796456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: eb413fd14a8483440af9652b7e4df5e1, type: 3}
+  m_PointAction: {fileID: 0}
+  m_MoveAction: {fileID: 0}
+  m_SubmitAction: {fileID: 0}
+  m_CancelAction: {fileID: 0}
+  m_LeftClickAction: {fileID: 0}
+  m_MiddleClickAction: {fileID: 0}
+  m_RightClickAction: {fileID: 0}
+  m_ScrollWheelAction: {fileID: 0}
+  m_TrackedDevicePositionAction: {fileID: 0}
+  m_TrackedDeviceOrientationAction: {fileID: 0}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!114 &74796458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2499,7 +2508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1639091784002085428, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1639091784002085428, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13565,6 +13574,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 2073453794}
   - {fileID: 1983793178}
   - {fileID: 246947326}
   - {fileID: 1318590597}
@@ -13665,6 +13675,99 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1639091784002085428, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
   m_PrefabInstance: {fileID: 730698711}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2073453793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2073453794}
+  - component: {fileID: 2073453795}
+  m_Layer: 0
+  m_Name: UI_Input
+  m_TagString: UIInput
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2073453794
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073453793}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10799.999}
+  m_LocalScale: {x: 108, y: 108, z: 108}
+  m_Children: []
+  m_Father: {fileID: 1599240741}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2073453795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073453793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: eb413fd14a8483440af9652b7e4df5e1, type: 3}
+  m_NotificationBehavior: 3
+  m_UIInputModule: {fileID: 74796457}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 107019fe-240c-46ff-8c62-cb385ef8b9af
+    m_ActionName: UI_Normal/SelectItemLeft
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 826dd3f1-2cf8-4169-97c8-dfb56b850143
+    m_ActionName: UI_Normal/SelectItemRight
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 505dabb4-91f7-430c-8696-092690269639
+    m_ActionName: UI_Normal/SelectItemUp
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b3da8633-7f50-44b3-8302-50706e589307
+    m_ActionName: UI_Normal/SelectItemDown
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0bdf3154-e1db-4044-af50-cacb3764a07c
+    m_ActionName: UI_Normal/Enter
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 68074d67-61a1-4a4d-bd68-8398b0e7afe3
+    m_ActionName: UI_Normal/Back
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 64b67280-c530-4e38-b3ff-8d0177591396
+    m_ActionName: UI_Normal/OptionMenu
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cab3c346-07e2-4c0c-8377-cb934dd28bd3
+    m_ActionName: UI_InGame/OptionMenu
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard
+  m_DefaultActionMap: UI_Normal
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1001 &1963501580473600373
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13682,7 +13785,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1963501579241001456, guid: 334eee9f85f308347844f8f5e99167c3, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1963501579241001456, guid: 334eee9f85f308347844f8f5e99167c3, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13791,7 +13894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3531919739338806919, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3531919739338806919, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
       propertyPath: m_AnchorMax.x
@@ -13944,7 +14047,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4478785627166277610, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4478785627166277610, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_AnchorMax.x
