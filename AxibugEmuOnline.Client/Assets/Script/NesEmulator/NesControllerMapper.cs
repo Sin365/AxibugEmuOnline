@@ -25,6 +25,12 @@ namespace AxibugEmuOnline.Client
             Player1.A.keyCode = KeyCode.K;
             Player1.SELECT.keyCode = KeyCode.V;
             Player1.START.keyCode = KeyCode.B;
+
+            //PC XBOX
+            //Player1.B.keyCode = Common.PC_XBOXKEY.A;
+            //Player1.A.keyCode = Common.PC_XBOXKEY.B;
+            //Player1.SELECT.keyCode = Common.PC_XBOXKEY.ViewBtn;
+            //Player1.START.keyCode = Common.PC_XBOXKEY.MenuBtn;
         }
 
         public void Save()

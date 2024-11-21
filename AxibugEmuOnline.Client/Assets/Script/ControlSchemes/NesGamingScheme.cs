@@ -14,6 +14,9 @@ namespace AxibugEmuOnline.Client
                 uiKeyMapper[Common.PSVitaKey.L] = EnumCommand.OptionMenu;
                 uiKeyMapper[Common.PSVitaKey.R] = EnumCommand.OptionMenu;
             }
+
+            //PC XBOX
+            uiKeyMapper[Common.PC_XBOXKEY.Y] = EnumCommand.OptionMenu;
         }
     }
 

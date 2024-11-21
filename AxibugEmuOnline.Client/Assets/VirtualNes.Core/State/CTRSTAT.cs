@@ -1,7 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using System;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public struct CTRSTAT : IStateBufferObject
     {

@@ -1,5 +1,4 @@
-﻿using Codice.CM.Client.Differences;
-using VirtualNes.Core;
+﻿using VirtualNes.Core;
 
 namespace VirtualNes
 {

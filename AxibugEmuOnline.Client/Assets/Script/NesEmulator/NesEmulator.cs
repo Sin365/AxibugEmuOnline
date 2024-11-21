@@ -168,7 +168,7 @@ namespace AxibugEmuOnline.Client
             NesCore.LoadState(st);
         }
 
-
+#if UNITY_EDITOR
         /// <summary>
         /// ±à¼­Æ÷ÓÃ
         /// </summary>
@@ -196,6 +196,7 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
+#endif
 
         public uint Frame => NesCore.FrameCount;
     }
