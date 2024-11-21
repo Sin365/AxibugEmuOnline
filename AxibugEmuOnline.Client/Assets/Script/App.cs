@@ -39,9 +39,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
 
-        [Preserve]
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-        static void Init()
+
+
+        //[Preserve]
+        //[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        public static void Init()
         {
             settings = new AppSettings();
 
