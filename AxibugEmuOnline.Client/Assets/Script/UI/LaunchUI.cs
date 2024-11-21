@@ -29,7 +29,6 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
-            App.Init();
             Instance = this;
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;
