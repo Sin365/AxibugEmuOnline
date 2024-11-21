@@ -1223,7 +1223,7 @@ namespace VirtualNes.Core
                 return;
             }
 
-            if ((m_TapeCycles -= (double)cycles) > 0)
+            if ((m_TapeCycles -= cycles) > 0)
                 return;
 
             m_TapeCycles += (nescfg.CpuClock / 32000.0);
