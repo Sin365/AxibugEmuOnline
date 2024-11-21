@@ -1,9 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Graphs.Styles;
 
 namespace AxibugEmuOnline.Client
 {
