@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
-            ControlScheme.Current = ControlSchemeSetts.Normal;
+            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
         }
 
         public void HideMainMenu()

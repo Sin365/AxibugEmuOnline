@@ -125,7 +125,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        ControlScheme m_lastCS;
+        IKeyMapperChanger m_lastCS;
         public void Pop<T>(List<T> menus, int defaultIndex = 0) where T : OptionMenu
         {
             ReleaseRuntimeMenus();
@@ -160,8 +160,8 @@ namespace AxibugEmuOnline.Client
                     0.3f
                     ).SetEase(Ease.OutCubic);
 
-                m_lastCS = ControlScheme.Current;
-                ControlScheme.Current = ControlSchemeSetts.Normal;
+                m_lastCS = CommandDispatcher.Instance.Current;
+                CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
             }
 
         }
@@ -192,7 +192,7 @@ namespace AxibugEmuOnline.Client
 
                 m_bPoped = false;
 
-                ControlScheme.Current = m_lastCS;
+                CommandDispatcher.Instance.Current = m_lastCS;
 
                 OnHide?.Invoke();
             }
