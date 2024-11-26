@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Scripting;
 using static AxibugEmuOnline.Client.HttpAPI;
 using static AxibugEmuOnline.Client.Manager.LogManager;
 
@@ -38,11 +37,6 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-
-
-
-        //[Preserve]
-        //[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         public static void Init()
         {
             settings = new AppSettings();
@@ -162,7 +156,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         }
         static void OnNoSugarNetLog(int LogLevel, string msg)
         {
-            E_LogType logType =(E_LogType)LogLevel;
+            E_LogType logType = (E_LogType)LogLevel;
             switch (logType)
             {
                 case E_LogType.Debug:

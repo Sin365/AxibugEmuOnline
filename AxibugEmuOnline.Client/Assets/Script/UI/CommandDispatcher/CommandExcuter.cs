@@ -49,6 +49,8 @@ namespace AxibugEmuOnline.Client
 
         public void ExecuteCommand(EnumCommand cmd, bool cancel)
         {
+            if(cmd == EnumCommand.NONE) return;
+
             if (!cancel)
             {
                 switch (cmd)
@@ -118,6 +120,7 @@ namespace AxibugEmuOnline.Client
 
     public enum EnumCommand
     {
+        NONE,
         SelectItemLeft,
         SelectItemRight,
         SelectItemUp,

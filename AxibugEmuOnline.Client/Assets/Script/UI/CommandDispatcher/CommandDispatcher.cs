@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,8 +19,6 @@ namespace AxibugEmuOnline.Client
         /// <summary> 游戏中UI操作 </summary>
         public IKeyMapperChanger Gaming { get; private set; }
 
-        public bool LegacyInput;
-
         private IKeyMapperChanger m_current;
         public IKeyMapperChanger Current
         {
@@ -37,22 +36,11 @@ namespace AxibugEmuOnline.Client
             Instance = this;
 
             //初始化command监视器
-            if (LegacyInput)
-                m_listener = new CommandListener_Legacy();
-            else
-                m_listener = new CommandListener();
+            m_listener = new CommandListener_Legacy();
 
             //初始化键位修改器
-            if (LegacyInput)
-            {
-                Normal = new NormalChanger_Legacy();
-                Gaming = new GamingChanger_Legacy();
-            }
-            else
-            {
-                Normal = new NormalChanger();
-                Gaming = new GamingChanger();
-            }
+            Normal = new NormalChanger_Legacy();
+            Gaming = new GamingChanger_Legacy();
         }
 
         private void OnDestroy()
