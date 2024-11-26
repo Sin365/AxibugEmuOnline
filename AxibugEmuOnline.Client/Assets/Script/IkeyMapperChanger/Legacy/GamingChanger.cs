@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class GamingChanger_Legacy : CommandChanger
+    public class GamingChanger : CommandChanger
     {
         Dictionary<KeyCode, EnumCommand> m_uiKeyMapper = new Dictionary<KeyCode, EnumCommand>();
-        public GamingChanger_Legacy()
+        public GamingChanger()
         {
             m_uiKeyMapper[KeyCode.Escape] = EnumCommand.OptionMenu;
 

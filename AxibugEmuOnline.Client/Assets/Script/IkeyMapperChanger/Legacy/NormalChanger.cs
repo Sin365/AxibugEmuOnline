@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
 
-    public class NormalChanger_Legacy : CommandChanger
+    public class NormalChanger : CommandChanger
     {
         Dictionary<KeyCode, EnumCommand> m_uiKeyMapper = new Dictionary<KeyCode, EnumCommand>();
-        public NormalChanger_Legacy()
+        public NormalChanger()
         {
             m_uiKeyMapper[KeyCode.A] = EnumCommand.SelectItemLeft;
             m_uiKeyMapper[KeyCode.D] = EnumCommand.SelectItemRight;

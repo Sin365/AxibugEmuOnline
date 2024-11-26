@@ -36,11 +36,11 @@ namespace AxibugEmuOnline.Client
             Instance = this;
 
             //初始化command监视器
-            m_listener = new CommandListener_Legacy();
+            m_listener = new CommandListener();
 
             //初始化键位修改器
-            Normal = new NormalChanger_Legacy();
-            Gaming = new GamingChanger_Legacy();
+            Normal = new NormalChanger();
+            Gaming = new GamingChanger();
         }
 
         private void OnDestroy()
