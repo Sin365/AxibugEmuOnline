@@ -60,6 +60,7 @@ namespace VirtualNes.Core
     [Flags]
     public enum EnumButtonType
     {
+        NONE = 0,
         UP = 1,
         DOWN = 2,
         LEFT = 4,
