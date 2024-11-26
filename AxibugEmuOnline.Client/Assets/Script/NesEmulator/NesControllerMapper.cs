@@ -40,7 +40,7 @@ namespace AxibugEmuOnline.Client
 
             private void loadConfig()
             {
-                m_keyListener = MapperSetter.GetKey_Legacy(m_controllerIndex, m_buttonType);
+                m_keyListener = MapperSetter.GetKey(m_controllerIndex, m_buttonType);
 
             }
 
@@ -95,13 +95,13 @@ namespace AxibugEmuOnline.Client
                 return res;
             }
 
-            public static IKeyListener GetKey_Legacy(int controllerInput, EnumButtonType nesConBtnType)
+            public static IKeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
             {
                 string configKey = $"NES_{controllerInput}_{nesConBtnType}";
 
                 if (PlayerPrefs.HasKey(configKey))
                 {
-                    return new KeyListener_Legacy(PlayerPrefs.GetString(configKey));
+                    return new KeyListener(PlayerPrefs.GetString(configKey));
                 }
                 else
                 {
@@ -110,31 +110,31 @@ namespace AxibugEmuOnline.Client
                     return defaultKeyCode;
                 }
 
-                KeyListener_Legacy GetDefaultKey()
+                KeyListener GetDefaultKey()
                 {
                     switch (controllerInput)
                     {
                         case 1:
-                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener_Legacy(KeyCode.A, KeyCode.Joystick1Button12);
-                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener_Legacy(KeyCode.D, KeyCode.Joystick1Button13);
-                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener_Legacy(KeyCode.W, KeyCode.Joystick1Button10);
-                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener_Legacy(KeyCode.S, KeyCode.Joystick1Button11);
-                            if (nesConBtnType == EnumButtonType.START) return new KeyListener_Legacy(KeyCode.B, KeyCode.Joystick1Button7);
-                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener_Legacy(KeyCode.V, KeyCode.Joystick1Button6);
-                            if (nesConBtnType == EnumButtonType.A) return new KeyListener_Legacy(KeyCode.K, KeyCode.Joystick1Button1);
-                            if (nesConBtnType == EnumButtonType.B) return new KeyListener_Legacy(KeyCode.J, KeyCode.Joystick1Button2);
-                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener_Legacy(KeyCode.M, KeyCode.Joystick1Button12);
+                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener(KeyCode.A);
+                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener(KeyCode.D);
+                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener(KeyCode.W);
+                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener(KeyCode.S);
+                            if (nesConBtnType == EnumButtonType.START) return new KeyListener(KeyCode.B);
+                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener(KeyCode.V);
+                            if (nesConBtnType == EnumButtonType.A) return new KeyListener(KeyCode.K);
+                            if (nesConBtnType == EnumButtonType.B) return new KeyListener(KeyCode.J);
+                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener(KeyCode.M);
                             break;
                         case 2:
-                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener_Legacy(KeyCode.Delete, KeyCode.Joystick2Button12);
-                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener_Legacy(KeyCode.PageDown, KeyCode.Joystick2Button13);
-                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener_Legacy(KeyCode.Home, KeyCode.Joystick2Button10);
-                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener_Legacy(KeyCode.End, KeyCode.Joystick2Button11);
-                            if (nesConBtnType == EnumButtonType.START) return new KeyListener_Legacy(KeyCode.PageUp, KeyCode.Joystick2Button7);
-                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener_Legacy(KeyCode.Insert, KeyCode.Joystick2Button6);
-                            if (nesConBtnType == EnumButtonType.A) return new KeyListener_Legacy(KeyCode.Keypad5, KeyCode.Joystick2Button1);
-                            if (nesConBtnType == EnumButtonType.B) return new KeyListener_Legacy(KeyCode.Keypad4, KeyCode.Joystick2Button2);
-                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener_Legacy(KeyCode.KeypadPeriod, KeyCode.Joystick2Button12);
+                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener(KeyCode.Delete);
+                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener(KeyCode.PageDown);
+                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener(KeyCode.Home);
+                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener(KeyCode.End);
+                            if (nesConBtnType == EnumButtonType.START) return new KeyListener(KeyCode.PageUp);
+                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener(KeyCode.Insert);
+                            if (nesConBtnType == EnumButtonType.A) return new KeyListener(KeyCode.Keypad5);
+                            if (nesConBtnType == EnumButtonType.B) return new KeyListener(KeyCode.Keypad4);
+                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener(KeyCode.KeypadPeriod);
                             break;
                     }
 
@@ -149,56 +149,36 @@ namespace AxibugEmuOnline.Client
             bool IsPressing();
         }
 
-        public struct KeyListener_Legacy : IKeyListener
+        public struct KeyListener : IKeyListener
         {
-            private KeyCode[] m_keys;
+            private KeyCode m_key;
 
-            public KeyListener_Legacy(params KeyCode[] keys)
+            public KeyListener(KeyCode key)
             {
-                m_keys = keys;
+                m_key = key;
             }
 
             /// <summary>
             /// 从配置表字符串构建
             /// </summary>
-            /// <param name="confStr">以:分割的键值字符串</param>
-            public KeyListener_Legacy(string confStr)
+            public KeyListener(string confStr)
             {
-                m_keys = new KeyCode[2];
+                m_key = KeyCode.None;
 
-                var temp = confStr.Split(':');
-                m_keys = new KeyCode[temp.Length];
-                for (int i = 0; i < temp.Length; i++)
-                {
-                    if (int.TryParse(temp[i], out int result))
-                        m_keys[i] = (KeyCode)result;
-                }
+                if (int.TryParse(confStr, out int result))
+                    m_key = (KeyCode)result;
             }
 
-            public bool IsPressing()
+            public readonly bool IsPressing()
             {
-                if (m_keys == null || m_keys.Length == 0) return false;
-
-                foreach (var key in m_keys)
-                {
-                    if (Input.GetKey(key)) return true;
-                }
+                if (Input.GetKey(m_key)) return true;
 
                 return false;
             }
 
             public override string ToString()
             {
-                if (m_keys == null || m_keys.Length == 0) return string.Empty;
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < m_keys.Length; i++)
-                {
-                    var keyVal = (int)m_keys[i];
-                    sb.Append(keyVal);
-                    if (i != m_keys.Length - 1) sb.Append(':');
-                }
-
-                return sb.ToString();
+                return ((int)(m_key)).ToString();
             }
         }
     }

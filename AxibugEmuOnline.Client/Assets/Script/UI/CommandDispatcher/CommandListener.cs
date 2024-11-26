@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class CommandListener_Legacy : ICommandListener
+    public class CommandListener : ICommandListener
     {
         Dictionary<KeyCode, EnumCommand> m_keyMapper = new Dictionary<KeyCode, EnumCommand>();
         List<CommandState> m_commands = new List<CommandState>();
