@@ -98,7 +98,6 @@ namespace AxibugEmuOnline.Client
             public static IKeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
             {
                 string configKey = $"NES_{controllerInput}_{nesConBtnType}";
-
                 if (PlayerPrefs.HasKey(configKey))
                 {
                     return new KeyListener(PlayerPrefs.GetString(configKey));
