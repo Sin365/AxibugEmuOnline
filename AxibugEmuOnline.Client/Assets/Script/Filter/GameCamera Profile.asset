@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GameCamera Profile
   m_EditorClassIdentifier: 
   settings:
-  - {fileID: 8004032914748422304}
---- !u!114 &8004032914748422304
+  - {fileID: 117625959343581733}
+--- !u!114 &117625959343581733
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -32,7 +32,7 @@ MonoBehaviour:
     value: 1
   MaskStyle:
     overrideState: 0
-    value: 3
+    value: 1
   DrawResolution:
     overrideState: 0
     value: {x: 272, y: 240}
@@ -44,19 +44,19 @@ MonoBehaviour:
     value: -2
   HardBloomScan:
     overrideState: 0
-    value: -4.06
+    value: -4
   HardBloomPix:
     overrideState: 0
-    value: -1.15
+    value: -1.5
   BloomAmount:
     overrideState: 0
-    value: 0.483
+    value: 0.0625
   Warp:
     overrideState: 0
-    value: {x: 0.12, y: 0.04}
+    value: {x: 0.015625, y: 0.041666668}
   MaskLight:
     overrideState: 0
-    value: 3
+    value: 1.5
   MaskDrak:
     overrideState: 0
-    value: 0.1
+    value: 0.5

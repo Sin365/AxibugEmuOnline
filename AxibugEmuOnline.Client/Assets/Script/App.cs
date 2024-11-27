@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Rendering.PostProcessing;
 using static AxibugEmuOnline.Client.HttpAPI;
 using static AxibugEmuOnline.Client.Manager.LogManager;
 
@@ -27,6 +28,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static CacheManager CacheMgr;
         public static AppRoom roomMgr;
         public static AppSettings settings;
+        public static FilterManager filter;
         #region Mono
         public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
@@ -37,7 +39,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init()
+        public static void Init(PostProcessVolume filterVolume)
         {
             settings = new AppSettings();
 
@@ -53,6 +55,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
+            filter = new FilterManager(filterVolume);
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             tickLoop = go.AddComponent<TickLoop>();
