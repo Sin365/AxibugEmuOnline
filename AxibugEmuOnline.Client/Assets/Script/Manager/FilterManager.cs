@@ -11,6 +11,11 @@ namespace AxibugEmuOnline.Client
         private PostProcessProfile m_filterPorfile;
         private List<Filter> m_filters;
 
+        /// <summary>
+        /// 滤镜列表
+        /// </summary>
+        public IReadOnlyList<Filter> Filters => m_filters;
+
         public FilterManager(PostProcessVolume filterVolume)
         {
             m_filterPorfile = filterVolume.profile;
@@ -18,12 +23,7 @@ namespace AxibugEmuOnline.Client
 
             ShutDownFilter();
         }
-
-        /// <summary>
-        /// 滤镜列表
-        /// </summary>
-        public IReadOnlyList<Filter> Filters => m_filters;
-
+        
         /// <summary>
         /// 打开滤镜
         /// </summary>
@@ -49,6 +49,7 @@ namespace AxibugEmuOnline.Client
 
         public struct Filter
         {
+            public bool Empty => m_setting == null;
             public readonly string Name => m_setting.name;
 
             internal FilterEffect m_setting;

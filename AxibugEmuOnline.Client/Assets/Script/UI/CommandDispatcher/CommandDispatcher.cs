@@ -1,4 +1,5 @@
 using AxibugEmuOnline.Client.ClientCore;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -46,6 +47,11 @@ namespace AxibugEmuOnline.Client
         private void OnDestroy()
         {
             Instance = null;
+        }
+
+        public bool IsRegisted(CommandExecuter commandExecuter)
+        {
+            return m_register.Contains(commandExecuter) || m_registerHigh.Contains(commandExecuter);
         }
 
         public void RegistController(CommandExecuter controller)
@@ -125,7 +131,6 @@ namespace AxibugEmuOnline.Client
             normal = m_register;
             alone = m_registerHigh;
         }
-
 #endif
     }
 }
