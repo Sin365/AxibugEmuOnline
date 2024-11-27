@@ -1,11 +1,12 @@
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
 [System.Serializable]
 [PostProcess(typeof(FixingPixelArtGrilleRenderer), PostProcessEvent.BeforeStack, "Filter/FixingPixelArtGrille")]
-public sealed class FixingPixelArtGrille : PostProcessEffectSettings
+public sealed class FixingPixelArtGrille : FilterEffect
 {
     public ParameterOverride<EnumMaskStyle> MaskStyle = new ParameterOverride<EnumMaskStyle> { value = EnumMaskStyle.ApertureGrille };
 
