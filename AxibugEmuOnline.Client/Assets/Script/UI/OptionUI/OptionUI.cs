@@ -69,6 +69,8 @@ namespace AxibugEmuOnline.Client
         protected override void Update()
         {
             UpdateMenuState();
+
+            base.Update();
         }
 
         private void UpdateMenuState()

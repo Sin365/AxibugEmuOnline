@@ -17,6 +17,7 @@ namespace AxibugEmuOnline.Client
 
         public abstract bool Enable { get; }
         public virtual bool AloneMode { get; }
+        public bool Registed => CommandDispatcher.Instance.IsRegisted(this);
 
         protected virtual void Awake()
         {
@@ -32,10 +33,20 @@ namespace AxibugEmuOnline.Client
 
         protected virtual void Update()
         {
-            m_pulsInvoker_Left.Update(Time.deltaTime);
-            m_pulsInvoker_Right.Update(Time.deltaTime);
-            m_pulsInvoker_Up.Update(Time.deltaTime);
-            m_pulsInvoker_Down.Update(Time.deltaTime);
+            if (Registed)
+            {
+                m_pulsInvoker_Left.Update(Time.deltaTime);
+                m_pulsInvoker_Right.Update(Time.deltaTime);
+                m_pulsInvoker_Up.Update(Time.deltaTime);
+                m_pulsInvoker_Down.Update(Time.deltaTime);
+            }
+            else
+            {
+                m_pulsInvoker_Left.DisActive();
+                m_pulsInvoker_Right.DisActive();
+                m_pulsInvoker_Up.DisActive();
+                m_pulsInvoker_Down.DisActive();
+            }
         }
 
 
@@ -49,8 +60,7 @@ namespace AxibugEmuOnline.Client
 
         public void ExecuteCommand(EnumCommand cmd, bool cancel)
         {
-            if(cmd == EnumCommand.NONE) return;
-
+            if (cmd == EnumCommand.NONE) return;
             if (!cancel)
             {
                 switch (cmd)
