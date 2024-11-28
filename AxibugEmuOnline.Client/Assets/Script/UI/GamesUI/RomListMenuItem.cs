@@ -74,9 +74,9 @@ namespace AxibugEmuOnline.Client
                 m_romListUI = romListUI;
             }
 
-            public override void OnExcute()
+            public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
-                OverlayManager.Input((OnSearchCommit, "输入Rom名称", m_romListUI.SearchKey));
+                OverlayManager.Input(OnSearchCommit, "输入Rom名称", m_romListUI.SearchKey);
             }
 
             private void OnSearchCommit(string text)
@@ -97,7 +97,7 @@ namespace AxibugEmuOnline.Client
                 m_ui = romListUI;
             }
 
-            public override void OnExcute()
+            public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
                 m_ui.SearchKey = null;
                 m_ui.RefreshUI();

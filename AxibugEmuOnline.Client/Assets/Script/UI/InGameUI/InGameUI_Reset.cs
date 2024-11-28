@@ -17,12 +17,13 @@ namespace AxibugEmuOnline.Client
             m_gameUI = gameUI;
         }
 
-        public override void OnExcute()
+        public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
         {
             if (!m_gameUI.IsNetPlay)
             {
                 App.emu.ResetGame();
             }
+
         }
     }
 }

@@ -17,11 +17,16 @@ namespace AxibugEmuOnline.Client
             m_InputUI.gameObject.SetActive(false);
         }
 
-        public static InputUI Input((Action<string> callback, string placeHolder, string defaultText) param)
+        public static InputUI Input(Action<string> callback, string placeHolder, string defaultText)
         {
-            s_ins.m_InputUI.Show(param);
+            s_ins.m_InputUI.Show((callback, placeHolder, defaultText));
 
             return s_ins.m_InputUI;
+        }
+
+        public static void PopMsg(string msg)
+        {
+
         }
     }
 }

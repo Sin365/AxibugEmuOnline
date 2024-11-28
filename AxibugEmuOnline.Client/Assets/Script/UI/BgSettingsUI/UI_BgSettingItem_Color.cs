@@ -96,10 +96,7 @@ namespace AxibugEmuOnline.Client
                 };
             }
 
-            public override void OnExcute()
-            {
-
-            }
+            public override void OnExcute(OptionUI optionUI, ref bool cancelHide) { }
         }
     }
 }

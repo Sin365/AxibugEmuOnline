@@ -45,7 +45,7 @@ namespace AxibugEmuOnline.Client
 
             base.Awake();
         }
-        
+
         protected override void OnDestroy()
         {
             Instance = null;
@@ -82,7 +82,6 @@ namespace AxibugEmuOnline.Client
             }
 
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
-            OptionUI.Instance.OnHide += PopMenu_OnHide;
 
             gameObject.SetActiveEx(true);
         }
@@ -95,14 +94,12 @@ namespace AxibugEmuOnline.Client
         public void Hide()
         {
             CommandDispatcher.Instance.UnRegistController(this);
-
-            OptionUI.Instance.OnHide -= PopMenu_OnHide;
             gameObject.SetActiveEx(false);
         }
 
         protected override void OnCmdOptionMenu()
         {
-            OptionUI.Instance.Pop(menus);
+            OptionUI.Instance.Pop(menus, 0, PopMenu_OnHide);
 
             if (!IsNetPlay)//单人模式暂停模拟器
             {

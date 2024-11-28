@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +31,7 @@ namespace AxibugEmuOnline.Client
 
         protected abstract void OnSetData(OptionMenu menuData);
 
-        public abstract void OnExecute();
+        public abstract void OnExecute(OptionUI optionUI, ref bool cancelHide);
         public abstract void OnFocus();
     }
 
