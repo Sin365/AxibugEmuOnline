@@ -16,6 +16,7 @@ namespace AxibugEmuOnline.Server
         public static UserManager g_UserMgr;
         public static IOCPNetWork g_SocketMgr;
         public static RoomManager g_Room;
+        public static GameShareManager g_GameShareMgr;
 
         public static void InitServer(int port)
         {
@@ -28,8 +29,9 @@ namespace AxibugEmuOnline.Server
             g_Login = new LoginManager();
             g_Chat = new ChatManager();
             g_UserMgr = new UserManager();
-            g_SocketMgr = new IOCPNetWork(1024, 4096*2);
+            g_SocketMgr = new IOCPNetWork(1024, 4096 * 2);
             g_Room = new RoomManager();
+            g_GameShareMgr = new GameShareManager();
 
             g_SocketMgr.Init();
             g_SocketMgr.Start(new IPEndPoint(IPAddress.Any.Address, port));
