@@ -39,7 +39,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init(PostProcessVolume filterVolume)
+        public static void Init(Initer initer)
         {
             settings = new AppSettings();
 
@@ -55,7 +55,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
-            filter = new FilterManager(filterVolume);
+            filter = new FilterManager(initer.m_filterVolume, initer.m_filterPreview,initer.m_xmbBg);
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             tickLoop = go.AddComponent<TickLoop>();

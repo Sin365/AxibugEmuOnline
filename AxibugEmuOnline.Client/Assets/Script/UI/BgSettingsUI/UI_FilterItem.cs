@@ -1,10 +1,5 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
-using DG.Tweening;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
-using System.Linq;
-using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
@@ -16,30 +11,34 @@ namespace AxibugEmuOnline.Client
         public int Index { get; set; }
         public FilterManager.Filter Datacontext { get; private set; }
 
+
         public void SetData(object data)
         {
-            Datacontext = (FilterManager.Filter)data;
+            Datacontext = data as FilterManager.Filter;
 
-            UpdateView();
-        }
-
-        private void Setting_OnColorChanged(XMBColor color)
-        {
             UpdateView();
         }
 
         private void UpdateView()
         {
+            SetBaseInfo(Datacontext.Name, $"参数数量:{Datacontext.Paramerters.Count}", null);
         }
 
         public void SetDependencyProperty(object data)
         {
             SetSelectState(data is ThirdMenuRoot tr && tr.SelectIndex == Index);
+
+            if (m_select)
+            {
+                App.filter.EnableFilterPreview();
+                App.filter.EnableFilter(Datacontext);
+            }
         }
 
         public void Release()
         {
         }
+
         public override bool OnEnterItem()
         {
             return false;

@@ -103,8 +103,12 @@ namespace AxibugEmuOnline.Client.UI
                     if (InfoNode != null) InfoNode.alpha = m_progress;
                     if (spline != null) spline.SetAlpha(m_progress);
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
+
+                    if (m_select) OnSelected(m_progress);
                 });
         }
+
+        protected virtual void OnSelected(float progress) { }
 
         public virtual bool OnEnterItem() => true;
 

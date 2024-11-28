@@ -8,6 +8,8 @@ using UnityEngine.Rendering.PostProcessing;
 [PostProcess(typeof(FixingPixelArtGrilleRenderer), PostProcessEvent.BeforeStack, "Filter/FixingPixelArtGrille")]
 public sealed class FixingPixelArtGrille : FilterEffect
 {
+    public override string Name => nameof(FixingPixelArtGrille);
+
     public ParameterOverride<EnumMaskStyle> MaskStyle = new ParameterOverride<EnumMaskStyle> { value = EnumMaskStyle.ApertureGrille };
 
     [Tooltip("Emulated input resolution\nOptimize for resize")]
