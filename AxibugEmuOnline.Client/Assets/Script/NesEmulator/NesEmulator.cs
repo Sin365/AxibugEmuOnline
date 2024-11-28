@@ -1,5 +1,4 @@
 using AxibugEmuOnline.Client.ClientCore;
-using AxibugEmuOnline.Client.Common;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +11,8 @@ namespace AxibugEmuOnline.Client
 {
     public class NesEmulator : MonoBehaviour, IEmuCore
     {
+        public EnumPlatform Platform => EnumPlatform.NES;
+
         //模拟器核心实例化对象
         public NES NesCore { get; private set; }
 
@@ -135,7 +136,7 @@ namespace AxibugEmuOnline.Client
 
         public void SetupScheme()
         {
-            ControlScheme.Current = ControlSchemeSetts.NES;
+            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Gaming;
         }
 
         public void LoadState(object state)
@@ -168,6 +169,8 @@ namespace AxibugEmuOnline.Client
             NesCore.LoadState(st);
         }
 
+        public uint Frame => NesCore.FrameCount;
+
 #if UNITY_EDITOR
         /// <summary>
         /// 编辑器用
@@ -196,8 +199,7 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
-#endif
 
-        public uint Frame => NesCore.FrameCount;
+#endif
     }
 }

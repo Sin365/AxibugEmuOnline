@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VirtuNesDraw
+  m_Name: NesEmulator_Screen
   m_Shader: {fileID: 4800000, guid: b351396ff606116478d7f4412abe4e2e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

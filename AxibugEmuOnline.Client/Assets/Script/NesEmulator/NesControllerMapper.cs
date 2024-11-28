@@ -1,6 +1,5 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
-using System;
-using System.IO;
+﻿using System;
+using System.Text;
 using UnityEngine;
 using VirtualNes.Core;
 
@@ -8,36 +7,10 @@ namespace AxibugEmuOnline.Client
 {
     public class NesControllerMapper
     {
-        private static readonly string ConfigFilePath = $"{App.PersistentDataPath}/NES/ControllerMapper.json";
-
-        public MapperSetter Player1 = new MapperSetter();
-        public MapperSetter Player2 = new MapperSetter();
-        public MapperSetter Player3 = new MapperSetter();
-        public MapperSetter Player4 = new MapperSetter();
-
-        public NesControllerMapper()
-        {
-            Player1.UP.keyCode = KeyCode.W;
-            Player1.DOWN.keyCode = KeyCode.S;
-            Player1.LEFT.keyCode = KeyCode.A;
-            Player1.RIGHT.keyCode = KeyCode.D;
-            Player1.B.keyCode = KeyCode.J;
-            Player1.A.keyCode = KeyCode.K;
-            Player1.SELECT.keyCode = KeyCode.V;
-            Player1.START.keyCode = KeyCode.B;
-
-            //PC XBOX
-            //Player1.B.keyCode = Common.PC_XBOXKEY.A;
-            //Player1.A.keyCode = Common.PC_XBOXKEY.B;
-            //Player1.SELECT.keyCode = Common.PC_XBOXKEY.ViewBtn;
-            //Player1.START.keyCode = Common.PC_XBOXKEY.MenuBtn;
-        }
-
-        public void Save()
-        {
-            var jsonStr = JsonUtility.ToJson(this);
-            File.WriteAllText(ConfigFilePath, jsonStr);
-        }
+        public MapperSetter Player1 = new MapperSetter(1);
+        public MapperSetter Player2 = new MapperSetter(2);
+        public MapperSetter Player3 = new MapperSetter(3);
+        public MapperSetter Player4 = new MapperSetter(4);
 
         public ControllerState CreateState()
         {
@@ -46,86 +19,168 @@ namespace AxibugEmuOnline.Client
             var state3 = Player3.GetButtons();
             var state4 = Player4.GetButtons();
 
-            return new ControllerState(state1, state2, state3, state4);
+            var result = new ControllerState(state1, state2, state3, state4);
+            return result;
         }
 
-        private static NesControllerMapper s_setting;
-        public static NesControllerMapper Get()
-        {
-            if (s_setting == null)
-            {
-                try
-                {
-                    var json = File.ReadAllText($"{App.PersistentDataPath}/Nes/ControllerMapper.json");
-                    s_setting = JsonUtility.FromJson<NesControllerMapper>(json);
-                }
-                catch
-                {
-                    s_setting = new NesControllerMapper();
-                }
-            }
-
-            return s_setting;
-        }
-
-        [Serializable]
         public class Mapper
         {
-            public EnumButtonType buttonType;
-            public KeyCode keyCode;
+            MapperSetter m_setter;
+            EnumButtonType m_buttonType;
+            IKeyListener m_keyListener;
+            int m_controllerIndex => m_setter.ControllerIndex;
 
-            public Mapper(EnumButtonType buttonType)
+            public Mapper(MapperSetter setter, EnumButtonType buttonType)
             {
-                this.buttonType = buttonType;
+                m_setter = setter;
+                m_buttonType = buttonType;
+
+                loadConfig();
+            }
+
+            private void loadConfig()
+            {
+                m_keyListener = MapperSetter.GetKey(m_controllerIndex, m_buttonType);
+
+            }
+
+            public EnumButtonType SampleKey()
+            {
+                return m_keyListener.IsPressing() ? m_buttonType : 0;
             }
         }
 
-        [Serializable]
         public class MapperSetter
         {
-            public Mapper UP = new Mapper(EnumButtonType.UP);
-            public Mapper DOWN = new Mapper(EnumButtonType.DOWN);
-            public Mapper LEFT = new Mapper(EnumButtonType.LEFT);
-            public Mapper RIGHT = new Mapper(EnumButtonType.RIGHT);
-            public Mapper A = new Mapper(EnumButtonType.A);
-            public Mapper B = new Mapper(EnumButtonType.B);
-            public Mapper SELECT = new Mapper(EnumButtonType.SELECT);
-            public Mapper START = new Mapper(EnumButtonType.START);
-            public Mapper MIC = new Mapper(EnumButtonType.MIC);
+            /// <summary> 控制器序号(手柄1,2,3,4) </summary>
+            public int ControllerIndex { get; }
+            public Mapper UP { get; private set; }
+            public Mapper DOWN { get; private set; }
+            public Mapper LEFT { get; private set; }
+            public Mapper RIGHT { get; private set; }
+            public Mapper A { get; private set; }
+            public Mapper B { get; private set; }
+            public Mapper SELECT { get; private set; }
+            public Mapper START { get; private set; }
+            public Mapper MIC { get; private set; }
+
+            public MapperSetter(int controllerIndex)
+            {
+                ControllerIndex = controllerIndex;
+                UP = new Mapper(this, EnumButtonType.UP);
+                DOWN = new Mapper(this, EnumButtonType.DOWN);
+                LEFT = new Mapper(this, EnumButtonType.LEFT);
+                RIGHT = new Mapper(this, EnumButtonType.RIGHT);
+                A = new Mapper(this, EnumButtonType.A);
+                B = new Mapper(this, EnumButtonType.B);
+                SELECT = new Mapper(this, EnumButtonType.SELECT);
+                START = new Mapper(this, EnumButtonType.START);
+                MIC = new Mapper(this, EnumButtonType.MIC);
+            }
 
             public EnumButtonType GetButtons()
             {
                 EnumButtonType res = 0;
 
-                if (Input.GetKey(UP.keyCode))
-                    res |= EnumButtonType.UP;
-
-                if (Input.GetKey(DOWN.keyCode))
-                    res |= EnumButtonType.DOWN;
-
-                if (Input.GetKey(LEFT.keyCode))
-                    res |= EnumButtonType.LEFT;
-
-                if (Input.GetKey(RIGHT.keyCode))
-                    res |= EnumButtonType.RIGHT;
-
-                if (Input.GetKey(A.keyCode))
-                    res |= EnumButtonType.A;
-
-                if (Input.GetKey(B.keyCode))
-                    res |= EnumButtonType.B;
-
-                if (Input.GetKey(SELECT.keyCode))
-                    res |= EnumButtonType.SELECT;
-
-                if (Input.GetKey(START.keyCode))
-                    res |= EnumButtonType.START;
-
-                if (Input.GetKey(MIC.keyCode))
-                    res |= EnumButtonType.MIC;
+                res |= UP.SampleKey();
+                res |= DOWN.SampleKey();
+                res |= LEFT.SampleKey();
+                res |= RIGHT.SampleKey();
+                res |= A.SampleKey();
+                res |= B.SampleKey();
+                res |= SELECT.SampleKey();
+                res |= START.SampleKey();
+                res |= MIC.SampleKey();
 
                 return res;
             }
+
+            public static IKeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
+            {
+                string configKey = $"NES_{controllerInput}_{nesConBtnType}";
+                if (PlayerPrefs.HasKey(configKey))
+                {
+                    return new KeyListener(PlayerPrefs.GetString(configKey));
+                }
+                else
+                {
+                    var defaultKeyCode = GetDefaultKey();
+                    PlayerPrefs.SetString(configKey, defaultKeyCode.ToString());
+                    return defaultKeyCode;
+                }
+
+                KeyListener GetDefaultKey()
+                {
+                    switch (controllerInput)
+                    {
+                        case 1:
+                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener(KeyCode.A);
+                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener(KeyCode.D);
+                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener(KeyCode.W);
+                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener(KeyCode.S);
+                            if (nesConBtnType == EnumButtonType.START) return new KeyListener(KeyCode.B);
+                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener(KeyCode.V);
+                            if (nesConBtnType == EnumButtonType.A) return new KeyListener(KeyCode.K);
+                            if (nesConBtnType == EnumButtonType.B) return new KeyListener(KeyCode.J);
+                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener(KeyCode.M);
+                            break;
+                        case 2:
+                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener(KeyCode.Delete);
+                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener(KeyCode.PageDown);
+                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener(KeyCode.Home);
+                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener(KeyCode.End);
+                            if (nesConBtnType == EnumButtonType.START) return new KeyListener(KeyCode.PageUp);
+                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener(KeyCode.Insert);
+                            if (nesConBtnType == EnumButtonType.A) return new KeyListener(KeyCode.Keypad5);
+                            if (nesConBtnType == EnumButtonType.B) return new KeyListener(KeyCode.Keypad4);
+                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener(KeyCode.KeypadPeriod);
+                            break;
+                    }
+
+                    return default;
+                }
+
+            }
+        }
+
+        public interface IKeyListener
+        {
+            bool IsPressing();
+        }
+
+        public struct KeyListener : IKeyListener
+        {
+            private KeyCode m_key;
+
+            public KeyListener(KeyCode key)
+            {
+                m_key = key;
+            }
+
+            /// <summary>
+            /// 从配置表字符串构建
+            /// </summary>
+            public KeyListener(string confStr)
+            {
+                m_key = KeyCode.None;
+
+                if (int.TryParse(confStr, out int result))
+                    m_key = (KeyCode)result;
+            }
+
+            public readonly bool IsPressing()
+            {
+                if (Input.GetKey(m_key)) return true;
+
+                return false;
+            }
+
+            public override string ToString()
+            {
+                return ((int)(m_key)).ToString();
+            }
         }
     }
+
+
 }

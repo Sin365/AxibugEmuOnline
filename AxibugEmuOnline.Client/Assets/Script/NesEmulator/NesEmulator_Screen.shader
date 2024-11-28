@@ -1,4 +1,4 @@
-﻿Shader "AleinUI/Clip"
+﻿Shader "NesEmulator/Screen"
 {
     Properties
     {
@@ -106,8 +106,6 @@
                 float end = (272.0-8.0)/272.0;
 
                 mapUV.x = lerp(start,end, mapUV.x);
-
-
 
                 half4 color = tex2D(_MainTex,mapUV);
                 
