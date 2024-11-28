@@ -107,7 +107,6 @@ namespace AxibugEmuOnline.Web.Controllers
             return new JsonResult(resp);
         }
 
-
         [HttpGet]
         public JsonResult RomInfo(int Ptype, int RomID)
         {
@@ -115,7 +114,7 @@ namespace AxibugEmuOnline.Web.Controllers
             Resp_RomInfo resp = new Resp_RomInfo();
             MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("NesRomList");
             {
-                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist_nes where id = ?romid;";
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars` FROM romlist_nes where id = ?romid;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -132,7 +131,8 @@ namespace AxibugEmuOnline.Web.Controllers
                             resp.url = !reader.IsDBNull(4) ? reader.GetString(4) : string.Empty;
                             resp.imgUrl = !reader.IsDBNull(5) ? reader.GetString(5) : string.Empty;
                             resp.hash = !reader.IsDBNull(6) ? reader.GetString(6) : string.Empty;
-                            resp.stars = 0;
+                            resp.playcount = reader.GetInt32(7);
+                            resp.stars = reader.GetInt32(8);
                         }
                     }
                 }

@@ -105,7 +105,7 @@ namespace AxibugEmuOnline.Server
         }
         public void RoomLog(long uid, int platform, int RoomID, int RomID, RoomLogType state)
         {
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("ModifyNikeName");
+            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("RoomLog");
             try
             {
                 string query = "INSERT INTO `haoyue_emu`.`room_log` (`uid`, `platform`, `romid`,`roomid`, `state`) VALUES ( ?uid, ?platform, ?romid, ?roomid, ?state);";
@@ -831,7 +831,7 @@ namespace AxibugEmuOnline.Server
             int oldPlayerCount = GetPlayerCount();
             if (GetPlayerUIDByIdx(PlayerNum, out long hadUID))
             {
-                errcode = ErrorCode.ErrorRoomSlotReadlyHadPlayer;
+                errcode = ErrorCode.ErrorRoomSlotAlreadlyHadPlayer;
                 return false;
             }
             AppSrv.g_Log.Debug($"Join _c.UID->{_c.UID} RoomID->{RoomID}");

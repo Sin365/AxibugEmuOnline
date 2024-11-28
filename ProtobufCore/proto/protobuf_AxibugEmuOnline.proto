@@ -64,6 +64,8 @@ enum CommandID
 	
 	//画面采集
 	CMD_Screen = 7001;  //画面采集 | 同步广播 对应 Protobuf_Screnn_Frame
+	
+	CMD_GAME_MARK = 10101;  //房间列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
 }
 
 enum ErrorCode
@@ -72,9 +74,12 @@ enum ErrorCode
 	ERROR_OK = 1;   //成功
 	
 	ERROR_ROOM_NOT_FOUND = 10;//房间不存在
-	ERROR_ROOM_SLOT_READLY_HAD_PLAYER=11;//加入目标位置已经有人
+	ERROR_ROOM_SLOT_ALREADLY_HAD_PLAYER=11;//加入目标位置已经有人
 	
 	ERROR_ROOM_CANT_DO_CURR_STATE =50;//当前房间状态不允许本操作
+	
+	ERROR_ROM_ALREADY_HAD_STAR =403;//已经收藏
+	ERROR_ROM_DONT_HAD_STAR =404;//并没有收藏
 }
 
 enum LoginType
@@ -91,6 +96,12 @@ enum DeviceType
 	Android = 2;
 	IOS = 3;
 	PSV = 4;
+}
+
+enum PlatformType
+{
+    All = 0;
+    Nes = 1;
 }
 
 //enum RoomPlayerState
@@ -352,4 +363,18 @@ message Protobuf_Room_Get_Screen_RESP
 	int32 RoomID = 1;//房间ID
 	int32 FrameID = 2;//帧编号
     bytes RawBitmap = 3;//渲染层画面
+}
+
+
+message Protobuf_Game_Mark
+{
+	int32 RomID = 1;//RomID
+	int32 state = 2;//[0]收藏 [1]取消收藏
+	PlatformType PlatformType = 3;//平台类型
+}
+
+message Protobuf_Game_Mark_RESP
+{
+	int32 RomID = 1;//RomID
+	PlatformType PlatformType = 2;//平台类型
 }

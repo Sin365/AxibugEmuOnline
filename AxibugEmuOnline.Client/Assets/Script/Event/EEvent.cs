@@ -10,6 +10,9 @@
         //更新其他用户信息
         OnOtherUserInfoUpdate,
 
+        //当收藏数发生变化
+        OnDoStars,
+
         //用户列表，登录和离开
         OnUserListAllUpdate,
         OnUserLogin,

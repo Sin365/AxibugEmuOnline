@@ -87,35 +87,42 @@ namespace AxibugProtobuf {
             "UCIcChpQcm90b2J1Zl9Sb29tX1BsYXllcl9SZWFkeSIqChhQcm90b2J1Zl9S",
             "b29tX0dldF9TY3JlZW4SDgoGUm9vbUlEGAEgASgFIlMKHVByb3RvYnVmX1Jv",
             "b21fR2V0X1NjcmVlbl9SRVNQEg4KBlJvb21JRBgBIAEoBRIPCgdGcmFtZUlE",
-            "GAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCrqBAoJQ29tbWFuZElEEg4KCkNN",
-            "RF9ERUZBVUwQABIMCghDTURfUElORxABEgwKCENNRF9QT05HEAISDgoJQ01E",
-            "X0xPR0lOENEPEhgKE0NNRF9VU0VSX09OTElORUxJU1QQuBcSEgoNQ01EX1VT",
-            "RVJfSk9JThDXFxITCg5DTURfVVNFUl9MRUFWRRDYFxIaChVDTURfVVNFUl9T",
-            "VEFURV9VUERBVEUQ2RcSGAoTQ01EX01vZGlmeV9OaWNrTmFtZRCdGBIcChdD",
-            "TURfVXBkYXRlX1NlbGZVc2VySW5mbxCmGBIdChhDTURfVXBkYXRlX090aGVy",
-            "VXNlckluZm8QqBgSEAoLQ01EX0NIQVRNU0cQoR8SEgoNQ01EX1Jvb21fTGlz",
-            "dBCJJxIZChRDTURfUm9vbV9MaXN0X1VwZGF0ZRCKJxIYChNDTURfUm9vbV9H",
-            "ZXRfU2NyZWVuEJMnEhQKD0NNRF9Sb29tX0NyZWF0ZRDtJxISCg1DTURfUm9v",
-            "bV9Kb2luEPEnEhMKDkNNRF9Sb29tX0xlYXZlEPInEiIKHUNNRF9Sb29tX015",
-            "Um9vbV9TdGF0ZV9DaGFuZ2VkEPYnEhYKEUNNRF9Sb29tX1dhaXRTdGVwENEo",
-            "EicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRlU3RhdGVSYXcQ1CgSGgoV",
-            "Q01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAKG0NNRF9Sb29tX1NpbmdlbF9Q",
-            "bGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9TWU5fUGxheWVySW5wdXQQ/y4S",
-            "DwoKQ01EX1NjcmVlbhDZNiqPAQoJRXJyb3JDb2RlEhAKDEVSUk9SX0RFRkFV",
-            "TBAAEgwKCEVSUk9SX09LEAESGAoURVJST1JfUk9PTV9OT1RfRk9VTkQQChIl",
-            "CiFFUlJPUl9ST09NX1NMT1RfUkVBRExZX0hBRF9QTEFZRVIQCxIhCh1FUlJP",
-            "Ul9ST09NX0NBTlRfRE9fQ1VSUl9TVEFURRAyKkAKCUxvZ2luVHlwZRINCglV",
-            "c2VEZXZpY2UQABIOCgpVc2VBY2NvdW50EAESFAoQVXNlSGFvWXVlQWNjb3Vu",
-            "dBACKksKCkRldmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAASBgoC",
-            "UEMQARILCgdBbmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQqcAoNUm9vbUdh",
-            "bWVTdGF0ZRISCg5Ob25lX0dhbWVTdGF0ZRAAEgwKCE9ubHlIb3N0EAESEQoN",
-            "V2FpdFJhd1VwZGF0ZRACEg0KCVdhaXRSZWFkeRADEgkKBVBhdXNlEAQSEAoM",
-            "SW5PbmxpbmVHYW1lEAUqTgoRTG9naW5SZXN1bHRTdGF0dXMSIQodTG9naW5S",
-            "ZXN1bHRTdGF0dXNfQmFzZURlZmF1bHQQABIGCgJPSxABEg4KCkFjY291bnRF",
-            "cnIQAkICSAFiBnByb3RvMw=="));
+            "GAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCJmChJQcm90b2J1Zl9HYW1lX01h",
+            "cmsSDQoFUm9tSUQYASABKAUSDQoFc3RhdGUYAiABKAUSMgoMUGxhdGZvcm1U",
+            "eXBlGAMgASgOMhwuQXhpYnVnUHJvdG9idWYuUGxhdGZvcm1UeXBlIlwKF1By",
+            "b3RvYnVmX0dhbWVfTWFya19SRVNQEg0KBVJvbUlEGAEgASgFEjIKDFBsYXRm",
+            "b3JtVHlwZRgCIAEoDjIcLkF4aWJ1Z1Byb3RvYnVmLlBsYXRmb3JtVHlwZSr+",
+            "BAoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElORxABEgwK",
+            "CENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhgKE0NNRF9VU0VSX09OTElO",
+            "RUxJU1QQuBcSEgoNQ01EX1VTRVJfSk9JThDXFxITCg5DTURfVVNFUl9MRUFW",
+            "RRDYFxIaChVDTURfVVNFUl9TVEFURV9VUERBVEUQ2RcSGAoTQ01EX01vZGlm",
+            "eV9OaWNrTmFtZRCdGBIcChdDTURfVXBkYXRlX1NlbGZVc2VySW5mbxCmGBId",
+            "ChhDTURfVXBkYXRlX090aGVyVXNlckluZm8QqBgSEAoLQ01EX0NIQVRNU0cQ",
+            "oR8SEgoNQ01EX1Jvb21fTGlzdBCJJxIZChRDTURfUm9vbV9MaXN0X1VwZGF0",
+            "ZRCKJxIYChNDTURfUm9vbV9HZXRfU2NyZWVuEJMnEhQKD0NNRF9Sb29tX0Ny",
+            "ZWF0ZRDtJxISCg1DTURfUm9vbV9Kb2luEPEnEhMKDkNNRF9Sb29tX0xlYXZl",
+            "EPInEiIKHUNNRF9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2VkEPYnEhYKEUNN",
+            "RF9Sb29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBk",
+            "YXRlU3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAK",
+            "G0NNRF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9T",
+            "WU5fUGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNhISCg1DTURfR0FN",
+            "RV9NQVJLEPVOKtABCglFcnJvckNvZGUSEAoMRVJST1JfREVGQVVMEAASDAoI",
+            "RVJST1JfT0sQARIYChRFUlJPUl9ST09NX05PVF9GT1VORBAKEicKI0VSUk9S",
+            "X1JPT01fU0xPVF9BTFJFQURMWV9IQURfUExBWUVSEAsSIQodRVJST1JfUk9P",
+            "TV9DQU5UX0RPX0NVUlJfU1RBVEUQMhIfChpFUlJPUl9ST01fQUxSRUFEWV9I",
+            "QURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9OVF9IQURfU1RBUhCUAypACglM",
+            "b2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoKVXNlQWNjb3VudBABEhQKEFVz",
+            "ZUhhb1l1ZUFjY291bnQQAipLCgpEZXZpY2VUeXBlEhYKEkRldmljZVR5cGVf",
+            "RGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9pZBACEgcKA0lPUxADEgcKA1BT",
+            "VhAEKiAKDFBsYXRmb3JtVHlwZRIHCgNBbGwQABIHCgNOZXMQASpwCg1Sb29t",
+            "R2FtZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIR",
+            "Cg1XYWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQ",
+            "CgxJbk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dp",
+            "blJlc3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3Vu",
+            "dEVychACQgJIAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg), global::AxibugProtobuf.Protobuf_ChatMsg.Parser, new[]{ "ChatMsg" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg_RESP), global::AxibugProtobuf.Protobuf_ChatMsg_RESP.Parser, new[]{ "NickName", "ChatMsg", "Date" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Ping), global::AxibugProtobuf.Protobuf_Ping.Parser, new[]{ "Seed" }, null, null, null, null),
@@ -151,7 +158,9 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen), global::AxibugProtobuf.Protobuf_Room_Get_Screen.Parser, new[]{ "RoomID" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark), global::AxibugProtobuf.Protobuf_Game_Mark.Parser, new[]{ "RomID", "State", "PlatformType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark_RESP), global::AxibugProtobuf.Protobuf_Game_Mark_RESP.Parser, new[]{ "RomID", "PlatformType" }, null, null, null, null)
           }));
     }
     #endregion
@@ -277,6 +286,10 @@ namespace AxibugProtobuf {
     ///画面采集
     /// </summary>
     [pbr::OriginalName("CMD_Screen")] CmdScreen = 7001,
+    /// <summary>
+    ///房间列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_GAME_MARK")] CmdGameMark = 10101,
   }
 
   public enum ErrorCode {
@@ -295,11 +308,19 @@ namespace AxibugProtobuf {
     /// <summary>
     ///加入目标位置已经有人
     /// </summary>
-    [pbr::OriginalName("ERROR_ROOM_SLOT_READLY_HAD_PLAYER")] ErrorRoomSlotReadlyHadPlayer = 11,
+    [pbr::OriginalName("ERROR_ROOM_SLOT_ALREADLY_HAD_PLAYER")] ErrorRoomSlotAlreadlyHadPlayer = 11,
     /// <summary>
     ///当前房间状态不允许本操作
     /// </summary>
     [pbr::OriginalName("ERROR_ROOM_CANT_DO_CURR_STATE")] ErrorRoomCantDoCurrState = 50,
+    /// <summary>
+    ///已经收藏
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROM_ALREADY_HAD_STAR")] ErrorRomAlreadyHadStar = 403,
+    /// <summary>
+    ///并没有收藏
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROM_DONT_HAD_STAR")] ErrorRomDontHadStar = 404,
   }
 
   public enum LoginType {
@@ -326,6 +347,11 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("Android")] Android = 2,
     [pbr::OriginalName("IOS")] Ios = 3,
     [pbr::OriginalName("PSV")] Psv = 4,
+  }
+
+  public enum PlatformType {
+    [pbr::OriginalName("All")] All = 0,
+    [pbr::OriginalName("Nes")] Nes = 1,
   }
 
   public enum RoomGameState {
@@ -8130,6 +8156,473 @@ namespace AxibugProtobuf {
           }
           case 26: {
             RawBitmap = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Game_Mark : pb::IMessage<Protobuf_Game_Mark>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Game_Mark> _parser = new pb::MessageParser<Protobuf_Game_Mark>(() => new Protobuf_Game_Mark());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Game_Mark> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[36]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark(Protobuf_Game_Mark other) : this() {
+      romID_ = other.romID_;
+      state_ = other.state_;
+      platformType_ = other.platformType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark Clone() {
+      return new Protobuf_Game_Mark(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 2;
+    private int state_;
+    /// <summary>
+    ///[0]收藏 [1]取消收藏
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int State {
+      get { return state_; }
+      set {
+        state_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlatformType" field.</summary>
+    public const int PlatformTypeFieldNumber = 3;
+    private global::AxibugProtobuf.PlatformType platformType_ = global::AxibugProtobuf.PlatformType.All;
+    /// <summary>
+    ///平台类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.PlatformType PlatformType {
+      get { return platformType_; }
+      set {
+        platformType_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Game_Mark);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Game_Mark other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (State != other.State) return false;
+      if (PlatformType != other.PlatformType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (State != 0) hash ^= State.GetHashCode();
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) hash ^= PlatformType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (State != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(State);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (State != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(State);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (State != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(State);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Game_Mark other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.State != 0) {
+        State = other.State;
+      }
+      if (other.PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        PlatformType = other.PlatformType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            State = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            State = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Game_Mark_RESP : pb::IMessage<Protobuf_Game_Mark_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Game_Mark_RESP> _parser = new pb::MessageParser<Protobuf_Game_Mark_RESP>(() => new Protobuf_Game_Mark_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Game_Mark_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[37]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark_RESP(Protobuf_Game_Mark_RESP other) : this() {
+      romID_ = other.romID_;
+      platformType_ = other.platformType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark_RESP Clone() {
+      return new Protobuf_Game_Mark_RESP(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlatformType" field.</summary>
+    public const int PlatformTypeFieldNumber = 2;
+    private global::AxibugProtobuf.PlatformType platformType_ = global::AxibugProtobuf.PlatformType.All;
+    /// <summary>
+    ///平台类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.PlatformType PlatformType {
+      get { return platformType_; }
+      set {
+        platformType_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Game_Mark_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Game_Mark_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (PlatformType != other.PlatformType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) hash ^= PlatformType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Game_Mark_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        PlatformType = other.PlatformType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
             break;
           }
         }
