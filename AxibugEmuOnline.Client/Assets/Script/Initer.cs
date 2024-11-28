@@ -6,12 +6,13 @@ namespace AxibugEmuOnline.Client
 {
     public class Initer : MonoBehaviour
     {
-        [SerializeField]
-        PostProcessVolume m_filterVolume;
+        public PostProcessVolume m_filterVolume;
+        public CanvasGroup m_filterPreview;
+        public CanvasGroup m_xmbBg;
 
         private void Awake()
         {
-            App.Init(m_filterVolume);
+            App.Init(this);
         }
     }
 }

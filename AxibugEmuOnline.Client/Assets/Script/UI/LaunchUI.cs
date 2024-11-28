@@ -14,8 +14,7 @@ namespace AxibugEmuOnline.Client
         RectTransform MainMenuRoot;
         [SerializeField]
         MainMenuController MainMenu;
-        [SerializeField]
-        Image BG;
+        public Image BG;
 
         Vector2 m_mainLayoutPosition;
         [SerializeField]

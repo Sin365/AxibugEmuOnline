@@ -13,6 +13,8 @@ namespace AxibugEmuOnline.Client
 
         public IReadOnlyCollection<EditableParamerter> EditableParam => m_editableParamList.AsReadOnly();
 
+        public abstract string Name { get; }
+
         public FilterEffect()
         {
             GetEditableFilterParamters();
