@@ -4,7 +4,6 @@ using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace AxibugEmuOnline.Server
 {

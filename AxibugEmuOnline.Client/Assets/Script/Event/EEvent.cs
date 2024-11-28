@@ -5,6 +5,15 @@
         // 添加你自己需要的事件类型
         OnChatMsg,
 
+        //自己的信息更新(比如改名更新）
+        OnSelfInfoUpdate,
+        //更新其他用户信息
+        OnOtherUserInfoUpdate,
+
+        //用户列表，登录和离开
+        OnUserListAllUpdate,
+        OnUserLogin,
+        OnUserLoginOut,
 
         OnRoomListAllUpdate,//房间列表全量刷新
         OnRoomListSingleAdd,//房间列表中新增房间

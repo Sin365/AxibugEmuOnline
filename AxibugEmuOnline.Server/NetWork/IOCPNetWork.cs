@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Server.NetWork
 
         private void ClientNumberChange(int num, AsyncUserToken token)
         {
-            Console.WriteLine("Client数发生变化");
+            Console.WriteLine($"Client数发生变化 num->{num}");
         }
 
         /// <summary>

@@ -13,6 +13,7 @@ namespace AxibugEmuOnline.Server
         public static LogManager g_Log;
         public static LoginManager g_Login;
         public static ChatManager g_Chat;
+        public static UserManager g_UserMgr;
         public static IOCPNetWork g_SocketMgr;
         public static RoomManager g_Room;
 
@@ -26,6 +27,7 @@ namespace AxibugEmuOnline.Server
             g_Log = new LogManager();
             g_Login = new LoginManager();
             g_Chat = new ChatManager();
+            g_UserMgr = new UserManager();
             g_SocketMgr = new IOCPNetWork(1024, 4096*2);
             g_Room = new RoomManager();
 
