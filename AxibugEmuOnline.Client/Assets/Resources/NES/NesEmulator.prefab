@@ -458,6 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39557e19783acee499ace6c68549e8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InputTemplate: {fileID: 0}
   VideoProvider: {fileID: 4232056520112715744}
   AudioProvider: {fileID: 9003897287163669553}
   m_bPause: 0

@@ -124,7 +124,7 @@ namespace AxibugEmuOnline.Client
             App.roomMgr.SendLeavnRoom();
             App.emu.StopGame();
 
-            ControlScheme.Current = ControlSchemeSetts.Normal;
+            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
         }
     }
 }

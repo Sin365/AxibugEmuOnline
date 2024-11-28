@@ -1,5 +1,4 @@
 using AxibugEmuOnline.Client.ClientCore;
-using AxiReplay;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -57,7 +56,7 @@ namespace AxibugEmuOnline.Client
         }
 
         public EmulatorConfig Config { get; private set; } = new EmulatorConfig();
-
+        public NesControllerMapper ControllerMapper { get; private set; } = new NesControllerMapper();
         public void PrepareDirectory(string directPath)
         {
             Directory.CreateDirectory($"{App.PersistentDataPath}/{directPath}");
@@ -115,7 +114,7 @@ namespace AxibugEmuOnline.Client
                 }
                 else m_sampledState = default;
 
-                var localState = NesControllerMapper.Get().CreateState();
+                var localState = ControllerMapper.CreateState();
                 var rawData = ToNet(localState);
                 if (LastTestInput != rawData)
                 {
@@ -126,7 +125,7 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                m_sampledState = NesControllerMapper.Get().CreateState();
+                m_sampledState = ControllerMapper.CreateState();
             }
         }
 
