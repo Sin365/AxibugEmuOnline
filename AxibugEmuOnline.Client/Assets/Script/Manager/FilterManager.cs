@@ -67,15 +67,111 @@ namespace AxibugEmuOnline.Client
         public class Filter
         {
             public string Name => m_setting.Name;
+            public IReadOnlyCollection<EditableParamerter> Paramerters => m_setting.EditableParam;
+            /// <summary> 滤镜预设 </summary>
+            public List<FilterPreset> Presets = new List<FilterPreset>();
 
             internal FilterEffect m_setting;
 
             public Filter(FilterEffect setting)
             {
                 m_setting = setting;
+
+                loadPresets();
             }
 
-            internal IReadOnlyCollection<EditableParamerter> Paramerters => m_setting.EditableParam;
+            private void loadPresets()
+            {
+                var json = PlayerPrefs.GetString($"Filter_{Name}_PresetList", string.Empty);
+                var loadedPresets = JsonUtility.FromJson<FilterPresetList>(json);
+                if (loadedPresets == null) return;
+                else Presets = loadedPresets.presets;
+            }
+
+            private void savePresets()
+            {
+                var json = JsonUtility.ToJson(new FilterPresetList { presets = Presets });
+                PlayerPrefs.SetString($"Filter_{Name}_PresetList", json);
+            }
+
+            public MsgBool CreatePreset(string presetName,out FilterPreset newPreset)
+            {
+                newPreset = null;
+                if (Presets.Count(p => p.Name == presetName) != 0) return "名称重复";
+
+                newPreset = new FilterPreset(presetName);
+                Presets.Add(newPreset);
+
+                savePresets();
+
+                return true;
+            }
+
+            public void ResetPreset()
+            {
+                foreach (var param in Paramerters)
+                {
+                    param.ResetToDefault();
+                }
+            }
+
+            public void ApplyPreset(FilterPreset preset)
+            {
+                foreach (var param in Paramerters)
+                {
+                    var json = preset.GetParamValueJson(param.Name);
+                    if (string.IsNullOrEmpty(json))
+                        param.ResetToDefault();
+                    else
+                        param.Apply(json);
+                }
+
+            }
+        }
+
+        [Serializable]
+        private class FilterPresetList
+        {
+            public List<FilterPreset> presets;
+        }
+
+        [Serializable]
+        public class FilterPreset
+        {
+            [SerializeField]
+            public string Name;
+            [SerializeField]
+            private List<string> m_paramName = new List<string>();
+            [SerializeField]
+            private List<string> m_valueJson = new List<string>();
+
+            private bool m_cacheReady = false;
+            private Dictionary<string, string> m_paramName2ValueJson;
+            public FilterPreset(string presetName)
+            {
+                Name = presetName;
+            }
+
+            public string GetParamValueJson(string paramName)
+            {
+                prepareCache();
+
+                m_paramName2ValueJson.TryGetValue(paramName, out var value);
+                return value;
+            }
+
+            private void prepareCache()
+            {
+                if (m_cacheReady) return;
+
+                m_paramName2ValueJson = new Dictionary<string, string>();
+                for (int i = 0; i < m_paramName.Count; i++)
+                {
+                    m_paramName2ValueJson[m_paramName[i]] = m_valueJson[i];
+                }
+
+                m_cacheReady = true;
+            }
         }
     }
 }

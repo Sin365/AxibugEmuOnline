@@ -25,8 +25,6 @@ namespace AxibugEmuOnline.Client
         private bool m_bPoped = false;
         private List<OptionUI_MenuItem> m_runtimeMenuItems = new List<OptionUI_MenuItem>();
 
-        public event Action OnHide;
-
         private int m_selectIndex = -1;
         public int SelectIndex
         {
@@ -44,6 +42,11 @@ namespace AxibugEmuOnline.Client
                 var itemUIRect = optionUI_MenuItem.transform as RectTransform;
                 SelectBorder.pivot = itemUIRect.pivot;
                 SelectBorder.sizeDelta = itemUIRect.rect.size;
+
+                //重置选择游标的动画
+                SelectBorder.gameObject.SetActive(false);
+                SelectBorder.gameObject.SetActive(true);
+
                 DOTween.To(() => SelectBorder.position, (value) => SelectBorder.position = value, itemUIRect.position, 0.125f);
                 SelectBorder.SetAsLastSibling();
             }
@@ -128,8 +131,30 @@ namespace AxibugEmuOnline.Client
         }
 
         IKeyMapperChanger m_lastCS;
-        public void Pop<T>(List<T> menus, int defaultIndex = 0) where T : OptionMenu
+        private Action m_onClose;
+
+        /// <summary>
+        /// 当菜单弹出时,动态添加一个菜单选项
+        /// </summary>
+        /// <param name="menu"></param>
+        public void AddOptionMenuWhenPoping(OptionMenu menu)
         {
+            if (!m_bPoped) return;
+
+            CreateRuntimeMenuItem(menu);
+            Canvas.ForceUpdateCanvases();
+
+            OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
+            var itemUIRect = optionUI_MenuItem.transform as RectTransform;
+            SelectBorder.pivot = itemUIRect.pivot;
+            SelectBorder.position = itemUIRect.position;
+            SelectBorder.sizeDelta = itemUIRect.rect.size;
+            SelectBorder.SetAsLastSibling();
+        }
+
+        public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+        {
+            m_onClose = onClose;
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
             CommandDispatcher.Instance.RegistController(this);
@@ -140,6 +165,7 @@ namespace AxibugEmuOnline.Client
             m_selectIndex = defaultIndex;
             OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[defaultIndex];
             optionUI_MenuItem.OnFocus();
+
             var itemUIRect = optionUI_MenuItem.transform as RectTransform;
             SelectBorder.pivot = itemUIRect.pivot;
             SelectBorder.position = itemUIRect.position;
@@ -196,7 +222,8 @@ namespace AxibugEmuOnline.Client
 
                 CommandDispatcher.Instance.Current = m_lastCS;
 
-                OnHide?.Invoke();
+                m_onClose?.Invoke();
+                m_onClose = null;
             }
         }
 
@@ -242,12 +269,46 @@ namespace AxibugEmuOnline.Client
         protected override bool OnCmdEnter()
         {
             var executer = m_runtimeMenuItems[SelectIndex];
-            Hide();
-            executer.OnExecute();
-            return true;
+            bool cancelHide = false;
+            executer.OnExecute(this, ref cancelHide);
+            if (!cancelHide) Hide();
+
+            return false;
         }
     }
 
+
+
+    /// <summary>
+    /// 带有执行行为的菜单
+    /// </summary>
+    public abstract class ExecuteMenu : OptionMenu
+    {
+        public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
+
+        public abstract void OnExcute(OptionUI optionUI, ref bool cancelHide);
+    }
+
+    /// <summary>
+    /// 带有值类型显示和编辑的菜单
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ValueSetMenu<T> : ValueSetMenu
+    {
+        public sealed override Type ValueType => typeof(T);
+
+        public T Value { get; private set; }
+
+        public sealed override object ValueRaw => Value;
+
+        public sealed override void OnValueChanged(object newValue)
+        {
+            Value = (T)newValue;
+        }
+        protected ValueSetMenu(string name) : base(name) { }
+    }
+
+    /// <summary> 不要直接继承这个类 </summary>
     public abstract class OptionMenu
     {
         public string Name { get; protected set; }
@@ -264,29 +325,7 @@ namespace AxibugEmuOnline.Client
         public virtual void OnFocus() { }
         public virtual void OnShow(OptionUI_MenuItem ui) { }
     }
-
-    public abstract class ExecuteMenu : OptionMenu
-    {
-        public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
-
-        public abstract void OnExcute();
-    }
-
-    public class ValueSetMenu<T> : ValueSetMenu
-    {
-        public sealed override Type ValueType => typeof(T);
-
-        public T Value { get; private set; }
-
-        public sealed override object ValueRaw => Value;
-
-        public sealed override void OnValueChanged(object newValue)
-        {
-            Value = (T)newValue;
-        }
-        protected ValueSetMenu(string name) : base(name) { }
-    }
-
+    /// <summary> 不要直接继承这个类 </summary>
     public abstract class ValueSetMenu : OptionMenu
     {
         public ValueSetMenu(string name) : base(name) { }
