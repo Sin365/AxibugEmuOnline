@@ -152,6 +152,7 @@ namespace AxibugEmuOnline.Client.Manager
         public void RecvUserOnlinelist(byte[] reqData)
         {
             Protobuf_UserList_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserList_RESP>(reqData);
+            DictUID2User.Clear();
             for (int i = 0; i < msg.UserList.Count; i++)
             {
                 UserMiniInfo mi = msg.UserList[i];
