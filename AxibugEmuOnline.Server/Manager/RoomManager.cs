@@ -2,9 +2,10 @@
 using AxibugEmuOnline.Server.Manager;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
+using MySql.Data.MySqlClient;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Security.Policy;
 
 namespace AxibugEmuOnline.Server
 {
@@ -92,6 +93,48 @@ namespace AxibugEmuOnline.Server
             }
         }
 
+        #endregion
+
+        #region
+
+        public enum RoomLogType
+        {
+            Create = 0,
+            Join = 1,
+            Leave = 2
+        }
+        public void RoomLog(long uid, int platform, int RoomID, int RomID, RoomLogType state)
+        {
+            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("RoomLog");
+            try
+            {
+                string query = "INSERT INTO `haoyue_emu`.`room_log` (`uid`, `platform`, `romid`,`roomid`, `state`) VALUES ( ?uid, ?platform, ?romid, ?roomid, ?state);";
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    // 设置参数值
+                    command.Parameters.AddWithValue("?uid", uid);
+                    command.Parameters.AddWithValue("?platform", platform);
+                    command.Parameters.AddWithValue("?romid", RomID);
+                    command.Parameters.AddWithValue("?roomid", RoomID);
+                    command.Parameters.AddWithValue("?state", state);
+                    command.ExecuteNonQuery();
+                }
+
+                if (state == RoomLogType.Join)
+                {
+                    query = "update romlist_nes set playcount = playcount + 1 where id = ?romid";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        command.Parameters.AddWithValue("?romid", RomID);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+            }
+            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+        }
         #endregion
 
         private Protobuf_Room_MiniInfo GetProtoDataRoom(Data_RoomData room)
@@ -203,6 +246,8 @@ namespace AxibugEmuOnline.Server
                 SendRoomStepChange(newRoom);
 
             SendRoomUpdateToAll(newRoom.RoomID, 0);
+
+            RoomLog(_c.UID, 1, newRoom.RoomID, newRoom.GameRomID, RoomLogType.Create);
         }
 
         public void OnCmdRoomJoin(Socket sk, byte[] reqData)
@@ -241,6 +286,7 @@ namespace AxibugEmuOnline.Server
                     SendRoomUpdateToAll(room.RoomID, 0);
                 }
             }
+            RoomLog(_c.UID, 1, room.RoomID, room.GameRomID, RoomLogType.Join);
         }
         public void OnCmdRoomLeave(Socket sk, byte[] reqData)
         {
@@ -305,6 +351,8 @@ namespace AxibugEmuOnline.Server
             }
             else
                 SendRoomUpdateToAll(room.RoomID, 0);
+
+            RoomLog(_c.UID,1,room.RoomID,room.GameRomID,RoomLogType.Leave);
         }
 
         public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)
@@ -783,7 +831,7 @@ namespace AxibugEmuOnline.Server
             int oldPlayerCount = GetPlayerCount();
             if (GetPlayerUIDByIdx(PlayerNum, out long hadUID))
             {
-                errcode = ErrorCode.ErrorRoomSlotReadlyHadPlayer;
+                errcode = ErrorCode.ErrorRoomSlotAlreadlyHadPlayer;
                 return false;
             }
             AppSrv.g_Log.Debug($"Join _c.UID->{_c.UID} RoomID->{RoomID}");
@@ -911,7 +959,7 @@ namespace AxibugEmuOnline.Server
             this.ScreenRaw = NextStateRaw;
         }
 
-        public bool GetNeedForwardTick(uint clientFrame,out long forwaFrame)
+        public bool GetNeedForwardTick(uint clientFrame, out long forwaFrame)
         {
             forwaFrame = 0;
             //目标帧，客户端+服务器提前量

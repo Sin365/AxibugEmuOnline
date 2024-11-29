@@ -9,10 +9,12 @@ namespace AxibugEmuOnline.Client
         public PostProcessVolume m_filterVolume;
         public CanvasGroup m_filterPreview;
         public CanvasGroup m_xmbBg;
+        public static string dev_UUID;
 
         private void Awake()
         {
             App.Init(this);
+            dev_UUID = SystemInfo.deviceUniqueIdentifier;
         }
     }
 }

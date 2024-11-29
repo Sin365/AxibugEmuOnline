@@ -12,6 +12,15 @@ enum CommandID
 	
 	CMD_LOGIN = 2001;  //自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
 	
+	CMD_USER_ONLINELIST = 3000;  //获取在线用户列表 上行 | 下行 对应 Protobuf_UserList | Protobuf_UserList_RESP
+	CMD_USER_JOIN = 3031;  //用户上线 下行 对应 Protobuf_UserOnline_RESP
+	CMD_USER_LEAVE = 3032;  //用户下线 下行 对应 Protobuf_UserOffline_RESP
+	CMD_USER_STATE_UPDATE = 3033;  //更新在线用户状态 下行 对应 Protobuf_UserState_RESP
+	
+	CMD_Modify_NickName = 3101;  //修改名称上行 | 下行 对应 Protobuf_Modify_NickName | Protobuf_Modify_NickName_RESP
+	CMD_Update_SelfUserInfo = 3110;  //更新用户信息 下行 Protobuf_Update_UserInfo_RESP
+	CMD_Update_OtherUserInfo = 3112;  //更新其他用户信息 下行 Protobuf_Update_OtherUserInfo_RESP
+	
 	CMD_CHATMSG = 4001;  //广播聊天信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
 	
 	//房间列表相关（仅用于列表显示）
@@ -55,6 +64,8 @@ enum CommandID
 	
 	//画面采集
 	CMD_Screen = 7001;  //画面采集 | 同步广播 对应 Protobuf_Screnn_Frame
+	
+	CMD_GAME_MARK = 10101;  //房间列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
 }
 
 enum ErrorCode
@@ -63,14 +74,19 @@ enum ErrorCode
 	ERROR_OK = 1;   //成功
 	
 	ERROR_ROOM_NOT_FOUND = 10;//房间不存在
-	ERROR_ROOM_SLOT_READLY_HAD_PLAYER=11;//加入目标位置已经有人
+	ERROR_ROOM_SLOT_ALREADLY_HAD_PLAYER=11;//加入目标位置已经有人
 	
 	ERROR_ROOM_CANT_DO_CURR_STATE =50;//当前房间状态不允许本操作
+	
+	ERROR_ROM_ALREADY_HAD_STAR =403;//已经收藏
+	ERROR_ROM_DONT_HAD_STAR =404;//并没有收藏
 }
 
 enum LoginType
 {
-    BaseDefault = 0;//缺省不使用
+	UseDevice = 0;//使用设备登录
+	UseAccount = 1;//使用账户
+	UseHaoYueAccount = 2;//使用皓月通行证
 }
 
 enum DeviceType
@@ -80,6 +96,12 @@ enum DeviceType
 	Android = 2;
 	IOS = 3;
 	PSV = 4;
+}
+
+enum PlatformType
+{
+    All = 0;
+    Nes = 1;
 }
 
 //enum RoomPlayerState
@@ -135,21 +157,86 @@ message Protobuf_Pong
 //登录数据上行
 message Protobuf_Login
 {
-	LoginType loginType = 1;//登录操作类型 [0]皓月通行证 [3] 皓月BF3 [4] 皓月BF4
-	DeviceType deviceType = 2;//设备类型 [0]PC [1]AndroidPad预留 [3]IPad预留
-	string Account = 3;//用户名
-	string Password = 4;//密码
+	LoginType loginType = 1;//登录操作类型
+	DeviceType deviceType = 2;//设备类型 [0] PC [1] AndroidPad预留 [3] IPad预留
+	string deviceStr = 3;//设备串
+	string Account = 4;//用户名
+	string Password = 5;//密码
 }
 
 //登录数据下行
 message Protobuf_Login_RESP
 {
-	string DeviceUUID = 1;//设备唯一串
+	string NickName = 1;//昵称（第一次是自动生成）
 	string Token = 2;//登录凭据 （本次登录之后，所有业务请求凭据，需要存储在内存中）
 	string LastLoginDate = 3;//上次登录时间（只用于呈现的字符串，若界面需求需要）
 	string RegDate = 4;//注册时间（只用于呈现的字符串，若界面需求需要）
 	LoginResultStatus Status = 5;//账号状态 （预留） [1]正常[0]被禁封
 	int64 UID = 6;
+}
+
+
+
+//获取在线用户列表 上行
+message Protobuf_UserList
+{
+}
+
+//获取在线用户列表 下行
+message Protobuf_UserList_RESP
+{
+	int32 UserCount = 1;//玩家数量
+	repeated UserMiniInfo UserList = 2;//用户列表
+}
+
+//用户上线 下行
+message Protobuf_UserJoin_RESP
+{
+	UserMiniInfo UserInfo = 1;//用户
+}
+
+//用户下线 下行
+message Protobuf_UserLeave_RESP
+{
+	int64 UID = 1;//用户ID
+}
+
+//更新在线用户状态 下行
+message Protobuf_UserState_RESP
+{
+	int64 UID = 1;//用户ID
+	int32 State = 2;//状态
+}
+
+message UserMiniInfo
+{
+	int64 UID = 1;//用户ID
+	string NickName = 2;//昵称
+}
+
+//修改昵称上行
+message Protobuf_Modify_NickName
+{
+	string NickName = 1;//昵称
+}
+
+//修改昵称下行
+message Protobuf_Modify_NickName_RESP
+{
+
+}
+
+//用户信息更新
+message Protobuf_Update_UserInfo_RESP
+{
+	UserMiniInfo UserInfo = 1;//用户
+}
+
+//其他用户信息更新
+message Protobuf_Update_OtherUserInfo_RESP
+{
+	int64 UID = 1;//用户ID
+	UserMiniInfo UserInfo = 2;//用户
 }
 
 message Protobuf_Room_List
@@ -276,4 +363,18 @@ message Protobuf_Room_Get_Screen_RESP
 	int32 RoomID = 1;//房间ID
 	int32 FrameID = 2;//帧编号
     bytes RawBitmap = 3;//渲染层画面
+}
+
+
+message Protobuf_Game_Mark
+{
+	int32 RomID = 1;//RomID
+	int32 state = 2;//[0]收藏 [1]取消收藏
+	PlatformType PlatformType = 3;//平台类型
+}
+
+message Protobuf_Game_Mark_RESP
+{
+	int32 RomID = 1;//RomID
+	PlatformType PlatformType = 2;//平台类型
 }
