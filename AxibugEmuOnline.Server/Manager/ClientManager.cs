@@ -1,6 +1,10 @@
 ﻿using AxibugEmuOnline.Server.Common;
+using AxibugEmuOnline.Server.Event;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
+using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Timers;
 
@@ -9,12 +13,14 @@ namespace AxibugEmuOnline.Server.Manager
     public class ClientInfo
     {
         public long UID { get; set; }
-        public string NickName { get; set; }
-        public string Account { get; set; }
+        public string NickName { get; set; } = string.Empty;
+        public string Account { get; set; } = string.Empty;
         public Socket _socket { get; set; }
         public bool IsOffline { get; set; } = false;
+        public DateTime RegisterDT { get; set; }
         public DateTime LogOutDT { get; set; }
         public DateTime LogInDT { get; set; }
+        public DateTime LastLogInDT { get; set; }
         public UserRoomState RoomState { get; set; } = new UserRoomState();
         public TimeSpan LastStartPingTime { get; set; }
         public int LastPingSeed { get; set; }
@@ -81,6 +87,7 @@ namespace AxibugEmuOnline.Server.Manager
             threadPingTick.Start();
         }
 
+
         public long GetNextUID()
         {
             return ++TestUIDSeed;
@@ -104,7 +111,7 @@ namespace AxibugEmuOnline.Server.Manager
         //通用处理
         #region clientlist 处理
 
-        public ClientInfo JoinNewClient(Protobuf_Login data, Socket _socket)
+        public ClientInfo JoinNewClient(long _uid, Socket _socket)
         {
             //也许这个函数需加lock
             ClientInfo cinfo = GetClientForSocket(_socket);
@@ -117,10 +124,8 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 cinfo = new ClientInfo()
                 {
-                    UID = GetNextUID(),
+                    UID = _uid,
                     _socket = _socket,
-                    Account = data.Account,
-                    NickName = data.Account,
                     IsOffline = false,
                 };
                 AddClient(cinfo);
@@ -192,6 +197,10 @@ namespace AxibugEmuOnline.Server.Manager
             }
         }
 
+        public ClientInfo GetClientForUID(long UID)
+        {
+            return _DictUIDClient.ContainsKey(UID) ? _DictUIDClient[UID] : null;
+        }
 
         public ClientInfo GetClientForSocket(Socket sk)
         {
@@ -221,8 +230,8 @@ namespace AxibugEmuOnline.Server.Manager
             Console.WriteLine("标记玩家UID" + cinfo.UID + "为离线");
             cinfo.IsOffline = true;
             cinfo.LogOutDT = DateTime.Now;
-
             AppSrv.g_Room.LeaveRoom(cinfo, cinfo.RoomState.RoomID);
+            EventSystem.Instance.PostEvent(EEvent.OnUserOffline, cinfo.UID);
         }
 
         public void RemoveClientForSocket(Socket sk)
@@ -264,7 +273,6 @@ namespace AxibugEmuOnline.Server.Manager
         public void OnCmdPing(Socket sk, byte[] reqData)
         {
             //AppSrv.g_Log.Debug($"OnCmdPing");
-            ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Ping msg = ProtoBufHelper.DeSerizlize<Protobuf_Ping>(reqData);
 
             //创建成功下行
@@ -272,7 +280,7 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 Seed = msg.Seed,
             };
-            AppSrv.g_ClientMgr.ClientSend(_c._socket, (int)CommandID.CmdPong, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+            AppSrv.g_ClientMgr.ClientSend(sk, (int)CommandID.CmdPong, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
         }
         public void OnCmdPong(Socket sk, byte[] reqData)
         {
@@ -302,6 +310,7 @@ namespace AxibugEmuOnline.Server.Manager
             }
         }
         #endregion
+
 
         public void ClientSendALL(int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
         {

@@ -29,6 +29,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppRoom roomMgr;
         public static AppSettings settings;
         public static FilterManager filter;
+        public static AppShare share;
         #region Mono
         public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
@@ -55,6 +56,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             nesRomLib = new RomLib(EnumPlatform.NES);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
+            share = new AppShare();
             filter = new FilterManager(initer.m_filterVolume, initer.m_filterPreview,initer.m_xmbBg);
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
@@ -66,7 +68,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 //PSV 等平台需要手动创建目录
                 PersistentDataPathDir();
             }
-
+            
             var importNode = GameObject.Find("IMPORTENT");
             if (importNode != null) GameObject.DontDestroyOnLoad(importNode);
 

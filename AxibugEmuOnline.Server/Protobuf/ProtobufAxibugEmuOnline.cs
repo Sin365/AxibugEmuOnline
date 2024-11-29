@@ -28,82 +28,117 @@ namespace AxibugProtobuf {
             "YnVmIiMKEFByb3RvYnVmX0NoYXRNc2cSDwoHQ2hhdE1zZxgBIAEoCSJIChVQ",
             "cm90b2J1Zl9DaGF0TXNnX1JFU1ASEAoITmlja05hbWUYASABKAkSDwoHQ2hh",
             "dE1zZxgCIAEoCRIMCgREYXRlGAMgASgDIh0KDVByb3RvYnVmX1BpbmcSDAoE",
-            "U2VlZBgBIAEoBSIdCg1Qcm90b2J1Zl9Qb25nEgwKBFNlZWQYASABKAUikQEK",
+            "U2VlZBgBIAEoBSIdCg1Qcm90b2J1Zl9Qb25nEgwKBFNlZWQYASABKAUipAEK",
             "DlByb3RvYnVmX0xvZ2luEiwKCWxvZ2luVHlwZRgBIAEoDjIZLkF4aWJ1Z1By",
             "b3RvYnVmLkxvZ2luVHlwZRIuCgpkZXZpY2VUeXBlGAIgASgOMhouQXhpYnVn",
-            "UHJvdG9idWYuRGV2aWNlVHlwZRIPCgdBY2NvdW50GAMgASgJEhAKCFBhc3N3",
-            "b3JkGAQgASgJIqABChNQcm90b2J1Zl9Mb2dpbl9SRVNQEhIKCkRldmljZVVV",
-            "SUQYASABKAkSDQoFVG9rZW4YAiABKAkSFQoNTGFzdExvZ2luRGF0ZRgDIAEo",
-            "CRIPCgdSZWdEYXRlGAQgASgJEjEKBlN0YXR1cxgFIAEoDjIhLkF4aWJ1Z1By",
-            "b3RvYnVmLkxvZ2luUmVzdWx0U3RhdHVzEgsKA1VJRBgGIAEoAyIUChJQcm90",
-            "b2J1Zl9Sb29tX0xpc3QiWwoXUHJvdG9idWZfUm9vbV9MaXN0X1JFU1ASQAoQ",
-            "Um9vbU1pbmlJbmZvTGlzdBgBIAMoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3Rv",
-            "YnVmX1Jvb21fTWluaUluZm8ihgMKFlByb3RvYnVmX1Jvb21fTWluaUluZm8S",
-            "DgoGUm9vbUlEGAEgASgFEhEKCUdhbWVSb21JRBgCIAEoBRITCgtHYW1lUm9t",
-            "SGFzaBgDIAEoCRIVCg1Ib3N0UGxheWVyVUlEGAQgASgDEjAKCUdhbWVTdGF0",
-            "ZRgFIAEoDjIdLkF4aWJ1Z1Byb3RvYnVmLlJvb21HYW1lU3RhdGUSFAoMT2Jz",
-            "VXNlckNvdW50GAYgASgFEhMKC1BsYXllcjFfVUlEGAcgASgDEhgKEFBsYXll",
-            "cjFfTmlja05hbWUYCCABKAkSEwoLUGxheWVyMl9VSUQYCSABKAMSGAoQUGxh",
-            "eWVyMl9OaWNrTmFtZRgKIAEoCRITCgtQbGF5ZXIzX1VJRBgLIAEoAxIYChBQ",
-            "bGF5ZXIzX05pY2tOYW1lGAwgASgJEhMKC1BsYXllcjRfVUlEGA0gASgDEhgK",
-            "EFBsYXllcjRfTmlja05hbWUYDiABKAkSGQoRU2NyZWVuUHJvdmlkZXJVSUQY",
-            "DyABKAMibQoZUHJvdG9idWZfUm9vbV9VcGRhdGVfUkVTUBISCgpVcGRhdGVU",
-            "eXBlGAEgASgFEjwKDFJvb21NaW5pSW5mbxgCIAEoCzImLkF4aWJ1Z1Byb3Rv",
-            "YnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iSwoVUHJvdG9idWZfU2NyZW5u",
-            "X0ZyYW1lEg4KBlJvb21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJh",
-            "d0JpdG1hcBgDIAEoDCJJCiNQcm90b2J1Zl9Sb29tX1NpbmdsZVBsYXllcklu",
-            "cHV0RGF0YRIPCgdGcmFtZUlEGAEgASgNEhEKCUlucHV0RGF0YRgCIAEoDSJk",
-            "CidQcm90b2J1Zl9Sb29tX1N5bl9Sb29tRnJhbWVBbGxJbnB1dERhdGESDwoH",
-            "RnJhbWVJRBgBIAEoDRIRCglJbnB1dERhdGEYAiABKAQSFQoNU2VydmVyRnJh",
-            "bWVJRBgDIAEoDSJVChRQcm90b2J1Zl9Sb29tX0NyZWF0ZRIRCglHYW1lUm9t",
-            "SUQYASABKAUSEwoLR2FtZVJvbUhhc2gYAiABKAkSFQoNSm9pblBsYXllcklk",
-            "eBgDIAEoBSJZChlQcm90b2J1Zl9Sb29tX0NyZWF0ZV9SRVNQEjwKDFJvb21N",
-            "aW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21f",
-            "TWluaUluZm8iNwoSUHJvdG9idWZfUm9vbV9Kb2luEg4KBlJvb21JRBgBIAEo",
-            "BRIRCglQbGF5ZXJOdW0YAiABKAUiVwoXUHJvdG9idWZfUm9vbV9Kb2luX1JF",
-            "U1ASPAoMUm9vbU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYuUHJv",
-            "dG9idWZfUm9vbV9NaW5pSW5mbyIlChNQcm90b2J1Zl9Sb29tX0xlYXZlEg4K",
-            "BlJvb21JRBgBIAEoBSIqChhQcm90b2J1Zl9Sb29tX0xlYXZlX1JFU1ASDgoG",
-            "Um9vbUlEGAEgASgFImEKIVByb3RvYnVmX1Jvb21fTXlSb29tX1N0YXRlX0No",
-            "YW5nZRI8CgxSb29tTWluaUluZm8YASABKAsyJi5BeGlidWdQcm90b2J1Zi5Q",
-            "cm90b2J1Zl9Sb29tX01pbmlJbmZvIkUKG1Byb3RvYnVmX1Jvb21fV2FpdFN0",
-            "ZXBfUkVTUBIQCghXYWl0U3RlcBgBIAEoBRIUCgxMb2FkU3RhdGVSYXcYAiAB",
-            "KAwiPwonUHJvdG9idWZfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3",
-            "EhQKDExvYWRTdGF0ZVJhdxgBIAEoDCIuCixQcm90b2J1Zl9Sb29tX0hvc3RQ",
-            "bGF5ZXJfVXBkYXRlU3RhdGVSYXdfUkVTUCIcChpQcm90b2J1Zl9Sb29tX1Bs",
-            "YXllcl9SZWFkeSIqChhQcm90b2J1Zl9Sb29tX0dldF9TY3JlZW4SDgoGUm9v",
-            "bUlEGAEgASgFIlMKHVByb3RvYnVmX1Jvb21fR2V0X1NjcmVlbl9SRVNQEg4K",
-            "BlJvb21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgD",
-            "IAEoDCq0AwoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElO",
-            "RxABEgwKCENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhAKC0NNRF9DSEFU",
-            "TVNHEKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01EX1Jvb21fTGlzdF9V",
-            "cGRhdGUQiicSGAoTQ01EX1Jvb21fR2V0X1NjcmVlbhCTJxIUCg9DTURfUm9v",
-            "bV9DcmVhdGUQ7ScSEgoNQ01EX1Jvb21fSm9pbhDxJxITCg5DTURfUm9vbV9M",
-            "ZWF2ZRDyJxIiCh1DTURfUm9vbV9NeVJvb21fU3RhdGVfQ2hhbmdlZBD2JxIW",
-            "ChFDTURfUm9vbV9XYWl0U3RlcBDRKBInCiJDTURfUm9vbV9Ib3N0UGxheWVy",
-            "X1VwZGF0ZVN0YXRlUmF3ENQoEhoKFUNNRF9Sb29tX1BsYXllcl9SZWFkeRDY",
-            "KBIgChtDTURfUm9vbV9TaW5nZWxfUGxheWVySW5wdXQQ+i4SHQoYQ01EX1JP",
-            "T01fU1lOX1BsYXllcklucHV0EP8uEg8KCkNNRF9TY3JlZW4Q2TYqjwEKCUVy",
-            "cm9yQ29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVS",
-            "Uk9SX1JPT01fTk9UX0ZPVU5EEAoSJQohRVJST1JfUk9PTV9TTE9UX1JFQURM",
-            "WV9IQURfUExBWUVSEAsSIQodRVJST1JfUk9PTV9DQU5UX0RPX0NVUlJfU1RB",
-            "VEUQMiocCglMb2dpblR5cGUSDwoLQmFzZURlZmF1bHQQACpLCgpEZXZpY2VU",
-            "eXBlEhYKEkRldmljZVR5cGVfRGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9p",
-            "ZBACEgcKA0lPUxADEgcKA1BTVhAEKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9u",
-            "ZV9HYW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQ",
-            "AhINCglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAF",
-            "Kk4KEUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jh",
-            "c2VEZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90",
-            "bzM="));
+            "UHJvdG9idWYuRGV2aWNlVHlwZRIRCglkZXZpY2VTdHIYAyABKAkSDwoHQWNj",
+            "b3VudBgEIAEoCRIQCghQYXNzd29yZBgFIAEoCSKeAQoTUHJvdG9idWZfTG9n",
+            "aW5fUkVTUBIQCghOaWNrTmFtZRgBIAEoCRINCgVUb2tlbhgCIAEoCRIVCg1M",
+            "YXN0TG9naW5EYXRlGAMgASgJEg8KB1JlZ0RhdGUYBCABKAkSMQoGU3RhdHVz",
+            "GAUgASgOMiEuQXhpYnVnUHJvdG9idWYuTG9naW5SZXN1bHRTdGF0dXMSCwoD",
+            "VUlEGAYgASgDIhMKEVByb3RvYnVmX1VzZXJMaXN0IlsKFlByb3RvYnVmX1Vz",
+            "ZXJMaXN0X1JFU1ASEQoJVXNlckNvdW50GAEgASgFEi4KCFVzZXJMaXN0GAIg",
+            "AygLMhwuQXhpYnVnUHJvdG9idWYuVXNlck1pbmlJbmZvIkgKFlByb3RvYnVm",
+            "X1VzZXJKb2luX1JFU1ASLgoIVXNlckluZm8YASABKAsyHC5BeGlidWdQcm90",
+            "b2J1Zi5Vc2VyTWluaUluZm8iJgoXUHJvdG9idWZfVXNlckxlYXZlX1JFU1AS",
+            "CwoDVUlEGAEgASgDIjUKF1Byb3RvYnVmX1VzZXJTdGF0ZV9SRVNQEgsKA1VJ",
+            "RBgBIAEoAxINCgVTdGF0ZRgCIAEoBSItCgxVc2VyTWluaUluZm8SCwoDVUlE",
+            "GAEgASgDEhAKCE5pY2tOYW1lGAIgASgJIiwKGFByb3RvYnVmX01vZGlmeV9O",
+            "aWNrTmFtZRIQCghOaWNrTmFtZRgBIAEoCSIfCh1Qcm90b2J1Zl9Nb2RpZnlf",
+            "Tmlja05hbWVfUkVTUCJPCh1Qcm90b2J1Zl9VcGRhdGVfVXNlckluZm9fUkVT",
+            "UBIuCghVc2VySW5mbxgBIAEoCzIcLkF4aWJ1Z1Byb3RvYnVmLlVzZXJNaW5p",
+            "SW5mbyJhCiJQcm90b2J1Zl9VcGRhdGVfT3RoZXJVc2VySW5mb19SRVNQEgsK",
+            "A1VJRBgBIAEoAxIuCghVc2VySW5mbxgCIAEoCzIcLkF4aWJ1Z1Byb3RvYnVm",
+            "LlVzZXJNaW5pSW5mbyIUChJQcm90b2J1Zl9Sb29tX0xpc3QiWwoXUHJvdG9i",
+            "dWZfUm9vbV9MaXN0X1JFU1ASQAoQUm9vbU1pbmlJbmZvTGlzdBgBIAMoCzIm",
+            "LkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8ihgMKFlBy",
+            "b3RvYnVmX1Jvb21fTWluaUluZm8SDgoGUm9vbUlEGAEgASgFEhEKCUdhbWVS",
+            "b21JRBgCIAEoBRITCgtHYW1lUm9tSGFzaBgDIAEoCRIVCg1Ib3N0UGxheWVy",
+            "VUlEGAQgASgDEjAKCUdhbWVTdGF0ZRgFIAEoDjIdLkF4aWJ1Z1Byb3RvYnVm",
+            "LlJvb21HYW1lU3RhdGUSFAoMT2JzVXNlckNvdW50GAYgASgFEhMKC1BsYXll",
+            "cjFfVUlEGAcgASgDEhgKEFBsYXllcjFfTmlja05hbWUYCCABKAkSEwoLUGxh",
+            "eWVyMl9VSUQYCSABKAMSGAoQUGxheWVyMl9OaWNrTmFtZRgKIAEoCRITCgtQ",
+            "bGF5ZXIzX1VJRBgLIAEoAxIYChBQbGF5ZXIzX05pY2tOYW1lGAwgASgJEhMK",
+            "C1BsYXllcjRfVUlEGA0gASgDEhgKEFBsYXllcjRfTmlja05hbWUYDiABKAkS",
+            "GQoRU2NyZWVuUHJvdmlkZXJVSUQYDyABKAMibQoZUHJvdG9idWZfUm9vbV9V",
+            "cGRhdGVfUkVTUBISCgpVcGRhdGVUeXBlGAEgASgFEjwKDFJvb21NaW5pSW5m",
+            "bxgCIAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUlu",
+            "Zm8iSwoVUHJvdG9idWZfU2NyZW5uX0ZyYW1lEg4KBlJvb21JRBgBIAEoBRIP",
+            "CgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCJJCiNQcm90b2J1",
+            "Zl9Sb29tX1NpbmdsZVBsYXllcklucHV0RGF0YRIPCgdGcmFtZUlEGAEgASgN",
+            "EhEKCUlucHV0RGF0YRgCIAEoDSJkCidQcm90b2J1Zl9Sb29tX1N5bl9Sb29t",
+            "RnJhbWVBbGxJbnB1dERhdGESDwoHRnJhbWVJRBgBIAEoDRIRCglJbnB1dERh",
+            "dGEYAiABKAQSFQoNU2VydmVyRnJhbWVJRBgDIAEoDSJVChRQcm90b2J1Zl9S",
+            "b29tX0NyZWF0ZRIRCglHYW1lUm9tSUQYASABKAUSEwoLR2FtZVJvbUhhc2gY",
+            "AiABKAkSFQoNSm9pblBsYXllcklkeBgDIAEoBSJZChlQcm90b2J1Zl9Sb29t",
+            "X0NyZWF0ZV9SRVNQEjwKDFJvb21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1By",
+            "b3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iNwoSUHJvdG9idWZfUm9v",
+            "bV9Kb2luEg4KBlJvb21JRBgBIAEoBRIRCglQbGF5ZXJOdW0YAiABKAUiVwoX",
+            "UHJvdG9idWZfUm9vbV9Kb2luX1JFU1ASPAoMUm9vbU1pbmlJbmZvGAEgASgL",
+            "MiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyIlChNQ",
+            "cm90b2J1Zl9Sb29tX0xlYXZlEg4KBlJvb21JRBgBIAEoBSIqChhQcm90b2J1",
+            "Zl9Sb29tX0xlYXZlX1JFU1ASDgoGUm9vbUlEGAEgASgFImEKIVByb3RvYnVm",
+            "X1Jvb21fTXlSb29tX1N0YXRlX0NoYW5nZRI8CgxSb29tTWluaUluZm8YASAB",
+            "KAsyJi5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvIkUK",
+            "G1Byb3RvYnVmX1Jvb21fV2FpdFN0ZXBfUkVTUBIQCghXYWl0U3RlcBgBIAEo",
+            "BRIUCgxMb2FkU3RhdGVSYXcYAiABKAwiPwonUHJvdG9idWZfUm9vbV9Ib3N0",
+            "UGxheWVyX1VwZGF0ZVN0YXRlUmF3EhQKDExvYWRTdGF0ZVJhdxgBIAEoDCIu",
+            "CixQcm90b2J1Zl9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRlU3RhdGVSYXdfUkVT",
+            "UCIcChpQcm90b2J1Zl9Sb29tX1BsYXllcl9SZWFkeSIqChhQcm90b2J1Zl9S",
+            "b29tX0dldF9TY3JlZW4SDgoGUm9vbUlEGAEgASgFIlMKHVByb3RvYnVmX1Jv",
+            "b21fR2V0X1NjcmVlbl9SRVNQEg4KBlJvb21JRBgBIAEoBRIPCgdGcmFtZUlE",
+            "GAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCJmChJQcm90b2J1Zl9HYW1lX01h",
+            "cmsSDQoFUm9tSUQYASABKAUSDQoFc3RhdGUYAiABKAUSMgoMUGxhdGZvcm1U",
+            "eXBlGAMgASgOMhwuQXhpYnVnUHJvdG9idWYuUGxhdGZvcm1UeXBlIlwKF1By",
+            "b3RvYnVmX0dhbWVfTWFya19SRVNQEg0KBVJvbUlEGAEgASgFEjIKDFBsYXRm",
+            "b3JtVHlwZRgCIAEoDjIcLkF4aWJ1Z1Byb3RvYnVmLlBsYXRmb3JtVHlwZSr+",
+            "BAoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElORxABEgwK",
+            "CENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhgKE0NNRF9VU0VSX09OTElO",
+            "RUxJU1QQuBcSEgoNQ01EX1VTRVJfSk9JThDXFxITCg5DTURfVVNFUl9MRUFW",
+            "RRDYFxIaChVDTURfVVNFUl9TVEFURV9VUERBVEUQ2RcSGAoTQ01EX01vZGlm",
+            "eV9OaWNrTmFtZRCdGBIcChdDTURfVXBkYXRlX1NlbGZVc2VySW5mbxCmGBId",
+            "ChhDTURfVXBkYXRlX090aGVyVXNlckluZm8QqBgSEAoLQ01EX0NIQVRNU0cQ",
+            "oR8SEgoNQ01EX1Jvb21fTGlzdBCJJxIZChRDTURfUm9vbV9MaXN0X1VwZGF0",
+            "ZRCKJxIYChNDTURfUm9vbV9HZXRfU2NyZWVuEJMnEhQKD0NNRF9Sb29tX0Ny",
+            "ZWF0ZRDtJxISCg1DTURfUm9vbV9Kb2luEPEnEhMKDkNNRF9Sb29tX0xlYXZl",
+            "EPInEiIKHUNNRF9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2VkEPYnEhYKEUNN",
+            "RF9Sb29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBk",
+            "YXRlU3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAK",
+            "G0NNRF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9T",
+            "WU5fUGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNhISCg1DTURfR0FN",
+            "RV9NQVJLEPVOKtABCglFcnJvckNvZGUSEAoMRVJST1JfREVGQVVMEAASDAoI",
+            "RVJST1JfT0sQARIYChRFUlJPUl9ST09NX05PVF9GT1VORBAKEicKI0VSUk9S",
+            "X1JPT01fU0xPVF9BTFJFQURMWV9IQURfUExBWUVSEAsSIQodRVJST1JfUk9P",
+            "TV9DQU5UX0RPX0NVUlJfU1RBVEUQMhIfChpFUlJPUl9ST01fQUxSRUFEWV9I",
+            "QURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9OVF9IQURfU1RBUhCUAypACglM",
+            "b2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoKVXNlQWNjb3VudBABEhQKEFVz",
+            "ZUhhb1l1ZUFjY291bnQQAipLCgpEZXZpY2VUeXBlEhYKEkRldmljZVR5cGVf",
+            "RGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9pZBACEgcKA0lPUxADEgcKA1BT",
+            "VhAEKiAKDFBsYXRmb3JtVHlwZRIHCgNBbGwQABIHCgNOZXMQASpwCg1Sb29t",
+            "R2FtZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIR",
+            "Cg1XYWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQ",
+            "CgxJbk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dp",
+            "blJlc3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3Vu",
+            "dEVychACQgJIAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg), global::AxibugProtobuf.Protobuf_ChatMsg.Parser, new[]{ "ChatMsg" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg_RESP), global::AxibugProtobuf.Protobuf_ChatMsg_RESP.Parser, new[]{ "NickName", "ChatMsg", "Date" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Ping), global::AxibugProtobuf.Protobuf_Ping.Parser, new[]{ "Seed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Pong), global::AxibugProtobuf.Protobuf_Pong.Parser, new[]{ "Seed" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login), global::AxibugProtobuf.Protobuf_Login.Parser, new[]{ "LoginType", "DeviceType", "Account", "Password" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login_RESP), global::AxibugProtobuf.Protobuf_Login_RESP.Parser, new[]{ "DeviceUUID", "Token", "LastLoginDate", "RegDate", "Status", "UID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login), global::AxibugProtobuf.Protobuf_Login.Parser, new[]{ "LoginType", "DeviceType", "DeviceStr", "Account", "Password" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Login_RESP), global::AxibugProtobuf.Protobuf_Login_RESP.Parser, new[]{ "NickName", "Token", "LastLoginDate", "RegDate", "Status", "UID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_UserList), global::AxibugProtobuf.Protobuf_UserList.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_UserList_RESP), global::AxibugProtobuf.Protobuf_UserList_RESP.Parser, new[]{ "UserCount", "UserList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_UserJoin_RESP), global::AxibugProtobuf.Protobuf_UserJoin_RESP.Parser, new[]{ "UserInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_UserLeave_RESP), global::AxibugProtobuf.Protobuf_UserLeave_RESP.Parser, new[]{ "UID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_UserState_RESP), global::AxibugProtobuf.Protobuf_UserState_RESP.Parser, new[]{ "UID", "State" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.UserMiniInfo), global::AxibugProtobuf.UserMiniInfo.Parser, new[]{ "UID", "NickName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Modify_NickName), global::AxibugProtobuf.Protobuf_Modify_NickName.Parser, new[]{ "NickName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Modify_NickName_RESP), global::AxibugProtobuf.Protobuf_Modify_NickName_RESP.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Update_UserInfo_RESP), global::AxibugProtobuf.Protobuf_Update_UserInfo_RESP.Parser, new[]{ "UserInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Update_OtherUserInfo_RESP), global::AxibugProtobuf.Protobuf_Update_OtherUserInfo_RESP.Parser, new[]{ "UID", "UserInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List), global::AxibugProtobuf.Protobuf_Room_List.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List_RESP), global::AxibugProtobuf.Protobuf_Room_List_RESP.Parser, new[]{ "RoomMiniInfoList" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "HostPlayerUID", "GameState", "ObsUserCount", "Player1UID", "Player1NickName", "Player2UID", "Player2NickName", "Player3UID", "Player3NickName", "Player4UID", "Player4NickName", "ScreenProviderUID" }, null, null, null, null),
@@ -123,7 +158,9 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen), global::AxibugProtobuf.Protobuf_Room_Get_Screen.Parser, new[]{ "RoomID" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark), global::AxibugProtobuf.Protobuf_Game_Mark.Parser, new[]{ "RomID", "State", "PlatformType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark_RESP), global::AxibugProtobuf.Protobuf_Game_Mark_RESP.Parser, new[]{ "RomID", "PlatformType" }, null, null, null, null)
           }));
     }
     #endregion
@@ -147,6 +184,34 @@ namespace AxibugProtobuf {
     ///自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
     /// </summary>
     [pbr::OriginalName("CMD_LOGIN")] CmdLogin = 2001,
+    /// <summary>
+    ///获取在线用户列表 上行 | 下行 对应 Protobuf_UserList | Protobuf_UserList_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_USER_ONLINELIST")] CmdUserOnlinelist = 3000,
+    /// <summary>
+    ///用户上线 下行 对应 Protobuf_UserOnline_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_USER_JOIN")] CmdUserJoin = 3031,
+    /// <summary>
+    ///用户下线 下行 对应 Protobuf_UserOffline_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_USER_LEAVE")] CmdUserLeave = 3032,
+    /// <summary>
+    ///更新在线用户状态 下行 对应 Protobuf_UserState_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_USER_STATE_UPDATE")] CmdUserStateUpdate = 3033,
+    /// <summary>
+    ///修改名称上行 | 下行 对应 Protobuf_Modify_NickName | Protobuf_Modify_NickName_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Modify_NickName")] CmdModifyNickName = 3101,
+    /// <summary>
+    ///更新用户信息 下行 Protobuf_Update_UserInfo_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Update_SelfUserInfo")] CmdUpdateSelfUserInfo = 3110,
+    /// <summary>
+    ///更新其他用户信息 下行 Protobuf_Update_OtherUserInfo_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Update_OtherUserInfo")] CmdUpdateOtherUserInfo = 3112,
     /// <summary>
     ///广播聊天信息上行 | 下行 对应 Protobuf_ChatMsg | Protobuf_ChatMsg_RESP
     /// </summary>
@@ -221,6 +286,10 @@ namespace AxibugProtobuf {
     ///画面采集
     /// </summary>
     [pbr::OriginalName("CMD_Screen")] CmdScreen = 7001,
+    /// <summary>
+    ///房间列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_GAME_MARK")] CmdGameMark = 10101,
   }
 
   public enum ErrorCode {
@@ -239,18 +308,34 @@ namespace AxibugProtobuf {
     /// <summary>
     ///加入目标位置已经有人
     /// </summary>
-    [pbr::OriginalName("ERROR_ROOM_SLOT_READLY_HAD_PLAYER")] ErrorRoomSlotReadlyHadPlayer = 11,
+    [pbr::OriginalName("ERROR_ROOM_SLOT_ALREADLY_HAD_PLAYER")] ErrorRoomSlotAlreadlyHadPlayer = 11,
     /// <summary>
     ///当前房间状态不允许本操作
     /// </summary>
     [pbr::OriginalName("ERROR_ROOM_CANT_DO_CURR_STATE")] ErrorRoomCantDoCurrState = 50,
+    /// <summary>
+    ///已经收藏
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROM_ALREADY_HAD_STAR")] ErrorRomAlreadyHadStar = 403,
+    /// <summary>
+    ///并没有收藏
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROM_DONT_HAD_STAR")] ErrorRomDontHadStar = 404,
   }
 
   public enum LoginType {
     /// <summary>
-    ///缺省不使用
+    ///使用设备登录
     /// </summary>
-    [pbr::OriginalName("BaseDefault")] BaseDefault = 0,
+    [pbr::OriginalName("UseDevice")] UseDevice = 0,
+    /// <summary>
+    ///使用账户
+    /// </summary>
+    [pbr::OriginalName("UseAccount")] UseAccount = 1,
+    /// <summary>
+    ///使用皓月通行证
+    /// </summary>
+    [pbr::OriginalName("UseHaoYueAccount")] UseHaoYueAccount = 2,
   }
 
   public enum DeviceType {
@@ -262,6 +347,11 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("Android")] Android = 2,
     [pbr::OriginalName("IOS")] Ios = 3,
     [pbr::OriginalName("PSV")] Psv = 4,
+  }
+
+  public enum PlatformType {
+    [pbr::OriginalName("All")] All = 0,
+    [pbr::OriginalName("Nes")] Nes = 1,
   }
 
   public enum RoomGameState {
@@ -1121,6 +1211,7 @@ namespace AxibugProtobuf {
     public Protobuf_Login(Protobuf_Login other) : this() {
       loginType_ = other.loginType_;
       deviceType_ = other.deviceType_;
+      deviceStr_ = other.deviceStr_;
       account_ = other.account_;
       password_ = other.password_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1133,9 +1224,9 @@ namespace AxibugProtobuf {
 
     /// <summary>Field number for the "loginType" field.</summary>
     public const int LoginTypeFieldNumber = 1;
-    private global::AxibugProtobuf.LoginType loginType_ = global::AxibugProtobuf.LoginType.BaseDefault;
+    private global::AxibugProtobuf.LoginType loginType_ = global::AxibugProtobuf.LoginType.UseDevice;
     /// <summary>
-    ///登录操作类型 [0]皓月通行证 [3] 皓月BF3 [4] 皓月BF4
+    ///登录操作类型
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::AxibugProtobuf.LoginType LoginType {
@@ -1149,7 +1240,7 @@ namespace AxibugProtobuf {
     public const int DeviceTypeFieldNumber = 2;
     private global::AxibugProtobuf.DeviceType deviceType_ = global::AxibugProtobuf.DeviceType.Default;
     /// <summary>
-    ///设备类型 [0]PC [1]AndroidPad预留 [3]IPad预留
+    ///设备类型 [0] PC [1] AndroidPad预留 [3] IPad预留
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::AxibugProtobuf.DeviceType DeviceType {
@@ -1159,8 +1250,22 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "deviceStr" field.</summary>
+    public const int DeviceStrFieldNumber = 3;
+    private string deviceStr_ = "";
+    /// <summary>
+    ///设备串
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string DeviceStr {
+      get { return deviceStr_; }
+      set {
+        deviceStr_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "Account" field.</summary>
-    public const int AccountFieldNumber = 3;
+    public const int AccountFieldNumber = 4;
     private string account_ = "";
     /// <summary>
     ///用户名
@@ -1174,7 +1279,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "Password" field.</summary>
-    public const int PasswordFieldNumber = 4;
+    public const int PasswordFieldNumber = 5;
     private string password_ = "";
     /// <summary>
     ///密码
@@ -1202,6 +1307,7 @@ namespace AxibugProtobuf {
       }
       if (LoginType != other.LoginType) return false;
       if (DeviceType != other.DeviceType) return false;
+      if (DeviceStr != other.DeviceStr) return false;
       if (Account != other.Account) return false;
       if (Password != other.Password) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -1210,8 +1316,9 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (LoginType != global::AxibugProtobuf.LoginType.BaseDefault) hash ^= LoginType.GetHashCode();
+      if (LoginType != global::AxibugProtobuf.LoginType.UseDevice) hash ^= LoginType.GetHashCode();
       if (DeviceType != global::AxibugProtobuf.DeviceType.Default) hash ^= DeviceType.GetHashCode();
+      if (DeviceStr.Length != 0) hash ^= DeviceStr.GetHashCode();
       if (Account.Length != 0) hash ^= Account.GetHashCode();
       if (Password.Length != 0) hash ^= Password.GetHashCode();
       if (_unknownFields != null) {
@@ -1230,7 +1337,7 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (LoginType != global::AxibugProtobuf.LoginType.BaseDefault) {
+      if (LoginType != global::AxibugProtobuf.LoginType.UseDevice) {
         output.WriteRawTag(8);
         output.WriteEnum((int) LoginType);
       }
@@ -1238,12 +1345,16 @@ namespace AxibugProtobuf {
         output.WriteRawTag(16);
         output.WriteEnum((int) DeviceType);
       }
-      if (Account.Length != 0) {
+      if (DeviceStr.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(DeviceStr);
+      }
+      if (Account.Length != 0) {
+        output.WriteRawTag(34);
         output.WriteString(Account);
       }
       if (Password.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteString(Password);
       }
       if (_unknownFields != null) {
@@ -1255,7 +1366,7 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (LoginType != global::AxibugProtobuf.LoginType.BaseDefault) {
+      if (LoginType != global::AxibugProtobuf.LoginType.UseDevice) {
         output.WriteRawTag(8);
         output.WriteEnum((int) LoginType);
       }
@@ -1263,12 +1374,16 @@ namespace AxibugProtobuf {
         output.WriteRawTag(16);
         output.WriteEnum((int) DeviceType);
       }
-      if (Account.Length != 0) {
+      if (DeviceStr.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(DeviceStr);
+      }
+      if (Account.Length != 0) {
+        output.WriteRawTag(34);
         output.WriteString(Account);
       }
       if (Password.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteString(Password);
       }
       if (_unknownFields != null) {
@@ -1280,11 +1395,14 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (LoginType != global::AxibugProtobuf.LoginType.BaseDefault) {
+      if (LoginType != global::AxibugProtobuf.LoginType.UseDevice) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) LoginType);
       }
       if (DeviceType != global::AxibugProtobuf.DeviceType.Default) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) DeviceType);
+      }
+      if (DeviceStr.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceStr);
       }
       if (Account.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Account);
@@ -1303,11 +1421,14 @@ namespace AxibugProtobuf {
       if (other == null) {
         return;
       }
-      if (other.LoginType != global::AxibugProtobuf.LoginType.BaseDefault) {
+      if (other.LoginType != global::AxibugProtobuf.LoginType.UseDevice) {
         LoginType = other.LoginType;
       }
       if (other.DeviceType != global::AxibugProtobuf.DeviceType.Default) {
         DeviceType = other.DeviceType;
+      }
+      if (other.DeviceStr.Length != 0) {
+        DeviceStr = other.DeviceStr;
       }
       if (other.Account.Length != 0) {
         Account = other.Account;
@@ -1338,10 +1459,14 @@ namespace AxibugProtobuf {
             break;
           }
           case 26: {
-            Account = input.ReadString();
+            DeviceStr = input.ReadString();
             break;
           }
           case 34: {
+            Account = input.ReadString();
+            break;
+          }
+          case 42: {
             Password = input.ReadString();
             break;
           }
@@ -1368,10 +1493,14 @@ namespace AxibugProtobuf {
             break;
           }
           case 26: {
-            Account = input.ReadString();
+            DeviceStr = input.ReadString();
             break;
           }
           case 34: {
+            Account = input.ReadString();
+            break;
+          }
+          case 42: {
             Password = input.ReadString();
             break;
           }
@@ -1414,7 +1543,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Login_RESP(Protobuf_Login_RESP other) : this() {
-      deviceUUID_ = other.deviceUUID_;
+      nickName_ = other.nickName_;
       token_ = other.token_;
       lastLoginDate_ = other.lastLoginDate_;
       regDate_ = other.regDate_;
@@ -1428,17 +1557,17 @@ namespace AxibugProtobuf {
       return new Protobuf_Login_RESP(this);
     }
 
-    /// <summary>Field number for the "DeviceUUID" field.</summary>
-    public const int DeviceUUIDFieldNumber = 1;
-    private string deviceUUID_ = "";
+    /// <summary>Field number for the "NickName" field.</summary>
+    public const int NickNameFieldNumber = 1;
+    private string nickName_ = "";
     /// <summary>
-    ///设备唯一串
+    ///昵称（第一次是自动生成）
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string DeviceUUID {
-      get { return deviceUUID_; }
+    public string NickName {
+      get { return nickName_; }
       set {
-        deviceUUID_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        nickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1522,7 +1651,7 @@ namespace AxibugProtobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (DeviceUUID != other.DeviceUUID) return false;
+      if (NickName != other.NickName) return false;
       if (Token != other.Token) return false;
       if (LastLoginDate != other.LastLoginDate) return false;
       if (RegDate != other.RegDate) return false;
@@ -1534,7 +1663,7 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (DeviceUUID.Length != 0) hash ^= DeviceUUID.GetHashCode();
+      if (NickName.Length != 0) hash ^= NickName.GetHashCode();
       if (Token.Length != 0) hash ^= Token.GetHashCode();
       if (LastLoginDate.Length != 0) hash ^= LastLoginDate.GetHashCode();
       if (RegDate.Length != 0) hash ^= RegDate.GetHashCode();
@@ -1556,9 +1685,9 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (DeviceUUID.Length != 0) {
+      if (NickName.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(DeviceUUID);
+        output.WriteString(NickName);
       }
       if (Token.Length != 0) {
         output.WriteRawTag(18);
@@ -1589,9 +1718,9 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (DeviceUUID.Length != 0) {
+      if (NickName.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(DeviceUUID);
+        output.WriteString(NickName);
       }
       if (Token.Length != 0) {
         output.WriteRawTag(18);
@@ -1622,8 +1751,8 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (DeviceUUID.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeviceUUID);
+      if (NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NickName);
       }
       if (Token.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Token);
@@ -1651,8 +1780,8 @@ namespace AxibugProtobuf {
       if (other == null) {
         return;
       }
-      if (other.DeviceUUID.Length != 0) {
-        DeviceUUID = other.DeviceUUID;
+      if (other.NickName.Length != 0) {
+        NickName = other.NickName;
       }
       if (other.Token.Length != 0) {
         Token = other.Token;
@@ -1684,7 +1813,7 @@ namespace AxibugProtobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            DeviceUUID = input.ReadString();
+            NickName = input.ReadString();
             break;
           }
           case 18: {
@@ -1722,7 +1851,7 @@ namespace AxibugProtobuf {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            DeviceUUID = input.ReadString();
+            NickName = input.ReadString();
             break;
           }
           case 18: {
@@ -1752,6 +1881,1877 @@ namespace AxibugProtobuf {
 
   }
 
+  /// <summary>
+  ///获取在线用户列表 上行
+  /// </summary>
+  public sealed partial class Protobuf_UserList : pb::IMessage<Protobuf_UserList>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_UserList> _parser = new pb::MessageParser<Protobuf_UserList>(() => new Protobuf_UserList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_UserList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserList(Protobuf_UserList other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserList Clone() {
+      return new Protobuf_UserList(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_UserList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_UserList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_UserList other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///获取在线用户列表 下行
+  /// </summary>
+  public sealed partial class Protobuf_UserList_RESP : pb::IMessage<Protobuf_UserList_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_UserList_RESP> _parser = new pb::MessageParser<Protobuf_UserList_RESP>(() => new Protobuf_UserList_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_UserList_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserList_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserList_RESP(Protobuf_UserList_RESP other) : this() {
+      userCount_ = other.userCount_;
+      userList_ = other.userList_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserList_RESP Clone() {
+      return new Protobuf_UserList_RESP(this);
+    }
+
+    /// <summary>Field number for the "UserCount" field.</summary>
+    public const int UserCountFieldNumber = 1;
+    private int userCount_;
+    /// <summary>
+    ///玩家数量
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int UserCount {
+      get { return userCount_; }
+      set {
+        userCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "UserList" field.</summary>
+    public const int UserListFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::AxibugProtobuf.UserMiniInfo> _repeated_userList_codec
+        = pb::FieldCodec.ForMessage(18, global::AxibugProtobuf.UserMiniInfo.Parser);
+    private readonly pbc::RepeatedField<global::AxibugProtobuf.UserMiniInfo> userList_ = new pbc::RepeatedField<global::AxibugProtobuf.UserMiniInfo>();
+    /// <summary>
+    ///用户列表
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::AxibugProtobuf.UserMiniInfo> UserList {
+      get { return userList_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_UserList_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_UserList_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UserCount != other.UserCount) return false;
+      if(!userList_.Equals(other.userList_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UserCount != 0) hash ^= UserCount.GetHashCode();
+      hash ^= userList_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (UserCount != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(UserCount);
+      }
+      userList_.WriteTo(output, _repeated_userList_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UserCount != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(UserCount);
+      }
+      userList_.WriteTo(ref output, _repeated_userList_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UserCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(UserCount);
+      }
+      size += userList_.CalculateSize(_repeated_userList_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_UserList_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UserCount != 0) {
+        UserCount = other.UserCount;
+      }
+      userList_.Add(other.userList_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            UserCount = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            userList_.AddEntriesFrom(input, _repeated_userList_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            UserCount = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            userList_.AddEntriesFrom(ref input, _repeated_userList_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///用户上线 下行
+  /// </summary>
+  public sealed partial class Protobuf_UserJoin_RESP : pb::IMessage<Protobuf_UserJoin_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_UserJoin_RESP> _parser = new pb::MessageParser<Protobuf_UserJoin_RESP>(() => new Protobuf_UserJoin_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_UserJoin_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserJoin_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserJoin_RESP(Protobuf_UserJoin_RESP other) : this() {
+      userInfo_ = other.userInfo_ != null ? other.userInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserJoin_RESP Clone() {
+      return new Protobuf_UserJoin_RESP(this);
+    }
+
+    /// <summary>Field number for the "UserInfo" field.</summary>
+    public const int UserInfoFieldNumber = 1;
+    private global::AxibugProtobuf.UserMiniInfo userInfo_;
+    /// <summary>
+    ///用户
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.UserMiniInfo UserInfo {
+      get { return userInfo_; }
+      set {
+        userInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_UserJoin_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_UserJoin_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(UserInfo, other.UserInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (userInfo_ != null) hash ^= UserInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (userInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(UserInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (userInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(UserInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (userInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_UserJoin_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.userInfo_ != null) {
+        if (userInfo_ == null) {
+          UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+        }
+        UserInfo.MergeFrom(other.UserInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (userInfo_ == null) {
+              UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+            }
+            input.ReadMessage(UserInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (userInfo_ == null) {
+              UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+            }
+            input.ReadMessage(UserInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///用户下线 下行
+  /// </summary>
+  public sealed partial class Protobuf_UserLeave_RESP : pb::IMessage<Protobuf_UserLeave_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_UserLeave_RESP> _parser = new pb::MessageParser<Protobuf_UserLeave_RESP>(() => new Protobuf_UserLeave_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_UserLeave_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserLeave_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserLeave_RESP(Protobuf_UserLeave_RESP other) : this() {
+      uID_ = other.uID_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserLeave_RESP Clone() {
+      return new Protobuf_UserLeave_RESP(this);
+    }
+
+    /// <summary>Field number for the "UID" field.</summary>
+    public const int UIDFieldNumber = 1;
+    private long uID_;
+    /// <summary>
+    ///用户ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long UID {
+      get { return uID_; }
+      set {
+        uID_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_UserLeave_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_UserLeave_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UID != other.UID) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UID != 0L) hash ^= UID.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UID);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_UserLeave_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UID != 0L) {
+        UID = other.UID;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///更新在线用户状态 下行
+  /// </summary>
+  public sealed partial class Protobuf_UserState_RESP : pb::IMessage<Protobuf_UserState_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_UserState_RESP> _parser = new pb::MessageParser<Protobuf_UserState_RESP>(() => new Protobuf_UserState_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_UserState_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserState_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserState_RESP(Protobuf_UserState_RESP other) : this() {
+      uID_ = other.uID_;
+      state_ = other.state_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_UserState_RESP Clone() {
+      return new Protobuf_UserState_RESP(this);
+    }
+
+    /// <summary>Field number for the "UID" field.</summary>
+    public const int UIDFieldNumber = 1;
+    private long uID_;
+    /// <summary>
+    ///用户ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long UID {
+      get { return uID_; }
+      set {
+        uID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "State" field.</summary>
+    public const int StateFieldNumber = 2;
+    private int state_;
+    /// <summary>
+    ///状态
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int State {
+      get { return state_; }
+      set {
+        state_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_UserState_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_UserState_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UID != other.UID) return false;
+      if (State != other.State) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UID != 0L) hash ^= UID.GetHashCode();
+      if (State != 0) hash ^= State.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (State != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(State);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (State != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(State);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UID);
+      }
+      if (State != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(State);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_UserState_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UID != 0L) {
+        UID = other.UID;
+      }
+      if (other.State != 0) {
+        State = other.State;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            State = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            State = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class UserMiniInfo : pb::IMessage<UserMiniInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<UserMiniInfo> _parser = new pb::MessageParser<UserMiniInfo>(() => new UserMiniInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<UserMiniInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserMiniInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserMiniInfo(UserMiniInfo other) : this() {
+      uID_ = other.uID_;
+      nickName_ = other.nickName_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UserMiniInfo Clone() {
+      return new UserMiniInfo(this);
+    }
+
+    /// <summary>Field number for the "UID" field.</summary>
+    public const int UIDFieldNumber = 1;
+    private long uID_;
+    /// <summary>
+    ///用户ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long UID {
+      get { return uID_; }
+      set {
+        uID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NickName" field.</summary>
+    public const int NickNameFieldNumber = 2;
+    private string nickName_ = "";
+    /// <summary>
+    ///昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string NickName {
+      get { return nickName_; }
+      set {
+        nickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as UserMiniInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(UserMiniInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UID != other.UID) return false;
+      if (NickName != other.NickName) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UID != 0L) hash ^= UID.GetHashCode();
+      if (NickName.Length != 0) hash ^= NickName.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (NickName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(NickName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (NickName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(NickName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UID);
+      }
+      if (NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NickName);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(UserMiniInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UID != 0L) {
+        UID = other.UID;
+      }
+      if (other.NickName.Length != 0) {
+        NickName = other.NickName;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///修改昵称上行
+  /// </summary>
+  public sealed partial class Protobuf_Modify_NickName : pb::IMessage<Protobuf_Modify_NickName>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Modify_NickName> _parser = new pb::MessageParser<Protobuf_Modify_NickName>(() => new Protobuf_Modify_NickName());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Modify_NickName> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[12]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Modify_NickName() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Modify_NickName(Protobuf_Modify_NickName other) : this() {
+      nickName_ = other.nickName_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Modify_NickName Clone() {
+      return new Protobuf_Modify_NickName(this);
+    }
+
+    /// <summary>Field number for the "NickName" field.</summary>
+    public const int NickNameFieldNumber = 1;
+    private string nickName_ = "";
+    /// <summary>
+    ///昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string NickName {
+      get { return nickName_; }
+      set {
+        nickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Modify_NickName);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Modify_NickName other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (NickName != other.NickName) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (NickName.Length != 0) hash ^= NickName.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (NickName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(NickName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (NickName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(NickName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (NickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NickName);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Modify_NickName other) {
+      if (other == null) {
+        return;
+      }
+      if (other.NickName.Length != 0) {
+        NickName = other.NickName;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            NickName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///修改昵称下行
+  /// </summary>
+  public sealed partial class Protobuf_Modify_NickName_RESP : pb::IMessage<Protobuf_Modify_NickName_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Modify_NickName_RESP> _parser = new pb::MessageParser<Protobuf_Modify_NickName_RESP>(() => new Protobuf_Modify_NickName_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Modify_NickName_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[13]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Modify_NickName_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Modify_NickName_RESP(Protobuf_Modify_NickName_RESP other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Modify_NickName_RESP Clone() {
+      return new Protobuf_Modify_NickName_RESP(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Modify_NickName_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Modify_NickName_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Modify_NickName_RESP other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///用户信息更新
+  /// </summary>
+  public sealed partial class Protobuf_Update_UserInfo_RESP : pb::IMessage<Protobuf_Update_UserInfo_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Update_UserInfo_RESP> _parser = new pb::MessageParser<Protobuf_Update_UserInfo_RESP>(() => new Protobuf_Update_UserInfo_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Update_UserInfo_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[14]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Update_UserInfo_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Update_UserInfo_RESP(Protobuf_Update_UserInfo_RESP other) : this() {
+      userInfo_ = other.userInfo_ != null ? other.userInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Update_UserInfo_RESP Clone() {
+      return new Protobuf_Update_UserInfo_RESP(this);
+    }
+
+    /// <summary>Field number for the "UserInfo" field.</summary>
+    public const int UserInfoFieldNumber = 1;
+    private global::AxibugProtobuf.UserMiniInfo userInfo_;
+    /// <summary>
+    ///用户
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.UserMiniInfo UserInfo {
+      get { return userInfo_; }
+      set {
+        userInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Update_UserInfo_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Update_UserInfo_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(UserInfo, other.UserInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (userInfo_ != null) hash ^= UserInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (userInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(UserInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (userInfo_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(UserInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (userInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Update_UserInfo_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.userInfo_ != null) {
+        if (userInfo_ == null) {
+          UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+        }
+        UserInfo.MergeFrom(other.UserInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (userInfo_ == null) {
+              UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+            }
+            input.ReadMessage(UserInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (userInfo_ == null) {
+              UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+            }
+            input.ReadMessage(UserInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  ///其他用户信息更新
+  /// </summary>
+  public sealed partial class Protobuf_Update_OtherUserInfo_RESP : pb::IMessage<Protobuf_Update_OtherUserInfo_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Update_OtherUserInfo_RESP> _parser = new pb::MessageParser<Protobuf_Update_OtherUserInfo_RESP>(() => new Protobuf_Update_OtherUserInfo_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Update_OtherUserInfo_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[15]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Update_OtherUserInfo_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Update_OtherUserInfo_RESP(Protobuf_Update_OtherUserInfo_RESP other) : this() {
+      uID_ = other.uID_;
+      userInfo_ = other.userInfo_ != null ? other.userInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Update_OtherUserInfo_RESP Clone() {
+      return new Protobuf_Update_OtherUserInfo_RESP(this);
+    }
+
+    /// <summary>Field number for the "UID" field.</summary>
+    public const int UIDFieldNumber = 1;
+    private long uID_;
+    /// <summary>
+    ///用户ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long UID {
+      get { return uID_; }
+      set {
+        uID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "UserInfo" field.</summary>
+    public const int UserInfoFieldNumber = 2;
+    private global::AxibugProtobuf.UserMiniInfo userInfo_;
+    /// <summary>
+    ///用户
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.UserMiniInfo UserInfo {
+      get { return userInfo_; }
+      set {
+        userInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Update_OtherUserInfo_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Update_OtherUserInfo_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (UID != other.UID) return false;
+      if (!object.Equals(UserInfo, other.UserInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (UID != 0L) hash ^= UID.GetHashCode();
+      if (userInfo_ != null) hash ^= UserInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (userInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(UserInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (UID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(UID);
+      }
+      if (userInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(UserInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (UID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(UID);
+      }
+      if (userInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Update_OtherUserInfo_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.UID != 0L) {
+        UID = other.UID;
+      }
+      if (other.userInfo_ != null) {
+        if (userInfo_ == null) {
+          UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+        }
+        UserInfo.MergeFrom(other.UserInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            if (userInfo_ == null) {
+              UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+            }
+            input.ReadMessage(UserInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            UID = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            if (userInfo_ == null) {
+              UserInfo = new global::AxibugProtobuf.UserMiniInfo();
+            }
+            input.ReadMessage(UserInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class Protobuf_Room_List : pb::IMessage<Protobuf_Room_List>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1764,7 +3764,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[6]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1900,7 +3900,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[7]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2064,7 +4064,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[8]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2782,7 +4782,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[9]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3005,7 +5005,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[10]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3258,7 +5258,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[11]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3472,7 +5472,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[12]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3725,7 +5725,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[13]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3972,7 +5972,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[14]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4156,7 +6156,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[15]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4370,7 +6370,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[16]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4554,7 +6554,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[17]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4729,7 +6729,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[18]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4904,7 +6904,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[19]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5088,7 +7088,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[20]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5302,7 +7302,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[21]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5477,7 +7477,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[22]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5613,7 +7613,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[23]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5749,7 +7749,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[24]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5924,7 +7924,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[25]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6156,6 +8156,473 @@ namespace AxibugProtobuf {
           }
           case 26: {
             RawBitmap = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Game_Mark : pb::IMessage<Protobuf_Game_Mark>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Game_Mark> _parser = new pb::MessageParser<Protobuf_Game_Mark>(() => new Protobuf_Game_Mark());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Game_Mark> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[36]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark(Protobuf_Game_Mark other) : this() {
+      romID_ = other.romID_;
+      state_ = other.state_;
+      platformType_ = other.platformType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark Clone() {
+      return new Protobuf_Game_Mark(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 2;
+    private int state_;
+    /// <summary>
+    ///[0]收藏 [1]取消收藏
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int State {
+      get { return state_; }
+      set {
+        state_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlatformType" field.</summary>
+    public const int PlatformTypeFieldNumber = 3;
+    private global::AxibugProtobuf.PlatformType platformType_ = global::AxibugProtobuf.PlatformType.All;
+    /// <summary>
+    ///平台类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.PlatformType PlatformType {
+      get { return platformType_; }
+      set {
+        platformType_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Game_Mark);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Game_Mark other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (State != other.State) return false;
+      if (PlatformType != other.PlatformType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (State != 0) hash ^= State.GetHashCode();
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) hash ^= PlatformType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (State != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(State);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (State != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(State);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (State != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(State);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Game_Mark other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.State != 0) {
+        State = other.State;
+      }
+      if (other.PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        PlatformType = other.PlatformType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            State = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            State = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Game_Mark_RESP : pb::IMessage<Protobuf_Game_Mark_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Game_Mark_RESP> _parser = new pb::MessageParser<Protobuf_Game_Mark_RESP>(() => new Protobuf_Game_Mark_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Game_Mark_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[37]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark_RESP(Protobuf_Game_Mark_RESP other) : this() {
+      romID_ = other.romID_;
+      platformType_ = other.platformType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Game_Mark_RESP Clone() {
+      return new Protobuf_Game_Mark_RESP(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlatformType" field.</summary>
+    public const int PlatformTypeFieldNumber = 2;
+    private global::AxibugProtobuf.PlatformType platformType_ = global::AxibugProtobuf.PlatformType.All;
+    /// <summary>
+    ///平台类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.PlatformType PlatformType {
+      get { return platformType_; }
+      set {
+        platformType_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Game_Mark_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Game_Mark_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (PlatformType != other.PlatformType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) hash ^= PlatformType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlatformType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Game_Mark_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.PlatformType != global::AxibugProtobuf.PlatformType.All) {
+        PlatformType = other.PlatformType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlatformType = (global::AxibugProtobuf.PlatformType) input.ReadEnum();
             break;
           }
         }

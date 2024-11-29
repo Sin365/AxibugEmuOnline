@@ -138,8 +138,6 @@ Response:
 序列化C#实体类示例
 
 ```
-      
-
       class Resp_GameList
       {
           public int page { get; set; }
@@ -148,18 +146,19 @@ Response:
           public List<Resp_RomInfo> gameList { get; set; }
       }
 
-      public class Resp_RomInfo
-      {
-          public int orderid { get; set; }
-          public int id { get; set; }
-          public string romName { get; set;}
-          public string gType { get; set; }
-          public string desc { get; set; }
-          public string url { get; set; }
-          public string imgUrl { get; set; }
-          public string hash { get; set; }
-          public int stars { get; set; }
-      }
+     public class Resp_RomInfo
+	 {
+		 public int orderid { get; set; }
+		 public int id { get; set; }
+		 public string romName { get; set; }
+		 public string gType { get; set; }
+		 public string desc { get; set; }
+		 public string url { get; set; }
+		 public string imgUrl { get; set; }
+		 public string hash { get; set; }
+		 public int stars { get; set; }
+		 public int playcount { get; set; }
+	 }
 ```
 
 
