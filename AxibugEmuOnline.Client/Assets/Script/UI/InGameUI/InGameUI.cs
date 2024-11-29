@@ -99,7 +99,7 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdOptionMenu()
         {
-            OptionUI.Instance.Pop(menus, 0, PopMenu_OnHide);
+            OverlayManager.Pop(menus, 0, PopMenu_OnHide);
 
             if (!IsNetPlay)//单人模式暂停模拟器
             {
