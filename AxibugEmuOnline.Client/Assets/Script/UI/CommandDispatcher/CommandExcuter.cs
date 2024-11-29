@@ -33,7 +33,7 @@ namespace AxibugEmuOnline.Client
 
         protected virtual void Update()
         {
-            if (Registed)
+            if (Registed && Enable)
             {
                 m_pulsInvoker_Left.Update(Time.deltaTime);
                 m_pulsInvoker_Right.Update(Time.deltaTime);

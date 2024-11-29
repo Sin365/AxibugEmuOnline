@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -9,6 +10,8 @@ namespace AxibugEmuOnline.Client
 
         [SerializeField]
         InputUI m_InputUI;
+        [SerializeField]
+        OptionUI m_OptionUI;
 
         private void Awake()
         {
@@ -22,6 +25,10 @@ namespace AxibugEmuOnline.Client
             s_ins.m_InputUI.Show((callback, placeHolder, defaultText));
 
             return s_ins.m_InputUI;
+        }
+        public static void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+        {
+            s_ins.m_OptionUI.Pop(menus, defaultIndex, onClose);
         }
 
         public static void PopMsg(string msg)

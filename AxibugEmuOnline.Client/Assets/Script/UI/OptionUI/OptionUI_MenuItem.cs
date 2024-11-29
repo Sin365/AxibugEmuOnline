@@ -11,11 +11,12 @@ namespace AxibugEmuOnline.Client
         public Image IconUI => m_Icon;
 
         public bool Visible => m_Menu.Visible;
-
+        public OptionUI OptionUI { get; private set; }
         protected OptionMenu m_Menu;
 
-        public void SetData(OptionMenu menuData)
+        public void SetData(OptionUI optionUI, OptionMenu menuData)
         {
+            OptionUI = optionUI;
             m_Menu = menuData;
             m_MenuNameTxt.text = menuData.Name;
             if (menuData.Icon == null) m_Icon.gameObject.SetActiveEx(false);
@@ -29,10 +30,13 @@ namespace AxibugEmuOnline.Client
             OnSetData(menuData);
         }
 
+        public bool IsExpandMenu => m_Menu is ExpandMenu;
+
         protected abstract void OnSetData(OptionMenu menuData);
 
         public abstract void OnExecute(OptionUI optionUI, ref bool cancelHide);
         public abstract void OnFocus();
+        public virtual void OnHide() { }
     }
 
     public abstract class OptionUI_MenuItem<T> : OptionUI_MenuItem
@@ -48,6 +52,11 @@ namespace AxibugEmuOnline.Client
         public override void OnFocus()
         {
             MenuData.OnFocus();
+        }
+
+        public override void OnHide()
+        {
+            MenuData.OnHide();
         }
     }
 }

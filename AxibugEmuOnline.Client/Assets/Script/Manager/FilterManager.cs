@@ -94,9 +94,10 @@ namespace AxibugEmuOnline.Client
                 PlayerPrefs.SetString($"Filter_{Name}_PresetList", json);
             }
 
-            public MsgBool CreatePreset(string presetName,out FilterPreset newPreset)
+            public MsgBool CreatePreset(string presetName, out FilterPreset newPreset)
             {
                 newPreset = null;
+                if (string.IsNullOrWhiteSpace(presetName)) return "名称不能为空";
                 if (Presets.Count(p => p.Name == presetName) != 0) return "名称重复";
 
                 newPreset = new FilterPreset(presetName);
@@ -105,6 +106,14 @@ namespace AxibugEmuOnline.Client
                 savePresets();
 
                 return true;
+            }
+
+            public void RemovePreset(FilterPreset preset)
+            {
+                if (!Presets.Remove(preset)) return;
+                savePresets();
+
+                EventInvoker.RaiseFilterPresetRemoved(this, preset);
             }
 
             public void ResetPreset()
@@ -127,6 +136,8 @@ namespace AxibugEmuOnline.Client
                 }
 
             }
+
+
         }
 
         [Serializable]

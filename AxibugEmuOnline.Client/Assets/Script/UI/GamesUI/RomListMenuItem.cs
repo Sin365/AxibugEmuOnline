@@ -62,7 +62,7 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdOptionMenu()
         {
-            OptionUI.Instance.Pop(m_options);
+            OverlayManager.Pop(m_options);
         }
 
         public class OptMenu_Search : ExecuteMenu

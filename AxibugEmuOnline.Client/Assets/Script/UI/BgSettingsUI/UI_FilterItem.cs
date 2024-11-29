@@ -46,7 +46,7 @@ namespace AxibugEmuOnline.Client
             opts.Add(new Opt_CreatePreset(Datacontext));
             opts.AddRange(Datacontext.Presets.Select(p => new Opt_Presets(Datacontext, p)));
 
-            OptionUI.Instance.Pop(opts, onClose: () =>
+            OverlayManager.Pop(opts, onClose: () =>
             {
                 App.filter.EnableFilterPreview();
                 Datacontext.ResetPreset();
@@ -83,15 +83,35 @@ namespace AxibugEmuOnline.Client
                 }, "为预设设置一个名称", string.Empty);
             }
         }
-        public class Opt_Presets : ExecuteMenu
+        public class Opt_Presets : ExpandMenu
         {
             private Filter m_filter;
             private FilterPreset m_preset;
+            private OptionUI_MenuItem m_ui;
 
             public Opt_Presets(Filter filter, FilterPreset preset) : base(preset.Name, null)
             {
                 m_filter = filter;
                 m_preset = preset;
+
+            }
+
+            public override void OnShow(OptionUI_MenuItem ui)
+            {
+                EventInvoker.OnFilterPresetRemoved += EventInvoker_OnFilterPresetRemoved;
+                m_ui = ui;
+                base.OnShow(ui);
+            }
+
+            public override void OnHide()
+            {
+                EventInvoker.OnFilterPresetRemoved -= EventInvoker_OnFilterPresetRemoved;
+            }
+
+            private void EventInvoker_OnFilterPresetRemoved(Filter filter, FilterPreset removedPreset)
+            {
+                if (filter != m_filter || m_preset != removedPreset) return;
+                m_ui.OptionUI.RemoveItem(m_ui);
             }
 
             public override void OnFocus()
@@ -100,9 +120,26 @@ namespace AxibugEmuOnline.Client
                 App.filter.EnableFilter(m_filter);
             }
 
-            public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+            protected override List<OptionMenu> GetOptionMenus()
             {
+                return new List<OptionMenu> { new Opt_Delete(m_filter, m_preset) };
+            }
 
+            public class Opt_Delete : ExecuteMenu
+            {
+                private Filter m_filter;
+                private FilterPreset m_preset;
+
+                public Opt_Delete(Filter filter, FilterPreset preset) : base("删除预设", null)
+                {
+                    m_filter = filter;
+                    m_preset = preset;
+                }
+
+                public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+                {
+                    m_filter.RemovePreset(m_preset);
+                }
             }
         }
     }
