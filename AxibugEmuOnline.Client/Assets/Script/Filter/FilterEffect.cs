@@ -62,6 +62,8 @@ namespace AxibugEmuOnline.Client
                 }
             }
 
+            public void ResetToDefault() => m_paramObject.overrideState = false;
+
             public string Serilized()
             {
                 return JsonUtility.ToJson(Value);
