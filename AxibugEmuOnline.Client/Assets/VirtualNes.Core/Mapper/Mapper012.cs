@@ -295,9 +295,9 @@ namespace VirtualNes.Core
             p[20] = irq_preset;
             p[21] = irq_preset_vbl;
             //*((DWORD*)&p[22]) = vb0;
-            BitConverter.GetBytes(vb0).CopyTo(p,22);
+            BitConverter.GetBytes(vb0).CopyTo(p, 22);
             //*((DWORD*)&p[26]) = vb1;
-            BitConverter.GetBytes(vb1).CopyTo(p,26);
+            BitConverter.GetBytes(vb1).CopyTo(p, 26);
         }
 
         //void Mapper012::LoadState(LPBYTE p)

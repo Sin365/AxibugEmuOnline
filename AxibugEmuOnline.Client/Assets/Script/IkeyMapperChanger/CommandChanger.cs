@@ -5,8 +5,7 @@ namespace AxibugEmuOnline.Client
 {
     public abstract class CommandChanger : IKeyMapperChanger
     {
-        public string Name { get; private set; }
-
+        public string Name => GetType().Name;
         public abstract object GetConfig();
     }
 }

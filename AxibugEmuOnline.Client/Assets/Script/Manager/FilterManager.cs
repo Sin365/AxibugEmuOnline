@@ -14,6 +14,7 @@ namespace AxibugEmuOnline.Client
         private List<Filter> m_filters;
         private Dictionary<EnumPlatform, Filter> m_filterPlatforms = new Dictionary<EnumPlatform, Filter>();
         private AlphaWraper m_previewFilterWraper;
+        FilterRomSetting m_filterRomSetting;
         /// <summary>
         /// 滤镜列表
         /// </summary>
@@ -23,6 +24,8 @@ namespace AxibugEmuOnline.Client
         {
             m_filterPorfile = filterVolume.profile;
             m_filters = m_filterPorfile.settings.Where(setting => setting is FilterEffect).Select(setting => new Filter(setting as FilterEffect)).ToList();
+            var json = PlayerPrefs.GetString(nameof(FilterRomSetting));
+            m_filterRomSetting = JsonUtility.FromJson<FilterRomSetting>(json) ?? new FilterRomSetting();
 
             m_previewFilterWraper = new AlphaWraper(mainBg, filterPreview, false);
             ShutDownFilterPreview();
@@ -64,12 +67,48 @@ namespace AxibugEmuOnline.Client
                 setting.enabled.Override(false);
         }
 
+        /// <summary>
+        /// 为指定rom设置滤镜以及滤镜的预设
+        /// </summary>
+        /// <param name="rom">rom对象</param>
+        /// <param name="filter">滤镜</param>
+        /// <param name="preset">滤镜预设</param>
+        public void SetupFilter(RomFile rom, Filter filter, FilterPreset preset)
+        {
+            m_filterRomSetting.Setup(rom, filter, preset);
+
+            string json = m_filterRomSetting.ToJson();
+            PlayerPrefs.SetString(nameof(FilterRomSetting), json);
+        }
+
+        /// <summary>
+        /// 获得指定rom配置的滤镜设置
+        /// </summary>
+        /// <param name="rom">rom对象</param>
+        /// <returns>此元组任意内任意成员都有可能为空</returns>
+        public (Filter filter, FilterPreset preset) GetFilterSetting(RomFile rom)
+        {
+            var value = m_filterRomSetting.Get(rom);
+            Filter filter = null;
+            FilterPreset preset = null;
+
+            filter = Filters.FirstOrDefault(f => f.Name == value.filterName);
+            if (filter != null)
+            {
+                preset = filter.Presets.FirstOrDefault(p => p.Name == value.filterName);
+            }
+
+            return (filter, preset);
+        }
+
         public class Filter
         {
             public string Name => m_setting.Name;
             public IReadOnlyCollection<EditableParamerter> Paramerters => m_setting.EditableParam;
             /// <summary> 滤镜预设 </summary>
             public List<FilterPreset> Presets = new List<FilterPreset>();
+            /// <summary> 滤镜默认预设 </summary>
+            public FilterPreset DefaultPreset = new FilterPreset("DEFAULT");
 
             internal FilterEffect m_setting;
 
@@ -182,6 +221,67 @@ namespace AxibugEmuOnline.Client
                 }
 
                 m_cacheReady = true;
+            }
+        }
+
+        [Serializable]
+        public class FilterRomSetting
+        {
+            [SerializeField]
+            private List<int> m_romID;
+            [SerializeField]
+            private List<Item> m_items;
+
+            bool m_cacheReady = false;
+            Dictionary<int, Item> m_cache;
+
+            public void Setup(RomFile rom, Filter filter, FilterPreset preset)
+            {
+                prepareCache();
+
+                if (filter == null)
+                    m_cache.Remove(rom.ID);
+                else
+                    m_cache[rom.ID] = new Item { FilterName = filter.Name, PresetName = preset != null ? preset.Name : null };
+            }
+
+            public string ToJson()
+            {
+                prepareCache();
+                m_romID = m_cache.Keys.ToList();
+                m_items = m_cache.Values.ToList();
+
+                return JsonUtility.ToJson(this);
+            }
+
+            public (string filterName, string presetName) Get(RomFile rom)
+            {
+                prepareCache();
+
+                m_cache.TryGetValue(rom.ID, out var item);
+                return (item.FilterName, item.PresetName);
+            }
+
+            private void prepareCache()
+            {
+                if (m_cacheReady) return;
+
+                if (m_items == null) m_items = new List<Item>();
+                if (m_romID == null) m_romID = new List<int>();
+                m_cache = new Dictionary<int, Item>();
+                for (int i = 0; i < m_romID.Count && i < m_items.Count; i++)
+                {
+                    m_cache[m_romID[i]] = m_items[i];
+                }
+
+                m_cacheReady = true;
+            }
+
+            [Serializable]
+            struct Item
+            {
+                public string FilterName;
+                public string PresetName;
             }
         }
     }

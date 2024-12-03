@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using VirtualNes.Core.Emu2413;
 
 namespace VirtualNes.Core

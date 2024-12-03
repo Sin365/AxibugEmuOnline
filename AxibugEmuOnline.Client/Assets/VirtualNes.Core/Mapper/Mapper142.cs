@@ -103,7 +103,7 @@ namespace VirtualNes.Core
             prg_sel = p[0];
             irq_enable = p[1];
             //irq_counter = *(INT*)&p[2];
-            irq_counter = BitConverter.ToInt32 (p, 2);
+            irq_counter = BitConverter.ToInt32(p, 2);
         }
         public override bool IsStateSave()
         {

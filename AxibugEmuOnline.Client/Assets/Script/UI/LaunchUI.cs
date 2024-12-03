@@ -38,6 +38,12 @@ namespace AxibugEmuOnline.Client
             CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
         }
 
+        private void Update()
+        {
+            if (CommandDispatcher.Instance.Current == CommandDispatcher.Instance.Gaming && App.emu.Core.IsNull())
+                CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
+        }
+
         public void HideMainMenu()
         {
             BG.gameObject.SetActiveEx(false);

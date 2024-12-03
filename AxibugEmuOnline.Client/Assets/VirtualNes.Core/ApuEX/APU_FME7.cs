@@ -1,5 +1,4 @@
 ﻿using System;
-using static VirtualNes.Core.APU_FME7;
 
 namespace VirtualNes.Core
 {
