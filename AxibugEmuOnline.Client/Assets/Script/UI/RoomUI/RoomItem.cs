@@ -49,6 +49,8 @@ namespace AxibugEmuOnline.Client
 
         public override bool OnEnterItem()
         {
+            if (m_romFile == null) return false;
+
             if (!m_romFile.RomReady)
             {
                 m_romFile.BeginDownload();
