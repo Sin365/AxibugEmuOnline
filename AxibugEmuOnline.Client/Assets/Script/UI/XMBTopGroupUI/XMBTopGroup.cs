@@ -12,6 +12,7 @@ public class XMBTopGroup : MonoBehaviour
     public Image imgPower2;
     public Image imgPower3;
     public Text DelayValue;
+    public Text OnlinePlayerCount;
     public Text FPS;
 
     void OnEnable()
@@ -56,12 +57,22 @@ public class XMBTopGroup : MonoBehaviour
         if (App.user == null)
         {
             DelayValue.text = $"-";
+            OnlinePlayerCount.text = $"-";
             return;
         }
-        if (App.user.IsLoggedIn)
-            DelayValue.text = $"{App.tickLoop.AveNetDelay * 1000:0}ms";
         else
-            DelayValue.text = "-";
+        {
+            if (App.user.IsLoggedIn)
+            {
+                DelayValue.text = $"{App.tickLoop.AveNetDelay * 1000:0}ms";
+                OnlinePlayerCount.text = App.user.OnlinePlayerCount.ToString();
+            }
+            else
+            {
+                DelayValue.text = "-";
+                OnlinePlayerCount.text = $"-";
+            }
+        }
     }
 
     void RefreshTime()

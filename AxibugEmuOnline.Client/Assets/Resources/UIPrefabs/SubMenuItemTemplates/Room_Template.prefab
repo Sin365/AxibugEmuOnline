@@ -66,7 +66,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 33a3bdf8f6bd1ec4eba7c4bc58183212, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
@@ -445,10 +445,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13190caeb949d3541bfcb2b2f66b5d45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PulseInvoke_Delay: 0.4
-  PulseInvoke_Interval: 0.05
   Icon: {fileID: 6771349210554360888}
   Txt: {fileID: 991446423622995247}
+  SubTitle: {fileID: 0}
+  spline: {fileID: 0}
   Descript: {fileID: 3380485461544738227}
   Root: {fileID: 8754483333502849411}
   ShadowIcon: {fileID: 2619187604372594158}
@@ -635,8 +635,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d1e3e91ac34bc8468f357ee247ffb6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PulseInvoke_Delay: 0.4
-  PulseInvoke_Interval: 0.05
   m_menuItemRoot: {fileID: 0}
   SubMenuItemTemplate: {fileID: 0}
   alphaGroup: {fileID: 0}
@@ -826,7 +824,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 33a3bdf8f6bd1ec4eba7c4bc58183212, type: 3}
     m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
