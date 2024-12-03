@@ -12,6 +12,9 @@ namespace AxibugEmuOnline.Client
 
         Action<string> OnCommit;
 
+        public static bool IsInputing { get; private set; }
+
+
 
         protected override void OnShow(object param)
         {
@@ -20,6 +23,24 @@ namespace AxibugEmuOnline.Client
             OnCommit = t.callback;
             (m_input.placeholder as Text).text = t.placeHolder;
             m_input.text = t.defaultText;
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            IsInputing = m_input.isFocused;
+
+            if (IsInputing && Input.GetButtonDown("Submit"))
+            {
+                OnCmdEnter();
+            }
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            IsInputing = false;
         }
 
         protected override void OnEnable()

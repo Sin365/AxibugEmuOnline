@@ -2,6 +2,8 @@ using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
@@ -81,8 +83,11 @@ namespace AxibugEmuOnline.Client
         readonly List<CommandExecuter> oneFrameRegister = new List<CommandExecuter>();
         private void Update()
         {
-            peekRegister(oneFrameRegister);
-            m_listener.Update(oneFrameRegister);
+            if (!InputUI.IsInputing)
+            {
+                peekRegister(oneFrameRegister);
+                m_listener.Update(oneFrameRegister);
+            }
 
             //键位映射在按键响应的堆栈结束后处理,防止迭代器修改问题
             if (m_waitMapperSetting != null)

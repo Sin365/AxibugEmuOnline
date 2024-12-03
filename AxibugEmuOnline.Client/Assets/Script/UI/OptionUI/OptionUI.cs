@@ -8,24 +8,23 @@ namespace AxibugEmuOnline.Client
 {
     public class OptionUI : CommandExecuter
     {
-        public static OptionUI Instance { get; private set; }
-
         [SerializeField]
         RectTransform MenuRoot;
         [SerializeField]
-        RectTransform SelectBorder;
+        Selector SelectBorder;
 
         [Space]
         [Header("模板")]
         [SerializeField] OptionUI_ExecuteItem TEMPLATE_EXECUTEITEM;
 
+        private OptionUI m_child;
+        private OptionUI m_parent;
+
         public override bool AloneMode => true;
-        public override bool Enable => m_bPoped;
+        public override bool Enable => m_bPoped && (m_child == null || !m_child.m_bPoped);
 
         private bool m_bPoped = false;
         private List<OptionUI_MenuItem> m_runtimeMenuItems = new List<OptionUI_MenuItem>();
-
-        public event Action OnHide;
 
         private int m_selectIndex = -1;
         public int SelectIndex
@@ -33,37 +32,41 @@ namespace AxibugEmuOnline.Client
             get { return m_selectIndex; }
             set
             {
-                var selectableItems = m_runtimeMenuItems.Where(t => t.Visible).ToList();
-                value = Mathf.Clamp(value, 0, selectableItems.Count - 1);
+                value = Mathf.Clamp(value, 0, m_runtimeMenuItems.Count - 1);
                 if (m_selectIndex == value) return;
+
+                var gap = value - m_selectIndex;
+
+                while (!m_runtimeMenuItems[value].Visible)
+                {
+                    var temp = value;
+                    if (gap > 0)
+                    {
+                        temp++;
+                    }
+                    else
+                    {
+                        temp--;
+                    }
+
+                    if (temp >= 0 && temp < m_runtimeMenuItems.Count)
+                        value = temp;
+                }
 
                 m_selectIndex = value;
 
-                OptionUI_MenuItem optionUI_MenuItem = selectableItems[m_selectIndex];
+                OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
                 optionUI_MenuItem.OnFocus();
                 var itemUIRect = optionUI_MenuItem.transform as RectTransform;
-                SelectBorder.pivot = itemUIRect.pivot;
-                SelectBorder.sizeDelta = itemUIRect.rect.size;
-                DOTween.To(() => SelectBorder.position, (value) => SelectBorder.position = value, itemUIRect.position, 0.125f);
-                SelectBorder.SetAsLastSibling();
+                SelectBorder.Target = itemUIRect;
             }
         }
 
         protected override void Awake()
         {
-            Instance = this;
             TEMPLATE_EXECUTEITEM.gameObject.SetActiveEx(false);
             SelectBorder.gameObject.SetActiveEx(false);
             base.Awake();
-        }
-
-        private void Start()
-        {
-            Canvas.ForceUpdateCanvases();
-            var width = MenuRoot.rect.size.x;
-            var temp = MenuRoot.anchoredPosition;
-            temp.x = width;
-            MenuRoot.anchoredPosition = temp;
         }
 
         protected override void Update()
@@ -76,6 +79,58 @@ namespace AxibugEmuOnline.Client
         private void UpdateMenuState()
         {
             bool dirty = false;
+            dirty = checkDirty();
+            if (dirty)
+            {
+                RebuildSelectIndex();
+            }
+        }
+
+        private void RebuildSelectIndex()
+        {
+            Canvas.ForceUpdateCanvases();
+
+            SelectIndex = Mathf.Clamp(SelectIndex, 0, m_runtimeMenuItems.Count - 1);
+            var selectItem = m_runtimeMenuItems[SelectIndex];
+
+            if (selectItem.Visible == false)
+            {
+                bool find = false;
+                int currentSelect = SelectIndex;
+                while (currentSelect > 0)
+                {
+                    currentSelect--;
+                    if (m_runtimeMenuItems[currentSelect].Visible)
+                    {
+                        find = true;
+                    }
+                }
+                if (!find)
+                {
+                    currentSelect = SelectIndex;
+                    while (currentSelect < m_runtimeMenuItems.Count)
+                    {
+                        if (m_runtimeMenuItems[currentSelect].Visible)
+                        {
+                            find = true;
+                        }
+                        currentSelect++;
+                    }
+                }
+
+                if (find)
+                    SelectIndex = currentSelect;
+            }
+            else
+            {
+                var itemUIRect = selectItem.transform as RectTransform;
+                SelectBorder.Target = itemUIRect;
+            }
+        }
+
+        private bool checkDirty()
+        {
+            bool dirty = false;
             foreach (var menuItem in m_runtimeMenuItems)
             {
                 if (menuItem.gameObject.activeSelf != menuItem.Visible)
@@ -84,52 +139,31 @@ namespace AxibugEmuOnline.Client
                     menuItem.gameObject.SetActive(menuItem.Visible);
                 }
             }
-            if (dirty)
-            {
-                Canvas.ForceUpdateCanvases();
 
-                if (m_runtimeMenuItems[SelectIndex].Visible == false)
-                {
-                    bool find = false;
-                    int currentSelect = SelectIndex;
-                    while (currentSelect > 0)
-                    {
-                        currentSelect--;
-                        if (m_runtimeMenuItems[currentSelect].Visible)
-                        {
-                            find = true;
-                        }
-                    }
-                    if (!find)
-                    {
-                        currentSelect = SelectIndex;
-                        while (currentSelect < m_runtimeMenuItems.Count)
-                        {
-                            if (m_runtimeMenuItems[currentSelect].Visible)
-                            {
-                                find = true;
-                            }
-                            currentSelect++;
-                        }
-                    }
-
-                    if (find)
-                        SelectIndex = currentSelect;
-                }
-                else
-                {
-                    var selectItem = m_runtimeMenuItems[SelectIndex];
-                    var itemUIRect = selectItem.transform as RectTransform;
-                    SelectBorder.pivot = itemUIRect.pivot;
-                    SelectBorder.position = itemUIRect.position;
-                    SelectBorder.sizeDelta = itemUIRect.rect.size;
-                }
-            }
+            return dirty;
         }
 
         IKeyMapperChanger m_lastCS;
-        public void Pop<T>(List<T> menus, int defaultIndex = 0) where T : OptionMenu
+        private Action m_onClose;
+
+        /// <summary>
+        /// 当菜单弹出时,动态添加一个菜单选项
+        /// </summary>
+        /// <param name="menu"></param>
+        public void AddOptionMenuWhenPoping(OptionMenu menu)
         {
+            if (!m_bPoped) return;
+
+            CreateRuntimeMenuItem(menu);
+            Canvas.ForceUpdateCanvases();
+
+            OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[m_selectIndex];
+            SelectBorder.Target = optionUI_MenuItem.transform as RectTransform;
+        }
+
+        public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+        {
+            m_onClose = onClose;
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
             CommandDispatcher.Instance.RegistController(this);
@@ -140,25 +174,37 @@ namespace AxibugEmuOnline.Client
             m_selectIndex = defaultIndex;
             OptionUI_MenuItem optionUI_MenuItem = m_runtimeMenuItems[defaultIndex];
             optionUI_MenuItem.OnFocus();
+
             var itemUIRect = optionUI_MenuItem.transform as RectTransform;
-            SelectBorder.pivot = itemUIRect.pivot;
-            SelectBorder.position = itemUIRect.position;
-            SelectBorder.sizeDelta = itemUIRect.rect.size;
-            SelectBorder.SetAsLastSibling();
+            SelectBorder.Target = itemUIRect;
 
             if (!m_bPoped)
             {
                 m_bPoped = true;
-
+                Vector2 start = new Vector2(0, MenuRoot.anchoredPosition.y);
+                Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                 DOTween.To(
-                    () => MenuRoot.anchoredPosition.x,
+                    () => start,
                     (value) =>
                     {
-                        var temp = MenuRoot.anchoredPosition;
-                        temp.x = value;
-                        MenuRoot.anchoredPosition = temp;
+                        var moveDelta = value - start;
+                        start = value;
+
+                        var topParent = m_parent;
+                        while (topParent != null && topParent.m_parent != null)
+                        {
+                            topParent = topParent.m_parent;
+                        }
+                        if (topParent != null)
+                        {
+                            topParent.MenuRoot.anchoredPosition += moveDelta;
+                        }
+                        else
+                        {
+                            MenuRoot.anchoredPosition += moveDelta;
+                        }
                     },
-                    0,
+                    end,
                     0.3f
                     ).SetEase(Ease.OutCubic);
 
@@ -179,16 +225,30 @@ namespace AxibugEmuOnline.Client
 
                 CommandDispatcher.Instance.UnRegistController(this);
                 Canvas.ForceUpdateCanvases();
-                var width = MenuRoot.rect.width;
+                Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
+                Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
                 DOTween.To(
-                    () => MenuRoot.anchoredPosition.x,
+                    () => start,
                     (value) =>
                     {
-                        var temp = MenuRoot.anchoredPosition;
-                        temp.x = value;
-                        MenuRoot.anchoredPosition = temp;
+                        var moveDelta = value - start;
+                        start = value;
+
+                        var topParent = m_parent;
+                        while (topParent != null && topParent.m_parent != null)
+                        {
+                            topParent = topParent.m_parent;
+                        }
+                        if (topParent != null)
+                        {
+                            topParent.MenuRoot.anchoredPosition += moveDelta;
+                        }
+                        else
+                        {
+                            MenuRoot.anchoredPosition += moveDelta;
+                        }
                     },
-                    width,
+                    end,
                     0.3f
                     ).SetEase(Ease.OutCubic);
 
@@ -196,7 +256,8 @@ namespace AxibugEmuOnline.Client
 
                 CommandDispatcher.Instance.Current = m_lastCS;
 
-                OnHide?.Invoke();
+                m_onClose?.Invoke();
+                m_onClose = null;
             }
         }
 
@@ -206,7 +267,7 @@ namespace AxibugEmuOnline.Client
             {
                 var menuUI = GameObject.Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
                 menuUI.gameObject.SetActive(true);
-                menuUI.SetData(executeMenu);
+                menuUI.SetData(this, executeMenu);
                 m_runtimeMenuItems.Add(menuUI);
             }
             else
@@ -219,6 +280,7 @@ namespace AxibugEmuOnline.Client
         {
             foreach (var item in m_runtimeMenuItems)
             {
+                item.OnHide();
                 Destroy(item.gameObject);
             }
             m_runtimeMenuItems.Clear();
@@ -239,39 +301,89 @@ namespace AxibugEmuOnline.Client
             Hide();
         }
 
+        protected override void OnCmdSelectItemRight()
+        {
+            var executer = m_runtimeMenuItems[SelectIndex];
+            if (!executer.IsExpandMenu) return;
+
+            OnCmdEnter();
+        }
+
         protected override bool OnCmdEnter()
         {
             var executer = m_runtimeMenuItems[SelectIndex];
-            Hide();
-            executer.OnExecute();
-            return true;
+            bool cancelHide = false;
+            executer.OnExecute(this, ref cancelHide);
+            if (!cancelHide) Hide();
+
+            return false;
         }
-    }
 
-    public abstract class OptionMenu
-    {
-        public string Name { get; protected set; }
-        public Sprite Icon { get; protected set; }
-        public virtual bool Visible => true;
-        public virtual bool Enable => true;
-
-        public OptionMenu(string name, Sprite icon = null)
+        /// <summary>
+        /// 展开下级菜单
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="menus"></param>
+        /// <param name="defaultIndex"></param>
+        /// <param name="onClose"></param>
+        public void ExpandSubMenu<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
         {
-            Name = name;
-            Icon = icon;
+            if (m_child == null)
+            {
+                var sourcePrefab = Resources.Load<GameObject>("UIPrefabs/OptionUI");
+                m_child = Instantiate(sourcePrefab, transform).GetComponent<OptionUI>();
+                m_child.name = $"{name}_Sub";
+                m_child.m_parent = this;
+            }
+
+            Canvas.ForceUpdateCanvases();
+
+            m_child.Pop(menus, 0, onClose);
         }
 
-        public virtual void OnFocus() { }
-        public virtual void OnShow(OptionUI_MenuItem ui) { }
+        public void RemoveItem(OptionUI_MenuItem ui)
+        {
+            var index = m_runtimeMenuItems.IndexOf(ui);
+            if (index == -1) return;
+
+            m_runtimeMenuItems.Remove(ui);
+            ui.OnHide();
+            Destroy(ui.gameObject);
+
+            RebuildSelectIndex();
+        }
     }
 
+    /// <summary>
+    /// 带有执行行为的菜单
+    /// </summary>
     public abstract class ExecuteMenu : OptionMenu
     {
         public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
-        public abstract void OnExcute();
+        public abstract void OnExcute(OptionUI optionUI, ref bool cancelHide);
     }
 
+    /// <summary>
+    /// 带有展开行为的菜单
+    /// </summary>
+    public abstract class ExpandMenu : ExecuteMenu
+    {
+        protected ExpandMenu(string name, Sprite icon = null) : base(name, icon) { }
+
+        public sealed override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+        {
+            cancelHide = true;
+            optionUI.ExpandSubMenu(GetOptionMenus());
+        }
+
+        protected abstract List<OptionMenu> GetOptionMenus();
+    }
+
+    /// <summary>
+    /// 带有值类型显示和编辑的菜单
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ValueSetMenu<T> : ValueSetMenu
     {
         public sealed override Type ValueType => typeof(T);
@@ -287,6 +399,25 @@ namespace AxibugEmuOnline.Client
         protected ValueSetMenu(string name) : base(name) { }
     }
 
+    /// <summary> 不要直接继承这个类 </summary>
+    public abstract class OptionMenu
+    {
+        public string Name { get; protected set; }
+        public Sprite Icon { get; protected set; }
+        public virtual bool Visible => true;
+        public virtual bool Enable => true;
+
+        public OptionMenu(string name, Sprite icon = null)
+        {
+            Name = name;
+            Icon = icon;
+        }
+
+        public virtual void OnFocus() { }
+        public virtual void OnShow(OptionUI_MenuItem ui) { }
+        public virtual void OnHide() { }
+    }
+    /// <summary> 不要直接继承这个类 </summary>
     public abstract class ValueSetMenu : OptionMenu
     {
         public ValueSetMenu(string name) : base(name) { }
