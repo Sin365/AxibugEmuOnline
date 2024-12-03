@@ -17,6 +17,8 @@ namespace AxibugEmuOnline.Client.Network
         private NetMsg() { }
 
 
+        public static object lockQueueObj = new object();
+
         #region RegisterMsgEvent
 
         public void RegNetMsgEvent(int cmd, Action<byte[]> callback)
@@ -61,15 +63,21 @@ namespace AxibugEmuOnline.Client.Network
         #region PostEvent
         public void EnqueueNesMsg(int cmd, int ERRCODE, byte[] arg)
         {
-            queueNetMsg.Enqueue((cmd, ERRCODE, arg));
+            lock (lockQueueObj)
+            {
+                queueNetMsg.Enqueue((cmd, ERRCODE, arg));
+            }
         }
 
         public void DequeueNesMsg()
         {
-            while (queueNetMsg.Count > 0)
+            lock (lockQueueObj)
             {
-                (int, int, byte[]) msgData = queueNetMsg.Dequeue();
-                PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
+                while (queueNetMsg.Count > 0)
+                {
+                    (int, int, byte[]) msgData = queueNetMsg.Dequeue();
+                    PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
+                }
             }
         }
 
