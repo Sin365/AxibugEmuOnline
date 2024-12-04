@@ -5,6 +5,7 @@ namespace AxibugEmuOnline.Server.Manager
     public class TickManager
     {
         public Stopwatch sw;
+        public double timeNow => sw.Elapsed.TotalSeconds;
         public enum TickType
         {
             Interval_16MS,

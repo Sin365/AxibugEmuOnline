@@ -105,6 +105,8 @@ namespace AxibugEmuOnline.Server
         }
         public void RoomLog(long uid, int platform, int RoomID, int RomID, RoomLogType state)
         {
+
+            return;
             MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("RoomLog");
             try
             {
@@ -352,7 +354,7 @@ namespace AxibugEmuOnline.Server
             else
                 SendRoomUpdateToAll(room.RoomID, 0);
 
-            RoomLog(_c.UID,1,room.RoomID,room.GameRomID,RoomLogType.Leave);
+            RoomLog(_c.UID, 1, room.RoomID, room.GameRomID, RoomLogType.Leave);
         }
 
         public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)
@@ -419,8 +421,8 @@ namespace AxibugEmuOnline.Server
                     if (i + 1 == forwaFrame)//最后一帧
                     {
                         //写入操作前、将网络波动堆积，可能造成瞬时多个连续推帧结果（最后一帧除外）立即广播，不等16msTick
-                        if (forwaFrame > 1)
-                            room.SynInputData();
+                        //if (forwaFrame > 1)
+                        //    room.SynInputData();
 
                         //推帧过程中，最后一帧才写入操作
                         room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp);
@@ -592,7 +594,7 @@ namespace AxibugEmuOnline.Server
         /// <summary>
         /// 服务器提前帧数
         /// </summary>
-        public int SrvForwardFrames { get; set; }
+        public uint SrvForwardFrames { get; set; }
 
 
         bool IsAllReady()
@@ -759,6 +761,18 @@ namespace AxibugEmuOnline.Server
             mInputQueue.Clear();
             mDictPlayerIdx2SendQueue.Clear();
 
+            mCurrServerFrameId = 0;
+            mCurrInputData.all = 1;
+
+            UpdateRoomForwardNum();
+
+            //服务器提前跑帧数
+            for (int i = 0; i < SrvForwardFrames; i++)
+                TakeFrame();
+        }
+
+        public void UpdateRoomForwardNum()
+        {
             List<ClientInfo> playerlist = GetAllPlayerClientList();
             double maxNetDelay = 0;
             for (int i = 0; i < playerlist.Count; i++)
@@ -766,53 +780,87 @@ namespace AxibugEmuOnline.Server
                 ClientInfo player = playerlist[i];
                 maxNetDelay = Math.Max(maxNetDelay, player.AveNetDelay);
             }
-
-            mCurrServerFrameId = 0;
-            mCurrInputData.all = 1;
-
-            float MustTaskFrame = 3;
-
-            SrvForwardFrames = (int)((maxNetDelay / 0.016f) + MustTaskFrame);
-            AppSrv.g_Log.Debug($"服务器提前跑帧数：({maxNetDelay} / {0.016f}) + {MustTaskFrame} = {SrvForwardFrames}");
-
-            //服务器提前跑帧数
-            for (int i = 0; i < SrvForwardFrames; i++)
-                TakeFrame();
+            float MustTaskFrame = 1;
+            SrvForwardFrames = (uint)((maxNetDelay / 0.016f) + MustTaskFrame);
+            if (SrvForwardFrames < 2)
+                SrvForwardFrames = 2;
+            AppSrv.g_Log.Debug($"服务器提前跑帧数：Max(2,({maxNetDelay} / {0.016f}) + {MustTaskFrame}) = {SrvForwardFrames}");
         }
 
         public void TakeFrame()
         {
-            mInputQueue.Enqueue((mCurrServerFrameId, mCurrInputData));
-            mCurrServerFrameId++;
+            lock (synInputLock)
+            {
+                mInputQueue.Enqueue((mCurrServerFrameId, mCurrInputData));
+                mCurrServerFrameId++;
+                if (mCurrServerFrameId % 60 == 0)
+                {
+                    UpdateRoomForwardNum();
+                }
+            }
         }
 
         ulong LastTestSend = 0;
         internal ulong LastTestRecv;
+
+        public List<double> send2time = new List<double>();
+        const int SynLimitOnSec = 63;
 
         /// <summary>
         /// 广播数据
         /// </summary>
         public void SynInputData()
         {
+            List<(uint frameId, ServerInputSnapShot inputdata)> temp = null;
+            bool flagInitList = false;
             lock (synInputLock)
             {
+                double timeNow = AppSrv.g_Tick.timeNow;
                 while (mInputQueue.Count > 0)
                 {
-                    (uint frameId, ServerInputSnapShot inputdata) data = mInputQueue.Dequeue();
-                    Protobuf_Room_Syn_RoomFrameAllInputData resp = new Protobuf_Room_Syn_RoomFrameAllInputData()
+                    if (send2time.Count >= SynLimitOnSec)
                     {
-                        FrameID = data.frameId,
-                        InputData = data.inputdata.all,
-                        ServerFrameID = mCurrServerFrameId
-                    };
-                    //if (LastTestSend != data.inputdata.all)
-                    //{
-                    //    LastTestSend = data.inputdata.all;
-                    //    AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynInput=> RoomID->{RoomID} ServerFrameID->{mCurrServerFrameId} SynUIDs=>{string.Join(",", SynUIDs)} ");
-                    //}
-                    AppSrv.g_ClientMgr.ClientSend(SynUIDs, (int)CommandID.CmdRoomSynPlayerInput, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
-                    //AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynInput=> RoomID->{RoomID} ServerFrameID->{mCurrServerFrameId} SynUIDs=>{string.Join(",", SynUIDs)} ");
+                        //AppSrv.g_Log.Info($"{timeNow} - {send2time[0]} =>{timeNow - send2time[0]}");
+                        if (timeNow - send2time[0] < 1f) //最早的历史发送还在一秒之内
+                            break;
+                        else
+                            send2time.RemoveAt(0);
+                    }
+
+                    if (!flagInitList)
+                    {
+                        flagInitList = true;
+                        temp = new List<(uint frameId, ServerInputSnapShot inputdata)>();
+                    }
+                    temp.Add(mInputQueue.Dequeue());
+                    send2time.Add(timeNow);
                 }
+                //while (mInputQueue.Count > 0)
+                //{
+                //    temp.Add(mInputQueue.Dequeue());
+                //}
+            }
+
+            if (!flagInitList)
+                return;
+
+            for (int i = 0; i < temp.Count; i++)
+            {
+                (uint frameId, ServerInputSnapShot inputdata) data = temp[i];
+
+                Protobuf_Room_Syn_RoomFrameAllInputData resp = new Protobuf_Room_Syn_RoomFrameAllInputData()
+                {
+                    FrameID = data.frameId,
+                    InputData = data.inputdata.all,
+                    ServerFrameID = mCurrServerFrameId,
+                    ServerForwardCount = this.SrvForwardFrames
+                };
+                AppSrv.g_ClientMgr.ClientSend(SynUIDs, (int)CommandID.CmdRoomSynPlayerInput, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+                //if (LastTestSend != data.inputdata.all)
+                //{
+                //    LastTestSend = data.inputdata.all;
+                //    AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynInput=> RoomID->{RoomID} ServerFrameID->{mCurrServerFrameId} SynUIDs=>{string.Join(",", SynUIDs)} ");
+                //}
             }
         }
 

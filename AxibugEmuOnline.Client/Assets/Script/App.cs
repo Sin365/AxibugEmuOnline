@@ -104,7 +104,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 yield break;
 
             int platform = 0;
-            bool bTest = true;
+            bool bTest = false;
             if (bTest)
             {
                 yield return null;
