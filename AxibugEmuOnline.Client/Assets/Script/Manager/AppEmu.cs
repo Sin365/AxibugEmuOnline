@@ -1,7 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
-using MyNes.Core;
-using System;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
@@ -74,7 +72,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void ResetGame()
         {
-            if(m_emuCore.IsNull()) return;
+            if (m_emuCore.IsNull()) return;
 
             m_emuCore.DoReset();
         }
