@@ -220,10 +220,10 @@ namespace VirtualNes.Core
             p[1] = reg[1];
             p[2] = reg[2];
             //*(INT*)&p[3] = chr_bank;
-            BitConverter.GetBytes(chr_bank).CopyTo(p,3);
+            BitConverter.GetBytes(chr_bank).CopyTo(p, 3);
             p[7] = irq_enable;
             //*(INT*)&p[8] = irq_counter;
-            BitConverter.GetBytes(irq_counter).CopyTo(p,8);
+            BitConverter.GetBytes(irq_counter).CopyTo(p, 8);
         }
 
         //void Mapper083::LoadState(LPBYTE p)

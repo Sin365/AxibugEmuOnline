@@ -38,6 +38,7 @@ namespace AxibugEmuOnline.Client
 
             m_stepPerformer = new StepPerformer(this);
 
+            //menus.Add(new InGameUI_FilterSetting(this));
             menus.Add(new InGameUI_Reset(this));
             menus.Add(new InGameUI_SaveState(this));
             menus.Add(new InGameUI_LoadState(this));
@@ -84,6 +85,16 @@ namespace AxibugEmuOnline.Client
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
 
             gameObject.SetActiveEx(true);
+
+            var filterSetting = App.filter.GetFilterSetting(currentRom);
+            if (filterSetting.filter != null)
+            {
+                var filter = filterSetting.filter;
+                var preset = filterSetting.preset ?? filter.DefaultPreset;
+
+                filter.ApplyPreset(preset);
+                App.filter.EnableFilter(filter);
+            }
         }
 
         private void OnServerStepUpdate(int step)
@@ -95,6 +106,8 @@ namespace AxibugEmuOnline.Client
         {
             CommandDispatcher.Instance.UnRegistController(this);
             gameObject.SetActiveEx(false);
+
+            App.filter.ShutDownFilter();
         }
 
         protected override void OnCmdOptionMenu()
@@ -120,8 +133,6 @@ namespace AxibugEmuOnline.Client
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
             App.roomMgr.SendLeavnRoom();
             App.emu.StopGame();
-
-            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace AxibugEmuOnline.Client
         private RectTransform m_parent;
 
         [SerializeField]
-        private RectTransform m_selectArrow; 
+        private RectTransform m_selectArrow;
         [SerializeField]
         float ArrowOffset = 50;
         [SerializeField]
@@ -102,8 +102,12 @@ namespace AxibugEmuOnline.Client
                 srollRect.content.anchoredPosition += new Vector2(0, gap);
             else
             {
+                var srcPos = m_selectArrow.position;
                 var endValue = srollRect.content.anchoredPosition + new Vector2(0, gap);
-                DOTween.To(() => srollRect.content.anchoredPosition, (x) => srollRect.content.anchoredPosition = x, endValue, 0.125f);
+                var tween = DOTween.To(
+                    () => srollRect.content.anchoredPosition,
+                    (x) => srollRect.content.anchoredPosition = x,
+                    endValue, 0.125f);
             }
         }
 

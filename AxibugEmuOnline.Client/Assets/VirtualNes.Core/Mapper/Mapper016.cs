@@ -422,8 +422,8 @@ namespace VirtualNes.Core
                 {
                     //x24c02.Load(&p[16]);
                     //x24c01.Load(&p[48]);
-                    x24c02.Load(p+16);
-                    x24c01.Load(p+48);
+                    x24c02.Load(p + 16);
+                    x24c01.Load(p + 48);
                 }
             }
         }

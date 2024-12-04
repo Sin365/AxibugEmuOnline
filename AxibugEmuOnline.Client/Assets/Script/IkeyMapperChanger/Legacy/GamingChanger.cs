@@ -5,6 +5,7 @@ namespace AxibugEmuOnline.Client
 {
     public class GamingChanger : CommandChanger
     {
+
         Dictionary<KeyCode, EnumCommand> m_uiKeyMapper = new Dictionary<KeyCode, EnumCommand>();
         public GamingChanger()
         {

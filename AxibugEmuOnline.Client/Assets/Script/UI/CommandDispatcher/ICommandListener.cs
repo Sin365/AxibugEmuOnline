@@ -4,6 +4,7 @@ namespace AxibugEmuOnline.Client
 {
     public interface IKeyMapperChanger
     {
+        string Name { get; }
         object GetConfig();
     }
     public interface ICommandListener

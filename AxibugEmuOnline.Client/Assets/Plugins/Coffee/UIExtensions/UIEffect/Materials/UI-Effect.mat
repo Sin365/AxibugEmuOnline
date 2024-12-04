@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill-MediumBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: EX FILL MEDIUMBLUR
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -47,7 +47,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill-FastBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: EX FASTBLUR FILL
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -123,7 +123,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -161,7 +161,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -199,7 +199,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -237,7 +237,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -275,7 +275,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -313,7 +313,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -351,7 +351,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -389,7 +389,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -427,7 +427,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -461,7 +461,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -495,7 +495,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -529,7 +529,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -563,7 +563,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -597,7 +597,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -631,7 +631,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -665,7 +665,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -703,7 +703,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -737,7 +737,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -775,7 +775,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -809,7 +809,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -843,7 +843,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -877,7 +877,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -911,7 +911,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -945,7 +945,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -983,7 +983,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1017,7 +1017,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1055,7 +1055,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1089,7 +1089,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1123,7 +1123,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1157,7 +1157,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1191,7 +1191,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1225,7 +1225,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1259,7 +1259,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1293,7 +1293,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1331,7 +1331,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1365,7 +1365,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1399,7 +1399,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1471,7 +1471,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1505,7 +1505,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1539,7 +1539,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1573,7 +1573,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1611,7 +1611,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1645,7 +1645,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1679,7 +1679,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1713,7 +1713,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1747,7 +1747,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1781,7 +1781,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1815,7 +1815,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1849,7 +1849,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1883,7 +1883,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1917,7 +1917,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1955,7 +1955,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -1989,7 +1989,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2023,7 +2023,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2057,7 +2057,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2091,7 +2091,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2125,7 +2125,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2159,7 +2159,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-MediumBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: EX MEDIUMBLUR
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2197,7 +2197,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2235,7 +2235,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2269,7 +2269,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2307,7 +2307,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2341,7 +2341,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2379,7 +2379,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Add-DetailBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD DETAILBLUR EX
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2417,7 +2417,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2455,7 +2455,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2489,7 +2489,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2523,7 +2523,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2561,7 +2561,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-DetailBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR EX
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2599,7 +2599,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2633,7 +2633,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2667,7 +2667,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2701,7 +2701,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2735,7 +2735,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2773,7 +2773,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2807,7 +2807,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2841,7 +2841,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2875,7 +2875,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2909,7 +2909,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2943,7 +2943,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -2977,7 +2977,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3011,7 +3011,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Add-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR ADD CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3045,7 +3045,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3079,7 +3079,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3113,7 +3113,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-FastBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: EX FASTBLUR
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3151,7 +3151,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3185,7 +3185,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3223,7 +3223,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3257,7 +3257,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3291,7 +3291,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3325,7 +3325,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3359,7 +3359,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3393,7 +3393,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3427,7 +3427,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3461,7 +3461,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3495,7 +3495,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3529,7 +3529,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3563,7 +3563,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3601,7 +3601,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3639,7 +3639,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3673,7 +3673,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3711,7 +3711,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3745,7 +3745,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3779,7 +3779,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3813,7 +3813,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3851,7 +3851,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3885,7 +3885,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3919,7 +3919,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3957,7 +3957,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3991,7 +3991,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4029,7 +4029,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Add-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR ADD NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4063,7 +4063,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4101,7 +4101,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4135,7 +4135,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4169,7 +4169,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Subtract-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR SUBTRACT SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4203,7 +4203,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-DetailBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR EX GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4241,7 +4241,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4275,7 +4275,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4309,7 +4309,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4343,7 +4343,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4381,7 +4381,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Subtract-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR SUBTRACT GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4415,7 +4415,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Subtract
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: SUBTRACT PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4449,7 +4449,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Fill-FastBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FASTBLUR FILL GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4483,7 +4483,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Mono-Add
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: ADD MONO
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4517,7 +4517,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR FILL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4555,7 +4555,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4589,7 +4589,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Subtract-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR SUBTRACT CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4623,7 +4623,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Pixel-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL PIXEL
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4657,7 +4657,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Fill
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: FILL CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4691,7 +4691,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Cutoff-Add-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR ADD CUTOFF
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4725,7 +4725,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Hue-Fill-DetailBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR FILL HUE
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4759,7 +4759,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-MediumBlur
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: MEDIUMBLUR
+  m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4797,7 +4797,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Nega-Fill-DetailBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR EX FILL NEGA
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4835,7 +4835,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Grayscale-Fill-DetailBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR EX FILL GRAYSCALE
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4873,7 +4873,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Sepia-Fill-DetailBlur-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: DETAILBLUR EX FILL SEPIA
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -4911,7 +4911,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UI-Effect-Fill-Ex
   m_Shader: {fileID: 4800000, guid: b868e81d0156245e08c8646b4fb68d7a, type: 3}
-  m_ShaderKeywords: EX FILL
+  m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

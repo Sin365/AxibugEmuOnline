@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Rendering.PostProcessing;
 using static AxibugEmuOnline.Client.HttpAPI;
 using static AxibugEmuOnline.Client.Manager.LogManager;
 
@@ -57,7 +56,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            filter = new FilterManager(initer.m_filterVolume, initer.m_filterPreview,initer.m_xmbBg);
+            filter = new FilterManager(initer.m_filterVolume, initer.m_filterPreview, initer.m_xmbBg);
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             tickLoop = go.AddComponent<TickLoop>();
@@ -68,7 +67,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 //PSV 等平台需要手动创建目录
                 PersistentDataPathDir();
             }
-            
+
             var importNode = GameObject.Find("IMPORTENT");
             if (importNode != null) GameObject.DontDestroyOnLoad(importNode);
 

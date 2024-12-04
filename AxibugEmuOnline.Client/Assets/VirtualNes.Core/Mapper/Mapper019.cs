@@ -409,7 +409,7 @@ namespace VirtualNes.Core
             //irq_counter = *(WORD*)&p[4];
             irq_counter = BitConverter.ToUInt16(p, 4);
             //::memcpy(exram, &p[8], sizeof(exram));
-            Array.Copy(p,exram,exram.Length);
+            Array.Copy(p, exram, exram.Length);
         }
 
 

@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.IO;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
