@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Client
         [Space]
         [Header("模板")]
         [SerializeField] OptionUI_ExecuteItem TEMPLATE_EXECUTEITEM;
+        [SerializeField] OptionUI_ValueEditItem TEMPLATE_VALUEEDITITEM;
 
         private OptionUI m_child;
         private OptionUI m_parent;
@@ -64,6 +65,8 @@ namespace AxibugEmuOnline.Client
         protected override void Awake()
         {
             TEMPLATE_EXECUTEITEM.gameObject.SetActiveEx(false);
+            TEMPLATE_VALUEEDITITEM.gameObject.SetActiveEx(false);
+
             SelectBorder.gameObject.SetActiveEx(false);
             base.Awake();
         }
@@ -269,15 +272,19 @@ namespace AxibugEmuOnline.Client
         {
             if (menuData is ExecuteMenu executeMenu)
             {
-                var menuUI = GameObject.Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
+                var menuUI = Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
                 menuUI.gameObject.SetActive(true);
                 menuUI.SetData(this, executeMenu);
                 m_runtimeMenuItems.Add(menuUI);
             }
-            else
+            else if (menuData is ValueSetMenu valueSetMenu)
             {
-                throw new NotImplementedException($"暂不支持的菜单类型{menuData.GetType().Name}");
+                var menuUI = Instantiate(TEMPLATE_VALUEEDITITEM.gameObject, TEMPLATE_VALUEEDITITEM.transform.parent).GetComponent<OptionUI_ValueEditItem>();
+                menuUI.gameObject.SetActive(true);
+                menuUI.SetData(this, valueSetMenu);
+                m_runtimeMenuItems.Add(menuUI);
             }
+            else throw new NotImplementedException($"暂不支持的菜单类型{menuData.GetType().Name}");
         }
 
         private void ReleaseRuntimeMenus()
@@ -305,10 +312,23 @@ namespace AxibugEmuOnline.Client
             Hide();
         }
 
+        protected override void OnCmdSelectItemLeft()
+        {
+            var executer = m_runtimeMenuItems[SelectIndex];
+            if (executer != null)
+            {
+                executer.OnLeft();
+            }
+        }
+
         protected override void OnCmdSelectItemRight()
         {
             var executer = m_runtimeMenuItems[SelectIndex];
-            if (!executer.IsExpandMenu) return;
+            if (!executer.IsExpandMenu)
+            {
+                executer.OnRight();
+                return;
+            }
 
             OnCmdEnter();
         }
@@ -384,25 +404,6 @@ namespace AxibugEmuOnline.Client
         protected abstract List<OptionMenu> GetOptionMenus();
     }
 
-    /// <summary>
-    /// 带有值类型显示和编辑的菜单
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ValueSetMenu<T> : ValueSetMenu
-    {
-        public sealed override Type ValueType => typeof(T);
-
-        public T Value { get; private set; }
-
-        public sealed override object ValueRaw => Value;
-
-        public sealed override void OnValueChanged(object newValue)
-        {
-            Value = (T)newValue;
-        }
-        protected ValueSetMenu(string name) : base(name) { }
-    }
-
     /// <summary> 不要直接继承这个类 </summary>
     public abstract class OptionMenu
     {
@@ -421,7 +422,9 @@ namespace AxibugEmuOnline.Client
         public virtual void OnShow(OptionUI_MenuItem ui) { }
         public virtual void OnHide() { }
     }
-    /// <summary> 不要直接继承这个类 </summary>
+    /// <summary>
+    /// 带有值类型显示和编辑的菜单
+    /// </summary>
     public abstract class ValueSetMenu : OptionMenu
     {
         public ValueSetMenu(string name) : base(name) { }
@@ -429,7 +432,7 @@ namespace AxibugEmuOnline.Client
         public abstract Type ValueType { get; }
         public abstract object ValueRaw { get; }
         public abstract void OnValueChanged(object newValue);
+        public abstract object Min { get; }
+        public abstract object Max { get; }
     }
-
-
 }
