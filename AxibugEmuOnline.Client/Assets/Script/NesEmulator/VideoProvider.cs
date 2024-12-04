@@ -57,8 +57,8 @@ namespace AxibugEmuOnline.Client
         public unsafe void SetDrawData(uint* screenData)
         {
             PrepareUI(screenData);
-            if (GPUTurbo) PrepareForGPU(screenData);
-            else PrepareForCPU(screenData);
+            if (GPUTurbo) PrepareForGPU(screenData);//判断使用GPU还是CPU
+            else PrepareForCPU(screenData);//使用CPU
 
             if (GPUTurbo)
             {
@@ -144,6 +144,7 @@ namespace AxibugEmuOnline.Client
 
             for (int line = 0; line < PPU.SCREEN_HEIGHT; line++)
             {
+                //PS：如果是CPU计算，宽度减少16的不必要部分，才能对齐
                 width = PPU.SCREEN_WIDTH - 16;
 
                 while (width > 0)
@@ -151,14 +152,17 @@ namespace AxibugEmuOnline.Client
                     var edx = screenData[pScn + 8];
 
                     uint index = edx & 0xFF;
+                    //按下标颜色查找表中真实颜色
                     var colorData = palRaw[index];
                     //dst中颜色排列为abgr,而colorData排列为argb
                     uint r = (colorData & 0x00FF0000) >> 16; // 提取Red通道
                     uint g = (colorData & 0x0000FF00) >> 8;  // 提取Green通道
                     uint b = (colorData & 0x000000FF);       // 提取Blue通道
 
+                    //用rgb构建颜色对象（如果非unity 可以用这个rgb 构建System.Drawing.Color 单个颜色对象）
                     uint abgr = 0xFF000000 | (b << 16) | (g << 8) | (r << 0);
 
+                    //放进颜色矩阵
                     Dst[pDst] = abgr;
 
                     pScn += 1;
