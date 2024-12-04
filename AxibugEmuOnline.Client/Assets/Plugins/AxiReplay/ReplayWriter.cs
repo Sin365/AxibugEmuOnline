@@ -57,7 +57,7 @@ namespace AxiReplay
         /// 往前推进帧的,指定帧下标
         /// </summary>
         /// <param name="frameInput"></param>
-        public void NextFramebyFrameIdx(int FrameID,UInt64 frameInput)
+        public void NextFramebyFrameIdx(int FrameID, UInt64 frameInput)
         {
             TakeFrame(FrameID - byFrameIdx, frameInput);
             byFrameIdx = FrameID;
@@ -80,7 +80,7 @@ namespace AxiReplay
         {
             if (addFrame < 0)
             {
-                
+
             }
             mCurrFrame += addFrame;
             if (mCurrInput == frameInput)
@@ -140,7 +140,7 @@ namespace AxiReplay
                 temp.Add($"CreateTime => {handler.CreateTime}");
                 temp.Add($"AllFrame => {handler.AllFrame}");
                 temp.Add($"SingleLenght => {handler.SingleLenght}");
-                dbgList.InsertRange(0,temp);
+                dbgList.InsertRange(0, temp);
                 File.WriteAllLines(dumppath, dbgList);
             }
         }

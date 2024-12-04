@@ -1,7 +1,6 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -71,6 +70,7 @@ namespace AxibugEmuOnline.Client
 
         protected override void Update()
         {
+            SelectBorder.Active = Enable;
             UpdateMenuState();
 
             base.Update();
@@ -177,6 +177,7 @@ namespace AxibugEmuOnline.Client
 
             var itemUIRect = optionUI_MenuItem.transform as RectTransform;
             SelectBorder.Target = itemUIRect;
+            SelectBorder.RefreshPosition();
 
             if (!m_bPoped)
             {
