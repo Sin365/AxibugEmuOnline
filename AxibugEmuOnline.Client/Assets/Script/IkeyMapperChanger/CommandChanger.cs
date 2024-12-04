@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-namespace AxibugEmuOnline.Client
+﻿namespace AxibugEmuOnline.Client
 {
     public abstract class CommandChanger : IKeyMapperChanger
     {

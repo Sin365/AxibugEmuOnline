@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client

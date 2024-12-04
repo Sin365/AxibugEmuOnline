@@ -1,11 +1,8 @@
-using AxibugEmuOnline.Client.Common;
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using VirtualNes.Core;
-using static UnityEngine.UI.CanvasScaler;
 
 namespace AxibugEmuOnline.Client
 {

@@ -14,23 +14,23 @@ using System.Linq;
 
 namespace Coffee.UIExtensions
 {
-	/// <summary>
-	/// Base class for effects that modify the generated Mesh.
-	/// It works well not only for standard Graphic components (Image, RawImage, Text, etc.) but also for TextMeshPro and TextMeshProUGUI.
-	/// </summary>
-	[ExecuteInEditMode]
-	public abstract class BaseMeshEffect : UIBehaviour, IMeshModifier
-	{
-		//################################
-		// Constant or Static Members.
-		//################################
+    /// <summary>
+    /// Base class for effects that modify the generated Mesh.
+    /// It works well not only for standard Graphic components (Image, RawImage, Text, etc.) but also for TextMeshPro and TextMeshProUGUI.
+    /// </summary>
+    [ExecuteInEditMode]
+    public abstract class BaseMeshEffect : UIBehaviour, IMeshModifier
+    {
+        //################################
+        // Constant or Static Members.
+        //################################
 #if TMP_PRESENT
 		static readonly List<Vector2> s_Uv0 = new List<Vector2> (4096);
 		static readonly List<Vector2> s_Uv1 = new List<Vector2> (4096);
-		#if UNITY_2017_1_OR_NEWER
+#if UNITY_2017_1_OR_NEWER
 		static readonly List<Vector2> s_Uv2 = new List<Vector2> (4096);
 		static readonly List<Vector2> s_Uv3 = new List<Vector2> (4096);
-		#endif
+#endif
 		static readonly List<Vector3> s_Vertices = new List<Vector3> (4096);
 		static readonly List<int> s_Indices = new List<int> (4096);
 		static readonly List<Vector3> s_Normals = new List<Vector3> (4096);
@@ -42,21 +42,21 @@ namespace Coffee.UIExtensions
 		static readonly List<UIVertex> s_UIVertices = new List<UIVertex> (4096);
 		static readonly List<BaseMeshEffect> s_TmpEffects = new List<BaseMeshEffect>(4);
 #endif
-		static readonly Material [] s_EmptyMaterials = new Material [0];
+        static readonly Material[] s_EmptyMaterials = new Material[0];
 
 
-		//################################
-		// Public Members.
-		//################################
-		/// <summary>
-		/// The Graphic attached to this GameObject.
-		/// </summary>
-		public Graphic graphic { get { Initialize (); return _graphic; } }
+        //################################
+        // Public Members.
+        //################################
+        /// <summary>
+        /// The Graphic attached to this GameObject.
+        /// </summary>
+        public Graphic graphic { get { Initialize(); return _graphic; } }
 
-		/// <summary>
-		/// The CanvasRenderer attached to this GameObject.
-		/// </summary>
-		public CanvasRenderer canvasRenderer { get { Initialize (); return _canvasRenderer; } }
+        /// <summary>
+        /// The CanvasRenderer attached to this GameObject.
+        /// </summary>
+        public CanvasRenderer canvasRenderer { get { Initialize(); return _canvasRenderer; } }
 
 #if TMP_PRESENT
 		/// <summary>
@@ -65,40 +65,40 @@ namespace Coffee.UIExtensions
 		public TMP_Text textMeshPro { get { Initialize (); return _textMeshPro; } }
 #endif
 
-		/// <summary>
-		/// The RectTransform attached to this GameObject.
-		/// </summary>
-		public RectTransform rectTransform { get { Initialize (); return _rectTransform; } }
+        /// <summary>
+        /// The RectTransform attached to this GameObject.
+        /// </summary>
+        public RectTransform rectTransform { get { Initialize(); return _rectTransform; } }
 
 #if UNITY_5_6_OR_NEWER
-		/// <summary>
-		/// Additional canvas shader channels to use this component.
-		/// </summary>
-		public virtual AdditionalCanvasShaderChannels requiredChannels { get { return AdditionalCanvasShaderChannels.None; } }
+        /// <summary>
+        /// Additional canvas shader channels to use this component.
+        /// </summary>
+        public virtual AdditionalCanvasShaderChannels requiredChannels { get { return AdditionalCanvasShaderChannels.None; } }
 #endif
 
-		/// <summary>
-		/// Is TextMeshPro or TextMeshProUGUI attached to this GameObject?
-		/// </summary>
-		public bool isTMPro
-		{
-			get
-			{
+        /// <summary>
+        /// Is TextMeshPro or TextMeshProUGUI attached to this GameObject?
+        /// </summary>
+        public bool isTMPro
+        {
+            get
+            {
 #if TMP_PRESENT
 				return textMeshPro != null;
 #else
-				return false;
+                return false;
 #endif
-			}
-		}
+            }
+        }
 
-		/// <summary>
-		/// The material for rendering.
-		/// </summary>
-		public virtual Material material
-		{
-			get
-			{
+        /// <summary>
+        /// The material for rendering.
+        /// </summary>
+        public virtual Material material
+        {
+            get
+            {
 
 #if TMP_PRESENT
 				if (textMeshPro)
@@ -107,17 +107,17 @@ namespace Coffee.UIExtensions
 				}
 				else
 #endif
-				if (graphic)
-				{
-					return graphic.material;
-				}
-				else
-				{
-					return null;
-				}
-			}
-			set
-			{
+                if (graphic)
+                {
+                    return graphic.material;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
 #if TMP_PRESENT
 				if (textMeshPro)
 				{
@@ -125,17 +125,17 @@ namespace Coffee.UIExtensions
 				}
 				else
 #endif
-				if (graphic)
-				{
-					graphic.material = value;
-				}
-			}
-		}
+                if (graphic)
+                {
+                    graphic.material = value;
+                }
+            }
+        }
 
-		public virtual Material[] materials
-		{
-			get
-			{
+        public virtual Material[] materials
+        {
+            get
+            {
 
 #if TMP_PRESENT
 				if (textMeshPro)
@@ -144,39 +144,39 @@ namespace Coffee.UIExtensions
 				}
 				else
 #endif
-				if (graphic)
-				{
-					_materials [0] = graphic.material;
-					return _materials;
-				}
-				else
-				{
-					return s_EmptyMaterials;
-				}
-			}
-		}
+                if (graphic)
+                {
+                    _materials[0] = graphic.material;
+                    return _materials;
+                }
+                else
+                {
+                    return s_EmptyMaterials;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Call used to modify mesh. (legacy)
-		/// </summary>
-		/// <param name="mesh">Mesh.</param>
-		public virtual void ModifyMesh (Mesh mesh)
-		{
-		}
+        /// <summary>
+        /// Call used to modify mesh. (legacy)
+        /// </summary>
+        /// <param name="mesh">Mesh.</param>
+        public virtual void ModifyMesh(Mesh mesh)
+        {
+        }
 
-		/// <summary>
-		/// Call used to modify mesh.
-		/// </summary>
-		/// <param name="vh">VertexHelper.</param>
-		public virtual void ModifyMesh (VertexHelper vh)
-		{
-		}
+        /// <summary>
+        /// Call used to modify mesh.
+        /// </summary>
+        /// <param name="vh">VertexHelper.</param>
+        public virtual void ModifyMesh(VertexHelper vh)
+        {
+        }
 
-		/// <summary>
-		/// Mark the vertices as dirty.
-		/// </summary>
-		public virtual void SetVerticesDirty ()
-		{
+        /// <summary>
+        /// Mark the vertices as dirty.
+        /// </summary>
+        public virtual void SetVerticesDirty()
+        {
 #if TMP_PRESENT
 			if (textMeshPro)
 			{
@@ -211,14 +211,14 @@ namespace Coffee.UIExtensions
 			}
 			else
 #endif
-			if (graphic)
-			{
-				graphic.SetVerticesDirty ();
-			}
-		}
+            if (graphic)
+            {
+                graphic.SetVerticesDirty();
+            }
+        }
 
-		public void ShowTMProWarning (Shader shader, Shader mobileShader, Shader spriteShader, System.Action<Material> onCreatedMaterial)
-		{
+        public void ShowTMProWarning(Shader shader, Shader mobileShader, Shader spriteShader, System.Action<Material> onCreatedMaterial)
+        {
 #if UNITY_EDITOR && TMP_PRESENT
 			if(!textMeshPro || !textMeshPro.fontSharedMaterial)
 			{
@@ -312,39 +312,39 @@ namespace Coffee.UIExtensions
 			EditorUtility.SetDirty (spriteAsset);
 			return spriteAsset;
 #endif
-		}
+        }
 
 
-		//################################
-		// Protected Members.
-		//################################
-		/// <summary>
-		/// Should the effect modify the mesh directly for TMPro?
-		/// </summary>
-		protected virtual bool isLegacyMeshModifier { get { return false; } }
+        //################################
+        // Protected Members.
+        //################################
+        /// <summary>
+        /// Should the effect modify the mesh directly for TMPro?
+        /// </summary>
+        protected virtual bool isLegacyMeshModifier { get { return false; } }
 
 
-		protected virtual void Initialize ()
-		{
-			if (!_initialized)
-			{
-				_initialized = true;
-				_graphic = _graphic ?? GetComponent<Graphic> ();
-				_canvasRenderer = _canvasRenderer ?? GetComponent<CanvasRenderer> ();
-				_rectTransform = _rectTransform ?? GetComponent<RectTransform> ();
+        protected virtual void Initialize()
+        {
+            if (!_initialized)
+            {
+                _initialized = true;
+                _graphic = _graphic ?? GetComponent<Graphic>();
+                _canvasRenderer = _canvasRenderer ?? GetComponent<CanvasRenderer>();
+                _rectTransform = _rectTransform ?? GetComponent<RectTransform>();
 #if TMP_PRESENT
 				_textMeshPro = _textMeshPro ?? GetComponent<TMP_Text> ();
 #endif
-			}
-		}
+            }
+        }
 
-		/// <summary>
-		/// This function is called when the object becomes enabled and active.
-		/// </summary>
-		protected override void OnEnable ()
-		{
-			_initialized = false;
-			SetVerticesDirty ();
+        /// <summary>
+        /// This function is called when the object becomes enabled and active.
+        /// </summary>
+        protected override void OnEnable()
+        {
+            _initialized = false;
+            SetVerticesDirty();
 #if TMP_PRESENT
 			if (textMeshPro)
 			{
@@ -360,27 +360,27 @@ namespace Coffee.UIExtensions
 #endif
 
 #if UNITY_5_6_OR_NEWER
-			if (graphic)
-			{
-				AdditionalCanvasShaderChannels channels = requiredChannels;
-				var canvas = graphic.canvas;
-				if (canvas && (canvas.additionalShaderChannels & channels) != channels)
-				{
-					Debug.LogWarningFormat (this, "Enable {1} of Canvas.additionalShaderChannels to use {0}.", GetType ().Name, channels);
-				}
-			}
+            if (graphic)
+            {
+                AdditionalCanvasShaderChannels channels = requiredChannels;
+                var canvas = graphic.canvas;
+                if (canvas && (canvas.additionalShaderChannels & channels) != channels)
+                {
+                    Debug.LogWarningFormat(this, "Enable {1} of Canvas.additionalShaderChannels to use {0}.", GetType().Name, channels);
+                }
+            }
 #endif
-		}
+        }
 
-		/// <summary>
-		/// This function is called when the behaviour becomes disabled () or inactive.
-		/// </summary>
-		protected override void OnDisable ()
-		{
+        /// <summary>
+        /// This function is called when the behaviour becomes disabled () or inactive.
+        /// </summary>
+        protected override void OnDisable()
+        {
 #if TMP_PRESENT
 			TMPro_EventManager.TEXT_CHANGED_EVENT.Remove (OnTextChanged);
 #endif
-			SetVerticesDirty ();
+            SetVerticesDirty();
 
 #if UNITY_EDITOR && TMP_PRESENT
 			if (graphic && textMeshPro)
@@ -388,14 +388,14 @@ namespace Coffee.UIExtensions
 				GraphicRebuildTracker.UnTrackGraphic (graphic);
 			}
 #endif
-		}
+        }
 
 
-		/// <summary>
-		/// LateUpdate is called every frame, if the Behaviour is enabled.
-		/// </summary>
-		protected virtual void LateUpdate ()
-		{
+        /// <summary>
+        /// LateUpdate is called every frame, if the Behaviour is enabled.
+        /// </summary>
+        protected virtual void LateUpdate()
+        {
 #if TMP_PRESENT
 			if (textMeshPro)
 			{
@@ -406,35 +406,35 @@ namespace Coffee.UIExtensions
 				_isTextMeshProActive = textMeshPro.isActiveAndEnabled;
 			}
 #endif
-		}
+        }
 
-		/// <summary>
-		/// Callback for when properties have been changed by animation.
-		/// </summary>
-		protected override void OnDidApplyAnimationProperties ()
-		{
-			SetVerticesDirty ();
-		}
+        /// <summary>
+        /// Callback for when properties have been changed by animation.
+        /// </summary>
+        protected override void OnDidApplyAnimationProperties()
+        {
+            SetVerticesDirty();
+        }
 
 #if UNITY_EDITOR
-		/// <summary>
-		/// This function is called when the script is loaded or a value is changed in the inspector (Called in the editor only).
-		/// </summary>
-		protected override void OnValidate ()
-		{
-			SetVerticesDirty ();
-		}
+        /// <summary>
+        /// This function is called when the script is loaded or a value is changed in the inspector (Called in the editor only).
+        /// </summary>
+        protected override void OnValidate()
+        {
+            SetVerticesDirty();
+        }
 #endif
 
 
-		//################################
-		// Private Members.
-		//################################
-		bool _initialized;
-		CanvasRenderer _canvasRenderer;
-		RectTransform _rectTransform;
-		Graphic _graphic;
-		Material [] _materials = new Material [1];
+        //################################
+        // Private Members.
+        //################################
+        bool _initialized;
+        CanvasRenderer _canvasRenderer;
+        RectTransform _rectTransform;
+        Graphic _graphic;
+        Material[] _materials = new Material[1];
 
 #if TMP_PRESENT
 		bool _isTextMeshProActive;
@@ -532,12 +532,12 @@ namespace Coffee.UIExtensions
 			mesh.GetTangents (s_Tangents);
 			mesh.GetIndices (s_Indices, 0);
 
-		#if UNITY_2017_1_OR_NEWER
+#if UNITY_2017_1_OR_NEWER
 			mesh.GetUVs (2, s_Uv2);
 			mesh.GetUVs (3, s_Uv3);
 			bool useUv2 = 0 < s_Uv2.Count;
 			bool useUv3 = 0 < s_Uv3.Count;
-		#endif
+#endif
 			
 			s_UIVertices.Clear();
 			UIVertex v = default(UIVertex);
@@ -547,12 +547,12 @@ namespace Coffee.UIExtensions
 				v.color = s_Colors[i];
 				v.uv0 = s_Uv0[i];
 				v.uv1 = s_Uv1[i];
-		#if UNITY_2017_1_OR_NEWER
+#if UNITY_2017_1_OR_NEWER
 				if (useUv2 && i < s_Uv2.Count)
 					v.uv2 = s_Uv2[i];
 				if (useUv3 && i < s_Uv3.Count)
 					v.uv3 = s_Uv3[i];
-		#endif
+#endif
 				v.normal = s_Normals[i];
 				v.tangent = s_Tangents[i];
 
@@ -561,5 +561,5 @@ namespace Coffee.UIExtensions
 			s_VertexHelper.AddUIVertexStream(s_UIVertices, s_Indices);
 		}
 #endif
-	}
+    }
 }

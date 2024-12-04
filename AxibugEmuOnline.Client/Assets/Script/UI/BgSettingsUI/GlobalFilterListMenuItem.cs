@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client
         {
             App.filter.ShutDownFilterPreview();
             App.filter.ShutDownFilter();
-            
+
             return base.OnExitItem();
         }
 

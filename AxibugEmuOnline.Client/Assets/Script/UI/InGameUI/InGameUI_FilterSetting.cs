@@ -1,7 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client

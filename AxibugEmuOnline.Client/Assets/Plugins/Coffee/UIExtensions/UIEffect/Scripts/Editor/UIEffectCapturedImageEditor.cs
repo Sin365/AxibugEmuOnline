@@ -5,184 +5,184 @@ using DesamplingRate = Coffee.UIExtensions.UIEffectCapturedImage.DesamplingRate;
 
 namespace Coffee.UIExtensions.Editors
 {
-	/// <summary>
-	/// UIEffectCapturedImage editor.
-	/// </summary>
-	[CustomEditor(typeof(UIEffectCapturedImage))]
-	[CanEditMultipleObjects]
-	public class UIEffectCapturedImageEditor : RawImageEditor
-	{
-		//################################
-		// Constant or Static Members.
-		//################################
+    /// <summary>
+    /// UIEffectCapturedImage editor.
+    /// </summary>
+    [CustomEditor(typeof(UIEffectCapturedImage))]
+    [CanEditMultipleObjects]
+    public class UIEffectCapturedImageEditor : RawImageEditor
+    {
+        //################################
+        // Constant or Static Members.
+        //################################
 
-		public enum QualityMode : int
-		{
-			Fast = (DesamplingRate.x2 << 0) + (DesamplingRate.x2 << 4) + (FilterMode.Bilinear << 8) + (2 << 10),
-			Medium = (DesamplingRate.x1 << 0) + (DesamplingRate.x1 << 4) + (FilterMode.Bilinear << 8) + (3 << 10),
-			Detail = (DesamplingRate.None << 0) + (DesamplingRate.x1 << 4) + (FilterMode.Bilinear << 8) + (5 << 10),
-			Custom = -1,
-		}
-
-
-		//################################
-		// Public/Protected Members.
-		//################################
-		/// <summary>
-		/// This function is called when the object becomes enabled and active.
-		/// </summary>
-		protected override void OnEnable()
-		{
-			base.OnEnable();
-			_spTexture = serializedObject.FindProperty("m_Texture");
-			_spColor = serializedObject.FindProperty("m_Color");
-			_spRaycastTarget = serializedObject.FindProperty("m_RaycastTarget");
-			_spDesamplingRate = serializedObject.FindProperty("m_DesamplingRate");
-			_spReductionRate = serializedObject.FindProperty("m_ReductionRate");
-			_spFilterMode = serializedObject.FindProperty("m_FilterMode");
-			_spIterations = serializedObject.FindProperty("m_BlurIterations");
-			_spKeepSizeToRootCanvas = serializedObject.FindProperty("m_FitToScreen");
-			_spBlurMode = serializedObject.FindProperty("m_BlurMode");
-			_spCaptureOnEnable = serializedObject.FindProperty("m_CaptureOnEnable");
+        public enum QualityMode : int
+        {
+            Fast = (DesamplingRate.x2 << 0) + (DesamplingRate.x2 << 4) + (FilterMode.Bilinear << 8) + (2 << 10),
+            Medium = (DesamplingRate.x1 << 0) + (DesamplingRate.x1 << 4) + (FilterMode.Bilinear << 8) + (3 << 10),
+            Detail = (DesamplingRate.None << 0) + (DesamplingRate.x1 << 4) + (FilterMode.Bilinear << 8) + (5 << 10),
+            Custom = -1,
+        }
 
 
-			_customAdvancedOption = (qualityMode == QualityMode.Custom);
-		}
+        //################################
+        // Public/Protected Members.
+        //################################
+        /// <summary>
+        /// This function is called when the object becomes enabled and active.
+        /// </summary>
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _spTexture = serializedObject.FindProperty("m_Texture");
+            _spColor = serializedObject.FindProperty("m_Color");
+            _spRaycastTarget = serializedObject.FindProperty("m_RaycastTarget");
+            _spDesamplingRate = serializedObject.FindProperty("m_DesamplingRate");
+            _spReductionRate = serializedObject.FindProperty("m_ReductionRate");
+            _spFilterMode = serializedObject.FindProperty("m_FilterMode");
+            _spIterations = serializedObject.FindProperty("m_BlurIterations");
+            _spKeepSizeToRootCanvas = serializedObject.FindProperty("m_FitToScreen");
+            _spBlurMode = serializedObject.FindProperty("m_BlurMode");
+            _spCaptureOnEnable = serializedObject.FindProperty("m_CaptureOnEnable");
 
-		/// <summary>
-		/// Implement this function to make a custom inspector.
-		/// </summary>
-		public override void OnInspectorGUI()
-		{
-			var graphic = (target as UIEffectCapturedImage);
-			serializedObject.Update();
 
-			//================
-			// Basic properties.
-			//================
-			EditorGUILayout.PropertyField(_spTexture);
-			EditorGUILayout.PropertyField(_spColor);
-			EditorGUILayout.PropertyField(_spRaycastTarget);
+            _customAdvancedOption = (qualityMode == QualityMode.Custom);
+        }
 
-			//================
-			// Capture effect.
-			//================
-			GUILayout.Space(10);
-			EditorGUILayout.LabelField("Capture Effect", EditorStyles.boldLabel);
-			UIEffectEditor.DrawEffectProperties(serializedObject, "m_EffectColor");
+        /// <summary>
+        /// Implement this function to make a custom inspector.
+        /// </summary>
+        public override void OnInspectorGUI()
+        {
+            var graphic = (target as UIEffectCapturedImage);
+            serializedObject.Update();
 
-			//================
-			// Advanced option.
-			//================
-			GUILayout.Space(10);
-			EditorGUILayout.LabelField("Advanced Option", EditorStyles.boldLabel);
+            //================
+            // Basic properties.
+            //================
+            EditorGUILayout.PropertyField(_spTexture);
+            EditorGUILayout.PropertyField(_spColor);
+            EditorGUILayout.PropertyField(_spRaycastTarget);
 
-			EditorGUILayout.PropertyField(_spCaptureOnEnable);// CaptureOnEnable.
-			EditorGUILayout.PropertyField(_spKeepSizeToRootCanvas);// Keep Graphic Size To RootCanvas.
+            //================
+            // Capture effect.
+            //================
+            GUILayout.Space(10);
+            EditorGUILayout.LabelField("Capture Effect", EditorStyles.boldLabel);
+            UIEffectEditor.DrawEffectProperties(serializedObject, "m_EffectColor");
 
-			EditorGUI.BeginChangeCheck();
-			QualityMode quality = qualityMode;
-			quality = (QualityMode)EditorGUILayout.EnumPopup("Quality Mode", quality);
-			if (EditorGUI.EndChangeCheck())
-			{
-				_customAdvancedOption = (quality == QualityMode.Custom);
-				qualityMode = quality;
-			}
+            //================
+            // Advanced option.
+            //================
+            GUILayout.Space(10);
+            EditorGUILayout.LabelField("Advanced Option", EditorStyles.boldLabel);
 
-			// When qualityMode is `Custom`, show advanced option.
-			if (_customAdvancedOption)
-			{
-				if (_spBlurMode.intValue != 0)
-				{
-					EditorGUILayout.PropertyField(_spIterations);// Iterations.
-				}
-				DrawDesamplingRate(_spReductionRate);// Reduction rate.
+            EditorGUILayout.PropertyField(_spCaptureOnEnable);// CaptureOnEnable.
+            EditorGUILayout.PropertyField(_spKeepSizeToRootCanvas);// Keep Graphic Size To RootCanvas.
 
-				EditorGUILayout.Space();
-				EditorGUILayout.LabelField("Result Texture Setting", EditorStyles.boldLabel);
+            EditorGUI.BeginChangeCheck();
+            QualityMode quality = qualityMode;
+            quality = (QualityMode)EditorGUILayout.EnumPopup("Quality Mode", quality);
+            if (EditorGUI.EndChangeCheck())
+            {
+                _customAdvancedOption = (quality == QualityMode.Custom);
+                qualityMode = quality;
+            }
 
-				EditorGUILayout.PropertyField(_spFilterMode);// Filter Mode.
-				DrawDesamplingRate(_spDesamplingRate);// Desampling rate.
-			}
+            // When qualityMode is `Custom`, show advanced option.
+            if (_customAdvancedOption)
+            {
+                if (_spBlurMode.intValue != 0)
+                {
+                    EditorGUILayout.PropertyField(_spIterations);// Iterations.
+                }
+                DrawDesamplingRate(_spReductionRate);// Reduction rate.
 
-			serializedObject.ApplyModifiedProperties();
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Result Texture Setting", EditorStyles.boldLabel);
 
-			// Debug.
-			using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
-			{
-				GUILayout.Label("Debug");
+                EditorGUILayout.PropertyField(_spFilterMode);// Filter Mode.
+                DrawDesamplingRate(_spDesamplingRate);// Desampling rate.
+            }
 
-				if (GUILayout.Button("Capture", "ButtonLeft"))
-				{
-					graphic.Release();
-					EditorApplication.delayCall += graphic.Capture;
-				}
+            serializedObject.ApplyModifiedProperties();
 
-				EditorGUI.BeginDisabledGroup(!(target as UIEffectCapturedImage).capturedTexture);
-				if (GUILayout.Button("Release", "ButtonRight"))
-				{
-					graphic.Release();
-				}
-				EditorGUI.EndDisabledGroup();
-			}
-		}
+            // Debug.
+            using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+            {
+                GUILayout.Label("Debug");
 
-		//################################
-		// Private Members.
-		//################################
-		const int Bits4 = (1 << 4) - 1;
-		const int Bits2 = (1 << 2) - 1;
-		bool _customAdvancedOption = false;
-		SerializedProperty _spTexture;
-		SerializedProperty _spColor;
-		SerializedProperty _spRaycastTarget;
-		SerializedProperty _spDesamplingRate;
-		SerializedProperty _spReductionRate;
-		SerializedProperty _spFilterMode;
-		SerializedProperty _spBlurMode;
-		SerializedProperty _spIterations;
-		SerializedProperty _spKeepSizeToRootCanvas;
-		SerializedProperty _spCaptureOnEnable;
+                if (GUILayout.Button("Capture", "ButtonLeft"))
+                {
+                    graphic.Release();
+                    EditorApplication.delayCall += graphic.Capture;
+                }
 
-		QualityMode qualityMode
-		{
-			get
-			{
-				if (_customAdvancedOption)
-					return QualityMode.Custom;
+                EditorGUI.BeginDisabledGroup(!(target as UIEffectCapturedImage).capturedTexture);
+                if (GUILayout.Button("Release", "ButtonRight"))
+                {
+                    graphic.Release();
+                }
+                EditorGUI.EndDisabledGroup();
+            }
+        }
 
-				int qualityValue = (_spDesamplingRate.intValue << 0)
-				                   + (_spReductionRate.intValue << 4)
-				                   + (_spFilterMode.intValue << 8)
-				                   + (_spIterations.intValue << 10);
+        //################################
+        // Private Members.
+        //################################
+        const int Bits4 = (1 << 4) - 1;
+        const int Bits2 = (1 << 2) - 1;
+        bool _customAdvancedOption = false;
+        SerializedProperty _spTexture;
+        SerializedProperty _spColor;
+        SerializedProperty _spRaycastTarget;
+        SerializedProperty _spDesamplingRate;
+        SerializedProperty _spReductionRate;
+        SerializedProperty _spFilterMode;
+        SerializedProperty _spBlurMode;
+        SerializedProperty _spIterations;
+        SerializedProperty _spKeepSizeToRootCanvas;
+        SerializedProperty _spCaptureOnEnable;
 
-				return System.Enum.IsDefined(typeof(QualityMode), qualityValue) ? (QualityMode)qualityValue : QualityMode.Custom;
-			}
-			set
-			{
-				if (value != QualityMode.Custom)
-				{
-					int qualityValue = (int)value;
-					_spDesamplingRate.intValue = (qualityValue >> 0) & Bits4;
-					_spReductionRate.intValue = (qualityValue >> 4) & Bits4;
-					_spFilterMode.intValue = (qualityValue >> 8) & Bits2;
-					_spIterations.intValue = (qualityValue >> 10) & Bits4;
-				}
-			}
-		}
+        QualityMode qualityMode
+        {
+            get
+            {
+                if (_customAdvancedOption)
+                    return QualityMode.Custom;
 
-		/// <summary>
-		/// Draws the desampling rate.
-		/// </summary>
-		void DrawDesamplingRate(SerializedProperty sp)
-		{
-			using (new EditorGUILayout.HorizontalScope())
-			{
-				EditorGUILayout.PropertyField(sp);
-				int w, h;
-				(target as UIEffectCapturedImage).GetDesamplingSize((UIEffectCapturedImage.DesamplingRate)sp.intValue, out w, out h);
-				GUILayout.Label(string.Format("{0}x{1}", w, h), EditorStyles.miniLabel);
-			}
-		}
-	}
+                int qualityValue = (_spDesamplingRate.intValue << 0)
+                                   + (_spReductionRate.intValue << 4)
+                                   + (_spFilterMode.intValue << 8)
+                                   + (_spIterations.intValue << 10);
+
+                return System.Enum.IsDefined(typeof(QualityMode), qualityValue) ? (QualityMode)qualityValue : QualityMode.Custom;
+            }
+            set
+            {
+                if (value != QualityMode.Custom)
+                {
+                    int qualityValue = (int)value;
+                    _spDesamplingRate.intValue = (qualityValue >> 0) & Bits4;
+                    _spReductionRate.intValue = (qualityValue >> 4) & Bits4;
+                    _spFilterMode.intValue = (qualityValue >> 8) & Bits2;
+                    _spIterations.intValue = (qualityValue >> 10) & Bits4;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws the desampling rate.
+        /// </summary>
+        void DrawDesamplingRate(SerializedProperty sp)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.PropertyField(sp);
+                int w, h;
+                (target as UIEffectCapturedImage).GetDesamplingSize((UIEffectCapturedImage.DesamplingRate)sp.intValue, out w, out h);
+                GUILayout.Label(string.Format("{0}x{1}", w, h), EditorStyles.miniLabel);
+            }
+        }
+    }
 }
