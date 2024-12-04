@@ -114,11 +114,19 @@ namespace AxibugEmuOnline.Server.Manager
         public ClientInfo JoinNewClient(long _uid, Socket _socket)
         {
             //也许这个函数需加lock
-            ClientInfo cinfo = GetClientForSocket(_socket);
+            //ClientInfo cinfo = GetClientForSocket(_socket);
+            GetClientByUID(_uid, out ClientInfo cinfo, false);
             //如果连接还在
             if (cinfo != null)
             {
                 cinfo.IsOffline = false;
+                Socket oldsocket = cinfo._socket;
+                cinfo._socket = _socket;
+
+                if (_DictSocketClient.ContainsKey(oldsocket))
+                    _DictSocketClient.Remove(oldsocket);
+
+                _DictSocketClient[_socket] = cinfo;
             }
             else
             {

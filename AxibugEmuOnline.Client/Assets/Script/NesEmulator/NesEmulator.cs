@@ -25,6 +25,9 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
+            //关闭垂直同步
+            QualitySettings.vSyncCount = 0;
+            //设为60帧
             Application.targetFrameRate = 60;
             VideoProvider.NesEmu = this;
             AudioProvider.NesEmu = this;
