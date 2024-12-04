@@ -35,6 +35,8 @@ namespace AxibugEmuOnline.Client
         protected abstract void OnSetData(OptionMenu menuData);
 
         public abstract void OnExecute(OptionUI optionUI, ref bool cancelHide);
+        public virtual void OnLeft() { }
+        public virtual void OnRight() { }
         public abstract void OnFocus();
         public virtual void OnHide() { }
     }
