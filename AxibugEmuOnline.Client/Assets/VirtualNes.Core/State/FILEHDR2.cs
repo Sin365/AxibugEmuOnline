@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public struct FILEHDR2 : IStateBufferObject
     {

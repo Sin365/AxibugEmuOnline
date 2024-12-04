@@ -218,6 +218,10 @@ namespace AxibugEmuOnline.Client
         {
             if (m_bPoped)
             {
+                Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
+                Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
+
+
                 ReleaseRuntimeMenus();
                 m_runtimeMenuItems.Clear();
 
@@ -225,8 +229,7 @@ namespace AxibugEmuOnline.Client
 
                 CommandDispatcher.Instance.UnRegistController(this);
                 Canvas.ForceUpdateCanvases();
-                Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
-                Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
+
                 DOTween.To(
                     () => start,
                     (value) =>
