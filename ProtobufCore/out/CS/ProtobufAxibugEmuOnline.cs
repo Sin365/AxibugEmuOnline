@@ -66,60 +66,61 @@ namespace AxibugProtobuf {
             "Zm8iSwoVUHJvdG9idWZfU2NyZW5uX0ZyYW1lEg4KBlJvb21JRBgBIAEoBRIP",
             "CgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCJJCiNQcm90b2J1",
             "Zl9Sb29tX1NpbmdsZVBsYXllcklucHV0RGF0YRIPCgdGcmFtZUlEGAEgASgN",
-            "EhEKCUlucHV0RGF0YRgCIAEoDSJkCidQcm90b2J1Zl9Sb29tX1N5bl9Sb29t",
-            "RnJhbWVBbGxJbnB1dERhdGESDwoHRnJhbWVJRBgBIAEoDRIRCglJbnB1dERh",
-            "dGEYAiABKAQSFQoNU2VydmVyRnJhbWVJRBgDIAEoDSJVChRQcm90b2J1Zl9S",
-            "b29tX0NyZWF0ZRIRCglHYW1lUm9tSUQYASABKAUSEwoLR2FtZVJvbUhhc2gY",
-            "AiABKAkSFQoNSm9pblBsYXllcklkeBgDIAEoBSJZChlQcm90b2J1Zl9Sb29t",
-            "X0NyZWF0ZV9SRVNQEjwKDFJvb21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1By",
-            "b3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iNwoSUHJvdG9idWZfUm9v",
-            "bV9Kb2luEg4KBlJvb21JRBgBIAEoBRIRCglQbGF5ZXJOdW0YAiABKAUiVwoX",
-            "UHJvdG9idWZfUm9vbV9Kb2luX1JFU1ASPAoMUm9vbU1pbmlJbmZvGAEgASgL",
-            "MiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyIlChNQ",
-            "cm90b2J1Zl9Sb29tX0xlYXZlEg4KBlJvb21JRBgBIAEoBSIqChhQcm90b2J1",
-            "Zl9Sb29tX0xlYXZlX1JFU1ASDgoGUm9vbUlEGAEgASgFImEKIVByb3RvYnVm",
-            "X1Jvb21fTXlSb29tX1N0YXRlX0NoYW5nZRI8CgxSb29tTWluaUluZm8YASAB",
-            "KAsyJi5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvIkUK",
-            "G1Byb3RvYnVmX1Jvb21fV2FpdFN0ZXBfUkVTUBIQCghXYWl0U3RlcBgBIAEo",
-            "BRIUCgxMb2FkU3RhdGVSYXcYAiABKAwiPwonUHJvdG9idWZfUm9vbV9Ib3N0",
-            "UGxheWVyX1VwZGF0ZVN0YXRlUmF3EhQKDExvYWRTdGF0ZVJhdxgBIAEoDCIu",
-            "CixQcm90b2J1Zl9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRlU3RhdGVSYXdfUkVT",
-            "UCIcChpQcm90b2J1Zl9Sb29tX1BsYXllcl9SZWFkeSIqChhQcm90b2J1Zl9S",
-            "b29tX0dldF9TY3JlZW4SDgoGUm9vbUlEGAEgASgFIlMKHVByb3RvYnVmX1Jv",
-            "b21fR2V0X1NjcmVlbl9SRVNQEg4KBlJvb21JRBgBIAEoBRIPCgdGcmFtZUlE",
-            "GAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCJmChJQcm90b2J1Zl9HYW1lX01h",
-            "cmsSDQoFUm9tSUQYASABKAUSDQoFc3RhdGUYAiABKAUSMgoMUGxhdGZvcm1U",
-            "eXBlGAMgASgOMhwuQXhpYnVnUHJvdG9idWYuUGxhdGZvcm1UeXBlIlwKF1By",
-            "b3RvYnVmX0dhbWVfTWFya19SRVNQEg0KBVJvbUlEGAEgASgFEjIKDFBsYXRm",
-            "b3JtVHlwZRgCIAEoDjIcLkF4aWJ1Z1Byb3RvYnVmLlBsYXRmb3JtVHlwZSr+",
-            "BAoJQ29tbWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElORxABEgwK",
-            "CENNRF9QT05HEAISDgoJQ01EX0xPR0lOENEPEhgKE0NNRF9VU0VSX09OTElO",
-            "RUxJU1QQuBcSEgoNQ01EX1VTRVJfSk9JThDXFxITCg5DTURfVVNFUl9MRUFW",
-            "RRDYFxIaChVDTURfVVNFUl9TVEFURV9VUERBVEUQ2RcSGAoTQ01EX01vZGlm",
-            "eV9OaWNrTmFtZRCdGBIcChdDTURfVXBkYXRlX1NlbGZVc2VySW5mbxCmGBId",
-            "ChhDTURfVXBkYXRlX090aGVyVXNlckluZm8QqBgSEAoLQ01EX0NIQVRNU0cQ",
-            "oR8SEgoNQ01EX1Jvb21fTGlzdBCJJxIZChRDTURfUm9vbV9MaXN0X1VwZGF0",
-            "ZRCKJxIYChNDTURfUm9vbV9HZXRfU2NyZWVuEJMnEhQKD0NNRF9Sb29tX0Ny",
-            "ZWF0ZRDtJxISCg1DTURfUm9vbV9Kb2luEPEnEhMKDkNNRF9Sb29tX0xlYXZl",
-            "EPInEiIKHUNNRF9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2VkEPYnEhYKEUNN",
-            "RF9Sb29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBk",
-            "YXRlU3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAK",
-            "G0NNRF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9T",
-            "WU5fUGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNhISCg1DTURfR0FN",
-            "RV9NQVJLEPVOKtABCglFcnJvckNvZGUSEAoMRVJST1JfREVGQVVMEAASDAoI",
-            "RVJST1JfT0sQARIYChRFUlJPUl9ST09NX05PVF9GT1VORBAKEicKI0VSUk9S",
-            "X1JPT01fU0xPVF9BTFJFQURMWV9IQURfUExBWUVSEAsSIQodRVJST1JfUk9P",
-            "TV9DQU5UX0RPX0NVUlJfU1RBVEUQMhIfChpFUlJPUl9ST01fQUxSRUFEWV9I",
-            "QURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9OVF9IQURfU1RBUhCUAypACglM",
-            "b2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoKVXNlQWNjb3VudBABEhQKEFVz",
-            "ZUhhb1l1ZUFjY291bnQQAipLCgpEZXZpY2VUeXBlEhYKEkRldmljZVR5cGVf",
-            "RGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9pZBACEgcKA0lPUxADEgcKA1BT",
-            "VhAEKiAKDFBsYXRmb3JtVHlwZRIHCgNBbGwQABIHCgNOZXMQASpwCg1Sb29t",
-            "R2FtZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIR",
-            "Cg1XYWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQ",
-            "CgxJbk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dp",
-            "blJlc3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3Vu",
-            "dEVychACQgJIAWIGcHJvdG8z"));
+            "EhEKCUlucHV0RGF0YRgCIAEoDSKAAQonUHJvdG9idWZfUm9vbV9TeW5fUm9v",
+            "bUZyYW1lQWxsSW5wdXREYXRhEg8KB0ZyYW1lSUQYASABKA0SEQoJSW5wdXRE",
+            "YXRhGAIgASgEEhUKDVNlcnZlckZyYW1lSUQYAyABKA0SGgoSU2VydmVyRm9y",
+            "d2FyZENvdW50GAQgASgNIlUKFFByb3RvYnVmX1Jvb21fQ3JlYXRlEhEKCUdh",
+            "bWVSb21JRBgBIAEoBRITCgtHYW1lUm9tSGFzaBgCIAEoCRIVCg1Kb2luUGxh",
+            "eWVySWR4GAMgASgFIlkKGVByb3RvYnVmX1Jvb21fQ3JlYXRlX1JFU1ASPAoM",
+            "Um9vbU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZf",
+            "Um9vbV9NaW5pSW5mbyI3ChJQcm90b2J1Zl9Sb29tX0pvaW4SDgoGUm9vbUlE",
+            "GAEgASgFEhEKCVBsYXllck51bRgCIAEoBSJXChdQcm90b2J1Zl9Sb29tX0pv",
+            "aW5fUkVTUBI8CgxSb29tTWluaUluZm8YASABKAsyJi5BeGlidWdQcm90b2J1",
+            "Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvIiUKE1Byb3RvYnVmX1Jvb21fTGVh",
+            "dmUSDgoGUm9vbUlEGAEgASgFIioKGFByb3RvYnVmX1Jvb21fTGVhdmVfUkVT",
+            "UBIOCgZSb29tSUQYASABKAUiYQohUHJvdG9idWZfUm9vbV9NeVJvb21fU3Rh",
+            "dGVfQ2hhbmdlEjwKDFJvb21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1Byb3Rv",
+            "YnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iRQobUHJvdG9idWZfUm9vbV9X",
+            "YWl0U3RlcF9SRVNQEhAKCFdhaXRTdGVwGAEgASgFEhQKDExvYWRTdGF0ZVJh",
+            "dxgCIAEoDCI/CidQcm90b2J1Zl9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRlU3Rh",
+            "dGVSYXcSFAoMTG9hZFN0YXRlUmF3GAEgASgMIi4KLFByb3RvYnVmX1Jvb21f",
+            "SG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhd19SRVNQIhwKGlByb3RvYnVmX1Jv",
+            "b21fUGxheWVyX1JlYWR5IioKGFByb3RvYnVmX1Jvb21fR2V0X1NjcmVlbhIO",
+            "CgZSb29tSUQYASABKAUiUwodUHJvdG9idWZfUm9vbV9HZXRfU2NyZWVuX1JF",
+            "U1ASDgoGUm9vbUlEGAEgASgFEg8KB0ZyYW1lSUQYAiABKAUSEQoJUmF3Qml0",
+            "bWFwGAMgASgMImYKElByb3RvYnVmX0dhbWVfTWFyaxINCgVSb21JRBgBIAEo",
+            "BRINCgVzdGF0ZRgCIAEoBRIyCgxQbGF0Zm9ybVR5cGUYAyABKA4yHC5BeGli",
+            "dWdQcm90b2J1Zi5QbGF0Zm9ybVR5cGUiXAoXUHJvdG9idWZfR2FtZV9NYXJr",
+            "X1JFU1ASDQoFUm9tSUQYASABKAUSMgoMUGxhdGZvcm1UeXBlGAIgASgOMhwu",
+            "QXhpYnVnUHJvdG9idWYuUGxhdGZvcm1UeXBlKv4ECglDb21tYW5kSUQSDgoK",
+            "Q01EX0RFRkFVTBAAEgwKCENNRF9QSU5HEAESDAoIQ01EX1BPTkcQAhIOCglD",
+            "TURfTE9HSU4Q0Q8SGAoTQ01EX1VTRVJfT05MSU5FTElTVBC4FxISCg1DTURf",
+            "VVNFUl9KT0lOENcXEhMKDkNNRF9VU0VSX0xFQVZFENgXEhoKFUNNRF9VU0VS",
+            "X1NUQVRFX1VQREFURRDZFxIYChNDTURfTW9kaWZ5X05pY2tOYW1lEJ0YEhwK",
+            "F0NNRF9VcGRhdGVfU2VsZlVzZXJJbmZvEKYYEh0KGENNRF9VcGRhdGVfT3Ro",
+            "ZXJVc2VySW5mbxCoGBIQCgtDTURfQ0hBVE1TRxChHxISCg1DTURfUm9vbV9M",
+            "aXN0EIknEhkKFENNRF9Sb29tX0xpc3RfVXBkYXRlEIonEhgKE0NNRF9Sb29t",
+            "X0dldF9TY3JlZW4QkycSFAoPQ01EX1Jvb21fQ3JlYXRlEO0nEhIKDUNNRF9S",
+            "b29tX0pvaW4Q8ScSEwoOQ01EX1Jvb21fTGVhdmUQ8icSIgodQ01EX1Jvb21f",
+            "TXlSb29tX1N0YXRlX0NoYW5nZWQQ9icSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ",
+            "0SgSJwoiQ01EX1Jvb21fSG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIa",
+            "ChVDTURfUm9vbV9QbGF5ZXJfUmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2Vs",
+            "X1BsYXllcklucHV0EPouEh0KGENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/",
+            "LhIPCgpDTURfU2NyZWVuENk2EhIKDUNNRF9HQU1FX01BUksQ9U4q0AEKCUVy",
+            "cm9yQ29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVS",
+            "Uk9SX1JPT01fTk9UX0ZPVU5EEAoSJwojRVJST1JfUk9PTV9TTE9UX0FMUkVB",
+            "RExZX0hBRF9QTEFZRVIQCxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9T",
+            "VEFURRAyEh8KGkVSUk9SX1JPTV9BTFJFQURZX0hBRF9TVEFSEJMDEhwKF0VS",
+            "Uk9SX1JPTV9ET05UX0hBRF9TVEFSEJQDKkAKCUxvZ2luVHlwZRINCglVc2VE",
+            "ZXZpY2UQABIOCgpVc2VBY2NvdW50EAESFAoQVXNlSGFvWXVlQWNjb3VudBAC",
+            "KksKCkRldmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQ",
+            "ARILCgdBbmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQqIAoMUGxhdGZvcm1U",
+            "eXBlEgcKA0FsbBAAEgcKA05lcxABKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9u",
+            "ZV9HYW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQ",
+            "AhINCglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAF",
+            "Kk4KEUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jh",
+            "c2VEZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -145,7 +146,7 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Update_RESP), global::AxibugProtobuf.Protobuf_Room_Update_RESP.Parser, new[]{ "UpdateType", "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Screnn_Frame), global::AxibugProtobuf.Protobuf_Screnn_Frame.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData), global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData.Parser, new[]{ "FrameID", "InputData" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData), global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData.Parser, new[]{ "FrameID", "InputData", "ServerFrameID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData), global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData.Parser, new[]{ "FrameID", "InputData", "ServerFrameID", "ServerForwardCount" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create), global::AxibugProtobuf.Protobuf_Room_Create.Parser, new[]{ "GameRomID", "GameRomHash", "JoinPlayerIdx" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create_RESP), global::AxibugProtobuf.Protobuf_Room_Create_RESP.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Join), global::AxibugProtobuf.Protobuf_Room_Join.Parser, new[]{ "RoomID", "PlayerNum" }, null, null, null, null),
@@ -5492,6 +5493,7 @@ namespace AxibugProtobuf {
       frameID_ = other.frameID_;
       inputData_ = other.inputData_;
       serverFrameID_ = other.serverFrameID_;
+      serverForwardCount_ = other.serverForwardCount_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5542,6 +5544,20 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "ServerForwardCount" field.</summary>
+    public const int ServerForwardCountFieldNumber = 4;
+    private uint serverForwardCount_;
+    /// <summary>
+    ///服务器提前量
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint ServerForwardCount {
+      get { return serverForwardCount_; }
+      set {
+        serverForwardCount_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Protobuf_Room_Syn_RoomFrameAllInputData);
@@ -5558,6 +5574,7 @@ namespace AxibugProtobuf {
       if (FrameID != other.FrameID) return false;
       if (InputData != other.InputData) return false;
       if (ServerFrameID != other.ServerFrameID) return false;
+      if (ServerForwardCount != other.ServerForwardCount) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5567,6 +5584,7 @@ namespace AxibugProtobuf {
       if (FrameID != 0) hash ^= FrameID.GetHashCode();
       if (InputData != 0UL) hash ^= InputData.GetHashCode();
       if (ServerFrameID != 0) hash ^= ServerFrameID.GetHashCode();
+      if (ServerForwardCount != 0) hash ^= ServerForwardCount.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5595,6 +5613,10 @@ namespace AxibugProtobuf {
         output.WriteRawTag(24);
         output.WriteUInt32(ServerFrameID);
       }
+      if (ServerForwardCount != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(ServerForwardCount);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5616,6 +5638,10 @@ namespace AxibugProtobuf {
         output.WriteRawTag(24);
         output.WriteUInt32(ServerFrameID);
       }
+      if (ServerForwardCount != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(ServerForwardCount);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -5633,6 +5659,9 @@ namespace AxibugProtobuf {
       }
       if (ServerFrameID != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ServerFrameID);
+      }
+      if (ServerForwardCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ServerForwardCount);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5653,6 +5682,9 @@ namespace AxibugProtobuf {
       }
       if (other.ServerFrameID != 0) {
         ServerFrameID = other.ServerFrameID;
+      }
+      if (other.ServerForwardCount != 0) {
+        ServerForwardCount = other.ServerForwardCount;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5680,6 +5712,10 @@ namespace AxibugProtobuf {
             ServerFrameID = input.ReadUInt32();
             break;
           }
+          case 32: {
+            ServerForwardCount = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -5704,6 +5740,10 @@ namespace AxibugProtobuf {
           }
           case 24: {
             ServerFrameID = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            ServerForwardCount = input.ReadUInt32();
             break;
           }
         }

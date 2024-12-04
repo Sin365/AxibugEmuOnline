@@ -15,6 +15,10 @@ namespace AxiReplay
         /// </summary>
         public int mRemoteFrameIdx { get; private set; }
         /// <summary>
+        /// 服务器远端当前提前量
+        /// </summary>
+        public int mRemoteForwardCount { get; private set; }
+        /// <summary>
         /// Remote 2 Client Frame Gap
         /// </summary>
         public int mDiffFrameCount => mRemoteFrameIdx - mCurrClientFrameIdx;
@@ -110,19 +114,27 @@ namespace AxiReplay
 
         public int GetSkipFrameCount()
         {
-            var frameGap = mDiffFrameCount;
-            if (frameGap > 10000) return 0;
-
             int skip = 0;
-            
-            if (frameGap <= 2) skip = 0;
-            if (frameGap > 2 && frameGap < 6) skip = 1 + 1;
-            else if (frameGap > 7 && frameGap < 12) skip = 2 + 1;
-            else if (frameGap > 13 && frameGap < 20) skip = 3 + 1;
-            else skip = frameGap - 2;
-
-
+            //本地队列差异高于服务器提前量的值
+            int moreNum = mDiffFrameCount - mRemoteForwardCount;
+            if (mDiffFrameCount > short.MaxValue) skip = 0;
+            else if (moreNum <= 1) skip = 0;
+            else if (moreNum <= 3) skip = 2;
+            else if (moreNum <= 6) skip = 2;
+            else if (moreNum <= 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
+            else skip = moreNum;//完全追上
             return skip;
+
+            //var frameGap = mDiffFrameCount;
+            //if (frameGap > 10000) return 0;
+            //if (frameGap <= 2) skip = 0;
+            //if (frameGap > 2 && frameGap < 6) skip = 1 + 1;
+            //else if (frameGap > 7 && frameGap < 12) skip = 2 + 1;
+            //else if (frameGap > 13 && frameGap < 20) skip = 3 + 1;
+            //else skip = frameGap - 2;
+
+
+            //return skip;
         }
     }
 }

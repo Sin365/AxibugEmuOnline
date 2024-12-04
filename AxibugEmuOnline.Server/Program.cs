@@ -30,6 +30,8 @@ namespace AxibugEmuOnline.Server
                                 AppSrv.g_Log.Info($"GameState:{room.GameState}");
                                 AppSrv.g_Log.Info($"HostUID:{room.HostUID}");
                                 AppSrv.g_Log.Info($"mCurrFrameId:{room.mCurrServerFrameId}");
+                                AppSrv.g_Log.Info($"SrvForwardFrames:{room.SrvForwardFrames}");
+                                AppSrv.g_Log.Info($"room.send2time.Count:{room.send2time.Count}");
                                 AppSrv.g_Log.Info($"input all:{room.mCurrInputData.all}");
                                 AppSrv.g_Log.Info($"input p1:{room.mCurrInputData.p1_byte}");
                                 AppSrv.g_Log.Info($"input p2:{room.mCurrInputData.p2_byte}");
