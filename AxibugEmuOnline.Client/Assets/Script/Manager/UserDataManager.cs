@@ -5,8 +5,6 @@ using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.EventSystems;
-using static AxibugEmuOnline.Client.ClientCore.RomDB;
 
 namespace AxibugEmuOnline.Client.Manager
 {

@@ -1,5 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -88,12 +89,16 @@ namespace AxibugEmuOnline.Client
             private Filter m_filter;
             private FilterPreset m_preset;
             private OptionUI_MenuItem m_ui;
+            private List<OptionMenu> m_menu;
 
             public Opt_Presets(Filter filter, FilterPreset preset) : base(preset.Name, null)
             {
                 m_filter = filter;
                 m_preset = preset;
 
+                m_menu = new List<OptionMenu>();
+                m_menu.Add(new Opt_Delete(m_filter, m_preset));
+                foreach (var p in m_filter.Paramerters) m_menu.Add(new Opt_ParamEditor(m_filter, p, m_preset));
             }
 
             public override void OnShow(OptionUI_MenuItem ui)
@@ -122,7 +127,37 @@ namespace AxibugEmuOnline.Client
 
             protected override List<OptionMenu> GetOptionMenus()
             {
-                return new List<OptionMenu> { new Opt_Delete(m_filter, m_preset) };
+                return m_menu;
+            }
+
+            public class Opt_ParamEditor : ValueSetMenu
+            {
+                private Filter m_filter;
+                private FilterEffect.EditableParamerter m_param;
+                private FilterPreset m_preset;
+
+                public Opt_ParamEditor(Filter filter, FilterEffect.EditableParamerter editParam, FilterPreset preset)
+                    : base(editParam.Name)
+                {
+                    m_filter = filter;
+                    m_param = editParam;
+                    m_preset = preset;
+                }
+
+                public override Type ValueType => m_param.ValueType;
+
+                public override object ValueRaw => m_preset.GetParamValue(m_param.Name, ValueType) ?? m_param.Value;
+
+                public override void OnValueChanged(object newValue)
+                {
+                    m_preset.SetParamValue(m_param.Name, ValueType, newValue);
+                    m_filter.SavePresets();
+                    m_param.Apply(newValue);
+                }
+
+                public override object Min => m_param.MinValue;
+
+                public override object Max => m_param.MaxValue;
             }
 
             public class Opt_Delete : ExecuteMenu
@@ -141,6 +176,8 @@ namespace AxibugEmuOnline.Client
                     m_filter.RemovePreset(m_preset);
                 }
             }
+
+
         }
     }
 }

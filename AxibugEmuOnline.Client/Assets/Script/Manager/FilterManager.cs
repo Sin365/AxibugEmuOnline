@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,7 +95,8 @@ namespace AxibugEmuOnline.Client
             filter = Filters.FirstOrDefault(f => f.Name == value.filterName);
             if (filter != null)
             {
-                preset = filter.Presets.FirstOrDefault(p => p.Name == value.filterName);
+                string presetName = value.presetName;
+                preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
             }
 
             return (filter, preset);
@@ -127,9 +128,9 @@ namespace AxibugEmuOnline.Client
                 else Presets = loadedPresets.presets;
             }
 
-            private void savePresets()
+            public void SavePresets()
             {
-                var json = JsonUtility.ToJson(new FilterPresetList { presets = Presets });
+                var json = JsonUtility.ToJson(new FilterPresetList(Presets));
                 PlayerPrefs.SetString($"Filter_{Name}_PresetList", json);
             }
 
@@ -142,7 +143,7 @@ namespace AxibugEmuOnline.Client
                 newPreset = new FilterPreset(presetName);
                 Presets.Add(newPreset);
 
-                savePresets();
+                SavePresets();
 
                 return true;
             }
@@ -150,7 +151,7 @@ namespace AxibugEmuOnline.Client
             public void RemovePreset(FilterPreset preset)
             {
                 if (!Presets.Remove(preset)) return;
-                savePresets();
+                SavePresets();
 
                 EventInvoker.RaiseFilterPresetRemoved(this, preset);
             }
@@ -167,11 +168,11 @@ namespace AxibugEmuOnline.Client
             {
                 foreach (var param in Paramerters)
                 {
-                    var json = preset.GetParamValueJson(param.Name);
-                    if (string.IsNullOrEmpty(json))
+                    var value = preset.GetParamValue(param.Name, param.ValueType);
+                    if (value == null)
                         param.ResetToDefault();
                     else
-                        param.Apply(json);
+                        param.Apply(value);
                 }
 
             }
@@ -183,6 +184,15 @@ namespace AxibugEmuOnline.Client
         private class FilterPresetList
         {
             public List<FilterPreset> presets;
+
+            public FilterPresetList(List<FilterPreset> presets)
+            {
+                this.presets = presets;
+                foreach (var preset in presets)
+                {
+                    preset.ReadyForJson();
+                }
+            }
         }
 
         [Serializable]
@@ -202,12 +212,57 @@ namespace AxibugEmuOnline.Client
                 Name = presetName;
             }
 
+            public void ReadyForJson()
+            {
+                prepareCache();
+
+                m_paramName = m_paramName2ValueJson.Keys.ToList();
+                m_valueJson = m_paramName2ValueJson.Values.ToList();
+            }
+
             public string GetParamValueJson(string paramName)
             {
                 prepareCache();
 
                 m_paramName2ValueJson.TryGetValue(paramName, out var value);
                 return value;
+            }
+
+            public object GetParamValue(string paramName, Type valueType)
+            {
+                var rawStr = GetParamValueJson(paramName);
+                if (rawStr == null) return null;
+
+                if (valueType == typeof(float))
+                {
+                    float.TryParse(rawStr, out var floatVal);
+                    return floatVal;
+                }
+                else if (valueType.IsEnum)
+                {
+                    var names = Enum.GetNames(valueType);
+                    var values = Enum.GetValues(valueType);
+
+                    for (int i = 0; i < names.Length; i++)
+                    {
+                        if (names[i].Equals(rawStr))
+                        {
+                            return values.GetValue(i);
+                        }
+                    }
+                    return null;
+                }
+                else
+                {
+                    App.log.Error($"尚未支持的滤镜参数类型{valueType}");
+                    return null;
+                }
+            }
+
+            public void SetParamValue(string paramName, Type valueType, object value)
+            {
+                prepareCache();
+                m_paramName2ValueJson[paramName] = value.ToString();
             }
 
             private void prepareCache()

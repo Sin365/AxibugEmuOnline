@@ -2,7 +2,6 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
