@@ -1,8 +1,4 @@
 using AxibugEmuOnline.Client.ClientCore;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace AxibugEmuOnline.Client
 {

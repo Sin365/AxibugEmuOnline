@@ -79,7 +79,7 @@ namespace AxiReplay
             }
         }
 
-        
+
         void UpdateNextFrame(int targetFrame)
         {
             //如果已经超过
@@ -128,14 +128,14 @@ namespace AxiReplay
         /// </summary>
         public bool NextFrame(out ReplayStep data)
         {
-            return TakeFrame(1,out data);
+            return TakeFrame(1, out data);
         }
 
         /// <summary>
         /// 往前推进指定帧数量的Input (返回是否变化）
         /// </summary>
         /// <param name="addFrame"></param>
-        public bool TakeFrame(int addFrame,out ReplayStep data)
+        public bool TakeFrame(int addFrame, out ReplayStep data)
         {
             bool Changed = false;
             mCurrFrame += addFrame;
