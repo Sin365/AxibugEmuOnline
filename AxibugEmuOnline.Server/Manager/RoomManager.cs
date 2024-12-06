@@ -440,7 +440,7 @@ namespace AxibugEmuOnline.Server
             if (room.LastTestRecv != room.mCurrInputData.all)
             {
                 room.LastTestRecv = room.mCurrInputData.all;
-                AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynTestRecv=> UID->{_c.UID} roomId->{room.mCurrServerFrameId} input->{msg.InputData}");
+                //AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynTestRecv=> UID->{_c.UID} roomId->{room.mCurrServerFrameId} input->{msg.InputData}");
             }
         }
 
@@ -766,9 +766,12 @@ namespace AxibugEmuOnline.Server
 
             UpdateRoomForwardNum();
 
+            uint StartForwardFrames = (SrvForwardFrames * 2) + 5;
+            StartForwardFrames = Math.Min(10, StartForwardFrames);
             //服务器提前跑帧数
             for (int i = 0; i < SrvForwardFrames; i++)
                 TakeFrame();
+            AppSrv.g_Log.Info($"房间初始提前量=>{StartForwardFrames}，当前延迟提前量=>{SrvForwardFrames}");
         }
 
         public void UpdateRoomForwardNum()
@@ -784,7 +787,7 @@ namespace AxibugEmuOnline.Server
             SrvForwardFrames = (uint)((maxNetDelay / 0.016f) + MustTaskFrame);
             if (SrvForwardFrames < 2)
                 SrvForwardFrames = 2;
-            AppSrv.g_Log.Debug($"服务器提前跑帧数：Max(2,({maxNetDelay} / {0.016f}) + {MustTaskFrame}) = {SrvForwardFrames}");
+            //AppSrv.g_Log.Debug($"服务器提前跑帧数：Max(2,({maxNetDelay} / {0.016f}) + {MustTaskFrame}) = {SrvForwardFrames}");
         }
 
         public void TakeFrame()
