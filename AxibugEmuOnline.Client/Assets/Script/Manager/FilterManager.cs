@@ -214,6 +214,8 @@ namespace AxibugEmuOnline.Client
 
             public void ReadyForJson()
             {
+                prepareCache();
+
                 m_paramName = m_paramName2ValueJson.Keys.ToList();
                 m_valueJson = m_paramName2ValueJson.Values.ToList();
             }
@@ -238,8 +240,17 @@ namespace AxibugEmuOnline.Client
                 }
                 else if (valueType.IsEnum)
                 {
-                    Enum.TryParse(valueType, rawStr,out var enumValue);
-                    return enumValue;
+                    var names = Enum.GetNames(valueType);
+                    var values = Enum.GetValues(valueType);
+
+                    for (int i = 0; i < names.Length; i++)
+                    {
+                        if (names[i].Equals(rawStr))
+                        {
+                            return values.GetValue(i);
+                        }
+                    }
+                    return null;
                 }
                 else
                 {
