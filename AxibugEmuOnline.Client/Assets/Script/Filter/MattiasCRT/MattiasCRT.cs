@@ -6,7 +6,7 @@ using UnityEngine.Rendering.PostProcessing;
 [PostProcess(typeof(MattiasCRTRenderer), PostProcessEvent.BeforeStack, "Filter/MattiasCRT")]
 public sealed class MattiasCRT : FilterEffect
 {
-    public override string Name => nameof(MattiasCRT); 
+    public override string Name => nameof(MattiasCRT);
 }
 
 public sealed class MattiasCRTRenderer : PostProcessEffectRenderer<MattiasCRT>

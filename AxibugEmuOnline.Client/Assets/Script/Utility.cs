@@ -1,7 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,7 +41,7 @@ namespace AxibugEmuOnline.Client
         {
             if (s_RomFileCahcesInRoomInfo.TryGetValue(roomInfo.GameRomID, out RomFile romFile))
             {
-                callback.Invoke(roomInfo,romFile);
+                callback.Invoke(roomInfo, romFile);
                 return;
             }
             switch (platform)
@@ -53,8 +52,8 @@ namespace AxibugEmuOnline.Client
                         RomFile romFile = new RomFile(EnumPlatform.NES, 0, 0);
                         romFile.SetWebData(romWebData);
                         s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = romFile;
-                        
-                        callback.Invoke(roomInfo,romFile);
+
+                        callback.Invoke(roomInfo, romFile);
                     }));
                     break;
             }

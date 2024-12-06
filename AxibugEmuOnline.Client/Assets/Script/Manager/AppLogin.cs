@@ -74,7 +74,7 @@ namespace AxibugEmuOnline.Client.Manager
         long TestFrameID = 0;
         void TestEmuUpdate()
         {
-            
+
         }
         #endregion
 

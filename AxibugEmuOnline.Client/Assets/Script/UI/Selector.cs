@@ -1,4 +1,4 @@
-using DG.Tweening;
+锘縰sing DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
@@ -7,6 +7,8 @@ namespace AxibugEmuOnline.Client
 {
     public class Selector : MonoBehaviour
     {
+        [SerializeField]
+        private Animator animator;
         private RectTransform m_rect => transform as RectTransform;
 
         private RectTransform m_target;
@@ -21,14 +23,12 @@ namespace AxibugEmuOnline.Client
 
                 m_target = value;
 
-                //重置选择游标的动画
-                gameObject.SetActive(false);
-                gameObject.SetActive(true);
-
                 var itemUIRect = m_target.transform as RectTransform;
                 m_rect.pivot = itemUIRect.pivot;
                 m_rect.sizeDelta = itemUIRect.rect.size;
                 m_rect.SetAsLastSibling();
+
+                animator.SetTrigger("reactive");
 
                 if (m_trackTween != null)
                 {
@@ -40,15 +40,34 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        private bool m_active;
+        public bool Active
+        {
+            get => m_active;
+            set
+            {
+                if (m_active == value) return;
+                m_active = value;
+
+                animator.SetBool("active", value);
+            }
+        }
+
+        public void RefreshPosition()
+        {
+            if (Target != null)
+            {
+                m_rect.position = Target.position;
+            }
+        }
+
         private void LateUpdate()
         {
-            if (m_trackTween != null)
+            if (m_trackTween != null && m_trackTween.endValue != Target.position)
             {
-                m_trackTween.endValue = Target.position;
+                m_trackTween.ChangeEndValue(Target.position, true);
             }
             if (Target == null) return;
-
-            m_rect.position = Target.position;
         }
     }
 }

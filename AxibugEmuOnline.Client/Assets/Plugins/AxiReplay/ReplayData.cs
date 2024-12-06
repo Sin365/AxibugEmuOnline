@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AxiReplay
 {
-    [StructLayout(LayoutKind.Explicit,Size = 44)]
+    [StructLayout(LayoutKind.Explicit, Size = 44)]
     public struct ReplayHandler
     {
         [FieldOffset(0)]
@@ -51,7 +51,7 @@ namespace AxiReplay
             FM32IP32,
             FM32IP64,
         }
-        public static void GetStringByteData(string str,out byte[] data,out int lenghtWithEnd,Encoding encoding)
+        public static void GetStringByteData(string str, out byte[] data, out int lenghtWithEnd, Encoding encoding)
         {
             data = encoding.GetBytes(str);
             lenghtWithEnd = data.Length + 1;
