@@ -316,7 +316,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvLeavnRoom(byte[] reqData)
         {
-            App.log.Debug("加入房间成功");
+            App.log.Debug("离开房间成功");
             Protobuf_Room_Leave_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Leave_RESP>(reqData);
             ReleaseRePlay();
             mineRoomMiniInfo = null;
@@ -374,6 +374,7 @@ namespace AxibugEmuOnline.Client.Manager
                     byte[] decompressRawData = Helper.DecompressByteArray(msg.LoadStateRaw.ToByteArray());
                     App.log.Info($"收到即时存档数据 解压后;{decompressRawData.Length}");
                     RawData = decompressRawData;
+                    ReleaseRePlay();
                 }
                 Eventer.Instance.PostEvent(EEvent.OnRoomWaitStepChange, WaitStep);
             }
