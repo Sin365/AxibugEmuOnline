@@ -26,7 +26,22 @@ namespace AxibugEmuOnline.Client
                               where t.DeclaringType.IsSubclassOf(typeof(FilterEffect))
                               orderby t.MetadataToken
                               select t);
-            m_editableParamList = parameters.Select(p => new EditableParamerter(p.Name, (ParameterOverride)p.GetValue(this))).ToList();
+
+            m_editableParamList = new List<EditableParamerter>();
+            foreach (var param in parameters)
+            {
+                var paramObj = (ParameterOverride)param.GetValue(this);
+                var rangeAtt = param.GetCustomAttribute<RangeAttribute>();
+                float min = 0;
+                float max = 10;
+                if (rangeAtt != null)
+                {
+                    min = rangeAtt.min; max = rangeAtt.max;
+                }
+
+                var editableParam = new EditableParamerter(param.Name, paramObj, min, max);
+                m_editableParamList.Add(editableParam);
+            }
         }
 
         public class EditableParamerter
@@ -42,9 +57,13 @@ namespace AxibugEmuOnline.Client
                 set
                 {
                     valueFieldInfo.SetValue(m_paramObject, value);
+                    m_paramObject.overrideState = true;
                 }
             }
-            public EditableParamerter(string name, ParameterOverride paramObject)
+            public object MinValue { get; private set; }
+            public object MaxValue { get; private set; }
+
+            public EditableParamerter(string name, ParameterOverride paramObject, object minValue, object maxValue)
             {
                 m_paramObject = paramObject;
                 Name = name;
@@ -60,18 +79,16 @@ namespace AxibugEmuOnline.Client
                 {
                     ValueType = typeof(object);
                 }
+
+                MinValue = minValue;
+                MaxValue = maxValue;
             }
 
             public void ResetToDefault() => m_paramObject.overrideState = false;
 
-            public string Serilized()
-            {
-                return JsonUtility.ToJson(Value);
-            }
 
-            public void Apply(string json)
+            public void Apply(object overrideValue)
             {
-                var overrideValue = JsonUtility.FromJson(json, ValueType);
                 Value = overrideValue;
             }
         }

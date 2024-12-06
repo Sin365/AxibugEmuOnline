@@ -3,7 +3,6 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
-using System;
 
 namespace AxibugEmuOnline.Client.Manager
 {
