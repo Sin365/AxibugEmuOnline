@@ -1,5 +1,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
 using System;
@@ -58,7 +59,20 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                App.roomMgr.SendJoinRoom(roomID, 1);
+                if (!App.roomMgr.GetRoomListMiniInfo(roomID, out Protobuf_Room_MiniInfo MiniInfo))
+                {
+                    OverlayManager.PopMsg("房间不存在");
+                    return false;
+                }
+
+                int[] freeSlots = null;
+                if (!MiniInfo.GetFreeSlot(out freeSlots))
+                {
+                    OverlayManager.PopMsg("无空闲位置");
+                    return false;
+                }
+
+                App.roomMgr.SendJoinRoom(roomID, freeSlots[0]);
                 return true;
             }
         }

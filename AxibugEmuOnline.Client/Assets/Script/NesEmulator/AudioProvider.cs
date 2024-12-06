@@ -14,7 +14,6 @@ namespace AxibugEmuOnline.Client
         public void Start()
         {
             var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
-
             dummy.SetData(new float[] { 1 }, 0);
             m_as.clip = dummy; //just to let unity play the audiosource
             m_as.loop = true;
