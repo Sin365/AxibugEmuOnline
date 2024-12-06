@@ -1,6 +1,4 @@
 using AxibugEmuOnline.Client;
-using AxibugEmuOnline.Client.ClientCore;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
