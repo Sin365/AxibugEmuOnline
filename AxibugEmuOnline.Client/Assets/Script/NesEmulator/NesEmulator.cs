@@ -21,7 +21,9 @@ namespace AxibugEmuOnline.Client
         //音频驱动（这里是Unity接收模拟器音频数据的并播放出来的实现）
         public AudioProvider AudioProvider;
         //是否暂停
-        public bool m_bPause;
+        private bool m_bPause;
+        /// <summary> 是否暂停 </summary>
+        public bool IsPause => m_bPause;
 
         private void Start()
         {

@@ -26,6 +26,7 @@ namespace AxibugEmuOnline.Client
             int step = channels;
 
             if (NesEmu == null || NesEmu.NesCore == null) return;
+            if (NesEmu.IsPause) return;
 
             ProcessSound(NesEmu.NesCore, (uint)(data.Length / channels));
 

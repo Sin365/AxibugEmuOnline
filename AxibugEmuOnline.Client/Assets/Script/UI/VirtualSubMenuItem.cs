@@ -20,7 +20,7 @@ namespace AxibugEmuOnline.Client
             base.Awake();
 
             RomGroupRoot.gameObject.SetActive(false);
-            RomGroupRoot.alpha = 0;           
+            RomGroupRoot.alpha = 0;
         }
 
         public override void SetSelectState(bool selected)
@@ -58,7 +58,7 @@ namespace AxibugEmuOnline.Client
             thirdMenuGroup.itemGroup.Clear();
 
             RefreshUI();
-            
+
             if (SubMenuItemGroup != null) SubMenuItemGroup.SetSelect(true);
 
             return true;
