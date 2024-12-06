@@ -7,7 +7,7 @@ namespace AxiReplay
         /// <summary>
         /// 客户端当前帧
         /// </summary>
-        public int mCurrClientFrameIdx = int.MinValue;
+        public int mCurrClientFrameIdx = 0;
         /// <summary>
         /// 服务器远端当前帧
         /// </summary>
@@ -112,9 +112,18 @@ namespace AxiReplay
 
         public int GetSkipFrameCount()
         {
-            int skip = 0;
+            if(!bNetInit)
+                return 0;
             //本地队列差异高于服务器提前量的值
             int moreNum = mDiffFrameCount - mRemoteForwardCount;
+            //if (mDiffFrameCount < 0 || mDiffFrameCount > 10000)
+            //    return 0;
+
+            ////游戏刚开始的一小段时间，直接追满
+            //if (mCurrClientFrameIdx < 60)
+            //    return moreNum;
+
+            int skip = 0;
             if (mDiffFrameCount > short.MaxValue) skip = 0;
             else if (moreNum <= 1) skip = 0;
             else if (moreNum <= 3) skip = 2;
