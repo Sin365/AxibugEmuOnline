@@ -1,0 +1,10 @@
+{
+    "name": "AxibugEmuOnline.Client",
+    "references": [
+        "VirtualNes.Core"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
