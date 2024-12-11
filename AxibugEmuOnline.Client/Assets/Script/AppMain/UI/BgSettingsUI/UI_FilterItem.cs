@@ -47,7 +47,7 @@ namespace AxibugEmuOnline.Client
             opts.Add(new Opt_CreatePreset(Datacontext));
             opts.AddRange(Datacontext.Presets.Select(p => new Opt_Presets(Datacontext, p)));
 
-            OverlayManager.Pop(opts, onClose: () =>
+            OverlayManager.PopSideBar(opts, onClose: () =>
             {
                 App.filter.EnableFilterPreview();
                 Datacontext.ResetPreset();
@@ -79,7 +79,7 @@ namespace AxibugEmuOnline.Client
                 OverlayManager.Input((presetName) =>
                 {
                     var result = m_filter.CreatePreset(presetName, out var newPreset);
-                    if (!result) OverlayManager.PopMsg(result);
+                    if (!result) OverlayManager.PopTip(result);
                     else optionUI.AddOptionMenuWhenPoping(new Opt_Presets(m_filter, newPreset));
                 }, "为预设设置一个名称", string.Empty);
             }

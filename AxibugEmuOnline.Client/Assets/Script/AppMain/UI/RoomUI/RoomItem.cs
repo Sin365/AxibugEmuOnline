@@ -60,14 +60,14 @@ namespace AxibugEmuOnline.Client
             {
                 if (!App.roomMgr.GetRoomListMiniInfo(roomID, out Protobuf_Room_MiniInfo MiniInfo))
                 {
-                    OverlayManager.PopMsg("房间不存在");
+                    OverlayManager.PopTip("房间不存在");
                     return false;
                 }
 
                 int[] freeSlots = null;
                 if (!MiniInfo.GetFreeSlot(out freeSlots))
                 {
-                    OverlayManager.PopMsg("无空闲位置");
+                    OverlayManager.PopTip("无空闲位置");
                     return false;
                 }
 

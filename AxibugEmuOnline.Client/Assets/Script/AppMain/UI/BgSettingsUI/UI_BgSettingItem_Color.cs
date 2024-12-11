@@ -51,7 +51,7 @@ namespace AxibugEmuOnline.Client
             var options = Datacontext.Presets.Select(preset => new ColorOption(preset)).ToList();
             var currentColor = Datacontext.CurrentColor;
             var index = options.FindIndex(op => op.Color.GetHashCode() == currentColor.GetHashCode());
-            OverlayManager.Pop(options, Mathf.Clamp(index, 0, options.Count - 1));
+            OverlayManager.PopSideBar(options, Mathf.Clamp(index, 0, options.Count - 1));
             return false;
         }
 
