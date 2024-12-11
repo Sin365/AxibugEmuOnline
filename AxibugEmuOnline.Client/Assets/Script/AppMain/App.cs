@@ -29,6 +29,8 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppSettings settings;
         public static FilterManager filter;
         public static AppShare share;
+        static bool bTest;
+        static string mTestSrvIP;
         #region Mono
         public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
@@ -39,7 +41,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init(Initer initer)
+        public static void Init(Initer initer, bool isTest = false, string testSrvIP = "")
         {
             settings = new AppSettings();
 
@@ -57,6 +59,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             roomMgr = new AppRoom();
             share = new AppShare();
             filter = new FilterManager(initer.m_filterVolume, initer.m_filterPreview, initer.m_xmbBg);
+            bTest = isTest;
+            mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             tickLoop = go.AddComponent<TickLoop>();
@@ -103,11 +107,10 @@ namespace AxibugEmuOnline.Client.ClientCore
                 yield break;
 
             int platform = 0;
-            bool bTest = false;
             if (bTest)
             {
                 yield return null;
-                Connect("192.168.0.47", 10492);
+                Connect(mTestSrvIP, 10492);
                 yield break;
             }
 
