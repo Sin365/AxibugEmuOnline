@@ -105,8 +105,6 @@ namespace AxibugEmuOnline.Server
         }
         public void RoomLog(long uid, int platform, int RoomID, int RomID, RoomLogType state)
         {
-
-            return;
             MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("RoomLog");
             try
             {
@@ -122,7 +120,7 @@ namespace AxibugEmuOnline.Server
                     command.ExecuteNonQuery();
                 }
 
-                if (state == RoomLogType.Join)
+                if (state == RoomLogType.Create)
                 {
                     query = "update romlist_nes set playcount = playcount + 1 where id = ?romid";
                     using (var command = new MySqlCommand(query, conn))
@@ -210,9 +208,8 @@ namespace AxibugEmuOnline.Server
         /// </summary>
         /// <param name="RoomID"></param>
         /// <param name="type">//[0] 更新或新增 [1] 删除</param>
-        public void SendRoomUpdateToAll(int RoomID, int type)
+        public void SendRoomUpdateToAll(Data_RoomData room, int type)
         {
-            Data_RoomData room = GetRoomData(RoomID);
             if (room == null)
                 return;
 
@@ -247,7 +244,7 @@ namespace AxibugEmuOnline.Server
             if (joinErrcode == ErrorCode.ErrorOk && bHadRoomStateChange)
                 SendRoomStepChange(newRoom);
 
-            SendRoomUpdateToAll(newRoom.RoomID, 0);
+            SendRoomUpdateToAll(newRoom, 0);
 
             RoomLog(_c.UID, 1, newRoom.RoomID, newRoom.GameRomID, RoomLogType.Create);
         }
@@ -285,7 +282,7 @@ namespace AxibugEmuOnline.Server
 
                 if (room != null)
                 {
-                    SendRoomUpdateToAll(room.RoomID, 0);
+                    SendRoomUpdateToAll(room, 0);
                 }
             }
             RoomLog(_c.UID, 1, room.RoomID, room.GameRomID, RoomLogType.Join);
@@ -348,11 +345,11 @@ namespace AxibugEmuOnline.Server
 
             if (room.GetPlayerCount() < 1)
             {
+                SendRoomUpdateToAll(room, 1);
                 RemoveRoom(room.RoomID);
-                SendRoomUpdateToAll(room.RoomID, 1);
             }
             else
-                SendRoomUpdateToAll(room.RoomID, 0);
+                SendRoomUpdateToAll(room, 0);
 
             RoomLog(_c.UID, 1, room.RoomID, room.GameRomID, RoomLogType.Leave);
         }
