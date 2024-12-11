@@ -8,10 +8,10 @@ namespace AxibugEmuOnline.Client
     {
         static OverlayManager s_ins;
 
-        [SerializeField]
-        InputUI m_InputUI;
-        [SerializeField]
-        OptionUI m_OptionUI;
+
+        [SerializeField] InputUI m_InputUI;
+        [SerializeField] OptionUI m_OptionUI;
+        [SerializeField] PopTipsUI m_popTipsUI;
 
         private void Awake()
         {
@@ -26,14 +26,15 @@ namespace AxibugEmuOnline.Client
 
             return s_ins.m_InputUI;
         }
-        public static void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+
+        public static void PopSideBar<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
         {
             s_ins.m_OptionUI.Pop(menus, defaultIndex, onClose);
         }
 
-        public static void PopMsg(string msg)
+        public static void PopTip(string msg)
         {
-
+            s_ins.m_popTipsUI.Pop(msg);
         }
     }
 }
