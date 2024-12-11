@@ -189,6 +189,7 @@ namespace AxibugEmuOnline.Client.Manager
         {
             App.log.Info("取得完整房间列表");
             Protobuf_Room_List_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_List_RESP>(reqData);
+            dictRoomListID2Info.Clear();
             for (int i = 0; i < msg.RoomMiniInfoList.Count; i++)
                 AddOrUpdateRoomList(msg.RoomMiniInfoList[i]);
             Eventer.Instance.PostEvent(EEvent.OnRoomListAllUpdate);

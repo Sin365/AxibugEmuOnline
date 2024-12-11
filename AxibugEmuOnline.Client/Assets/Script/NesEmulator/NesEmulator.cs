@@ -86,7 +86,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        //是否跳帧，单机无效
+        //是否跳帧，单机无效a
         private void FixEmulatorFrame()
         {
             var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
