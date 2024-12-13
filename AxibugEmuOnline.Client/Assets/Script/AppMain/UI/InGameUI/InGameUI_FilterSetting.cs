@@ -1,6 +1,9 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Presets;
+using UnityEngine;
+using VirtualNes.Core;
 using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
@@ -9,14 +12,34 @@ namespace AxibugEmuOnline.Client
     {
         private InGameUI m_gameUI;
 
-        public InGameUI_FilterSetting(InGameUI gameUI) : base("�˾�", null)
+        public InGameUI_FilterSetting(InGameUI gameUI) : base("滤镜", null)
         {
             m_gameUI = gameUI;
         }
 
         protected override List<OptionMenu> GetOptionMenus()
         {
-            return App.filter.Filters.Select(f => new FilterMenu(m_gameUI.RomFile, f) as OptionMenu).ToList();
+            List<OptionMenu> menus = new List<OptionMenu>();
+            menus.Add(new FilterNone(m_gameUI.RomFile));
+            menus.AddRange(App.filter.Filters.Select(f => new FilterMenu(m_gameUI.RomFile, f) as OptionMenu));
+            return menus;
+        }
+
+        public class FilterNone : ExecuteMenu
+        {
+            private RomFile m_rom;
+
+            public FilterNone(RomFile rom) : base("取消滤镜", null)
+            {
+                m_rom = rom;
+            }
+
+            public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+            {
+                App.filter.ShutDownFilter();
+
+                App.filter.SetupFilter(m_rom, null, null);
+            }
         }
 
         public class FilterMenu : ExpandMenu
