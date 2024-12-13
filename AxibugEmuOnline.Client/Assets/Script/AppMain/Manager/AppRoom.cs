@@ -295,7 +295,10 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Join_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Join_RESP>(reqData);
             mineRoomMiniInfo = msg.RoomMiniInfo;
             InitRePlay();
-            Eventer.Instance.PostEvent(EEvent.OnMineJoinRoom);
+            {
+                OverlayManager.PopTip($"已进入[{msg.RoomMiniInfo.GetHostNickName()}]的房间");
+                Eventer.Instance.PostEvent(EEvent.OnMineJoinRoom);
+            }
         }
 
         /// <summary>
@@ -322,6 +325,7 @@ namespace AxibugEmuOnline.Client.Manager
             ReleaseRePlay();
             mineRoomMiniInfo = null;
             Eventer.Instance.PostEvent(EEvent.OnMineLeavnRoom);
+            OverlayManager.PopTip($"已经离开房间");
         }
 
         void RecvRoomMyRoomStateChange(byte[] reqData)
@@ -341,7 +345,10 @@ namespace AxibugEmuOnline.Client.Manager
                 {
                     Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
                     if (NewPlayer > 0)//而且害换了一个玩家
+                    { 
                         Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+                        OverlayManager.PopTip($"其他人进入了房间");
+                    }
                 }
                 else //之前没人
                     Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);

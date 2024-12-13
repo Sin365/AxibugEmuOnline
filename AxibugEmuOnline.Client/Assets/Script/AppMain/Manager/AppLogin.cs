@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Common;
+using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System;
@@ -50,15 +51,21 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 App.log.Info("登录成功");
                 App.user.InitMainUserData(App.user.userdata.Account, msg.UID);
+                OverlayManager.PopTip("登录成功");
+
 
                 App.log.Info("获取Room列表");
                 App.roomMgr.SendGetRoomList();
                 App.log.Info("获取在线玩家列表");
                 App.user.Send_GetUserList();
+
+                Eventer.Instance.PostEvent(EEvent.OnLoginSucceed);
             }
             else
             {
-                App.log.Info("登录失败");
+                App.log.Info("登录失败"); 
+                OverlayManager.PopTip("登录失败");
+                Eventer.Instance.PostEvent(EEvent.OnLoginFailed);
             }
 #if UNITY_EDITOR
             //TestCreate();

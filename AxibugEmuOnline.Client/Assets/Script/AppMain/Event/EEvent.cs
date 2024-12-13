@@ -3,6 +3,18 @@
     public enum EEvent
     {
         // 添加你自己需要的事件类型
+
+
+        /// <summary>
+        /// 登录成功
+        /// </summary>
+        OnLoginSucceed,
+
+        /// <summary>
+        /// 登录失败
+        /// </summary>
+        OnLoginFailed,
+
         OnChatMsg,
 
         //自己的信息更新(比如改名更新）
