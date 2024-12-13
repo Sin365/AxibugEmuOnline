@@ -37,6 +37,10 @@
         OnRoomGetRoomScreen,//获取到房间数据
 
         /// <summary>
+        /// 我的房间创建成功
+        /// </summary>
+        OnMineRoomCreated,
+        /// <summary>
         /// 我进入房间
         /// </summary>
         OnMineJoinRoom,
