@@ -5,6 +5,7 @@ using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using AxiReplay;
 using Google.Protobuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -450,6 +451,25 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Screnn_Frame msg = ProtoBufHelper.DeSerizlize<Protobuf_Screnn_Frame>(reqData);
             //解压
             byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
+        }
+
+        public void ChangeCurrRoomPlayerName(long uid)
+        {
+            UserDataBase userdata = App.user.GetUserByUid(uid);
+            if (userdata == null)
+                return;
+
+            if (mineRoomMiniInfo == null)
+            {
+                if (mineRoomMiniInfo.Player1UID == uid)
+                    mineRoomMiniInfo.Player1NickName = userdata.NickName;
+                else if (mineRoomMiniInfo.Player2UID == uid)
+                    mineRoomMiniInfo.Player2NickName = userdata.NickName;
+                else if (mineRoomMiniInfo.Player3UID == uid)
+                    mineRoomMiniInfo.Player3NickName = userdata.NickName;
+                else if (mineRoomMiniInfo.Player4UID == uid)
+                    mineRoomMiniInfo.Player4NickName = userdata.NickName;
+            }
         }
     }
 
