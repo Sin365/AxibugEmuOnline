@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client
 
         Vector2 m_mainLayoutPosition;
         [SerializeField]
-        Vector2 m_detailLayoutPosition;
+        float m_detailLayoutPosition_x = 55;
         [SerializeField]
         float m_LayoutChangeSpeed = 10;
 
@@ -67,7 +67,7 @@ namespace AxibugEmuOnline.Client
                 .To(
                 () => MainMenuRoot.anchoredPosition,
                 (x) => MainMenuRoot.anchoredPosition = x,
-                m_detailLayoutPosition,
+                new Vector2(m_detailLayoutPosition_x, MainMenuRoot.anchoredPosition.y),
                 m_LayoutChangeSpeed)
                 .SetSpeedBased();
             MainMenu.ListenControlAction = false;
