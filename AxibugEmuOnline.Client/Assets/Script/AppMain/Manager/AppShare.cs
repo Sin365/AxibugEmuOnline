@@ -26,19 +26,17 @@ namespace AxibugEmuOnline.Client.Manager
                 RomID = RomID,
                 PlatformType = Platform
             };
-
             App.log.Info($"LeavnRoom");
             App.network.SendToServer((int)CommandID.CmdGameMark, ProtoBufHelper.Serizlize(req));
         }
 
         /// <summary>
-        /// 离开房间成功
+        /// 收藏
         /// </summary>
         /// <param name="reqData"></param>
         void RecvGameStar(byte[] reqData)
         {
             Protobuf_Game_Mark_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Game_Mark_RESP>(reqData);
-
             Eventer.Instance.PostEvent(EEvent.OnDoStars, msg.PlatformType, msg.RomID);
         }
 
