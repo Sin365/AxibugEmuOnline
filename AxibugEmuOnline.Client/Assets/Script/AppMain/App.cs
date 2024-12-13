@@ -43,6 +43,8 @@ namespace AxibugEmuOnline.Client.ClientCore
 #endif
         public static void Init(Initer initer, bool isTest = false, string testSrvIP = "")
         {
+            PlayerPrefs.DeleteAll();
+
             settings = new AppSettings();
 
             log = new LogManager();
