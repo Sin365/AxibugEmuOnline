@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+ï»¿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using static AxibugEmuOnline.Client.FilterManager;
 namespace AxibugEmuOnline.Client
 {
     /// <summary>
-    /// ±³¾°ÑÕÉ«ÉèÖÃUI
+    /// èƒŒæ™¯é¢œè‰²è®¾ç½®UI
     /// </summary>
     public class UI_FilterItem : MenuItem, IVirtualItem
     {
@@ -25,7 +25,10 @@ namespace AxibugEmuOnline.Client
 
         private void UpdateView()
         {
-            SetBaseInfo(Datacontext.Name, $"²ÎÊıÊıÁ¿:{Datacontext.Paramerters.Count}", null);
+            if (Datacontext == null)
+                SetBaseInfo("æ— ", null, null);
+            else
+                SetBaseInfo(Datacontext.Name, $"å‚æ•°æ•°é‡:{Datacontext.Paramerters.Count}", null);
         }
 
         public void SetDependencyProperty(object data)
@@ -35,7 +38,10 @@ namespace AxibugEmuOnline.Client
             if (m_select)
             {
                 App.filter.EnableFilterPreview();
-                App.filter.EnableFilter(Datacontext);
+                if (App.filter != null)
+                    App.filter.EnableFilter(Datacontext);
+                else
+                    App.filter.ShutDownFilter();
             }
         }
 
@@ -43,16 +49,19 @@ namespace AxibugEmuOnline.Client
 
         public override bool OnEnterItem()
         {
-            var opts = new List<OptionMenu>();
-            opts.Add(new Opt_CreatePreset(Datacontext));
-            opts.AddRange(Datacontext.Presets.Select(p => new Opt_Presets(Datacontext, p)));
-
-            OverlayManager.PopSideBar(opts, onClose: () =>
+            if (Datacontext != null && Datacontext.Paramerters.Count > 0)
             {
-                App.filter.EnableFilterPreview();
-                Datacontext.ResetPreset();
-                App.filter.EnableFilter(Datacontext);
-            });
+                var opts = new List<OptionMenu>();
+                opts.Add(new Opt_CreatePreset(Datacontext));
+                opts.AddRange(Datacontext.Presets.Select(p => new Opt_Presets(Datacontext, p)));
+
+                OverlayManager.PopSideBar(opts, onClose: () =>
+                {
+                    App.filter.EnableFilterPreview();
+                    Datacontext.ResetPreset();
+                    App.filter.EnableFilter(Datacontext);
+                });
+            }
             return false;
         }
 
@@ -61,7 +70,7 @@ namespace AxibugEmuOnline.Client
         {
             private Filter m_filter;
 
-            public Opt_CreatePreset(Filter filter) : base("´´½¨ÂË¾µÔ¤Éè", Resources.LoadAll<Sprite>("Icons/XMB-Icons/misc")[0])
+            public Opt_CreatePreset(Filter filter) : base("åˆ›å»ºæ»¤é•œé¢„è®¾", Resources.LoadAll<Sprite>("Icons/XMB-Icons/misc")[0])
             {
                 m_filter = filter;
             }
@@ -81,7 +90,7 @@ namespace AxibugEmuOnline.Client
                     var result = m_filter.CreatePreset(presetName, out var newPreset);
                     if (!result) OverlayManager.PopTip(result);
                     else optionUI.AddOptionMenuWhenPoping(new Opt_Presets(m_filter, newPreset));
-                }, "ÎªÔ¤ÉèÉèÖÃÒ»¸öÃû³Æ", string.Empty);
+                }, "ä¸ºé¢„è®¾è®¾ç½®ä¸€ä¸ªåç§°", string.Empty);
             }
         }
         public class Opt_Presets : ExpandMenu
@@ -170,7 +179,7 @@ namespace AxibugEmuOnline.Client
                 private Filter m_filter;
                 private FilterPreset m_preset;
 
-                public Opt_Delete(Filter filter, FilterPreset preset) : base("É¾³ıÔ¤Éè", null)
+                public Opt_Delete(Filter filter, FilterPreset preset) : base("åˆ é™¤é¢„è®¾", null)
                 {
                     m_filter = filter;
                     m_preset = preset;
