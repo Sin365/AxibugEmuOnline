@@ -557,7 +557,6 @@ namespace AxibugEmuOnline.Server
         public Google.Protobuf.ByteString? NextStateRaw { get; private set; }
         public Google.Protobuf.ByteString? ScreenRaw { get; private set; }
         public bool[] PlayerReadyState { get; private set; }
-
         public List<long> SynUIDs;
         //public RoomPlayerState PlayerState => getPlayerState();
         private RoomGameState mGameState;
@@ -587,13 +586,10 @@ namespace AxibugEmuOnline.Server
                 }
             }
         }
-
         /// <summary>
         /// 服务器提前帧数
         /// </summary>
         public uint SrvForwardFrames { get; set; }
-
-
         bool IsAllReady()
         {
             bool Ready = true;
@@ -611,7 +607,6 @@ namespace AxibugEmuOnline.Server
             }
             return Ready;
         }
-
         public void Init(int roomID, int gameRomID, string roomHash, long hostUId, bool bloadState = false)
         {
             RoomID = roomID;
@@ -630,7 +625,6 @@ namespace AxibugEmuOnline.Server
             mInputQueue = new Queue<(uint, ServerInputSnapShot)>();
             mDictPlayerIdx2SendQueue = new Dictionary<int, Queue<byte[]>>();
         }
-
         public void SetPlayerUID(int PlayerIdx, ClientInfo _c)
         {
             long oldUID = -1;
@@ -647,7 +641,6 @@ namespace AxibugEmuOnline.Server
             AppSrv.g_Log.Debug($"SetPlayerUID RoomID->{RoomID} _c.UID->{_c.UID}  PlayerIdx->{PlayerIdx}");
             _c.RoomState.SetRoomData(this.RoomID, PlayerIdx);
         }
-
         public void RemovePlayer(ClientInfo _c)
         {
             int PlayerIdx = GetPlayerIdx(_c);
@@ -660,7 +653,6 @@ namespace AxibugEmuOnline.Server
             }
             _c.RoomState.ClearRoomData();
         }
-
         int GetPlayerIdx(ClientInfo _c)
         {
             if (Player1_UID == _c.UID) return 0;
@@ -669,7 +661,6 @@ namespace AxibugEmuOnline.Server
             if (Player4_UID == _c.UID) return 3;
             return -1;
         }
-
         public bool GetPlayerUIDByIdx(int Idx, out long UID)
         {
             switch (Idx)
@@ -693,7 +684,6 @@ namespace AxibugEmuOnline.Server
 
             return true;
         }
-
         public List<long> GetAllPlayerUIDs()
         {
             List<long> list = new List<long>();
@@ -703,7 +693,6 @@ namespace AxibugEmuOnline.Server
             if (Player4_UID > 0) list.Add(Player4_UID);
             return list;
         }
-
         public List<ClientInfo> GetAllPlayerClientList()
         {
             List<ClientInfo> list = new List<ClientInfo>();
@@ -720,7 +709,6 @@ namespace AxibugEmuOnline.Server
 
             return list;
         }
-
         public void SetPlayerInput(int PlayerIdx, long mFrameID, ServerInputSnapShot allinput)
         {
             switch (PlayerIdx)
@@ -731,9 +719,9 @@ namespace AxibugEmuOnline.Server
                 case 3: mCurrInputData.p4_byte = allinput.p1_byte; break;
             }
         }
-
-        public void ClearPlayerInput(int PlayerIdx)
+        public void ClearPlayerInput(ClientInfo _c)
         {
+            int PlayerIdx = GetPlayerIdx(_c);
             switch (PlayerIdx)
             {
                 case 0: mCurrInputData.p1_byte = 0; break;
@@ -742,7 +730,6 @@ namespace AxibugEmuOnline.Server
                 case 3: mCurrInputData.p4_byte = 0; break;
             }
         }
-
         public int GetPlayerCount()
         {
             int count = 0;
@@ -752,7 +739,6 @@ namespace AxibugEmuOnline.Server
             if (Player4_UID > 0) count++;
             return count;
         }
-
         void StartNewTick()
         {
             mInputQueue.Clear();
@@ -902,6 +888,7 @@ namespace AxibugEmuOnline.Server
         {
             int oldPlayerCount = GetPlayerCount();
             RemovePlayer(_c);
+            ClearPlayerInput(_c);
             int newPlayerCount = GetPlayerCount();
             errcode = ErrorCode.ErrorOk;
             bHadRoomStateChange = CheckRoomStateChange(oldPlayerCount, newPlayerCount);

@@ -103,6 +103,7 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     UserInfo = miniinfo,
                 };
+
                 //回执给自己
                 AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdUpdateSelfUserInfo, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(infodata));
 
