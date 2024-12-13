@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,7 @@ namespace AxibugEmuOnline.Client
         protected override void GetVirtualListDatas(Action<object> datas)
         {
             List<object> list = new List<object>();
+            list.Add(null);
             list.AddRange(App.filter.Filters.Select(f => (object)f));
             datas.Invoke(list);
         }
