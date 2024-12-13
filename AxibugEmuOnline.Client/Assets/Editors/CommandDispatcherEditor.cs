@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client;
+﻿using AxibugEmuOnline.Client;
 using UnityEditor;
 using UnityEngine;
 namespace AxibugEmuOnline.Editors
@@ -9,6 +9,8 @@ namespace AxibugEmuOnline.Editors
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
+            if (!Application.isPlaying) return;
 
             var dispacather = target as CommandDispatcher;
 
