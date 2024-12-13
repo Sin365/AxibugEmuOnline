@@ -31,6 +31,7 @@ MonoBehaviour:
   settings:
   - {fileID: 117625959343581733}
   - {fileID: -2985742813244632235}
+  - {fileID: 2118329037781486242}
 --- !u!114 &117625959343581733
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -77,3 +78,19 @@ MonoBehaviour:
   MaskDrak:
     overrideState: 0
     value: 0.5
+--- !u!114 &2118329037781486242
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0a5286ac74b734ba8d1e0cfdfb9c8d, type: 3}
+  m_Name: LCDPostEffect
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
