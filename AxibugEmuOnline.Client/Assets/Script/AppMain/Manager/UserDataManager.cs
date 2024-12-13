@@ -163,7 +163,10 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_UserJoin_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserJoin_RESP>(reqData);
             UpdateOrAddUser(msg.UserInfo, out bool isNewUser);
             if (isNewUser)
+            { 
                 Eventer.Instance.PostEvent(EEvent.OnUserLogin, msg.UserInfo.UID, msg.UserInfo.NickName);
+                OverlayManager.PopTip($"玩家[{msg.UserInfo.NickName}]上线了");
+            }
         }
 
         public void RecvGetUserLeave(byte[] reqData)
