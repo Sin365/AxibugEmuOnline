@@ -56,7 +56,7 @@ MonoBehaviour:
   m_msgText: {fileID: 4253545256053581529}
   OutTime: 0.5
   OutEase: 9
-  StandTime: 5
+  StandTime: 2
   InTime: 0.5
   InEase: 28
 --- !u!114 &7081568093111909217

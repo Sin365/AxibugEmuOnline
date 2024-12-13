@@ -12,7 +12,7 @@ namespace AxibugEmuOnline.Client
         List<PopTipsItem> m_runtimeItems = new List<PopTipsItem>();
 
         const float StartY = -108f;
-        const float StepY = -120;
+        const float StepY = -140f;
 
         private void Awake()
         {
