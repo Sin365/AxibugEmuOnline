@@ -207,7 +207,9 @@ namespace AxibugEmuOnline.Client.Manager
             if (userdata == null)
                 return;
             userdata.NickName = msg.UserInfo.NickName;
-            //TODO其他
+
+            App.roomMgr.ChangeCurrRoomPlayerName(msg.UID);
+
             Eventer.Instance.PostEvent(EEvent.OnOtherUserInfoUpdate, msg.UID);
         }
 
