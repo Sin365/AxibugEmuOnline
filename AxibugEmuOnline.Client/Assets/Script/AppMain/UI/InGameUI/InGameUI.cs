@@ -1,5 +1,6 @@
-using AxibugEmuOnline.Client.ClientCore;
+ï»¿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using System;
 using System.Collections.Generic;
 
 namespace AxibugEmuOnline.Client
@@ -11,7 +12,7 @@ namespace AxibugEmuOnline.Client
         public RomFile RomFile => m_rom;
         public override bool Enable => gameObject.activeInHierarchy;
 
-        /// <summary> Ö¸Ê¾¸ÃÓÎÏ·ÊµÀıÊÇ·ñ´¦ÓÚÁª»úÄ£Ê½ </summary>
+        /// <summary> æŒ‡ç¤ºè¯¥æ¸¸æˆå®ä¾‹æ˜¯å¦å¤„äºè”æœºæ¨¡å¼ </summary>
         public bool IsNetPlay
         {
             get
@@ -53,13 +54,13 @@ namespace AxibugEmuOnline.Client
             base.OnDestroy();
         }
 
-        /// <summary> ±£´æ¿ìËÙ¿ìÕÕ </summary>
+        /// <summary> ä¿å­˜å¿«é€Ÿå¿«ç…§ </summary>
         public void SaveQuickState(object state)
         {
             m_state = state;
         }
         /// <summary>
-        /// ¶ÁÈ¡¿ìËÙ¿ìÕÕ
+        /// è¯»å–å¿«é€Ÿå¿«ç…§
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -68,21 +69,31 @@ namespace AxibugEmuOnline.Client
             return m_state;
         }
 
+        private bool m_delayCreateRoom;
         public void Show(RomFile currentRom, IEmuCore core)
         {
-            m_state = null;//Çå¿ÕÓÎÏ·¿ìÕÕ
+            m_delayCreateRoom = false;
+            m_state = null;//æ¸…ç©ºæ¸¸æˆå¿«ç…§
             CommandDispatcher.Instance.RegistController(this);
 
             m_rom = currentRom;
             Core = core;
             m_stepPerformer.Reset();
 
-            if (App.user.IsLoggedIn && !App.roomMgr.InRoom)
+            if (!App.roomMgr.InRoom)
             {
-                App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
+                if (App.user.IsLoggedIn)
+                    App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
+                else
+                {
+                    m_delayCreateRoom = true;
+                    OverlayManager.PopTip("ç¨åå°†ä¼šå»ºç«‹æˆ¿é—´");
+                }
             }
 
+            Eventer.Instance.RegisterEvent(EEvent.OnLoginSucceed, OnLoggedIn);
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
+            Eventer.Instance.RegisterEvent(EEvent.OnMineJoinRoom, OnRoomJoin);
 
             gameObject.SetActiveEx(true);
 
@@ -94,6 +105,19 @@ namespace AxibugEmuOnline.Client
 
                 filter.ApplyPreset(preset);
                 App.filter.EnableFilter(filter);
+            }
+        }
+
+        private void OnRoomJoin()
+        {
+            m_delayCreateRoom = false;
+        }
+
+        private void OnLoggedIn()
+        {
+            if (m_delayCreateRoom)
+            {
+                App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
             }
         }
 
@@ -114,23 +138,21 @@ namespace AxibugEmuOnline.Client
         {
             OverlayManager.PopSideBar(menus, 0, PopMenu_OnHide);
 
-            if (!IsNetPlay)//µ¥ÈËÄ£Ê½ÔİÍ£Ä£ÄâÆ÷
-            {
+            if (!IsNetPlay)//å•äººæ¨¡å¼æš‚åœæ¨¡æ‹Ÿå™¨
                 Core.Pause();
-            }
         }
 
-        //²Ëµ¥¹Ø±ÕÊ±ºò
+        //èœå•å…³é—­æ—¶å€™
         private void PopMenu_OnHide()
         {
-            if (!IsNetPlay)//µ¥ÈËÄ£Ê½»Ö¸´Ä£ÄâÆ÷µÄÔİÍ£
+            if (!IsNetPlay)//å•äººæ¨¡å¼æ¢å¤æ¨¡æ‹Ÿå™¨çš„æš‚åœ
                 Core.Resume();
         }
-
-
         public void QuitGame()
         {
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
+            Eventer.Instance.UnregisterEvent(EEvent.OnLoginSucceed, OnLoggedIn);
+            Eventer.Instance.UnregisterEvent(EEvent.OnMineJoinRoom, OnRoomJoin);
             App.roomMgr.SendLeavnRoom();
             App.emu.StopGame();
         }
