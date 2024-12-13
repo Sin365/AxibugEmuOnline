@@ -78,8 +78,7 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     // 设置参数值
                     command.Parameters.AddWithValue("?uid", _c.UID);
-                    command.Parameters.AddWithValue("?uid", msg.NickName);
-
+                    command.Parameters.AddWithValue("?nikename", msg.NickName);
                     if (command.ExecuteNonQuery() > 0)
                     {
                         bDone = true;
@@ -104,6 +103,7 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     UserInfo = miniinfo,
                 };
+
                 //回执给自己
                 AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdUpdateSelfUserInfo, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(infodata));
 
@@ -145,7 +145,7 @@ namespace AxibugEmuOnline.Server.Manager
                 }
                 else
                 {
-                    query = "INSERT INTO `haoyue_emu`.`users` (`nikename`, `regdate`, `lastlogindate`) VALUES (NULL,now(),now());SELECT LAST_INSERT_ID(); ";
+                    query = "INSERT INTO `haoyue_emu`.`users` (`nikename`, `regdate`,`lastlogindate`) VALUES (NULL,now(),now());SELECT LAST_INSERT_ID(); ";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值  
@@ -156,6 +156,19 @@ namespace AxibugEmuOnline.Server.Manager
                             {
                                 uid = reader.GetInt64(0);
                             }
+                        }
+                    }
+
+                    //设置默认名字
+                    query = "update users set nikename = ?nikename where uid = ?uid ";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        // 设置参数值
+                        command.Parameters.AddWithValue("?uid", uid);
+                        command.Parameters.AddWithValue("?nikename", GetRandomNickName(uid));
+                        if (command.ExecuteNonQuery() < 1)
+                        {
+                            bDone = false;
                         }
                     }
 
@@ -201,7 +214,7 @@ namespace AxibugEmuOnline.Server.Manager
                         {
 
                             _c.Account = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
-                            _c.NickName = reader.IsDBNull(1) ? string.Empty:reader.GetString(1);
+                            _c.NickName = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
                             _c.LogInDT = DateTime.Now;
                             _c.RegisterDT = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2);
                             _c.LastLogInDT = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3);
@@ -222,5 +235,216 @@ namespace AxibugEmuOnline.Server.Manager
             Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
         }
 
+        public string GetRandomNickName(long uid)
+        {
+            int Idx = new Random((int)DateTime.Now.TimeOfDay.TotalMilliseconds).Next(0, RandomNickName.Length - 1);
+            return $"{RandomNickName[Idx]}_{uid}";
+        }
+
+        static string[] RandomNickName =
+            [
+"马里奥",
+"路易基",
+"碧琪公主",
+"库巴",
+"耀西",
+"瓦里奥",
+"瓦路易吉",
+"奇诺比奥",
+"罗塞塔公主",
+"布斯特",
+"凯萨琳/凯瑟琳",
+"盖拉库巴",
+"黛西",
+"保罗","马里奥先锋",
+            "塞尔达勇士",
+    "银河猎人",
+    "主手柄",
+    "8-bit英雄",
+    "像素战士",
+    "魂斗罗精英",
+    "城堡征服者",
+    "塔特博尔打击",
+    "奇迹神庙",
+    "勇者斗恶龙",
+    "龟速侠",
+    "拳皇大师",
+    "无敌破坏王",
+    "时空之刃",
+    "跳跃达人",
+    "炸弹超人",
+    "复古玩家",
+    "混沌骑士",
+    "传说之翼",
+    "火箭骑士",
+    "像素魔法师",
+    "超级马车手",
+    "冒险之星",
+    "银河护卫",
+    "弹跳英雄",
+    "红白机战神",
+    "像素忍者",
+    "激战霸主",
+    "挑战之王",
+    "像素巫师",
+    "红白机复仇者",
+    "马里奥兄弟",
+    "赛博战士",
+    "像素传说",
+    "红白机神话",
+    "复古传承者",
+    "街头霸王",
+    "合金装备",
+    "像素英雄",
+    "打砖块大师",
+    "复活节彩蛋",
+    "8-bit传奇",
+    "炸弹达人",
+    "原子战士",
+    "猎天使魔女",
+    "探险家",
+    "奇异探险",
+    "像素大师",
+    "星际狂热",
+    "点阵图王",
+    "掘地者",
+    "街机勇士",
+    "极速赛车手",
+    "星际旅行者",
+    "红白机守护者",
+    "扭曲像素",
+    "冒险家俱乐部",
+    "像素方块",
+    "时空探险者",
+    "红白机奇迹",
+    "战士之魂",
+    "复古英雄",
+    "超级星战士",
+    "跳跃精灵",
+    "时空旅行者",
+    "银河征服者",
+    "奇妙世界",
+    "无敌小子",
+    "打怪达人",
+    "复古王者",
+    "超级马拉松",
+    "银河守护者",
+    "街机传奇",
+    "像素探险家",
+    "红白机战士",
+    "复活小队",
+    "时间扭曲者",
+    "像素骑士",
+    "复古探索者",
+    "超级跳跃者",
+    "银河冒险者",
+    "复古时代",
+    "超级英雄",
+    "街机探险者",
+    "红白机大师",
+    "时间旅行者",
+    "星际战士",
+    "冒险之子",
+    "红白机复仇",
+    "像素探索者",
+    "超级宇航员",
+    "复古复仇者",
+    "时间守护者",
+    "银河之子",
+    "超级格斗家",
+    "时空征服者",
+    "复古之星",
+    "超级战斗机",
+    "时间冒险者",
+    "银河神话",
+    "超级星际",
+    "冒险之魂",
+    "复古传奇",
+    "超级街机",
+    "像素英雄王",
+    "红白机探险",
+    "超级复仇者",
+    "时间征服者",
+    "银河之王",
+    "超级探险家",
+    "复古守护者",
+    "超级跳跃王",
+    "冒险之王",
+    "超级像素",
+    "复古战斗",
+    "超级复古",
+    "时间之神",
+    "银河征服",
+    "超级传奇",
+    "冒险战士",
+    "红白机冒险",
+    "超级复仇",
+    "复古之神",
+    "超级时间",
+    "银河守护",
+    "超级银河",
+    "冒险守护",
+    "红白机战斗",
+    "超级探险",
+    "超级星际战士",
+    "时间之子",
+    "银河之神",
+    "超级复古战士",
+    "红白机之魂",
+    "超级时间旅行者",
+    "冒险之神",
+    "复古探险家",
+    "超级银河探险",
+    "时间复仇者",
+    "银河战斗机",
+    "超级复古探险",
+    "红白机战士王",
+    "超级冒险家",
+    "复古之王",
+    "超级像素战士",
+    "时间战士",
+    "银河探险家",
+    "超级红白机",
+    "复古复仇者王",
+    "超级时间之神",
+    "银河冒险家",
+    "超级复古传奇",
+    "超级冒险王",
+    "复古之魂",
+    "超级银河战士",
+    "时间探险者",
+    "银河战士之神",
+    "超级复古冒险",
+    "红白机探险王",
+    "超级时间之子",
+    "冒险战士王",
+    "复古战士王",
+    "超级像素传奇",
+    "时间探险王",
+    "银河之魂",
+    "超级复古神话",
+    "超级冒险传奇",
+    "复古战士之神",
+    "超级银河探险家",
+    "时间战士之神",
+    "银河战士传奇",
+    "超级复古之神",
+    "超级冒险神话",
+    "复古探险传奇",
+    "超级像素神话",
+    "时间探险之神",
+    "银河冒险传奇",
+    "超级复古探险家",
+    "超级时间探险者",
+    "复古战士传奇",
+    "超级银河之神",
+    "时间冒险传奇",
+    "银河探险传奇",
+    "超级红白机神话",
+    "超级银河战士之神",
+    "超级复古探险之神",
+    "红白机战士之魂",
+    "超级时间探险家"
+            ];
     }
 }

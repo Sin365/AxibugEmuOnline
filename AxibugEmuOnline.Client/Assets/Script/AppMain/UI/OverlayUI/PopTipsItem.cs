@@ -22,7 +22,7 @@ namespace AxibugEmuOnline.Client
             m_msgText.text = msg;
             Canvas.ForceUpdateCanvases();
 
-            var targetPos = new Vector2(-RectTransform.rect.width,RectTransform.anchoredPosition.y);
+            var targetPos = new Vector2(-RectTransform.rect.width - 20 , RectTransform.anchoredPosition.y);
             DOTween.To(
                 () => RectTransform.anchoredPosition,
                 (value) => RectTransform.anchoredPosition = value,
