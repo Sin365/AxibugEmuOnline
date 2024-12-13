@@ -269,6 +269,9 @@ namespace AxibugEmuOnline.Client.Manager
             Protobuf_Room_Create_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Create_RESP>(reqData);
             mineRoomMiniInfo = msg.RoomMiniInfo;
             InitRePlay();
+            Eventer.Instance.PostEvent(EEvent.OnMineRoomCreated);
+            OverlayManager.PopTip($"房间创建成功");
+
         }
 
         /// <summary>
@@ -281,7 +284,7 @@ namespace AxibugEmuOnline.Client.Manager
         {
             _Protobuf_Room_Join.RoomID = RoomID;
             _Protobuf_Room_Join.PlayerNum = JoinPlayerIdx;
-            App.log.Info($"创建房间");
+            App.log.Info($"加入房间");
             App.network.SendToServer((int)CommandID.CmdRoomJoin, ProtoBufHelper.Serizlize(_Protobuf_Room_Join));
         }
 
@@ -296,8 +299,8 @@ namespace AxibugEmuOnline.Client.Manager
             mineRoomMiniInfo = msg.RoomMiniInfo;
             InitRePlay();
             {
-                OverlayManager.PopTip($"已进入[{msg.RoomMiniInfo.GetHostNickName()}]的房间");
                 Eventer.Instance.PostEvent(EEvent.OnMineJoinRoom);
+                OverlayManager.PopTip($"已进入[{msg.RoomMiniInfo.GetHostNickName()}]的房间");
             }
         }
 
@@ -325,7 +328,7 @@ namespace AxibugEmuOnline.Client.Manager
             ReleaseRePlay();
             mineRoomMiniInfo = null;
             Eventer.Instance.PostEvent(EEvent.OnMineLeavnRoom);
-            OverlayManager.PopTip($"已经离开房间");
+            OverlayManager.PopTip($"你已经离开房间");
         }
 
         void RecvRoomMyRoomStateChange(byte[] reqData)
@@ -344,14 +347,22 @@ namespace AxibugEmuOnline.Client.Manager
                 if (OldPlayer > 0)
                 {
                     Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
+                    UserDataBase oldplayer = App.user.GetUserByUid(OldPlayer);
+                    string oldPlayName = oldplayer != null ? oldplayer.NickName : "Player";
+                    OverlayManager.PopTip($"[{oldPlayName}]离开房间,手柄位:P{i}");
                     if (NewPlayer > 0)//而且害换了一个玩家
-                    { 
+                    {
                         Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
-                        OverlayManager.PopTip($"其他人进入了房间");
+                        mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
+                        OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
                     }
                 }
                 else //之前没人
+                { 
                     Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+                    mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
+                    OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
+                }
             }
         }
 
@@ -459,6 +470,26 @@ namespace AxibugEmuOnline.Client.Manager
             if (roomMiniInfo.Player4UID <= 0) temp.Add(3);
             freeSlots = temp.ToArray();
             return freeSlots.Length > 0;
+        }
+        
+        /// <summary>
+        /// 按照房间玩家下标获取昵称
+        /// </summary>
+        /// <param name="roomMiniInfo"></param>
+        /// <param name="PlayerIndex"></param>
+        /// <param name="PlayerName"></param>
+        /// <returns></returns>
+        public static bool GetPlayerNameByPlayerIdx(this Protobuf_Room_MiniInfo roomMiniInfo,uint PlayerIndex, out string PlayerName)
+        {
+            PlayerName = string.Empty;
+            switch (PlayerIndex)
+            {
+                case 0: PlayerName = roomMiniInfo.Player1UID > 0 ? roomMiniInfo.Player1NickName : null; break;
+                case 1: PlayerName = roomMiniInfo.Player2UID > 0 ? roomMiniInfo.Player2NickName : null; break;
+                case 2: PlayerName = roomMiniInfo.Player3UID > 0 ? roomMiniInfo.Player3NickName : null; break;
+                case 3: PlayerName = roomMiniInfo.Player4UID > 0 ? roomMiniInfo.Player4NickName : null; break;
+            }
+            return string.IsNullOrEmpty(PlayerName);
         }
     }
 }
