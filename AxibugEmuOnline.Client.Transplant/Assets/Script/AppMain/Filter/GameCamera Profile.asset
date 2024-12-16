@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2985742813244632235
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98a055cea8a1355429d1cbb752c4e60e, type: 3}
+  m_Name: MattiasCRT
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+  m_Name: GameCamera Profile
+  m_EditorClassIdentifier: 
+  settings:
+  - {fileID: 117625959343581733}
+  - {fileID: -2985742813244632235}
+  - {fileID: 2118329037781486242}
+--- !u!114 &117625959343581733
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e88ab71ab1a47d048ba0e45b742f6140, type: 3}
+  m_Name: FixingPixelArtGrille
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  MaskStyle:
+    overrideState: 0
+    value: 1
+  DrawResolution:
+    overrideState: 0
+    value: {x: 272, y: 240}
+  HardScan:
+    overrideState: 0
+    value: -10
+  HardPix:
+    overrideState: 0
+    value: -2
+  HardBloomScan:
+    overrideState: 0
+    value: -4
+  HardBloomPix:
+    overrideState: 0
+    value: -1.5
+  BloomAmount:
+    overrideState: 0
+    value: 0.0625
+  Warp:
+    overrideState: 0
+    value: {x: 0.015625, y: 0.041666668}
+  MaskLight:
+    overrideState: 0
+    value: 1.5
+  MaskDrak:
+    overrideState: 0
+    value: 0.5
+--- !u!114 &2118329037781486242
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0a5286ac74b734ba8d1e0cfdfb9c8d, type: 3}
+  m_Name: LCDPostEffect
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
