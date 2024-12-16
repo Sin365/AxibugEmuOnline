@@ -1,4 +1,4 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,6 +26,16 @@ namespace AxibugEmuOnline.Client
         }
         private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<Resp_GameList> callback)
         {
+
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
+            yield return request.SendWebRequest;
+            if (!request.downloadHandler.isDone)
+            {
+                callback.Invoke(null);
+                yield break;
+            }
+
+            /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
             yield return request.SendWebRequest();
 
@@ -33,13 +43,21 @@ namespace AxibugEmuOnline.Client
             {
                 callback.Invoke(null);
                 yield break;
-            }
+            }*/
 
             var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
             callback.Invoke(resp);
         }
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
         {
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
+            yield return request.SendWebRequest;
+            if (!request.downloadHandler.isDone)
+            {
+                callback.Invoke(null);
+                yield break;
+            }
+            /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
             yield return request.SendWebRequest();
 
@@ -48,13 +66,23 @@ namespace AxibugEmuOnline.Client
                 callback.Invoke(null);
                 yield break;
             }
-
+            */
             var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
             callback.Invoke(resp);
         }
 
         public IEnumerator GetNesRomInfo(int RomID, Action<Resp_RomInfo> callback)
         {
+
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/RomInfo?PType={PlatformType.Nes}&RomID={RomID}");
+            yield return request.SendWebRequest;
+            if (!request.downloadHandler.isDone)
+            {
+                callback.Invoke(null);
+                yield break;
+            }
+
+            /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/RomInfo?PType={PlatformType.Nes}&RomID={RomID}");
             yield return request.SendWebRequest();
 
@@ -62,7 +90,7 @@ namespace AxibugEmuOnline.Client
             {
                 callback.Invoke(null);
                 yield break;
-            }
+            }*/
 
             var resp = JsonUtility.FromJson<Resp_RomInfo>(request.downloadHandler.text);
             callback.Invoke(resp);

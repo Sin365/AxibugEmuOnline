@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client
             GetCacheData(url, TextureCacheDirPath, callback);
         }
 
-        /// <summary> ÒÆ³ýÎÄ¼þ»º´æ </summary>
+        /// <summary> ç§»é™¤æ–‡ä»¶ç¼“å­˜ </summary>
         public void ClearCaches()
         {
             if (Directory.Exists(CacheDirPath))
@@ -27,9 +27,28 @@ namespace AxibugEmuOnline.Client
 
         IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
         {
+			AxiHttpProxy.SendDownLoadProxy request = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{url}");
+
+            while (!request.downloadHandler.isDone)
+            {
+                yield return null;
+                //Debug.Log($"ä¸‹è½½è¿›åº¦ï¼š{respInfo.DownLoadPr} ->{respInfo.loadedLenght}/{respInfo.NeedloadedLenght}");
+            }
+            AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler);
+
+            if (request.downloadHandler.Err != null)
+            {
+                Directory.CreateDirectory(path);
+                File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data);
+                callback.Invoke(request.downloadHandler.data);
+            }
+            else
+                callback.Invoke(null);
+
+            /*
             var request = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{url}");
             yield return request.SendWebRequest();
-
+            
             if (request.result == UnityWebRequest.Result.Success)
             {
                 Directory.CreateDirectory(path);
@@ -38,6 +57,7 @@ namespace AxibugEmuOnline.Client
             }
             else
                 callback.Invoke(null);
+            */
         }
 
         private Dictionary<string, object> cachesInMemory = new Dictionary<string, object>();
