@@ -1,4 +1,4 @@
-﻿using AxibugEmuOnline.Client.Manager;
+using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
 using System.Collections;
 using System.IO;
@@ -116,14 +116,21 @@ namespace AxibugEmuOnline.Client.ClientCore
                 yield break;
             }
 
-            UnityWebRequest request = UnityWebRequest.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+			AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+            yield return request.SendWebRequest;
+            if (!request.downloadHandler.isDone)
+                yield break;
+            Resp_CheckStandInfo resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);
+
+            /*UnityWebRequest request = UnityWebRequest.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
                 yield break;
 
             App.log.Debug($"ApiResp => {request.downloadHandler.text}");
-            Resp_CheckStandInfo resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);
+            Resp_CheckStandInfo resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);*/
+
             //需要更新
             if (resp.needUpdateClient == 1)
             {

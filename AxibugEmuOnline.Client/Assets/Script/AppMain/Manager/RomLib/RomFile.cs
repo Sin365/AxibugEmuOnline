@@ -1,8 +1,9 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.ClientCore;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using System.IO;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace AxibugEmuOnline.Client
@@ -12,7 +13,8 @@ namespace AxibugEmuOnline.Client
         private HttpAPI.Resp_RomInfo webData;
         private bool hasLocalFile;
         private EnumPlatform platform;
-        private UnityWebRequest downloadRequest;
+        //private UnityWebRequest downloadRequest;
+        private AxiHttpProxy.SendDownLoadProxy downloadRequest;
 
         public bool IsUserRom { get; private set; }
 
@@ -24,9 +26,14 @@ namespace AxibugEmuOnline.Client
 
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;
+        ///// <summary> 指示是否正在下载Rom文件 </summary>
+        //public bool IsDownloading => downloadRequest != null && downloadRequest.result == UnityWebRequest.Result.InProgress;
+        //public float Progress => IsDownloading ? downloadRequest.downloadProgress : 0;
+
         /// <summary> 指示是否正在下载Rom文件 </summary>
-        public bool IsDownloading => downloadRequest != null && downloadRequest.result == UnityWebRequest.Result.InProgress;
-        public float Progress => IsDownloading ? downloadRequest.downloadProgress : 0;
+        public bool IsDownloading => downloadRequest != null && !downloadRequest.downloadHandler.isDone;
+        public float Progress => IsDownloading ? downloadRequest.downloadHandler.DownLoadPr : 0;
+
 
         public EnumPlatform Platform => platform;
         /// <summary> 指示该Rom信息是否已填充 </summary>
@@ -114,21 +121,42 @@ namespace AxibugEmuOnline.Client
 
         private IEnumerator DownloadRemoteRom(Action<byte[]> callback)
         {
-            downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
-            yield return downloadRequest.SendWebRequest();
+            downloadRequest = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{webData.url}");
+
+			while (!downloadRequest.downloadHandler.isDone)
+			{
+				yield return null;
+				Debug.Log($"下载进度：{downloadRequest.downloadHandler.DownLoadPr} ->{downloadRequest.downloadHandler.loadedLenght}/{downloadRequest.downloadHandler.NeedloadedLenght}");
+			}
+			AxiHttpProxy.ShowAxiHttpDebugInfo(downloadRequest.downloadHandler);
 
             var request = downloadRequest;
             downloadRequest = null;
 
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                callback(null);
-            }
-            else
-            {
-                callback(request.downloadHandler.data);
-            }
-        }
+			if (request.downloadHandler.Err != null)
+			{
+				callback(null);
+			}
+			else
+			{
+				callback(request.downloadHandler.data);
+			}
+
+			//downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
+			//yield return downloadRequest.SendWebRequest();
+
+			//var request = downloadRequest;
+			//downloadRequest = null;
+
+			//if (request.result != UnityWebRequest.Result.Success)
+			//{
+			//	callback(null);
+			//}
+			//else
+			//{
+			//	callback(request.downloadHandler.data);
+			//}
+		}
 
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
