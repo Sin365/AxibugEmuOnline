@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class PrefabComponentLister : EditorWindow
@@ -155,7 +154,7 @@ public class PrefabComponentLister : EditorWindow
 	{
 		AxiPrefabCache cache = AssetDatabase.LoadAssetAtPath<AxiPrefabCache>(cachecfgPath);
 		Dictionary<string, string> tempReplaceDict = new Dictionary<string, string>();
-		foreach(var data in cache.caches)
+		foreach (var data in cache.caches)
 		{
 			tempReplaceDict[data.GUID] = data.ToGUID;
 		}
@@ -200,4 +199,55 @@ public class PrefabComponentLister : EditorWindow
 		}
 	}
 
+
+	[MenuItem("移植工具/[5]UnPack")]
+	public static void UnpackPrefabs()
+	{
+		string[] allAssetPaths = AssetDatabase.GetAllAssetPaths();
+		int prefabCount = 0;
+
+		foreach (string path in allAssetPaths)
+		{
+			if (Path.GetExtension(path).Equals(".prefab"))
+			{
+				Debug.Log($"Unpacking {path}");
+				UnpackPrefab(path);
+				prefabCount++;
+			}
+		}
+
+		Debug.Log($"Unpacked {prefabCount} prefabs.");
+	}
+
+	static void UnpackPrefab(string prefabPath)
+	{
+		GameObject prefabInstance = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+		if (prefabInstance == null)
+		{
+			Debug.LogError($"Failed to load prefab at path: {prefabPath}");
+			return;
+		}
+
+		var obj = GameObject.Instantiate(prefabInstance, null);
+		TraverseHierarchy(obj);
+		PrefabUtility.SaveAsPrefabAsset(obj, prefabPath);
+		GameObject.DestroyImmediate(obj);
+	}
+
+	static void TraverseHierarchy(GameObject obj)
+	{
+		// 检查该对象是否是预制体的实例
+		if (PrefabUtility.IsPartOfPrefabInstance(obj))
+		{
+			// 将预制体实例转换为普通游戏对象
+			PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+			Debug.Log("Prefab instance converted to game object: " + obj.name);
+		}
+
+		// 递归遍历子对象
+		for (int i = 0; i < obj.transform.childCount; i++)
+		{
+			TraverseHierarchy(obj.transform.GetChild(i).gameObject);
+		}
+	}
 }
