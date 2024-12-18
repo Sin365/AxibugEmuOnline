@@ -93,7 +93,7 @@ namespace AxibugEmuOnline.Client
 
             Eventer.Instance.RegisterEvent(EEvent.OnLoginSucceed, OnLoggedIn);
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
-            Eventer.Instance.RegisterEvent(EEvent.OnMineJoinRoom, OnRoomJoin);
+            Eventer.Instance.RegisterEvent(EEvent.OnMineRoomCreated, OnRoomCreated);
 
             gameObject.SetActiveEx(true);
 
@@ -108,7 +108,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private void OnRoomJoin()
+        private void OnRoomCreated()
         {
             m_delayCreateRoom = false;
         }
@@ -152,7 +152,7 @@ namespace AxibugEmuOnline.Client
         {
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
             Eventer.Instance.UnregisterEvent(EEvent.OnLoginSucceed, OnLoggedIn);
-            Eventer.Instance.UnregisterEvent(EEvent.OnMineJoinRoom, OnRoomJoin);
+            Eventer.Instance.UnregisterEvent(EEvent.OnMineRoomCreated, OnRoomCreated);
             App.roomMgr.SendLeavnRoom();
             App.emu.StopGame();
         }
