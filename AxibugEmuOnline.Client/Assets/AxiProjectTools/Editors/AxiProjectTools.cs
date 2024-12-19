@@ -96,7 +96,7 @@ public class AxiProjectTools : EditorWindow
             if (monoCom == null)
                 continue;
             Type monoType = monoCom.GetType();
-            if (!monoType.FullName.Contains("UnityEngine.UI"))
+            if (!monoType.Assembly.FullName.Contains("UnityEngine.UI"))
                 continue;
             // 获取MonoScript资源
             MonoScript monoScript = MonoScript.FromMonoBehaviour(monoCom);
