@@ -2,7 +2,7 @@
     "name": "UIEffect.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:085dc26d74e6f994a924d401ea41a5a8"
+        "UIEffect"
     ],
     "includePlatforms": [
         "Editor"
