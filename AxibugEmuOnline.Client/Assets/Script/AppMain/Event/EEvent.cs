@@ -63,5 +63,10 @@
         /// 服务器等待Step更新
         /// </summary>
         OnRoomWaitStepChange,
+        
+        /// <summary>
+        /// 当房间中手柄位信息发生任何变化时触发,进入房间后也应该触发
+        /// </summary>
+        OnRoomSlotDataChanged, //todo : 实现这个事件
     }
 }

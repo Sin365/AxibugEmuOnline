@@ -18,3 +18,5 @@
 /AxibugEmuOnline.Server/config.cfg
 /AxibugEmuOnline.Server/bin/
 /AxibugEmuOnline.Client/.editorconfig
+/AxibugEmuOnline.Client/*.user
+/AxibugEmuOnline.Client/.idea

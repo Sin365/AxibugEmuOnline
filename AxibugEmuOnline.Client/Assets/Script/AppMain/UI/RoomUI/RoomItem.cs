@@ -1,28 +1,25 @@
-using AxibugEmuOnline.Client.ClientCore;
+Ôªøusing AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = System.Diagnostics.Debug;
 
 namespace AxibugEmuOnline.Client
 {
     public class RoomItem : MenuItem, IVirtualItem
     {
-        [SerializeField]
-        Image m_roomPreview;
-        [SerializeField]
-        Slider m_downloadProgress;
-        [SerializeField]
-        GameObject m_downloadingFlag;
-        [SerializeField]
-        GameObject m_romReadyFlag;
+        [SerializeField] Image m_roomPreview;
+        [SerializeField] Slider m_downloadProgress;
+        [SerializeField] GameObject m_downloadingFlag;
+        [SerializeField] GameObject m_romReadyFlag;
 
         private RomFile m_romFile;
 
         public int Index { get; set; }
-        public int roomID { get; private set; }
+        public int RoomID { get; private set; }
 
         protected override void Awake()
         {
@@ -33,7 +30,7 @@ namespace AxibugEmuOnline.Client
 
         private void OnRoomSignelUpdate(int roomID)
         {
-            if (this.roomID != roomID) return;
+            if (this.RoomID != roomID) return;
 
             if (App.roomMgr.GetRoomListMiniInfo(roomID, out var roomInfo))
                 UpdateUI(roomInfo);
@@ -41,8 +38,10 @@ namespace AxibugEmuOnline.Client
 
         public void SetData(object data)
         {
-            var roomInfo = data as Protobuf_Room_MiniInfo;
-            roomID = roomInfo.RoomID;
+            Debug.Assert(data is Protobuf_Room_MiniInfo);
+            
+            var roomInfo = (Protobuf_Room_MiniInfo)data;
+            RoomID = roomInfo.RoomID;
 
             UpdateUI(roomInfo);
         }
@@ -58,20 +57,19 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                if (!App.roomMgr.GetRoomListMiniInfo(roomID, out Protobuf_Room_MiniInfo MiniInfo))
+                if (!App.roomMgr.GetRoomListMiniInfo(RoomID, out Protobuf_Room_MiniInfo MiniInfo))
                 {
-                    OverlayManager.PopTip("∑øº‰≤ª¥Ê‘⁄");
+                    OverlayManager.PopTip("ÊàøÈó¥‰∏çÂ≠òÂú®");
                     return false;
                 }
 
-                int[] freeSlots = null;
-                if (!MiniInfo.GetFreeSlot(out freeSlots))
+                if (!MiniInfo.GetFreeSlot(out var freeSlots))
                 {
-                    OverlayManager.PopTip("Œﬁø’œ–Œª÷√");
+                    OverlayManager.PopTip("Êó†Á©∫Èó≤‰ΩçÁΩÆ");
                     return false;
                 }
 
-                App.roomMgr.SendJoinRoom(roomID, freeSlots[0]);
+                App.roomMgr.SendJoinRoom(RoomID, freeSlots[0]);
                 return true;
             }
         }
@@ -80,12 +78,12 @@ namespace AxibugEmuOnline.Client
         {
             var hostNick = roomInfo.GetHostNickName();
             roomInfo.GetRoomPlayers(out var cur, out var max);
-            SetBaseInfo("--", $"<b>{hostNick}</b>µƒ∑øº‰", $"{cur}/{max}");
+            SetBaseInfo("--", $"<b>{hostNick}</b>ÁöÑÊàøÈó¥", $"{cur}/{max}");
             SetIcon(null);
 
             roomInfo.FetchRomFileInRoomInfo(EnumPlatform.NES, (room, romFile) =>
             {
-                if (room.RoomID != roomID) return;
+                if (room.RoomID != RoomID) return;
 
                 m_romFile = romFile;
                 Txt.text = romFile.Alias;
