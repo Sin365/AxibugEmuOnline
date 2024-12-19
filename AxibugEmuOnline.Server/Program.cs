@@ -38,15 +38,17 @@ namespace AxibugEmuOnline.Server
                                 AppSrv.g_Log.Info($"input p3:{room.mCurrInputData.p3_byte}");
                                 AppSrv.g_Log.Info($"input p4:{room.mCurrInputData.p4_byte}");
                                 AppSrv.g_Log.Info($"GetPlayerCount:{room.GetPlayerCount()}");
-                                for (int i = 0; i < 4; i++)
+                                for (int i = 0; i < room.PlayerSlot.Length; i++)
                                 {
                                     AppSrv.g_Log.Info($"    P{i}：");
-                                    if (room.GetPlayerClientByIdx(i, out ClientInfo _c))
+
+                                    if (AppSrv.g_ClientMgr.GetClientByUID(room.PlayerSlot[i].UID, out ClientInfo _c))
                                     {
-                                        AppSrv.g_Log.Info($"    UID->{_c.UID}");
+                                        AppSrv.g_Log.Info($"    UID->{room.PlayerSlot[i].UID}");
                                         AppSrv.g_Log.Info($"    NickName->{_c.NickName}");
                                         AppSrv.g_Log.Info($"    AveNetDelay->{_c.AveNetDelay}");
-                                    }
+										AppSrv.g_Log.Info($"    LocalJoyIdx->{room.PlayerSlot[i].LocalJoyIdx}");
+									}
                                     else
                                     {
                                         AppSrv.g_Log.Info($"    None");
