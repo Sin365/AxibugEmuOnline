@@ -1,15 +1,21 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
+﻿using System.Collections.Generic;
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
-using System;
-using System.Collections.Generic;
+using AxibugProtobuf;
 
 namespace AxibugEmuOnline.Client
 {
     public class InGameUI : CommandExecuter
     {
+        private bool m_delayCreateRoom;
+        private object m_state;
+        private StepPerformer m_stepPerformer;
+
+        private readonly List<OptionMenu> menus = new();
         public static InGameUI Instance { get; private set; }
 
-        public RomFile RomFile => m_rom;
+        public RomFile RomFile { get; private set; }
+
         public override bool Enable => gameObject.activeInHierarchy;
 
         /// <summary> 指示该游戏实例是否处于联机模式 </summary>
@@ -19,18 +25,13 @@ namespace AxibugEmuOnline.Client
             {
                 if (!App.user.IsLoggedIn) return false;
                 if (App.roomMgr.mineRoomMiniInfo == null) return false;
-                if (App.roomMgr.RoomState <= AxibugProtobuf.RoomGameState.OnlyHost) return false;
+                if (App.roomMgr.RoomState <= RoomGameState.OnlyHost) return false;
 
                 return true;
             }
         }
 
-        private RomFile m_rom;
         public IEmuCore Core { get; private set; }
-        private object m_state;
-
-        private List<OptionMenu> menus = new List<OptionMenu>();
-        private StepPerformer m_stepPerformer;
 
         protected override void Awake()
         {
@@ -59,31 +60,31 @@ namespace AxibugEmuOnline.Client
         {
             m_state = state;
         }
+
         /// <summary>
-        /// 读取快速快照
+        ///     读取快速快照
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public object GetQuickState()
         {
             return m_state;
         }
 
-        private bool m_delayCreateRoom;
         public void Show(RomFile currentRom, IEmuCore core)
         {
             m_delayCreateRoom = false;
-            m_state = null;//清空游戏快照
+            m_state = null; //清空游戏快照
             CommandDispatcher.Instance.RegistController(this);
 
-            m_rom = currentRom;
+            RomFile = currentRom;
             Core = core;
             m_stepPerformer.Reset();
 
             if (!App.roomMgr.InRoom)
             {
                 if (App.user.IsLoggedIn)
-                    App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
+                {
+                    App.roomMgr.SendCreateRoom(RomFile.ID, 0, RomFile.Hash);
+                }
                 else
                 {
                     m_delayCreateRoom = true;
@@ -115,10 +116,7 @@ namespace AxibugEmuOnline.Client
 
         private void OnLoggedIn()
         {
-            if (m_delayCreateRoom)
-            {
-                App.roomMgr.SendCreateRoom(m_rom.ID, 0, m_rom.Hash);
-            }
+            if (m_delayCreateRoom) App.roomMgr.SendCreateRoom(RomFile.ID, 0, RomFile.Hash);
         }
 
         private void OnServerStepUpdate(int step)
@@ -138,16 +136,17 @@ namespace AxibugEmuOnline.Client
         {
             OverlayManager.PopSideBar(menus, 0, PopMenu_OnHide);
 
-            if (!IsNetPlay)//单人模式暂停模拟器
+            if (!IsNetPlay) //单人模式暂停模拟器
                 Core.Pause();
         }
 
         //菜单关闭时候
         private void PopMenu_OnHide()
         {
-            if (!IsNetPlay)//单人模式恢复模拟器的暂停
+            if (!IsNetPlay) //单人模式恢复模拟器的暂停
                 Core.Resume();
         }
+
         public void QuitGame()
         {
             Eventer.Instance.UnregisterEvent<int>(EEvent.OnRoomWaitStepChange, OnServerStepUpdate);
