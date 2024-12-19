@@ -2,7 +2,7 @@
     "name": "ItemPresentEditor",
     "rootNamespace": "",
     "references": [
-        "GUID:3fe77f1eed9fc0847a86648f644fe815"
+        "AxibugEmuOnline.Client"
     ],
     "includePlatforms": [
         "Editor"
