@@ -15,7 +15,7 @@ public class AxiPrefabCache : ScriptableObject
 public class AxiPrefabCache_Com2GUID
 {
     public string SrcFullName;
-	public string SrcName;
+    public string SrcName;
 	public string GUID;
 	public string ToName;
 	public string ToPATH;

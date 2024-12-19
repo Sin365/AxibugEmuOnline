@@ -92,6 +92,14 @@ public class AxiProjectTools : EditorWindow
         for (int i = 0; i < comCount; i++)
         {
             var com = prefabRoot.GetComponentAtIndex(i);
+            if (com == null)
+                continue;
+
+            if (com.name.Contains("VideoPlayer"))
+            {
+                
+            }
+
             MonoBehaviour monoCom = com as MonoBehaviour;
             if (monoCom == null)
                 continue;
@@ -127,15 +135,15 @@ public class AxiProjectTools : EditorWindow
     [MenuItem("Axibug移植工具/[2]生成中间脚本代码")]
     public static void Part2()
     {
-        if (Directory.Exists(outCsDir))
-            Directory.Delete(outCsDir);
+        if (UnityEngine.Windows.Directory.Exists(outCsDir))
+            UnityEngine.Windows.Directory.Delete(outCsDir);
         Directory.CreateDirectory(outCsDir);
         AxiPrefabCache cache = AssetDatabase.LoadAssetAtPath<AxiPrefabCache>(cachecfgPath);
         foreach (var data in cache.caches)
         {
             string toName = "Axi" + data.SrcName;
             string toPath = outCsDir + toName + ".cs";
-            string codeStr = "using UnityEngine.UI; public class " + toName + " : " + data.SrcName + " {}";
+            string codeStr = "namespace AxibugCom { public class " + toName + " : " + data.SrcFullName + " {} }";
             try
             {
                 System.IO.File.WriteAllText(toPath, codeStr);
