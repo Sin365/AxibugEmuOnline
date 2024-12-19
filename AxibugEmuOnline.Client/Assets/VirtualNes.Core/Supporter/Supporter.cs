@@ -5,6 +5,7 @@ namespace VirtualNes.Core
     public static class Supporter
     {
         private static ISupporterImpl s_support;
+
         public static void Setup(ISupporterImpl supporter)
         {
             s_support = supporter;
@@ -44,6 +45,7 @@ namespace VirtualNes.Core
         {
             s_support.SaveFile(fileData, directPath, fileName);
         }
+
         public static Stream OpenFile(string directPath, string fileName)
         {
             return s_support.OpenFile(directPath, fileName);
@@ -64,6 +66,11 @@ namespace VirtualNes.Core
             s_support.SampleInput(frameCount);
         }
 
+        public static IControllerSetuper GetControllerSetuper()
+        {
+            return s_support.GetControllerSetuper();
+        }
+
         public static EmulatorConfig Config => s_support.Config;
     }
 
@@ -82,5 +89,21 @@ namespace VirtualNes.Core
         bool TryGetMapperNo(ROM rom, out int mapperNo);
         ControllerState GetControllerState();
         void SampleInput(uint frameCount);
+        IControllerSetuper GetControllerSetuper();
+    }
+
+    /// <summary>
+    /// 负责管理本地控制器与具体游戏之间的槽位分配
+    /// </summary>
+    public interface IControllerSetuper
+    {
+        /// <summary>
+        /// 设置本地手柄与游戏手柄槽位的映射
+        /// </summary>
+        void SetConnect(
+            uint? con0ToSlot = null,
+            uint? con1ToSlot = null,
+            uint? con2ToSlot = null,
+            uint? con3ToSlot = null);
     }
 }

@@ -6,7 +6,7 @@ namespace AxibugEmuOnline.Client
 {
     public class StepPerformer
     {
-        private InGameUI m_inGameUI;
+        private readonly InGameUI m_inGameUI;
         private int m_step = -1;
 
         public StepPerformer(InGameUI inGameUI)

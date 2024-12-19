@@ -1,44 +1,61 @@
-using AxibugEmuOnline.Client.ClientCore;
-using System;
+ï»¿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
+using AxibugEmuOnline.Client.ClientCore;
+using UnityEditor;
 using UnityEngine;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
+using Debug = System.Diagnostics.Debug;
 
 namespace AxibugEmuOnline.Client
 {
     public class NesEmulator : MonoBehaviour, IEmuCore
     {
-        public EnumPlatform Platform => EnumPlatform.NES;
-
-        //Ä£ÄâÆ÷ºËĞÄÊµÀı»¯¶ÔÏó
+        public VideoProvider VideoProvider;
+        public AudioProvider AudioProvider;
+        
+        //æ¨¡æ‹Ÿå™¨æ ¸å¿ƒå®ä¾‹åŒ–å¯¹è±¡
         public NES NesCore { get; private set; }
 
-        //ÊÓÆµÇı¶¯£¨ÕâÀïÊÇUnity½ÓÊÕÄ£ÄâÆ÷»­ÃæÊı¾İµÄ²¢äÖÈ¾³öÀ´µÄÊµÏÖ£©
-        public VideoProvider VideoProvider;
-        //ÒôÆµÇı¶¯£¨ÕâÀïÊÇUnity½ÓÊÕÄ£ÄâÆ÷ÒôÆµÊı¾İµÄ²¢²¥·Å³öÀ´µÄÊµÏÖ£©
-        public AudioProvider AudioProvider;
-        //ÊÇ·ñÔİÍ£
-        private bool m_bPause;
-        /// <summary> ÊÇ·ñÔİÍ£ </summary>
-        public bool IsPause => m_bPause;
+        /// <summary> æ˜¯å¦æš‚åœ </summary>
+        public bool IsPause { get; private set; }
 
         private void Start()
         {
-            //¹Ø±Õ´¹Ö±Í¬²½
+            //å…³é—­å‚ç›´åŒæ­¥
             QualitySettings.vSyncCount = 0;
-            //ÉèÎª60Ö¡
+            //è®¾ä¸º60å¸§
             Application.targetFrameRate = 60;
             VideoProvider.NesEmu = this;
             AudioProvider.NesEmu = this;
         }
 
         /// <summary>
-        /// Ö¸¶¨ROM¿ªÊ¼ÓÎÏ·
+        ///     Unityçš„é€å¸§é©±åŠ¨
         /// </summary>
-        /// <param name="rom"></param>
+        private unsafe void Update()
+        {
+            if (IsPause) return;
+
+            if (NesCore != null)
+            {
+                PushEmulatorFrame();
+                if (InGameUI.Instance.IsNetPlay)
+                    FixEmulatorFrame();
+
+                var screenBuffer = NesCore.ppu.GetScreenPtr();
+                VideoProvider.SetDrawData(screenBuffer);
+            }
+        }
+
+        public EnumPlatform Platform => EnumPlatform.NES;
+
+        /// <summary>
+        /// æŒ‡å®šROMå¼€å§‹æ¸¸æˆ
+        /// </summary>
         public void StartGame(RomFile rom)
         {
             StopGame();
@@ -59,78 +76,14 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        /// <summary>
-        /// Í£Ö¹ÓÎÏ·
-        /// </summary>
-        public void StopGame()
-        {
-            NesCore?.Dispose();
-            NesCore = null;
-        }
-
-        /// <summary>
-        /// UnityµÄÖğÖ¡Çı¶¯
-        /// </summary>
-        private unsafe void Update()
-        {
-            if (m_bPause) return;
-
-            if (NesCore != null)
-            {
-                PushEmulatorFrame();
-                if (InGameUI.Instance.IsNetPlay)
-                    FixEmulatorFrame();
-
-                var screenBuffer = NesCore.ppu.GetScreenPtr();
-                VideoProvider.SetDrawData(screenBuffer);
-            }
-        }
-
-        //ÊÇ·ñÌøÖ¡£¬µ¥»úÎŞĞ§
-        private void FixEmulatorFrame()
-        {
-            var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-
-            if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
-            for (int i = 0; i < skipFrameCount; i++)
-            {
-                if (!PushEmulatorFrame()) break;
-            }
-        }
-
-        ControllerState lastState;
-        //ÍÆ½øÖ¡
-        private bool PushEmulatorFrame()
-        {
-            Supporter.SampleInput(NesCore.FrameCount);
-            var controlState = Supporter.GetControllerState();
-
-            //Èç¹ûÎ´ÊÕµ½InputÊı¾İ,ºËĞÄÖ¡²»ÍÆ½ø
-            if (!controlState.valid) return false;
-
-#if UNITY_EDITOR
-            if (controlState != lastState)
-            {
-                App.log.Info($"[LOCALDEBUG]{NesCore.FrameCount}-->{controlState}");
-            }
-#endif
-
-            NesCore.pad.Sync(controlState);
-            NesCore.EmulateFrame(true);
-
-            lastState = controlState;
-
-            return true;
-        }
-
         public void Pause()
         {
-            m_bPause = true;
+            IsPause = true;
         }
 
         public void Resume()
         {
-            m_bPause = false;
+            IsPause = false;
         }
 
 
@@ -155,7 +108,7 @@ namespace AxibugEmuOnline.Client
         }
 
         /// <summary>
-        /// »ñÈ¡¼´Ê±´æµµ
+        ///     è·å–å³æ—¶å­˜æ¡£
         /// </summary>
         /// <returns></returns>
         public byte[] GetStateBytes()
@@ -164,21 +117,68 @@ namespace AxibugEmuOnline.Client
         }
 
         /// <summary>
-        /// ¼ÓÔØ¼´Ê±´æµµ
+        ///     åŠ è½½å³æ—¶å­˜æ¡£
         /// </summary>
-        /// <param name="data"></param>
+        /// <param
+        ///     name="data">
+        /// </param>
         public void LoadStateFromBytes(byte[] data)
         {
-            State st = new State();
+            var st = new State();
             st.FromByte(data);
             NesCore.LoadState(st);
         }
 
         public uint Frame => NesCore.FrameCount;
 
+        /// <summary>
+        ///     åœæ­¢æ¸¸æˆ
+        /// </summary>
+        public void StopGame()
+        {
+            NesCore?.Dispose();
+            NesCore = null;
+        }
+
+        
+#if UNITY_EDITOR
+        private ControllerState m_lastState;
+#endif
+        //æ˜¯å¦è·³å¸§ï¼Œå•æœºæ— æ•ˆ
+        private void FixEmulatorFrame()
+        {
+            var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
+
+            if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
+            for (var i = 0; i < skipFrameCount; i++)
+                if (!PushEmulatorFrame())
+                    break;
+        }
+
+        //æ¨è¿›å¸§
+        private bool PushEmulatorFrame()
+        {
+            Supporter.SampleInput(NesCore.FrameCount);
+            var controlState = Supporter.GetControllerState();
+
+            //å¦‚æœæœªæ”¶åˆ°Inputæ•°æ®,æ ¸å¿ƒå¸§ä¸æ¨è¿›
+            if (!controlState.valid) return false;
+
+#if UNITY_EDITOR
+            if (controlState != m_lastState) App.log.Info($"[LOCALDEBUG]{NesCore.FrameCount}-->{controlState}");
+            m_lastState = controlState;
+#endif
+
+            NesCore.pad.Sync(controlState);
+            NesCore.EmulateFrame(true);
+
+
+            return true;
+        }
+
 #if UNITY_EDITOR
         /// <summary>
-        /// ±à¼­Æ÷ÓÃ
+        ///     ç¼–è¾‘å™¨ç”¨
         /// </summary>
         [Conditional("UNITY_EDITOR")]
         [ContextMenu("ImportNesDB")]
@@ -189,20 +189,21 @@ namespace AxibugEmuOnline.Client
 
             var xmlStr = File.ReadAllText("nes20db.xml");
             var xml = XDocument.Parse(xmlStr);
-            var games = xml.Element("nes20db").Elements("game");
+            var games = xml.Element("nes20db")?.Elements("game");
+            Debug.Assert(games != null, nameof(games) + " != null");
             foreach (var game in games)
             {
-                var crcStr = game.Element("rom").Attribute("crc32").Value;
-                var crc = uint.Parse($"{crcStr}", System.Globalization.NumberStyles.HexNumber);
+                var crcStr = game.Element("rom")?.Attribute("crc32")?.Value;
+                var crc = uint.Parse($"{crcStr}", NumberStyles.HexNumber);
 
-                var mapper = int.Parse($"{game.Element("pcb").Attribute("mapper").Value}");
+                var mapper = int.Parse($"{game.Element("pcb")?.Attribute("mapper")?.Value}");
 
                 if (mapper > 255) continue;
                 db.AddInfo(new RomDB.RomInfo { CRC = crc, Mapper = mapper });
             }
 
-            UnityEditor.EditorUtility.SetDirty(db);
-            UnityEditor.AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(db);
+            AssetDatabase.SaveAssets();
         }
 
 #endif
