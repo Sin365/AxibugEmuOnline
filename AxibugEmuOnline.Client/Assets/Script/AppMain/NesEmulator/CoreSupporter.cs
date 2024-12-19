@@ -129,6 +129,11 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public IControllerSetuper GetControllerSetuper()
+        {
+            return ControllerMapper;
+        }
+
         public ControllerState FromNet(AxiReplay.ReplayStep step)
         {
             var temp = new ServerInputSnapShot();

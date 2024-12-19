@@ -493,6 +493,26 @@ namespace AxibugEmuOnline.Client.Manager
         }
         
         /// <summary>
+        /// 指定uid和该uid的本地手柄序号,获取占用的手柄位
+        /// </summary>
+        public static bool GetPlayerSlotIdxByUid(this Protobuf_Room_MiniInfo roomMiniInfo, long uid ,int controllerIndex, out uint? slotID)
+        {
+            slotID = null;
+            
+            //controllerIndex取值返回[0,3],这个序号代表玩家本地的手柄编号
+            //todo : 根据uid和controllerIndex 返回占用的位置
+            
+            //目前未实现,所有非0号位置的手柄,都返回false
+            if (controllerIndex != 0) return false;
+            
+            if (roomMiniInfo.Player1UID == uid) slotID = 0;
+            if (roomMiniInfo.Player2UID == uid) slotID = 1;
+            if (roomMiniInfo.Player3UID == uid) slotID = 2;
+            if (roomMiniInfo.Player4UID == uid) slotID = 3;
+            return true;
+        }
+        
+        /// <summary>
         /// 按照房间玩家下标获取昵称
         /// </summary>
         /// <param name="roomMiniInfo"></param>

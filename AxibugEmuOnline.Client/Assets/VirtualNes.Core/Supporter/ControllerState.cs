@@ -2,7 +2,7 @@
 
 namespace VirtualNes.Core
 {
-    public struct ControllerState
+    public struct ControllerState : IEquatable<ControllerState>
     {
         public uint raw0;
         public uint raw1;
@@ -11,19 +11,49 @@ namespace VirtualNes.Core
 
         public bool valid;
 
-        public ControllerState(
-            EnumButtonType player0_buttons,
-            EnumButtonType player1_buttons,
-            EnumButtonType player2_buttons,
-            EnumButtonType player3_buttons)
+        public ControllerState(EnumButtonType[] states)
         {
-            raw0 = (uint)player0_buttons;
-            raw1 = (uint)player1_buttons;
-            raw2 = (uint)player2_buttons;
-            raw3 = (uint)player3_buttons;
+            raw0 = (uint)states[0];
+            raw1 = (uint)states[1];
+            raw2 = (uint)states[2];
+            raw3 = (uint)states[3];
             valid = true;
         }
+        
+        public bool HasButton(int player, EnumButtonType button)
+        {
+            uint raw = player switch
+            {
+                0 => raw0,
+                1 => raw1,
+                2 => raw2,
+                3 => raw3,
+                _ => 0
+            };
+            return (raw & (uint)button) == (uint)button;
+        }
 
+        public override string ToString()
+        {
+            return $"{raw0}|{raw1}|{raw2}|{raw3}";
+        }
+
+        #region Impl_Equals
+        public bool Equals(ControllerState other)
+        {
+            return raw0 == other.raw0 && raw1 == other.raw1 && raw2 == other.raw2 && raw3 == other.raw3 && valid == other.valid;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ControllerState other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(raw0, raw1, raw2, raw3, valid);
+        }
+        
         public static bool operator ==(ControllerState left, ControllerState right)
         {
             return
@@ -37,24 +67,7 @@ namespace VirtualNes.Core
         {
             return !(left == right);
         }
-
-        public override string ToString()
-        {
-            return $"{raw0}|{raw1}|{raw2}|{raw3}";
-        }
-
-        public bool HasButton(int player, EnumButtonType button)
-        {
-            uint raw = 0;
-            switch (player)
-            {
-                case 0: raw = raw0; break;
-                case 1: raw = raw1; break;
-                case 2: raw = raw2; break;
-                case 3: raw = raw3; break;
-            }
-            return (raw & (uint)button) == (uint)button;
-        }
+        #endregion
     }
 
     [Flags]

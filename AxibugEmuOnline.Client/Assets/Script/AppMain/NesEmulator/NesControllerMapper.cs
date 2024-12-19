@@ -3,77 +3,69 @@ using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
-    public class NesControllerMapper
+    public class NesControllerMapper : IControllerSetuper
     {
-        public MapperSetter Player1 = new MapperSetter(1);
-        public MapperSetter Player2 = new MapperSetter(2);
-        public MapperSetter Player3 = new MapperSetter(3);
-        public MapperSetter Player4 = new MapperSetter(4);
+        public Controller Controller0 { get; } = new(0);
+        public Controller Controller1 { get; } = new(1);
+        public Controller Controller2 { get; } = new(2);
+        public Controller Controller3 { get; } = new(3);
+
+        private readonly EnumButtonType[] m_states = new EnumButtonType[4];
 
         public ControllerState CreateState()
         {
-            var state1 = Player1.GetButtons();
-            var state2 = Player2.GetButtons();
-            var state3 = Player3.GetButtons();
-            var state4 = Player4.GetButtons();
+            m_states[0] = m_states[1] = m_states[2] = m_states[3] = 0;
 
-            var result = new ControllerState(state1, state2, state3, state4);
+            if (Controller0.ConnectSlot.HasValue) m_states[Controller0.ConnectSlot.Value] = Controller0.GetButtons();
+            if (Controller1.ConnectSlot.HasValue) m_states[Controller1.ConnectSlot.Value] = Controller1.GetButtons();
+            if (Controller2.ConnectSlot.HasValue) m_states[Controller2.ConnectSlot.Value] = Controller2.GetButtons();
+            if (Controller3.ConnectSlot.HasValue) m_states[Controller3.ConnectSlot.Value] = Controller3.GetButtons();
+
+            var result = new ControllerState(m_states);
             return result;
         }
 
-        public class Mapper
+        /// <summary>
+        /// Nes控制器
+        /// </summary>
+        public class Controller
         {
-            MapperSetter m_setter;
-            EnumButtonType m_buttonType;
-            IKeyListener m_keyListener;
-            int m_controllerIndex => m_setter.ControllerIndex;
-
-            public Mapper(MapperSetter setter, EnumButtonType buttonType)
-            {
-                m_setter = setter;
-                m_buttonType = buttonType;
-
-                loadConfig();
-            }
-
-            private void loadConfig()
-            {
-                m_keyListener = MapperSetter.GetKey(m_controllerIndex, m_buttonType);
-
-            }
-
-            public EnumButtonType SampleKey()
-            {
-                return m_keyListener.IsPressing() ? m_buttonType : 0;
-            }
-        }
-
-        public class MapperSetter
-        {
-            /// <summary> 控制器序号(手柄1,2,3,4) </summary>
+            /// <summary>
+            /// 控制器编号
+            /// <para><c>此编号并非对应游戏中的player1,player2,player3,player4,仅仅作为本地4个手柄的实例</c></para>
+            /// <value>[0,3]</value>
+            /// </summary>
             public int ControllerIndex { get; }
-            public Mapper UP { get; private set; }
-            public Mapper DOWN { get; private set; }
-            public Mapper LEFT { get; private set; }
-            public Mapper RIGHT { get; private set; }
-            public Mapper A { get; private set; }
-            public Mapper B { get; private set; }
-            public Mapper SELECT { get; private set; }
-            public Mapper START { get; private set; }
-            public Mapper MIC { get; private set; }
 
-            public MapperSetter(int controllerIndex)
+            /// <summary>
+            /// 指示该手柄连接的手柄插槽
+            /// <para><c>这个值代表了该手柄在实际游戏中控制的Player</c></para>
+            /// <value>[0,3] 例外:为空代表未连接</value>
+            /// </summary>
+            public uint? ConnectSlot { get; set; }
+
+            public Button UP { get; }
+            public Button DOWN { get; }
+            public Button LEFT { get; }
+            public Button RIGHT { get; }
+            public Button A { get; }
+            public Button B { get; }
+            public Button SELECT { get; }
+            public Button START { get; }
+            public Button MIC { get; }
+
+            public Controller(int controllerIndex)
             {
                 ControllerIndex = controllerIndex;
-                UP = new Mapper(this, EnumButtonType.UP);
-                DOWN = new Mapper(this, EnumButtonType.DOWN);
-                LEFT = new Mapper(this, EnumButtonType.LEFT);
-                RIGHT = new Mapper(this, EnumButtonType.RIGHT);
-                A = new Mapper(this, EnumButtonType.A);
-                B = new Mapper(this, EnumButtonType.B);
-                SELECT = new Mapper(this, EnumButtonType.SELECT);
-                START = new Mapper(this, EnumButtonType.START);
-                MIC = new Mapper(this, EnumButtonType.MIC);
+                UP = new Button(this, EnumButtonType.UP);
+                DOWN = new Button(this, EnumButtonType.DOWN);
+                LEFT = new Button(this, EnumButtonType.LEFT);
+                RIGHT = new Button(this, EnumButtonType.RIGHT);
+                A = new Button(this, EnumButtonType.A);
+                B = new Button(this, EnumButtonType.B);
+                SELECT = new Button(this, EnumButtonType.SELECT);
+                START = new Button(this, EnumButtonType.START);
+                MIC = new Button(this, EnumButtonType.MIC);
             }
 
             public EnumButtonType GetButtons()
@@ -93,7 +85,7 @@ namespace AxibugEmuOnline.Client
                 return res;
             }
 
-            public static IKeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
+            public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
             {
                 string configKey = $"NES_{controllerInput}_{nesConBtnType}";
                 if (PlayerPrefs.HasKey(configKey))
@@ -102,62 +94,60 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
-                    var defaultKeyCode = GetDefaultKey();
+                    var defaultKeyCode = KeyListener.GetDefaultKey(controllerInput, nesConBtnType);
                     PlayerPrefs.SetString(configKey, defaultKeyCode.ToString());
                     return defaultKeyCode;
                 }
-
-                KeyListener GetDefaultKey()
-                {
-                    switch (controllerInput)
-                    {
-                        case 1:
-                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener(KeyCode.A);
-                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener(KeyCode.D);
-                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener(KeyCode.W);
-                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener(KeyCode.S);
-                            if (nesConBtnType == EnumButtonType.START) return new KeyListener(KeyCode.B);
-                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener(KeyCode.V);
-                            if (nesConBtnType == EnumButtonType.A) return new KeyListener(KeyCode.K);
-                            if (nesConBtnType == EnumButtonType.B) return new KeyListener(KeyCode.J);
-                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener(KeyCode.M);
-                            break;
-                        case 2:
-                            if (nesConBtnType == EnumButtonType.LEFT) return new KeyListener(KeyCode.Delete);
-                            if (nesConBtnType == EnumButtonType.RIGHT) return new KeyListener(KeyCode.PageDown);
-                            if (nesConBtnType == EnumButtonType.UP) return new KeyListener(KeyCode.Home);
-                            if (nesConBtnType == EnumButtonType.DOWN) return new KeyListener(KeyCode.End);
-                            if (nesConBtnType == EnumButtonType.START) return new KeyListener(KeyCode.PageUp);
-                            if (nesConBtnType == EnumButtonType.SELECT) return new KeyListener(KeyCode.Insert);
-                            if (nesConBtnType == EnumButtonType.A) return new KeyListener(KeyCode.Keypad5);
-                            if (nesConBtnType == EnumButtonType.B) return new KeyListener(KeyCode.Keypad4);
-                            if (nesConBtnType == EnumButtonType.MIC) return new KeyListener(KeyCode.KeypadPeriod);
-                            break;
-                    }
-
-                    return default;
-                }
-
             }
         }
 
-        public interface IKeyListener
+        /// <summary>
+        /// NES控制器按键类
+        /// </summary>
+        public class Button
         {
-            bool IsPressing();
+            /// <summary> 所属控制器 </summary>
+            readonly Controller m_hostController;
+
+            /// <summary> 按键 </summary>
+            readonly EnumButtonType m_buttonType;
+
+            /// <summary> 按键监听器 </summary>
+            KeyListener m_keyListener;
+
+            public Button(Controller controller, EnumButtonType buttonType)
+            {
+                m_hostController = controller;
+                m_buttonType = buttonType;
+
+                CreateListener();
+            }
+
+            /// <summary>
+            /// 采集按钮按下状态
+            /// </summary>
+            /// <returns></returns>
+            public EnumButtonType SampleKey()
+            {
+                return m_keyListener.IsPressing() ? m_buttonType : 0;
+            }
+
+            private void CreateListener()
+            {
+                m_keyListener = Controller.GetKey(m_hostController.ControllerIndex, m_buttonType);
+            }
         }
 
-        public struct KeyListener : IKeyListener
+        public readonly struct KeyListener
         {
-            private KeyCode m_key;
+            private readonly KeyCode m_key;
 
             public KeyListener(KeyCode key)
             {
                 m_key = key;
             }
 
-            /// <summary>
-            /// 从配置表字符串构建
-            /// </summary>
+            /// <summary> 从配置字符串构建 </summary>
             public KeyListener(string confStr)
             {
                 m_key = KeyCode.None;
@@ -166,19 +156,83 @@ namespace AxibugEmuOnline.Client
                     m_key = (KeyCode)result;
             }
 
-            public readonly bool IsPressing()
+            public bool IsPressing()
             {
-                if (Input.GetKey(m_key)) return true;
-
-                return false;
+                return Input.GetKey(m_key);
             }
 
             public override string ToString()
             {
                 return ((int)(m_key)).ToString();
             }
+
+            public static KeyListener GetDefaultKey(int controllerIndex, EnumButtonType nesConBtnType)
+            {
+                switch (controllerIndex)
+                {
+                    case 1:
+                        switch (nesConBtnType)
+                        {
+                            case EnumButtonType.LEFT:
+                                return new KeyListener(KeyCode.A);
+                            case EnumButtonType.RIGHT:
+                                return new KeyListener(KeyCode.D);
+                            case EnumButtonType.UP:
+                                return new KeyListener(KeyCode.W);
+                            case EnumButtonType.DOWN:
+                                return new KeyListener(KeyCode.S);
+                            case EnumButtonType.START:
+                                return new KeyListener(KeyCode.B);
+                            case EnumButtonType.SELECT:
+                                return new KeyListener(KeyCode.V);
+                            case EnumButtonType.A:
+                                return new KeyListener(KeyCode.K);
+                            case EnumButtonType.B:
+                                return new KeyListener(KeyCode.J);
+                            case EnumButtonType.MIC:
+                                return new KeyListener(KeyCode.M);
+                        }
+
+                        break;
+                    case 2:
+                        switch (nesConBtnType)
+                        {
+                            case EnumButtonType.LEFT:
+                                return new KeyListener(KeyCode.Delete);
+                            case EnumButtonType.RIGHT:
+                                return new KeyListener(KeyCode.PageDown);
+                            case EnumButtonType.UP:
+                                return new KeyListener(KeyCode.Home);
+                            case EnumButtonType.DOWN:
+                                return new KeyListener(KeyCode.End);
+                            case EnumButtonType.START:
+                                return new KeyListener(KeyCode.PageUp);
+                            case EnumButtonType.SELECT:
+                                return new KeyListener(KeyCode.Insert);
+                            case EnumButtonType.A:
+                                return new KeyListener(KeyCode.Keypad5);
+                            case EnumButtonType.B:
+                                return new KeyListener(KeyCode.Keypad4);
+                            case EnumButtonType.MIC:
+                                return new KeyListener(KeyCode.KeypadPeriod);
+                        }
+
+                        break;
+                }
+
+                return default;
+            }
+        }
+
+        public void SetConnect(uint? con0ToSlot = null,
+            uint? con1ToSlot = null,
+            uint? con2ToSlot = null,
+            uint? con3ToSlot = null)
+        {
+            Controller0.ConnectSlot = con0ToSlot;
+            Controller1.ConnectSlot = con1ToSlot;
+            Controller2.ConnectSlot = con2ToSlot;
+            Controller3.ConnectSlot = con3ToSlot;
         }
     }
-
-
 }
