@@ -33,6 +33,7 @@ enum CommandID
 	CMD_Room_Join = 5105;  //房间加入 对应 Protobuf_Room_Join | Protobuf_Room_Join_RESP //建议Join之前按照房间信息，提前下载并读取本地Rom
 	CMD_Room_Leave = 5106;  //房间离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
 	CMD_Room_MyRoom_State_Changed = 5110;  //我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change
+	CMD_Room_ChangePlayerWithJoy = 5130;  //更换操作槽位 对应 Protobuf_Room_Change_PlaySlotWithJoy | Protobuf_Room_Change_PlaySlotWithJoy_RESP
 	
 		//准备和开始流程（5201 ~ 5204 ~ 5208）
 		//
@@ -257,15 +258,15 @@ message Protobuf_Room_MiniInfo
 	int64 HostPlayerUID = 4;//主机玩家ID
 	RoomGameState GameState = 5;//游戏状态
 	int32 ObsUserCount = 6;//观战用户数量
-	int64 Player1_UID = 7;//玩家1 UID
-	string Player1_NickName = 8;//玩家1 昵称
-	int64 Player2_UID = 9;//玩家2 UID
-	string Player2_NickName = 10;//玩家2 昵称
-	int64 Player3_UID = 11;//玩家3 UID
-	string Player3_NickName = 12;//玩家3 昵称
-	int64 Player4_UID = 13;//玩家4 UID
-	string Player4_NickName = 14;//玩家4 昵称
-	int64 ScreenProviderUID = 15;//屏幕数据供应者
+	int64 ScreenProviderUID = 7;//屏幕数据供应者
+	repeated Protobuf_Room_GamePlaySlot GamePlaySlotList = 8;//游玩槽位信息P1~P4 固定4个
+}
+
+message Protobuf_Room_GamePlaySlot
+{
+	int64 Player_UID = 1;//玩家 UID
+	string Player_NickName = 2;//玩家 昵称
+	int32 PlayerLocalJoyIdx = 3;//客户端JoyIdx
 }
 
 message Protobuf_Room_Update_RESP
@@ -299,7 +300,8 @@ message Protobuf_Room_Create
 {
 	int32 GameRomID = 1;
 	string GameRomHash = 2;
-	int32 JoinPlayerIdx = 3;//P1~P4[0~3] 以几号位玩家创建房间
+	int32 PlayerSlotIdx = 3;//创建时的P1~P4编号
+	int32 PlayerLocalJoyIdx = 4;//创建时的客户端Joy编号
 }
 
 message Protobuf_Room_Create_RESP
@@ -310,7 +312,8 @@ message Protobuf_Room_Create_RESP
 message Protobuf_Room_Join
 {
 	int32 RoomID = 1;//房间ID
-	int32 PlayerNum = 2;//玩家编号 [0]1号玩家 [1]2号玩家
+	int32 PlayerSlotIdx = 2;//P1~P4编号
+	int32 PlayerLocalJoyIdx = 3;//客户端Joy编号
 }
 
 message Protobuf_Room_Join_RESP
@@ -333,6 +336,21 @@ message Protobuf_Room_MyRoom_State_Change
 	Protobuf_Room_MiniInfo RoomMiniInfo = 1;//更新房间信息
 }
 
+message Protobuf_Room_Change_PlaySlotWithJoy
+{
+	repeated Protobuf_PlaySlotIdxWithJoyIdx SlotWithJoy = 1;//P1~P4编号
+}
+
+message Protobuf_PlaySlotIdxWithJoyIdx
+{
+	int32 PlayerSlotIdx = 1;//P1~P4编号
+	int32 PlayerLocalJoyIdx = 2;//客户端Joy编号
+}
+
+message Protobuf_Room_Change_PlaySlotWithJoy_RESP
+{
+}
+
 message Protobuf_Room_WaitStep_RESP
 {
 	int32 WaitStep = 1;//状态 [0]等待主机上报即时存档 [1]要求客户端准备 [2]开始（收到本状态时，立即开始跑模拟器核心）
@@ -352,6 +370,10 @@ message Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
 
 message Protobuf_Room_Player_Ready
 {
+	float PushFrameNeedTimeUs = 1;//push帧所需平均时间（微秒）
+	float LoadStateNeedTimeUs = 2;//加载即时存档所需平均时间（微秒）
+	float VideoFrameShowNeedTimeUs = 3;//视频一帧所需时间（微秒）
+	float AudioFramePlayNeedTimeUs = 4;//音频处理一帧所需时间（微秒）
 }
 
 message Protobuf_Room_Get_Screen

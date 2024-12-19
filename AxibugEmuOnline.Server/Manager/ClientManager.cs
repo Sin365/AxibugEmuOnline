@@ -34,20 +34,17 @@ namespace AxibugEmuOnline.Server.Manager
     public class UserRoomState
     {
         public int RoomID { get; private set; }
-        public int PlayerIdx { get; private set; }
         public UserRoomState()
         {
             ClearRoomData();
         }
-        public void SetRoomData(int roomID, int playerIdx)
+        public void SetRoomData(int roomID)
         {
             RoomID = roomID;
-            PlayerIdx = playerIdx;
         }
         public void ClearRoomData()
         {
             RoomID = -1;
-            PlayerIdx = -1;
         }
     }
 
