@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
 
@@ -83,6 +84,12 @@ namespace AxibugEmuOnline.Client.Network
 
         public void PostNetMsgEvent(int cmd, int ERRCODE, byte[] arg)
         {
+            ErrorCode err = ((ErrorCode)ERRCODE);
+            if (err != ErrorCode.ErrorOk)
+            {
+                OverlayManager.PopTip("错误:"+err.ToString());
+            }
+
             List<Delegate> eventList = GetNetEventDicList(cmd);
             if (eventList != null)
             {

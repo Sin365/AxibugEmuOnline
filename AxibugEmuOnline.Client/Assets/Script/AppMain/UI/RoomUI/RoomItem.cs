@@ -39,7 +39,7 @@ namespace AxibugEmuOnline.Client
         public void SetData(object data)
         {
             Debug.Assert(data is Protobuf_Room_MiniInfo);
-            
+
             var roomInfo = (Protobuf_Room_MiniInfo)data;
             RoomID = roomInfo.RoomID;
 
@@ -69,7 +69,7 @@ namespace AxibugEmuOnline.Client
                     return false;
                 }
 
-                App.roomMgr.SendJoinRoom(RoomID, freeSlots[0]);
+                App.roomMgr.SendJoinRoom(RoomID);
                 return true;
             }
         }

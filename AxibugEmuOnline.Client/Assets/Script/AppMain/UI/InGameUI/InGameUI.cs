@@ -83,7 +83,7 @@ namespace AxibugEmuOnline.Client
             {
                 if (App.user.IsLoggedIn)
                 {
-                    App.roomMgr.SendCreateRoom(RomFile.ID, 0, RomFile.Hash);
+                    App.roomMgr.SendCreateRoom(RomFile.ID, RomFile.Hash);
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace AxibugEmuOnline.Client
 
         private void OnLoggedIn()
         {
-            if (m_delayCreateRoom) App.roomMgr.SendCreateRoom(RomFile.ID, 0, RomFile.Hash);
+            if (m_delayCreateRoom) App.roomMgr.SendCreateRoom(RomFile.ID, RomFile.Hash);
         }
 
         private void OnServerStepUpdate(int step)
