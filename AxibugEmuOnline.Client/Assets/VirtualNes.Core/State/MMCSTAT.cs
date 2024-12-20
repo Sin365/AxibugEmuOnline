@@ -9,12 +9,12 @@
             return new MMCSTAT() { mmcdata = new byte[256] };
         }
 
-        public  uint GetSize()
+        public readonly uint GetSize()
         {
             return 256;
         }
 
-        public  void SaveState(StateBuffer buffer)
+        public readonly void SaveState(StateBuffer buffer)
         {
             buffer.Write(mmcdata);
         }

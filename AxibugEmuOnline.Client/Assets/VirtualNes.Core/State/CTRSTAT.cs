@@ -8,12 +8,12 @@
         public uint pad4bit;
         public byte strobe;
 
-        public  uint GetSize()
+        public readonly uint GetSize()
         {
             return sizeof(uint) * 4 + sizeof(byte);
         }
 
-        public  void SaveState(StateBuffer buffer)
+        public readonly void SaveState(StateBuffer buffer)
         {
             buffer.Write(pad1bit);
             buffer.Write(pad2bit);
