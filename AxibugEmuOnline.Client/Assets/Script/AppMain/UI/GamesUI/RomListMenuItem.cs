@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+锘縰sing AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client
                     case EnumPlatform.NES:
                         return App.nesRomLib;
                     default:
-                        throw new System.NotImplementedException($"未实现的平台 {Platform}");
+                        throw new System.NotImplementedException($"鏈疄鐜扮殑骞冲彴 {Platform}");
                 }
             }
         }
@@ -69,14 +69,14 @@ namespace AxibugEmuOnline.Client
         {
             private RomListMenuItem m_romListUI;
 
-            public OptMenu_Search(RomListMenuItem romListUI, Sprite icon = null) : base("搜索", icon)
+            public OptMenu_Search(RomListMenuItem romListUI, Sprite icon = null) : base("鎼滅储", icon)
             {
                 m_romListUI = romListUI;
             }
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
-                OverlayManager.Input(OnSearchCommit, "输入Rom名称", m_romListUI.SearchKey);
+                OverlayManager.Input(OnSearchCommit, "杈撳叆Rom鍚嶇О", m_romListUI.SearchKey);
             }
 
             private void OnSearchCommit(string text)
@@ -92,7 +92,7 @@ namespace AxibugEmuOnline.Client
 
             public override bool Visible => !string.IsNullOrWhiteSpace(m_ui.SearchKey);
 
-            public OptMenu_ShowAll(RomListMenuItem romListUI, Sprite icon = null) : base("显示全部", icon)
+            public OptMenu_ShowAll(RomListMenuItem romListUI, Sprite icon = null) : base("鏄剧ず鍏ㄩ儴", icon)
             {
                 m_ui = romListUI;
             }

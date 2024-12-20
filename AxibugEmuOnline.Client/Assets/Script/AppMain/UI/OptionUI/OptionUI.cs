@@ -1,4 +1,4 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client
         Selector SelectBorder;
 
         [Space]
-        [Header("Ä£°å")]
+        [Header("æ¨¡æ¿")]
         [SerializeField] OptionUI_ExecuteItem TEMPLATE_EXECUTEITEM;
         [SerializeField] OptionUI_ValueEditItem TEMPLATE_VALUEEDITITEM;
 
@@ -21,15 +21,15 @@ namespace AxibugEmuOnline.Client
         private OptionUI m_parent;
 
         public override bool AloneMode => true;
-        public override bool Enable => m_bPoped && (m_child == null || !m_child.m_bPoped);
+        public override bool Enable => m_bPoped && (!m_child || !m_child.m_bPoped);
 
-        private bool m_bPoped = false;
-        private List<OptionUI_MenuItem> m_runtimeMenuItems = new List<OptionUI_MenuItem>();
+        private bool m_bPoped;
+        private readonly List<OptionUI_MenuItem> m_runtimeMenuItems = new List<OptionUI_MenuItem>();
 
         private int m_selectIndex = -1;
         public int SelectIndex
         {
-            get { return m_selectIndex; }
+            get => m_selectIndex;
             set
             {
                 value = Mathf.Clamp(value, 0, m_runtimeMenuItems.Count - 1);
@@ -81,9 +81,7 @@ namespace AxibugEmuOnline.Client
 
         private void UpdateMenuState()
         {
-            bool dirty = false;
-            dirty = checkDirty();
-            if (dirty)
+            if (checkDirty())
             {
                 RebuildSelectIndex();
             }
@@ -150,7 +148,7 @@ namespace AxibugEmuOnline.Client
         private Action m_onClose;
 
         /// <summary>
-        /// µ±²Ëµ¥µ¯³öÊ±,¶¯Ì¬Ìí¼ÓÒ»¸ö²Ëµ¥Ñ¡Ïî
+        /// å½“èœå•å¼¹å‡ºæ—¶,åŠ¨æ€æ·»åŠ ä¸€ä¸ªèœå•é€‰é¡¹
         /// </summary>
         /// <param name="menu"></param>
         public void AddOptionMenuWhenPoping(OptionMenu menu)
@@ -285,7 +283,7 @@ namespace AxibugEmuOnline.Client
                 menuUI.SetData(this, valueSetMenu);
                 m_runtimeMenuItems.Add(menuUI);
             }
-            else throw new NotImplementedException($"Ôİ²»Ö§³ÖµÄ²Ëµ¥ÀàĞÍ{menuData.GetType().Name}");
+            else throw new NotImplementedException($"æš‚ä¸æ”¯æŒçš„èœå•ç±»å‹{menuData.GetType().Name}");
         }
 
         private void ReleaseRuntimeMenus()
@@ -316,7 +314,7 @@ namespace AxibugEmuOnline.Client
         protected override void OnCmdSelectItemLeft()
         {
             var executer = m_runtimeMenuItems[SelectIndex];
-            if (executer != null)
+            if (executer)
             {
                 executer.OnLeft();
             }
@@ -345,7 +343,7 @@ namespace AxibugEmuOnline.Client
         }
 
         /// <summary>
-        /// Õ¹¿ªÏÂ¼¶²Ëµ¥
+        /// å±•å¼€ä¸‹çº§èœå•
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="menus"></param>
@@ -380,17 +378,17 @@ namespace AxibugEmuOnline.Client
     }
 
     /// <summary>
-    /// ´øÓĞÖ´ĞĞĞĞÎªµÄ²Ëµ¥
+    /// å¸¦æœ‰æ‰§è¡Œè¡Œä¸ºçš„èœå•
     /// </summary>
     public abstract class ExecuteMenu : OptionMenu
     {
-        public ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
+        protected ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
         public abstract void OnExcute(OptionUI optionUI, ref bool cancelHide);
     }
 
     /// <summary>
-    /// ´øÓĞÕ¹¿ªĞĞÎªµÄ²Ëµ¥
+    /// å¸¦æœ‰å±•å¼€è¡Œä¸ºçš„èœå•
     /// </summary>
     public abstract class ExpandMenu : ExecuteMenu
     {
@@ -405,7 +403,7 @@ namespace AxibugEmuOnline.Client
         protected abstract List<OptionMenu> GetOptionMenus();
     }
 
-    /// <summary> ²»ÒªÖ±½Ó¼Ì³ĞÕâ¸öÀà </summary>
+    /// <summary> ä¸è¦ç›´æ¥ç»§æ‰¿è¿™ä¸ªç±» </summary>
     public abstract class OptionMenu
     {
         public string Name { get; protected set; }
@@ -413,7 +411,7 @@ namespace AxibugEmuOnline.Client
         public virtual bool Visible => true;
         public virtual bool Enable => true;
 
-        public OptionMenu(string name, Sprite icon = null)
+        protected OptionMenu(string name, Sprite icon = null)
         {
             Name = name;
             Icon = icon;
@@ -424,11 +422,11 @@ namespace AxibugEmuOnline.Client
         public virtual void OnHide() { }
     }
     /// <summary>
-    /// ´øÓĞÖµÀàĞÍÏÔÊ¾ºÍ±à¼­µÄ²Ëµ¥
+    /// å¸¦æœ‰å€¼ç±»å‹æ˜¾ç¤ºå’Œç¼–è¾‘çš„èœå•
     /// </summary>
     public abstract class ValueSetMenu : OptionMenu
     {
-        public ValueSetMenu(string name) : base(name) { }
+        protected ValueSetMenu(string name) : base(name) { }
 
         public abstract Type ValueType { get; }
         public abstract object ValueRaw { get; }
