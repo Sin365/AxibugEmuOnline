@@ -22,12 +22,12 @@ namespace VirtualNes.Core
             return res;
         }
 
-        public uint GetSize()
+        public  uint GetSize()
         {
             return (uint)(RAM.Length + BGPAL.Length + SPPAL.Length + SPRAM.Length);
         }
 
-        public void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             buffer.Write(RAM);
             buffer.Write(BGPAL);

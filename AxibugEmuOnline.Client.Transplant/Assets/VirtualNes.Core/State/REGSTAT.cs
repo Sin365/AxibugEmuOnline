@@ -7,12 +7,12 @@
 
 
 
-        public uint GetSize()
+        public  uint GetSize()
         {
             return cpureg.GetSize() + ppureg.GetSize();
         }
 
-        public void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             cpureg.SaveState(buffer);
             ppureg.SaveState(buffer);
@@ -45,12 +45,12 @@
         public long emul_cycles;
         public long base_cycles;
 
-        public uint GetSize()
+        public  uint GetSize()
         {
             return 32;
         }
 
-        public void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             buffer.Write(PC);
             buffer.Write(A);
@@ -102,12 +102,12 @@
         public ushort loopy_v;
         public ushort loopy_x;
 
-        public uint GetSize()
+        public  uint GetSize()
         {
             return 12;
         }
 
-        public void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             buffer.Write(reg0);
             buffer.Write(reg1);
