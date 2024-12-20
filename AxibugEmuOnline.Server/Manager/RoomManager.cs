@@ -235,7 +235,7 @@ namespace AxibugEmuOnline.Server
 			AddRoom(newRoom);
 			ErrorCode joinErrcode = ErrorCode.ErrorOk;
 			//加入
-			if (newRoom.Join((uint)msg.PlayerSlotIdx, (uint)msg.PlayerLocalJoyIdx, _c, out joinErrcode, out bool bHadRoomStateChange))
+			if (newRoom.Join(0, 0, _c, out joinErrcode, out bool bHadRoomStateChange))
 			{
 				//创建成功下行
 				resp.RoomMiniInfo = GetProtoDataRoom(newRoom);
@@ -266,10 +266,20 @@ namespace AxibugEmuOnline.Server
 				AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
 				return;
 			}
-			lock (room)
+
+
+            lock (room)
 			{
-				//加入
-				if (room.Join((uint)msg.PlayerSlotIdx, (uint)msg.PlayerLocalJoyIdx, _c, out joinErrcode, out bHadRoomStateChange))
+
+				if (!room.GetFreeSlot(out uint SlotIdx))
+                {
+                    joinErrcode = ErrorCode.ErrorRoomSlotAlreadlyHadPlayer;
+                    AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
+					return;
+                }
+
+                //加入
+                if (room.Join(SlotIdx, (uint)0, _c, out joinErrcode, out bHadRoomStateChange))
 				{
 					Data_RoomData roomData = GetRoomData(msg.RoomID);
 					resp.RoomMiniInfo = GetProtoDataRoom(roomData);
@@ -354,7 +364,6 @@ namespace AxibugEmuOnline.Server
 			RoomLog(_c.UID, 1, room.RoomID, room.GameRomID, RoomLogType.Leave);
 		}
 
-
 		public void OnCmdRoomChangePlayerWithJoy(Socket sk, byte[] reqData)
 		{
 			AppSrv.g_Log.DebugCmd($"OnCmdRoomChangePlayerjoySlot");
@@ -386,7 +395,6 @@ namespace AxibugEmuOnline.Server
 			}
 			AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomMyRoomStateChanged, (int)errcode, ProtoBufHelper.Serizlize(resp));
 		}
-
 
 		public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)
 		{
@@ -830,6 +838,19 @@ namespace AxibugEmuOnline.Server
 			}
 			return UID > 0;
 		}
+		public bool GetFreeSlot(out uint SlotIdx)
+		{
+			for (uint i = 0; i < PlayerSlot.Length; i++)
+			{
+				if (PlayerSlot[i].UID < 0)
+				{
+					SlotIdx = i;
+					return true;
+				}
+			}
+			SlotIdx = 0;
+			return false;
+        }
 		public bool GetPlayerClientByIdx(uint Idx, out ClientInfo _c)
 		{
 			_c = null;
