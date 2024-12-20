@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class XMBTopGroup : MonoBehaviour
+public class XMBInfoBar : MonoBehaviour
 {
     public Text txtDateTime;
     public Image imgPowerRoot;
