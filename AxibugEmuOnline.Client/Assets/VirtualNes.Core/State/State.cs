@@ -36,7 +36,7 @@ namespace VirtualNes.Core
         public BLOCKHDR exctrBLOCK;
         public EXCTRSTAT exctr;
 
-        public readonly byte[] ToBytes()
+        public  byte[] ToBytes()
         {
             StateBuffer buffer = new StateBuffer();
 

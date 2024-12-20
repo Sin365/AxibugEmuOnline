@@ -14,12 +14,12 @@
 
 
 
-        public readonly uint GetSize()
+        public  uint GetSize()
         {
             return (uint)(ID.Length + sizeof(ushort) + sizeof(uint) + sizeof(ushort) + sizeof(ushort));
         }
 
-        public readonly void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             buffer.Write(ID);
             buffer.Write(BlockVersion);

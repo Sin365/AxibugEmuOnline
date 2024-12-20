@@ -4,12 +4,12 @@
     {
         public uint data;
 
-        public readonly uint GetSize()
+        public  uint GetSize()
         {
             return sizeof(uint);
         }
 
-        public readonly void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             buffer.Write(data);
         }

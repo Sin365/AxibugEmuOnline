@@ -9,12 +9,12 @@
             return new SNDSTAT() { snddata = new byte[0x800] };
         }
 
-        public readonly uint GetSize()
+        public  uint GetSize()
         {
             return (uint)snddata.Length;
         }
 
-        public readonly void SaveState(StateBuffer buffer)
+        public  void SaveState(StateBuffer buffer)
         {
             buffer.Write(snddata);
         }
