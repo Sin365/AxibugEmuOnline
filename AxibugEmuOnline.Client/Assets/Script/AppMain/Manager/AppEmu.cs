@@ -64,10 +64,10 @@ namespace AxibugEmuOnline.Client.Manager
             m_emuCore.SetupScheme();
 
             m_controllerSetuper = Supporter.GetControllerSetuper();
-            
+
             SetupController();
-            
-            Eventer.Instance.RegisterEvent(EEvent.OnRoomSlotDataChanged,OnSlotDataChanged);
+
+            Eventer.Instance.RegisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
         }
 
         private void OnSlotDataChanged()
@@ -102,7 +102,7 @@ namespace AxibugEmuOnline.Client.Manager
             InGameUI.Instance.Hide();
             LaunchUI.Instance.ShowMainMenu();
             m_controllerSetuper = null;
-            Eventer.Instance.UnregisterEvent(EEvent.OnRoomSlotDataChanged,OnSlotDataChanged);
+            Eventer.Instance.UnregisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
         }
 
         public void ResetGame()
