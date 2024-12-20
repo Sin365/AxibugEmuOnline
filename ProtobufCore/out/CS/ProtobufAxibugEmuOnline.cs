@@ -51,76 +51,83 @@ namespace AxibugProtobuf {
             "A1VJRBgBIAEoAxIuCghVc2VySW5mbxgCIAEoCzIcLkF4aWJ1Z1Byb3RvYnVm",
             "LlVzZXJNaW5pSW5mbyIUChJQcm90b2J1Zl9Sb29tX0xpc3QiWwoXUHJvdG9i",
             "dWZfUm9vbV9MaXN0X1JFU1ASQAoQUm9vbU1pbmlJbmZvTGlzdBgBIAMoCzIm",
-            "LkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8ihgMKFlBy",
+            "LkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8ikAIKFlBy",
             "b3RvYnVmX1Jvb21fTWluaUluZm8SDgoGUm9vbUlEGAEgASgFEhEKCUdhbWVS",
             "b21JRBgCIAEoBRITCgtHYW1lUm9tSGFzaBgDIAEoCRIVCg1Ib3N0UGxheWVy",
             "VUlEGAQgASgDEjAKCUdhbWVTdGF0ZRgFIAEoDjIdLkF4aWJ1Z1Byb3RvYnVm",
-            "LlJvb21HYW1lU3RhdGUSFAoMT2JzVXNlckNvdW50GAYgASgFEhMKC1BsYXll",
-            "cjFfVUlEGAcgASgDEhgKEFBsYXllcjFfTmlja05hbWUYCCABKAkSEwoLUGxh",
-            "eWVyMl9VSUQYCSABKAMSGAoQUGxheWVyMl9OaWNrTmFtZRgKIAEoCRITCgtQ",
-            "bGF5ZXIzX1VJRBgLIAEoAxIYChBQbGF5ZXIzX05pY2tOYW1lGAwgASgJEhMK",
-            "C1BsYXllcjRfVUlEGA0gASgDEhgKEFBsYXllcjRfTmlja05hbWUYDiABKAkS",
-            "GQoRU2NyZWVuUHJvdmlkZXJVSUQYDyABKAMibQoZUHJvdG9idWZfUm9vbV9V",
-            "cGRhdGVfUkVTUBISCgpVcGRhdGVUeXBlGAEgASgFEjwKDFJvb21NaW5pSW5m",
-            "bxgCIAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jvb21fTWluaUlu",
-            "Zm8iSwoVUHJvdG9idWZfU2NyZW5uX0ZyYW1lEg4KBlJvb21JRBgBIAEoBRIP",
-            "CgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgDIAEoDCJJCiNQcm90b2J1",
-            "Zl9Sb29tX1NpbmdsZVBsYXllcklucHV0RGF0YRIPCgdGcmFtZUlEGAEgASgN",
-            "EhEKCUlucHV0RGF0YRgCIAEoDSKAAQonUHJvdG9idWZfUm9vbV9TeW5fUm9v",
-            "bUZyYW1lQWxsSW5wdXREYXRhEg8KB0ZyYW1lSUQYASABKA0SEQoJSW5wdXRE",
-            "YXRhGAIgASgEEhUKDVNlcnZlckZyYW1lSUQYAyABKA0SGgoSU2VydmVyRm9y",
-            "d2FyZENvdW50GAQgASgNIlUKFFByb3RvYnVmX1Jvb21fQ3JlYXRlEhEKCUdh",
-            "bWVSb21JRBgBIAEoBRITCgtHYW1lUm9tSGFzaBgCIAEoCRIVCg1Kb2luUGxh",
-            "eWVySWR4GAMgASgFIlkKGVByb3RvYnVmX1Jvb21fQ3JlYXRlX1JFU1ASPAoM",
+            "LlJvb21HYW1lU3RhdGUSFAoMT2JzVXNlckNvdW50GAYgASgFEhkKEVNjcmVl",
+            "blByb3ZpZGVyVUlEGAcgASgDEkQKEEdhbWVQbGF5U2xvdExpc3QYCCADKAsy",
+            "Ki5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29tX0dhbWVQbGF5U2xvdCJk",
+            "ChpQcm90b2J1Zl9Sb29tX0dhbWVQbGF5U2xvdBISCgpQbGF5ZXJfVUlEGAEg",
+            "ASgDEhcKD1BsYXllcl9OaWNrTmFtZRgCIAEoCRIZChFQbGF5ZXJMb2NhbEpv",
+            "eUlkeBgDIAEoBSJtChlQcm90b2J1Zl9Sb29tX1VwZGF0ZV9SRVNQEhIKClVw",
+            "ZGF0ZVR5cGUYASABKAUSPAoMUm9vbU1pbmlJbmZvGAIgASgLMiYuQXhpYnVn",
+            "UHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyJLChVQcm90b2J1Zl9T",
+            "Y3Jlbm5fRnJhbWUSDgoGUm9vbUlEGAEgASgFEg8KB0ZyYW1lSUQYAiABKAUS",
+            "EQoJUmF3Qml0bWFwGAMgASgMIkkKI1Byb3RvYnVmX1Jvb21fU2luZ2xlUGxh",
+            "eWVySW5wdXREYXRhEg8KB0ZyYW1lSUQYASABKA0SEQoJSW5wdXREYXRhGAIg",
+            "ASgNIoABCidQcm90b2J1Zl9Sb29tX1N5bl9Sb29tRnJhbWVBbGxJbnB1dERh",
+            "dGESDwoHRnJhbWVJRBgBIAEoDRIRCglJbnB1dERhdGEYAiABKAQSFQoNU2Vy",
+            "dmVyRnJhbWVJRBgDIAEoDRIaChJTZXJ2ZXJGb3J3YXJkQ291bnQYBCABKA0i",
+            "PgoUUHJvdG9idWZfUm9vbV9DcmVhdGUSEQoJR2FtZVJvbUlEGAEgASgFEhMK",
+            "C0dhbWVSb21IYXNoGAIgASgJIlkKGVByb3RvYnVmX1Jvb21fQ3JlYXRlX1JF",
+            "U1ASPAoMUm9vbU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYuUHJv",
+            "dG9idWZfUm9vbV9NaW5pSW5mbyIkChJQcm90b2J1Zl9Sb29tX0pvaW4SDgoG",
+            "Um9vbUlEGAEgASgFIlcKF1Byb3RvYnVmX1Jvb21fSm9pbl9SRVNQEjwKDFJv",
+            "b21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1Jv",
+            "b21fTWluaUluZm8iJQoTUHJvdG9idWZfUm9vbV9MZWF2ZRIOCgZSb29tSUQY",
+            "ASABKAUiKgoYUHJvdG9idWZfUm9vbV9MZWF2ZV9SRVNQEg4KBlJvb21JRBgB",
+            "IAEoBSJhCiFQcm90b2J1Zl9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2USPAoM",
             "Um9vbU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZf",
-            "Um9vbV9NaW5pSW5mbyI3ChJQcm90b2J1Zl9Sb29tX0pvaW4SDgoGUm9vbUlE",
-            "GAEgASgFEhEKCVBsYXllck51bRgCIAEoBSJXChdQcm90b2J1Zl9Sb29tX0pv",
-            "aW5fUkVTUBI8CgxSb29tTWluaUluZm8YASABKAsyJi5BeGlidWdQcm90b2J1",
-            "Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvIiUKE1Byb3RvYnVmX1Jvb21fTGVh",
-            "dmUSDgoGUm9vbUlEGAEgASgFIioKGFByb3RvYnVmX1Jvb21fTGVhdmVfUkVT",
-            "UBIOCgZSb29tSUQYASABKAUiYQohUHJvdG9idWZfUm9vbV9NeVJvb21fU3Rh",
-            "dGVfQ2hhbmdlEjwKDFJvb21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1Byb3Rv",
-            "YnVmLlByb3RvYnVmX1Jvb21fTWluaUluZm8iRQobUHJvdG9idWZfUm9vbV9X",
+            "Um9vbV9NaW5pSW5mbyJrCiRQcm90b2J1Zl9Sb29tX0NoYW5nZV9QbGF5U2xv",
+            "dFdpdGhKb3kSQwoLU2xvdFdpdGhKb3kYASADKAsyLi5BeGlidWdQcm90b2J1",
+            "Zi5Qcm90b2J1Zl9QbGF5U2xvdElkeFdpdGhKb3lJZHgiUgoeUHJvdG9idWZf",
+            "UGxheVNsb3RJZHhXaXRoSm95SWR4EhUKDVBsYXllclNsb3RJZHgYASABKAUS",
+            "GQoRUGxheWVyTG9jYWxKb3lJZHgYAiABKAUiKwopUHJvdG9idWZfUm9vbV9D",
+            "aGFuZ2VfUGxheVNsb3RXaXRoSm95X1JFU1AiRQobUHJvdG9idWZfUm9vbV9X",
             "YWl0U3RlcF9SRVNQEhAKCFdhaXRTdGVwGAEgASgFEhQKDExvYWRTdGF0ZVJh",
             "dxgCIAEoDCI/CidQcm90b2J1Zl9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRlU3Rh",
             "dGVSYXcSFAoMTG9hZFN0YXRlUmF3GAEgASgMIi4KLFByb3RvYnVmX1Jvb21f",
-            "SG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhd19SRVNQIhwKGlByb3RvYnVmX1Jv",
-            "b21fUGxheWVyX1JlYWR5IioKGFByb3RvYnVmX1Jvb21fR2V0X1NjcmVlbhIO",
-            "CgZSb29tSUQYASABKAUiUwodUHJvdG9idWZfUm9vbV9HZXRfU2NyZWVuX1JF",
-            "U1ASDgoGUm9vbUlEGAEgASgFEg8KB0ZyYW1lSUQYAiABKAUSEQoJUmF3Qml0",
-            "bWFwGAMgASgMImYKElByb3RvYnVmX0dhbWVfTWFyaxINCgVSb21JRBgBIAEo",
-            "BRINCgVzdGF0ZRgCIAEoBRIyCgxQbGF0Zm9ybVR5cGUYAyABKA4yHC5BeGli",
-            "dWdQcm90b2J1Zi5QbGF0Zm9ybVR5cGUiXAoXUHJvdG9idWZfR2FtZV9NYXJr",
-            "X1JFU1ASDQoFUm9tSUQYASABKAUSMgoMUGxhdGZvcm1UeXBlGAIgASgOMhwu",
-            "QXhpYnVnUHJvdG9idWYuUGxhdGZvcm1UeXBlKv4ECglDb21tYW5kSUQSDgoK",
-            "Q01EX0RFRkFVTBAAEgwKCENNRF9QSU5HEAESDAoIQ01EX1BPTkcQAhIOCglD",
-            "TURfTE9HSU4Q0Q8SGAoTQ01EX1VTRVJfT05MSU5FTElTVBC4FxISCg1DTURf",
-            "VVNFUl9KT0lOENcXEhMKDkNNRF9VU0VSX0xFQVZFENgXEhoKFUNNRF9VU0VS",
-            "X1NUQVRFX1VQREFURRDZFxIYChNDTURfTW9kaWZ5X05pY2tOYW1lEJ0YEhwK",
-            "F0NNRF9VcGRhdGVfU2VsZlVzZXJJbmZvEKYYEh0KGENNRF9VcGRhdGVfT3Ro",
-            "ZXJVc2VySW5mbxCoGBIQCgtDTURfQ0hBVE1TRxChHxISCg1DTURfUm9vbV9M",
-            "aXN0EIknEhkKFENNRF9Sb29tX0xpc3RfVXBkYXRlEIonEhgKE0NNRF9Sb29t",
-            "X0dldF9TY3JlZW4QkycSFAoPQ01EX1Jvb21fQ3JlYXRlEO0nEhIKDUNNRF9S",
-            "b29tX0pvaW4Q8ScSEwoOQ01EX1Jvb21fTGVhdmUQ8icSIgodQ01EX1Jvb21f",
-            "TXlSb29tX1N0YXRlX0NoYW5nZWQQ9icSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ",
-            "0SgSJwoiQ01EX1Jvb21fSG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIa",
-            "ChVDTURfUm9vbV9QbGF5ZXJfUmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2Vs",
-            "X1BsYXllcklucHV0EPouEh0KGENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/",
-            "LhIPCgpDTURfU2NyZWVuENk2EhIKDUNNRF9HQU1FX01BUksQ9U4q0AEKCUVy",
-            "cm9yQ29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVS",
-            "Uk9SX1JPT01fTk9UX0ZPVU5EEAoSJwojRVJST1JfUk9PTV9TTE9UX0FMUkVB",
-            "RExZX0hBRF9QTEFZRVIQCxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9T",
-            "VEFURRAyEh8KGkVSUk9SX1JPTV9BTFJFQURZX0hBRF9TVEFSEJMDEhwKF0VS",
-            "Uk9SX1JPTV9ET05UX0hBRF9TVEFSEJQDKkAKCUxvZ2luVHlwZRINCglVc2VE",
-            "ZXZpY2UQABIOCgpVc2VBY2NvdW50EAESFAoQVXNlSGFvWXVlQWNjb3VudBAC",
-            "KksKCkRldmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQ",
-            "ARILCgdBbmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQqIAoMUGxhdGZvcm1U",
-            "eXBlEgcKA0FsbBAAEgcKA05lcxABKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9u",
-            "ZV9HYW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQ",
-            "AhINCglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAF",
-            "Kk4KEUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jh",
-            "c2VEZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90",
-            "bzM="));
+            "SG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhd19SRVNQIpoBChpQcm90b2J1Zl9S",
+            "b29tX1BsYXllcl9SZWFkeRIbChNQdXNoRnJhbWVOZWVkVGltZVVzGAEgASgC",
+            "EhsKE0xvYWRTdGF0ZU5lZWRUaW1lVXMYAiABKAISIAoYVmlkZW9GcmFtZVNo",
+            "b3dOZWVkVGltZVVzGAMgASgCEiAKGEF1ZGlvRnJhbWVQbGF5TmVlZFRpbWVV",
+            "cxgEIAEoAiIqChhQcm90b2J1Zl9Sb29tX0dldF9TY3JlZW4SDgoGUm9vbUlE",
+            "GAEgASgFIlMKHVByb3RvYnVmX1Jvb21fR2V0X1NjcmVlbl9SRVNQEg4KBlJv",
+            "b21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgDIAEo",
+            "DCJmChJQcm90b2J1Zl9HYW1lX01hcmsSDQoFUm9tSUQYASABKAUSDQoFc3Rh",
+            "dGUYAiABKAUSMgoMUGxhdGZvcm1UeXBlGAMgASgOMhwuQXhpYnVnUHJvdG9i",
+            "dWYuUGxhdGZvcm1UeXBlIlwKF1Byb3RvYnVmX0dhbWVfTWFya19SRVNQEg0K",
+            "BVJvbUlEGAEgASgFEjIKDFBsYXRmb3JtVHlwZRgCIAEoDjIcLkF4aWJ1Z1By",
+            "b3RvYnVmLlBsYXRmb3JtVHlwZSqhBQoJQ29tbWFuZElEEg4KCkNNRF9ERUZB",
+            "VUwQABIMCghDTURfUElORxABEgwKCENNRF9QT05HEAISDgoJQ01EX0xPR0lO",
+            "ENEPEhgKE0NNRF9VU0VSX09OTElORUxJU1QQuBcSEgoNQ01EX1VTRVJfSk9J",
+            "ThDXFxITCg5DTURfVVNFUl9MRUFWRRDYFxIaChVDTURfVVNFUl9TVEFURV9V",
+            "UERBVEUQ2RcSGAoTQ01EX01vZGlmeV9OaWNrTmFtZRCdGBIcChdDTURfVXBk",
+            "YXRlX1NlbGZVc2VySW5mbxCmGBIdChhDTURfVXBkYXRlX090aGVyVXNlcklu",
+            "Zm8QqBgSEAoLQ01EX0NIQVRNU0cQoR8SEgoNQ01EX1Jvb21fTGlzdBCJJxIZ",
+            "ChRDTURfUm9vbV9MaXN0X1VwZGF0ZRCKJxIYChNDTURfUm9vbV9HZXRfU2Ny",
+            "ZWVuEJMnEhQKD0NNRF9Sb29tX0NyZWF0ZRDtJxISCg1DTURfUm9vbV9Kb2lu",
+            "EPEnEhMKDkNNRF9Sb29tX0xlYXZlEPInEiIKHUNNRF9Sb29tX015Um9vbV9T",
+            "dGF0ZV9DaGFuZ2VkEPYnEiEKHENNRF9Sb29tX0NoYW5nZVBsYXllcldpdGhK",
+            "b3kQiigSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ0SgSJwoiQ01EX1Jvb21fSG9z",
+            "dFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIaChVDTURfUm9vbV9QbGF5ZXJf",
+            "UmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2VsX1BsYXllcklucHV0EPouEh0K",
+            "GENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/LhIPCgpDTURfU2NyZWVuENk2",
+            "EhIKDUNNRF9HQU1FX01BUksQ9U4q0AEKCUVycm9yQ29kZRIQCgxFUlJPUl9E",
+            "RUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVSUk9SX1JPT01fTk9UX0ZPVU5E",
+            "EAoSJwojRVJST1JfUk9PTV9TTE9UX0FMUkVBRExZX0hBRF9QTEFZRVIQCxIh",
+            "Ch1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9TVEFURRAyEh8KGkVSUk9SX1JP",
+            "TV9BTFJFQURZX0hBRF9TVEFSEJMDEhwKF0VSUk9SX1JPTV9ET05UX0hBRF9T",
+            "VEFSEJQDKkAKCUxvZ2luVHlwZRINCglVc2VEZXZpY2UQABIOCgpVc2VBY2Nv",
+            "dW50EAESFAoQVXNlSGFvWXVlQWNjb3VudBACKksKCkRldmljZVR5cGUSFgoS",
+            "RGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQARILCgdBbmRyb2lkEAISBwoD",
+            "SU9TEAMSBwoDUFNWEAQqIAoMUGxhdGZvcm1UeXBlEgcKA0FsbBAAEgcKA05l",
+            "cxABKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9uZV9HYW1lU3RhdGUQABIMCghP",
+            "bmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQAhINCglXYWl0UmVhZHkQAxIJ",
+            "CgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAFKk4KEUxvZ2luUmVzdWx0U3Rh",
+            "dHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jhc2VEZWZhdWx0EAASBgoCT0sQ",
+            "ARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -142,22 +149,26 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Update_OtherUserInfo_RESP), global::AxibugProtobuf.Protobuf_Update_OtherUserInfo_RESP.Parser, new[]{ "UID", "UserInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List), global::AxibugProtobuf.Protobuf_Room_List.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List_RESP), global::AxibugProtobuf.Protobuf_Room_List_RESP.Parser, new[]{ "RoomMiniInfoList" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "HostPlayerUID", "GameState", "ObsUserCount", "Player1UID", "Player1NickName", "Player2UID", "Player2NickName", "Player3UID", "Player3NickName", "Player4UID", "Player4NickName", "ScreenProviderUID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "HostPlayerUID", "GameState", "ObsUserCount", "ScreenProviderUID", "GamePlaySlotList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_GamePlaySlot), global::AxibugProtobuf.Protobuf_Room_GamePlaySlot.Parser, new[]{ "PlayerUID", "PlayerNickName", "PlayerLocalJoyIdx" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Update_RESP), global::AxibugProtobuf.Protobuf_Room_Update_RESP.Parser, new[]{ "UpdateType", "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Screnn_Frame), global::AxibugProtobuf.Protobuf_Screnn_Frame.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData), global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData.Parser, new[]{ "FrameID", "InputData" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData), global::AxibugProtobuf.Protobuf_Room_Syn_RoomFrameAllInputData.Parser, new[]{ "FrameID", "InputData", "ServerFrameID", "ServerForwardCount" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create), global::AxibugProtobuf.Protobuf_Room_Create.Parser, new[]{ "GameRomID", "GameRomHash", "JoinPlayerIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create), global::AxibugProtobuf.Protobuf_Room_Create.Parser, new[]{ "GameRomID", "GameRomHash" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Create_RESP), global::AxibugProtobuf.Protobuf_Room_Create_RESP.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Join), global::AxibugProtobuf.Protobuf_Room_Join.Parser, new[]{ "RoomID", "PlayerNum" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Join), global::AxibugProtobuf.Protobuf_Room_Join.Parser, new[]{ "RoomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Join_RESP), global::AxibugProtobuf.Protobuf_Room_Join_RESP.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Leave), global::AxibugProtobuf.Protobuf_Room_Leave.Parser, new[]{ "RoomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Leave_RESP), global::AxibugProtobuf.Protobuf_Room_Leave_RESP.Parser, new[]{ "RoomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MyRoom_State_Change), global::AxibugProtobuf.Protobuf_Room_MyRoom_State_Change.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy), global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy.Parser, new[]{ "SlotWithJoy" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx), global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx.Parser, new[]{ "PlayerSlotIdx", "PlayerLocalJoyIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy_RESP), global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy_RESP.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP), global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP.Parser, new[]{ "WaitStep", "LoadStateRaw" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw.Parser, new[]{ "LoadStateRaw" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw_RESP.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Player_Ready), global::AxibugProtobuf.Protobuf_Room_Player_Ready.Parser, new[]{ "PushFrameNeedTimeUs", "LoadStateNeedTimeUs", "VideoFrameShowNeedTimeUs", "AudioFramePlayNeedTimeUs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen), global::AxibugProtobuf.Protobuf_Room_Get_Screen.Parser, new[]{ "RoomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark), global::AxibugProtobuf.Protobuf_Game_Mark.Parser, new[]{ "RomID", "State", "PlatformType" }, null, null, null, null),
@@ -245,6 +256,10 @@ namespace AxibugProtobuf {
     ///我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change
     /// </summary>
     [pbr::OriginalName("CMD_Room_MyRoom_State_Changed")] CmdRoomMyRoomStateChanged = 5110,
+    /// <summary>
+    ///更换操作槽位 对应 Protobuf_Room_Change_PlaySlotWithJoy | Protobuf_Room_Change_PlaySlotWithJoy_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_Room_ChangePlayerWithJoy")] CmdRoomChangePlayerWithJoy = 5130,
     /// <summary>
     ///准备和开始流程（5201 ~ 5204 ~ 5208）
     ///
@@ -4088,15 +4103,8 @@ namespace AxibugProtobuf {
       hostPlayerUID_ = other.hostPlayerUID_;
       gameState_ = other.gameState_;
       obsUserCount_ = other.obsUserCount_;
-      player1UID_ = other.player1UID_;
-      player1NickName_ = other.player1NickName_;
-      player2UID_ = other.player2UID_;
-      player2NickName_ = other.player2NickName_;
-      player3UID_ = other.player3UID_;
-      player3NickName_ = other.player3NickName_;
-      player4UID_ = other.player4UID_;
-      player4NickName_ = other.player4NickName_;
       screenProviderUID_ = other.screenProviderUID_;
+      gamePlaySlotList_ = other.gamePlaySlotList_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4186,120 +4194,8 @@ namespace AxibugProtobuf {
       }
     }
 
-    /// <summary>Field number for the "Player1_UID" field.</summary>
-    public const int Player1UIDFieldNumber = 7;
-    private long player1UID_;
-    /// <summary>
-    ///玩家1 UID
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Player1UID {
-      get { return player1UID_; }
-      set {
-        player1UID_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Player1_NickName" field.</summary>
-    public const int Player1NickNameFieldNumber = 8;
-    private string player1NickName_ = "";
-    /// <summary>
-    ///玩家1 昵称
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Player1NickName {
-      get { return player1NickName_; }
-      set {
-        player1NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "Player2_UID" field.</summary>
-    public const int Player2UIDFieldNumber = 9;
-    private long player2UID_;
-    /// <summary>
-    ///玩家2 UID
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Player2UID {
-      get { return player2UID_; }
-      set {
-        player2UID_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Player2_NickName" field.</summary>
-    public const int Player2NickNameFieldNumber = 10;
-    private string player2NickName_ = "";
-    /// <summary>
-    ///玩家2 昵称
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Player2NickName {
-      get { return player2NickName_; }
-      set {
-        player2NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "Player3_UID" field.</summary>
-    public const int Player3UIDFieldNumber = 11;
-    private long player3UID_;
-    /// <summary>
-    ///玩家3 UID
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Player3UID {
-      get { return player3UID_; }
-      set {
-        player3UID_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Player3_NickName" field.</summary>
-    public const int Player3NickNameFieldNumber = 12;
-    private string player3NickName_ = "";
-    /// <summary>
-    ///玩家3 昵称
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Player3NickName {
-      get { return player3NickName_; }
-      set {
-        player3NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
-    /// <summary>Field number for the "Player4_UID" field.</summary>
-    public const int Player4UIDFieldNumber = 13;
-    private long player4UID_;
-    /// <summary>
-    ///玩家4 UID
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Player4UID {
-      get { return player4UID_; }
-      set {
-        player4UID_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Player4_NickName" field.</summary>
-    public const int Player4NickNameFieldNumber = 14;
-    private string player4NickName_ = "";
-    /// <summary>
-    ///玩家4 昵称
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Player4NickName {
-      get { return player4NickName_; }
-      set {
-        player4NickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "ScreenProviderUID" field.</summary>
-    public const int ScreenProviderUIDFieldNumber = 15;
+    public const int ScreenProviderUIDFieldNumber = 7;
     private long screenProviderUID_;
     /// <summary>
     ///屏幕数据供应者
@@ -4310,6 +4206,19 @@ namespace AxibugProtobuf {
       set {
         screenProviderUID_ = value;
       }
+    }
+
+    /// <summary>Field number for the "GamePlaySlotList" field.</summary>
+    public const int GamePlaySlotListFieldNumber = 8;
+    private static readonly pb::FieldCodec<global::AxibugProtobuf.Protobuf_Room_GamePlaySlot> _repeated_gamePlaySlotList_codec
+        = pb::FieldCodec.ForMessage(66, global::AxibugProtobuf.Protobuf_Room_GamePlaySlot.Parser);
+    private readonly pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Room_GamePlaySlot> gamePlaySlotList_ = new pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Room_GamePlaySlot>();
+    /// <summary>
+    ///游玩槽位信息P1~P4 固定4个
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Room_GamePlaySlot> GamePlaySlotList {
+      get { return gamePlaySlotList_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4331,15 +4240,8 @@ namespace AxibugProtobuf {
       if (HostPlayerUID != other.HostPlayerUID) return false;
       if (GameState != other.GameState) return false;
       if (ObsUserCount != other.ObsUserCount) return false;
-      if (Player1UID != other.Player1UID) return false;
-      if (Player1NickName != other.Player1NickName) return false;
-      if (Player2UID != other.Player2UID) return false;
-      if (Player2NickName != other.Player2NickName) return false;
-      if (Player3UID != other.Player3UID) return false;
-      if (Player3NickName != other.Player3NickName) return false;
-      if (Player4UID != other.Player4UID) return false;
-      if (Player4NickName != other.Player4NickName) return false;
       if (ScreenProviderUID != other.ScreenProviderUID) return false;
+      if(!gamePlaySlotList_.Equals(other.gamePlaySlotList_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4352,15 +4254,8 @@ namespace AxibugProtobuf {
       if (HostPlayerUID != 0L) hash ^= HostPlayerUID.GetHashCode();
       if (GameState != global::AxibugProtobuf.RoomGameState.NoneGameState) hash ^= GameState.GetHashCode();
       if (ObsUserCount != 0) hash ^= ObsUserCount.GetHashCode();
-      if (Player1UID != 0L) hash ^= Player1UID.GetHashCode();
-      if (Player1NickName.Length != 0) hash ^= Player1NickName.GetHashCode();
-      if (Player2UID != 0L) hash ^= Player2UID.GetHashCode();
-      if (Player2NickName.Length != 0) hash ^= Player2NickName.GetHashCode();
-      if (Player3UID != 0L) hash ^= Player3UID.GetHashCode();
-      if (Player3NickName.Length != 0) hash ^= Player3NickName.GetHashCode();
-      if (Player4UID != 0L) hash ^= Player4UID.GetHashCode();
-      if (Player4NickName.Length != 0) hash ^= Player4NickName.GetHashCode();
       if (ScreenProviderUID != 0L) hash ^= ScreenProviderUID.GetHashCode();
+      hash ^= gamePlaySlotList_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4401,42 +4296,11 @@ namespace AxibugProtobuf {
         output.WriteRawTag(48);
         output.WriteInt32(ObsUserCount);
       }
-      if (Player1UID != 0L) {
-        output.WriteRawTag(56);
-        output.WriteInt64(Player1UID);
-      }
-      if (Player1NickName.Length != 0) {
-        output.WriteRawTag(66);
-        output.WriteString(Player1NickName);
-      }
-      if (Player2UID != 0L) {
-        output.WriteRawTag(72);
-        output.WriteInt64(Player2UID);
-      }
-      if (Player2NickName.Length != 0) {
-        output.WriteRawTag(82);
-        output.WriteString(Player2NickName);
-      }
-      if (Player3UID != 0L) {
-        output.WriteRawTag(88);
-        output.WriteInt64(Player3UID);
-      }
-      if (Player3NickName.Length != 0) {
-        output.WriteRawTag(98);
-        output.WriteString(Player3NickName);
-      }
-      if (Player4UID != 0L) {
-        output.WriteRawTag(104);
-        output.WriteInt64(Player4UID);
-      }
-      if (Player4NickName.Length != 0) {
-        output.WriteRawTag(114);
-        output.WriteString(Player4NickName);
-      }
       if (ScreenProviderUID != 0L) {
-        output.WriteRawTag(120);
+        output.WriteRawTag(56);
         output.WriteInt64(ScreenProviderUID);
       }
+      gamePlaySlotList_.WriteTo(output, _repeated_gamePlaySlotList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4470,42 +4334,11 @@ namespace AxibugProtobuf {
         output.WriteRawTag(48);
         output.WriteInt32(ObsUserCount);
       }
-      if (Player1UID != 0L) {
-        output.WriteRawTag(56);
-        output.WriteInt64(Player1UID);
-      }
-      if (Player1NickName.Length != 0) {
-        output.WriteRawTag(66);
-        output.WriteString(Player1NickName);
-      }
-      if (Player2UID != 0L) {
-        output.WriteRawTag(72);
-        output.WriteInt64(Player2UID);
-      }
-      if (Player2NickName.Length != 0) {
-        output.WriteRawTag(82);
-        output.WriteString(Player2NickName);
-      }
-      if (Player3UID != 0L) {
-        output.WriteRawTag(88);
-        output.WriteInt64(Player3UID);
-      }
-      if (Player3NickName.Length != 0) {
-        output.WriteRawTag(98);
-        output.WriteString(Player3NickName);
-      }
-      if (Player4UID != 0L) {
-        output.WriteRawTag(104);
-        output.WriteInt64(Player4UID);
-      }
-      if (Player4NickName.Length != 0) {
-        output.WriteRawTag(114);
-        output.WriteString(Player4NickName);
-      }
       if (ScreenProviderUID != 0L) {
-        output.WriteRawTag(120);
+        output.WriteRawTag(56);
         output.WriteInt64(ScreenProviderUID);
       }
+      gamePlaySlotList_.WriteTo(ref output, _repeated_gamePlaySlotList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4533,33 +4366,10 @@ namespace AxibugProtobuf {
       if (ObsUserCount != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObsUserCount);
       }
-      if (Player1UID != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player1UID);
-      }
-      if (Player1NickName.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player1NickName);
-      }
-      if (Player2UID != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player2UID);
-      }
-      if (Player2NickName.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player2NickName);
-      }
-      if (Player3UID != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player3UID);
-      }
-      if (Player3NickName.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player3NickName);
-      }
-      if (Player4UID != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Player4UID);
-      }
-      if (Player4NickName.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Player4NickName);
-      }
       if (ScreenProviderUID != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(ScreenProviderUID);
       }
+      size += gamePlaySlotList_.CalculateSize(_repeated_gamePlaySlotList_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -4589,33 +4399,10 @@ namespace AxibugProtobuf {
       if (other.ObsUserCount != 0) {
         ObsUserCount = other.ObsUserCount;
       }
-      if (other.Player1UID != 0L) {
-        Player1UID = other.Player1UID;
-      }
-      if (other.Player1NickName.Length != 0) {
-        Player1NickName = other.Player1NickName;
-      }
-      if (other.Player2UID != 0L) {
-        Player2UID = other.Player2UID;
-      }
-      if (other.Player2NickName.Length != 0) {
-        Player2NickName = other.Player2NickName;
-      }
-      if (other.Player3UID != 0L) {
-        Player3UID = other.Player3UID;
-      }
-      if (other.Player3NickName.Length != 0) {
-        Player3NickName = other.Player3NickName;
-      }
-      if (other.Player4UID != 0L) {
-        Player4UID = other.Player4UID;
-      }
-      if (other.Player4NickName.Length != 0) {
-        Player4NickName = other.Player4NickName;
-      }
       if (other.ScreenProviderUID != 0L) {
         ScreenProviderUID = other.ScreenProviderUID;
       }
+      gamePlaySlotList_.Add(other.gamePlaySlotList_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -4655,39 +4442,11 @@ namespace AxibugProtobuf {
             break;
           }
           case 56: {
-            Player1UID = input.ReadInt64();
+            ScreenProviderUID = input.ReadInt64();
             break;
           }
           case 66: {
-            Player1NickName = input.ReadString();
-            break;
-          }
-          case 72: {
-            Player2UID = input.ReadInt64();
-            break;
-          }
-          case 82: {
-            Player2NickName = input.ReadString();
-            break;
-          }
-          case 88: {
-            Player3UID = input.ReadInt64();
-            break;
-          }
-          case 98: {
-            Player3NickName = input.ReadString();
-            break;
-          }
-          case 104: {
-            Player4UID = input.ReadInt64();
-            break;
-          }
-          case 114: {
-            Player4NickName = input.ReadString();
-            break;
-          }
-          case 120: {
-            ScreenProviderUID = input.ReadInt64();
+            gamePlaySlotList_.AddEntriesFrom(input, _repeated_gamePlaySlotList_codec);
             break;
           }
         }
@@ -4729,39 +4488,264 @@ namespace AxibugProtobuf {
             break;
           }
           case 56: {
-            Player1UID = input.ReadInt64();
+            ScreenProviderUID = input.ReadInt64();
             break;
           }
           case 66: {
-            Player1NickName = input.ReadString();
+            gamePlaySlotList_.AddEntriesFrom(ref input, _repeated_gamePlaySlotList_codec);
             break;
           }
-          case 72: {
-            Player2UID = input.ReadInt64();
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_GamePlaySlot : pb::IMessage<Protobuf_Room_GamePlaySlot>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_GamePlaySlot> _parser = new pb::MessageParser<Protobuf_Room_GamePlaySlot>(() => new Protobuf_Room_GamePlaySlot());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_GamePlaySlot> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[19]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_GamePlaySlot() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_GamePlaySlot(Protobuf_Room_GamePlaySlot other) : this() {
+      playerUID_ = other.playerUID_;
+      playerNickName_ = other.playerNickName_;
+      playerLocalJoyIdx_ = other.playerLocalJoyIdx_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_GamePlaySlot Clone() {
+      return new Protobuf_Room_GamePlaySlot(this);
+    }
+
+    /// <summary>Field number for the "Player_UID" field.</summary>
+    public const int PlayerUIDFieldNumber = 1;
+    private long playerUID_;
+    /// <summary>
+    ///玩家 UID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long PlayerUID {
+      get { return playerUID_; }
+      set {
+        playerUID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Player_NickName" field.</summary>
+    public const int PlayerNickNameFieldNumber = 2;
+    private string playerNickName_ = "";
+    /// <summary>
+    ///玩家 昵称
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PlayerNickName {
+      get { return playerNickName_; }
+      set {
+        playerNickName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "PlayerLocalJoyIdx" field.</summary>
+    public const int PlayerLocalJoyIdxFieldNumber = 3;
+    private int playerLocalJoyIdx_;
+    /// <summary>
+    ///客户端JoyIdx
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerLocalJoyIdx {
+      get { return playerLocalJoyIdx_; }
+      set {
+        playerLocalJoyIdx_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_GamePlaySlot);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_GamePlaySlot other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerUID != other.PlayerUID) return false;
+      if (PlayerNickName != other.PlayerNickName) return false;
+      if (PlayerLocalJoyIdx != other.PlayerLocalJoyIdx) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerUID != 0L) hash ^= PlayerUID.GetHashCode();
+      if (PlayerNickName.Length != 0) hash ^= PlayerNickName.GetHashCode();
+      if (PlayerLocalJoyIdx != 0) hash ^= PlayerLocalJoyIdx.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PlayerUID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(PlayerUID);
+      }
+      if (PlayerNickName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(PlayerNickName);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(PlayerLocalJoyIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PlayerUID != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(PlayerUID);
+      }
+      if (PlayerNickName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(PlayerNickName);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(PlayerLocalJoyIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerUID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(PlayerUID);
+      }
+      if (PlayerNickName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerNickName);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerLocalJoyIdx);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_GamePlaySlot other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerUID != 0L) {
+        PlayerUID = other.PlayerUID;
+      }
+      if (other.PlayerNickName.Length != 0) {
+        PlayerNickName = other.PlayerNickName;
+      }
+      if (other.PlayerLocalJoyIdx != 0) {
+        PlayerLocalJoyIdx = other.PlayerLocalJoyIdx;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PlayerUID = input.ReadInt64();
             break;
           }
-          case 82: {
-            Player2NickName = input.ReadString();
+          case 18: {
+            PlayerNickName = input.ReadString();
             break;
           }
-          case 88: {
-            Player3UID = input.ReadInt64();
+          case 24: {
+            PlayerLocalJoyIdx = input.ReadInt32();
             break;
           }
-          case 98: {
-            Player3NickName = input.ReadString();
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PlayerUID = input.ReadInt64();
             break;
           }
-          case 104: {
-            Player4UID = input.ReadInt64();
+          case 18: {
+            PlayerNickName = input.ReadString();
             break;
           }
-          case 114: {
-            Player4NickName = input.ReadString();
-            break;
-          }
-          case 120: {
-            ScreenProviderUID = input.ReadInt64();
+          case 24: {
+            PlayerLocalJoyIdx = input.ReadInt32();
             break;
           }
         }
@@ -4783,7 +4767,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[19]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5006,7 +4990,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[20]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5259,7 +5243,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[21]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5473,7 +5457,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[22]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5765,7 +5749,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[23]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5784,7 +5768,6 @@ namespace AxibugProtobuf {
     public Protobuf_Room_Create(Protobuf_Room_Create other) : this() {
       gameRomID_ = other.gameRomID_;
       gameRomHash_ = other.gameRomHash_;
-      joinPlayerIdx_ = other.joinPlayerIdx_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5815,20 +5798,6 @@ namespace AxibugProtobuf {
       }
     }
 
-    /// <summary>Field number for the "JoinPlayerIdx" field.</summary>
-    public const int JoinPlayerIdxFieldNumber = 3;
-    private int joinPlayerIdx_;
-    /// <summary>
-    ///P1~P4[0~3] 以几号位玩家创建房间
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int JoinPlayerIdx {
-      get { return joinPlayerIdx_; }
-      set {
-        joinPlayerIdx_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Protobuf_Room_Create);
@@ -5844,7 +5813,6 @@ namespace AxibugProtobuf {
       }
       if (GameRomID != other.GameRomID) return false;
       if (GameRomHash != other.GameRomHash) return false;
-      if (JoinPlayerIdx != other.JoinPlayerIdx) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5853,7 +5821,6 @@ namespace AxibugProtobuf {
       int hash = 1;
       if (GameRomID != 0) hash ^= GameRomID.GetHashCode();
       if (GameRomHash.Length != 0) hash ^= GameRomHash.GetHashCode();
-      if (JoinPlayerIdx != 0) hash ^= JoinPlayerIdx.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5878,10 +5845,6 @@ namespace AxibugProtobuf {
         output.WriteRawTag(18);
         output.WriteString(GameRomHash);
       }
-      if (JoinPlayerIdx != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(JoinPlayerIdx);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5899,10 +5862,6 @@ namespace AxibugProtobuf {
         output.WriteRawTag(18);
         output.WriteString(GameRomHash);
       }
-      if (JoinPlayerIdx != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(JoinPlayerIdx);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -5917,9 +5876,6 @@ namespace AxibugProtobuf {
       }
       if (GameRomHash.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(GameRomHash);
-      }
-      if (JoinPlayerIdx != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(JoinPlayerIdx);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5937,9 +5893,6 @@ namespace AxibugProtobuf {
       }
       if (other.GameRomHash.Length != 0) {
         GameRomHash = other.GameRomHash;
-      }
-      if (other.JoinPlayerIdx != 0) {
-        JoinPlayerIdx = other.JoinPlayerIdx;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5961,10 +5914,6 @@ namespace AxibugProtobuf {
           }
           case 18: {
             GameRomHash = input.ReadString();
-            break;
-          }
-          case 24: {
-            JoinPlayerIdx = input.ReadInt32();
             break;
           }
         }
@@ -5989,10 +5938,6 @@ namespace AxibugProtobuf {
             GameRomHash = input.ReadString();
             break;
           }
-          case 24: {
-            JoinPlayerIdx = input.ReadInt32();
-            break;
-          }
         }
       }
     }
@@ -6012,7 +5957,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[24]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6196,7 +6141,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[25]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6214,7 +6159,6 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Room_Join(Protobuf_Room_Join other) : this() {
       roomID_ = other.roomID_;
-      playerNum_ = other.playerNum_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6237,20 +6181,6 @@ namespace AxibugProtobuf {
       }
     }
 
-    /// <summary>Field number for the "PlayerNum" field.</summary>
-    public const int PlayerNumFieldNumber = 2;
-    private int playerNum_;
-    /// <summary>
-    ///玩家编号 [0]1号玩家 [1]2号玩家
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int PlayerNum {
-      get { return playerNum_; }
-      set {
-        playerNum_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Protobuf_Room_Join);
@@ -6265,7 +6195,6 @@ namespace AxibugProtobuf {
         return true;
       }
       if (RoomID != other.RoomID) return false;
-      if (PlayerNum != other.PlayerNum) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6273,7 +6202,6 @@ namespace AxibugProtobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (RoomID != 0) hash ^= RoomID.GetHashCode();
-      if (PlayerNum != 0) hash ^= PlayerNum.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6294,10 +6222,6 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteInt32(RoomID);
       }
-      if (PlayerNum != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(PlayerNum);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6311,10 +6235,6 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteInt32(RoomID);
       }
-      if (PlayerNum != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(PlayerNum);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -6326,9 +6246,6 @@ namespace AxibugProtobuf {
       int size = 0;
       if (RoomID != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomID);
-      }
-      if (PlayerNum != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerNum);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6343,9 +6260,6 @@ namespace AxibugProtobuf {
       }
       if (other.RoomID != 0) {
         RoomID = other.RoomID;
-      }
-      if (other.PlayerNum != 0) {
-        PlayerNum = other.PlayerNum;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -6365,10 +6279,6 @@ namespace AxibugProtobuf {
             RoomID = input.ReadInt32();
             break;
           }
-          case 16: {
-            PlayerNum = input.ReadInt32();
-            break;
-          }
         }
       }
     #endif
@@ -6385,10 +6295,6 @@ namespace AxibugProtobuf {
             break;
           case 8: {
             RoomID = input.ReadInt32();
-            break;
-          }
-          case 16: {
-            PlayerNum = input.ReadInt32();
             break;
           }
         }
@@ -6410,7 +6316,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[26]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6594,7 +6500,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[27]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6769,7 +6675,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[28]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6944,7 +6850,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[29]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7116,6 +7022,520 @@ namespace AxibugProtobuf {
 
   }
 
+  public sealed partial class Protobuf_Room_Change_PlaySlotWithJoy : pb::IMessage<Protobuf_Room_Change_PlaySlotWithJoy>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Change_PlaySlotWithJoy> _parser = new pb::MessageParser<Protobuf_Room_Change_PlaySlotWithJoy>(() => new Protobuf_Room_Change_PlaySlotWithJoy());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Change_PlaySlotWithJoy> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[31]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Change_PlaySlotWithJoy() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Change_PlaySlotWithJoy(Protobuf_Room_Change_PlaySlotWithJoy other) : this() {
+      slotWithJoy_ = other.slotWithJoy_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Change_PlaySlotWithJoy Clone() {
+      return new Protobuf_Room_Change_PlaySlotWithJoy(this);
+    }
+
+    /// <summary>Field number for the "SlotWithJoy" field.</summary>
+    public const int SlotWithJoyFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx> _repeated_slotWithJoy_codec
+        = pb::FieldCodec.ForMessage(10, global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx.Parser);
+    private readonly pbc::RepeatedField<global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx> slotWithJoy_ = new pbc::RepeatedField<global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx>();
+    /// <summary>
+    ///P1~P4编号
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx> SlotWithJoy {
+      get { return slotWithJoy_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Change_PlaySlotWithJoy);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Change_PlaySlotWithJoy other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!slotWithJoy_.Equals(other.slotWithJoy_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= slotWithJoy_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      slotWithJoy_.WriteTo(output, _repeated_slotWithJoy_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      slotWithJoy_.WriteTo(ref output, _repeated_slotWithJoy_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      size += slotWithJoy_.CalculateSize(_repeated_slotWithJoy_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Change_PlaySlotWithJoy other) {
+      if (other == null) {
+        return;
+      }
+      slotWithJoy_.Add(other.slotWithJoy_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            slotWithJoy_.AddEntriesFrom(input, _repeated_slotWithJoy_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            slotWithJoy_.AddEntriesFrom(ref input, _repeated_slotWithJoy_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_PlaySlotIdxWithJoyIdx : pb::IMessage<Protobuf_PlaySlotIdxWithJoyIdx>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_PlaySlotIdxWithJoyIdx> _parser = new pb::MessageParser<Protobuf_PlaySlotIdxWithJoyIdx>(() => new Protobuf_PlaySlotIdxWithJoyIdx());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_PlaySlotIdxWithJoyIdx> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[32]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_PlaySlotIdxWithJoyIdx() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_PlaySlotIdxWithJoyIdx(Protobuf_PlaySlotIdxWithJoyIdx other) : this() {
+      playerSlotIdx_ = other.playerSlotIdx_;
+      playerLocalJoyIdx_ = other.playerLocalJoyIdx_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_PlaySlotIdxWithJoyIdx Clone() {
+      return new Protobuf_PlaySlotIdxWithJoyIdx(this);
+    }
+
+    /// <summary>Field number for the "PlayerSlotIdx" field.</summary>
+    public const int PlayerSlotIdxFieldNumber = 1;
+    private int playerSlotIdx_;
+    /// <summary>
+    ///P1~P4编号
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerSlotIdx {
+      get { return playerSlotIdx_; }
+      set {
+        playerSlotIdx_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlayerLocalJoyIdx" field.</summary>
+    public const int PlayerLocalJoyIdxFieldNumber = 2;
+    private int playerLocalJoyIdx_;
+    /// <summary>
+    ///客户端Joy编号
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int PlayerLocalJoyIdx {
+      get { return playerLocalJoyIdx_; }
+      set {
+        playerLocalJoyIdx_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_PlaySlotIdxWithJoyIdx);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_PlaySlotIdxWithJoyIdx other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PlayerSlotIdx != other.PlayerSlotIdx) return false;
+      if (PlayerLocalJoyIdx != other.PlayerLocalJoyIdx) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PlayerSlotIdx != 0) hash ^= PlayerSlotIdx.GetHashCode();
+      if (PlayerLocalJoyIdx != 0) hash ^= PlayerLocalJoyIdx.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PlayerSlotIdx != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PlayerSlotIdx);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PlayerLocalJoyIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PlayerSlotIdx != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PlayerSlotIdx);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PlayerLocalJoyIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (PlayerSlotIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerSlotIdx);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerLocalJoyIdx);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_PlaySlotIdxWithJoyIdx other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PlayerSlotIdx != 0) {
+        PlayerSlotIdx = other.PlayerSlotIdx;
+      }
+      if (other.PlayerLocalJoyIdx != 0) {
+        PlayerLocalJoyIdx = other.PlayerLocalJoyIdx;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PlayerSlotIdx = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlayerLocalJoyIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PlayerSlotIdx = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            PlayerLocalJoyIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Room_Change_PlaySlotWithJoy_RESP : pb::IMessage<Protobuf_Room_Change_PlaySlotWithJoy_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Room_Change_PlaySlotWithJoy_RESP> _parser = new pb::MessageParser<Protobuf_Room_Change_PlaySlotWithJoy_RESP>(() => new Protobuf_Room_Change_PlaySlotWithJoy_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Room_Change_PlaySlotWithJoy_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[33]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Change_PlaySlotWithJoy_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Change_PlaySlotWithJoy_RESP(Protobuf_Room_Change_PlaySlotWithJoy_RESP other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Room_Change_PlaySlotWithJoy_RESP Clone() {
+      return new Protobuf_Room_Change_PlaySlotWithJoy_RESP(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Room_Change_PlaySlotWithJoy_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Room_Change_PlaySlotWithJoy_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Room_Change_PlaySlotWithJoy_RESP other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class Protobuf_Room_WaitStep_RESP : pb::IMessage<Protobuf_Room_WaitStep_RESP>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -7128,7 +7548,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[30]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7342,7 +7762,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[31]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7517,7 +7937,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[32]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7653,7 +8073,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[33]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7670,12 +8090,72 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Room_Player_Ready(Protobuf_Room_Player_Ready other) : this() {
+      pushFrameNeedTimeUs_ = other.pushFrameNeedTimeUs_;
+      loadStateNeedTimeUs_ = other.loadStateNeedTimeUs_;
+      videoFrameShowNeedTimeUs_ = other.videoFrameShowNeedTimeUs_;
+      audioFramePlayNeedTimeUs_ = other.audioFramePlayNeedTimeUs_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Room_Player_Ready Clone() {
       return new Protobuf_Room_Player_Ready(this);
+    }
+
+    /// <summary>Field number for the "PushFrameNeedTimeUs" field.</summary>
+    public const int PushFrameNeedTimeUsFieldNumber = 1;
+    private float pushFrameNeedTimeUs_;
+    /// <summary>
+    ///push帧所需平均时间（微秒）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PushFrameNeedTimeUs {
+      get { return pushFrameNeedTimeUs_; }
+      set {
+        pushFrameNeedTimeUs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "LoadStateNeedTimeUs" field.</summary>
+    public const int LoadStateNeedTimeUsFieldNumber = 2;
+    private float loadStateNeedTimeUs_;
+    /// <summary>
+    ///加载即时存档所需平均时间（微秒）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float LoadStateNeedTimeUs {
+      get { return loadStateNeedTimeUs_; }
+      set {
+        loadStateNeedTimeUs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "VideoFrameShowNeedTimeUs" field.</summary>
+    public const int VideoFrameShowNeedTimeUsFieldNumber = 3;
+    private float videoFrameShowNeedTimeUs_;
+    /// <summary>
+    ///视频一帧所需时间（微秒）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float VideoFrameShowNeedTimeUs {
+      get { return videoFrameShowNeedTimeUs_; }
+      set {
+        videoFrameShowNeedTimeUs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "AudioFramePlayNeedTimeUs" field.</summary>
+    public const int AudioFramePlayNeedTimeUsFieldNumber = 4;
+    private float audioFramePlayNeedTimeUs_;
+    /// <summary>
+    ///音频处理一帧所需时间（微秒）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AudioFramePlayNeedTimeUs {
+      get { return audioFramePlayNeedTimeUs_; }
+      set {
+        audioFramePlayNeedTimeUs_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7691,12 +8171,20 @@ namespace AxibugProtobuf {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PushFrameNeedTimeUs, other.PushFrameNeedTimeUs)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(LoadStateNeedTimeUs, other.LoadStateNeedTimeUs)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(VideoFrameShowNeedTimeUs, other.VideoFrameShowNeedTimeUs)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AudioFramePlayNeedTimeUs, other.AudioFramePlayNeedTimeUs)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (PushFrameNeedTimeUs != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PushFrameNeedTimeUs);
+      if (LoadStateNeedTimeUs != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(LoadStateNeedTimeUs);
+      if (VideoFrameShowNeedTimeUs != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(VideoFrameShowNeedTimeUs);
+      if (AudioFramePlayNeedTimeUs != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AudioFramePlayNeedTimeUs);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7713,6 +8201,22 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (PushFrameNeedTimeUs != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(PushFrameNeedTimeUs);
+      }
+      if (LoadStateNeedTimeUs != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(LoadStateNeedTimeUs);
+      }
+      if (VideoFrameShowNeedTimeUs != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(VideoFrameShowNeedTimeUs);
+      }
+      if (AudioFramePlayNeedTimeUs != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(AudioFramePlayNeedTimeUs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7722,6 +8226,22 @@ namespace AxibugProtobuf {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PushFrameNeedTimeUs != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(PushFrameNeedTimeUs);
+      }
+      if (LoadStateNeedTimeUs != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(LoadStateNeedTimeUs);
+      }
+      if (VideoFrameShowNeedTimeUs != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(VideoFrameShowNeedTimeUs);
+      }
+      if (AudioFramePlayNeedTimeUs != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(AudioFramePlayNeedTimeUs);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -7731,6 +8251,18 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (PushFrameNeedTimeUs != 0F) {
+        size += 1 + 4;
+      }
+      if (LoadStateNeedTimeUs != 0F) {
+        size += 1 + 4;
+      }
+      if (VideoFrameShowNeedTimeUs != 0F) {
+        size += 1 + 4;
+      }
+      if (AudioFramePlayNeedTimeUs != 0F) {
+        size += 1 + 4;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -7741,6 +8273,18 @@ namespace AxibugProtobuf {
     public void MergeFrom(Protobuf_Room_Player_Ready other) {
       if (other == null) {
         return;
+      }
+      if (other.PushFrameNeedTimeUs != 0F) {
+        PushFrameNeedTimeUs = other.PushFrameNeedTimeUs;
+      }
+      if (other.LoadStateNeedTimeUs != 0F) {
+        LoadStateNeedTimeUs = other.LoadStateNeedTimeUs;
+      }
+      if (other.VideoFrameShowNeedTimeUs != 0F) {
+        VideoFrameShowNeedTimeUs = other.VideoFrameShowNeedTimeUs;
+      }
+      if (other.AudioFramePlayNeedTimeUs != 0F) {
+        AudioFramePlayNeedTimeUs = other.AudioFramePlayNeedTimeUs;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -7756,6 +8300,22 @@ namespace AxibugProtobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 13: {
+            PushFrameNeedTimeUs = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            LoadStateNeedTimeUs = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            VideoFrameShowNeedTimeUs = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            AudioFramePlayNeedTimeUs = input.ReadFloat();
+            break;
+          }
         }
       }
     #endif
@@ -7770,6 +8330,22 @@ namespace AxibugProtobuf {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 13: {
+            PushFrameNeedTimeUs = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            LoadStateNeedTimeUs = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            VideoFrameShowNeedTimeUs = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            AudioFramePlayNeedTimeUs = input.ReadFloat();
+            break;
+          }
         }
       }
     }
@@ -7789,7 +8365,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[34]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7964,7 +8540,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[35]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8217,7 +8793,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[36]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8470,7 +9046,7 @@ namespace AxibugProtobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[37]; }
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

@@ -72,18 +72,5 @@ namespace AxibugEmuOnline.Client.Manager
 #endif
         }
 
-
-        #region 测试
-        void TestCreate()
-        {
-            App.roomMgr.SendCreateRoom(1, 0, string.Empty);
-        }
-        long TestFrameID = 0;
-        void TestEmuUpdate()
-        {
-
-        }
-        #endregion
-
     }
 }

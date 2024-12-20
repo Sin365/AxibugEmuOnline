@@ -2,6 +2,7 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -19,21 +20,17 @@ namespace AxibugEmuOnline.Client
         public static string GetHostNickName(this Protobuf_Room_MiniInfo roomInfo)
         {
             var hostUID = roomInfo.HostPlayerUID;
-            if (hostUID == roomInfo.Player1UID) return roomInfo.Player1NickName;
-            else if (hostUID == roomInfo.Player2UID) return roomInfo.Player2NickName;
-            else if (hostUID == roomInfo.Player3UID) return roomInfo.Player3NickName;
-            else if (hostUID == roomInfo.Player4UID) return roomInfo.Player4NickName;
-            else return string.Empty;
+            Protobuf_Room_GamePlaySlot slotdata = roomInfo.GamePlaySlotList.FirstOrDefault(w => w.PlayerUID == hostUID);
+            if (slotdata != null)
+                return slotdata.PlayerNickName;
+            else
+                return string.Empty;
         }
 
         public static void GetRoomPlayers(this Protobuf_Room_MiniInfo roomInfo, out int current, out int max)
         {
             current = 0; max = 4;
-
-            if (roomInfo.Player1UID > 0) current++;
-            if (roomInfo.Player2UID > 0) current++;
-            if (roomInfo.Player3UID > 0) current++;
-            if (roomInfo.Player4UID > 0) current++;
+            current = roomInfo.GamePlaySlotList.Count(w => w.PlayerUID > 0);
         }
 
         private static Dictionary<int, RomFile> s_RomFileCahcesInRoomInfo = new Dictionary<int, RomFile>();

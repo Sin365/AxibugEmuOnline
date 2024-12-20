@@ -18,7 +18,6 @@ namespace AxibugEmuOnline.Client.Manager
         public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == App.user.userdata.UID;
         public bool IsScreenProviderUID => mineRoomMiniInfo?.ScreenProviderUID == App.user.userdata.UID;
         public RoomGameState RoomState => mineRoomMiniInfo.GameState;
-        public int MinePlayerIdx => GetMinePlayerIndex();
         public int WaitStep { get; private set; } = -1;
         public byte[] RawData { get; private set; } = null;
         public NetReplay netReplay { get; private set; }
@@ -110,64 +109,31 @@ namespace AxibugEmuOnline.Client.Manager
         #endregion
 
         #region 房间管理
-        int GetMinePlayerIndex()
+        List<Protobuf_Room_GamePlaySlot> GetMinePlayerSlotInfo()
         {
             if (mineRoomMiniInfo == null)
-                return -1;
-
-            if (mineRoomMiniInfo.Player1UID == App.user.userdata.UID)
-                return 0;
-            if (mineRoomMiniInfo.Player2UID == App.user.userdata.UID)
-                return 1;
-            if (mineRoomMiniInfo.Player3UID == App.user.userdata.UID)
-                return 2;
-            if (mineRoomMiniInfo.Player4UID == App.user.userdata.UID)
-                return 3;
-            return -1;
+                return null;
+            return mineRoomMiniInfo.GamePlaySlotList.Where(w => w.PlayerUID == App.user.userdata.UID).ToList();
         }
 
         long[] GetRoom4PlayerUIDs()
         {
             if (mineRoomMiniInfo == null)
                 return null;
-            long[] result = new long[4];
-            if (mineRoomMiniInfo.Player1UID > 0)
-                result[0] = mineRoomMiniInfo.Player1UID;
-            if (mineRoomMiniInfo.Player2UID > 0)
-                result[1] = mineRoomMiniInfo.Player2UID;
-            if (mineRoomMiniInfo.Player3UID > 0)
-                result[2] = mineRoomMiniInfo.Player3UID;
-            if (mineRoomMiniInfo.Player4UID > 0)
-                result[3] = mineRoomMiniInfo.Player4UID;
+            long[] result = new long[mineRoomMiniInfo.GamePlaySlotList.Count];
+            for (int i = 0; i < mineRoomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                if (mineRoomMiniInfo.GamePlaySlotList[i].PlayerUID > 0)
+                    result[i] = mineRoomMiniInfo.GamePlaySlotList[i].PlayerUID;
+            }
             return result;
         }
 
-        S_PlayerMiniInfo[] GetRoom4PlayerMiniInfos()
+        Protobuf_Room_GamePlaySlot[] GetRoom4GameSlotMiniInfos()
         {
             if (mineRoomMiniInfo == null)
                 return null;
-            S_PlayerMiniInfo[] result = new S_PlayerMiniInfo[4];
-            if (mineRoomMiniInfo.Player1UID > 0)
-            {
-                result[0].UID = mineRoomMiniInfo.Player1UID;
-                result[0].NickName = mineRoomMiniInfo.Player1NickName;
-            }
-            if (mineRoomMiniInfo.Player2UID > 0)
-            {
-                result[1].UID = mineRoomMiniInfo.Player2UID;
-                result[1].NickName = mineRoomMiniInfo.Player2NickName;
-            }
-            if (mineRoomMiniInfo.Player3UID > 0)
-            {
-                result[2].UID = mineRoomMiniInfo.Player3UID;
-                result[2].NickName = mineRoomMiniInfo.Player3NickName;
-            }
-            if (mineRoomMiniInfo.Player4UID > 0)
-            {
-                result[3].UID = mineRoomMiniInfo.Player4UID;
-                result[3].NickName = mineRoomMiniInfo.Player4NickName;
-            }
-            return result;
+            return mineRoomMiniInfo.GamePlaySlotList.ToArray();
         }
 
         #endregion
@@ -251,9 +217,8 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="GameRomID"></param>
         /// <param name="JoinPlayerIdx"></param>
         /// <param name="GameRomHash"></param>
-        public void SendCreateRoom(int GameRomID, int JoinPlayerIdx, string GameRomHash = null)
+        public void SendCreateRoom(int GameRomID, string GameRomHash = null)
         {
-            _Protobuf_Room_Create.JoinPlayerIdx = JoinPlayerIdx;
             _Protobuf_Room_Create.GameRomID = GameRomID;
             _Protobuf_Room_Create.GameRomHash = GameRomHash;
             App.log.Info($"创建房间");
@@ -278,13 +243,12 @@ namespace AxibugEmuOnline.Client.Manager
         /// <summary>
         /// 创建房间
         /// </summary>
-        /// <param name="GameRomID"></param>
-        /// <param name="JoinPlayerIdx"></param>
-        /// <param name="GameRomHash"></param>
-        public void SendJoinRoom(int RoomID, int JoinPlayerIdx)
+        /// <param name="RoomID"></param>
+        /// <param name="JoinSlotIdx">加入时所在SlotIdx</param>
+        /// <param name="LocalJoyIdx">加入时候本地对应JoyIdx</param>
+        public void SendJoinRoom(int RoomID)
         {
             _Protobuf_Room_Join.RoomID = RoomID;
-            _Protobuf_Room_Join.PlayerNum = JoinPlayerIdx;
             App.log.Info($"加入房间");
             App.network.SendToServer((int)CommandID.CmdRoomJoin, ProtoBufHelper.Serizlize(_Protobuf_Room_Join));
         }
@@ -336,35 +300,105 @@ namespace AxibugEmuOnline.Client.Manager
         {
             Protobuf_Room_MyRoom_State_Change msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_MyRoom_State_Change>(reqData);
             long[] oldRoomPlayer = GetRoom4PlayerUIDs();
+            Protobuf_Room_GamePlaySlot[] oldslotArr = GetRoom4GameSlotMiniInfos();
             mineRoomMiniInfo = msg.RoomMiniInfo;
             long[] newRoomPlayer = GetRoom4PlayerUIDs();
+            Protobuf_Room_GamePlaySlot[] newslotArr = GetRoom4GameSlotMiniInfos();
+
+            oldRoomPlayer = oldRoomPlayer.Where(w => w > 0).Distinct().ToArray();
+            newRoomPlayer = newRoomPlayer.Where(w => w > 0).Distinct().ToArray();
+            //离开用户
+            foreach (var leavn in oldRoomPlayer.Where(w => !newRoomPlayer.Contains(w)))
+            {
+                UserDataBase oldplayer = App.user.GetUserByUid(leavn);
+                string oldPlayName = oldplayer != null ? oldplayer.NickName : "Player";
+                OverlayManager.PopTip($"[{oldPlayName}]离开房间");
+                Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, leavn);
+            }
+            //新加入用户
+            foreach (var newJoin in newRoomPlayer.Where(w => !oldRoomPlayer.Contains(w)))
+            {
+                UserDataBase newplayer = App.user.GetUserByUid(newJoin);
+                string newplayerName = newplayer != null ? newplayer.NickName : "Player";
+                OverlayManager.PopTip($"[{newplayer}]进入房间");
+                Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, newJoin);
+            }
+
+            bool bChangeSlot = false;
             for (int i = 0; i < 4; i++)
             {
-                long OldPlayer = oldRoomPlayer[i];
-                long NewPlayer = newRoomPlayer[i];
-                if (OldPlayer == NewPlayer)
+                var oldSlot = oldslotArr[i];
+                var newSlot = newslotArr[i];
+                if (oldSlot.PlayerUID <= 0 && newSlot.PlayerUID <= 0)
                     continue;
-                //位置之前有人，但是离开了
-                if (OldPlayer > 0)
+                if (
+                    oldSlot.PlayerUID != newSlot.PlayerUID
+                    ||
+                    oldSlot.PlayerLocalJoyIdx != newSlot.PlayerLocalJoyIdx
+                    )
                 {
-                    Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
-                    UserDataBase oldplayer = App.user.GetUserByUid(OldPlayer);
-                    string oldPlayName = oldplayer != null ? oldplayer.NickName : "Player";
-                    OverlayManager.PopTip($"[{oldPlayName}]离开房间,手柄位:P{i}");
-                    if (NewPlayer > 0)//而且害换了一个玩家
+                    bChangeSlot = true;
+                    if (newSlot.PlayerUID > 0)
                     {
-                        Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
-                        mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
-                        OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
+                        OverlayManager.PopTip($"[{newSlot.PlayerNickName}]使用:P{i}");
                     }
                 }
-                else //之前没人
-                { 
-                    Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
-                    mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
-                    OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
-                }
             }
+
+            if (bChangeSlot)
+            {
+                Eventer.Instance.PostEvent(EEvent.OnRoomSlotDataChanged);
+            }
+
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    long OldPlayer = oldRoomPlayer[i];
+            //    long NewPlayer = newRoomPlayer[i];
+            //    if (OldPlayer == NewPlayer)
+            //        continue;
+
+            //    //位置之前有人，但是离开了
+            //    if (OldPlayer > 0)
+            //    {
+            //        Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
+            //        UserDataBase oldplayer = App.user.GetUserByUid(OldPlayer);
+            //        string oldPlayName = oldplayer != null ? oldplayer.NickName : "Player";
+            //        OverlayManager.PopTip($"[{oldPlayName}]离开房间,手柄位:P{i}");
+            //        if (NewPlayer > 0)//而且害换了一个玩家
+            //        {
+            //            Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+            //            mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
+            //            OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
+            //        }
+            //    }
+            //    else //之前没人
+            //    {
+            //        Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+            //        mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
+            //        OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
+            //    }
+
+            //    //位置之前有人，但是离开了
+            //    if (OldPlayer > 0)
+            //    {
+            //        Eventer.Instance.PostEvent(EEvent.OnOtherPlayerLeavnRoom, i, OldPlayer);
+            //        UserDataBase oldplayer = App.user.GetUserByUid(OldPlayer);
+            //        string oldPlayName = oldplayer != null ? oldplayer.NickName : "Player";
+            //        OverlayManager.PopTip($"[{oldPlayName}]离开房间,手柄位:P{i}");
+            //        if (NewPlayer > 0)//而且害换了一个玩家
+            //        {
+            //            Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+            //            mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
+            //            OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
+            //        }
+            //    }
+            //    else //之前没人
+            //    {
+            //        Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, i, NewPlayer);
+            //        mineRoomMiniInfo.GetPlayerNameByPlayerIdx((uint)i, out string PlayerName);
+            //        OverlayManager.PopTip($"[{PlayerName}]进入房间,手柄位:P{i}");
+            //    }
+            //}
         }
 
         /// <summary>
@@ -461,14 +495,11 @@ namespace AxibugEmuOnline.Client.Manager
 
             if (mineRoomMiniInfo == null)
             {
-                if (mineRoomMiniInfo.Player1UID == uid)
-                    mineRoomMiniInfo.Player1NickName = userdata.NickName;
-                else if (mineRoomMiniInfo.Player2UID == uid)
-                    mineRoomMiniInfo.Player2NickName = userdata.NickName;
-                else if (mineRoomMiniInfo.Player3UID == uid)
-                    mineRoomMiniInfo.Player3NickName = userdata.NickName;
-                else if (mineRoomMiniInfo.Player4UID == uid)
-                    mineRoomMiniInfo.Player4NickName = userdata.NickName;
+                foreach (var gameslot in mineRoomMiniInfo.GamePlaySlotList)
+                {
+                    if (gameslot.PlayerUID == uid)
+                        gameslot.PlayerNickName = userdata.NickName;
+                }
             }
         }
     }
@@ -484,34 +515,38 @@ namespace AxibugEmuOnline.Client.Manager
         public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo, out int[] freeSlots)
         {
             List<int> temp = new List<int>();
-            if (roomMiniInfo.Player1UID <= 0) temp.Add(0);
-            if (roomMiniInfo.Player2UID <= 0) temp.Add(1);
-            if (roomMiniInfo.Player3UID <= 0) temp.Add(2);
-            if (roomMiniInfo.Player4UID <= 0) temp.Add(3);
+            for (int i = 0; i < roomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                if (roomMiniInfo.GamePlaySlotList[i].PlayerUID <= 0)
+                    temp.Add(i);
+            }
             freeSlots = temp.ToArray();
             return freeSlots.Length > 0;
         }
-        
+
         /// <summary>
         /// 指定uid和该uid的本地手柄序号,获取占用的手柄位
         /// </summary>
-        public static bool GetPlayerSlotIdxByUid(this Protobuf_Room_MiniInfo roomMiniInfo, long uid ,int controllerIndex, out uint? slotID)
+        public static bool GetPlayerSlotIdxByUid(this Protobuf_Room_MiniInfo roomMiniInfo, long uid, int joyIdx, out uint? slotIdx)
         {
-            slotID = null;
-            
-            //controllerIndex取值返回[0,3],这个序号代表玩家本地的手柄编号
+            slotIdx = null;
+            //joyIdx取值返回[0,3],这个序号代表玩家本地的手柄编号
             //todo : 根据uid和controllerIndex 返回占用的位置
-            
+
             //目前未实现,所有非0号位置的手柄,都返回false
-            if (controllerIndex != 0) return false;
-            
-            if (roomMiniInfo.Player1UID == uid) slotID = 0;
-            if (roomMiniInfo.Player2UID == uid) slotID = 1;
-            if (roomMiniInfo.Player3UID == uid) slotID = 2;
-            if (roomMiniInfo.Player4UID == uid) slotID = 3;
-            return true;
+
+
+            for (int i = 0; i < roomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                if (roomMiniInfo.GamePlaySlotList[i].PlayerUID == uid)
+                {
+                    slotIdx = (uint)i;
+                    return true;
+                }
+            }
+            return false;
         }
-        
+
         /// <summary>
         /// 按照房间玩家下标获取昵称
         /// </summary>
@@ -519,16 +554,11 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="PlayerIndex"></param>
         /// <param name="PlayerName"></param>
         /// <returns></returns>
-        public static bool GetPlayerNameByPlayerIdx(this Protobuf_Room_MiniInfo roomMiniInfo,uint PlayerIndex, out string PlayerName)
+        public static bool GetPlayerNameByPlayerIdx(this Protobuf_Room_MiniInfo roomMiniInfo, uint GameSlotIdx, out string PlayerName)
         {
             PlayerName = string.Empty;
-            switch (PlayerIndex)
-            {
-                case 0: PlayerName = roomMiniInfo.Player1UID > 0 ? roomMiniInfo.Player1NickName : null; break;
-                case 1: PlayerName = roomMiniInfo.Player2UID > 0 ? roomMiniInfo.Player2NickName : null; break;
-                case 2: PlayerName = roomMiniInfo.Player3UID > 0 ? roomMiniInfo.Player3NickName : null; break;
-                case 3: PlayerName = roomMiniInfo.Player4UID > 0 ? roomMiniInfo.Player4NickName : null; break;
-            }
+            if (roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerUID > 0)
+                PlayerName = roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerNickName;
             return string.IsNullOrEmpty(PlayerName);
         }
     }

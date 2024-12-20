@@ -300,8 +300,6 @@ message Protobuf_Room_Create
 {
 	int32 GameRomID = 1;
 	string GameRomHash = 2;
-	int32 PlayerSlotIdx = 3;//创建时的P1~P4编号
-	int32 PlayerLocalJoyIdx = 4;//创建时的客户端Joy编号
 }
 
 message Protobuf_Room_Create_RESP
@@ -312,8 +310,6 @@ message Protobuf_Room_Create_RESP
 message Protobuf_Room_Join
 {
 	int32 RoomID = 1;//房间ID
-	int32 PlayerSlotIdx = 2;//P1~P4编号
-	int32 PlayerLocalJoyIdx = 3;//客户端Joy编号
 }
 
 message Protobuf_Room_Join_RESP
