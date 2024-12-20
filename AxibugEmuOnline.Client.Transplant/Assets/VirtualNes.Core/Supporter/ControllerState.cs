@@ -56,11 +56,29 @@ namespace VirtualNes.Core
         public override int GetHashCode()
         {
             //return HashCode.Combine(raw0, raw1, raw2, raw3, valid);
-            return raw0.GetHashCode()+ raw1.GetHashCode()+ raw2.GetHashCode()+ raw3.GetHashCode();
-
+            return ComputeHashCode(raw0, raw1, raw2, raw3, valid);
 		}
-        
-        public static bool operator ==(ControllerState left, ControllerState right)
+
+		public static int ComputeHashCode(uint raw0, uint raw1, uint raw2, uint raw3, bool valid)
+		{
+			unchecked // 允许溢出，使得哈希码计算更加合理
+			{
+				int hash = 17; // 选择一个非零的初始值
+
+				// 将每个 uint 类型的值转换为 int 并合并到哈希码中
+				hash = hash * 31 + (int)raw0;
+				hash = hash * 31 + (int)raw1;
+				hash = hash * 31 + (int)raw2;
+				hash = hash * 31 + (int)raw3;
+
+				// 将 bool 类型的值转换为 int 并合并到哈希码中
+				hash = hash * 31 + (valid ? 1 : 0);
+
+				return hash;
+			}
+		}
+
+		public static bool operator ==(ControllerState left, ControllerState right)
         {
             return
                 left.raw0 == right.raw0 &&
