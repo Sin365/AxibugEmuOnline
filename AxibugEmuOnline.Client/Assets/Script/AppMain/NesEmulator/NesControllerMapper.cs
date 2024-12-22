@@ -137,8 +137,10 @@ namespace AxibugEmuOnline.Client
                 m_keyListener = Controller.GetKey(m_hostController.ControllerIndex, m_buttonType);
             }
         }
+		//low C# readonly
+		//public readonly struct KeyListener
 
-        public struct KeyListener
+		public struct KeyListener
         {
             private readonly KeyCode m_key;
 
