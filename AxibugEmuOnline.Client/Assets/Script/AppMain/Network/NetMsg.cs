@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client.Network
 
         private Dictionary<int, List<Delegate>> netEventDic = new Dictionary<int, List<Delegate>>(128);
 
-        private Queue<(int, int, byte[])> queueNetMsg = new Queue<(int, int, byte[])>();
+        private Queue<ValueTuple<int, int, byte[]>> queueNetMsg = new Queue<ValueTuple<int, int, byte[]>>();
 
         private NetMsg() { }
 
@@ -66,7 +66,7 @@ namespace AxibugEmuOnline.Client.Network
         {
             lock (lockQueueObj)
             {
-                queueNetMsg.Enqueue((cmd, ERRCODE, arg));
+                queueNetMsg.Enqueue(new ValueTuple<int,int,byte[]>(cmd, ERRCODE, arg));
             }
         }
 
@@ -76,7 +76,8 @@ namespace AxibugEmuOnline.Client.Network
             {
                 while (queueNetMsg.Count > 0)
                 {
-                    (int, int, byte[]) msgData = queueNetMsg.Dequeue();
+
+					var msgData = queueNetMsg.Dequeue();
                     PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
                 }
             }

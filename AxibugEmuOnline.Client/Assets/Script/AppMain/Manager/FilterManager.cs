@@ -22,6 +22,8 @@ namespace AxibugEmuOnline.Client
 
         public FilterManager(PostProcessVolume filterVolume, CanvasGroup filterPreview, CanvasGroup mainBg)
         {
+            if (filterVolume == null)
+                return;
             m_filterPorfile = filterVolume.profile;
             m_filters = m_filterPorfile.settings.Where(setting => setting is FilterEffect).Select(setting => new Filter(setting as FilterEffect)).ToList();
             var json = PlayerPrefs.GetString(nameof(FilterRomSetting));
@@ -86,23 +88,40 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         /// <param name="rom">rom对象</param>
         /// <returns>此元组任意内任意成员都有可能为空</returns>
-        public (Filter filter, FilterPreset preset) GetFilterSetting(RomFile rom)
+        public GetFilterSetting_result GetFilterSetting(RomFile rom)
         {
             var value = m_filterRomSetting.Get(rom);
             Filter filter = null;
             FilterPreset preset = null;
 
-            filter = Filters.FirstOrDefault(f => f.Name == value.filterName);
-            if (filter != null)
-            {
-                string presetName = value.presetName;
-                preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
-            }
+			//filter = Filters.FirstOrDefault(f => f.Name == value.filterName);
+			//if (filter != null)
+			//{
+			//    string presetName = value.presetName;
+			//    preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
+			//}
 
-            return (filter, preset);
+			filter = Filters.FirstOrDefault(f => f.Name == value.Item1);
+			if (filter != null)
+			{
+				string presetName = value.Item2;
+				preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
+			}
+
+			return new GetFilterSetting_result()
+            {
+                filter = filter,
+                preset = preset
+            };
         }
 
-        public class Filter
+        public struct GetFilterSetting_result
+        {
+            public Filter filter;
+			public FilterPreset preset;
+		}
+
+		public class Filter
         {
             public string Name => m_setting.Name;
             public IReadOnlyCollection<EditableParamerter> Paramerters => m_setting.EditableParam;
@@ -223,8 +242,8 @@ namespace AxibugEmuOnline.Client
             public string GetParamValueJson(string paramName)
             {
                 prepareCache();
-
-                m_paramName2ValueJson.TryGetValue(paramName, out var value);
+                string value;
+				m_paramName2ValueJson.TryGetValue(paramName, out value);
                 return value;
             }
 
@@ -234,8 +253,9 @@ namespace AxibugEmuOnline.Client
                 if (rawStr == null) return null;
 
                 if (valueType == typeof(float))
-                {
-                    float.TryParse(rawStr, out var floatVal);
+				{
+                    float floatVal;
+					float.TryParse(rawStr, out floatVal);
                     return floatVal;
                 }
                 else if (valueType.IsEnum)
@@ -309,12 +329,13 @@ namespace AxibugEmuOnline.Client
                 return JsonUtility.ToJson(this);
             }
 
-            public (string filterName, string presetName) Get(RomFile rom)
+            public ValueTuple<string,string> Get(RomFile rom)
             {
                 prepareCache();
 
-                m_cache.TryGetValue(rom.ID, out var item);
-                return (item.FilterName, item.PresetName);
+                Item item;
+				m_cache.TryGetValue(rom.ID, out item);
+                return new ValueTuple<string, string>(item.FilterName, item.PresetName);
             }
 
             private void prepareCache()

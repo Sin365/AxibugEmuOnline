@@ -17,9 +17,10 @@ namespace AxibugEmuOnline.Client
             com_floatEdit.gameObject.SetActive(false);
             com_enumEdit.gameObject.SetActive(false);
 
-            if (menuData is ValueSetMenu valueMenu)
+            if (menuData is ValueSetMenu)
             {
-                if (valueMenu.ValueType == typeof(float))
+                var valueMenu = (ValueSetMenu)menuData;
+				if (valueMenu.ValueType == typeof(float))
                 {
                     m_currentCom = com_floatEdit;
                 }

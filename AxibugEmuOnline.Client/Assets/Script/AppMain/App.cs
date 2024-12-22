@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static CoroutineRunner coRunner;
         #endregion
 
-#if UNITY_PSP2
+#if UNITY_PSP2 && !UNITY_EDITOR //PSV真机
         public static string PersistentDataPath => "ux0:data/AxibugEmu";
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
@@ -45,7 +45,13 @@ namespace AxibugEmuOnline.Client.ClientCore
         {
             PlayerPrefs.DeleteAll();
 
-            settings = new AppSettings();
+			if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
+			{
+				//PSV 等平台需要手动创建目录
+				PSP2Init();
+			}
+
+			settings = new AppSettings();
 
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
@@ -68,11 +74,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             tickLoop = go.AddComponent<TickLoop>();
             coRunner = go.AddComponent<CoroutineRunner>();
 
-            if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
-            {
-                //PSV 等平台需要手动创建目录
-                PersistentDataPathDir();
-            }
 
             var importNode = GameObject.Find("IMPORTENT");
             if (importNode != null) GameObject.DontDestroyOnLoad(importNode);
@@ -81,12 +82,17 @@ namespace AxibugEmuOnline.Client.ClientCore
             RePullNetInfo();
         }
 
-        private static void PersistentDataPathDir()
+
+        private static void PSP2Init()
         {
+            //PSVita最好手动创建目录
             if (!Directory.Exists(PersistentDataPath))
-            {
                 Directory.CreateDirectory(PersistentDataPath);
-            }
+
+#if UNITY_PSP2
+            //释放解码 FMV的26M内存，一般游戏用不上（PSP才用那破玩意儿）
+            UnityEngine.PSVita.PSVitaVideoPlayer.TransferMemToMonoHeap();
+#endif
         }
 
         private static IEnumerator AppTickFlow()

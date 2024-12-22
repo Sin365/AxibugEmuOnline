@@ -5,10 +5,10 @@ namespace AxibugEmuOnline.Client
 {
     public class NesControllerMapper : IControllerSetuper
     {
-        public Controller Controller0 { get; } = new(0);
-        public Controller Controller1 { get; } = new(1);
-        public Controller Controller2 { get; } = new(2);
-        public Controller Controller3 { get; } = new(3);
+        public Controller Controller0 { get; } = new Controller(0);
+        public Controller Controller1 { get; } = new Controller(1);
+        public Controller Controller2 { get; } = new Controller(2);
+        public Controller Controller3 { get; } = new Controller(3);
 
         private readonly EnumButtonType[] m_states = new EnumButtonType[4];
 
@@ -138,7 +138,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public readonly struct KeyListener
+        public struct KeyListener
         {
             private readonly KeyCode m_key;
 
@@ -152,7 +152,8 @@ namespace AxibugEmuOnline.Client
             {
                 m_key = KeyCode.None;
 
-                if (int.TryParse(confStr, out int result))
+                int result;
+				if (int.TryParse(confStr, out result))
                     m_key = (KeyCode)result;
             }
 
@@ -220,7 +221,7 @@ namespace AxibugEmuOnline.Client
                         break;
                 }
 
-                return default;
+                return default(KeyListener);
             }
         }
 

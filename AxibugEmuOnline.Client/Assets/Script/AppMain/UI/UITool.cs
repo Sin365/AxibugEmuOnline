@@ -9,7 +9,8 @@ namespace AxibugEmuOnline.Client
         private static Dictionary<Graphic, Material> _caches = new Dictionary<Graphic, Material>();
         public static Material GetMaterial(this Graphic graphic)
         {
-            if (_caches.TryGetValue(graphic, out var material))
+            Material material;
+			if (_caches.TryGetValue(graphic, out material))
             {
                 return material;
             }

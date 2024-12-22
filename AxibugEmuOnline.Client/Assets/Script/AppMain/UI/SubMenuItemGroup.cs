@@ -184,6 +184,10 @@ namespace AxibugEmuOnline.Client
         private MenuItem Clone(MenuItem template, Transform parent)
         {
 #if UNITY_EDITOR
+
+			//========================套娃宏========================
+#if UNITY_2019_1_OR_NEWER //新版Unity，因UNITY2018.2用不了这玩意儿，编辑器也罢
+
             if (Application.isPlaying)
             {
                 var item = GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
@@ -197,8 +201,17 @@ namespace AxibugEmuOnline.Client
                 return clone.GetComponent<MenuItem>();
             }
 #else
-                return GameObject.Instantiate(SubMenuItemTemplate.gameObject, parent).GetComponent<MenuItem>();
+			var item = GameObject.Instantiate(template.gameObject, parent).GetComponent<MenuItem>();
+			item.transform.localPosition = Vector3.zero;
+			return item;
 #endif
-        }
-    }
+			//========================套娃宏 End========================
+
+
+
+#else
+            return GameObject.Instantiate(SubMenuItemTemplate.gameObject, parent).GetComponent<MenuItem>();
+#endif
+		}
+	}
 }

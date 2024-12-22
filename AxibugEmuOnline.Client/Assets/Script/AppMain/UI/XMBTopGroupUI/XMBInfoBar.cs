@@ -34,7 +34,10 @@ public class XMBInfoBar : MonoBehaviour
         RefreshFps();
     }
 
-    (uint lastFrame, float lastTime) m_lastFrameInfo;
+	/// <summary>
+	/// (uint lastFrame, float lastTime)
+	/// </summary>
+	ValueTuple<uint,float> m_lastFrameInfo;
     private void RefreshFps()
     {
         if (App.emu.Core.IsNull())
@@ -42,14 +45,18 @@ public class XMBInfoBar : MonoBehaviour
         else
         {
             FPS.gameObject.SetActiveEx(true);
-            var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
-            var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
-            var fps = gap / time;
+			//var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
+			//var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
+			var gap = App.emu.Core.Frame - m_lastFrameInfo.Item1;
+			var time = Time.realtimeSinceStartup - m_lastFrameInfo.Item2;
+			var fps = gap / time;
             FPS.text = $"FPS:{fps:.#}";
 
-            m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
-            m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
-        }
+			//m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
+			//m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
+			m_lastFrameInfo.Item1 = App.emu.Core.Frame;
+			m_lastFrameInfo.Item2 = Time.realtimeSinceStartup;
+		}
     }
 
     private void RefreshDelay()

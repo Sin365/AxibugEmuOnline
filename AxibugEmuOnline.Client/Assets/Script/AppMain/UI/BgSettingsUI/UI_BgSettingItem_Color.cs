@@ -39,7 +39,7 @@ namespace AxibugEmuOnline.Client
 
         public void SetDependencyProperty(object data)
         {
-            SetSelectState(data is ThirdMenuRoot tr && tr.SelectIndex == Index);
+            SetSelectState(data is ThirdMenuRoot && ((ThirdMenuRoot)data).SelectIndex == Index);
         }
 
         public void Release()

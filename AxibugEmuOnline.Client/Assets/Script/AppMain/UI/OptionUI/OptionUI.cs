@@ -269,16 +269,18 @@ namespace AxibugEmuOnline.Client
 
         private void CreateRuntimeMenuItem(OptionMenu menuData)
         {
-            if (menuData is ExecuteMenu executeMenu)
+            if (menuData is ExecuteMenu)
             {
-                var menuUI = Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
+				ExecuteMenu executeMenu = (ExecuteMenu)menuData;
+				var menuUI = Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
                 menuUI.gameObject.SetActive(true);
                 menuUI.SetData(this, executeMenu);
                 m_runtimeMenuItems.Add(menuUI);
             }
-            else if (menuData is ValueSetMenu valueSetMenu)
+            else if (menuData is ValueSetMenu)
             {
-                var menuUI = Instantiate(TEMPLATE_VALUEEDITITEM.gameObject, TEMPLATE_VALUEEDITITEM.transform.parent).GetComponent<OptionUI_ValueEditItem>();
+                var valueSetMenu = (ValueSetMenu)menuData;
+				var menuUI = Instantiate(TEMPLATE_VALUEEDITITEM.gameObject, TEMPLATE_VALUEEDITITEM.transform.parent).GetComponent<OptionUI_ValueEditItem>();
                 menuUI.gameObject.SetActive(true);
                 menuUI.SetData(this, valueSetMenu);
                 m_runtimeMenuItems.Add(menuUI);

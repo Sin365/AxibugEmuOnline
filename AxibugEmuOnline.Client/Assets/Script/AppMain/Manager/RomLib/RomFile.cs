@@ -5,6 +5,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace AxibugEmuOnline.Client
 {
@@ -95,9 +96,11 @@ namespace AxibugEmuOnline.Client
             if (Path.GetExtension(LocalFilePath).ToLower() == ".zip")
             {
                 var zip = new ZipInputStream(new MemoryStream(bytes));
-                while (zip.GetNextEntry() is ZipEntry entry)
+                var entry = zip.GetNextEntry() as ZipEntry;
+
+				while (entry != null)
                 {
-                    if (!entry.Name.ToLower().EndsWith(".nes")) continue;
+					if (!entry.Name.ToLower().EndsWith(".nes")) continue;
 
                     var buffer = new byte[1024];
                     MemoryStream output = new MemoryStream();

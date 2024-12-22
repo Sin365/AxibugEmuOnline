@@ -22,7 +22,7 @@ namespace AxibugEmuOnline.Client
 
         public static InputUI Input(Action<string> callback, string placeHolder, string defaultText)
         {
-            s_ins.m_InputUI.Show((callback, placeHolder, defaultText));
+            s_ins.m_InputUI.Show(new ValueTuple<Action<string>, string, string>(callback, placeHolder, defaultText));
 
             return s_ins.m_InputUI;
         }

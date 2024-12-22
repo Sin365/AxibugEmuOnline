@@ -248,7 +248,19 @@ Shader "PostEffect/FixingPixcelArtGrille"
               if(pos.x<0.333)mask.r=_maskLight;
               else if(pos.x<0.666)mask.g=_maskLight;
               else mask.b=_maskLight;
-              return mask;}   
+              return mask;} 
+             #else
+            // VGA style shadow mask.
+            float3 Mask(float2 pos){
+              pos.xy=floor(pos.xy*float2(1.0,0.5));
+              pos.x+=pos.y*3.0;
+              float3 mask=float3(_maskDark,_maskDark,_maskDark);
+              pos.x=fract(pos.x/6.0);
+              if(pos.x<0.333)mask.r=_maskLight;
+              else if(pos.x<0.666)mask.g=_maskLight;
+              else mask.b=_maskLight;
+              return mask;} 
+
             #endif
 
 

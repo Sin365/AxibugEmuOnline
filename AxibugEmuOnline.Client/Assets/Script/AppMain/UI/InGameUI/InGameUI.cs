@@ -11,7 +11,7 @@ namespace AxibugEmuOnline.Client
         private object m_state;
         private StepPerformer m_stepPerformer;
 
-        private readonly List<OptionMenu> menus = new();
+        private readonly List<OptionMenu> menus = new List<OptionMenu>();
         public static InGameUI Instance { get; private set; }
 
         public RomFile RomFile { get; private set; }

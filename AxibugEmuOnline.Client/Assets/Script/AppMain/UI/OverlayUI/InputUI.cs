@@ -18,11 +18,11 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnShow(object param)
         {
-            (Action<string> callback, string placeHolder, string defaultText) t = ((Action<string> callback, string placeHolder, string defaultText))param;
+            ValueTuple<Action<string>, string, string> t = (ValueTuple<Action<string>, string, string>)param;
 
-            OnCommit = t.callback;
-            (m_input.placeholder as Text).text = t.placeHolder;
-            m_input.text = t.defaultText;
+            OnCommit = t.Item1;
+            (m_input.placeholder as Text).text = t.Item2;
+            m_input.text = t.Item3;
         }
 
         protected override void Update()

@@ -62,10 +62,13 @@ namespace AxibugEmuOnline.Client
 
         private Dictionary<string, object> cachesInMemory = new Dictionary<string, object>();
         void GetCacheData<T>(string url, string path, Action<T, string> callback) where T : class
-        {
-            if (cachesInMemory.TryGetValue(url, out var cacheObj) && cacheObj is T obj)
+		{
+            object cacheObj;
+
+			if (cachesInMemory.TryGetValue(url, out cacheObj) && cacheObj is T)
             {
-                callback.Invoke(obj, url);
+                T obj = (T)cacheObj;
+				callback.Invoke(obj, url);
                 return;
             }
 

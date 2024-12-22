@@ -1,14 +1,11 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Presets;
-using UnityEngine;
-using VirtualNes.Core;
 using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {
-    public class InGameUI_FilterSetting : ExpandMenu
+	public class InGameUI_FilterSetting : ExpandMenu
     {
         private InGameUI m_gameUI;
 

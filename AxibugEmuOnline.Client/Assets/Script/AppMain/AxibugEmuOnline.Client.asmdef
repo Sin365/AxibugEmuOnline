@@ -1,19 +1,12 @@
 {
     "name": "AxibugEmuOnline.Client",
-    "rootNamespace": "AxibugEmuOnline.Client",
     "references": [
-        "VirtualNes.Core",
         "UIEffect",
         "AxiReplay",
         "Unity.Postprocessing.Runtime"
     ],
+    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": true,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+    "allowUnsafeCode": true
 }

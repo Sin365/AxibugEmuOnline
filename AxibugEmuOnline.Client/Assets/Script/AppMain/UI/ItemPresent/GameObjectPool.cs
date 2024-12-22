@@ -39,8 +39,10 @@ public static class GameObjectPool
 
     public static void Release(GameObject instance)
     {
-        s_instanceToSrc.TryGetValue(instance, out var src);
-        if (src != null && s_poolMap.TryGetValue(src, out var pool))
+        GameObject src;
+        Queue<GameObject> pool;
+		s_instanceToSrc.TryGetValue(instance, out src);
+        if (src != null && s_poolMap.TryGetValue(src, out pool))
         {
             pool.Enqueue(instance);
             //instance.SetActive(false);

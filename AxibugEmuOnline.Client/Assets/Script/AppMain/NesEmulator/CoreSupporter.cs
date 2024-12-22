@@ -1,4 +1,5 @@
 using AxibugEmuOnline.Client.ClientCore;
+using AxiReplay;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -101,8 +102,9 @@ namespace AxibugEmuOnline.Client
         public void SampleInput(uint frameIndex)
         {
             if (InGameUI.Instance.IsNetPlay)
-            {
-                if (App.roomMgr.netReplay.TryGetNextFrame((int)frameIndex, out var replayData, out int frameDiff, out bool inputDiff))
+			{
+                int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
+				if (App.roomMgr.netReplay.TryGetNextFrame((int)frameIndex, out replayData, out frameDiff, out inputDiff))
                 {
                     if (inputDiff)
                     {
@@ -112,7 +114,7 @@ namespace AxibugEmuOnline.Client
 
                     m_sampledState = FromNet(replayData);
                 }
-                else m_sampledState = default;
+                else m_sampledState = default(ControllerState);
 
                 var localState = ControllerMapper.CreateState();
                 var rawData = ToNet(localState);

@@ -154,14 +154,16 @@ namespace AxibugEmuOnline.Client.Manager
             for (int i = 0; i < msg.UserList.Count; i++)
             {
                 UserMiniInfo mi = msg.UserList[i];
-                UpdateOrAddUser(mi, out bool isNewUser);
+                bool isNewUser;
+				UpdateOrAddUser(mi, out isNewUser);
             }
             Eventer.Instance.PostEvent(EEvent.OnUserListAllUpdate);
         }
         public void RecvCmdUserJoin(byte[] reqData)
         {
             Protobuf_UserJoin_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserJoin_RESP>(reqData);
-            UpdateOrAddUser(msg.UserInfo, out bool isNewUser);
+            bool isNewUser;
+			UpdateOrAddUser(msg.UserInfo, out isNewUser);
             if (isNewUser)
             { 
                 Eventer.Instance.PostEvent(EEvent.OnUserLogin, msg.UserInfo.UID, msg.UserInfo.NickName);

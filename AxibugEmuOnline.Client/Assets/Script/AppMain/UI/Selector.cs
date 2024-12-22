@@ -44,7 +44,7 @@ namespace AxibugEmuOnline.Client
                     m_trackTween.Kill();
                     m_trackTween = null;
                 }
-                m_trackTween = DOTween.To(() => m_rect.position, (value) => m_rect.position = value, itemUIRect.position, 0.125f);
+                m_trackTween = DOTween.To(() => m_rect.position, (_value) => m_rect.position = _value, itemUIRect.position, 0.125f);
                 m_trackTween.onComplete = () => m_trackTween = null;
             }
         }

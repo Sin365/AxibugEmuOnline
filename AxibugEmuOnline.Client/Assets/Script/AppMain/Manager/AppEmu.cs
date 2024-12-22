@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         private IEmuCore m_emuCore;
 
-        private IControllerSetuper m_controllerSetuper;
+        private VirtualNes.Core.IControllerSetuper m_controllerSetuper;
 
         /// <summary>
         /// unity的c#实现有bug,以接口类型保存的monobehaviour引用,!=和==运算符没有调用到monobehaviour重写过的运算符
@@ -84,10 +84,15 @@ namespace AxibugEmuOnline.Client.Manager
             else //在房间中则使用服务器下发的手柄槽位信息分配本地手柄
             {
                 long selfUID = App.user.userdata.UID;
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 0, out var con0Slot);
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 1, out var con1Slot);
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 2, out var con2Slot);
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 3, out var con3Slot);
+                uint? con0Slot;
+				uint? con1Slot;
+				uint? con2Slot;
+				uint? con3Slot;
+
+				App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 0, out con0Slot);
+                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 1, out con1Slot);
+                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 2, out con2Slot);
+                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 3, out con3Slot);
 
                 m_controllerSetuper.SetConnect(con0Slot, con1Slot, con2Slot, con3Slot);
             }
