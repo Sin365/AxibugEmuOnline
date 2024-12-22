@@ -2,7 +2,7 @@
 {
     public struct BLOCKHDR : IStateBufferObject
     {
-        public  bool Valid => !string.IsNullOrEmpty(ID);
+        public readonly bool Valid => !string.IsNullOrEmpty(ID);
         /// <summary> 总是8个字节 </summary>
         public string ID;
         public ushort Reserved;
@@ -11,12 +11,12 @@
 
 
 
-        public  uint GetSize()
+        public readonly uint GetSize()
         {
             return (uint)(8 + sizeof(ushort) + sizeof(ushort) + sizeof(uint));
         }
 
-        public  void SaveState(StateBuffer buffer)
+        public readonly void SaveState(StateBuffer buffer)
         {
             if (Valid)
             {
