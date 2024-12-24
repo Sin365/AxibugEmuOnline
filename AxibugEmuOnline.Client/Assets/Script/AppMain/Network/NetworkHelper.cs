@@ -1,6 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
-using HaoYueNet.ClientNetworkNet.Standard2;
+using HaoYueNet.ClientNetwork;
 using System;
 using System.Net.Sockets;
 using System.Threading;
