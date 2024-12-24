@@ -11,8 +11,65 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
+public static class PSVThread
+{
+	static Thread psvThread = new Thread(Loop);
+	static AutoResetEvent autoEvent = new AutoResetEvent(false);
+	static Queue<Action> qActs = new Queue<Action>();
+	static Queue<Action> qWork = new Queue<Action>();
+
+	public static void DoTask(Action act)
+	{
+#if UNITY_PSP2
+		AddSingleTask(act);
+#else
+		ThreadPool.QueueUserWorkItem(new WaitCallback((state) => act.Invoke()));
+#endif
+	}
+
+#if UNITY_PSP2
+	static bool bSingleInit = false;
+	static void SingleInit()
+	{
+		if (bSingleInit) return;
+		psvThread.Start();
+		bSingleInit = true;
+	}
+	static void AddSingleTask(Action act)
+	{
+		SingleInit();
+		lock (qActs)
+		{
+			qActs.Enqueue(act);
+		}
+		autoEvent.Set();
+	}
+
+	static void Loop()
+	{
+		while (autoEvent.WaitOne())
+		{
+			lock (qActs)
+			{
+				while (qActs.Count > 0) { qWork.Enqueue(qActs.Dequeue()); }
+			}
+			while (qWork.Count > 0)
+			{
+				Action act = qWork.Dequeue();
+				try
+				{
+					act.Invoke();
+				}
+				catch (Exception ex)
+				{
+					UnityEngine.Debug.Log(ex.ToString());
+				}
+			}
+		}
+	}
+#endif
+}
 
 public static class AxiHttp
 {
@@ -127,14 +184,15 @@ public static class AxiHttp
 		AxiRespInfo respInfo = new AxiRespInfo();
 		respInfo.downloadMode = AxiDownLoadMode.NotDownLoad;
 		WaitAxiRequest respAsync = new WaitAxiRequest(respInfo);
-		Task task = new Task(() => SendAxiRequest(url, ref respInfo));
-		task.Start();
+		//Task task = new Task(() => SendAxiRequest(url, ref respInfo));
+		//task.Start()
+		PSVThread.DoTask(() => SendAxiRequest(url, ref respInfo));
 		return respAsync;
 	}
 
 	public static AxiRespInfo AxiDownload(string url)
 	{
-		AxiRespInfo respInfo = new AxiRespInfo(); 
+		AxiRespInfo respInfo = new AxiRespInfo();
 		respInfo.downloadMode = AxiDownLoadMode.DownLoadBytes;
 		SendAxiRequest(url, ref respInfo);
 		return respInfo;
@@ -142,19 +200,20 @@ public static class AxiHttp
 
 	public static AxiRespInfo AxiDownloadAsync(string url)
 	{
-		AxiRespInfo respInfo = new AxiRespInfo(); 
+		AxiRespInfo respInfo = new AxiRespInfo();
 		respInfo.downloadMode = AxiDownLoadMode.DownLoadBytes;
-		Task task = new Task(() => SendAxiRequest(url, ref respInfo));
-		task.Start();
+		//Task task = new Task(() => SendAxiRequest(url, ref respInfo));
+		//task.Start();
+		PSVThread.DoTask(() => SendAxiRequest(url, ref respInfo));
 		return respInfo;
 	}
 
-	static void SendAxiRequest(string url, ref AxiRespInfo respinfo,int timeout = 1000 * 1000,	string encoding = "UTF-8")
+	static void SendAxiRequest(string url, ref AxiRespInfo respinfo, int timeout = 1000 * 1000, string encoding = "UTF-8")
 	{
 		if (url.ToLower().StartsWith("https://"))
-			SendAxiRequestHttps(url, ref respinfo,timeout, encoding);// SendAxiRequestHttps(url, ref respinfo, timeout, encoding);
+			SendAxiRequestHttps(url, ref respinfo, timeout, encoding);// SendAxiRequestHttps(url, ref respinfo, timeout, encoding);
 		else
-			SendAxiRequestHttp(url, ref respinfo,timeout, encoding);
+			SendAxiRequestHttp(url, ref respinfo, timeout, encoding);
 	}
 
 	static void SendAxiRequestHttp(string url, ref AxiRespInfo respinfo, int timeout, string encoding)
@@ -735,6 +794,9 @@ public static class AxiHttp
 			//}
 			respinfo.isDone = true;
 		}
+
+		if (client != null)
+			client.Dispose();
 	}
 
 
@@ -1023,7 +1085,7 @@ public static class AxiHttp
 		{
 			try
 			{
-				Log($"convertToIntBy16 str- {str} lenght->{str.Length}");
+				//Log($"convertToIntBy16 str- {str} lenght->{str.Length}");
 				if (str.Length == 0)
 					return 0;
 				return Convert.ToInt32(str, 16);
