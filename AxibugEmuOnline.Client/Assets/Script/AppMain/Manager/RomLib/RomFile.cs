@@ -137,13 +137,9 @@ namespace AxibugEmuOnline.Client
             downloadRequest = null;
 
 			if (request.downloadHandler.Err != null)
-			{
-				callback(null);
-			}
+                callback(request.downloadHandler.data);
 			else
-			{
-				callback(request.downloadHandler.data);
-			}
+                callback(null);
 
 			//downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
 			//yield return downloadRequest.SendWebRequest();
