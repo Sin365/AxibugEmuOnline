@@ -1,28 +1,33 @@
-﻿using System;
+﻿using Assets.Script.AppMain.Filter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Rendering;
 
 namespace AxibugEmuOnline.Client
 {
-    public abstract class FilterEffect : PostProcessEffectSettings
+    public abstract class FilterEffect
     {
-        private List<EditableParamerter> m_editableParamList;
-
+        public BoolParameter Enable = new BoolParameter(false);
+        public abstract string Name { get; }
         public IReadOnlyCollection<EditableParamerter> EditableParam => m_editableParamList.AsReadOnly();
 
-        public abstract string Name { get; }
+        List<EditableParamerter> m_editableParamList;
+        Material m_material;
+
+        protected abstract string ShaderName { get; }
 
         public FilterEffect()
         {
             GetEditableFilterParamters();
+            m_material = new Material(Shader.Find(ShaderName));
         }
-        protected void GetEditableFilterParamters()
+        void GetEditableFilterParamters()
         {
             var parameters = (from t in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
-                              where t.FieldType.IsSubclassOf(typeof(ParameterOverride))
+                              where t.FieldType.IsSubclassOf(typeof(FilterParameter))
                               where t.DeclaringType.IsSubclassOf(typeof(FilterEffect))
                               orderby t.MetadataToken
                               select t);
@@ -30,7 +35,7 @@ namespace AxibugEmuOnline.Client
             m_editableParamList = new List<EditableParamerter>();
             foreach (var param in parameters)
             {
-                var paramObj = (ParameterOverride)param.GetValue(this);
+                var paramObj = (FilterParameter)param.GetValue(this);
                 var rangeAtt = param.GetCustomAttribute<RangeAttribute>();
                 float min = 0;
                 float max = 10;
@@ -44,47 +49,41 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public void Render(RenderTexture rt, RenderTexture result)
+        {
+            m_material.SetTexture("_MainTex", rt);
+            OnRenderer(m_material, rt, result);
+        }
+
+        protected abstract void OnRenderer(Material renderMat, RenderTexture rt, RenderTexture result);
+
         public class EditableParamerter
         {
-            private ParameterOverride m_paramObject;
-            private FieldInfo valueFieldInfo;
+            private FilterParameter m_paramObject;
 
-            public Type ValueType { get; private set; }
+            public Type ValueType => m_paramObject.ValueType;
             public string Name { get; private set; }
             public object Value
             {
-                get => valueFieldInfo.GetValue(m_paramObject);
-                set
-                {
-                    valueFieldInfo.SetValue(m_paramObject, value);
-                    m_paramObject.overrideState = true;
-                }
+                get => m_paramObject.Value;
+                set => m_paramObject.Value = value;
             }
+
             public object MinValue { get; private set; }
             public object MaxValue { get; private set; }
 
-            public EditableParamerter(string name, ParameterOverride paramObject, object minValue, object maxValue)
+            public EditableParamerter(string name, FilterParameter paramObject, object minValue, object maxValue)
             {
                 m_paramObject = paramObject;
                 Name = name;
 
                 var paramType = paramObject.GetType();
 
-                valueFieldInfo = paramType.GetField("value", BindingFlags.Public | BindingFlags.Instance);
-                if (valueFieldInfo != null)
-                {
-                    ValueType = valueFieldInfo.FieldType;
-                }
-                else
-                {
-                    ValueType = typeof(object);
-                }
-
                 MinValue = minValue;
                 MaxValue = maxValue;
             }
 
-            public void ResetToDefault() => m_paramObject.overrideState = false;
+            public void ResetToDefault() => m_paramObject.Value = null;
 
 
             public void Apply(object overrideValue)

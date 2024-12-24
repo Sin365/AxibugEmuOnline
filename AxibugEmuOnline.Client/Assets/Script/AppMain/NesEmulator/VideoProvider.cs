@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -14,7 +15,6 @@ namespace AxibugEmuOnline.Client
         public RawImage Image;
         #endregion
 
-
         #region GPU_TURBO
         //图像数据字节数
         private int TexBufferSize_gpu;
@@ -24,7 +24,9 @@ namespace AxibugEmuOnline.Client
         private Texture2D wrapTex_gpu;
         //nes调色板数据,已转换为unity纹理对象
         private Texture2D pPal_gpu;
+        [SerializeField]
         private Material GPUTurboMat_gpu;
+        private RenderTexture rt_gpu;
         #endregion
 
         #region CPU
@@ -42,13 +44,18 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
             DrawCanvas.worldCamera = Camera.main;
-            GPUTurboMat_gpu = Image.material;
         }
 
         private void OnDestroy()
         {
             if (wrapTexBufferGH.IsAllocated)
                 wrapTexBufferGH.Free();
+
+            if (rt_gpu != null)
+            {
+                RenderTexture.ReleaseTemporary(rt_gpu);
+                rt_gpu = null;
+            }
         }
 
         public unsafe void SetDrawData(uint* screenData)
@@ -61,6 +68,7 @@ namespace AxibugEmuOnline.Client
             {
                 wrapTex_gpu.LoadRawTextureData(wrapTexBufferPointer_gpu, TexBufferSize_gpu);
                 wrapTex_gpu.Apply();
+                Graphics.Blit(wrapTex_gpu, rt_gpu, GPUTurboMat_gpu);
             }
             else
             {
@@ -69,27 +77,32 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public void ApplyFilterEffect()
+        {
+            Image.texture = App.filter.ExecuteFilterRender(rt_gpu);
+        }
+
         private unsafe void PrepareUI(uint* screenData)
         {
             if (GPUTurbo)
             {
-                if (Image.material != GPUTurboMat_gpu) Image.material = GPUTurboMat_gpu;
-
                 if (wrapTex_gpu == null)
                 {
                     wrapTex_gpu = new Texture2D(PPU.SCREEN_WIDTH, PPU.SCREEN_HEIGHT, TextureFormat.RGBA32, false);
                     wrapTex_gpu.filterMode = FilterMode.Point;
                     wrapTexBufferPointer_gpu = (IntPtr)screenData;
+                    rt_gpu = RenderTexture.GetTemporary(wrapTex_gpu.width, wrapTex_gpu.height, 0);
+                    rt_gpu.filterMode = FilterMode.Point;
+                    rt_gpu.anisoLevel = 0;
+                    rt_gpu.antiAliasing = 1;
 
                     TexBufferSize_gpu = wrapTex_gpu.width * wrapTex_gpu.height * 4;
                 }
 
-                if (Image.texture != wrapTex_gpu) Image.texture = wrapTex_gpu;
+                if (Image.texture != rt_gpu) Image.texture = rt_gpu;
             }
             else
             {
-                if (Image.material == GPUTurboMat_gpu) Image.material = null;
-
                 if (wrapTex_cpu == null)
                 {
                     wrapTex_cpu = new Texture2D(PPU.SCREEN_WIDTH - 16, PPU.SCREEN_HEIGHT, TextureFormat.RGBA32, false);
@@ -103,6 +116,7 @@ namespace AxibugEmuOnline.Client
                 }
                 if (Image.texture != wrapTex_cpu) Image.texture = wrapTex_cpu;
             }
+
         }
 
         private unsafe void PrepareForGPU(uint* screenData)

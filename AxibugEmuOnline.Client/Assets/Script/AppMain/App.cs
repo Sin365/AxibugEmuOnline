@@ -43,15 +43,13 @@ namespace AxibugEmuOnline.Client.ClientCore
 #endif
         public static void Init(Initer initer, bool isTest = false, string testSrvIP = "")
         {
-            PlayerPrefs.DeleteAll();
+            if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
+            {
+                //PSV 等平台需要手动创建目录
+                PSP2Init();
+            }
 
-			if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
-			{
-				//PSV 等平台需要手动创建目录
-				PSP2Init();
-			}
-
-			settings = new AppSettings();
+            settings = new AppSettings();
 
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
@@ -66,7 +64,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            filter = new FilterManager(initer.m_filterVolume, initer.m_filterPreview, initer.m_xmbBg);
+            filter = new FilterManager(initer.m_filterPreview, initer.m_xmbBg);
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
@@ -122,7 +120,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 yield break;
             }
 
-			AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
                 yield break;

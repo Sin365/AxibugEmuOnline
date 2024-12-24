@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client
     {
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
-        
+
         //模拟器核心实例化对象
         public NES NesCore { get; private set; }
 
@@ -38,9 +38,7 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         private unsafe void Update()
         {
-            if (IsPause) return;
-
-            if (NesCore != null)
+            if (NesCore != null && !IsPause)
             {
                 PushEmulatorFrame();
                 if (InGameUI.Instance.IsNetPlay)
@@ -49,6 +47,9 @@ namespace AxibugEmuOnline.Client
                 var screenBuffer = NesCore.ppu.GetScreenPtr();
                 VideoProvider.SetDrawData(screenBuffer);
             }
+
+
+            VideoProvider.ApplyFilterEffect();
         }
 
         public EnumPlatform Platform => EnumPlatform.NES;
@@ -140,7 +141,7 @@ namespace AxibugEmuOnline.Client
             NesCore = null;
         }
 
-        
+
 #if UNITY_EDITOR
         private ControllerState m_lastState;
 #endif

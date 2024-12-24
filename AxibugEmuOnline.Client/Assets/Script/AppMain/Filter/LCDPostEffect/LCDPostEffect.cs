@@ -1,28 +1,15 @@
 ﻿using AxibugEmuOnline.Client;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 
-[System.Serializable]
-[PostProcess(typeof(LCDPostEffectRenderer), PostProcessEvent.BeforeStack, "Filter/LCDPostEffect")]
 public sealed class LCDPostEffect : FilterEffect
 {
     public override string Name => nameof(LCDPostEffect);
-}
 
-public sealed class LCDPostEffectRenderer : PostProcessEffectRenderer<LCDPostEffect>
-{
-    private Shader shader;
-    private Material material;
+    protected override string ShaderName => "Filter/LCDPostEffect";
 
-    public override void Init()
+    protected override void OnRenderer(Material renderMat, RenderTexture rt, RenderTexture result)
     {
-        shader = Shader.Find("Filter/LCDPostEffect");
-        material = new Material(shader);
-    }
-
-    public override void Render(PostProcessRenderContext context)
-    {
-        material.SetVector("_iResolution", new Vector4(Screen.width, Screen.height, 0, 0));
-        context.command.Blit(context.source, context.destination, material);
+        renderMat.SetVector("_iResolution", new Vector4(Screen.width, Screen.height, 0, 0));
+        Graphics.Blit(rt, result, renderMat);
     }
 }

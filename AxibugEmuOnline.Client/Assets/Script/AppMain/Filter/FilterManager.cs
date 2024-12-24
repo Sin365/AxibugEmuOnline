@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using static AxibugEmuOnline.Client.FilterEffect;
+using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {
     public class FilterManager
     {
-        private PostProcessProfile m_filterPorfile;
         private List<Filter> m_filters;
         private Dictionary<EnumPlatform, Filter> m_filterPlatforms = new Dictionary<EnumPlatform, Filter>();
         private AlphaWraper m_previewFilterWraper;
@@ -20,18 +19,42 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         public IReadOnlyList<Filter> Filters => m_filters;
 
-        public FilterManager(PostProcessVolume filterVolume, CanvasGroup filterPreview, CanvasGroup mainBg)
+        public FilterManager(CanvasGroup filterPreview, CanvasGroup mainBg)
         {
-            if (filterVolume == null)
-                return;
-            m_filterPorfile = filterVolume.profile;
-            m_filters = m_filterPorfile.settings.Where(setting => setting is FilterEffect).Select(setting => new Filter(setting as FilterEffect)).ToList();
+            m_filters = new List<Filter>
+            {
+                new Filter(new FixingPixelArtGrille()),
+                new Filter(new LCDPostEffect()),
+                new Filter(new MattiasCRT()),
+            };
             var json = PlayerPrefs.GetString(nameof(FilterRomSetting));
             m_filterRomSetting = JsonUtility.FromJson<FilterRomSetting>(json) ?? new FilterRomSetting();
 
             m_previewFilterWraper = new AlphaWraper(mainBg, filterPreview, false);
             ShutDownFilterPreview();
             ShutDownFilter();
+
+
+        }
+
+        private RenderTexture result = null;
+        public RenderTexture ExecuteFilterRender(RenderTexture rt)
+        {
+            if (result == null)
+                result = RenderTexture.GetTemporary(Screen.width, Screen.height);
+
+            bool anyFilterEnable = false;
+            foreach (var filter in Filters)
+            {
+                if (!filter.m_setting.Enable.GetValue()) continue;
+                filter.m_setting.Render(rt, result);
+                anyFilterEnable = true;
+            }
+
+            if (anyFilterEnable)
+                return result;
+            else
+                return rt;
         }
 
         /// <summary> 关闭滤镜预览 </summary>
@@ -54,8 +77,8 @@ namespace AxibugEmuOnline.Client
         {
             foreach (var selfFiler in Filters)
             {
-                if (selfFiler != filter) selfFiler.m_setting.enabled.Override(false);
-                else selfFiler.m_setting.enabled.Override(true);
+                if (selfFiler != filter) selfFiler.m_setting.Enable.Override(false);
+                else selfFiler.m_setting.Enable.Override(true);
             }
         }
 
@@ -65,8 +88,8 @@ namespace AxibugEmuOnline.Client
         public void ShutDownFilter()
         {
             //关闭所有后处理效果
-            foreach (var setting in m_filterPorfile.settings)
-                setting.enabled.Override(false);
+            foreach (var filter in Filters)
+                filter.m_setting.Enable.Override(false);
         }
 
         /// <summary>
@@ -94,21 +117,21 @@ namespace AxibugEmuOnline.Client
             Filter filter = null;
             FilterPreset preset = null;
 
-			//filter = Filters.FirstOrDefault(f => f.Name == value.filterName);
-			//if (filter != null)
-			//{
-			//    string presetName = value.presetName;
-			//    preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
-			//}
+            //filter = Filters.FirstOrDefault(f => f.Name == value.filterName);
+            //if (filter != null)
+            //{
+            //    string presetName = value.presetName;
+            //    preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
+            //}
 
-			filter = Filters.FirstOrDefault(f => f.Name == value.Item1);
-			if (filter != null)
-			{
-				string presetName = value.Item2;
-				preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
-			}
+            filter = Filters.FirstOrDefault(f => f.Name == value.Item1);
+            if (filter != null)
+            {
+                string presetName = value.Item2;
+                preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
+            }
 
-			return new GetFilterSetting_result()
+            return new GetFilterSetting_result()
             {
                 filter = filter,
                 preset = preset
@@ -118,10 +141,10 @@ namespace AxibugEmuOnline.Client
         public struct GetFilterSetting_result
         {
             public Filter filter;
-			public FilterPreset preset;
-		}
+            public FilterPreset preset;
+        }
 
-		public class Filter
+        public class Filter
         {
             public string Name => m_setting.Name;
             public IReadOnlyCollection<EditableParamerter> Paramerters => m_setting.EditableParam;
@@ -243,7 +266,7 @@ namespace AxibugEmuOnline.Client
             {
                 prepareCache();
                 string value;
-				m_paramName2ValueJson.TryGetValue(paramName, out value);
+                m_paramName2ValueJson.TryGetValue(paramName, out value);
                 return value;
             }
 
@@ -253,9 +276,9 @@ namespace AxibugEmuOnline.Client
                 if (rawStr == null) return null;
 
                 if (valueType == typeof(float))
-				{
+                {
                     float floatVal;
-					float.TryParse(rawStr, out floatVal);
+                    float.TryParse(rawStr, out floatVal);
                     return floatVal;
                 }
                 else if (valueType.IsEnum)
@@ -329,12 +352,12 @@ namespace AxibugEmuOnline.Client
                 return JsonUtility.ToJson(this);
             }
 
-            public ValueTuple<string,string> Get(RomFile rom)
+            public ValueTuple<string, string> Get(RomFile rom)
             {
                 prepareCache();
 
                 Item item;
-				m_cache.TryGetValue(rom.ID, out item);
+                m_cache.TryGetValue(rom.ID, out item);
                 return new ValueTuple<string, string>(item.FilterName, item.PresetName);
             }
 
