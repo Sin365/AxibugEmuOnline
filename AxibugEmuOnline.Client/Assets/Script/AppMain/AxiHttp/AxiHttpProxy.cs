@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using static AxiHttp;
 
@@ -46,6 +45,8 @@ public static class AxiHttpProxy
 
 	public static void ShowAxiHttpDebugInfo(AxiRespInfo resp)
 	{
+
+#if UNITY_EDITOR
 		Debug.Log($"");
 		Debug.Log($"==== request ====");
 		Debug.Log($"url =>{resp.url}");
@@ -70,6 +71,23 @@ public static class AxiHttpProxy
 		Debug.Log($"respInfo.fileName =>{resp.fileName}");
 		Debug.Log($"respInfo.NeedloadedLenght =>{resp.NeedloadedLenght}");
 		Debug.Log($"respInfo.loadedLenght =>{resp.loadedLenght}");
+#else
+		Debug.Log($"==== request url => { resp.url}");
+		Debug.Log($"code =>{resp.code}");
+		Debug.Log($"respInfo.bTimeOut =>{resp.bTimeOut}");
+		Debug.Log($"==== response ====");
+		if (resp.downloadMode == AxiDownLoadMode.NotDownLoad)
+		{
+			Debug.Log($"body_text =>{resp.body}");
+			Debug.Log($"body_text.Length =>{resp.body.Length}");
+		}
+		else
+		{
+			Debug.Log($"==== download ====");
+			Debug.Log($"respInfo.loadedLenght =>{resp.loadedLenght}");
+		}
+#endif
+
 		//if (resp.downloadMode == AxiDownLoadMode.DownLoadBytes)
 		//{
 		//	if (resp.bTimeOut)
