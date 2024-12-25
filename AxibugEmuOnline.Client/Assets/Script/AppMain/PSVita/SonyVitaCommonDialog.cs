@@ -4,17 +4,17 @@ public class SonyVitaCommonDialog : MonoBehaviour
 {
     static Action<string> resultAct = null;
     void Awake()
-	{
+    {
 #if UNITY_PSP2
         Sony.Vita.Dialog.Ime.OnGotIMEDialogResult += OnGotIMEDialogResult;
 		Sony.Vita.Dialog.Main.Initialise();
 #endif
-	}
+    }
 
-	public void ShowPSVitaIME(Action<string> callback, string placeHolder, string defaultText)
+    public void ShowPSVitaIME(Action<string> callback, string placeHolder, string defaultText)
     {
-        resultAct = callback;
 #if UNITY_PSP2
+        resultAct = callback;
         Sony.Vita.Dialog.Ime.ImeDialogParams info = new Sony.Vita.Dialog.Ime.ImeDialogParams();
 
         // Set supported languages, 'or' flags together or set to 0 to support all languages.
@@ -45,6 +45,7 @@ public class SonyVitaCommonDialog : MonoBehaviour
 		if (result.result == Sony.Vita.Dialog.Ime.EnumImeDialogResult.RESULT_OK)
 		{
             resultAct.Invoke(result);
+            resultAct = null;
         }
     }
 #endif
