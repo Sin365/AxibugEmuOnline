@@ -173,7 +173,7 @@ namespace AxibugEmuOnline.Client
             {
                 switch (controllerIndex)
                 {
-                    case 1:
+                    case 0:
                         switch (nesConBtnType)
                         {
                             case EnumButtonType.LEFT:
@@ -197,7 +197,7 @@ namespace AxibugEmuOnline.Client
                         }
 
                         break;
-                    case 2:
+                    case 1:
                         switch (nesConBtnType)
                         {
                             case EnumButtonType.LEFT:
