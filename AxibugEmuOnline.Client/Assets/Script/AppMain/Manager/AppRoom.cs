@@ -403,7 +403,28 @@ namespace AxibugEmuOnline.Client.Manager
         }
 
         /// <summary>
-        /// 发送修改玩家槽位
+        /// 发送修改玩家槽位,但是增量
+        /// </summary>
+        /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
+        public void SendChangePlaySlotIdxWithJoyIdx(uint localJoyIndex, uint slotIndex)
+        {
+            if (!App.roomMgr.InRoom) return;
+
+            Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
+            for (int i = 0; i < App.roomMgr.mineRoomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                var item = App.roomMgr.mineRoomMiniInfo.GamePlaySlotList[i];
+
+                if (item.PlayerUID <= 0) continue;
+                if (item.PlayerUID != App.user.userdata.UID) return;
+                temp[(uint)i] = (uint)item.PlayerLocalJoyIdx;
+            }
+            temp[slotIndex] = localJoyIndex;
+
+            SendChangePlaySlotIdxWithJoyIdx(temp);
+        }
+        /// <summary>
+        /// 发送修改玩家槽位,全量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
         public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, uint> dictSlotIdx2LocalJoyIdx)

@@ -20,16 +20,16 @@ namespace AxibugEmuOnline.Client
             m_states[0] = m_states[1] = m_states[2] = m_states[3] = 0;
 
             if (Controller0.ConnectSlot.HasValue) m_states[Controller0.ConnectSlot.Value] = Controller0.GetButtons();
-            else if (Controller0.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 0);
+            else if (Controller0.AnyButtonDown()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 0);
 
             if (Controller1.ConnectSlot.HasValue) m_states[Controller1.ConnectSlot.Value] = Controller1.GetButtons();
-            else if (Controller1.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 1);
+            else if (Controller1.AnyButtonDown()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 1);
 
             if (Controller2.ConnectSlot.HasValue) m_states[Controller2.ConnectSlot.Value] = Controller2.GetButtons();
-            else if (Controller2.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 2);
+            else if (Controller2.AnyButtonDown()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 2);
 
             if (Controller3.ConnectSlot.HasValue) m_states[Controller3.ConnectSlot.Value] = Controller3.GetButtons();
-            else if (Controller3.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 3);
+            else if (Controller3.AnyButtonDown()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 3);
 
             var result = new ControllerState(m_states);
             return result;
@@ -151,18 +151,18 @@ namespace AxibugEmuOnline.Client
                 return res;
             }
 
-            public bool AnyButtonPressed()
+            public bool AnyButtonDown()
             {
                 return
-                    UP.IsPressing ||
-                    DOWN.IsPressing ||
-                    LEFT.IsPressing ||
-                    RIGHT.IsPressing ||
-                    A.IsPressing ||
-                    B.IsPressing ||
-                    SELECT.IsPressing ||
-                    START.IsPressing ||
-                    MIC.IsPressing;
+                    UP.IsDown ||
+                    DOWN.IsDown ||
+                    LEFT.IsDown ||
+                    RIGHT.IsDown ||
+                    A.IsDown ||
+                    B.IsDown ||
+                    SELECT.IsDown ||
+                    START.IsDown ||
+                    MIC.IsDown;
             }
 
             public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
@@ -195,8 +195,10 @@ namespace AxibugEmuOnline.Client
             /// <summary> 按键监听器 </summary>
             KeyListener m_keyListener;
 
-            /// <summary> 指示按钮是否被按下 </summary>
+            /// <summary> 指示按钮是否正在按下状态 </summary>
             public bool IsPressing => m_keyListener.IsPressing();
+            /// <summary> 指示按钮是否被按下 </summary>
+            public bool IsDown => m_keyListener.IsDown();
 
             public Button(Controller controller, EnumButtonType buttonType)
             {
@@ -212,7 +214,7 @@ namespace AxibugEmuOnline.Client
             /// <returns></returns>
             public EnumButtonType SampleKey()
             {
-                return m_keyListener.IsPressing() ? m_buttonType : 0;
+                return IsPressing ? m_buttonType : 0;
             }
 
             private void CreateListener()
@@ -245,6 +247,10 @@ namespace AxibugEmuOnline.Client
             public bool IsPressing()
             {
                 return Input.GetKey(m_key);
+            }
+            public bool IsDown()
+            {
+                return Input.GetKeyDown(m_key);
             }
 
             public override string ToString()

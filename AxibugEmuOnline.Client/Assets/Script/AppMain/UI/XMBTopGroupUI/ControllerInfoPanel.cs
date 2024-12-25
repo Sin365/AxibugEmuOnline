@@ -27,7 +27,7 @@ public class ControllerInfoPanel : MonoBehaviour
 
             //找到第一个空闲手柄插槽
             var freeSlotIndex = s_freeSlots[0];
-            //App.roomMgr.SendRoomSingelPlayerInput
+            App.roomMgr.SendChangePlaySlotIdxWithJoyIdx((uint)joyIndex, (uint)freeSlotIndex);
         }
         else //不在房间中,直接设置
         {
