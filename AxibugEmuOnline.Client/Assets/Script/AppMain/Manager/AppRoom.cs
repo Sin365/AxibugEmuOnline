@@ -35,6 +35,7 @@ namespace AxibugEmuOnline.Client.Manager
         Protobuf_Room_Create _Protobuf_Room_Create = new Protobuf_Room_Create();
         Protobuf_Room_Join _Protobuf_Room_Join = new Protobuf_Room_Join();
         Protobuf_Room_Leave _Protobuf_Room_Leave = new Protobuf_Room_Leave();
+        Protobuf_Room_Change_PlaySlotWithJoy _Protobuf_Room_Change_PlaySlotWithJoy = new Protobuf_Room_Change_PlaySlotWithJoy();
         Protobuf_Room_Player_Ready _Protobuf_Room_Player_Ready = new Protobuf_Room_Player_Ready();
         Protobuf_Room_SinglePlayerInputData _Protobuf_Room_SinglePlayerInputData = new Protobuf_Room_SinglePlayerInputData();
         Protobuf_Screnn_Frame _Protobuf_Screnn_Frame = new Protobuf_Screnn_Frame();
@@ -401,6 +402,29 @@ namespace AxibugEmuOnline.Client.Manager
             //}
         }
 
+        /// <summary>
+        /// 发送修改玩家槽位
+        /// </summary>
+        /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
+        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, uint> dictSlotIdx2LocalJoyIdx)
+        {
+            if (!InRoom)
+                return;
+
+            _Protobuf_Room_Change_PlaySlotWithJoy.SlotWithJoy.Clear();
+
+            foreach (var slotdata in dictSlotIdx2LocalJoyIdx)
+            {
+                _Protobuf_Room_Change_PlaySlotWithJoy.SlotWithJoy.Add(new Protobuf_PlaySlotIdxWithJoyIdx()
+                {
+                    PlayerSlotIdx = (int)slotdata.Key,
+                    PlayerLocalJoyIdx = (int)slotdata.Value,
+                });
+            }
+
+            App.log.Info($"SendChangePlaySlotIdxWithJoyIdx");
+            App.network.SendToServer((int)CommandID.CmdRoomChangePlayerWithJoy, ProtoBufHelper.Serizlize(_Protobuf_Room_Change_PlaySlotWithJoy));
+        }
         /// <summary>
         /// 上报即时存档
         /// </summary>

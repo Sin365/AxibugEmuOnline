@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,11 +21,13 @@ namespace AxibugEmuOnline.Client
             m_InputUI.gameObject.SetActive(false);
         }
 
-        public static InputUI Input(Action<string> callback, string placeHolder, string defaultText)
+        public static void Input(Action<string> callback, string placeHolder, string defaultText)
         {
+#if UNITY_PSP2
+            App.sonyVitaCommonDialog.ShowPSVitaIME(callback, placeHolder, defaultText);
+#else
             s_ins.m_InputUI.Show(new ValueTuple<Action<string>, string, string>(callback, placeHolder, defaultText));
-
-            return s_ins.m_InputUI;
+#endif
         }
 
         public static void PopSideBar<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
