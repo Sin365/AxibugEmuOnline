@@ -34,6 +34,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         #region Mono
         public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
+
+#if UNITY_PSP2
+        public static SonyVitaCommonDialog sonyVitaCommonDialog;
+#endif
+
         #endregion
 
 #if UNITY_PSP2 && !UNITY_EDITOR //PSV真机
@@ -43,9 +48,9 @@ namespace AxibugEmuOnline.Client.ClientCore
 #endif
         public static void Init(Initer initer, bool isTest = false, string testSrvIP = "")
         {
+            //其他平台必要的初始化
             if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
             {
-                //PSV 等平台需要手动创建目录
                 PSP2Init();
             }
 
@@ -88,9 +93,12 @@ namespace AxibugEmuOnline.Client.ClientCore
                 Directory.CreateDirectory(PersistentDataPath);
 
 #if UNITY_PSP2
+            //创建PSV弹窗UI
+            sonyVitaCommonDialog = new GameObject().AddComponent<SonyVitaCommonDialog>();
             //释放解码 FMV的26M内存，一般游戏用不上（PSP才用那破玩意儿）
             UnityEngine.PSVita.PSVitaVideoPlayer.TransferMemToMonoHeap();
 #endif
+
         }
 
         private static IEnumerator AppTickFlow()
