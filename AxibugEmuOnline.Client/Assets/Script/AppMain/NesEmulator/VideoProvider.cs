@@ -91,7 +91,7 @@ namespace AxibugEmuOnline.Client
                     wrapTex_gpu = new Texture2D(PPU.SCREEN_WIDTH, PPU.SCREEN_HEIGHT, TextureFormat.RGBA32, false);
                     wrapTex_gpu.filterMode = FilterMode.Point;
                     wrapTexBufferPointer_gpu = (IntPtr)screenData;
-                    rt_gpu = RenderTexture.GetTemporary(wrapTex_gpu.width, wrapTex_gpu.height, 0);
+                    rt_gpu = RenderTexture.GetTemporary(256, wrapTex_gpu.height, 0);
                     rt_gpu.filterMode = FilterMode.Point;
                     rt_gpu.anisoLevel = 0;
                     rt_gpu.antiAliasing = 1;
