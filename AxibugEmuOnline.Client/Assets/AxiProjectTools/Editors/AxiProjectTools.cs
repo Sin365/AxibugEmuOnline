@@ -86,7 +86,7 @@ public class AxiProjectTools : EditorWindow
 	static void LoopPrefabNode(string rootPath, GameObject trans, int depth)
 	{
 		string nodename = $"{rootPath}>{trans.name}";
-#if UNITY_5_4_OR_NEWER && !UNITY_2018_4_OR_NEWER
+#if UNITY_2018_4_OR_NEWER
         GameObject prefabRoot = trans.gameObject;
         int comCount = prefabRoot.GetComponentCount();
         for (int i = 0; i < comCount; i++)
