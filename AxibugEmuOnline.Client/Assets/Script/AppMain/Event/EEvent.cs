@@ -9,7 +9,10 @@
         /// 登录成功
         /// </summary>
         OnLoginSucceed,
-
+        /// <summary>
+        /// 当登录被置为false时
+        /// </summary>
+        OnLossLoginState,
         /// <summary>
         /// 登录失败
         /// </summary>
@@ -63,10 +66,19 @@
         /// 服务器等待Step更新
         /// </summary>
         OnRoomWaitStepChange,
-        
+
         /// <summary>
         /// 当房间中手柄位信息发生任何变化时触发,进入房间后也应该触发
         /// </summary>
         OnRoomSlotDataChanged,
+        /// <summary>
+        /// 当手柄连接设置发生变化时触发
+        /// </summary>
+        OnControllerConnectChanged,
+        /// <summary>
+        /// 当本机手柄渴望插入时触发
+        /// <para>参数: <see cref="int"/> 本地手柄序号[0,3]</para>
+        /// </summary>
+        OnLocalJoyDesireInvert
     }
 }

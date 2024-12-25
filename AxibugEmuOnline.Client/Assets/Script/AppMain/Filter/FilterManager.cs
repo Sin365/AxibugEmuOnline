@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static AxibugEmuOnline.Client.FilterEffect;
-using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {
@@ -33,8 +32,6 @@ namespace AxibugEmuOnline.Client
             m_previewFilterWraper = new AlphaWraper(mainBg, filterPreview, false);
             ShutDownFilterPreview();
             ShutDownFilter();
-
-
         }
 
         private RenderTexture result = null;
@@ -42,6 +39,11 @@ namespace AxibugEmuOnline.Client
         {
             if (result == null)
                 result = RenderTexture.GetTemporary(Screen.width, Screen.height);
+            else if (result.width != Screen.width || result.height != Screen.height)
+            {
+                RenderTexture.ReleaseTemporary(result);
+                result = RenderTexture.GetTemporary(Screen.width, Screen.height);
+            }
 
             bool anyFilterEnable = false;
             foreach (var filter in Filters)

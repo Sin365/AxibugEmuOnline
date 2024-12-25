@@ -14,7 +14,7 @@ namespace AxibugEmuOnline.Client.Manager
     public class AppRoom
     {
         public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; } = null;
-        public bool InRoom => mineRoomMiniInfo != null;
+        public bool InRoom => App.user.IsLoggedIn && mineRoomMiniInfo != null;
         public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == App.user.userdata.UID;
         public bool IsScreenProviderUID => mineRoomMiniInfo?.ScreenProviderUID == App.user.userdata.UID;
         public RoomGameState RoomState => mineRoomMiniInfo.GameState;
@@ -403,7 +403,28 @@ namespace AxibugEmuOnline.Client.Manager
         }
 
         /// <summary>
-        /// 发送修改玩家槽位
+        /// 发送修改玩家槽位,但是增量
+        /// </summary>
+        /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
+        public void SendChangePlaySlotIdxWithJoyIdx(uint localJoyIndex, uint slotIndex)
+        {
+            if (!App.roomMgr.InRoom) return;
+
+            Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
+            for (int i = 0; i < App.roomMgr.mineRoomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                var item = App.roomMgr.mineRoomMiniInfo.GamePlaySlotList[i];
+
+                if (item.PlayerUID <= 0) continue;
+                if (item.PlayerUID != App.user.userdata.UID) return;
+                temp[(uint)i] = (uint)item.PlayerLocalJoyIdx;
+            }
+            temp[slotIndex] = localJoyIndex;
+
+            SendChangePlaySlotIdxWithJoyIdx(temp);
+        }
+        /// <summary>
+        /// 发送修改玩家槽位,全量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
         public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, uint> dictSlotIdx2LocalJoyIdx)
@@ -536,16 +557,15 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="roomMiniInfo"></param>
         /// <param name="freeSlots"></param>
         /// <returns></returns>
-        public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo, out int[] freeSlots)
+        public static bool GetFreeSlot(this Protobuf_Room_MiniInfo roomMiniInfo, ref List<int> freeSlots)
         {
-            List<int> temp = new List<int>();
+            freeSlots.Clear();
             for (int i = 0; i < roomMiniInfo.GamePlaySlotList.Count; i++)
             {
                 if (roomMiniInfo.GamePlaySlotList[i].PlayerUID <= 0)
-                    temp.Add(i);
+                    freeSlots.Add(i);
             }
-            freeSlots = temp.ToArray();
-            return freeSlots.Length > 0;
+            return freeSlots.Count > 0;
         }
 
         /// <summary>
@@ -554,15 +574,10 @@ namespace AxibugEmuOnline.Client.Manager
         public static bool GetPlayerSlotIdxByUid(this Protobuf_Room_MiniInfo roomMiniInfo, long uid, int joyIdx, out uint? slotIdx)
         {
             slotIdx = null;
-            //joyIdx取值返回[0,3],这个序号代表玩家本地的手柄编号
-            //todo : 根据uid和controllerIndex 返回占用的位置
-
-            //目前未实现,所有非0号位置的手柄,都返回false
-
 
             for (int i = 0; i < roomMiniInfo.GamePlaySlotList.Count; i++)
             {
-                if (roomMiniInfo.GamePlaySlotList[i].PlayerUID == uid)
+                if (roomMiniInfo.GamePlaySlotList[i].PlayerUID == uid && roomMiniInfo.GamePlaySlotList[i].PlayerLocalJoyIdx == joyIdx)
                 {
                     slotIdx = (uint)i;
                     return true;

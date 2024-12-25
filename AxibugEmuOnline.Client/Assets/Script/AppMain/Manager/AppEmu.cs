@@ -65,37 +65,29 @@ namespace AxibugEmuOnline.Client.Manager
 
             m_controllerSetuper = Supporter.GetControllerSetuper();
 
-            SetupController();
+            //自动分配0号手柄到0号手柄位
+            m_controllerSetuper.SetConnect(con0ToSlot: 0);
+            Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
 
             Eventer.Instance.RegisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
         }
 
         private void OnSlotDataChanged()
         {
-            SetupController();
-        }
+            long selfUID = App.user.userdata.UID;
+            uint? con0Slot;
+            uint? con1Slot;
+            uint? con2Slot;
+            uint? con3Slot;
 
-        private void SetupController()
-        {
-            if (!App.roomMgr.InRoom) //不在房间中,自动分配0号手柄到0号手柄位
-            {
-                m_controllerSetuper.SetConnect(con0ToSlot: 0);
-            }
-            else //在房间中则使用服务器下发的手柄槽位信息分配本地手柄
-            {
-                long selfUID = App.user.userdata.UID;
-                uint? con0Slot;
-				uint? con1Slot;
-				uint? con2Slot;
-				uint? con3Slot;
+            App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 0, out con0Slot);
+            App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 1, out con1Slot);
+            App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 2, out con2Slot);
+            App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 3, out con3Slot);
 
-				App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 0, out con0Slot);
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 1, out con1Slot);
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 2, out con2Slot);
-                App.roomMgr.mineRoomMiniInfo.GetPlayerSlotIdxByUid(selfUID, 3, out con3Slot);
+            m_controllerSetuper.SetConnect(con0Slot, con1Slot, con2Slot, con3Slot);
 
-                m_controllerSetuper.SetConnect(con0Slot, con1Slot, con2Slot, con3Slot);
-            }
+            Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
         }
 
         public void StopGame()
