@@ -5,73 +5,12 @@ namespace VirtualNes.Core
     public static class Supporter
     {
         private static ISupporterImpl s_support;
+        internal static ISupporterImpl S => s_support;
 
         public static void Setup(ISupporterImpl supporter)
         {
             s_support = supporter;
         }
-
-        public static Stream OpenRom(string fname)
-        {
-            return s_support.OpenRom(fname);
-        }
-
-        public static void GetFilePathInfo(string fname, out string fullPath, out string directPath)
-        {
-            s_support.GetRomPathInfo(fname, out fullPath, out directPath);
-        }
-
-        public static Stream OpenFile_DISKSYS()
-        {
-            return s_support.OpenFile_DISKSYS();
-        }
-
-        public static void SaveSRAMToFile(byte[] sramContent, string romName)
-        {
-            s_support.SaveSRAMToFile(sramContent, romName);
-        }
-
-        public static void SaveDISKToFile(byte[] diskFileContent, string romName)
-        {
-            s_support.SaveDISKToFile(diskFileContent, romName);
-        }
-
-        public static void PrepareDirectory(string directPath)
-        {
-            s_support.PrepareDirectory(directPath);
-        }
-
-        public static void SaveFile(byte[] fileData, string directPath, string fileName)
-        {
-            s_support.SaveFile(fileData, directPath, fileName);
-        }
-
-        public static Stream OpenFile(string directPath, string fileName)
-        {
-            return s_support.OpenFile(directPath, fileName);
-        }
-
-        public static bool TryGetMapperNo(ROM rom, out int mapperNo)
-        {
-            return s_support.TryGetMapperNo(rom, out mapperNo);
-        }
-
-        public static ControllerState GetControllerState()
-        {
-            return s_support.GetControllerState();
-        }
-
-        public static void SampleInput(uint frameCount)
-        {
-            s_support.SampleInput(frameCount);
-        }
-
-        public static IControllerSetuper GetControllerSetuper()
-        {
-            return s_support?.GetControllerSetuper();
-        }
-
-        public static EmulatorConfig Config => s_support.Config;
     }
 
     public interface ISupporterImpl
@@ -82,48 +21,11 @@ namespace VirtualNes.Core
         void SaveSRAMToFile(byte[] sramContent, string romName);
         void SaveDISKToFile(byte[] diskFileContent, string romName);
         EmulatorConfig Config { get; }
-
         void PrepareDirectory(string directPath);
         void SaveFile(byte[] fileData, string directPath, string fileName);
         Stream OpenFile(string directPath, string fileName);
         bool TryGetMapperNo(ROM rom, out int mapperNo);
         ControllerState GetControllerState();
         void SampleInput(uint frameCount);
-        IControllerSetuper GetControllerSetuper();
-    }
-
-    /// <summary>
-    /// 负责管理本地控制器与具体游戏之间的槽位分配
-    /// </summary>
-    public interface IControllerSetuper
-    {
-        /// <summary>
-        /// 设置本地手柄与游戏手柄槽位的映射,这个方法是一个全量更新手柄插入设置的方法
-        /// </summary>
-        void SetConnect(
-            uint? con0ToSlot = null,
-            uint? con1ToSlot = null,
-            uint? con2ToSlot = null,
-            uint? con3ToSlot = null);
-
-        /// <summary>
-        /// 指定手柄插槽位,获取当前槽位连接的本地手柄序号
-        /// </summary>
-        /// <param name="slotIndex"></param>
-        /// <returns></returns>
-        int? GetSlotConnectingController(int slotIndex);
-
-        /// <summary>
-        /// 获得一个空的槽位
-        /// </summary>
-        /// <returns></returns>
-        uint? GetFreeSlotIndex();
-
-        /// <summary>
-        /// 增量式的修改一个手柄和一个槽位的连接关系
-        /// </summary>
-        /// <param name="conIndex"></param>
-        /// <param name="slotIndex"></param>
-        void LetControllerConnect(int conIndex, uint slotIndex);
     }
 }

@@ -46,12 +46,21 @@ namespace AxibugEmuOnline.Client
             Controller3.ConnectSlot = con3ToSlot;
         }
 
-        public int? GetSlotConnectingController(int slotIndex)
+        public int? GetSlotConnectingControllerIndex(int slotIndex)
         {
             if (Controller0.ConnectSlot.HasValue && Controller0.ConnectSlot.Value == slotIndex) return 0;
             else if (Controller1.ConnectSlot.HasValue && Controller1.ConnectSlot.Value == slotIndex) return 1;
             else if (Controller2.ConnectSlot.HasValue && Controller2.ConnectSlot.Value == slotIndex) return 2;
             else if (Controller3.ConnectSlot.HasValue && Controller3.ConnectSlot.Value == slotIndex) return 3;
+            else return null;
+        }
+
+        public IController GetSlotConnectingController(int slotIndex)
+        {
+            if (Controller0.ConnectSlot.HasValue && Controller0.ConnectSlot.Value == slotIndex) return Controller0;
+            else if (Controller1.ConnectSlot.HasValue && Controller1.ConnectSlot.Value == slotIndex) return Controller1;
+            else if (Controller2.ConnectSlot.HasValue && Controller2.ConnectSlot.Value == slotIndex) return Controller2;
+            else if (Controller3.ConnectSlot.HasValue && Controller3.ConnectSlot.Value == slotIndex) return Controller3;
             else return null;
         }
 
@@ -94,7 +103,7 @@ namespace AxibugEmuOnline.Client
         /// <summary>
         /// Nes控制器
         /// </summary>
-        public class Controller
+        public class Controller : IController
         {
             /// <summary>
             /// 控制器编号
