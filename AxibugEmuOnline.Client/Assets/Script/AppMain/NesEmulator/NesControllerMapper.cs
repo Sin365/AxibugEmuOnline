@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using AxibugEmuOnline.Client.Event;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
@@ -17,12 +20,75 @@ namespace AxibugEmuOnline.Client
             m_states[0] = m_states[1] = m_states[2] = m_states[3] = 0;
 
             if (Controller0.ConnectSlot.HasValue) m_states[Controller0.ConnectSlot.Value] = Controller0.GetButtons();
+            else if (Controller0.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 0);
+
             if (Controller1.ConnectSlot.HasValue) m_states[Controller1.ConnectSlot.Value] = Controller1.GetButtons();
+            else if (Controller1.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 1);
+
             if (Controller2.ConnectSlot.HasValue) m_states[Controller2.ConnectSlot.Value] = Controller2.GetButtons();
+            else if (Controller2.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 2);
+
             if (Controller3.ConnectSlot.HasValue) m_states[Controller3.ConnectSlot.Value] = Controller3.GetButtons();
+            else if (Controller3.AnyButtonPressed()) Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 3);
 
             var result = new ControllerState(m_states);
             return result;
+        }
+
+        public void SetConnect(uint? con0ToSlot = null,
+            uint? con1ToSlot = null,
+            uint? con2ToSlot = null,
+            uint? con3ToSlot = null)
+        {
+            Controller0.ConnectSlot = con0ToSlot;
+            Controller1.ConnectSlot = con1ToSlot;
+            Controller2.ConnectSlot = con2ToSlot;
+            Controller3.ConnectSlot = con3ToSlot;
+        }
+
+        public int? GetSlotConnectingController(int slotIndex)
+        {
+            if (Controller0.ConnectSlot.HasValue && Controller0.ConnectSlot.Value == slotIndex) return 0;
+            else if (Controller1.ConnectSlot.HasValue && Controller1.ConnectSlot.Value == slotIndex) return 1;
+            else if (Controller2.ConnectSlot.HasValue && Controller2.ConnectSlot.Value == slotIndex) return 2;
+            else if (Controller3.ConnectSlot.HasValue && Controller3.ConnectSlot.Value == slotIndex) return 3;
+            else return null;
+        }
+
+        static HashSet<uint> s_temp = new HashSet<uint>(4);
+        public uint? GetFreeSlotIndex()
+        {
+            s_temp.Clear();
+            s_temp.Add(0);
+            s_temp.Add(1);
+            s_temp.Add(2);
+            s_temp.Add(3);
+
+            if (Controller0.ConnectSlot.HasValue) s_temp.Remove(Controller0.ConnectSlot.Value);
+            if (Controller1.ConnectSlot.HasValue) s_temp.Remove(Controller1.ConnectSlot.Value);
+            if (Controller2.ConnectSlot.HasValue) s_temp.Remove(Controller2.ConnectSlot.Value);
+            if (Controller3.ConnectSlot.HasValue) s_temp.Remove(Controller3.ConnectSlot.Value);
+
+            if (s_temp.Count > 0) return s_temp.First();
+            else return null;
+        }
+
+        public void LetControllerConnect(int conIndex, uint slotIndex)
+        {
+            var targetController = conIndex switch
+            {
+                0 => Controller0,
+                1 => Controller1,
+                2 => Controller2,
+                3 => Controller3,
+                _ => throw new System.Exception($"Not Allowed conIndex Range: {conIndex}")
+            };
+
+            if (targetController.ConnectSlot.HasValue) return;
+
+            targetController.ConnectSlot = slotIndex;
+
+            Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
         }
 
         /// <summary>
@@ -85,6 +151,20 @@ namespace AxibugEmuOnline.Client
                 return res;
             }
 
+            public bool AnyButtonPressed()
+            {
+                return
+                    UP.IsPressing ||
+                    DOWN.IsPressing ||
+                    LEFT.IsPressing ||
+                    RIGHT.IsPressing ||
+                    A.IsPressing ||
+                    B.IsPressing ||
+                    SELECT.IsPressing ||
+                    START.IsPressing ||
+                    MIC.IsPressing;
+            }
+
             public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
             {
                 string configKey = $"NES_{controllerInput}_{nesConBtnType}";
@@ -115,6 +195,9 @@ namespace AxibugEmuOnline.Client
             /// <summary> 按键监听器 </summary>
             KeyListener m_keyListener;
 
+            /// <summary> 指示按钮是否被按下 </summary>
+            public bool IsPressing => m_keyListener.IsPressing();
+
             public Button(Controller controller, EnumButtonType buttonType)
             {
                 m_hostController = controller;
@@ -137,10 +220,10 @@ namespace AxibugEmuOnline.Client
                 m_keyListener = Controller.GetKey(m_hostController.ControllerIndex, m_buttonType);
             }
         }
-		//low C# readonly
-		//public readonly struct KeyListener
+        //low C# readonly
+        //public readonly struct KeyListener
 
-		public struct KeyListener
+        public struct KeyListener
         {
             private readonly KeyCode m_key;
 
@@ -155,7 +238,7 @@ namespace AxibugEmuOnline.Client
                 m_key = KeyCode.None;
 
                 int result;
-				if (int.TryParse(confStr, out result))
+                if (int.TryParse(confStr, out result))
                     m_key = (KeyCode)result;
             }
 
@@ -225,17 +308,6 @@ namespace AxibugEmuOnline.Client
 
                 return default(KeyListener);
             }
-        }
-
-        public void SetConnect(uint? con0ToSlot = null,
-            uint? con1ToSlot = null,
-            uint? con2ToSlot = null,
-            uint? con3ToSlot = null)
-        {
-            Controller0.ConnectSlot = con0ToSlot;
-            Controller1.ConnectSlot = con1ToSlot;
-            Controller2.ConnectSlot = con2ToSlot;
-            Controller3.ConnectSlot = con3ToSlot;
         }
     }
 }

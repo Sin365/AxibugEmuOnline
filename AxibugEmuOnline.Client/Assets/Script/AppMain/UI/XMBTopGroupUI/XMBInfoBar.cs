@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client;
+﻿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using System;
 using UnityEngine;
@@ -14,11 +14,17 @@ public class XMBInfoBar : MonoBehaviour
     public Text DelayValue;
     public Text OnlinePlayerCount;
     public Text FPS;
+    public GameObject ControlSlotInfoNode;
 
     void OnEnable()
     {
         TickLoop.LoopAction_1s += RefreshAll;
         RefreshAll();
+    }
+
+    private void Update()
+    {
+        ControlSlotInfoNode.SetActiveEx(!App.emu.Core.IsNull());
     }
 
     void OnDisable()
@@ -34,10 +40,10 @@ public class XMBInfoBar : MonoBehaviour
         RefreshFps();
     }
 
-	/// <summary>
-	/// (uint lastFrame, float lastTime)
-	/// </summary>
-	ValueTuple<uint,float> m_lastFrameInfo;
+    /// <summary>
+    /// (uint lastFrame, float lastTime)
+    /// </summary>
+    ValueTuple<uint, float> m_lastFrameInfo;
     private void RefreshFps()
     {
         if (App.emu.Core.IsNull())
@@ -45,18 +51,18 @@ public class XMBInfoBar : MonoBehaviour
         else
         {
             FPS.gameObject.SetActiveEx(true);
-			//var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
-			//var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
-			var gap = App.emu.Core.Frame - m_lastFrameInfo.Item1;
-			var time = Time.realtimeSinceStartup - m_lastFrameInfo.Item2;
-			var fps = gap / time;
+            //var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
+            //var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
+            var gap = App.emu.Core.Frame - m_lastFrameInfo.Item1;
+            var time = Time.realtimeSinceStartup - m_lastFrameInfo.Item2;
+            var fps = gap / time;
             FPS.text = $"FPS:{fps:.#}";
 
-			//m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
-			//m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
-			m_lastFrameInfo.Item1 = App.emu.Core.Frame;
-			m_lastFrameInfo.Item2 = Time.realtimeSinceStartup;
-		}
+            //m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
+            //m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
+            m_lastFrameInfo.Item1 = App.emu.Core.Frame;
+            m_lastFrameInfo.Item2 = Time.realtimeSinceStartup;
+        }
     }
 
     private void RefreshDelay()

@@ -642,7 +642,11 @@ namespace AxibugEmuOnline.Server
 			ScreenProviderUID = hostUId;
 
 			if (PlayerSlot == null)
+			{ 
 				PlayerSlot = new Data_RoomSlot[4];
+				for (uint i = 0; i < PlayerSlot.Length; i++)
+					PlayerSlot[i] = new Data_RoomSlot();
+            }
 
 			for (uint i = 0; i < PlayerSlot.Length; i++)
 				PlayerSlot[i].Init(i);
@@ -814,7 +818,8 @@ namespace AxibugEmuOnline.Server
 			foreach (var slotdata in newSlotIdx2JoyIdx)
 			{
 				PlayerSlot[slotdata.Key].LocalJoyIdx = slotdata.Value;
-				AppSrv.g_Log.Debug($"SetPlayerUID RoomID->{RoomID} _c.UID->{_c.UID}  PlayerSlotIdx->{slotdata.Key} LocalJoyIdx->{slotdata.Value}");
+                PlayerSlot[slotdata.Key].UID = _c.UID;
+                AppSrv.g_Log.DebugCmd($"SetPlayerSlot RoomID->{RoomID} _c.UID->{_c.UID}  PlayerSlotIdx->{slotdata.Key} LocalJoyIdx->{slotdata.Value}");
 			}
 			//更新需要同步的UID
 			UpdateSynUIDs();

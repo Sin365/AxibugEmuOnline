@@ -96,6 +96,8 @@ namespace AxibugEmuOnline.Client.Manager
 
                 m_controllerSetuper.SetConnect(con0Slot, con1Slot, con2Slot, con3Slot);
             }
+
+            Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
         }
 
         public void StopGame()
