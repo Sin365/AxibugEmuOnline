@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,7 +6,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class AxiProjectTools : EditorWindow
 {
@@ -413,3 +413,4 @@ public class AxiProjectTools : EditorWindow
 		}
 	}
 }
+#endif

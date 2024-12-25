@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -22,3 +23,4 @@ public class AxiPrefabCache_Com2GUID
 	public string ToGUID;
 	public MonoScript monoScript;
 }
+#endif

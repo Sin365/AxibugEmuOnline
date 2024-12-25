@@ -212,12 +212,10 @@ namespace AxibugEmuOnline.Client
             EditorUtility.SetDirty(db);
             AssetDatabase.SaveAssets();
         }
-
+#endif
         public IControllerSetuper GetControllerSetuper()
         {
             return ControllerMapper;
         }
-
-#endif
     }
 }

@@ -1,4 +1,6 @@
-﻿using AxibugEmuOnline.Client.Event;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
+using AxibugEmuOnline.Client.Event;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -190,6 +192,13 @@ namespace AxibugEmuOnline.Client
             public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
             {
                 string configKey = $"NES_{controllerInput}_{nesConBtnType}";
+
+                //PSV平台固定键值
+                if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
+                {
+                    return KeyListener.GetPSVitaKey(controllerInput, nesConBtnType);
+                }
+
                 if (PlayerPrefs.HasKey(configKey))
                 {
                     return new KeyListener(PlayerPrefs.GetString(configKey));
@@ -334,6 +343,38 @@ namespace AxibugEmuOnline.Client
                         break;
                 }
 
+                return default(KeyListener);
+            }
+
+
+            public static KeyListener GetPSVitaKey(int controllerIndex, EnumButtonType nesConBtnType)
+            {
+                switch (controllerIndex)
+                {
+                    case 0:
+                        switch (nesConBtnType)
+                        {
+                            case EnumButtonType.LEFT:
+                                return new KeyListener(PSVitaKey.Left);
+                            case EnumButtonType.RIGHT:
+                                return new KeyListener(PSVitaKey.Right);
+                            case EnumButtonType.UP:
+                                return new KeyListener(PSVitaKey.Up);
+                            case EnumButtonType.DOWN:
+                                return new KeyListener(PSVitaKey.Down);
+                            case EnumButtonType.START:
+                                return new KeyListener(PSVitaKey.Start);
+                            case EnumButtonType.SELECT:
+                                return new KeyListener(PSVitaKey.Select);
+                            case EnumButtonType.A:
+                                return new KeyListener(PSVitaKey.Circle);
+                            case EnumButtonType.B:
+                                return new KeyListener(PSVitaKey.Cross);
+                            case EnumButtonType.MIC:
+                                return new KeyListener(PSVitaKey.Block);
+                        }
+                        break;
+                }
                 return default(KeyListener);
             }
         }
