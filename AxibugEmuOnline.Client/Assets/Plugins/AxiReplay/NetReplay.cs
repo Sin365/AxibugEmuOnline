@@ -60,7 +60,7 @@ namespace AxiReplay
             if (!bNetInit)
             {
                 data = default(ReplayStep);
-                frameDiff = default;
+                frameDiff = default(int);
                 inputDiff = false;
                 return false;
             }
@@ -73,7 +73,7 @@ namespace AxiReplay
             if (!bNetInit)
             {
                 data = default(ReplayStep);
-                frameDiff = default;
+                frameDiff = default(int);
                 inputDiff = false;
                 return false;
             }

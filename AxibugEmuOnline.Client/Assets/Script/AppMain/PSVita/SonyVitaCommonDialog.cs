@@ -44,7 +44,7 @@ public class SonyVitaCommonDialog : MonoBehaviour
         Debug.Log("IME text: " + result.text);
 		if (result.result == Sony.Vita.Dialog.Ime.EnumImeDialogResult.RESULT_OK)
 		{
-            resultAct.Invoke(result);
+            resultAct.Invoke(result.text);
             resultAct = null;
         }
     }

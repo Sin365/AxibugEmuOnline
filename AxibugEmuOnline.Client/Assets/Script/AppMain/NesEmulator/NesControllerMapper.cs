@@ -64,7 +64,9 @@ namespace AxibugEmuOnline.Client
             else return null;
         }
 
-        static HashSet<uint> s_temp = new HashSet<uint>(4);
+        //static HashSet<uint> s_temp = new HashSet<uint>(4);
+        //低版本不能这样初始化
+        static HashSet<uint> s_temp = new HashSet<uint>();
         public uint? GetFreeSlotIndex()
         {
             s_temp.Clear();
@@ -84,14 +86,25 @@ namespace AxibugEmuOnline.Client
 
         public void LetControllerConnect(int conIndex, uint slotIndex)
         {
-            var targetController = conIndex switch
+            Controller targetController;
+            switch (conIndex)
             {
-                0 => Controller0,
-                1 => Controller1,
-                2 => Controller2,
-                3 => Controller3,
-                _ => throw new System.Exception($"Not Allowed conIndex Range: {conIndex}")
-            };
+                case 0: targetController = Controller0;break;
+                case 1: targetController = Controller1; break;
+                case 2: targetController = Controller2; break;
+                case 3: targetController = Controller3; break;
+                default:
+                    throw new System.Exception($"Not Allowed conIndex Range: {conIndex}");
+                    break;
+            }
+            //var targetController = conIndex switch
+            //{
+            //    0 => Controller0,
+            //    1 => Controller1,
+            //    2 => Controller2,
+            //    3 => Controller3,
+            //    _ => throw new System.Exception($"Not Allowed conIndex Range: {conIndex}")
+            //};
 
             if (targetController.ConnectSlot.HasValue) return;
 

@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AxiProjectTools : EditorWindow
 {
@@ -94,11 +95,6 @@ public class AxiProjectTools : EditorWindow
             var com = prefabRoot.GetComponentAtIndex(i);
             if (com == null)
                 continue;
-
-            if (com.name.Contains("VideoPlayer"))
-            {
-                
-            }
 
             MonoBehaviour monoCom = com as MonoBehaviour;
             if (monoCom == null)
@@ -262,11 +258,13 @@ public class AxiProjectTools : EditorWindow
 	}
 
 
-	[MenuItem("Axibug移植工具/[5]UnPack所有预制体")]
+	[MenuItem("Axibug移植工具/[5]UnPack所有嵌套预制体和场景中的预制体")]
 	public static void UnpackPrefabs()
 	{
 
-		string[] allAssetPaths = AssetDatabase.GetAllAssetPaths();
+#if UNITY_2018_4_OR_NEWER
+        GoTAxiProjectToolsSence();
+        string[] allAssetPaths = AssetDatabase.GetAllAssetPaths();
 		int prefabCount = 0;
 
 		foreach (string path in allAssetPaths)
@@ -278,13 +276,41 @@ public class AxiProjectTools : EditorWindow
 				prefabCount++;
 			}
 		}
-		Debug.Log($"Unpacked {prefabCount} prefabs.");
+		Debug.Log($"{prefabCount}个预制体Unpack");
 
-		Debug.Log("<Color=#FFF333>处理完毕  [5]UnPack所有预制体</color>");
-	}
+        string[] sceneGuids = AssetDatabase.FindAssets("t:scene");
+        foreach (string guid in sceneGuids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (path.Contains(toolSenceName))
+                continue;
 
-	static void UnpackPrefab(string prefabPath)
+            EditorSceneManager.OpenScene(path); 
+			Scene currentScene = SceneManager.GetActiveScene();
+            GameObject[] rootObjects = currentScene.GetRootGameObjects();
+			foreach (GameObject rootObj in rootObjects)
+            {
+                // 遍历场景中的所有对象
+                TraverseHierarchy(rootObj);
+            }
+            // Save the scene // 获取当前打开的场景
+            currentScene = EditorSceneManager.GetActiveScene();
+            // 保存场景到文件（默认路径和名称）
+            bool success = EditorSceneManager.SaveScene(currentScene, currentScene.path);
+
+            Debug.Log($"{currentScene.name}场景中 所有物体Unpack");
+        }
+
+        GoTAxiProjectToolsSence();
+        Debug.Log("<Color=#FFF333>处理完毕  [5]UnPack所有预制体</color>");
+#else
+        Debug.Log("低版本不要执行本函数");
+#endif
+    }
+
+    static void UnpackPrefab(string prefabPath)
 	{
+#if UNITY_2018_4_OR_NEWER
 		GameObject prefabInstance = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 		if (prefabInstance == null)
 		{
@@ -296,10 +322,14 @@ public class AxiProjectTools : EditorWindow
 		TraverseHierarchy(obj);
 		PrefabUtility.SaveAsPrefabAsset(obj, prefabPath);
 		GameObject.DestroyImmediate(obj);
+#else
+		Debug.Log("低版本不要执行本函数");
+#endif
 	}
 
 	static void TraverseHierarchy(GameObject obj)
 	{
+#if UNITY_2018_4_OR_NEWER
 		// 检查该对象是否是预制体的实例
 		if (PrefabUtility.IsPartOfPrefabInstance(obj))
 		{
@@ -313,6 +343,9 @@ public class AxiProjectTools : EditorWindow
 		{
 			TraverseHierarchy(obj.transform.GetChild(i).gameObject);
 		}
+#else
+		Debug.Log("低版本不要执行本函数");
+#endif
 	}
 
 
