@@ -57,7 +57,7 @@ namespace VirtualNes.Core
                       9,10, 8,11,13,12,14,15 };
 
                     // OSDにするべきか…
-                    if (Supporter.Config.sound.bExtraSoundEnable)
+                    if (Supporter.S.Config.sound.bExtraSoundEnable)
                     {
                         //TODO : 似乎VirtuaNES有直接播放某个音频文件的功能
                         Debuger.Log($"CODE {data:X2}");

@@ -40,7 +40,7 @@ namespace VirtualNes.Core
                     Debuger.Log($"SOUND CODE:{addr & 0x1F:X2}");
 
                     // OSDにするべきか…
-                    if (Supporter.Config.sound.bExtraSoundEnable)
+                    if (Supporter.S.Config.sound.bExtraSoundEnable)
                     {
                         //TODO : 似乎VirtuaNES有直接播放某个音频文件的功能
                         //DirectSound.EsfAllStop();

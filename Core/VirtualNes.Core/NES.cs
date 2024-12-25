@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -249,7 +249,7 @@ namespace VirtualNes.Core
                 LoadDISK();
 
                 {
-                    // Pad¥¯¥é¥¹ÄÚ¤À¤È³õÆÚ»¯¥¿¥¤¥ß¥ó¥°¤¬ßW¤¤¤Î¤Ç¤³¤³¤Ç
+                    // Padã‚¯ãƒ©ã‚¹å†…ã ã¨åˆæœŸåŒ–ã‚¿ã‚¤ãƒŸãƒ³ã‚°ãŒé…ã„ã®ã§ã“ã“ã§
                     uint crc = rom.GetPROM_CRC();
                     if (
                         crc == 0xe792de94       // Best Play - Pro Yakyuu (New) (J)
@@ -275,7 +275,7 @@ namespace VirtualNes.Core
 
                 LoadTurboFile();
 
-                // VS-Unisystem¤Î¥Ç¥Õ¥©¥ë¥ÈÔO¶¨
+                // VS-Unisystemã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¨­å®š
                 if (rom.IsVSUNISYSTEM())
                 {
                     uint crc = rom.GetPROM_CRC();
@@ -286,13 +286,13 @@ namespace VirtualNes.Core
 
                 Reset();
 
-                // ¥²©`¥à¹ÌÓĞ¤Î¥Ç¥Õ¥©¥ë¥È¥ª¥×¥·¥ç¥ó¤òÔO¶¨(ÔO¶¨‘ø¤¹•r¤ËÊ¹¤¦é)
+                // ã‚²ãƒ¼ãƒ å›ºæœ‰ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’è¨­å®š(è¨­å®šæˆ»ã™æ™‚ã«ä½¿ã†ç‚º)
                 GameOption.defRenderMethod = (int)GetRenderMethod();
                 GameOption.defIRQtype = GetIrqType();
                 GameOption.defFrameIRQ = GetFrameIRQmode();
                 GameOption.defVideoMode = GetVideoMode();
 
-                // ÔO¶¨¤ò¥í©`¥É¤·¤ÆÔO¶¨¤¹¤ë(¥¨¥ó¥È¥ê¤¬Ÿo¤±¤ì¤Ğ¥Ç¥Õ¥©¥ë¥È¤¬Èë¤ë)
+                // è¨­å®šã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¦è¨­å®šã™ã‚‹(ã‚¨ãƒ³ãƒˆãƒªãŒç„¡ã‘ã‚Œã°ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãŒå…¥ã‚‹)
                 if (rom.GetMapperNo() != 20)
                 {
                     GameOption.Load(rom.GetPROM_CRC());
@@ -326,17 +326,17 @@ namespace VirtualNes.Core
             if (pad.GetExController() != (int)EXCONTROLLER.EXCONTROLLER_TURBOFILE)
                 return;
 
-            var fp = Supporter.OpenFile(Supporter.Config.path.szSavePath, "TurboFile.vtf");
+            var fp = Supporter.S.OpenFile(Supporter.S.Config.path.szSavePath, "TurboFile.vtf");
             try
             {
                 if (fp == null)
                 {
-                    // xxx ¥Õ¥¡¥¤¥ë¤òé_¤±¤Ş¤»¤ó
+                    // xxx ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã‘ã¾ã›ã‚“
                     throw new Exception($"Can Not Open File [TurboFile.vtf]");
                 }
 
                 long size = fp.Length;
-                // ¥Õ¥¡¥¤¥ë¥µ¥¤¥ºÈ¡µÃ
+                // ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºå–å¾—
                 if (size > 32 * 1024)
                 {
                     size = 32 * 1024;
@@ -354,7 +354,7 @@ namespace VirtualNes.Core
 
         private void LoadDISK()
         {
-            //todo : ´Åµú»ú¶ÁÈ¡Ö§³Ö
+            //todo : ç£ç¢Ÿæœºè¯»å–æ”¯æŒ
         }
 
         private void LoadSRAM()
@@ -367,10 +367,10 @@ namespace VirtualNes.Core
             if (!rom.IsSAVERAM())
                 return;
 
-            var saveFileDir = Supporter.Config.path.szSavePath;
+            var saveFileDir = Supporter.S.Config.path.szSavePath;
             var saveFileName = $"{rom.GetRomName()}.sav";
 
-            var fp = Supporter.OpenFile(saveFileDir, saveFileName);
+            var fp = Supporter.S.OpenFile(saveFileDir, saveFileName);
 
             try
             {
@@ -400,7 +400,7 @@ namespace VirtualNes.Core
         {
             int i;
 
-            // ƒƒ‚ƒŠƒNƒŠƒA
+            // å„Šå„Œå„•åƒ‹å„•å‚¾
             MemoryUtility.ZEROMEMORY(MMU.RAM, MMU.RAM.Length);
             MemoryUtility.ZEROMEMORY(MMU.WRAM, MMU.WRAM.Length);
             MemoryUtility.ZEROMEMORY(MMU.DRAM, MMU.DRAM.Length);
@@ -420,11 +420,11 @@ namespace VirtualNes.Core
 
             MMU.PROM = MMU.VROM = null;
 
-            // 0 œZ–h~‘Îô
+            // 0 å½å¶¼æŠå·­æ‡³å¶”
             MMU.PROM_8K_SIZE = MMU.PROM_16K_SIZE = MMU.PROM_32K_SIZE = 1;
             MMU.VROM_1K_SIZE = MMU.VROM_2K_SIZE = MMU.VROM_4K_SIZE = MMU.VROM_8K_SIZE = 1;
 
-            // ƒfƒtƒHƒ‹ƒgƒoƒ“ƒNİ’è
+            // åƒ¨åƒ¼åƒ…å„–åƒ©åƒ¶å„åƒ‹æ„æ•
             for (i = 0; i < 8; i++)
             {
                 MMU.CPU_MEM_BANK[i] = null;
@@ -432,11 +432,11 @@ namespace VirtualNes.Core
                 MMU.CPU_MEM_PAGE[i] = 0;
             }
 
-            // “à‘ŸRAM/WRAM
+            // æ’ªæ†»RAM/WRAM
             MMU.SetPROM_Bank(0, MMU.RAM, MMU.BANKTYPE_RAM);
             MMU.SetPROM_Bank(3, MMU.WRAM, MMU.BANKTYPE_RAM);
 
-            // ƒ_ƒ~[
+            // åƒŸå„ˆä¹•
             MMU.SetPROM_Bank(1, MMU.XRAM, MMU.BANKTYPE_ROM);
             MMU.SetPROM_Bank(2, MMU.XRAM, MMU.BANKTYPE_ROM);
 
@@ -502,13 +502,13 @@ namespace VirtualNes.Core
                                 EmulationCPU(nescfg.ScanlineCycles);
                             if (bDraw)
                             {
-                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                             }
                             else
                             {
                                 if (pad.IsZapperMode() && scanline == ZapperY)
                                 {
-                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                 }
                                 else
                                 {
@@ -518,11 +518,11 @@ namespace VirtualNes.Core
                                     }
                                     else
                                     {
-                                        ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                        ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                     }
                                 }
                             }
-                            ppu.ScanlineNext();                // ‚±‚ê‚ÌˆÊ’u‚Åƒ‰ƒXƒ^[Œn‚Í‰æ–Ê‚ªˆá‚¤
+                            ppu.ScanlineNext();                // å™å‚ŸåºåŸµæŠ²å±å„”åƒ—åƒä¹•å®¯å¼å¤‹æŸºå‘å ˜å†
                             if (RenderMethod == EnumRenderMethod.PRE_ALL_RENDER)
                                 EmulationCPU(nescfg.ScanlineCycles);
 
@@ -535,13 +535,13 @@ namespace VirtualNes.Core
                                 EmulationCPU(nescfg.HDrawCycles);
                             if (bDraw)
                             {
-                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                             }
                             else
                             {
                                 if (pad.IsZapperMode() && scanline == ZapperY)
                                 {
-                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                 }
                                 else
                                 {
@@ -551,7 +551,7 @@ namespace VirtualNes.Core
                                     }
                                     else
                                     {
-                                        ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                        ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                     }
                                 }
                             }
@@ -583,7 +583,7 @@ namespace VirtualNes.Core
                     {
                         pad.VSync();
 
-                        // VBLANKŠúŠÔ
+                        // VBLANKå©œå¨«
                         if (scanline == nescfg.TotalScanlines - 1)
                         {
                             ppu.VBlankEnd();
@@ -642,7 +642,7 @@ namespace VirtualNes.Core
 
                     if (scanline == 0)
                     {
-                        // ƒ_ƒ~[ƒXƒLƒƒƒ“ƒ‰ƒCƒ“
+                        // åƒŸå„ˆä¹•åƒ—åƒ‰å„å„å„”åƒ€å„
                         // H-Draw (4fetches*32)
                         EmulationCPU(FETCH_CYCLES * 128);
                         ppu.FrameStart();
@@ -655,10 +655,10 @@ namespace VirtualNes.Core
                     }
                     else if (scanline < 240)
                     {
-                        // ƒXƒNƒŠ[ƒ“•`‰æ(Scanline 1`239)
+                        // åƒ—åƒ‹å„•ä¹•å„æ˜¤å¤‹(Scanline 1ä¹£239)
                         if (bDraw)
                         {
-                            ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                            ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                             ppu.ScanlineNext();
                             EmulationCPU(FETCH_CYCLES * 10);
                             mapper.HSync(scanline);
@@ -670,7 +670,7 @@ namespace VirtualNes.Core
                         {
                             if (pad.IsZapperMode() && scanline == ZapperY)
                             {
-                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                 ppu.ScanlineNext();
                                 EmulationCPU(FETCH_CYCLES * 10);
                                 mapper.HSync(scanline);
@@ -694,7 +694,7 @@ namespace VirtualNes.Core
                                 }
                                 else
                                 {
-                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                     ppu.ScanlineNext();
                                     EmulationCPU(FETCH_CYCLES * 10);
                                     mapper.HSync(scanline);
@@ -707,7 +707,7 @@ namespace VirtualNes.Core
                     }
                     else if (scanline == 240)
                     {
-                        // ƒ_ƒ~[ƒXƒLƒƒƒ“ƒ‰ƒCƒ“ (Scanline 240)
+                        // åƒŸå„ˆä¹•åƒ—åƒ‰å„å„å„”åƒ€å„ (Scanline 240)
                         mapper.VSync();
 
                         EmulationCPU(nescfg.HDrawCycles);
@@ -720,7 +720,7 @@ namespace VirtualNes.Core
                     {
                         pad.VSync();
 
-                        // VBLANKŠúŠÔ
+                        // VBLANKå©œå¨«
                         if (scanline == nescfg.TotalScanlines - 1)
                         {
                             ppu.VBlankEnd();
@@ -864,7 +864,7 @@ namespace VirtualNes.Core
             MMU.VROM_4K_SIZE = rom.GetVROM_SIZE() * 2;
             MMU.VROM_8K_SIZE = rom.GetVROM_SIZE();
 
-            // ƒfƒtƒHƒ‹ƒgƒoƒ“ƒN
+            // åƒ¨åƒ¼åƒ…å„–åƒ©åƒ¶å„åƒ‹
             if (MMU.VROM_8K_SIZE != 0)
             {
                 MMU.SetVROM_8K_Bank(0);
@@ -874,7 +874,7 @@ namespace VirtualNes.Core
                 MMU.SetCRAM_8K_Bank(0);
             }
 
-            // ƒ~ƒ‰[
+            // å„ˆå„”ä¹•
             if (rom.Is4SCREEN())
             {
                 MMU.SetVRAM_Mirror(MMU.VRAM_MIRROR4);
@@ -976,13 +976,13 @@ namespace VirtualNes.Core
                     reg.S = 0xFF;
                     reg.P = CPU.Z_FLAG | CPU.R_FLAG | CPU.I_FLAG;
 
-                    // ˆÀ‘S‘Îô‚ğŒ“‚Ë‚Ä‚ ‚¦‚Äƒ‹[ƒv‚É(1•b•ª)
+                    // åŸ¨æ…¡æ‡³å¶”å‚ªå¯­å¹å°ååŠå°å„–ä¹•åƒ¾åµ(1æ˜©æš˜)
                     for (int i = 0; i < nescfg.TotalScanlines * 60; i++)
                     {
                         EmulationCPU(nescfg.ScanlineCycles);
                         cpu.GetContext(ref reg);
 
-                        // –³ŒÀƒ‹[ƒv‚É“ü‚Á‚½‚±‚Æ‚ğŠm”F‚µ‚½‚ç”²‚¯‚é
+                        // æŸå°·å„–ä¹•åƒ¾åµæ“–å­å¨å™å²å‚ªå¦‹æ“£åŸå¨å‚œæ•³å—å‚
                         if (reg.PC == 0x4700)
                         {
                             break;
@@ -993,7 +993,7 @@ namespace VirtualNes.Core
                 }
 
                 cpu.GetContext(ref reg);
-                // –³ŒÀƒ‹[ƒv‚É“ü‚Á‚Ä‚¢‚½‚çÄİ’è‚·‚é
+                // æŸå°·å„–ä¹•åƒ¾åµæ“–å­å°å„å¨å‚œåµæ„æ•å¡å‚
                 if (reg.PC == 0x4700)
                 {
                     reg.PC = 0x4720;    // Play Address
@@ -1009,7 +1009,7 @@ namespace VirtualNes.Core
             else
             {
                 cpu.GetContext(ref reg);
-                reg.PC = 0x4700;    // –³ŒÀƒ‹[ƒv
+                reg.PC = 0x4700;    // æŸå°·å„–ä¹•åƒ¾
                 reg.S = 0xFF;
 
                 EmulationCPU(nescfg.ScanlineCycles * nescfg.TotalScanlines);
@@ -1095,7 +1095,7 @@ namespace VirtualNes.Core
 
                 Debuger.Log($"Saving SAVERAM...[{romName}]");
 
-                Supporter.SaveSRAMToFile(MMU.WRAM, romName);
+                Supporter.S.SaveSRAMToFile(MMU.WRAM, romName);
             }
         }
 
@@ -1143,7 +1143,7 @@ namespace VirtualNes.Core
                     }
                 }
 
-                Supporter.SaveDISKToFile(contents.ToArray(), rom.GetRomName());
+                Supporter.S.SaveDISKToFile(contents.ToArray(), rom.GetRomName());
             }
             catch (Exception ex)
             {
@@ -1168,7 +1168,7 @@ namespace VirtualNes.Core
             {
                 Debuger.Log("Saving TURBOFILE...");
 
-                Supporter.SaveFile(MMU.ERAM, Supporter.Config.path.szSavePath, "TurboFile.vtf");
+                Supporter.S.SaveFile(MMU.ERAM, Supporter.S.Config.path.szSavePath, "TurboFile.vtf");
             }
         }
 
@@ -1186,7 +1186,7 @@ namespace VirtualNes.Core
                 if (m_BarcodeCycles > 1000)
                 {
                     m_BarcodeCycles = 0;
-                    // ’â~H
+                    // æ†å·­ä¸ 
                     if (m_BarcodeData[m_BarcodePtr] != 0xFF)
                     {
                         m_BarcodeOut = m_BarcodeData[m_BarcodePtr++];
@@ -1227,7 +1227,7 @@ namespace VirtualNes.Core
                 return;
 
             m_TapeCycles += (nescfg.CpuClock / 32000.0);
-            //	m_TapeCycles += (nescfg.CpuClock / 22050.0);	// ’x‚·‚¬‚Äƒ_ƒ‚Á‚Û‚¢
+            //	m_TapeCycles += (nescfg.CpuClock / 22050.0);	// æŠ¶å¡å“å°åƒŸå„Šå­å‚å„
 
             if (m_bTapePlay)
             {
@@ -1293,7 +1293,7 @@ namespace VirtualNes.Core
                     return MMU.CPU_MEM_BANK[addr >> 13][addr & 0x1FFF];
             }
 
-            return 0x00;    // Warning—\–h
+            return 0x00;    // Warningæ¢ŠæŠ
         }
 
         private byte ReadReg(ushort addr)
@@ -1504,7 +1504,7 @@ namespace VirtualNes.Core
                     pad.Write(addr, data);
                     apu.Write(addr, data);
                     break;
-                // VirtuaNESŒÅ—Lƒ|[ƒg
+                // VirtuaNESå±Œæ¡³å„„ä¹•åƒ©
                 case 0x18:
                     apu.Write(addr, data);
                     break;
@@ -1596,7 +1596,7 @@ namespace VirtualNes.Core
                     ref state.reg.cpureg.FrameIRQ_type,
                     ref state.reg.cpureg.FrameIRQ,
                     ref state.reg.cpureg.FrameIRQ_occur);
-                state.reg.cpureg.FrameIRQ_cycles = cycles;	// ²ÎÕÕ¤¬INT¤Êé£¨¤©
+                state.reg.cpureg.FrameIRQ_cycles = cycles;	// å‚ç…§ãŒINTãªç‚ºï¼ˆã‰
 
                 state.reg.cpureg.DMA_cycles = cpu.GetDmaCycles();
                 state.reg.cpureg.emul_cycles = emul_cycles;
@@ -1625,7 +1625,7 @@ namespace VirtualNes.Core
                 MemoryUtility.memcpy(state.ram.SPPAL, MMU.SPPAL, state.ram.SPPAL.Length);
                 MemoryUtility.memcpy(state.ram.SPRAM, MMU.SPRAM, state.ram.SPRAM.Length);
 
-                // S-RAM STATE(Ê¹ÓÃ/Î´Ê¹ÓÃ¤Ëév¤ï¤é¤º´æÔÚ¤¹¤ì¤Ğ¥»©`¥Ö¤¹¤ë)
+                // S-RAM STATE(ä½¿ç”¨/æœªä½¿ç”¨ã«é–¢ã‚ã‚‰ãšå­˜åœ¨ã™ã‚Œã°ã‚»ãƒ¼ãƒ–ã™ã‚‹)
                 if (rom.IsSAVERAM())
                 {
                     size = (uint)SAVERAM_SIZE;
@@ -1649,9 +1649,9 @@ namespace VirtualNes.Core
                 uint size = 0;
 
                 // SAVE CPU MEMORY BANK DATA
-                // BANK0,1,2¤Ï¥Ğ¥ó¥¯¥»©`¥Ö¤Ëév‚S¤Ê¤·
-                // VirtuaNES0.30¤«¤é
-                // ¥Ğ¥ó¥¯£³¤ÏSRAMÊ¹ÓÃ¤Ëév¤ï¤é¤º¥»©`¥Ö
+                // BANK0,1,2ã¯ãƒãƒ³ã‚¯ã‚»ãƒ¼ãƒ–ã«é–¢ä¿‚ãªã—
+                // VirtuaNES0.30ã‹ã‚‰
+                // ãƒãƒ³ã‚¯ï¼“ã¯SRAMä½¿ç”¨ã«é–¢ã‚ã‚‰ãšã‚»ãƒ¼ãƒ–
                 for (int i = 3; i < 8; i++)
                 {
                     state.mmu.CPU_MEM_TYPE[i] = MMU.CPU_MEM_TYPE[i];
@@ -1696,7 +1696,7 @@ namespace VirtualNes.Core
                     }
                 }
 
-                // WRITE VRAM MEMORY(³£¤Ë4K·Ö¤¹¤Ù¤Æ•ø¤­Şz¤à)
+                // WRITE VRAM MEMORY(å¸¸ã«4Kåˆ†ã™ã¹ã¦æ›¸ãè¾¼ã‚€)
                 state.VRAM = new byte[4 * 1024];
                 Array.Copy(MMU.VRAM, state.VRAM, state.VRAM.Length);
 
@@ -1764,7 +1764,7 @@ namespace VirtualNes.Core
                 int DiskSize = 16 + 65500 * rom.GetDiskNo();
 
 
-                // Ïàß`Êı¤ò¥«¥¦¥ó¥È
+                // ç›¸é•æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆ
                 for (int i = 16; i < DiskSize; i++)
                 {
                     if (lpWrite[i] != 0)
@@ -1874,9 +1874,9 @@ namespace VirtualNes.Core
             //BANK STATE
             {
                 // SAVE CPU MEMORY BANK DATA
-                // BANK0,1,2¤Ï¥Ğ¥ó¥¯¥»©`¥Ö¤Ëév‚S¤Ê¤·
-                // VirtuaNES0.30¤«¤é
-                // ¥Ğ¥ó¥¯£³¤ÏSRAMÊ¹ÓÃ¤Ëév¤ï¤é¤º¥»©`¥Ö
+                // BANK0,1,2ã¯ãƒãƒ³ã‚¯ã‚»ãƒ¼ãƒ–ã«é–¢ä¿‚ãªã—
+                // VirtuaNES0.30ã‹ã‚‰
+                // ãƒãƒ³ã‚¯ï¼“ã¯SRAMä½¿ç”¨ã«é–¢ã‚ã‚‰ãšã‚»ãƒ¼ãƒ–
                 for (byte i = 3; i < 8; i++)
                 {
                     MMU.CPU_MEM_TYPE[i] = state.mmu.CPU_MEM_TYPE[i];
