@@ -18,9 +18,11 @@ public class SonyVitaCommonDialog : MonoBehaviour
         Sony.Vita.Dialog.Ime.ImeDialogParams info = new Sony.Vita.Dialog.Ime.ImeDialogParams();
 
         // Set supported languages, 'or' flags together or set to 0 to support all languages.
-        info.supportedLanguages = Sony.Vita.Dialog.Ime.FlagsSupportedLanguages.LANGUAGE_JAPANESE |
+        info.supportedLanguages = Sony.Vita.Dialog.Ime.FlagsSupportedLanguages.LANGUAGE_SIMPLIFIED_CHINESE |
+                                    Sony.Vita.Dialog.Ime.FlagsSupportedLanguages.LANGUAGE_JAPANESE |
                                     Sony.Vita.Dialog.Ime.FlagsSupportedLanguages.LANGUAGE_ENGLISH_GB |
-                                    Sony.Vita.Dialog.Ime.FlagsSupportedLanguages.LANGUAGE_DANISH;
+                                    Sony.Vita.Dialog.Ime.FlagsSupportedLanguages.LANGUAGE_TRADITIONAL_CHINESE;
+                                    
         info.languagesForced = true;
 
         info.type = Sony.Vita.Dialog.Ime.EnumImeDialogType.TYPE_DEFAULT;

@@ -23,7 +23,7 @@ namespace AxibugEmuOnline.Client
 
         public static void Input(Action<string> callback, string placeHolder, string defaultText)
         {
-#if UNITY_PSP2
+#if UNITY_PSP2 && !UNITY_EDITOR
             App.sonyVitaCommonDialog.ShowPSVitaIME(callback, placeHolder, defaultText);
 #else
             s_ins.m_InputUI.Show(new ValueTuple<Action<string>, string, string>(callback, placeHolder, defaultText));
