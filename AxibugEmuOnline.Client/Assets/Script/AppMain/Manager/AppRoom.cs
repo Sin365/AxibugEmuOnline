@@ -299,6 +299,12 @@ namespace AxibugEmuOnline.Client.Manager
 
         void RecvRoomMyRoomStateChange(byte[] reqData)
         {
+            if (mineRoomMiniInfo == null)
+            {
+                App.log.Error("RecvRoomMyRoomStateChange 时 mineRoomMiniInfo 为空");
+                return;
+            }
+
             Protobuf_Room_MyRoom_State_Change msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_MyRoom_State_Change>(reqData);
             long[] oldRoomPlayer = GetRoom4PlayerUIDs();
             Protobuf_Room_GamePlaySlot[] oldslotArr = GetRoom4GameSlotMiniInfos();
