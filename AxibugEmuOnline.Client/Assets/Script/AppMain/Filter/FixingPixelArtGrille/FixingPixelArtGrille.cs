@@ -34,7 +34,7 @@ public sealed class FixingPixelArtGrille : FilterEffect
     }
 
 
-    protected override void OnRenderer(Material renderMat, RenderTexture rt, RenderTexture result)
+    protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
     {
         renderMat.SetVector("_iResolution", new Vector4(result.width, result.height, 0, 0));
         renderMat.SetVector("_res", new Vector4(DrawResolution.GetValue().x, DrawResolution.GetValue().y, 0, 0));
@@ -67,6 +67,6 @@ public sealed class FixingPixelArtGrille : FilterEffect
                 renderMat.EnableKeyword("_MASKSTYLE_STRETCHEDVGA");
                 break;
         }
-        Graphics.Blit(rt, result, renderMat);
+        Graphics.Blit(src, result, renderMat);
     }
 }

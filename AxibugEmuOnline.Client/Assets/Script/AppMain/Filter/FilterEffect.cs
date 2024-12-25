@@ -48,13 +48,13 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void Render(RenderTexture rt, RenderTexture result)
+        public void Render(Texture src, RenderTexture result)
         {
-            m_material.SetTexture("_MainTex", rt);
-            OnRenderer(m_material, rt, result);
+            m_material.SetTexture("_MainTex", src);
+            OnRenderer(m_material, src, result);
         }
 
-        protected abstract void OnRenderer(Material renderMat, RenderTexture rt, RenderTexture result);
+        protected abstract void OnRenderer(Material renderMat, Texture src, RenderTexture result);
 
         public class EditableParamerter
         {

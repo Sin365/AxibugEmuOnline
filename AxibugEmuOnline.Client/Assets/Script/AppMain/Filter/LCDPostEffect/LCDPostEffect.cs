@@ -7,9 +7,9 @@ public sealed class LCDPostEffect : FilterEffect
 
     protected override string ShaderName => "Filter/LCDPostEffect";
 
-    protected override void OnRenderer(Material renderMat, RenderTexture rt, RenderTexture result)
+    protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
     {
         renderMat.SetVector("_iResolution", new Vector4(Screen.width, Screen.height, 0, 0));
-        Graphics.Blit(rt, result, renderMat);
+        Graphics.Blit(src, result, renderMat);
     }
 }

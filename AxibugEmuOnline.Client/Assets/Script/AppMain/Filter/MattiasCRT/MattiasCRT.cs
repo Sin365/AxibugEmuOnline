@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client;
+﻿using AxibugEmuOnline.Client;
 using UnityEngine;
 
 public sealed class MattiasCRT : FilterEffect
@@ -7,9 +7,9 @@ public sealed class MattiasCRT : FilterEffect
 
     protected override string ShaderName => "Filter/MattiasCRT";
 
-    protected override void OnRenderer(Material renderMat, RenderTexture rt, RenderTexture result)
+    protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
     {
         renderMat.SetVector("_iResolution", new Vector4(result.width, result.height, 0, 0));
-        Graphics.Blit(rt, result, renderMat);
+        Graphics.Blit(src, result, renderMat);
     }
 }

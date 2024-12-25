@@ -38,7 +38,7 @@ namespace AxibugEmuOnline.Client
         }
 
         private RenderTexture result = null;
-        public RenderTexture ExecuteFilterRender(RenderTexture rt)
+        public Texture ExecuteFilterRender(Texture src)
         {
             if (result == null)
                 result = RenderTexture.GetTemporary(Screen.width, Screen.height);
@@ -47,14 +47,14 @@ namespace AxibugEmuOnline.Client
             foreach (var filter in Filters)
             {
                 if (!filter.m_setting.Enable.GetValue()) continue;
-                filter.m_setting.Render(rt, result);
+                filter.m_setting.Render(src, result);
                 anyFilterEnable = true;
             }
 
             if (anyFilterEnable)
                 return result;
             else
-                return rt;
+                return src;
         }
 
         /// <summary> 关闭滤镜预览 </summary>

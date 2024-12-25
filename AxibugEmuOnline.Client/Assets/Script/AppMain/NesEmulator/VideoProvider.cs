@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+ï»¿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -16,13 +16,13 @@ namespace AxibugEmuOnline.Client
         #endregion
 
         #region GPU_TURBO
-        //Í¼ÏñÊı¾İ×Ö½ÚÊı
+        //å›¾åƒæ•°æ®å­—èŠ‚æ•°
         private int TexBufferSize_gpu;
-        //Í¼ÏñÊı¾İÖ¸Õë
+        //å›¾åƒæ•°æ®æŒ‡é’ˆ
         private IntPtr wrapTexBufferPointer_gpu;
-        //Unity 2DÎÆÀí¶ÔÏó,ÓÃÓÚUIÉÏ»æÖÆ×îÖÕÊä³ö»­Ãæ
+        //Unity 2Dçº¹ç†å¯¹è±¡,ç”¨äºUIä¸Šç»˜åˆ¶æœ€ç»ˆè¾“å‡ºç”»é¢
         private Texture2D wrapTex_gpu;
-        //nesµ÷É«°åÊı¾İ,ÒÑ×ª»»ÎªunityÎÆÀí¶ÔÏó
+        //nesè°ƒè‰²æ¿æ•°æ®,å·²è½¬æ¢ä¸ºunityçº¹ç†å¯¹è±¡
         private Texture2D pPal_gpu;
         [SerializeField]
         private Material GPUTurboMat_gpu;
@@ -30,12 +30,12 @@ namespace AxibugEmuOnline.Client
         #endregion
 
         #region CPU
-        //Í¼ÏñÊı¾İ×Ö½ÚÊı
+        //å›¾åƒæ•°æ®å­—èŠ‚æ•°
         private int TexBufferSize_cpu;
-        //Í¼ÏñÊı¾İÖ¸Õë
+        //å›¾åƒæ•°æ®æŒ‡é’ˆ
         private GCHandle wrapTexBufferGH;
         private IntPtr wrapTexBufferPointer_cpu;
-        //Unity 2DÎÆÀí¶ÔÏó,ÓÃÓÚUIÉÏ»æÖÆ×îÖÕÊä³ö»­Ãæ
+        //Unity 2Dçº¹ç†å¯¹è±¡,ç”¨äºUIä¸Šç»˜åˆ¶æœ€ç»ˆè¾“å‡ºç”»é¢
         private Texture2D wrapTex_cpu;
         #endregion
 
@@ -61,8 +61,8 @@ namespace AxibugEmuOnline.Client
         public unsafe void SetDrawData(uint* screenData)
         {
             PrepareUI(screenData);
-            if (GPUTurbo) PrepareForGPU(screenData);//ÅĞ¶ÏÊ¹ÓÃGPU»¹ÊÇCPU
-            else PrepareForCPU(screenData);//Ê¹ÓÃCPU
+            if (GPUTurbo) PrepareForGPU(screenData);//åˆ¤æ–­ä½¿ç”¨GPUè¿˜æ˜¯CPU
+            else PrepareForCPU(screenData);//ä½¿ç”¨CPU
 
             if (GPUTurbo)
             {
@@ -155,7 +155,7 @@ namespace AxibugEmuOnline.Client
 
             for (int line = 0; line < PPU.SCREEN_HEIGHT; line++)
             {
-                //PS£ºÈç¹ûÊÇCPU¼ÆËã£¬¿í¶È¼õÉÙ16µÄ²»±ØÒª²¿·Ö£¬²ÅÄÜ¶ÔÆë
+                //PSï¼šå¦‚æœæ˜¯CPUè®¡ç®—ï¼Œå®½åº¦å‡å°‘16çš„ä¸å¿…è¦éƒ¨åˆ†ï¼Œæ‰èƒ½å¯¹é½
                 width = PPU.SCREEN_WIDTH - 16;
 
                 while (width > 0)
@@ -163,17 +163,17 @@ namespace AxibugEmuOnline.Client
                     var edx = screenData[pScn + 8];
 
                     uint index = edx & 0xFF;
-                    //°´ÏÂ±êÑÕÉ«²éÕÒ±íÖĞÕæÊµÑÕÉ«
+                    //æŒ‰ä¸‹æ ‡é¢œè‰²æŸ¥æ‰¾è¡¨ä¸­çœŸå®é¢œè‰²
                     var colorData = palRaw[index];
-                    //dstÖĞÑÕÉ«ÅÅÁĞÎªabgr,¶øcolorDataÅÅÁĞÎªargb
-                    uint r = (colorData & 0x00FF0000) >> 16; // ÌáÈ¡RedÍ¨µÀ
-                    uint g = (colorData & 0x0000FF00) >> 8;  // ÌáÈ¡GreenÍ¨µÀ
-                    uint b = (colorData & 0x000000FF);       // ÌáÈ¡BlueÍ¨µÀ
+                    //dstä¸­é¢œè‰²æ’åˆ—ä¸ºabgr,è€ŒcolorDataæ’åˆ—ä¸ºargb
+                    uint r = (colorData & 0x00FF0000) >> 16; // æå–Redé€šé“
+                    uint g = (colorData & 0x0000FF00) >> 8;  // æå–Greené€šé“
+                    uint b = (colorData & 0x000000FF);       // æå–Blueé€šé“
 
-                    //ÓÃrgb¹¹½¨ÑÕÉ«¶ÔÏó£¨Èç¹û·Çunity ¿ÉÒÔÓÃÕâ¸örgb ¹¹½¨System.Drawing.Color µ¥¸öÑÕÉ«¶ÔÏó£©
+                    //ç”¨rgbæ„å»ºé¢œè‰²å¯¹è±¡ï¼ˆå¦‚æœéunity å¯ä»¥ç”¨è¿™ä¸ªrgb æ„å»ºSystem.Drawing.Color å•ä¸ªé¢œè‰²å¯¹è±¡ï¼‰
                     uint abgr = 0xFF000000 | (b << 16) | (g << 8) | (r << 0);
 
-                    //·Å½øÑÕÉ«¾ØÕó
+                    //æ”¾è¿›é¢œè‰²çŸ©é˜µ
                     Dst[pDst] = abgr;
 
                     pScn += 1;
