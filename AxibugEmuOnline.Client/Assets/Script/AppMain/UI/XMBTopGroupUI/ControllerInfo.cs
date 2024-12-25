@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,9 +19,7 @@ public class ControllerInfo : MonoBehaviour
     Image m_indexIcon;
     [SerializeField]
     Text m_playerName;
-
-    int m_localJoyIndex;
-    bool m_isLocal;
+    private bool m_islocal;
 
     public int SlotIndex
     {
@@ -60,6 +59,18 @@ public class ControllerInfo : MonoBehaviour
         Eventer.Instance.UnregisterEvent(EEvent.OnControllerConnectChanged, OnControlConnectChanged);
     }
 
+    private void Update()
+    {
+        if (m_islocal)
+        {
+            var controller = App.emu.Core.GetControllerSetuper().GetSlotConnectingController(m_slotIndex);
+            if (controller == null) return;
+            if (!controller.AnyButtonDown()) return;
+
+            m_indexIcon.rectTransform.DOShakePosition(0.1f);
+        }
+    }
+
     private void OnMineRoomCreated() => UpdateConnectInfo();
     private void OnJoinRoom() => UpdateConnectInfo();
     private void OnLeaveRoom() => UpdateConnectInfo();
@@ -79,14 +90,15 @@ public class ControllerInfo : MonoBehaviour
         }
         else
         {
-            var connecter = Supporter.GetControllerSetuper();
-            if (connecter == null)
+            if (App.emu.Core.IsNull())
             {
                 SetDisconnect();
                 return;
-            }
 
-            var localControlIndex = connecter.GetSlotConnectingController(SlotIndex);
+            }
+            var connecter = App.emu.Core.GetControllerSetuper();
+
+            var localControlIndex = connecter.GetSlotConnectingControllerIndex(SlotIndex);
             if (localControlIndex == null)
                 SetDisconnect();
             else
@@ -101,8 +113,7 @@ public class ControllerInfo : MonoBehaviour
 
     private void UpdateStateView(bool isLocal, string playerName, int slotIndex)
     {
-        m_localJoyIndex = slotIndex;
-        m_isLocal = isLocal;
+        m_islocal = isLocal;
 
         m_connectInfoNode.SetActiveEx(true);
         m_playerName.text = playerName;
@@ -110,11 +121,9 @@ public class ControllerInfo : MonoBehaviour
 
     private void SetDisconnect()
     {
-        m_localJoyIndex = -1;
-        m_isLocal = false;
-
         m_connectInfoNode.SetActiveEx(false);
         m_playerName.text = null;
+        m_islocal = false;
     }
 
     private void UpdateIndexIcon()

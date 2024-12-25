@@ -117,10 +117,10 @@ namespace AxibugEmuOnline.Client
                 m_delayCreateRoom = false;
                 //延迟创建房间成功后,同步本地手柄连接状态
                 Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
-                var setuper = Supporter.GetControllerSetuper();
+                var setuper = App.emu.Core.GetControllerSetuper();
                 for (int i = 0; i < 4; i++)
                 {
-                    var joyIndex = setuper.GetSlotConnectingController(i);
+                    var joyIndex = setuper.GetSlotConnectingControllerIndex(i);
                     if (joyIndex != null) temp[(uint)i] = (uint)joyIndex.Value;
                 }
                 App.roomMgr.SendChangePlaySlotIdxWithJoyIdx(temp);

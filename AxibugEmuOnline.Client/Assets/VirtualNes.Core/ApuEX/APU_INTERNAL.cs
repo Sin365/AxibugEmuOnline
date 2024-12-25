@@ -1,4 +1,4 @@
-
+ï»¿
 using System;
 
 namespace VirtualNes.Core
@@ -184,15 +184,15 @@ namespace VirtualNes.Core
 
             Setup(fClock, nRate);
 
-            // $4011¤Ï³õÆÚ»¯¤·¤Ê¤¤
+            // $4011ã¯åˆæœŸåŒ–ã—ãªã„
             ushort addr;
             for (addr = 0x4000; addr <= 0x4010; addr++)
             {
                 Write(addr, 0x00);
                 SyncWrite(addr, 0x00);
             }
-            //	Write( 0x4001, 0x08 );	// Reset•r¤Ïinc¥â©`¥É¤Ë¤Ê¤ë?
-            //	Write( 0x4005, 0x08 );	// Reset•r¤Ïinc¥â©`¥É¤Ë¤Ê¤ë?
+            //	Write( 0x4001, 0x08 );	// Resetæ™‚ã¯incãƒ¢ãƒ¼ãƒ‰ã«ãªã‚‹?
+            //	Write( 0x4005, 0x08 );	// Resetæ™‚ã¯incãƒ¢ãƒ¼ãƒ‰ã«ãªã‚‹?
             Write(0x4012, 0x00);
             Write(0x4013, 0x00);
             Write(0x4015, 0x00);
@@ -200,7 +200,7 @@ namespace VirtualNes.Core
             SyncWrite(0x4013, 0x00);
             SyncWrite(0x4015, 0x00);
 
-            // $4017¤Ï•ø¤­Şz¤ß¤Ç³õÆÚ»¯¤·¤Ê¤¤(³õÆÚ¥â©`¥É¤¬0¤Ç¤¢¤ë¤Î¤òÆÚ´ı¤·¤¿¥½¥Õ¥È¤¬¤¢¤ëé)
+            // $4017ã¯æ›¸ãè¾¼ã¿ã§åˆæœŸåŒ–ã—ãªã„(åˆæœŸãƒ¢ãƒ¼ãƒ‰ãŒ0ã§ã‚ã‚‹ã®ã‚’æœŸå¾…ã—ãŸã‚½ãƒ•ãƒˆãŒã‚ã‚‹ç‚º)
             FrameIRQ = 0xC0;
             FrameCycle = 0;
             FrameIRQoccur = 0;
@@ -301,7 +301,7 @@ namespace VirtualNes.Core
                 case 0x4017:
                     break;
 
-                // VirtuaNES¹ÌÓĞ¥İ©`¥È
+                // VirtuaNESå›ºæœ‰ãƒãƒ¼ãƒˆ
                 case 0x4018:
                     UpdateRectangle(ch0, data);
                     UpdateRectangle(ch1, data);
@@ -635,7 +635,7 @@ namespace VirtualNes.Core
                 }
             }
 
-            // ¥¤¥ó¥Á¥­³ô¤¤¥×¥Á¥Î¥¤¥º¥«¥Ã¥È(TEST)
+            // ã‚¤ãƒ³ãƒã‚­è‡­ã„ãƒ—ãƒãƒã‚¤ã‚ºã‚«ãƒƒãƒˆ(TEST)
             ch4.dpcm_output_real = ((ch4.reg[1] & 0x01) + ch4.dpcm_value * 2) - 0x40;
             if (Math.Abs(ch4.dpcm_output_real - ch4.dpcm_output_fake) <= 8)
             {
@@ -712,7 +712,7 @@ namespace VirtualNes.Core
         private int RenderTriangle()
         {
             int vol;
-            if (Supporter.Config.sound.bDisableVolumeEffect)
+            if (Supporter.S.Config.sound.bDisableVolumeEffect)
             {
                 vol = 256;
             }
@@ -731,7 +731,7 @@ namespace VirtualNes.Core
                 return ch2.nowvolume * vol / 256;
             }
 
-            if (!(Supporter.Config.sound.bChangeTone && ChannelTone[2, 0] != 0))
+            if (!(Supporter.S.Config.sound.bChangeTone && ChannelTone[2, 0] != 0))
             {
                 ch2.phaseacc -= cycle_rate;
                 if (ch2.phaseacc >= 0)
@@ -756,7 +756,7 @@ namespace VirtualNes.Core
                     return ch2.nowvolume * vol / 256;
                 }
 
-                // ¼ÓÖØÆ½¾ù
+                // åŠ é‡å¹³å‡
                 int num_times, total;
                 num_times = total = 0;
                 while (ch2.phaseacc < 0)
@@ -799,7 +799,7 @@ namespace VirtualNes.Core
                     return ch2.nowvolume * vol / 256;
                 }
 
-                // ¼ÓÖØÆ½¾ù
+                // åŠ é‡å¹³å‡
                 int num_times, total;
                 num_times = total = 0;
                 while (ch2.phaseacc < 0)
@@ -832,9 +832,9 @@ namespace VirtualNes.Core
             }
             int volume = ch.nowvolume;
 
-            if (!(Supporter.Config.sound.bChangeTone && (ChannelTone[(ch.complement == 0) ? 0 : 1, ch.reg[0] >> 6]) != 0))
+            if (!(Supporter.S.Config.sound.bChangeTone && (ChannelTone[(ch.complement == 0) ? 0 : 1, ch.reg[0] >> 6]) != 0))
             {
-                // Ñaég„IÀí
+                // è£œé–“å‡¦ç†
                 double total;
                 double sample_weight = ch.phaseacc;
                 if (sample_weight > cycle_rate)
@@ -864,7 +864,7 @@ namespace VirtualNes.Core
                 int x = ChannelTone[(ch.complement == 0) ? 0 : 1, ch.reg[0] >> 6] - 1;
                 int pTone = 0;
 
-                // ¸üĞÂŸo¤·
+                // æ›´æ–°ç„¡ã—
                 ch.phaseacc -= cycle_rate * 2;
                 if (ch.phaseacc >= 0)
                 {
@@ -872,7 +872,7 @@ namespace VirtualNes.Core
                     return temp * volume / ((1 << RECTANGLE_VOL_SHIFT) / 2);
                 }
 
-                // 1¥¹¥Æ¥Ã¥×¤À¤±¸üĞÂ
+                // 1ã‚¹ãƒ†ãƒƒãƒ—ã ã‘æ›´æ–°
                 int freq = INT2FIX(ch.freq + 1);
                 if (freq > cycle_rate * 2)
                 {
@@ -882,7 +882,7 @@ namespace VirtualNes.Core
                     return temp * volume / ((1 << RECTANGLE_VOL_SHIFT) / 2);
                 }
 
-                // ¼ÓÖØÆ½¾ù
+                // åŠ é‡å¹³å‡
                 int num_times, total;
                 num_times = total = 0;
                 while (ch.phaseacc < 0)
@@ -1015,7 +1015,7 @@ namespace VirtualNes.Core
                     SyncWrite4017(data);
                     break;
 
-                // VirtuaNESŒÅ—Lƒ|[ƒg
+                // VirtuaNESå±Œæ¡³å„„ä¹•åƒ©
                 case 0x4018:
                     SyncUpdateRectangle(ch0, data);
                     SyncUpdateRectangle(ch1, data);

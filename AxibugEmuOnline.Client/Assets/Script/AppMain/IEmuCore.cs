@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
@@ -15,6 +15,8 @@ namespace AxibugEmuOnline.Client
         void SetupScheme();
         void StartGame(RomFile romFile);
         void DoReset();
+        IControllerSetuper GetControllerSetuper();
+
         EnumPlatform Platform { get; }
         uint Frame { get; }
     }

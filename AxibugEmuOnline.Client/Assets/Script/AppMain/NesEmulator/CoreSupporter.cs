@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxiReplay;
 using System;
 using System.IO;
@@ -10,6 +10,12 @@ namespace AxibugEmuOnline.Client
 {
     public class CoreSupporter : ISupporterImpl
     {
+        private NesControllerMapper m_controllerMapper;
+        public CoreSupporter(NesControllerMapper conMapper)
+        {
+            m_controllerMapper = conMapper;
+        }
+
         public Stream OpenRom(string fname)
         {
             try
@@ -57,7 +63,6 @@ namespace AxibugEmuOnline.Client
         }
 
         public EmulatorConfig Config { get; private set; } = new EmulatorConfig();
-        public NesControllerMapper ControllerMapper { get; private set; } = new NesControllerMapper();
         public void PrepareDirectory(string directPath)
         {
             Directory.CreateDirectory($"{App.PersistentDataPath}/{directPath}");
@@ -116,7 +121,7 @@ namespace AxibugEmuOnline.Client
                 }
                 else m_sampledState = default(ControllerState);
 
-                var localState = ControllerMapper.CreateState();
+                var localState = m_controllerMapper.CreateState();
                 var rawData = ToNet(localState);
                 if (LastTestInput != rawData)
                 {
@@ -127,13 +132,8 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                m_sampledState = ControllerMapper.CreateState();
+                m_sampledState = m_controllerMapper.CreateState();
             }
-        }
-
-        public IControllerSetuper GetControllerSetuper()
-        {
-            return ControllerMapper;
         }
 
         public ControllerState FromNet(AxiReplay.ReplayStep step)

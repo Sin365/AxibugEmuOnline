@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
 using System;
@@ -31,7 +32,8 @@ public class ControllerInfoPanel : MonoBehaviour
         }
         else //不在房间中,直接设置
         {
-            var setuper = Supporter.GetControllerSetuper();
+            if (App.emu.Core.IsNull()) return;
+            var setuper = App.emu.Core.GetControllerSetuper();
             if (setuper == null) return;
 
             var freeSlotIndex = setuper.GetFreeSlotIndex();

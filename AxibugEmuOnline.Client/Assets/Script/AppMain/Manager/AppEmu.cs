@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         private IEmuCore m_emuCore;
 
-        private VirtualNes.Core.IControllerSetuper m_controllerSetuper;
+        private IControllerSetuper m_controllerSetuper;
 
         /// <summary>
         /// unity的c#实现有bug,以接口类型保存的monobehaviour引用,!=和==运算符没有调用到monobehaviour重写过的运算符
@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client.Manager
 
             m_emuCore.SetupScheme();
 
-            m_controllerSetuper = Supporter.GetControllerSetuper();
+            m_controllerSetuper = m_emuCore.GetControllerSetuper();
 
             //自动分配0号手柄到0号手柄位
             m_controllerSetuper.SetConnect(con0ToSlot: 0);

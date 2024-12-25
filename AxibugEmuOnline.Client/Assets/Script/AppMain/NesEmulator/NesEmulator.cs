@@ -22,6 +22,12 @@ namespace AxibugEmuOnline.Client
 
         /// <summary> 是否暂停 </summary>
         public bool IsPause { get; private set; }
+        public NesControllerMapper ControllerMapper { get; private set; }
+
+        private void Awake()
+        {
+            ControllerMapper = new NesControllerMapper();
+        }
 
         private void Start()
         {
@@ -48,12 +54,11 @@ namespace AxibugEmuOnline.Client
                 VideoProvider.SetDrawData(screenBuffer);
             }
 
-
             VideoProvider.ApplyFilterEffect();
         }
 
         public EnumPlatform Platform => EnumPlatform.NES;
-
+        private CoreSupporter m_coreSupporter;
         /// <summary>
         /// 指定ROM开始游戏
         /// </summary>
@@ -61,7 +66,8 @@ namespace AxibugEmuOnline.Client
         {
             StopGame();
 
-            Supporter.Setup(new CoreSupporter());
+            m_coreSupporter = new CoreSupporter(ControllerMapper);
+            Supporter.Setup(m_coreSupporter);
             Debuger.Setup(new CoreDebuger());
 
             App.nesRomLib.AddRomFile(rom);
@@ -159,8 +165,8 @@ namespace AxibugEmuOnline.Client
         //推进帧
         private bool PushEmulatorFrame()
         {
-            Supporter.SampleInput(NesCore.FrameCount);
-            var controlState = Supporter.GetControllerState();
+            m_coreSupporter.SampleInput(NesCore.FrameCount);
+            var controlState = m_coreSupporter.GetControllerState();
 
             //如果未收到Input数据,核心帧不推进
             if (!controlState.valid) return false;
@@ -205,6 +211,11 @@ namespace AxibugEmuOnline.Client
 
             EditorUtility.SetDirty(db);
             AssetDatabase.SaveAssets();
+        }
+
+        public IControllerSetuper GetControllerSetuper()
+        {
+            return ControllerMapper;
         }
 
 #endif

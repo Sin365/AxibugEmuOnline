@@ -50,7 +50,7 @@ namespace VirtualNes.Core
 
             try
             {
-                fp = Supporter.OpenRom(fname);
+                fp = Supporter.S.OpenRom(fname);
                 if (fp == null)
                 {
                     throw new System.Exception($"Open Rom Failed:[{fname}]");
@@ -167,7 +167,7 @@ namespace VirtualNes.Core
                     lpPRG[3] = 0x1A;
                     lpPRG[4] = (byte)diskno;
 
-                    fp = Supporter.OpenFile_DISKSYS();
+                    fp = Supporter.S.OpenFile_DISKSYS();
                     if (fp == null)
                     {
                         throw new Exception($"Not found DISKSYS.ROM for [{fname}]");
@@ -217,7 +217,7 @@ namespace VirtualNes.Core
                     throw new Exception($"Unsupport format:[{fname}]");
                 }
 
-                Supporter.GetFilePathInfo(fname, out fullpath, out path);
+                Supporter.S.GetRomPathInfo(fname, out fullpath, out path);
                 name = Path.GetFileNameWithoutExtension(fullpath);
                 if (!bNSF)
                 {
@@ -244,7 +244,7 @@ namespace VirtualNes.Core
 
                         FileNameCheck(fname);
 
-                        if (Supporter.TryGetMapperNo(this, out int mapperNo))
+                        if (Supporter.S.TryGetMapperNo(this, out int mapperNo))
                         {
                             Debuger.Log($"ROMDB Set Mapper #{mapper:000} to #{mapperNo:000}");
                             mapper = mapperNo;
