@@ -33,6 +33,7 @@ Shader "Filter/MattiasCRT"
 
             float4 mainImage( float2 fragCoord )
             {
+                
                 float4 fragColor = float4(0,0,0,1);
                 
                 float2 q = fragCoord.xy / _iResolution.xy;
