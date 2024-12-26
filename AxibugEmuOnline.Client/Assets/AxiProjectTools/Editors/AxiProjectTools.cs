@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+ï»¿#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AxiProjectTools : EditorWindow
 {
@@ -28,7 +29,7 @@ public class AxiProjectTools : EditorWindow
 		}
 	}
 
-	[MenuItem("AxibugÒÆÖ²¹¤¾ß/[1]²É¼¯ËùÓĞÔ¤ÖÆÌåºÍ³¡¾°ÏÂµÄUGUI×é¼ş")]
+	[MenuItem("Axibugç§»æ¤å·¥å…·/[1]é‡‡é›†æ‰€æœ‰é¢„åˆ¶ä½“å’Œåœºæ™¯ä¸‹çš„UGUIç»„ä»¶")]
 	public static void Part1()
 	{
 		GoTAxiProjectToolsSence();
@@ -42,17 +43,17 @@ public class AxiProjectTools : EditorWindow
 
 			EditorSceneManager.OpenScene(path);
 
-			// ´´½¨Ò»¸öÁĞ±íÀ´´æ´¢¸ù½Úµã
+			// åˆ›å»ºä¸€ä¸ªåˆ—è¡¨æ¥å­˜å‚¨æ ¹èŠ‚ç‚¹
 			List<GameObject> rootNodes = new List<GameObject>();
 
-			// ±éÀú³¡¾°ÖĞµÄËùÓĞ¶ÔÏó
+			// éå†åœºæ™¯ä¸­çš„æ‰€æœ‰å¯¹è±¡
 			GameObject[] allObjects = FindObjectsOfType<GameObject>();
 			foreach (GameObject obj in allObjects)
 			{
-				// ¼ì²é¶ÔÏóÊÇ·ñÓĞ¸¸¶ÔÏó
+				// æ£€æŸ¥å¯¹è±¡æ˜¯å¦æœ‰çˆ¶å¯¹è±¡
 				if (obj.transform.parent == null)
 				{
-					// Èç¹ûÃ»ÓĞ¸¸¶ÔÏó£¬ÔòËüÊÇÒ»¸ö¸ù½Úµã
+					// å¦‚æœæ²¡æœ‰çˆ¶å¯¹è±¡ï¼Œåˆ™å®ƒæ˜¯ä¸€ä¸ªæ ¹èŠ‚ç‚¹
 					rootNodes.Add(obj);
 				}
 			}
@@ -76,7 +77,7 @@ public class AxiProjectTools : EditorWindow
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
 		GoTAxiProjectToolsSence();
-		Debug.Log("<Color=#FFF333>´¦ÀíÍê±Ï  [1]²É¼¯ËùÓĞÔ¤ÖÆÌåºÍ³¡¾°ÏÂµÄUGUI×é¼ş</color>");
+		Debug.Log("<Color=#FFF333>å¤„ç†å®Œæ¯•  [1]é‡‡é›†æ‰€æœ‰é¢„åˆ¶ä½“å’Œåœºæ™¯ä¸‹çš„UGUIç»„ä»¶</color>");
 	}
 
 	static void GetPrefab(string path)
@@ -102,11 +103,11 @@ public class AxiProjectTools : EditorWindow
             Type monoType = monoCom.GetType();
             if (!monoType.Assembly.FullName.Contains("UnityEngine.UI"))
                 continue;
-            // »ñÈ¡MonoScript×ÊÔ´
+            // è·å–MonoScriptèµ„æº
             MonoScript monoScript = MonoScript.FromMonoBehaviour(monoCom);
             if (monoScript != null)
             {
-                // »ñÈ¡MonoScript×ÊÔ´µÄGUID
+                // è·å–MonoScriptèµ„æºçš„GUID
                 string guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(monoScript));
                 Debug.Log($"{nodename}	|	<color=#FFF333>[{monoType.Name}]</color> <color=#FF0000>{guid}</color><color=#00FF00>({monoType.FullName})</color>");
                 ComType2GUID[monoType.FullName] =
@@ -119,19 +120,19 @@ public class AxiProjectTools : EditorWindow
             }
             else
             {
-                Debug.LogError("!!!! Ã»µÃ");
+                Debug.LogError("!!!! æ²¡å¾—");
             }
         }
 
-        //±éÀú
+        //éå†
         foreach (Transform child in trans.transform)
             LoopPrefabNode(nodename, child.gameObject, depth + 1);
 #else
-		Debug.Log("µÍ°æ±¾²»ÒªÖ´ĞĞ±¾º¯Êı");
+		Debug.Log("ä½ç‰ˆæœ¬ä¸è¦æ‰§è¡Œæœ¬å‡½æ•°");
 #endif
 	}
 
-	[MenuItem("AxibugÒÆÖ²¹¤¾ß/[2]Éú³ÉÖĞ¼ä½Å±¾´úÂë")]
+	[MenuItem("Axibugç§»æ¤å·¥å…·/[2]ç”Ÿæˆä¸­é—´è„šæœ¬ä»£ç ")]
 	public static void Part2()
 	{
 		if (UnityEngine.Windows.Directory.Exists(outCsDir))
@@ -151,16 +152,16 @@ public class AxiProjectTools : EditorWindow
 			}
 			catch (Exception ex)
 			{
-				Debug.LogError("Ğ´ÈëÊ§°Ü" + ex.ToString());
+				Debug.LogError("å†™å…¥å¤±è´¥" + ex.ToString());
 			}
 		}
-		Debug.Log("Ğ´ÈëÍê±Ï");
+		Debug.Log("å†™å…¥å®Œæ¯•");
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
-		Debug.Log("<Color=#FFF333>´¦ÀíÍê±Ï  [2]Éú³ÉÖĞ¼ä½Å±¾´úÂë</color>");
+		Debug.Log("<Color=#FFF333>å¤„ç†å®Œæ¯•  [2]ç”Ÿæˆä¸­é—´è„šæœ¬ä»£ç </color>");
 	}
 
-	[MenuItem("AxibugÒÆÖ²¹¤¾ß/[3]ÊÕ¼¯Éú³ÉµÄ½Å±¾")]
+	[MenuItem("Axibugç§»æ¤å·¥å…·/[3]æ”¶é›†ç”Ÿæˆçš„è„šæœ¬")]
 	public static void Part3()
 	{
 		AxiPrefabCache cache = AssetDatabase.LoadAssetAtPath<AxiPrefabCache>(cachecfgPath);
@@ -170,17 +171,17 @@ public class AxiProjectTools : EditorWindow
 			MonoScript monoScript = allMonoScripts.FirstOrDefault(w => w.name == data.ToName);
 			if (monoScript == null)
 			{
-				Debug.LogError("Ã»ÕÒµ½" + data.ToName);
+				Debug.LogError("æ²¡æ‰¾åˆ°" + data.ToName);
 				continue;
 			}
 			string guid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(monoScript));
 			data.ToGUID = guid;
 			data.monoScript = monoScript;
 		}
-		Debug.Log("Ğ´ÈëÍê±Ï");
+		Debug.Log("å†™å…¥å®Œæ¯•");
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
-		Debug.Log("<Color=#FFF333>´¦ÀíÍê±Ï  [3]ÊÕ¼¯Éú³ÉµÄ½Å±¾</color>");
+		Debug.Log("<Color=#FFF333>å¤„ç†å®Œæ¯•  [3]æ”¶é›†ç”Ÿæˆçš„è„šæœ¬</color>");
 	}
 
 	static List<T> FindAllAssetsOfType<T>() where T : UnityEngine.Object
@@ -191,7 +192,7 @@ public class AxiProjectTools : EditorWindow
 		foreach (string guid in allGuids)
 		{
 			string path = AssetDatabase.GUIDToAssetPath(guid);
-			if (path.EndsWith(".cs") || path.EndsWith(".js") || path.EndsWith(".boo")) // UnityÖ§³Ö¶àÖÖ½Å±¾ÓïÑÔ£¬µ«ÏÖ´úUnityÖ÷ÒªÊ¹ÓÃC#
+			if (path.EndsWith(".cs") || path.EndsWith(".js") || path.EndsWith(".boo")) // Unityæ”¯æŒå¤šç§è„šæœ¬è¯­è¨€ï¼Œä½†ç°ä»£Unityä¸»è¦ä½¿ç”¨C#
 			{
 				T asset = AssetDatabase.LoadAssetAtPath<T>(path);
 				if (asset != null)
@@ -204,7 +205,7 @@ public class AxiProjectTools : EditorWindow
 	}
 
 
-	[MenuItem("AxibugÒÆÖ²¹¤¾ß/[4]Ìæ»»ËùÓĞÔ¤ÖÆÌåºÍ³¡¾°ÖĞµÄ×é¼ş")]
+	[MenuItem("Axibugç§»æ¤å·¥å…·/[4]æ›¿æ¢æ‰€æœ‰é¢„åˆ¶ä½“å’Œåœºæ™¯ä¸­çš„ç»„ä»¶")]
 	public static void Part4()
 	{
 		AxiPrefabCache cache = AssetDatabase.LoadAssetAtPath<AxiPrefabCache>(cachecfgPath);
@@ -218,7 +219,7 @@ public class AxiProjectTools : EditorWindow
 		ProcessAllPrefabs("*.anim", tempReplaceDict);
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
-		Debug.Log("<Color=#FFF333>´¦ÀíÍê±Ï  [4]Ìæ»»ËùÓĞÔ¤ÖÆÌåºÍ³¡¾°ÖĞµÄ×é¼ş</color>");
+		Debug.Log("<Color=#FFF333>å¤„ç†å®Œæ¯•  [4]æ›¿æ¢æ‰€æœ‰é¢„åˆ¶ä½“å’Œåœºæ™¯ä¸­çš„ç»„ä»¶</color>");
 	}
 
 	static void ProcessAllPrefabs(string form, Dictionary<string, string> tempReplaceDict, bool reverse = false)
@@ -235,15 +236,15 @@ public class AxiProjectTools : EditorWindow
 				string newValue = reverse ? VARIABLE.Key : VARIABLE.Value;
 				ReplaceValue(absolutePaths[i], oldValue, newValue);
 			}
-			EditorUtility.DisplayProgressBar("´¦ÀíÔ¤ÖÆÌå¡­¡­", "´¦ÀíÔ¤ÖÆÌåÖĞ¡­¡­", (float)i / absolutePaths.Length);
+			EditorUtility.DisplayProgressBar("å¤„ç†é¢„åˆ¶ä½“â€¦â€¦", "å¤„ç†é¢„åˆ¶ä½“ä¸­â€¦â€¦", (float)i / absolutePaths.Length);
 		}
 		EditorUtility.ClearProgressBar();
 	}
 
 	/// <summary>
-	/// Ìæ»»Öµ
+	/// æ›¿æ¢å€¼
 	/// </summary>
-	/// <param name="strFilePath">ÎÄ¼şÂ·¾¶</param>
+	/// <param name="strFilePath">æ–‡ä»¶è·¯å¾„</param>
 	static void ReplaceValue(string strFilePath, string oldLine, string newLine)
 	{
 		if (File.Exists(strFilePath))
@@ -258,7 +259,7 @@ public class AxiProjectTools : EditorWindow
 	}
 
 
-	[MenuItem("AxibugÒÆÖ²¹¤¾ß/[5]UnPackËùÓĞÇ¶Ì×Ô¤ÖÆÌåºÍ³¡¾°ÖĞµÄÔ¤ÖÆÌå")]
+	[MenuItem("Axibugç§»æ¤å·¥å…·/[5]UnPackæ‰€æœ‰åµŒå¥—é¢„åˆ¶ä½“å’Œåœºæ™¯ä¸­çš„é¢„åˆ¶ä½“")]
 	public static void UnpackPrefabs()
 	{
 
@@ -276,7 +277,7 @@ public class AxiProjectTools : EditorWindow
 				prefabCount++;
 			}
 		}
-		Debug.Log($"{prefabCount}¸öÔ¤ÖÆÌåUnpack");
+		Debug.Log($"{prefabCount}ä¸ªé¢„åˆ¶ä½“Unpack");
 
         string[] sceneGuids = AssetDatabase.FindAssets("t:scene");
         foreach (string guid in sceneGuids)
@@ -290,21 +291,21 @@ public class AxiProjectTools : EditorWindow
             GameObject[] rootObjects = currentScene.GetRootGameObjects();
 			foreach (GameObject rootObj in rootObjects)
             {
-                // ±éÀú³¡¾°ÖĞµÄËùÓĞ¶ÔÏó
+                // éå†åœºæ™¯ä¸­çš„æ‰€æœ‰å¯¹è±¡
                 TraverseHierarchy(rootObj);
             }
-            // Save the scene // »ñÈ¡µ±Ç°´ò¿ªµÄ³¡¾°
+            // Save the scene // è·å–å½“å‰æ‰“å¼€çš„åœºæ™¯
             currentScene = EditorSceneManager.GetActiveScene();
-            // ±£´æ³¡¾°µ½ÎÄ¼ş£¨Ä¬ÈÏÂ·¾¶ºÍÃû³Æ£©
+            // ä¿å­˜åœºæ™¯åˆ°æ–‡ä»¶ï¼ˆé»˜è®¤è·¯å¾„å’Œåç§°ï¼‰
             bool success = EditorSceneManager.SaveScene(currentScene, currentScene.path);
 
-            Debug.Log($"{currentScene.name}³¡¾°ÖĞ ËùÓĞÎïÌåUnpack");
+            Debug.Log($"{currentScene.name}åœºæ™¯ä¸­ æ‰€æœ‰ç‰©ä½“Unpack");
         }
 
         GoTAxiProjectToolsSence();
-        Debug.Log("<Color=#FFF333>´¦ÀíÍê±Ï  [5]UnPackËùÓĞÔ¤ÖÆÌå</color>");
+        Debug.Log("<Color=#FFF333>å¤„ç†å®Œæ¯•  [5]UnPackæ‰€æœ‰é¢„åˆ¶ä½“</color>");
 #else
-        Debug.Log("µÍ°æ±¾²»ÒªÖ´ĞĞ±¾º¯Êı");
+        Debug.Log("ä½ç‰ˆæœ¬ä¸è¦æ‰§è¡Œæœ¬å‡½æ•°");
 #endif
     }
 
@@ -323,33 +324,33 @@ public class AxiProjectTools : EditorWindow
 		PrefabUtility.SaveAsPrefabAsset(obj, prefabPath);
 		GameObject.DestroyImmediate(obj);
 #else
-		Debug.Log("µÍ°æ±¾²»ÒªÖ´ĞĞ±¾º¯Êı");
+		Debug.Log("ä½ç‰ˆæœ¬ä¸è¦æ‰§è¡Œæœ¬å‡½æ•°");
 #endif
 	}
 
 	static void TraverseHierarchy(GameObject obj)
 	{
 #if UNITY_2018_4_OR_NEWER
-		// ¼ì²é¸Ã¶ÔÏóÊÇ·ñÊÇÔ¤ÖÆÌåµÄÊµÀı
+		// æ£€æŸ¥è¯¥å¯¹è±¡æ˜¯å¦æ˜¯é¢„åˆ¶ä½“çš„å®ä¾‹
 		if (PrefabUtility.IsPartOfPrefabInstance(obj))
 		{
-			// ½«Ô¤ÖÆÌåÊµÀı×ª»»ÎªÆÕÍ¨ÓÎÏ·¶ÔÏó
+			// å°†é¢„åˆ¶ä½“å®ä¾‹è½¬æ¢ä¸ºæ™®é€šæ¸¸æˆå¯¹è±¡
 			PrefabUtility.UnpackPrefabInstance(obj, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
 			Debug.Log("Prefab instance converted to game object: " + obj.name);
 		}
 
-		// µİ¹é±éÀú×Ó¶ÔÏó
+		// é€’å½’éå†å­å¯¹è±¡
 		for (int i = 0; i < obj.transform.childCount; i++)
 		{
 			TraverseHierarchy(obj.transform.GetChild(i).gameObject);
 		}
 #else
-		Debug.Log("µÍ°æ±¾²»ÒªÖ´ĞĞ±¾º¯Êı");
+		Debug.Log("ä½ç‰ˆæœ¬ä¸è¦æ‰§è¡Œæœ¬å‡½æ•°");
 #endif
 	}
 
 
-	[MenuItem("AxibugÒÆÖ²¹¤¾ß/[6]ĞŞ¸´Sprite")]
+	[MenuItem("Axibugç§»æ¤å·¥å…·/[6]ä¿®å¤Sprite")]
 	public static void FixMultipleMaterialSprites()
 	{
 		string[] guids = AssetDatabase.FindAssets("t:sprite");
@@ -360,7 +361,7 @@ public class AxiProjectTools : EditorWindow
 			string path = AssetDatabase.GUIDToAssetPath(guid);
 			Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
 
-			// ¼ì²éÊÇ·ñÓĞ¶à¸ö²ÄÖÊ
+			// æ£€æŸ¥æ˜¯å¦æœ‰å¤šä¸ªæè´¨
 			if (IsUsingMultipleMaterials(sprite))
 			{
 				spritesToFix.Add(sprite);
@@ -368,7 +369,7 @@ public class AxiProjectTools : EditorWindow
 			}
 		}
 
-		// ĞŞ¸´Ã¿¸öÕÒµ½µÄSprite
+		// ä¿®å¤æ¯ä¸ªæ‰¾åˆ°çš„Sprite
 		foreach (var sprite in spritesToFix)
 		{
 			FixSprite(sprite);
@@ -376,14 +377,14 @@ public class AxiProjectTools : EditorWindow
 
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
-		Debug.Log("<Color=#FFF333>´¦ÀíÍê±Ï  [6]ĞŞ¸´Sprite</color>");
+		Debug.Log("<Color=#FFF333>å¤„ç†å®Œæ¯•  [6]ä¿®å¤Sprite</color>");
 	}
 
 	private static bool IsUsingMultipleMaterials(Sprite sprite)
 	{
 		if (sprite == null) return false;
 
-		// »ñÈ¡¾«ÁéµÄ²ÄÖÊ
+		// è·å–ç²¾çµçš„æè´¨
 		var textureImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(sprite)) as TextureImporter;
 
 		return textureImporter != null && textureImporter.spriteImportMode == SpriteImportMode.Multiple;
@@ -391,24 +392,24 @@ public class AxiProjectTools : EditorWindow
 
 	private static void FixSprite(Sprite sprite)
 	{
-		// »ñÈ¡SpriteµÄÂ·¾¶
+		// è·å–Spriteçš„è·¯å¾„
 		string path = AssetDatabase.GetAssetPath(sprite);
 		var textureImporter = AssetImporter.GetAtPath(path) as TextureImporter;
 
 		if (textureImporter != null)
 		{
-			// ±£´æµ±Ç°ÇĞ¸îĞÅÏ¢
+			// ä¿å­˜å½“å‰åˆ‡å‰²ä¿¡æ¯
 			SpriteMetaData[] originalMetaData = textureImporter.spritesheet;
 
-			// ÁÙÊ±½ûÓÃSpriteµ¼Èë
+			// ä¸´æ—¶ç¦ç”¨Spriteå¯¼å…¥
 			textureImporter.spriteImportMode = SpriteImportMode.None;
 			textureImporter.SaveAndReimport();
 
-			// ÖØĞÂÆôÓÃSpriteµ¼Èë²¢±£³ÖÔ­ÑùÇĞ¸î²ÎÊı
+			// é‡æ–°å¯ç”¨Spriteå¯¼å…¥å¹¶ä¿æŒåŸæ ·åˆ‡å‰²å‚æ•°
 			textureImporter.spriteImportMode = SpriteImportMode.Multiple;
-			textureImporter.spritesheet = originalMetaData; // »Ö¸´Ô­À´µÄÇĞ¸îĞÅÏ¢
+			textureImporter.spritesheet = originalMetaData; // æ¢å¤åŸæ¥çš„åˆ‡å‰²ä¿¡æ¯
 
-			// ÖØĞÂµ¼ÈëÒÔÓ¦ÓÃ¸ü¸Ä
+			// é‡æ–°å¯¼å…¥ä»¥åº”ç”¨æ›´æ”¹
 			textureImporter.SaveAndReimport();
 		}
 	}
