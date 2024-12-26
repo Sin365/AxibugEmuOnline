@@ -22,7 +22,11 @@ namespace AxibugEmuOnline.Client
         {
             GetEditableFilterParamters();
             m_material = new Material(Shader.Find(ShaderName));
+            OnInit(m_material);
         }
+
+        protected virtual void OnInit(Material renderMat) { }
+
         void GetEditableFilterParamters()
         {
             var parameters = (from t in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
