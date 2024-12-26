@@ -22,16 +22,20 @@ namespace AxibugEmuOnline.Client
         private void OnSliderValueChanged(float value)
         {
             txt_value.text = $"{value:.00}";
-            m_valueMenu.OnValueChanged(value);
+
+            if (!m_dataSetting) m_valueMenu.OnValueChanged(value);
         }
 
+        bool m_dataSetting;
         public void SetData(ValueSetMenu valueMenu)
         {
+            m_dataSetting = true;
             m_valueMenu = valueMenu;
             slider.minValue = (float)valueMenu.Min;
             slider.maxValue = (float)valueMenu.Max;
             slider.value = (float)valueMenu.ValueRaw;
             m_step = (slider.maxValue - slider.minValue) * 0.05f;
+            m_dataSetting = false;
         }
 
         public void OnLeft()

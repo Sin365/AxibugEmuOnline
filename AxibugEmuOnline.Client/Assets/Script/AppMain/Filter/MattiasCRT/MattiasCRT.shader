@@ -1,4 +1,4 @@
-
+﻿
 Shader "Filter/MattiasCRT"
 {
     Properties
@@ -11,12 +11,12 @@ Shader "Filter/MattiasCRT"
         {
             CGPROGRAM
 
+            #pragma shader_feature_local _QUALITY_LOW _QUALITY_MID _QUALITY_HIGH
             #pragma vertex vert_img
             #pragma fragment frag
             #include "UnityCG.cginc"
 
             sampler2D _MainTex;
-            float4 _MainTex_TexelSize;
             float2 _iResolution;
             
             float2 curve(float2 uv)
@@ -32,21 +32,32 @@ Shader "Filter/MattiasCRT"
 
             float4 mainImage( float2 fragCoord )
             {
+                
                 float4 fragColor = float4(0,0,0,1);
                 
                 float2 q = fragCoord.xy / _iResolution.xy;
                 float2 uv = q;
                 uv = curve( uv ); 
-                float3 oricol = tex2D(_MainTex,uv).xyz;
-                float3 col;
                 float x =  sin(0.3*_Time+uv.y*21.0)*sin(0.7*_Time+uv.y*29.0)*sin(0.3+0.33*_Time+uv.y*31.0)*0.0017;
 
+                float3 col;
+                #if _QUALITY_LOW
+                col = tex2D(_MainTex,uv);
+                #elif _QUALITY_MID
+                col = tex2D(_MainTex,float2(x+uv.x+0.001,uv.y+0.001))+0.05;
+                float3 tmpColor2 = tex2D(_MainTex,0.75*float2(x+0.025, -0.027)+float2(uv.x+0.001,uv.y+0.001));
+                col.r+=tmpColor2.x*0.08;
+                col.g+=tmpColor2.y*0.05;
+                col.b+=tmpColor2.z*0.08;
+                #else
                 col.r = tex2D(_MainTex,float2(x+uv.x+0.001,uv.y+0.001)).x+0.05;
                 col.g = tex2D(_MainTex,float2(x+uv.x+0.000,uv.y-0.002)).y+0.05;
                 col.b = tex2D(_MainTex,float2(x+uv.x-0.002,uv.y+0.000)).z+0.05;
                 col.r += 0.08*tex2D(_MainTex,0.75*float2(x+0.025, -0.027)+float2(uv.x+0.001,uv.y+0.001)).x;
-                col.g += 0.05*tex2D(_MainTex,0.75*float2(x+-0.022, -0.02)+float2(uv.x+0.000,uv.y-0.002)).y;
                 col.b += 0.08*tex2D(_MainTex,0.75*float2(x+-0.02, -0.018)+float2(uv.x-0.002,uv.y+0.000)).z;
+                col.g += 0.05*tex2D(_MainTex,0.75*float2(x+-0.022, -0.02)+float2(uv.x+0.000,uv.y-0.002)).y;
+                #endif
+
 
                 col = clamp(col*0.6+0.4*col*col*1.0,0.0,1.0);
 

@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Client;
 using UnityEngine;
 
+[Strip(RuntimePlatform.PSP2)]
 public sealed class FixingPixelArtGrille : FilterEffect
 {
     public override string Name => nameof(FixingPixelArtGrille);
