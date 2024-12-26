@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiInputField : UnityEngine.UI.InputField {} }

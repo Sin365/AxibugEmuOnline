@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiText : UnityEngine.UI.Text {} }

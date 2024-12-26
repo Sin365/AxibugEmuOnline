@@ -1,0 +1,12 @@
+{
+    "name": "AxibugEmuOnline.Client",
+    "references": [
+        "UIEffect",
+        "AxiReplay",
+        "Unity.Postprocessing.Runtime"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true
+}

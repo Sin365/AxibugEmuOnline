@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiVerticalLayoutGroup : UnityEngine.UI.VerticalLayoutGroup {} }

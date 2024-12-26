@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiSlider : UnityEngine.UI.Slider {} }

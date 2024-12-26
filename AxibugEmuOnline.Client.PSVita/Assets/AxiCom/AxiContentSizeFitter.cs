@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiContentSizeFitter : UnityEngine.UI.ContentSizeFitter {} }

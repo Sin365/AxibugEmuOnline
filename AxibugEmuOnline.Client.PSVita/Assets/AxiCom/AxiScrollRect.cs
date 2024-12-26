@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiScrollRect : UnityEngine.UI.ScrollRect {} }
