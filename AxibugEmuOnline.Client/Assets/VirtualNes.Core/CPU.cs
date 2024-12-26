@@ -1110,7 +1110,7 @@ namespace VirtualNes.Core
                     case 0xD2:  /* JAM */
                     case 0xF2:  /* JAM */
                     default:
-                        if (!Supporter.Config.emulator.bIllegalOp)
+                        if (!Supporter.S.Config.emulator.bIllegalOp)
                         {
                             throw new Exception("IllegalOp");
                         }

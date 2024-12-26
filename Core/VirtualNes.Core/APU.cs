@@ -73,7 +73,7 @@ namespace VirtualNes.Core
 
         public void Process(ISoundDataBuffer lpBuffer, uint dwSize)
         {
-            int nBits = Supporter.Config.sound.nBits;
+            int nBits = Supporter.S.Config.sound.nBits;
             uint dwLength = (uint)(dwSize / (nBits / 8));
             int output;
             QUEUEDATA q = new QUEUEDATA();
@@ -82,11 +82,11 @@ namespace VirtualNes.Core
             var pSoundBuf = m_SoundBuffer;
             int nCcount = 0;
 
-            int nFilterType = Supporter.Config.sound.nFilterType;
+            int nFilterType = Supporter.S.Config.sound.nFilterType;
 
-            if (!Supporter.Config.sound.bEnable)
+            if (!Supporter.S.Config.sound.bEnable)
             {
-                byte empty = (byte)(Supporter.Config.sound.nRate == 8 ? 128 : 0);
+                byte empty = (byte)(Supporter.S.Config.sound.nRate == 8 ? 128 : 0);
                 for (int i = 0; i < dwSize; i++)
                     lpBuffer.WriteByte(empty);
                 return;
@@ -108,7 +108,7 @@ namespace VirtualNes.Core
             MemoryUtility.ZEROMEMORY(vol, vol.Length);
 
             var bMute = m_bMute;
-            var nVolume = Supporter.Config.sound.nVolume;
+            var nVolume = Supporter.S.Config.sound.nVolume;
 
             int nMasterVolume = bMute[0] ? nVolume[0] : 0;
 
@@ -151,7 +151,7 @@ namespace VirtualNes.Core
             vol[23] = (int)(bMute[8] ? (FME7_VOL * nVolume[11] * nMasterVolume) / (100 * 100) : 0);
 
             //	double	cycle_rate = ((double)FRAME_CYCLES*60.0/12.0)/(double)Config.sound.nRate;
-            double cycle_rate = (nes.nescfg.FrameCycles * 60.0 / 12.0) / Supporter.Config.sound.nRate;
+            double cycle_rate = (nes.nescfg.FrameCycles * 60.0 / 12.0) / Supporter.S.Config.sound.nRate;
 
             // CPUサイクル数がループしてしまった時の対策処理
             if (elapsed_time > nes.cpu.GetTotalCycles())
@@ -253,7 +253,7 @@ namespace VirtualNes.Core
                 // DC成分のカット(HPF TEST)
                 {
                     //		static	double	cutoff = (2.0*3.141592653579*40.0/44100.0);
-                    double cutoff = cutofftemp / Supporter.Config.sound.nRate;
+                    double cutoff = cutofftemp / Supporter.S.Config.sound.nRate;
                     double @in, @out;
 
                     @in = output;
@@ -436,7 +436,7 @@ namespace VirtualNes.Core
         public void SoundSetup()
         {
             float fClock = nes.nescfg.CpuClock;
-            int nRate = Supporter.Config.sound.nRate;
+            int nRate = Supporter.S.Config.sound.nRate;
 
             @internal.Setup(fClock, nRate);
             vrc6.Setup(fClock, nRate);
@@ -460,7 +460,7 @@ namespace VirtualNes.Core
             elapsed_time = 0;
 
             float fClock = nes.nescfg.CpuClock;
-            int nRate = Supporter.Config.sound.nRate;
+            int nRate = Supporter.S.Config.sound.nRate;
 
             @internal.Reset(fClock, nRate);
             vrc6.Reset(fClock, nRate);

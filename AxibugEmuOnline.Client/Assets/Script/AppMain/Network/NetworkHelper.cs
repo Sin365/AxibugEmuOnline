@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
-using HaoYueNet.ClientNetworkNet.Standard2;
+using HaoYueNet.ClientNetwork;
 using System;
 using System.Net.Sockets;
 using System.Threading;
@@ -99,6 +100,7 @@ namespace AxibugEmuOnline.Client.Network
         public void OnConnectClose()
         {
             NetworkDeBugLog("OnConnectClose");
+            Eventer.Instance.PostEvent(EEvent.OnLossLoginState);
 
             App.user.LoginOutData();
 

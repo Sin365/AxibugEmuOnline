@@ -326,7 +326,7 @@ namespace VirtualNes.Core
             if (pad.GetExController() != (int)EXCONTROLLER.EXCONTROLLER_TURBOFILE)
                 return;
 
-            var fp = Supporter.OpenFile(Supporter.Config.path.szSavePath, "TurboFile.vtf");
+            var fp = Supporter.S.OpenFile(Supporter.S.Config.path.szSavePath, "TurboFile.vtf");
             try
             {
                 if (fp == null)
@@ -367,10 +367,10 @@ namespace VirtualNes.Core
             if (!rom.IsSAVERAM())
                 return;
 
-            var saveFileDir = Supporter.Config.path.szSavePath;
+            var saveFileDir = Supporter.S.Config.path.szSavePath;
             var saveFileName = $"{rom.GetRomName()}.sav";
 
-            var fp = Supporter.OpenFile(saveFileDir, saveFileName);
+            var fp = Supporter.S.OpenFile(saveFileDir, saveFileName);
 
             try
             {
@@ -502,13 +502,13 @@ namespace VirtualNes.Core
                                 EmulationCPU(nescfg.ScanlineCycles);
                             if (bDraw)
                             {
-                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                             }
                             else
                             {
                                 if (pad.IsZapperMode() && scanline == ZapperY)
                                 {
-                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                 }
                                 else
                                 {
@@ -518,7 +518,7 @@ namespace VirtualNes.Core
                                     }
                                     else
                                     {
-                                        ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                        ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                     }
                                 }
                             }
@@ -535,13 +535,13 @@ namespace VirtualNes.Core
                                 EmulationCPU(nescfg.HDrawCycles);
                             if (bDraw)
                             {
-                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                             }
                             else
                             {
                                 if (pad.IsZapperMode() && scanline == ZapperY)
                                 {
-                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                 }
                                 else
                                 {
@@ -551,7 +551,7 @@ namespace VirtualNes.Core
                                     }
                                     else
                                     {
-                                        ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                        ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                     }
                                 }
                             }
@@ -658,7 +658,7 @@ namespace VirtualNes.Core
                         // 僗僋儕乕儞昤夋(Scanline 1乣239)
                         if (bDraw)
                         {
-                            ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                            ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                             ppu.ScanlineNext();
                             EmulationCPU(FETCH_CYCLES * 10);
                             mapper.HSync(scanline);
@@ -670,7 +670,7 @@ namespace VirtualNes.Core
                         {
                             if (pad.IsZapperMode() && scanline == ZapperY)
                             {
-                                ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                 ppu.ScanlineNext();
                                 EmulationCPU(FETCH_CYCLES * 10);
                                 mapper.HSync(scanline);
@@ -694,7 +694,7 @@ namespace VirtualNes.Core
                                 }
                                 else
                                 {
-                                    ppu.Scanline(scanline, Supporter.Config.graphics.bAllSprite, Supporter.Config.graphics.bLeftClip);
+                                    ppu.Scanline(scanline, Supporter.S.Config.graphics.bAllSprite, Supporter.S.Config.graphics.bLeftClip);
                                     ppu.ScanlineNext();
                                     EmulationCPU(FETCH_CYCLES * 10);
                                     mapper.HSync(scanline);
@@ -1095,7 +1095,7 @@ namespace VirtualNes.Core
 
                 Debuger.Log($"Saving SAVERAM...[{romName}]");
 
-                Supporter.SaveSRAMToFile(MMU.WRAM, romName);
+                Supporter.S.SaveSRAMToFile(MMU.WRAM, romName);
             }
         }
 
@@ -1143,7 +1143,7 @@ namespace VirtualNes.Core
                     }
                 }
 
-                Supporter.SaveDISKToFile(contents.ToArray(), rom.GetRomName());
+                Supporter.S.SaveDISKToFile(contents.ToArray(), rom.GetRomName());
             }
             catch (Exception ex)
             {
@@ -1168,7 +1168,7 @@ namespace VirtualNes.Core
             {
                 Debuger.Log("Saving TURBOFILE...");
 
-                Supporter.SaveFile(MMU.ERAM, Supporter.Config.path.szSavePath, "TurboFile.vtf");
+                Supporter.S.SaveFile(MMU.ERAM, Supporter.S.Config.path.szSavePath, "TurboFile.vtf");
             }
         }
 

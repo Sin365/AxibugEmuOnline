@@ -2,6 +2,7 @@ using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -14,7 +15,27 @@ namespace AxibugEmuOnline.Client
 
         public delegate void GetRomListAPI(Action<Resp_GameList> callback, int page, int pageSize = 10);
         public delegate void SearchRomListAPI(Action<Resp_GameList> callback, string searchKey, int page, int pageSize = 10);
+        public static string UrlEncode(string str)
+        {
+            StringBuilder sb = new StringBuilder();
 
+            foreach (char c in str)
+            {
+                if ((c >= '0' && c <= '9') ||
+                    (c >= 'a' && c <= 'z') ||
+                    (c >= 'A' && c <= 'Z') ||
+                    c == '-' || c == '_' || c == '.' || c == '!' || c == '~' || c == '*' || c == '\'' || c == '(' || c == ')')
+                {
+                    sb.Append(c);
+                }
+                else
+                {
+                    sb.Append('%').Append(((int)c).ToString("X2"));
+                }
+            }
+
+            return sb.ToString();
+        }
         public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
         {
             App.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
@@ -26,6 +47,13 @@ namespace AxibugEmuOnline.Client
         }
         private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<Resp_GameList> callback)
         {
+            //避免特殊字符和个别文字编码问题
+            byte[] gb2312Bytes = Encoding.Default.GetBytes(searchKey);
+            byte[] utf8Bytes = Encoding.Convert(Encoding.Default, Encoding.UTF8, gb2312Bytes);
+            // 将UTF-8编码的字节数组转换回字符串（此时是UTF-8编码的字符串）
+            string utf8String = Encoding.UTF8.GetString(utf8Bytes);
+            searchKey = UrlEncode(utf8String);
+            App.log.Info($"search->{utf8String} ->{searchKey}");
 
             AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
             yield return request.SendWebRequest;

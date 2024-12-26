@@ -181,7 +181,7 @@ namespace VirtualNes.Core
             }
             else
             {
-                if (Supporter.Config.emulator.bFourPlayer)
+                if (Supporter.S.Config.emulator.bFourPlayer)
                 {
                     // NES type
                     pad1bit = padbitsync[0] | ((uint)padbitsync[2] << 8) | 0x00080000;

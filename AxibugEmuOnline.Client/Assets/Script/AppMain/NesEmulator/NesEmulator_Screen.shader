@@ -102,10 +102,10 @@
             {
                 float2 mapUV = IN.texcoord;
                 
-                float start= 8.0/272.0;
-                float end = (272.0-8.0)/272.0;
-
+                float start= 0.02941535;
+                float end = 0.970582;
                 mapUV.x = lerp(start,end, mapUV.x);
+                //uv映射改为ugui BaseMeshEffect 机制实现uv映射,比shader代码更为平滑
 
                 half4 color = tex2D(_MainTex,mapUV);
                 

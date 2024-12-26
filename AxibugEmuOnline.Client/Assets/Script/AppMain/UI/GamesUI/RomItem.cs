@@ -66,7 +66,7 @@ namespace AxibugEmuOnline.Client
                 SetBaseInfo(m_romfile.Alias, m_romfile.Descript, m_romfile.GameTypeDes);
                 App.CacheMgr.GetSpriteCache(m_romfile.ImageURL, (img, url) =>
                 {
-                    if (url != m_romfile.ImageURL) return;
+                    if (!m_romfile.InfoReady || url != m_romfile.ImageURL) return;
 
                     m_romImage.sprite = img;
                 });

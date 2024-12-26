@@ -27,7 +27,7 @@ namespace AxibugEmuOnline.Client
         }
 
         // スキャンラインカラー
-        private static int m_nScanlineColor => Supporter.Config.graphics.nScanlineColor;
+        private static int m_nScanlineColor => 75; //patternViewer调试器用的,参照EmulatorConfig.graphics.nScanlineColor的值
 
         public static float[][] PalConvTbl = new float[8][]
                 {

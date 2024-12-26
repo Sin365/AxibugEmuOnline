@@ -14,7 +14,6 @@ using System.Threading;
 
 public static class PSVThread
 {
-	static Thread psvThread = new Thread(Loop);
 	static AutoResetEvent autoEvent = new AutoResetEvent(false);
 	static Queue<Action> qActs = new Queue<Action>();
 	static Queue<Action> qWork = new Queue<Action>();
@@ -29,6 +28,7 @@ public static class PSVThread
 	}
 
 #if UNITY_PSP2
+	static Thread psvThread = new Thread(Loop);
 	static bool bSingleInit = false;
 	static void SingleInit()
 	{

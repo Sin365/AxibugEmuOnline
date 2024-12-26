@@ -1,50 +1,29 @@
-﻿using AxibugEmuOnline.Client;
+﻿using Assets.Script.AppMain.Filter;
+using AxibugEmuOnline.Client;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 
-[System.Serializable]
-[PostProcess(typeof(FixingPixelArtGrilleRenderer), PostProcessEvent.BeforeStack, "Filter/FixingPixelArtGrille")]
 public sealed class FixingPixelArtGrille : FilterEffect
 {
     public override string Name => nameof(FixingPixelArtGrille);
 
-    public ParameterOverride<EnumMaskStyle> MaskStyle = new ParameterOverride<EnumMaskStyle> { value = EnumMaskStyle.ApertureGrille };
-
-    [Tooltip("Emulated input resolution\nOptimize for resize")]
-    public Vector2Parameter DrawResolution = new Vector2Parameter
-    {
-        value = new Vector2(272, 240)
-    };
-
-    [Tooltip("Hardness of scanline")]
+    protected override string ShaderName => "PostEffect/FixingPixcelArtGrille";
+    public FilterParameter<EnumMaskStyle> MaskStyle = new FilterParameter<EnumMaskStyle>(EnumMaskStyle.ApertureGrille);
+    public Vector2Parameter DrawResolution = new Vector2Parameter(new Vector2(272, 240));
     [Range(-32, 0)]
-    public FloatParameter HardScan = new FloatParameter { value = -10 };
-
-    [Tooltip("Hardness of pixels in scanline")]
+    public FloatParameter HardScan = new FloatParameter(-10);
     [Range(-6, 0)]
-    public FloatParameter HardPix = new FloatParameter { value = -2 };
-
-    [Tooltip("Hardness of short vertical bloom")]
+    public FloatParameter HardPix = new FloatParameter(-2);
     [Range(-8, 0)]
-    public FloatParameter HardBloomScan = new FloatParameter { value = -4.0f };
-
-    [Tooltip("Hardness of short horizontal bloom")]
+    public FloatParameter HardBloomScan = new FloatParameter(-4.0f);
     [Range(-4, 0)]
-    public FloatParameter HardBloomPix = new FloatParameter { value = -1.5f };
-
-    [Tooltip("Amount of small bloom effect")]
+    public FloatParameter HardBloomPix = new FloatParameter(-1.5f);
     [Range(0, 1)]
-    public FloatParameter BloomAmount = new FloatParameter { value = 1 / 16f };
-
-    [Tooltip("Display warp")]
-    public Vector2Parameter Warp = new Vector2Parameter { value = new Vector2(1f / 64f, 1f / 24f) };
-
-    [Tooltip("Amount of shadow mask Light")]
+    public FloatParameter BloomAmount = new FloatParameter(1 / 16f);
+    public Vector2Parameter Warp = new Vector2Parameter(new Vector2(1f / 64f, 1f / 24f));
     [Range(1, 3)]
-    public FloatParameter MaskLight = new FloatParameter { value = 1.5f };
+    public FloatParameter MaskLight = new FloatParameter(1.5f);
     [Range(0.1f, 1)]
-    [Tooltip("Amount of shadow mask Dark")]
-    public FloatParameter MaskDrak = new FloatParameter { value = 0.5f };
+    public FloatParameter MaskDrak = new FloatParameter(0.5f);
 
     public enum EnumMaskStyle
     {
@@ -53,54 +32,41 @@ public sealed class FixingPixelArtGrille : FilterEffect
         StretchedVGA,
         VGAStyle
     }
-}
 
-public sealed class FixingPixelArtGrilleRenderer : PostProcessEffectRenderer<FixingPixelArtGrille>
-{
-    private Shader shader;
-    private Material material;
 
-    public override void Init()
+    protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
     {
-        shader = Shader.Find("PostEffect/FixingPixcelArtGrille");
-        material = new Material(shader);
-    }
+        renderMat.SetVector("_iResolution", new Vector4(result.width, result.height, 0, 0));
+        renderMat.SetVector("_res", new Vector4(DrawResolution.GetValue().x, DrawResolution.GetValue().y, 0, 0));
+        renderMat.SetFloat("_hardScan", HardScan.GetValue());
+        renderMat.SetFloat("_hardPix", HardPix.GetValue());
+        renderMat.SetFloat("_hardBloomScan", HardBloomScan.GetValue());
+        renderMat.SetFloat("_hardBloomPix", HardBloomPix.GetValue());
+        renderMat.SetFloat("_bloomAmount", BloomAmount.GetValue());
+        renderMat.SetVector("_warp", Warp.GetValue());
+        renderMat.SetFloat("_maskDark", MaskDrak.GetValue());
+        renderMat.SetFloat("_maskLight", MaskLight.GetValue());
 
-    public override void Render(PostProcessRenderContext context)
-    {
-        material.SetVector("_iResolution", new Vector4(Screen.width, Screen.height, 0, 0));
-        var res = settings.DrawResolution;
-        material.SetVector("_res", new Vector4(res.value.x, res.value.y, 0, 0));
-        material.SetFloat("_hardScan", settings.HardScan.value);
-        material.SetFloat("_hardPix", settings.HardPix.value);
-        material.SetFloat("_hardBloomScan", settings.HardBloomScan.value);
-        material.SetFloat("_hardBloomPix", settings.HardBloomPix.value);
-        material.SetFloat("_bloomAmount", settings.BloomAmount.value);
-        material.SetVector("_warp", settings.Warp.value);
-        material.SetFloat("_maskDark", settings.MaskDrak.value);
-        material.SetFloat("_maskLight", settings.MaskLight.value);
+        renderMat.DisableKeyword("_MASKSTYLE_VGASTYLE");
+        renderMat.DisableKeyword("_MASKSTYLE_TVSTYLE");
+        renderMat.DisableKeyword("_MASKSTYLE_APERTUREGRILLE");
+        renderMat.DisableKeyword("_MASKSTYLE_STRETCHEDVGA");
 
-        material.DisableKeyword("_MASKSTYLE_VGASTYLE");
-        material.DisableKeyword("_MASKSTYLE_TVSTYLE");
-        material.DisableKeyword("_MASKSTYLE_APERTUREGRILLE");
-        material.DisableKeyword("_MASKSTYLE_STRETCHEDVGA");
-
-        switch (settings.MaskStyle.value)
+        switch (MaskStyle.GetValue())
         {
-            case FixingPixelArtGrille.EnumMaskStyle.VGAStyle:
-                material.EnableKeyword("_MASKSTYLE_VGASTYLE");
+            case EnumMaskStyle.VGAStyle:
+                renderMat.EnableKeyword("_MASKSTYLE_VGASTYLE");
                 break;
-            case FixingPixelArtGrille.EnumMaskStyle.TVStyle:
-                material.EnableKeyword("_MASKSTYLE_TVSTYLE");
+            case EnumMaskStyle.TVStyle:
+                renderMat.EnableKeyword("_MASKSTYLE_TVSTYLE");
                 break;
-            case FixingPixelArtGrille.EnumMaskStyle.ApertureGrille:
-                material.EnableKeyword("_MASKSTYLE_APERTUREGRILLE");
+            case EnumMaskStyle.ApertureGrille:
+                renderMat.EnableKeyword("_MASKSTYLE_APERTUREGRILLE");
                 break;
-            case FixingPixelArtGrille.EnumMaskStyle.StretchedVGA:
-                material.EnableKeyword("_MASKSTYLE_STRETCHEDVGA");
+            case EnumMaskStyle.StretchedVGA:
+                renderMat.EnableKeyword("_MASKSTYLE_STRETCHEDVGA");
                 break;
         }
-
-        context.command.Blit(context.source, context.destination, material);
+        Graphics.Blit(src, result, renderMat);
     }
 }

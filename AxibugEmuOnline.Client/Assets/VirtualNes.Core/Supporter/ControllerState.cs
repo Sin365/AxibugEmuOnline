@@ -51,9 +51,25 @@ namespace VirtualNes.Core
 
         public override int GetHashCode()
         {
+            //return CombineHashCode(raw0, raw1, raw2, raw3, valid);
             return HashCode.Combine(raw0, raw1, raw2, raw3, valid);
         }
-        
+
+        /// <summary>
+        /// .NetStandard2.0编译备用函数
+        /// </summary>
+        /// <param name="raw0"></param>
+        /// <param name="raw1"></param>
+        /// <param name="raw2"></param>
+        /// <param name="raw3"></param>
+        /// <param name="valid"></param>
+        /// <returns></returns>
+        static int CombineHashCode(uint raw0, uint raw1, uint raw2, uint raw3, bool valid)
+        {
+            uint validUInt = valid ? 1u : 0u;
+            uint combinedHash = (raw0 * 31 + raw1) * 31 + raw2 * 31 + raw3 * 31 + validUInt;
+            return (int)combinedHash;
+        }
         public static bool operator ==(ControllerState left, ControllerState right)
         {
             return

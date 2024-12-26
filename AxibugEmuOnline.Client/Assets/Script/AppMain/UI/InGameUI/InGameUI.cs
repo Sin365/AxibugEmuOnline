@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
+using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
 {
@@ -111,7 +112,19 @@ namespace AxibugEmuOnline.Client
 
         private void OnRoomCreated()
         {
-            m_delayCreateRoom = false;
+            if (m_delayCreateRoom)
+            {
+                m_delayCreateRoom = false;
+                //延迟创建房间成功后,同步本地手柄连接状态
+                Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
+                var setuper = App.emu.Core.GetControllerSetuper();
+                for (int i = 0; i < 4; i++)
+                {
+                    var joyIndex = setuper.GetSlotConnectingControllerIndex(i);
+                    if (joyIndex != null) temp[(uint)i] = (uint)joyIndex.Value;
+                }
+                App.roomMgr.SendChangePlaySlotIdxWithJoyIdx(temp);
+            }
         }
 
         private void OnLoggedIn()

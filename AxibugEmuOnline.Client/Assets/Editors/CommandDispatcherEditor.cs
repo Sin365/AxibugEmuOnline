@@ -1,6 +1,8 @@
 ﻿using AxibugEmuOnline.Client;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
+
 namespace AxibugEmuOnline.Editors
 {
     [CustomEditor(typeof(CommandDispatcher))]
@@ -13,8 +15,8 @@ namespace AxibugEmuOnline.Editors
             if (!Application.isPlaying) return;
 
             var dispacather = target as CommandDispatcher;
-
-            dispacather.GetRegisters(out var normal, out var solo);
+            IReadOnlyList<CommandExecuter> normal; IReadOnlyList<CommandExecuter> solo;
+            dispacather.GetRegisters(out normal, out solo);
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUILayout.LabelField("NORMAL");
