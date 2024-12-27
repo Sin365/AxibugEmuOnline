@@ -19,6 +19,7 @@ namespace AxibugEmuOnline.Client
 
         EnumPlatform Platform { get; }
         uint Frame { get; }
+        Vector2Int GetRawResolution();
     }
 
     public static class IEnumCoreTool

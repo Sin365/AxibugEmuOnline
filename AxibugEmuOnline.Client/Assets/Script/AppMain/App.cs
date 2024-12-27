@@ -27,7 +27,6 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static CacheManager CacheMgr;
         public static AppRoom roomMgr;
         public static AppSettings settings;
-        public static FilterManager filter;
         public static AppShare share;
         static bool bTest;
         static string mTestSrvIP;
@@ -54,7 +53,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 PSP2Init();
             }
 
-            settings = new AppSettings();
+            settings = new AppSettings(initer);
 
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
@@ -69,7 +68,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            filter = new FilterManager(initer.FilterPreview, initer.XMBBg);
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");

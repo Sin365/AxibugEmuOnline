@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client
         {
             List<OptionMenu> menus = new List<OptionMenu>();
             menus.Add(new FilterNone(m_gameUI.RomFile));
-            menus.AddRange(App.filter.Filters.Select(f => new FilterMenu(m_gameUI.RomFile, f) as OptionMenu));
+            menus.AddRange(App.settings.Filter.Filters.Select(f => new FilterMenu(m_gameUI.RomFile, f) as OptionMenu));
             return menus;
         }
 
@@ -33,9 +33,9 @@ namespace AxibugEmuOnline.Client
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
-                App.filter.ShutDownFilter();
+                App.settings.Filter.ShutDownFilter();
 
-                App.filter.SetupFilter(m_rom, null, null);
+                App.settings.Filter.SetupFilter(m_rom, null, null);
             }
         }
 
@@ -73,9 +73,9 @@ namespace AxibugEmuOnline.Client
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
                 m_filter.ApplyPreset(m_preset);
-                App.filter.EnableFilter(m_filter);
+                App.settings.Filter.EnableFilter(m_filter);
 
-                App.filter.SetupFilter(m_rom, m_filter, m_preset);
+                App.settings.Filter.SetupFilter(m_rom, m_filter, m_preset);
             }
         }
     }

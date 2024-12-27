@@ -217,5 +217,10 @@ namespace AxibugEmuOnline.Client
         {
             return ControllerMapper;
         }
+
+        public Vector2Int GetRawResolution()
+        {
+            return new Vector2Int(256, 240);
+        }
     }
 }

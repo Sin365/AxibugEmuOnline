@@ -99,14 +99,14 @@ namespace AxibugEmuOnline.Client
 
             gameObject.SetActiveEx(true);
 
-            var filterSetting = App.filter.GetFilterSetting(currentRom);
+            var filterSetting = App.settings.Filter.GetFilterSetting(currentRom);
             if (filterSetting.filter != null)
             {
                 var filter = filterSetting.filter;
                 var preset = filterSetting.preset ?? filter.DefaultPreset;
 
                 filter.ApplyPreset(preset);
-                App.filter.EnableFilter(filter);
+                App.settings.Filter.EnableFilter(filter);
             }
         }
 
@@ -142,7 +142,7 @@ namespace AxibugEmuOnline.Client
             CommandDispatcher.Instance.UnRegistController(this);
             gameObject.SetActiveEx(false);
 
-            App.filter.ShutDownFilter();
+            App.settings.Filter.ShutDownFilter();
         }
 
         protected override void OnCmdOptionMenu()

@@ -1,7 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using UnityEngine;
-using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client.Manager
 {
