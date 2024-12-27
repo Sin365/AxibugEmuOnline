@@ -5,15 +5,15 @@ namespace AxibugEmuOnline.Client
 {
     public class Initer : MonoBehaviour
     {
-        public CanvasGroup FilterPreview => m_refs.FilterPreview;
-        public CanvasGroup XMBBg => m_refs.XMBBg;
+        static GlobalRef m_refs;
+        public static CanvasGroup FilterPreview => m_refs.FilterPreview;
+        public static CanvasGroup XMBBg => m_refs.XMBBg;
 
         public static string dev_UUID;
 
         [SerializeField]
         GameObject IMPORTENT;
 
-        GlobalRef m_refs;
 
 #if UNITY_EDITOR
         public bool bTest = false;
@@ -22,15 +22,20 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
-            m_refs = Instantiate(IMPORTENT, transform).GetComponent<GlobalRef>();
-            
 #if UNITY_EDITOR
-            App.Init(this, bTest, mTestSrvIP);
+            App.Init(bTest, mTestSrvIP);
 #else
             App.Init(this);
 #endif
             dev_UUID = SystemInfo.deviceUniqueIdentifier;
 
+            m_refs = Instantiate(IMPORTENT, transform).GetComponent<GlobalRef>();
+        }
+
+        private void Start()
+        {
+            App.settings.Filter.ShutDownFilterPreview();
+            App.settings.Filter.ShutDownFilter();
         }
     }
 }

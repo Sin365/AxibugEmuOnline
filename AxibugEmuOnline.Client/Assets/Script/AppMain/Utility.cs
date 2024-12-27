@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
         }
 
         private static Dictionary<int, RomFile> s_RomFileCahcesInRoomInfo = new Dictionary<int, RomFile>();
-        public static void FetchRomFileInRoomInfo(this Protobuf_Room_MiniInfo roomInfo, EnumPlatform platform, Action<Protobuf_Room_MiniInfo, RomFile> callback)
+        public static void FetchRomFileInRoomInfo(this Protobuf_Room_MiniInfo roomInfo, EnumSupportEmuPlatform platform, Action<Protobuf_Room_MiniInfo, RomFile> callback)
         {
             RomFile romFile;
 
@@ -45,10 +45,10 @@ namespace AxibugEmuOnline.Client
             }
             switch (platform)
             {
-                case EnumPlatform.NES:
+                case EnumSupportEmuPlatform.NES:
                     App.StartCoroutine(App.httpAPI.GetNesRomInfo(roomInfo.GameRomID, (romWebData) =>
                     {
-                        RomFile _romFile = new RomFile(EnumPlatform.NES, 0, 0);
+                        RomFile _romFile = new RomFile(EnumSupportEmuPlatform.NES, 0, 0);
 						_romFile.SetWebData(romWebData);
                         s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = _romFile;
 

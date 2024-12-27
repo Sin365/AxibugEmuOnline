@@ -82,6 +82,11 @@ namespace AxibugEmuOnline.Client
             App.settings.Filter.ExecuteFilterRender(rt_gpu, Image);
         }
 
+        public void ApplyScreenScaler()
+        {
+            App.settings.ScreenScaler.CalcScale(Image, EnumSupportEmuPlatform.NES);
+        }
+
         private unsafe void PrepareUI(uint* screenData)
         {
             if (GPUTurbo)

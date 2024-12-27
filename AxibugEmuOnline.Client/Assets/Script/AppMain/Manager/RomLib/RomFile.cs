@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client
     {
         private HttpAPI.Resp_RomInfo webData;
         private bool hasLocalFile;
-        private EnumPlatform platform;
+        private EnumSupportEmuPlatform platform;
         //private UnityWebRequest downloadRequest;
         private AxiHttpProxy.SendDownLoadProxy downloadRequest;
 
@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client
         public float Progress => IsDownloading ? downloadRequest.downloadHandler.DownLoadPr : 0;
 
 
-        public EnumPlatform Platform => platform;
+        public EnumSupportEmuPlatform Platform => platform;
         /// <summary> 指示该Rom信息是否已填充 </summary>
         public bool InfoReady => webData != null;
         /// <summary> 唯一标识 </summary>
@@ -61,7 +61,7 @@ namespace AxibugEmuOnline.Client
         public event Action<RomFile> OnDownloadOver;
         public event Action OnInfoFilled;
 
-        public RomFile(EnumPlatform platform, int index, int insidePage)
+        public RomFile(EnumSupportEmuPlatform platform, int index, int insidePage)
         {
             this.platform = platform;
             Index = index;
@@ -181,7 +181,7 @@ namespace AxibugEmuOnline.Client
         }
 
         private RomFile() { }
-        public static RomFile CreateExistRom(EnumPlatform platform, string fileName)
+        public static RomFile CreateExistRom(EnumSupportEmuPlatform platform, string fileName)
         {
             var res = new RomFile();
             res.IsUserRom = true;

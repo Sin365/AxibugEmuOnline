@@ -54,10 +54,11 @@ namespace AxibugEmuOnline.Client
                 VideoProvider.SetDrawData(screenBuffer);
             }
 
+            VideoProvider.ApplyScreenScaler();
             VideoProvider.ApplyFilterEffect();
         }
 
-        public EnumPlatform Platform => EnumPlatform.NES;
+        public EnumSupportEmuPlatform Platform => EnumSupportEmuPlatform.NES;
         private CoreSupporter m_coreSupporter;
         /// <summary>
         /// 指定ROM开始游戏
@@ -216,11 +217,6 @@ namespace AxibugEmuOnline.Client
         public IControllerSetuper GetControllerSetuper()
         {
             return ControllerMapper;
-        }
-
-        public Vector2Int GetRawResolution()
-        {
-            return new Vector2Int(256, 240);
         }
     }
 }

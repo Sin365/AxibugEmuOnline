@@ -45,7 +45,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init(Initer initer, bool isTest = false, string testSrvIP = "")
+        public static void Init( bool isTest = false, string testSrvIP = "")
         {
             //其他平台必要的初始化
             if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
@@ -53,7 +53,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 PSP2Init();
             }
 
-            settings = new AppSettings(initer);
+            settings = new AppSettings();
 
             log = new LogManager();
             LogManager.OnLog += OnNoSugarNetLog;
@@ -64,7 +64,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             emu = new AppEmu();
             //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
-            nesRomLib = new RomLib(EnumPlatform.NES);
+            nesRomLib = new RomLib(EnumSupportEmuPlatform.NES);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();

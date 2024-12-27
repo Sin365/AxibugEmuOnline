@@ -8,7 +8,7 @@ namespace AxibugEmuOnline.Client
     public class RomListMenuItem : VirtualSubMenuItem
     {
         [SerializeField]
-        protected EnumPlatform Platform;
+        protected EnumSupportEmuPlatform Platform;
 
         private RomLib RomLib
         {
@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client
             {
                 switch (Platform)
                 {
-                    case EnumPlatform.NES:
+                    case EnumSupportEmuPlatform.NES:
                         return App.nesRomLib;
                     default:
                         throw new System.NotImplementedException($"未实现的平台 {Platform}");

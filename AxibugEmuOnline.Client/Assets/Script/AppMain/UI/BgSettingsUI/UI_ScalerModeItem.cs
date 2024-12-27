@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.UI;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.UI;
 
 namespace AxibugEmuOnline.Client
 {
@@ -8,27 +9,26 @@ namespace AxibugEmuOnline.Client
     public class UI_ScalerModeItem : MenuItem, IVirtualItem
     {
         public int Index { get; set; }
-        public ScreenScalerListMenuItem.EnumScalerMode Datacontext { get; private set; }
+        public ScreenScaler.EnumScalerMode Datacontext { get; private set; }
 
         public void SetData(object data)
         {
-            Datacontext = (ScreenScalerListMenuItem.EnumScalerMode)data;
+            Datacontext = (ScreenScaler.EnumScalerMode)data;
 
             UpdateView();
         }
 
         private void UpdateView()
         {
-            
             switch (Datacontext)
             {
-                case ScreenScalerListMenuItem.EnumScalerMode.FullScreen:
+                case ScreenScaler.EnumScalerMode.FullScreen:
                     SetBaseInfo("全屏", "模拟器输出画面将拉伸到全屏", null);
                     break;
-                case ScreenScalerListMenuItem.EnumScalerMode.Raw:
+                case ScreenScaler.EnumScalerMode.Raw:
                     SetBaseInfo("原始尺寸", "将保持模拟器输出画面的原始分辨率", null);
                     break;
-                case ScreenScalerListMenuItem.EnumScalerMode.Fix:
+                case ScreenScaler.EnumScalerMode.Fix:
                     SetBaseInfo("适应", "在保持原始画面比例的情况下适配到全屏", null);
                     break;
             }
@@ -37,6 +37,12 @@ namespace AxibugEmuOnline.Client
         public void SetDependencyProperty(object data)
         {
             SetSelectState(data is ThirdMenuRoot && ((ThirdMenuRoot)data).SelectIndex == Index);
+
+            if (m_select)
+            {
+                App.settings.Filter.EnableFilterPreview();
+                App.settings.ScreenScaler.GlobalMode = Datacontext;
+            }
         }
 
         public void Release() { }

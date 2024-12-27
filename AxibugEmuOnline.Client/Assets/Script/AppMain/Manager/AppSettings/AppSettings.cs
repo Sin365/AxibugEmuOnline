@@ -1,6 +1,4 @@
-﻿using static AxibugEmuOnline.Client.FilterManager;
-
-namespace AxibugEmuOnline.Client
+﻿namespace AxibugEmuOnline.Client
 {
     public class AppSettings
     {
@@ -8,11 +6,14 @@ namespace AxibugEmuOnline.Client
         public BgColorSettings BgColor { get; private set; }
         /// <summary> 滤镜设置 </summary>
         public FilterManager Filter { get; private set; }
+        /// <summary> 画面比例设置 </summary>
+        public ScreenScaler ScreenScaler { get; private set; }
 
-        public AppSettings(Initer initer)
+        public AppSettings()
         {
             BgColor = new BgColorSettings();
-            Filter = new FilterManager(initer.FilterPreview, initer.XMBBg);
+            Filter = new FilterManager();
+            ScreenScaler = new ScreenScaler();
         }
     }
 }
