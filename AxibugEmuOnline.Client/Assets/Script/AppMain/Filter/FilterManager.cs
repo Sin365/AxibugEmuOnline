@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 using static AxibugEmuOnline.Client.FilterEffect;
+using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {
@@ -48,33 +50,62 @@ namespace AxibugEmuOnline.Client
         }
 
         private RenderTexture result = null;
-        public Texture ExecuteFilterRender(Texture src)
+        public void ExecuteFilterRender(Texture src, RawImage renderGraphic)
         {
-            if (result == null)
-            {
-                result = RenderTexture.GetTemporary(Screen.width, Screen.height);
-            }
-            else if (result.width != Screen.width || result.height != Screen.height)
-            {
-                RenderTexture.ReleaseTemporary(result);
-                result = RenderTexture.GetTemporary(Screen.width, Screen.height);
-            }
-
-
-
-            bool anyFilterEnable = false;
+            //获得激活的滤镜
+            Filter activeFilter = null;
             foreach (var filter in Filters)
             {
-                if (!filter.m_setting.Enable.GetValue()) continue;
-                filter.m_setting.Render(src, result);
-                anyFilterEnable = true;
+                if (!filter.m_setting.Enable) continue;
+                activeFilter = filter;
+                break;
             }
 
-            if (anyFilterEnable)
-                return result;
-            else
-                return src;
+            if (activeFilter == null)
+            {
+                renderGraphic.texture = src;
+                return;
+            }
+
+            var resolution = GetRawImageScreenResolution(renderGraphic);
+            int resWidth = (int)(resolution.x * activeFilter.m_setting.RenderScale.GetValue());
+            int resHeight = (int)(resolution.y * activeFilter.m_setting.RenderScale.GetValue());
+
+            if (result == null)
+            {
+                result = RenderTexture.GetTemporary(resWidth, resHeight);
+            }
+            else if (result.width != resWidth || result.height != resHeight)
+            {
+                RenderTexture.ReleaseTemporary(result);
+                result = RenderTexture.GetTemporary(resWidth, resHeight);
+            }
+
+            activeFilter.m_setting.Render(src, result);
+
+            renderGraphic.texture = result;
         }
+
+        Vector2 GetRawImageScreenResolution(RawImage rawImage)
+        {
+            // 获取 RawImage 的 RectTransform
+            RectTransform rectTransform = rawImage.rectTransform;
+
+            // 获取 RawImage 在屏幕上的四个顶点的世界坐标
+            Vector3[] corners = new Vector3[4];
+            rectTransform.GetWorldCorners(corners);
+
+            // 左下角和右上角的屏幕坐标
+            Vector2 bottomLeft = RectTransformUtility.WorldToScreenPoint(rawImage.canvas.worldCamera, corners[0]);
+            Vector2 topRight = RectTransformUtility.WorldToScreenPoint(rawImage.canvas.worldCamera, corners[2]);
+
+            // 计算宽度和高度
+            float width = topRight.x - bottomLeft.x;
+            float height = topRight.y - bottomLeft.y;
+
+            return new Vector2(width, height);
+        }
+
 
         /// <summary> 关闭滤镜预览 </summary>
         public void ShutDownFilterPreview()
@@ -96,8 +127,8 @@ namespace AxibugEmuOnline.Client
         {
             foreach (var selfFiler in Filters)
             {
-                if (selfFiler != filter) selfFiler.m_setting.Enable.Override(false);
-                else selfFiler.m_setting.Enable.Override(true);
+                if (selfFiler != filter) selfFiler.m_setting.Enable = false;
+                else selfFiler.m_setting.Enable = true;
             }
         }
 
@@ -108,7 +139,7 @@ namespace AxibugEmuOnline.Client
         {
             //关闭所有后处理效果
             foreach (var filter in Filters)
-                filter.m_setting.Enable.Override(false);
+                filter.m_setting.Enable = false;
         }
 
         /// <summary>

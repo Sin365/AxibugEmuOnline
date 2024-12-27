@@ -37,7 +37,6 @@ public sealed class FixingPixelArtGrille : FilterEffect
 
     protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
     {
-        renderMat.SetVector("_iResolution", new Vector4(result.width, result.height, 0, 0));
         renderMat.SetVector("_res", new Vector4(DrawResolution.GetValue().x, DrawResolution.GetValue().y, 0, 0));
         renderMat.SetFloat("_hardScan", HardScan.GetValue());
         renderMat.SetFloat("_hardPix", HardPix.GetValue());

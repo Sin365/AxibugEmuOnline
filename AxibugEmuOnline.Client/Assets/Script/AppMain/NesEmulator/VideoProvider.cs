@@ -79,7 +79,7 @@ namespace AxibugEmuOnline.Client
 
         public void ApplyFilterEffect()
         {
-            Image.texture = App.filter.ExecuteFilterRender(rt_gpu);
+            App.filter.ExecuteFilterRender(rt_gpu, Image);
         }
 
         private unsafe void PrepareUI(uint* screenData)

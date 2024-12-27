@@ -9,17 +9,23 @@ namespace AxibugEmuOnline.Client
 {
     public abstract class FilterEffect
     {
-        public BoolParameter Enable = new BoolParameter(false);
+        public bool Enable { get; set; }
+
+        [Range(0.1f, 4f)]
+        public FloatParameter RenderScale;
+
         public abstract string Name { get; }
         public IReadOnlyCollection<EditableParamerter> EditableParam => m_editableParamList.AsReadOnly();
 
         List<EditableParamerter> m_editableParamList;
         Material m_material;
-
+        protected virtual float m_defaultRenderScale { get => 1f; }
         protected abstract string ShaderName { get; }
+        private static int m_iResolutionID = Shader.PropertyToID("_iResolution");
 
         public FilterEffect()
         {
+            RenderScale = new FloatParameter(m_defaultRenderScale);
             GetEditableFilterParamters();
             m_material = new Material(Shader.Find(ShaderName));
             OnInit(m_material);
@@ -31,7 +37,6 @@ namespace AxibugEmuOnline.Client
         {
             var parameters = (from t in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
                               where t.FieldType.IsSubclassOf(typeof(FilterParameter))
-                              where t.DeclaringType.IsSubclassOf(typeof(FilterEffect))
                               orderby t.MetadataToken
                               select t);
 
@@ -54,7 +59,7 @@ namespace AxibugEmuOnline.Client
 
         public void Render(Texture src, RenderTexture result)
         {
-            m_material.SetVector("_iResolution", new Vector4(result.width, result.height));
+            m_material.SetVector(m_iResolutionID, new Vector4(result.width, result.height));
             OnRenderer(m_material, src, result);
         }
 
