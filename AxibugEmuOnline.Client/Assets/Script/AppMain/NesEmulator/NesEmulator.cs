@@ -54,10 +54,11 @@ namespace AxibugEmuOnline.Client
                 VideoProvider.SetDrawData(screenBuffer);
             }
 
+            VideoProvider.ApplyScreenScaler();
             VideoProvider.ApplyFilterEffect();
         }
 
-        public EnumPlatform Platform => EnumPlatform.NES;
+        public EnumSupportEmuPlatform Platform => EnumSupportEmuPlatform.NES;
         private CoreSupporter m_coreSupporter;
         /// <summary>
         /// 指定ROM开始游戏

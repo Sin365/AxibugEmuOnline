@@ -1,11 +1,10 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AxibugEmuOnline.Client
 {
-    public class GlobalFilterListMenuItem : VirtualSubMenuItem
+    public class ScreenScalerListMenuItem : VirtualSubMenuItem
     {
         public override bool OnEnterItem()
         {
@@ -17,7 +16,6 @@ namespace AxibugEmuOnline.Client
         public override bool OnExitItem()
         {
             App.settings.Filter.ShutDownFilterPreview();
-            App.settings.Filter.ShutDownFilter();
 
             return base.OnExitItem();
         }
@@ -25,8 +23,7 @@ namespace AxibugEmuOnline.Client
         protected override void GetVirtualListDatas(Action<object> datas)
         {
             List<object> list = new List<object>();
-            list.Add(null);
-            list.AddRange(App.settings.Filter.Filters.Select(f => (object)f));
+            foreach (var enumValue in Enum.GetValues(typeof(ScreenScaler.EnumScalerMode))) list.Add(enumValue);
             datas.Invoke(list);
         }
     }

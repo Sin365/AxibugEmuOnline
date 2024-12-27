@@ -17,7 +17,7 @@ namespace AxibugEmuOnline.Client
         void DoReset();
         IControllerSetuper GetControllerSetuper();
 
-        EnumPlatform Platform { get; }
+        EnumSupportEmuPlatform Platform { get; }
         uint Frame { get; }
     }
 

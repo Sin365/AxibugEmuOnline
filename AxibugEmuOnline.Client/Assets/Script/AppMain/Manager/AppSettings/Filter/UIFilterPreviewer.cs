@@ -16,6 +16,7 @@ public class UIFilterPreviewer : MonoBehaviour
 
     private void Update()
     {
-        App.filter.ExecuteFilterRender(m_src, m_rawImg);
+        App.settings.ScreenScaler.CalcScale(m_rawImg);
+        App.settings.Filter.ExecuteFilterRender(m_src, m_rawImg);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AxibugEmuOnline.Client
 {
-    public enum EnumPlatform
+    public enum EnumSupportEmuPlatform
     {
         NES
     }

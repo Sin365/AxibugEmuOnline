@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.Manager;
+﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
 using System.Collections;
 using System.IO;
@@ -27,7 +27,6 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static CacheManager CacheMgr;
         public static AppRoom roomMgr;
         public static AppSettings settings;
-        public static FilterManager filter;
         public static AppShare share;
         static bool bTest;
         static string mTestSrvIP;
@@ -46,7 +45,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init(Initer initer, bool isTest = false, string testSrvIP = "")
+        public static void Init( bool isTest = false, string testSrvIP = "")
         {
             //其他平台必要的初始化
             if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
@@ -65,11 +64,10 @@ namespace AxibugEmuOnline.Client.ClientCore
             emu = new AppEmu();
             //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
-            nesRomLib = new RomLib(EnumPlatform.NES);
+            nesRomLib = new RomLib(EnumSupportEmuPlatform.NES);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            filter = new FilterManager(initer.m_filterPreview, initer.m_xmbBg);
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");

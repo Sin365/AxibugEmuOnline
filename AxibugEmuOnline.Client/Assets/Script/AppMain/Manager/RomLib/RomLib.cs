@@ -19,14 +19,14 @@ namespace AxibugEmuOnline.Client
         private Dictionary<string, RomFile> nesRomFileNameMapper = new Dictionary<string, RomFile>();
         private HttpAPI.GetRomListAPI m_romGetFunc;
         private HttpAPI.SearchRomListAPI m_romSearchFunc;
-        private EnumPlatform m_platform;
+        private EnumSupportEmuPlatform m_platform;
 
-        public RomLib(EnumPlatform platform)
+        public RomLib(EnumSupportEmuPlatform platform)
         {
             m_platform = platform;
             switch (platform)
             {
-                case EnumPlatform.NES:
+                case EnumSupportEmuPlatform.NES:
                     m_romGetFunc = App.httpAPI.GetNesRomList;
                     m_romSearchFunc = App.httpAPI.SearchNesRomList;
                     break;

@@ -9,7 +9,7 @@ using static AxibugEmuOnline.Client.FilterManager;
 namespace AxibugEmuOnline.Client
 {
 	/// <summary>
-	/// 背景颜色设置UI
+	/// 滤镜预览UI
 	/// </summary>
 	public class UI_FilterItem : MenuItem, IVirtualItem
 	{
@@ -37,11 +37,11 @@ namespace AxibugEmuOnline.Client
 
 			if (m_select)
 			{
-				App.filter.EnableFilterPreview();
-				if (App.filter != null)
-					App.filter.EnableFilter(Datacontext);
+				App.settings.Filter.EnableFilterPreview();
+				if (App.settings.Filter != null)
+					App.settings.Filter.EnableFilter(Datacontext);
 				else
-					App.filter.ShutDownFilter();
+					App.settings.Filter.ShutDownFilter();
 			}
 		}
 
@@ -57,9 +57,9 @@ namespace AxibugEmuOnline.Client
 
 				OverlayManager.PopSideBar(opts, onClose: () =>
 				{
-					App.filter.EnableFilterPreview();
+					App.settings.Filter.EnableFilterPreview();
 					Datacontext.ResetPreset();
-					App.filter.EnableFilter(Datacontext);
+					App.settings.Filter.EnableFilter(Datacontext);
 				});
 			}
 			return false;
@@ -78,7 +78,7 @@ namespace AxibugEmuOnline.Client
 			public override void OnFocus()
 			{
 				m_filter.ResetPreset();
-				App.filter.EnableFilter(m_filter);
+				App.settings.Filter.EnableFilter(m_filter);
 			}
 
 			public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
@@ -135,7 +135,7 @@ namespace AxibugEmuOnline.Client
 			public override void OnFocus()
 			{
 				m_filter.ApplyPreset(m_preset);
-				App.filter.EnableFilter(m_filter);
+				App.settings.Filter.EnableFilter(m_filter);
 			}
 
 			protected override List<OptionMenu> GetOptionMenus()

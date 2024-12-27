@@ -79,7 +79,12 @@ namespace AxibugEmuOnline.Client
 
         public void ApplyFilterEffect()
         {
-            App.filter.ExecuteFilterRender(rt_gpu, Image);
+            App.settings.Filter.ExecuteFilterRender(rt_gpu, Image);
+        }
+
+        public void ApplyScreenScaler()
+        {
+            App.settings.ScreenScaler.CalcScale(Image, EnumSupportEmuPlatform.NES);
         }
 
         private unsafe void PrepareUI(uint* screenData)

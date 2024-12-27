@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using Sony.Vita.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,14 +7,14 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 using static AxibugEmuOnline.Client.FilterEffect;
-using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {
     public class FilterManager
     {
         private List<Filter> m_filters;
-        private Dictionary<EnumPlatform, Filter> m_filterPlatforms = new Dictionary<EnumPlatform, Filter>();
+        private Dictionary<EnumSupportEmuPlatform, Filter> m_filterPlatforms = new Dictionary<EnumSupportEmuPlatform, Filter>();
+
         private AlphaWraper m_previewFilterWraper;
         FilterRomSetting m_filterRomSetting;
         /// <summary>
@@ -21,15 +22,11 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         public IReadOnlyList<Filter> Filters => m_filters;
 
-        public FilterManager(CanvasGroup filterPreview, CanvasGroup mainBg)
+        public FilterManager()
         {
             loadFilters();
             var json = PlayerPrefs.GetString(nameof(FilterRomSetting));
             m_filterRomSetting = JsonUtility.FromJson<FilterRomSetting>(json) ?? new FilterRomSetting();
-
-            m_previewFilterWraper = new AlphaWraper(mainBg, filterPreview, false);
-            ShutDownFilterPreview();
-            ShutDownFilter();
         }
 
         private void loadFilters()
@@ -100,8 +97,8 @@ namespace AxibugEmuOnline.Client
             Vector2 topRight = RectTransformUtility.WorldToScreenPoint(rawImage.canvas.worldCamera, corners[2]);
 
             // 计算宽度和高度
-            float width = topRight.x - bottomLeft.x;
-            float height = topRight.y - bottomLeft.y;
+            float width = Mathf.Abs(topRight.x - bottomLeft.x);
+            float height = Mathf.Abs(topRight.y - bottomLeft.y);
 
             return new Vector2(width, height);
         }
@@ -110,12 +107,14 @@ namespace AxibugEmuOnline.Client
         /// <summary> 关闭滤镜预览 </summary>
         public void ShutDownFilterPreview()
         {
+            if (m_previewFilterWraper == null) m_previewFilterWraper = new AlphaWraper(Initer.XMBBg, Initer.FilterPreview, false);
             m_previewFilterWraper.On = false;
         }
 
         /// <summary> 开启滤镜预览 </summary>
         public void EnableFilterPreview()
         {
+            if (m_previewFilterWraper == null) m_previewFilterWraper = new AlphaWraper(Initer.XMBBg, Initer.FilterPreview, false);
             m_previewFilterWraper.On = true;
         }
 
