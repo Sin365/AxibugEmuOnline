@@ -94,5 +94,21 @@ namespace AxibugEmuOnline.Client
                 Value = overrideValue;
             }
         }
+
+        [AttributeUsage(AttributeTargets.Class)]
+        internal class StripAttribute : Attribute
+        {
+            HashSet<RuntimePlatform> m_stripPlats;
+            /// <summary>
+            /// 指示一个滤镜是否会在指定的平台被剔除
+            /// </summary>
+            /// <param name="strip">会被剔除的平台</param>
+            public StripAttribute(params RuntimePlatform[] stripPlatform)
+            {
+                m_stripPlats = new HashSet<RuntimePlatform>(stripPlatform);
+            }
+
+            public bool NeedStrip => m_stripPlats.Contains(Application.platform);
+        }
     }
 }

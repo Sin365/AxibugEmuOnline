@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using static AxibugEmuOnline.Client.FilterEffect;
 
@@ -20,25 +21,30 @@ namespace AxibugEmuOnline.Client
 
         public FilterManager(CanvasGroup filterPreview, CanvasGroup mainBg)
         {
-#if UNITY_PSP2
-			m_filters = new List<Filter>();
-			m_filterRomSetting = new FilterRomSetting();
-			m_previewFilterWraper = new AlphaWraper(mainBg, filterPreview, false);
-			return;
-#endif
-
-            m_filters = new List<Filter>
-            {
-                new Filter(new FixingPixelArtGrille()),
-                new Filter(new LCDPostEffect()),
-                new Filter(new MattiasCRT()),
-            };
+            loadFilters();
             var json = PlayerPrefs.GetString(nameof(FilterRomSetting));
             m_filterRomSetting = JsonUtility.FromJson<FilterRomSetting>(json) ?? new FilterRomSetting();
 
             m_previewFilterWraper = new AlphaWraper(mainBg, filterPreview, false);
             ShutDownFilterPreview();
             ShutDownFilter();
+        }
+
+        private void loadFilters()
+        {
+            m_filters = new List<Filter>();
+
+            var effectBaseType = typeof(FilterEffect);
+            foreach (var type in effectBaseType.Assembly.GetTypes())
+            {
+                if (type.IsAbstract) continue;
+                if (type.IsInterface) continue;
+                if (!effectBaseType.IsAssignableFrom(type)) continue;
+                var stripAtt = type.GetCustomAttribute<StripAttribute>();
+                if (stripAtt != null && stripAtt.NeedStrip) continue;
+                var effect = Activator.CreateInstance(type) as FilterEffect;
+                m_filters.Add(new Filter(effect));
+            }
         }
 
         private RenderTexture result = null;
