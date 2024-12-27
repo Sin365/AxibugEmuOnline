@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiShadow : UnityEngine.UI.Shadow {} }

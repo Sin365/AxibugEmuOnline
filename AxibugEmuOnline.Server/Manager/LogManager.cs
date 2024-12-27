@@ -1,4 +1,7 @@
-﻿namespace AxibugEmuOnline.Server.Manager
+﻿using AxibugProtobuf;
+using static Mysqlx.Expect.Open.Types;
+
+namespace AxibugEmuOnline.Server.Manager
 {
     public class LogManager
     {
@@ -17,6 +20,14 @@
         {
             Console.WriteLine($"[{DateTime.Now.ToString("hh:mm:ss.fff")}][{str}]");
             //Console.WriteLine(str);
+        }
+
+        public void Assert(bool conditional, string message)
+        {
+            if (!conditional)
+            {
+                Debug(message);
+            }
         }
 
         public void Warning(string str)

@@ -31,7 +31,10 @@ namespace AxibugEmuOnline.Server.NetWork
             }
             else
             {
-                netEventDic.Add(cmd, new List<Delegate>() { callback });
+                //netEventDic.Add(cmd, new List<Delegate>() { callback });
+                List<Delegate> delList = ObjectPoolAuto.AcquireList<Delegate>();
+                delList.Add(callback);
+                netEventDic.Add(cmd, delList);
             }
         }
         #endregion
@@ -49,7 +52,12 @@ namespace AxibugEmuOnline.Server.NetWork
             if (netEventDic.ContainsKey(cmd))
             {
                 netEventDic[cmd].Remove(callback);
-                if (netEventDic[cmd].Count == 0) netEventDic.Remove(cmd);
+                if (netEventDic[cmd].Count == 0)
+                { 
+                    //netEventDic.Remove(cmd);
+                    ObjectPoolAuto.Release(netEventDic[cmd]);
+                    netEventDic.Remove(cmd);
+                }
             }
         }
         #endregion

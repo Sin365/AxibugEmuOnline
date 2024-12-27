@@ -20,12 +20,12 @@ namespace AxibugEmuOnline.Server
 
         public static void InitServer(int port)
         {
+            g_Log = new LogManager();
             Config.LoadConfig();
             Haoyue_SQLPoolManager.InitConnMgr();
             g_Tick = new TickManager();
             g_ClientMgr = new ClientManager();
             g_ClientMgr.Init(45000, 120);
-            g_Log = new LogManager();
             g_Login = new LoginManager();
             g_Chat = new ChatManager();
             g_UserMgr = new UserManager();

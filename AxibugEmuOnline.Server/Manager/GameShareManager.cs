@@ -1,10 +1,8 @@
 ﻿using AxibugEmuOnline.Server.Common;
-using AxibugEmuOnline.Server.Event;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
 using System.Net.Sockets;
-using static AxibugEmuOnline.Server.RoomManager;
 
 namespace AxibugEmuOnline.Server.Manager
 {

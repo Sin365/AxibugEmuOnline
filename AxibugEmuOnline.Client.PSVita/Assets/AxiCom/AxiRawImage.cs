@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiRawImage : UnityEngine.UI.RawImage {} }

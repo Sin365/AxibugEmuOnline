@@ -1,0 +1,1 @@
+namespace AxibugCom { public class AxiStandaloneInputModule : UnityEngine.EventSystems.StandaloneInputModule {} }

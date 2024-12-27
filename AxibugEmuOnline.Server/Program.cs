@@ -21,7 +21,10 @@ namespace AxibugEmuOnline.Server
                 {
                     case "rlist":
                         {
-                            var roomlist = AppSrv.g_Room.GetRoomList();
+
+                            List<Data_RoomData> roomlist = ObjectPoolAuto.AcquireList<Data_RoomData>();
+                            AppSrv.g_Room.GetRoomList(ref roomlist);
+
                             AppSrv.g_Log.Info($"RoomCount:{roomlist.Count}");
                             foreach (var room in roomlist)
                             {
@@ -55,6 +58,7 @@ namespace AxibugEmuOnline.Server
                                     }
                                 }
                             }
+                            ObjectPoolAuto.Release(roomlist);
                         }
                         break;
                     case "list":
