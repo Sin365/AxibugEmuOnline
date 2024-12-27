@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.Manager;
+﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
 using System.Collections;
 using System.IO;
@@ -69,7 +69,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            filter = new FilterManager(initer.m_filterPreview, initer.m_xmbBg);
+            filter = new FilterManager(initer.FilterPreview, initer.XMBBg);
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
