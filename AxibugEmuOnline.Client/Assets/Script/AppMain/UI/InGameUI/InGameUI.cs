@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
-using VirtualNes.Core;
+using System.Collections.Generic;
 
 namespace AxibugEmuOnline.Client
 {
