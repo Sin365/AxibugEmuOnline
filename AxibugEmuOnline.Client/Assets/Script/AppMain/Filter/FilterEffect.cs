@@ -54,7 +54,7 @@ namespace AxibugEmuOnline.Client
 
         public void Render(Texture src, RenderTexture result)
         {
-            m_material.SetTexture("_MainTex", src);
+            m_material.SetVector("_iResolution", new Vector4(result.width, result.height));
             OnRenderer(m_material, src, result);
         }
 
