@@ -4,6 +4,7 @@ using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Crypto.Parameters;
+using System.Collections.Generic;
 using System.Data;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -70,6 +71,8 @@ namespace AxibugEmuOnline.Server
             {
                 if (mDictRoom.ContainsKey(RoomID))
                 {
+                    mDictRoom[RoomID].Dispose();
+
                     mDictRoom.Remove(RoomID);
                     mKeyRoomList.Remove(RoomID);
                 }
@@ -83,16 +86,14 @@ namespace AxibugEmuOnline.Server
             return data;
         }
 
-        public List<Data_RoomData> GetRoomList()
+        public void GetRoomList(ref List<Data_RoomData> roomList)
         {
             lock (mDictRoom)
             {
-                List<Data_RoomData> temp = new List<Data_RoomData>();
                 foreach (var room in mDictRoom)
                 {
-                    temp.AddRange(mDictRoom.Values);
+                    roomList.AddRange(mDictRoom.Values);
                 }
-                return temp;
             }
         }
 
@@ -177,9 +178,11 @@ namespace AxibugEmuOnline.Server
             Protobuf_Room_List msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_List>(reqData);
 
             Protobuf_Room_List_RESP resp = new Protobuf_Room_List_RESP();
-            List<Data_RoomData> temp = GetRoomList();
+            List<Data_RoomData> temp = ObjectPoolAuto.AcquireList<Data_RoomData>();
+            GetRoomList(ref temp);
             foreach (var room in temp)
                 resp.RoomMiniInfoList.Add(GetProtoDataRoom(room));
+            ObjectPoolAuto.Release(temp);
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomList, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
         }
         public void CmdRoomGetScreen(Socket sk, byte[] reqData)
@@ -513,12 +516,15 @@ namespace AxibugEmuOnline.Server
                 RoomMiniInfo = GetProtoDataRoom(room)
             };
 
-            List<ClientInfo> userlist = room.GetAllPlayerClientList();
+            List<ClientInfo> userlist = ObjectPoolAuto.AcquireList<ClientInfo>();
+            room.GetAllPlayerClientList(ref userlist);
 
             foreach (ClientInfo _c in userlist)
             {
                 AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomMyRoomStateChanged, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
             }
+
+            ObjectPoolAuto.Release(userlist);
         }
 
         /// <summary>
@@ -527,7 +533,10 @@ namespace AxibugEmuOnline.Server
         /// <param name="room"></param>
         public void SendRoomStepChange(Data_RoomData room)
         {
-            List<ClientInfo> roomClient = room.GetAllPlayerClientList();
+
+            List<ClientInfo> roomClient = ObjectPoolAuto.AcquireList<ClientInfo>();
+            room.GetAllPlayerClientList(ref roomClient);
+
             switch (room.GameState)
             {
                 case RoomGameState.WaitRawUpdate:
@@ -562,6 +571,8 @@ namespace AxibugEmuOnline.Server
                     }
                     break;
             }
+
+            ObjectPoolAuto.Release(roomClient);
         }
 
         #region 房间帧循环
@@ -591,7 +602,7 @@ namespace AxibugEmuOnline.Server
         #endregion
     }
 
-    public class Data_RoomData
+    public class Data_RoomData : IDisposable
     {
         public int RoomID { get; private set; }
         public int GameRomID { get; private set; }
@@ -612,9 +623,13 @@ namespace AxibugEmuOnline.Server
         public uint mCurrServerFrameId = 0;
         public ServerInputSnapShot mCurrInputData;
         public Queue<(uint, ServerInputSnapShot)> mInputQueue;
+
+        public List<double> send2time;
+        const int SynLimitOnSec = 63;
+
         object synInputLock = new object();
         //TODO
-        public Dictionary<int, Queue<byte[]>> mDictPlayerIdx2SendQueue;
+        //public Dictionary<int, Queue<byte[]>> mDictPlayerIdx2SendQueue;
         public RoomGameState GameState
         {
             get { return mGameState; }
@@ -641,6 +656,7 @@ namespace AxibugEmuOnline.Server
         public uint SrvForwardFrames { get; set; }
         public void Init(int roomID, int gameRomID, string roomHash, long hostUId, bool bloadState = false)
         {
+            Dispose();
             RoomID = roomID;
             GameRomID = gameRomID;
             RomHash = roomHash;
@@ -658,12 +674,39 @@ namespace AxibugEmuOnline.Server
                 PlayerSlot[i].Init(i);
 
             //PlayerReadyState = new bool[4];
-            SynUIDs = new List<long>();//广播角色列表
+            SynUIDs = ObjectPoolAuto.AcquireList<long>();//new List<long>();//广播角色列表
             GameState = RoomGameState.NoneGameState;
             mCurrInputData = new ServerInputSnapShot();
-            mInputQueue = new Queue<(uint, ServerInputSnapShot)>();
-            mDictPlayerIdx2SendQueue = new Dictionary<int, Queue<byte[]>>();
+            mInputQueue = ObjectPoolAuto.AcquireQueue<(uint, ServerInputSnapShot)>();
+            // new Queue<(uint, ServerInputSnapShot)>();
+            //mDictPlayerIdx2SendQueue = new Dictionary<int, Queue<byte[]>>();
+            send2time = ObjectPoolAuto.AcquireList<double>();
         }
+
+        /// <summary>
+        /// 房间释放时，需要调用
+        /// </summary>
+        public void Dispose()
+        {
+            if (SynUIDs != null)
+            {
+                ObjectPoolAuto.Release(SynUIDs);
+                SynUIDs = null;
+            }
+
+            if (mInputQueue != null)
+            {
+                ObjectPoolAuto.Release(mInputQueue);
+                mInputQueue = null;
+            }
+
+            if (send2time != null)
+            {
+                ObjectPoolAuto.Release(send2time);
+                send2time = null;
+            }
+        }
+
         public Dictionary<uint, uint> GetSlotDataByUID(long uid)
         {
             Dictionary<uint, uint> slotIdx2JoyIdx = new Dictionary<uint, uint>();
@@ -736,13 +779,13 @@ namespace AxibugEmuOnline.Server
                 else if (Player2_UID == uid) bHad = true;
                 else if (Player3_UID == uid) bHad = true;
                 else if (Player4_UID == uid) bHad = true;
-                if (bHad)
+                if (!bHad)
                     SynUIDs.RemoveAt(i);
             }
-            if (!SynUIDs.Contains(Player1_UID)) SynUIDs.Add(Player1_UID);
-            if (!SynUIDs.Contains(Player2_UID)) SynUIDs.Add(Player2_UID);
-            if (!SynUIDs.Contains(Player3_UID)) SynUIDs.Add(Player3_UID);
-            if (!SynUIDs.Contains(Player4_UID)) SynUIDs.Add(Player4_UID);
+            if (Player1_UID > 0 && !SynUIDs.Contains(Player1_UID)) SynUIDs.Add(Player1_UID);
+            if (Player2_UID > 0 && !SynUIDs.Contains(Player2_UID)) SynUIDs.Add(Player2_UID);
+            if (Player3_UID > 0 && !SynUIDs.Contains(Player3_UID)) SynUIDs.Add(Player3_UID);
+            if (Player4_UID > 0 && !SynUIDs.Contains(Player4_UID)) SynUIDs.Add(Player4_UID);
         }
 
         #region 准备状态管理
@@ -790,7 +833,7 @@ namespace AxibugEmuOnline.Server
         public void SetPlayerSlotData(ClientInfo _c, ref readonly Dictionary<uint, uint> newSlotIdx2JoyIdx)
         {
             Dictionary<uint, uint> oldSlotIdx2JoyIdx = GetSlotDataByUID(_c.UID);
-            HashSet<uint> diffSlotIdxs = new HashSet<uint>();
+            HashSet<uint> diffSlotIdxs = ObjectPoolAuto.AcquireSet<uint>();// new HashSet<uint>();
             foreach (var old in oldSlotIdx2JoyIdx)
             {
                 uint old_slotIdx = old.Key;
@@ -830,6 +873,8 @@ namespace AxibugEmuOnline.Server
             //更新需要同步的UID
             UpdateSynUIDs();
             _c.RoomState.SetRoomData(this.RoomID);
+
+            ObjectPoolAuto.Release(diffSlotIdxs);
         }
         public void RemovePlayer(ClientInfo _c)
         {
@@ -873,9 +918,8 @@ namespace AxibugEmuOnline.Server
 
             return true;
         }
-        public List<ClientInfo> GetAllPlayerClientList()
+        public void GetAllPlayerClientList(ref List<ClientInfo> list)
         {
-            List<ClientInfo> list = new List<ClientInfo>();
             List<long> Uids = SynUIDs;
             foreach (long uid in Uids)
             {
@@ -883,7 +927,6 @@ namespace AxibugEmuOnline.Server
                     continue;
                 list.Add(_c);
             }
-            return list;
         }
 
         void SetInputBySlotIdxJoyIdx(uint SlotIdx, uint LocalJoyIdx, ServerInputSnapShot clieninput)
@@ -902,7 +945,10 @@ namespace AxibugEmuOnline.Server
         }
         public void UpdateRoomForwardNum()
         {
-            List<ClientInfo> playerlist = GetAllPlayerClientList();
+
+            List<ClientInfo> playerlist = ObjectPoolAuto.AcquireList<ClientInfo>();
+            GetAllPlayerClientList(ref playerlist);
+
             double maxNetDelay = 0;
             for (int i = 0; i < playerlist.Count; i++)
             {
@@ -914,13 +960,15 @@ namespace AxibugEmuOnline.Server
             if (SrvForwardFrames < 2)
                 SrvForwardFrames = 2;
             //AppSrv.g_Log.Debug($"服务器提前跑帧数：Max(2,({maxNetDelay} / {0.016f}) + {MustTaskFrame}) = {SrvForwardFrames}");
+
+            ObjectPoolAuto.Release(playerlist);
         }
 
         #region 帧相关
         void StartNewTick()
         {
             mInputQueue.Clear();
-            mDictPlayerIdx2SendQueue.Clear();
+            //mDictPlayerIdx2SendQueue.Clear();
 
             mCurrServerFrameId = 0;
             mCurrInputData.all = 1;
@@ -951,8 +999,6 @@ namespace AxibugEmuOnline.Server
         ulong LastTestSend = 0;
         internal ulong LastTestRecv;
 
-        public List<double> send2time = new List<double>();
-        const int SynLimitOnSec = 63;
 
         /// <summary>
         /// 广播数据
@@ -978,7 +1024,8 @@ namespace AxibugEmuOnline.Server
                     if (!flagInitList)
                     {
                         flagInitList = true;
-                        temp = new List<(uint frameId, ServerInputSnapShot inputdata)>();
+                        //temp = new List<(uint frameId, ServerInputSnapShot inputdata)>();
+                        temp = ObjectPoolAuto.AcquireList<(uint frameId, ServerInputSnapShot inputdata)>();
                     }
                     temp.Add(mInputQueue.Dequeue());
                     send2time.Add(timeNow);
@@ -1010,6 +1057,8 @@ namespace AxibugEmuOnline.Server
                 //    AppSrv.g_Log.Debug($" {DateTime.Now.ToString("hh:mm:ss.fff")} SynInput=> RoomID->{RoomID} ServerFrameID->{mCurrServerFrameId} SynUIDs=>{string.Join(",", SynUIDs)} ");
                 //}
             }
+
+            ObjectPoolAuto.Release(temp);
         }
 
         bool CheckRoomStateChange(int oldPlayerCount, int newPlayerCount)
@@ -1174,6 +1223,7 @@ namespace AxibugEmuOnline.Server
                 forwaFrame = targetFrame - mCurrServerFrameId;
             return forwaFrame > 0;
         }
+
         #endregion
     }
 
