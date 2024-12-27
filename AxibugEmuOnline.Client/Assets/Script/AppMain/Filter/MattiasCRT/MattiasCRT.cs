@@ -13,11 +13,9 @@ public sealed class MattiasCRT : FilterEffect
     private LocalKeyword _kw_qualityLow;
     private LocalKeyword _kw_qualityMid;
     private LocalKeyword _kw_qualityHigh;
-    private int _pid_iResolution;
 
     protected override void OnInit(Material renderMat)
     {
-        _pid_iResolution = Shader.PropertyToID("_iResolution");
         _kw_qualityLow = new LocalKeyword(renderMat.shader, "_QUALITY_LOW");
         _kw_qualityMid = new LocalKeyword(renderMat.shader, "_QUALITY_MID");
         _kw_qualityHigh = new LocalKeyword(renderMat.shader, "_QUALITY_HIGH");
@@ -25,7 +23,6 @@ public sealed class MattiasCRT : FilterEffect
 
     protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
     {
-        renderMat.SetVector(_pid_iResolution, new Vector4(result.width, result.height, 0, 0));
         renderMat.DisableKeyword(_kw_qualityLow);
         renderMat.DisableKeyword(_kw_qualityMid);
         renderMat.DisableKeyword(_kw_qualityHigh);

@@ -16,6 +16,6 @@ public class UIFilterPreviewer : MonoBehaviour
 
     private void Update()
     {
-        m_rawImg.texture = App.filter.ExecuteFilterRender(m_src);
+        App.filter.ExecuteFilterRender(m_src, m_rawImg);
     }
 }

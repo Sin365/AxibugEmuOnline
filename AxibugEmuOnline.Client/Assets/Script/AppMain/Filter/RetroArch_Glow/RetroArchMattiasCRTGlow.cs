@@ -1,4 +1,4 @@
-using Assets.Script.AppMain.Filter;
+﻿using Assets.Script.AppMain.Filter;
 using AxibugEmuOnline.Client;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -47,7 +47,6 @@ public class RetroArchMattiasCRTGlow : FilterEffect
         m_multipPassCmd.Clear();
 
         m_multipPassCmd.GetTemporaryRT(m_wrapRT, result.width, result.height);
-        renderMat.SetVector("_iResolution", new Vector2(result.width, result.height));
 
         renderMat.SetFloat(m_gamma_ID, InputGamma.GetValue());
         renderMat.SetFloat(m_horiz_gauss_width_ID, GaussianWidth.GetValue());
