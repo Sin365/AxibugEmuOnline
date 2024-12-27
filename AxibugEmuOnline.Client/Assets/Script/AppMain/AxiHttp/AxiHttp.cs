@@ -151,15 +151,9 @@ public static class AxiHttp
 	{
 		if (!dictIP2Address.ContainsKey(str))
 		{
-			try
-			{
-				IPAddress ip = Dns.GetHostEntry(str).AddressList[0];
-				dictIP2Address[str] = ip;
-			}
-			catch
-			{
-				return null;
-			}
+			IPHostEntry host = Dns.GetHostEntry(str);
+			IPAddress ip = host.AddressList[0];
+			dictIP2Address[str] = ip;
 		}
 		return dictIP2Address[str];
 	}
@@ -232,11 +226,12 @@ public static class AxiHttp
 			string strRelativePath = "";
 			bool bSSL = false;
 			bool foward_302 = true;
+			string ourErrMsg = "";
 
-			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath))
+			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath,ref ourErrMsg))
 			{
 				Log("ParseURI False");
-				respinfo.Err = "ParseURI False";
+				respinfo.Err = ourErrMsg;
 				respinfo.code = 0;
 				respinfo.isDone = true;
 				return;
@@ -531,11 +526,12 @@ public static class AxiHttp
 			string strRelativePath = "";
 			bool bSSL = false;
 			bool foward_302 = true;
+			string ourErrMsg = "";
 
-			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath))
+			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath, ref ourErrMsg))
 			{
 				Log("ParseURI False");
-				respinfo.Err = "ParseURI False";
+				respinfo.Err = ourErrMsg;
 				respinfo.code = 0;
 				respinfo.isDone = true;
 				return;
@@ -980,7 +976,13 @@ public static class AxiHttp
 	{
 		return true;
 	}
-	public static bool ParseURI(string strURI, ref bool bIsSSL, ref string strHost, ref string strIP, ref int Port, ref string strRelativePath)
+	public static bool ParseURI(string strURI, 
+		ref bool bIsSSL, 
+		ref string strHost, 
+		ref string strIP, 
+		ref int Port, 
+		ref string strRelativePath,
+		ref string errMsg)
 	{
 		string strAddressRet;
 		string strPortRet;
@@ -1013,7 +1015,10 @@ public static class AxiHttp
 				strRelativePathRet = strLeft.Substring(nIndexRelative, strLeft.Length - nIndexRelative);
 			}
 			else
+			{
+				errMsg = "Err Url";
 				return false;
+			}
 		}
 		else
 		{
@@ -1025,18 +1030,19 @@ public static class AxiHttp
 				strRelativePathRet = strLeft.Substring(nIndexRelative, strLeft.Length - nIndexRelative);
 			}
 			else
+			{
+				errMsg = "Err Url";
 				return false;
+			}
 		}
 		strHost = strAddressRet;
 		try
 		{
-			//IPHostEntry hostinfo = Dns.GetHostEntry(strAddressRet);
-			//IPAddress[] aryIP = hostinfo.AddressList;
-			//strIPRet = aryIP[0].ToString();
 			strIPRet = GetDnsIP(strAddressRet).ToString();
 		}
-		catch
+		catch(Exception ex)
 		{
+			errMsg = ex.ToString();
 			return false;
 		}
 

@@ -63,6 +63,13 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
+            if (request.downloadHandler.Err != null)
+            {
+                App.log.Error(request.downloadHandler.Err);
+                callback.Invoke(null);
+                yield break;
+            }
+
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
             yield return request.SendWebRequest();
@@ -82,6 +89,13 @@ namespace AxibugEmuOnline.Client
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
+                callback.Invoke(null);
+                yield break;
+            }
+
+            if (request.downloadHandler.Err != null)
+            {
+                App.log.Error(request.downloadHandler.Err);
                 callback.Invoke(null);
                 yield break;
             }
@@ -106,6 +120,13 @@ namespace AxibugEmuOnline.Client
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
+                callback.Invoke(null);
+                yield break;
+            }
+
+            if (request.downloadHandler.Err != null)
+            {
+                App.log.Error(request.downloadHandler.Err);
                 callback.Invoke(null);
                 yield break;
             }

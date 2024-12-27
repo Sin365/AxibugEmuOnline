@@ -132,6 +132,13 @@ namespace AxibugEmuOnline.Client.ClientCore
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
                 yield break;
+
+            if (request.downloadHandler.Err != null)
+            {
+                App.log.Error(request.downloadHandler.Err);
+                yield break;
+            }
+
             Resp_CheckStandInfo resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);
 
             /*UnityWebRequest request = UnityWebRequest.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");

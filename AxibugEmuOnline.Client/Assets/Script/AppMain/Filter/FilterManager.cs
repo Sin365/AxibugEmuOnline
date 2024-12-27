@@ -50,6 +50,13 @@ namespace AxibugEmuOnline.Client
         private RenderTexture result = null;
         public Texture ExecuteFilterRender(Texture src)
         {
+
+#if UNITY_PSP2
+			if (result == null)
+			{
+				result = RenderTexture.GetTemporary(Screen.width / 2, Screen.height / 2);
+			}
+#else
             if (result == null)
             {
                 result = RenderTexture.GetTemporary(Screen.width, Screen.height);
@@ -59,7 +66,7 @@ namespace AxibugEmuOnline.Client
                 RenderTexture.ReleaseTemporary(result);
                 result = RenderTexture.GetTemporary(Screen.width, Screen.height);
             }
-
+#endif
 
 
             bool anyFilterEnable = false;
