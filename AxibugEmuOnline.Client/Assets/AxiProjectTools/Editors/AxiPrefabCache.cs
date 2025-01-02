@@ -5,8 +5,6 @@ using UnityEditor;
 using UnityEngine;
 
 
-
-[CreateAssetMenu(fileName = "CrossMapCfg", menuName = "Tools/AxiPrefabCachec", order = 0)]
 public class AxiPrefabCache : ScriptableObject
 {
     public List<AxiPrefabCache_Com2GUID> caches = new List<AxiPrefabCache_Com2GUID>();

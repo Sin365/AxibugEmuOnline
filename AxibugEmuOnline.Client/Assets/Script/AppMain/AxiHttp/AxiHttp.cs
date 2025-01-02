@@ -14,9 +14,12 @@ using System.Threading;
 
 public static class PSVThread
 {
+
+#if UNITY_PSP2
 	static AutoResetEvent autoEvent = new AutoResetEvent(false);
 	static Queue<Action> qActs = new Queue<Action>();
 	static Queue<Action> qWork = new Queue<Action>();
+#endif
 
 	public static void DoTask(Action act)
 	{
@@ -85,7 +88,7 @@ public static class AxiHttp
 	public static long index = 0;
 	static int singlePkgMaxRead = 1024;
 
-	public class WaitAxiRequest : UnityEngine.CustomYieldInstruction
+    public class WaitAxiRequest : UnityEngine.CustomYieldInstruction
 	{
 		public AxiRespInfo mReqAsync;
 		public WaitAxiRequest(AxiRespInfo reqAsync)

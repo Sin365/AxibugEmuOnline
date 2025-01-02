@@ -47,6 +47,8 @@ namespace AxibugEmuOnline.Client.ClientCore
 #endif
         public static void Init( bool isTest = false, string testSrvIP = "")
         {
+            log = new LogManager(OnLogOut);
+
             //其他平台必要的初始化
             if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
             {
@@ -54,9 +56,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             }
 
             settings = new AppSettings();
-
-            log = new LogManager();
-            LogManager.OnLog += OnNoSugarNetLog;
             network = new NetworkHelper();
             login = new AppLogin();
             chat = new AppChat();
@@ -187,20 +186,20 @@ namespace AxibugEmuOnline.Client.ClientCore
         {
             App.log.Info("停止");
         }
-        static void OnNoSugarNetLog(int LogLevel, string msg)
+        static void OnLogOut(int LogLevel, string msg)
         {
             E_LogType logType = (E_LogType)LogLevel;
             switch (logType)
             {
                 case E_LogType.Debug:
                 case E_LogType.Info:
-                    Debug.Log("[AxiEmu]:" + msg);
+                    Debug.Log("[AxiNet]:" + msg);
                     break;
                 case E_LogType.Warning:
-                    Debug.LogWarning("[AxiEmu]:" + msg);
+                    Debug.LogWarning("[AxiNet]:" + msg);
                     break;
                 case E_LogType.Error:
-                    Debug.LogError("[AxiEmu]:" + msg);
+                    Debug.LogError("[AxiNet]:" + msg);
                     break;
             }
         }

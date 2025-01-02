@@ -18,16 +18,22 @@ namespace AxibugEmuOnline.Client
 #if UNITY_EDITOR
         public bool bTest = false;
         public string mTestSrvIP = "192.168.0.47";
+        public bool bEditorUUID = false;
 #endif
 
         private void Awake()
         {
 #if UNITY_EDITOR
             App.Init(bTest, mTestSrvIP);
+            dev_UUID = SystemInfo.deviceUniqueIdentifier;
+            if (bEditorUUID)
+            {
+                dev_UUID += "_Editor";
+            }
 #else
             App.Init(this);
-#endif
             dev_UUID = SystemInfo.deviceUniqueIdentifier;
+#endif
 
             m_refs = Instantiate(IMPORTENT, transform).GetComponent<GlobalRef>();
         }

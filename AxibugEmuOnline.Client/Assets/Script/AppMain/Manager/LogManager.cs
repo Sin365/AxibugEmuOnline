@@ -2,6 +2,11 @@
 {
     public class LogManager
     {
+        public LogManager(OnLogHandler logOut)
+        {
+            OnLog += logOut;
+        }
+
         public enum E_LogType : byte
         {
             Info = 0,
@@ -18,7 +23,7 @@
         /// <summary>  
         /// 内部输出
         /// </summary>
-        public static event OnLogHandler OnLog;
+        static event OnLogHandler OnLog;
 
         public void Info(string str)
         {
@@ -38,6 +43,14 @@
         public void Error(string str)
         {
             Log(E_LogType.Error, str);
+        }
+
+        public void Assert(bool conditional, string message)
+        {
+            if (!conditional)
+            {
+                Debug(message);
+            }
         }
 
         public void Log(E_LogType logtype, string str)
