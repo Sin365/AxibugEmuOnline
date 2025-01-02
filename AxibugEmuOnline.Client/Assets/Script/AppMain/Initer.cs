@@ -14,6 +14,7 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         GameObject IMPORTENT;
 
+        
 
 #if UNITY_EDITOR
         public bool bTest = false;

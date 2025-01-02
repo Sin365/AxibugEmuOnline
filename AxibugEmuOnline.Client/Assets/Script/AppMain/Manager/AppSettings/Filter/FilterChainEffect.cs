@@ -1,18 +1,19 @@
 ﻿using AxibugEmuOnline.Client;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Experimental.Rendering;
 
 public abstract class FilterChainEffect : FilterEffect
 {
     #region SealedForDisable
     protected sealed override string ShaderName => null;
     protected sealed override void OnInit(Material renderMat) { }
-    protected sealed override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
+
+    public sealed override void Render(Texture src, RenderTexture result)
     {
         OnRenderer(src, result);
     }
+    protected sealed override void OnRenderer(Material renderMat, Texture src, RenderTexture result) { }
     #endregion
 
     List<PassDefine> m_passes = new List<PassDefine>();
@@ -21,8 +22,11 @@ public abstract class FilterChainEffect : FilterEffect
     static int OriginalSize;
     static int Source;
     static int SourceSize;
+    static int FrameCount;
+    static int OutputSize;
 
     List<int> m_passOutputTexNames = new List<int>();
+    List<int> m_passOutputTexSizes = new List<int>();
 
     static FilterChainEffect()
     {
@@ -30,6 +34,8 @@ public abstract class FilterChainEffect : FilterEffect
         OriginalSize = Shader.PropertyToID(nameof(OriginalSize));
         Source = Shader.PropertyToID(nameof(Source));
         SourceSize = Shader.PropertyToID(nameof(SourceSize));
+        FrameCount = Shader.PropertyToID(nameof(FrameCount));
+        OutputSize = Shader.PropertyToID(nameof(OutputSize));
     }
 
     protected sealed override void Init()
@@ -39,8 +45,12 @@ public abstract class FilterChainEffect : FilterEffect
         {
             m_passes[i].Init(i);
             m_passOutputTexNames.Add(Shader.PropertyToID(m_passes[i].NormalOutputTextureName));
+            m_passOutputTexSizes.Add(Shader.PropertyToID($"{m_passes[i].NormalOutputTextureName}Size"));
             if (m_passes[i].AliasOutputTextureName != null)
+            {
                 m_passOutputTexNames.Add(Shader.PropertyToID(m_passes[i].AliasOutputTextureName));
+                m_passOutputTexSizes.Add(Shader.PropertyToID($"{m_passes[i].AliasOutputTextureName}Size"));
+            }
         }
     }
 
@@ -60,13 +70,24 @@ public abstract class FilterChainEffect : FilterEffect
             pass.Mat.SetVector(OriginalSize, originalSize);
             pass.Mat.SetTexture(Source, lastoutput);
             pass.Mat.SetVector(SourceSize, new Vector4(lastoutput.width, lastoutput.height, 1f / lastoutput.width, 1f / lastoutput.height));
-            foreach (var existoutput in m_passOutputTexNames)
+            pass.Mat.SetFloat(FrameCount, Time.frameCount);
+
+            for (int index = 0; index < m_passOutputTexNames.Count; index++)
             {
-                if (pass.Mat.HasTexture(existoutput) && m_outputCaches.TryGetValue(existoutput, out var passOutput))
-                    pass.Mat.SetTexture(existoutput, passOutput);
+                var existoutput = m_passOutputTexNames[index];
+                var existoutputSize = m_passOutputTexSizes[index];
+                if (m_outputCaches.TryGetValue(existoutput, out var passOutput))
+                {
+                    if (pass.Mat.HasTexture(existoutput))
+                        pass.Mat.SetTexture(existoutput, passOutput);
+                    if (pass.Mat.HasVector(existoutputSize))
+                        pass.Mat.SetVector(existoutputSize, new Vector4(passOutput.width, passOutput.height, 1f / passOutput.width, 1f / passOutput.height));
+                }
             }
 
             var output = pass.GetOutput(input, lastoutput, finalOut);
+
+            pass.Mat.SetVector(OutputSize, new Vector4(output.width, output.height, 1f / output.width, 1f / output.height));
 
             m_outputCaches[pass.NormalOutputTextureName_PID] = output;
             if (pass.AliasOutputTextureName != null) m_outputCaches[pass.AliasOutputTextureName_PID] = output;
@@ -86,13 +107,15 @@ public abstract class FilterChainEffect : FilterEffect
         public string ShaderName { get; private set; }
         public FilterMode FilterMode { get; private set; }
         public TextureWrapMode WrapMode { get; private set; }
-        public EnumScaleMode ScaleMode { get; private set; }
+        public EnumScaleMode ScaleModeX { get; private set; }
+        public EnumScaleMode ScaleModeY { get; private set; }
         public float ScaleX { get; private set; }
         public float ScaleY { get; private set; }
         public string AliasOutputTextureName { get; private set; }
         public int AliasOutputTextureName_PID { get; private set; }
         public string NormalOutputTextureName { get; private set; }
         public int NormalOutputTextureName_PID { get; private set; }
+        public bool sRGB { get; private set; }
 
         private PassDefine() { }
 
@@ -100,8 +123,9 @@ public abstract class FilterChainEffect : FilterEffect
             string shaderName,
             FilterMode filterMode = FilterMode.Point,
             TextureWrapMode wrapMode = TextureWrapMode.Clamp,
-            EnumScaleMode scaleMode = EnumScaleMode.Source, float scaleX = 1f, float scaleY = 1f,
-            string outputAlias = null
+            EnumScaleMode scaleModeX = EnumScaleMode.Source, EnumScaleMode scaleModeY = EnumScaleMode.Source, float scaleX = 1f, float scaleY = 1f,
+            string outputAlias = null,
+            bool sRGB = false
             )
         {
             return new PassDefine()
@@ -109,15 +133,19 @@ public abstract class FilterChainEffect : FilterEffect
                 ShaderName = shaderName,
                 FilterMode = filterMode,
                 WrapMode = wrapMode,
-                ScaleMode = scaleMode,
+                ScaleModeX = scaleModeX,
+                ScaleModeY = scaleModeY,
                 ScaleX = scaleX,
                 ScaleY = scaleY,
                 AliasOutputTextureName = outputAlias,
+                sRGB = sRGB,
             };
         }
 
         public int PassIndex { get; private set; }
         public Material Mat { get; private set; }
+
+
         internal void Init(int passIndex)
         {
             Mat = new Material(Shader.Find(ShaderName));
@@ -131,23 +159,36 @@ public abstract class FilterChainEffect : FilterEffect
         internal RenderTexture GetOutput(Texture original, Texture source, Texture final)
         {
             int width = 0;
-            int height = 0;
-            switch (ScaleMode)
+            switch (ScaleModeX)
             {
                 case EnumScaleMode.Viewport:
                     width = (int)(final.width * ScaleX);
-                    height = (int)(final.height * ScaleY);
                     break;
                 case EnumScaleMode.Source:
                     width = (int)(source.width * ScaleX);
-                    height = (int)(source.height * ScaleY);
                     break;
                 case EnumScaleMode.Absolute:
                     width = (int)ScaleX;
+                    break;
+            }
+            int height = 0;
+            switch (ScaleModeY)
+            {
+                case EnumScaleMode.Viewport:
+                    height = (int)(final.height * ScaleY);
+                    break;
+                case EnumScaleMode.Source:
+                    height = (int)(source.height * ScaleY);
+                    break;
+                case EnumScaleMode.Absolute:
                     height = (int)ScaleY;
                     break;
             }
-            var rt = RenderTexture.GetTemporary(width, height);
+
+            GraphicsFormat format = GraphicsFormat.R8G8B8A8_UNorm;
+            if (sRGB) format = GraphicsFormat.R8G8B8A8_SRGB;
+            var rt = RenderTexture.GetTemporary(width, height, 0, format, 1);
+
             rt.wrapMode = WrapMode;
             rt.filterMode = FilterMode;
 
