@@ -707,13 +707,13 @@ namespace AxibugEmuOnline.Server
             }
         }
 
-        public Dictionary<uint, uint> GetSlotDataByUID(long uid)
+        public bool GetSlotDataByUID(long uid, out Dictionary<uint, uint> slotIdx2JoyIdx)
         {
-            Dictionary<uint, uint> slotIdx2JoyIdx = new Dictionary<uint, uint>();
+            slotIdx2JoyIdx = new Dictionary<uint, uint>();
             var dataarr = PlayerSlot.Where(w => w.UID == uid).ToArray();
             foreach (var slot in dataarr)
                 slotIdx2JoyIdx[slot.SlotIdx] = slot.LocalJoyIdx;
-            return slotIdx2JoyIdx;
+            return slotIdx2JoyIdx.Count > 0;
         }
         /// <summary>
         /// 按照SlotIdx设置Input
@@ -832,7 +832,7 @@ namespace AxibugEmuOnline.Server
 
         public void SetPlayerSlotData(ClientInfo _c, ref readonly Dictionary<uint, uint> newSlotIdx2JoyIdx)
         {
-            Dictionary<uint, uint> oldSlotIdx2JoyIdx = GetSlotDataByUID(_c.UID);
+            GetSlotDataByUID(_c.UID, out Dictionary<uint, uint> oldSlotIdx2JoyIdx);
             HashSet<uint> diffSlotIdxs = ObjectPoolAuto.AcquireSet<uint>();// new HashSet<uint>();
             foreach (var old in oldSlotIdx2JoyIdx)
             {
@@ -1132,6 +1132,32 @@ namespace AxibugEmuOnline.Server
                     }
                     break;
             }
+
+
+
+            //房主离线,自动选择延迟最低另一名玩家做房主
+            if (!GetSlotDataByUID(this.HostUID, out Dictionary<uint, uint> slotIdx2JoyIdx))
+            {
+                List<ClientInfo> userlist = ObjectPoolAuto.AcquireList<ClientInfo>();
+                GetAllPlayerClientList(ref userlist);
+                if (userlist.Count > 0)
+                {
+                    ClientInfo? client = userlist.OrderBy(w => w.AveNetDelay).FirstOrDefault();
+                    this.HostUID = client.UID;
+                    AppSrv.g_Log.DebugCmd($"更换房主为{this.HostUID}");
+                    bChanged = true;
+                }
+                ObjectPoolAuto.Release(userlist);
+            }
+
+            if (this.GameState > RoomGameState.OnlyHost && newPlayerCount == 1)
+            {
+                this.GameState = RoomGameState.OnlyHost;
+                AppSrv.g_Log.DebugCmd("回到OnlyHost状态");
+                bChanged = true;
+            }
+
+
             return bChanged;
         }
 
