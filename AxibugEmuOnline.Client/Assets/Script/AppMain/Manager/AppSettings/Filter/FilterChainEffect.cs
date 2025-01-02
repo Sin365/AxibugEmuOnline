@@ -1,4 +1,6 @@
-﻿using AxibugEmuOnline.Client;
+﻿using Assets.Script.AppMain.Filter;
+using AxibugEmuOnline.Client;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
@@ -65,6 +67,7 @@ public abstract class FilterChainEffect : FilterEffect
         for (int i = 0; i < m_passes.Count; i++)
         {
             var pass = m_passes[i];
+            pass.OnRender();
 
             pass.Mat.SetTexture(Original, input);
             pass.Mat.SetVector(OriginalSize, originalSize);
@@ -98,6 +101,9 @@ public abstract class FilterChainEffect : FilterEffect
         }
 
         Graphics.Blit(lastoutput, finalOut);
+
+        foreach (var rt in m_outputCaches.Values)
+            RenderTexture.ReleaseTemporary(rt);
     }
 
     protected abstract void DefinePasses(ref List<PassDefine> passes);
@@ -142,10 +148,27 @@ public abstract class FilterChainEffect : FilterEffect
             };
         }
 
+        private Dictionary<string, FilterParameter> m_linkingParams = new Dictionary<string, FilterParameter>();
+        public PassDefine SetParameters(string shaderValName, FilterParameter para)
+        {
+            m_linkingParams[shaderValName] = para;
+            return this;
+        }
+
         public int PassIndex { get; private set; }
         public Material Mat { get; private set; }
 
-
+        public void OnRender()
+        {
+            foreach (var item in m_linkingParams)
+            {
+                var valType = item.Value.ValueType;
+                var val = item.Value.Value;
+                var paraName = item.Key;
+                if (valType == typeof(float))
+                    Mat.SetFloat(paraName, (float)val);
+            }
+        }
         internal void Init(int passIndex)
         {
             Mat = new Material(Shader.Find(ShaderName));
@@ -185,9 +208,8 @@ public abstract class FilterChainEffect : FilterEffect
                     break;
             }
 
-            GraphicsFormat format = GraphicsFormat.R8G8B8A8_UNorm;
-            if (sRGB) format = GraphicsFormat.R8G8B8A8_SRGB;
-            var rt = RenderTexture.GetTemporary(width, height, 0, format, 1);
+            //if (sRGB) format = GraphicsFormat.R8G8B8A8_SRGB;
+            var rt = RenderTexture.GetTemporary(width, height, 0, GraphicsFormat.R8G8B8A8_UNorm, 1);
 
             rt.wrapMode = WrapMode;
             rt.filterMode = FilterMode;
