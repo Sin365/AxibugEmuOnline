@@ -738,7 +738,7 @@ namespace AxibugEmuOnline.Server
             var dataarr = PlayerSlot.Where(w => w.UID == uid).ToArray();
             foreach (var slot in dataarr)
             {
-                dataarr[slot.SlotIdx].Init(slot.SlotIdx);
+                slot.Init(slot.SlotIdx);
                 ClearInputDataBySlotIdx(slot.SlotIdx);
             }
         }
