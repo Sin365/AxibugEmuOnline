@@ -27,6 +27,12 @@ namespace AxibugEmuOnline.Client
         {
             RenderScale = new FloatParameter(m_defaultRenderScale);
             GetEditableFilterParamters();
+
+            Init();
+        }
+
+        protected virtual void Init()
+        {
             m_material = new Material(Shader.Find(ShaderName));
             OnInit(m_material);
         }
