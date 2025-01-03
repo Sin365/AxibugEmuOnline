@@ -1,4 +1,4 @@
-﻿using Assets.Script.AppMain.Filter;
+using Assets.Script.AppMain.Filter;
 using AxibugEmuOnline.Client;
 using UnityEngine;
 using UnityEngine.Rendering;

@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void Render(Texture src, RenderTexture result)
+        public virtual void Render(Texture src, RenderTexture result)
         {
             m_material.SetVector(m_iResolutionID, new Vector4(result.width, result.height));
             OnRenderer(m_material, src, result);
