@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace AxibugEmuOnline.Client
 {
@@ -47,15 +46,24 @@ namespace AxibugEmuOnline.Client
         }
         private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<Resp_GameList> callback)
         {
-            //避免特殊字符和个别文字编码问题
-            byte[] gb2312Bytes = Encoding.Default.GetBytes(searchKey);
-            byte[] utf8Bytes = Encoding.Convert(Encoding.Default, Encoding.UTF8, gb2312Bytes);
-            // 将UTF-8编码的字节数组转换回字符串（此时是UTF-8编码的字符串）
-            string utf8String = Encoding.UTF8.GetString(utf8Bytes);
-            searchKey = UrlEncode(utf8String);
-            App.log.Info($"search->{utf8String} ->{searchKey}");
 
-            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                string oldsearch = searchKey;
+                searchKey = System.Net.WebUtility.UrlEncode(searchKey);
+                App.log.Info($"search->{oldsearch} ->{searchKey}");
+                //searchKey =  HttpUtility.UrlDecode(searchKey);
+            }
+            ////避免特殊字符和个别文字编码问题
+            //byte[] gb2312Bytes = Encoding.Default.GetBytes(searchKey);
+            //byte[] utf8Bytes = Encoding.Convert(Encoding.Default, Encoding.UTF8, gb2312Bytes);
+            //// 将UTF-8编码的字节数组转换回字符串（此时是UTF-8编码的字符串）
+            //string utf8String = Encoding.UTF8.GetString(utf8Bytes);
+            //searchKey = UrlEncode(utf8String);
+            //App.log.Info($"search->{utf8String} ->{searchKey}");
+            string url = $"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}";
+            App.log.Info($"GetRomList=>{url}");
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
@@ -85,7 +93,9 @@ namespace AxibugEmuOnline.Client
         }
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
         {
-            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
+            string url = $"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}";
+            App.log.Info($"GetRomList=>{url}");
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
