@@ -88,7 +88,7 @@ public static class AxiHttp
 	public static long index = 0;
 	static int singlePkgMaxRead = 1024;
 
-    public class WaitAxiRequest : UnityEngine.CustomYieldInstruction
+	public class WaitAxiRequest : UnityEngine.CustomYieldInstruction
 	{
 		public AxiRespInfo mReqAsync;
 		public WaitAxiRequest(AxiRespInfo reqAsync)
@@ -117,7 +117,22 @@ public static class AxiHttp
 	{
 		public bool isDone = false;
 		public AxiDownLoadMode downloadMode = AxiDownLoadMode.NotDownLoad;
-		public string Err = null;
+		public bool bHadErr
+		{
+			get
+			{
+				return
+					isDone = true 
+					&&
+					(
+					!string.IsNullOrEmpty(ErrInfo) 
+					||
+					code != 200
+					);
+			}
+		}
+		public string ErrInfo;
+		//public string Err = null;
 		public string host = "";//host主机头
 		public string url = "";//pathAndQuery
 		public int port = 80;
@@ -231,10 +246,10 @@ public static class AxiHttp
 			bool foward_302 = true;
 			string ourErrMsg = "";
 
-			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath,ref ourErrMsg))
+			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath, ref ourErrMsg))
 			{
 				Log("ParseURI False");
-				respinfo.Err = ourErrMsg;
+				respinfo.ErrInfo = ourErrMsg;
 				respinfo.code = 0;
 				respinfo.isDone = true;
 				return;
@@ -496,7 +511,7 @@ public static class AxiHttp
 		}
 		catch (Exception ex)
 		{
-			respinfo.Err = $"ex : {ex.ToString()}";
+			respinfo.ErrInfo = $"ex : {ex.ToString()}";
 		}
 		finally
 		{
@@ -534,7 +549,7 @@ public static class AxiHttp
 			if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath, ref ourErrMsg))
 			{
 				Log("ParseURI False");
-				respinfo.Err = ourErrMsg;
+				respinfo.ErrInfo = ourErrMsg;
 				respinfo.code = 0;
 				respinfo.isDone = true;
 				return;
@@ -778,7 +793,7 @@ public static class AxiHttp
 		}
 		catch (Exception ex)
 		{
-			respinfo.Err = $"ex : {ex.ToString()}";
+			respinfo.ErrInfo = $"ex : {ex.ToString()}";
 		}
 		finally
 		{
@@ -806,9 +821,9 @@ public static class AxiHttp
 		{
 			if (i == 0)
 			{
-
 				respinfo.code = Tools.convertToInt(headers[i].Split(' ')[1]);
-
+				if (respinfo.code != 200 && respinfo.code != 301 && respinfo.code != 302)
+					respinfo.ErrInfo = "code:" + respinfo.code;
 			}
 			else
 			{
@@ -979,11 +994,11 @@ public static class AxiHttp
 	{
 		return true;
 	}
-	public static bool ParseURI(string strURI, 
-		ref bool bIsSSL, 
-		ref string strHost, 
-		ref string strIP, 
-		ref int Port, 
+	public static bool ParseURI(string strURI,
+		ref bool bIsSSL,
+		ref string strHost,
+		ref string strIP,
+		ref int Port,
 		ref string strRelativePath,
 		ref string errMsg)
 	{
@@ -1043,7 +1058,7 @@ public static class AxiHttp
 		{
 			strIPRet = GetDnsIP(strAddressRet).ToString();
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			errMsg = ex.ToString();
 			return false;
@@ -1163,7 +1178,6 @@ public static class AxiHttp
 
 			Log($"BeginConnect {host}:{port} timeoutMSec=>{timeoutMSec}");
 			tcpclient.BeginConnect(host, port, new AsyncCallback(CallBackMethod), tcpclient);
-
 
 			if (TimeoutObject.WaitOne(timeoutMSec, false))
 			{

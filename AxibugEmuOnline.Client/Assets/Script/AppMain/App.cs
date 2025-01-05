@@ -130,9 +130,9 @@ namespace AxibugEmuOnline.Client.ClientCore
             if (!request.downloadHandler.isDone)
                 yield break;
 
-            if (request.downloadHandler.Err != null)
+            if (request.downloadHandler.bHadErr)
             {
-                App.log.Error(request.downloadHandler.Err);
+                App.log.Error(request.downloadHandler.ErrInfo);
                 yield break;
             }
 

@@ -54,7 +54,7 @@ namespace AxibugEmuOnline.Client
                 App.log.Info($"search->{oldsearch} ->{searchKey}");
                 //searchKey =  HttpUtility.UrlDecode(searchKey);
             }
-            ////避免特殊字符和个别文字编码问题
+            //避免特殊字符和个别文字编码问题
             //byte[] gb2312Bytes = Encoding.Default.GetBytes(searchKey);
             //byte[] utf8Bytes = Encoding.Convert(Encoding.Default, Encoding.UTF8, gb2312Bytes);
             //// 将UTF-8编码的字节数组转换回字符串（此时是UTF-8编码的字符串）
@@ -71,12 +71,15 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            if (request.downloadHandler.Err != null)
+            if (!request.downloadHandler.bHadErr)
             {
-                App.log.Error(request.downloadHandler.Err);
-                callback.Invoke(null);
+                var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
+                callback.Invoke(resp);
                 yield break;
             }
+
+            App.log.Error(request.downloadHandler.ErrInfo);
+            callback.Invoke(null);
 
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
@@ -88,8 +91,6 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }*/
 
-            var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
-            callback.Invoke(resp);
         }
         private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
         {
@@ -103,12 +104,16 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            if (request.downloadHandler.Err != null)
+            //请求成功
+            if (!request.downloadHandler.bHadErr)
             {
-                App.log.Error(request.downloadHandler.Err);
-                callback.Invoke(null);
+                var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
+                callback.Invoke(resp);
                 yield break;
             }
+
+            App.log.Error(request.downloadHandler.ErrInfo);
+            callback.Invoke(null);
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
             yield return request.SendWebRequest();
@@ -119,8 +124,6 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
             */
-            var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
-            callback.Invoke(resp);
         }
 
         public IEnumerator GetNesRomInfo(int RomID, Action<Resp_RomInfo> callback)
@@ -134,12 +137,16 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            if (request.downloadHandler.Err != null)
+            //成功
+            if (!request.downloadHandler.bHadErr)
             {
-                App.log.Error(request.downloadHandler.Err);
-                callback.Invoke(null);
+                var resp = JsonUtility.FromJson<Resp_RomInfo>(request.downloadHandler.text);
+                callback.Invoke(resp);
                 yield break;
             }
+
+            App.log.Error(request.downloadHandler.ErrInfo);
+            callback.Invoke(null);
 
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/RomInfo?PType={PlatformType.Nes}&RomID={RomID}");
@@ -151,8 +158,6 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }*/
 
-            var resp = JsonUtility.FromJson<Resp_RomInfo>(request.downloadHandler.text);
-            callback.Invoke(resp);
         }
 
         enum PlatformType : byte

@@ -136,7 +136,7 @@ namespace AxibugEmuOnline.Client
             var request = downloadRequest;
             downloadRequest = null;
 
-			if (request.downloadHandler.Err == null)
+			if (!request.downloadHandler.bHadErr)
                 callback(request.downloadHandler.data);
 			else
                 callback(null);

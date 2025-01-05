@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client
             }
             AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler);
 
-            if (request.downloadHandler.Err == null)
+            if (!request.downloadHandler.bHadErr)
             {
                 Directory.CreateDirectory(path);
                 File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data);
