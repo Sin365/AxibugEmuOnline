@@ -14,27 +14,7 @@ namespace AxibugEmuOnline.Client
 
         public delegate void GetRomListAPI(Action<Resp_GameList> callback, int page, int pageSize = 10);
         public delegate void SearchRomListAPI(Action<Resp_GameList> callback, string searchKey, int page, int pageSize = 10);
-        public static string UrlEncode(string str)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (char c in str)
-            {
-                if ((c >= '0' && c <= '9') ||
-                    (c >= 'a' && c <= 'z') ||
-                    (c >= 'A' && c <= 'Z') ||
-                    c == '-' || c == '_' || c == '.' || c == '!' || c == '~' || c == '*' || c == '\'' || c == '(' || c == ')')
-                {
-                    sb.Append(c);
-                }
-                else
-                {
-                    sb.Append('%').Append(((int)c).ToString("X2"));
-                }
-            }
-
-            return sb.ToString();
-        }
+        
         public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
         {
             App.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
@@ -50,7 +30,8 @@ namespace AxibugEmuOnline.Client
             if (!string.IsNullOrEmpty(searchKey))
             {
                 string oldsearch = searchKey;
-                searchKey = System.Net.WebUtility.UrlEncode(searchKey);
+                //searchKey = System.Net.WebUtility.UrlEncode(searchKey);
+                searchKey = AxiHttp.UrlEncode(searchKey);
                 App.log.Info($"search->{oldsearch} ->{searchKey}");
                 //searchKey =  HttpUtility.UrlDecode(searchKey);
             }
