@@ -77,6 +77,8 @@ namespace AxibugEmuOnline.Client
 			{
 				m_romGetFunc((romList) =>
 				{
+					//TODO 请求失败对于romList为空时的处理
+
 					FetchPageCmd.Clear();
 					nesRomFileIdMapper.Clear();
 					nesRomFileNameMapper.Clear();
@@ -95,6 +97,8 @@ namespace AxibugEmuOnline.Client
 			{
 				m_romSearchFunc((romList) =>
 				{
+					//TODO 请求失败对于romList为空时的处理
+
 					FetchPageCmd.Clear();
 					nesRomFileIdMapper.Clear();
 					nesRomFileNameMapper.Clear();
