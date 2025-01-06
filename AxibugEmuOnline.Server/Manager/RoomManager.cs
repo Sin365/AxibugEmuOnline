@@ -1188,8 +1188,8 @@ namespace AxibugEmuOnline.Server
                 return false;
             }
             AppSrv.g_Log.Debug($"Join _c.UID->{_c.UID} RoomID->{RoomID}");
-            Dictionary<uint, uint> slotInfo = new Dictionary<uint, uint>();
-            slotInfo[slotIdx] = joyIdx;
+            Dictionary<uint, (uint, GamePadType)> slotInfo = new Dictionary<uint, (uint, GamePadType)>();
+            slotInfo[slotIdx] = (joyIdx,GamePadType.GlobalGamePad);
             SetPlayerSlotData(_c, ref slotInfo);
             int newPlayerCount = GetPlayerCount();
             errcode = ErrorCode.ErrorOk;
