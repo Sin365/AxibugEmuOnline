@@ -162,8 +162,12 @@ namespace AxibugEmuOnline.Server
                 {
                     pbSlot.PlayerUID = slot.UID;
                     pbSlot.PlayerLocalJoyIdx = (int)slot.LocalJoyIdx;
+                    pbSlot.PlayerLocalGamePadType = slot.LocalGamePadType;
                     if (AppSrv.g_ClientMgr.GetClientByUID(pbSlot.PlayerUID, out ClientInfo _client))
+                    {
                         pbSlot.PlayerNickName = _client.NickName;
+                        pbSlot.DeviceType = _client.deviceType;
+                    }
                 }
                 result.GamePlaySlotList.Add(pbSlot);
             }
@@ -382,7 +386,7 @@ namespace AxibugEmuOnline.Server
                 return;
             }
 
-            Dictionary<uint, uint> newSlotIdx2JoyIdx = new Dictionary<uint, uint>();
+            Dictionary<uint, (uint, GamePadType)> newSlotIdx2JoyIdx = new Dictionary<uint, (uint, GamePadType)>();
             foreach (var slotinfo in msg.SlotWithJoy)
             {
                 //如果有任意一个槽位有人
@@ -396,7 +400,7 @@ namespace AxibugEmuOnline.Server
                         return;
                     }
                 }
-                newSlotIdx2JoyIdx[(uint)slotinfo.PlayerSlotIdx] = (uint)slotinfo.PlayerLocalJoyIdx;
+                newSlotIdx2JoyIdx[(uint)slotinfo.PlayerSlotIdx] = ((uint)slotinfo.PlayerLocalJoyIdx, slotinfo.PlayerLocalGamePadType);
             }
             room.SetPlayerSlotData(_c, ref newSlotIdx2JoyIdx);
 
@@ -830,7 +834,7 @@ namespace AxibugEmuOnline.Server
         }
         #endregion
 
-        public void SetPlayerSlotData(ClientInfo _c, ref readonly Dictionary<uint, uint> newSlotIdx2JoyIdx)
+        public void SetPlayerSlotData(ClientInfo _c, ref readonly Dictionary<uint, (uint, GamePadType)> newSlotIdx2JoyIdx)
         {
             GetSlotDataByUID(_c.UID, out Dictionary<uint, uint> oldSlotIdx2JoyIdx);
             HashSet<uint> diffSlotIdxs = ObjectPoolAuto.AcquireSet<uint>();// new HashSet<uint>();
@@ -844,7 +848,7 @@ namespace AxibugEmuOnline.Server
                 }
                 uint old_slotjoyIdx = old.Value;
                 //如果旧位置不变，但客户端本地JoyIdx变化则算作diff
-                if (old_slotjoyIdx != newSlotIdx2JoyIdx[old_slotIdx])
+                if (old_slotjoyIdx != newSlotIdx2JoyIdx[old_slotIdx].Item1)
                 {
                     diffSlotIdxs.Add(old_slotIdx); continue;
                 }
@@ -866,7 +870,8 @@ namespace AxibugEmuOnline.Server
             //设置新的槽位
             foreach (var slotdata in newSlotIdx2JoyIdx)
             {
-                PlayerSlot[slotdata.Key].LocalJoyIdx = slotdata.Value;
+                PlayerSlot[slotdata.Key].LocalJoyIdx = slotdata.Value.Item1;
+                PlayerSlot[slotdata.Key].LocalGamePadType = slotdata.Value.Item2;
                 PlayerSlot[slotdata.Key].UID = _c.UID;
                 AppSrv.g_Log.DebugCmd($"SetPlayerSlot RoomID->{RoomID} _c.UID->{_c.UID}  PlayerSlotIdx->{slotdata.Key} LocalJoyIdx->{slotdata.Value}");
             }
@@ -1258,6 +1263,7 @@ namespace AxibugEmuOnline.Server
         public uint SlotIdx { get; set; }
         public long UID { get; set; }
         public uint LocalJoyIdx { get; set; }
+        public GamePadType LocalGamePadType { get; set; }
         public bool Ready = false;
         public void Init(uint SlotIdx)
         {

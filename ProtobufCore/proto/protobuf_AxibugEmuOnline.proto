@@ -105,6 +105,24 @@ enum DeviceType
 	Nintendo3DS = 10;
 }
 
+enum GamePadType
+{
+    Keyboard = 0;//键盘
+	GlobalGamePad = 1;//通用手柄
+	TouchPanel = 2;//触屏
+	DS3Control = 3;
+	DS4Control = 4;
+	DS5Control = 5;
+	SwitchProControl = 6;
+	SwitchJoyCon = 7;
+	XBOX360Control = 8;
+	XBOXONEControl = 9;
+	PSVitaControl = 10;
+	WiiUPadControl = 11;
+	WiiRemoteControl = 12;
+	Nintendo3DSControl = 13;
+}
+
 enum PlatformType
 {
     All = 0;
@@ -277,7 +295,9 @@ message Protobuf_Room_GamePlaySlot
 {
 	int64 Player_UID = 1;//玩家 UID
 	string Player_NickName = 2;//玩家 昵称
-	int32 PlayerLocalJoyIdx = 3;//客户端JoyIdx
+	DeviceType deviceType = 3;//用户设备类型
+	int32 PlayerLocalJoyIdx = 4;//客户端JoyIdx
+	GamePadType PlayerLocalGamePadType = 5;//客户端手柄类型
 }
 
 message Protobuf_Room_Update_RESP
@@ -352,6 +372,7 @@ message Protobuf_PlaySlotIdxWithJoyIdx
 {
 	int32 PlayerSlotIdx = 1;//P1~P4编号
 	int32 PlayerLocalJoyIdx = 2;//客户端Joy编号
+	GamePadType PlayerLocalGamePadType = 3;//客户端手柄类型
 }
 
 message Protobuf_Room_Change_PlaySlotWithJoy_RESP

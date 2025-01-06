@@ -47,7 +47,7 @@ namespace AxibugEmuOnline.Server.Manager
 
             ClientInfo _c = AppSrv.g_ClientMgr.JoinNewClient(_uid, _socket);
 
-            UpdateUserData(_uid, _c);
+            UpdateUserData(_uid, _c,msg.DeviceType);
 
             EventSystem.Instance.PostEvent(EEvent.OnUserOnline, _c.UID);
 
@@ -97,6 +97,8 @@ namespace AxibugEmuOnline.Server.Manager
                 UserMiniInfo miniinfo = new UserMiniInfo()
                 {
                     NickName = _c.NickName,
+                    DeviceType = _c.deviceType,
+                    UID = _c.UID
                 };
 
                 Protobuf_Update_UserInfo_RESP infodata = new Protobuf_Update_UserInfo_RESP()
@@ -198,7 +200,7 @@ namespace AxibugEmuOnline.Server.Manager
             return bDone;
         }
 
-        public void UpdateUserData(long uid, ClientInfo _c)
+        public void UpdateUserData(long uid, ClientInfo _c, DeviceType deviceType)
         {
             MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("UpdateUserData");
             try
@@ -219,6 +221,7 @@ namespace AxibugEmuOnline.Server.Manager
                             _c.LogInDT = DateTime.Now;
                             _c.RegisterDT = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2);
                             _c.LastLogInDT = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3);
+                            _c.deviceType = deviceType;
                         }
                     }
                 }

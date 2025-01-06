@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Server.Manager
         public long UID { get; set; }
         public string NickName { get; set; } = string.Empty;
         public string Account { get; set; } = string.Empty;
+        internal DeviceType deviceType { get; set; } = DeviceType.Default;
         public Socket _socket { get; set; }
         public bool IsOffline { get; set; } = false;
         public DateTime RegisterDT { get; set; }

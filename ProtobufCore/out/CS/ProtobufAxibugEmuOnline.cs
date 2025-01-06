@@ -59,72 +59,82 @@ namespace AxibugProtobuf {
             "YnVmLlJvb21HYW1lU3RhdGUSFAoMT2JzVXNlckNvdW50GAYgASgFEhkKEVNj",
             "cmVlblByb3ZpZGVyVUlEGAcgASgDEkQKEEdhbWVQbGF5U2xvdExpc3QYCCAD",
             "KAsyKi5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29tX0dhbWVQbGF5U2xv",
-            "dCJkChpQcm90b2J1Zl9Sb29tX0dhbWVQbGF5U2xvdBISCgpQbGF5ZXJfVUlE",
-            "GAEgASgDEhcKD1BsYXllcl9OaWNrTmFtZRgCIAEoCRIZChFQbGF5ZXJMb2Nh",
-            "bEpveUlkeBgDIAEoBSJtChlQcm90b2J1Zl9Sb29tX1VwZGF0ZV9SRVNQEhIK",
-            "ClVwZGF0ZVR5cGUYASABKAUSPAoMUm9vbU1pbmlJbmZvGAIgASgLMiYuQXhp",
-            "YnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyJLChVQcm90b2J1",
-            "Zl9TY3Jlbm5fRnJhbWUSDgoGUm9vbUlEGAEgASgFEg8KB0ZyYW1lSUQYAiAB",
-            "KAUSEQoJUmF3Qml0bWFwGAMgASgMIkkKI1Byb3RvYnVmX1Jvb21fU2luZ2xl",
-            "UGxheWVySW5wdXREYXRhEg8KB0ZyYW1lSUQYASABKA0SEQoJSW5wdXREYXRh",
-            "GAIgASgNIoABCidQcm90b2J1Zl9Sb29tX1N5bl9Sb29tRnJhbWVBbGxJbnB1",
-            "dERhdGESDwoHRnJhbWVJRBgBIAEoDRIRCglJbnB1dERhdGEYAiABKAQSFQoN",
-            "U2VydmVyRnJhbWVJRBgDIAEoDRIaChJTZXJ2ZXJGb3J3YXJkQ291bnQYBCAB",
-            "KA0iPgoUUHJvdG9idWZfUm9vbV9DcmVhdGUSEQoJR2FtZVJvbUlEGAEgASgF",
-            "EhMKC0dhbWVSb21IYXNoGAIgASgJIlkKGVByb3RvYnVmX1Jvb21fQ3JlYXRl",
-            "X1JFU1ASPAoMUm9vbU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYu",
-            "UHJvdG9idWZfUm9vbV9NaW5pSW5mbyIkChJQcm90b2J1Zl9Sb29tX0pvaW4S",
-            "DgoGUm9vbUlEGAEgASgFIlcKF1Byb3RvYnVmX1Jvb21fSm9pbl9SRVNQEjwK",
-            "DFJvb21NaW5pSW5mbxgBIAEoCzImLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVm",
-            "X1Jvb21fTWluaUluZm8iJQoTUHJvdG9idWZfUm9vbV9MZWF2ZRIOCgZSb29t",
-            "SUQYASABKAUiKgoYUHJvdG9idWZfUm9vbV9MZWF2ZV9SRVNQEg4KBlJvb21J",
-            "RBgBIAEoBSJhCiFQcm90b2J1Zl9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2US",
-            "PAoMUm9vbU1pbmlJbmZvGAEgASgLMiYuQXhpYnVnUHJvdG9idWYuUHJvdG9i",
-            "dWZfUm9vbV9NaW5pSW5mbyJrCiRQcm90b2J1Zl9Sb29tX0NoYW5nZV9QbGF5",
-            "U2xvdFdpdGhKb3kSQwoLU2xvdFdpdGhKb3kYASADKAsyLi5BeGlidWdQcm90",
-            "b2J1Zi5Qcm90b2J1Zl9QbGF5U2xvdElkeFdpdGhKb3lJZHgiUgoeUHJvdG9i",
-            "dWZfUGxheVNsb3RJZHhXaXRoSm95SWR4EhUKDVBsYXllclNsb3RJZHgYASAB",
-            "KAUSGQoRUGxheWVyTG9jYWxKb3lJZHgYAiABKAUiKwopUHJvdG9idWZfUm9v",
-            "bV9DaGFuZ2VfUGxheVNsb3RXaXRoSm95X1JFU1AiRQobUHJvdG9idWZfUm9v",
-            "bV9XYWl0U3RlcF9SRVNQEhAKCFdhaXRTdGVwGAEgASgFEhQKDExvYWRTdGF0",
-            "ZVJhdxgCIAEoDCI/CidQcm90b2J1Zl9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRl",
-            "U3RhdGVSYXcSFAoMTG9hZFN0YXRlUmF3GAEgASgMIi4KLFByb3RvYnVmX1Jv",
-            "b21fSG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhd19SRVNQIpoBChpQcm90b2J1",
-            "Zl9Sb29tX1BsYXllcl9SZWFkeRIbChNQdXNoRnJhbWVOZWVkVGltZVVzGAEg",
-            "ASgCEhsKE0xvYWRTdGF0ZU5lZWRUaW1lVXMYAiABKAISIAoYVmlkZW9GcmFt",
-            "ZVNob3dOZWVkVGltZVVzGAMgASgCEiAKGEF1ZGlvRnJhbWVQbGF5TmVlZFRp",
-            "bWVVcxgEIAEoAiIqChhQcm90b2J1Zl9Sb29tX0dldF9TY3JlZW4SDgoGUm9v",
-            "bUlEGAEgASgFIlMKHVByb3RvYnVmX1Jvb21fR2V0X1NjcmVlbl9SRVNQEg4K",
-            "BlJvb21JRBgBIAEoBRIPCgdGcmFtZUlEGAIgASgFEhEKCVJhd0JpdG1hcBgD",
-            "IAEoDCJmChJQcm90b2J1Zl9HYW1lX01hcmsSDQoFUm9tSUQYASABKAUSDQoF",
-            "c3RhdGUYAiABKAUSMgoMUGxhdGZvcm1UeXBlGAMgASgOMhwuQXhpYnVnUHJv",
-            "dG9idWYuUGxhdGZvcm1UeXBlIlwKF1Byb3RvYnVmX0dhbWVfTWFya19SRVNQ",
-            "Eg0KBVJvbUlEGAEgASgFEjIKDFBsYXRmb3JtVHlwZRgCIAEoDjIcLkF4aWJ1",
-            "Z1Byb3RvYnVmLlBsYXRmb3JtVHlwZSqhBQoJQ29tbWFuZElEEg4KCkNNRF9E",
-            "RUZBVUwQABIMCghDTURfUElORxABEgwKCENNRF9QT05HEAISDgoJQ01EX0xP",
-            "R0lOENEPEhgKE0NNRF9VU0VSX09OTElORUxJU1QQuBcSEgoNQ01EX1VTRVJf",
-            "Sk9JThDXFxITCg5DTURfVVNFUl9MRUFWRRDYFxIaChVDTURfVVNFUl9TVEFU",
-            "RV9VUERBVEUQ2RcSGAoTQ01EX01vZGlmeV9OaWNrTmFtZRCdGBIcChdDTURf",
-            "VXBkYXRlX1NlbGZVc2VySW5mbxCmGBIdChhDTURfVXBkYXRlX090aGVyVXNl",
-            "ckluZm8QqBgSEAoLQ01EX0NIQVRNU0cQoR8SEgoNQ01EX1Jvb21fTGlzdBCJ",
-            "JxIZChRDTURfUm9vbV9MaXN0X1VwZGF0ZRCKJxIYChNDTURfUm9vbV9HZXRf",
-            "U2NyZWVuEJMnEhQKD0NNRF9Sb29tX0NyZWF0ZRDtJxISCg1DTURfUm9vbV9K",
-            "b2luEPEnEhMKDkNNRF9Sb29tX0xlYXZlEPInEiIKHUNNRF9Sb29tX015Um9v",
-            "bV9TdGF0ZV9DaGFuZ2VkEPYnEiEKHENNRF9Sb29tX0NoYW5nZVBsYXllcldp",
-            "dGhKb3kQiigSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ0SgSJwoiQ01EX1Jvb21f",
-            "SG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIaChVDTURfUm9vbV9QbGF5",
-            "ZXJfUmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2VsX1BsYXllcklucHV0EPou",
-            "Eh0KGENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/LhIPCgpDTURfU2NyZWVu",
-            "ENk2EhIKDUNNRF9HQU1FX01BUksQ9U4q0AEKCUVycm9yQ29kZRIQCgxFUlJP",
-            "Ul9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVSUk9SX1JPT01fTk9UX0ZP",
-            "VU5EEAoSJwojRVJST1JfUk9PTV9TTE9UX0FMUkVBRExZX0hBRF9QTEFZRVIQ",
-            "CxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9TVEFURRAyEh8KGkVSUk9S",
-            "X1JPTV9BTFJFQURZX0hBRF9TVEFSEJMDEhwKF0VSUk9SX1JPTV9ET05UX0hB",
-            "RF9TVEFSEJQDKkAKCUxvZ2luVHlwZRINCglVc2VEZXZpY2UQABIOCgpVc2VB",
-            "Y2NvdW50EAESFAoQVXNlSGFvWXVlQWNjb3VudBACKpIBCgpEZXZpY2VUeXBl",
-            "EhYKEkRldmljZVR5cGVfRGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9pZBAC",
-            "EgcKA0lPUxADEgcKA1BTVhAEEgcKA1BTMxAFEgcKA1BTNBAGEgsKB1hCT1gz",
-            "NjAQBxILCgdYQk9YT05FEAgSCAoEV2lpVRAJEg8KC05pbnRlbmRvM0RTEAoq",
+            "dCLRAQoaUHJvdG9idWZfUm9vbV9HYW1lUGxheVNsb3QSEgoKUGxheWVyX1VJ",
+            "RBgBIAEoAxIXCg9QbGF5ZXJfTmlja05hbWUYAiABKAkSLgoKZGV2aWNlVHlw",
+            "ZRgDIAEoDjIaLkF4aWJ1Z1Byb3RvYnVmLkRldmljZVR5cGUSGQoRUGxheWVy",
+            "TG9jYWxKb3lJZHgYBCABKAUSOwoWUGxheWVyTG9jYWxHYW1lUGFkVHlwZRgF",
+            "IAEoDjIbLkF4aWJ1Z1Byb3RvYnVmLkdhbWVQYWRUeXBlIm0KGVByb3RvYnVm",
+            "X1Jvb21fVXBkYXRlX1JFU1ASEgoKVXBkYXRlVHlwZRgBIAEoBRI8CgxSb29t",
+            "TWluaUluZm8YAiABKAsyJi5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29t",
+            "X01pbmlJbmZvIksKFVByb3RvYnVmX1NjcmVubl9GcmFtZRIOCgZSb29tSUQY",
+            "ASABKAUSDwoHRnJhbWVJRBgCIAEoBRIRCglSYXdCaXRtYXAYAyABKAwiSQoj",
+            "UHJvdG9idWZfUm9vbV9TaW5nbGVQbGF5ZXJJbnB1dERhdGESDwoHRnJhbWVJ",
+            "RBgBIAEoDRIRCglJbnB1dERhdGEYAiABKA0igAEKJ1Byb3RvYnVmX1Jvb21f",
+            "U3luX1Jvb21GcmFtZUFsbElucHV0RGF0YRIPCgdGcmFtZUlEGAEgASgNEhEK",
+            "CUlucHV0RGF0YRgCIAEoBBIVCg1TZXJ2ZXJGcmFtZUlEGAMgASgNEhoKElNl",
+            "cnZlckZvcndhcmRDb3VudBgEIAEoDSI+ChRQcm90b2J1Zl9Sb29tX0NyZWF0",
+            "ZRIRCglHYW1lUm9tSUQYASABKAUSEwoLR2FtZVJvbUhhc2gYAiABKAkiWQoZ",
+            "UHJvdG9idWZfUm9vbV9DcmVhdGVfUkVTUBI8CgxSb29tTWluaUluZm8YASAB",
+            "KAsyJi5BeGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvIiQK",
+            "ElByb3RvYnVmX1Jvb21fSm9pbhIOCgZSb29tSUQYASABKAUiVwoXUHJvdG9i",
+            "dWZfUm9vbV9Kb2luX1JFU1ASPAoMUm9vbU1pbmlJbmZvGAEgASgLMiYuQXhp",
+            "YnVnUHJvdG9idWYuUHJvdG9idWZfUm9vbV9NaW5pSW5mbyIlChNQcm90b2J1",
+            "Zl9Sb29tX0xlYXZlEg4KBlJvb21JRBgBIAEoBSIqChhQcm90b2J1Zl9Sb29t",
+            "X0xlYXZlX1JFU1ASDgoGUm9vbUlEGAEgASgFImEKIVByb3RvYnVmX1Jvb21f",
+            "TXlSb29tX1N0YXRlX0NoYW5nZRI8CgxSb29tTWluaUluZm8YASABKAsyJi5B",
+            "eGlidWdQcm90b2J1Zi5Qcm90b2J1Zl9Sb29tX01pbmlJbmZvImsKJFByb3Rv",
+            "YnVmX1Jvb21fQ2hhbmdlX1BsYXlTbG90V2l0aEpveRJDCgtTbG90V2l0aEpv",
+            "eRgBIAMoCzIuLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX1BsYXlTbG90SWR4",
+            "V2l0aEpveUlkeCKPAQoeUHJvdG9idWZfUGxheVNsb3RJZHhXaXRoSm95SWR4",
+            "EhUKDVBsYXllclNsb3RJZHgYASABKAUSGQoRUGxheWVyTG9jYWxKb3lJZHgY",
+            "AiABKAUSOwoWUGxheWVyTG9jYWxHYW1lUGFkVHlwZRgDIAEoDjIbLkF4aWJ1",
+            "Z1Byb3RvYnVmLkdhbWVQYWRUeXBlIisKKVByb3RvYnVmX1Jvb21fQ2hhbmdl",
+            "X1BsYXlTbG90V2l0aEpveV9SRVNQIkUKG1Byb3RvYnVmX1Jvb21fV2FpdFN0",
+            "ZXBfUkVTUBIQCghXYWl0U3RlcBgBIAEoBRIUCgxMb2FkU3RhdGVSYXcYAiAB",
+            "KAwiPwonUHJvdG9idWZfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3",
+            "EhQKDExvYWRTdGF0ZVJhdxgBIAEoDCIuCixQcm90b2J1Zl9Sb29tX0hvc3RQ",
+            "bGF5ZXJfVXBkYXRlU3RhdGVSYXdfUkVTUCKaAQoaUHJvdG9idWZfUm9vbV9Q",
+            "bGF5ZXJfUmVhZHkSGwoTUHVzaEZyYW1lTmVlZFRpbWVVcxgBIAEoAhIbChNM",
+            "b2FkU3RhdGVOZWVkVGltZVVzGAIgASgCEiAKGFZpZGVvRnJhbWVTaG93TmVl",
+            "ZFRpbWVVcxgDIAEoAhIgChhBdWRpb0ZyYW1lUGxheU5lZWRUaW1lVXMYBCAB",
+            "KAIiKgoYUHJvdG9idWZfUm9vbV9HZXRfU2NyZWVuEg4KBlJvb21JRBgBIAEo",
+            "BSJTCh1Qcm90b2J1Zl9Sb29tX0dldF9TY3JlZW5fUkVTUBIOCgZSb29tSUQY",
+            "ASABKAUSDwoHRnJhbWVJRBgCIAEoBRIRCglSYXdCaXRtYXAYAyABKAwiZgoS",
+            "UHJvdG9idWZfR2FtZV9NYXJrEg0KBVJvbUlEGAEgASgFEg0KBXN0YXRlGAIg",
+            "ASgFEjIKDFBsYXRmb3JtVHlwZRgDIAEoDjIcLkF4aWJ1Z1Byb3RvYnVmLlBs",
+            "YXRmb3JtVHlwZSJcChdQcm90b2J1Zl9HYW1lX01hcmtfUkVTUBINCgVSb21J",
+            "RBgBIAEoBRIyCgxQbGF0Zm9ybVR5cGUYAiABKA4yHC5BeGlidWdQcm90b2J1",
+            "Zi5QbGF0Zm9ybVR5cGUqoQUKCUNvbW1hbmRJRBIOCgpDTURfREVGQVVMEAAS",
+            "DAoIQ01EX1BJTkcQARIMCghDTURfUE9ORxACEg4KCUNNRF9MT0dJThDRDxIY",
+            "ChNDTURfVVNFUl9PTkxJTkVMSVNUELgXEhIKDUNNRF9VU0VSX0pPSU4Q1xcS",
+            "EwoOQ01EX1VTRVJfTEVBVkUQ2BcSGgoVQ01EX1VTRVJfU1RBVEVfVVBEQVRF",
+            "ENkXEhgKE0NNRF9Nb2RpZnlfTmlja05hbWUQnRgSHAoXQ01EX1VwZGF0ZV9T",
+            "ZWxmVXNlckluZm8QphgSHQoYQ01EX1VwZGF0ZV9PdGhlclVzZXJJbmZvEKgY",
+            "EhAKC0NNRF9DSEFUTVNHEKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01E",
+            "X1Jvb21fTGlzdF9VcGRhdGUQiicSGAoTQ01EX1Jvb21fR2V0X1NjcmVlbhCT",
+            "JxIUCg9DTURfUm9vbV9DcmVhdGUQ7ScSEgoNQ01EX1Jvb21fSm9pbhDxJxIT",
+            "Cg5DTURfUm9vbV9MZWF2ZRDyJxIiCh1DTURfUm9vbV9NeVJvb21fU3RhdGVf",
+            "Q2hhbmdlZBD2JxIhChxDTURfUm9vbV9DaGFuZ2VQbGF5ZXJXaXRoSm95EIoo",
+            "EhYKEUNNRF9Sb29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5",
+            "ZXJfVXBkYXRlU3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5",
+            "ENgoEiAKG0NNRF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURf",
+            "Uk9PTV9TWU5fUGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNhISCg1D",
+            "TURfR0FNRV9NQVJLEPVOKtABCglFcnJvckNvZGUSEAoMRVJST1JfREVGQVVM",
+            "EAASDAoIRVJST1JfT0sQARIYChRFUlJPUl9ST09NX05PVF9GT1VORBAKEicK",
+            "I0VSUk9SX1JPT01fU0xPVF9BTFJFQURMWV9IQURfUExBWUVSEAsSIQodRVJS",
+            "T1JfUk9PTV9DQU5UX0RPX0NVUlJfU1RBVEUQMhIfChpFUlJPUl9ST01fQUxS",
+            "RUFEWV9IQURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9OVF9IQURfU1RBUhCU",
+            "AypACglMb2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoKVXNlQWNjb3VudBAB",
+            "EhQKEFVzZUhhb1l1ZUFjY291bnQQAiqSAQoKRGV2aWNlVHlwZRIWChJEZXZp",
+            "Y2VUeXBlX0RlZmF1bHQQABIGCgJQQxABEgsKB0FuZHJvaWQQAhIHCgNJT1MQ",
+            "AxIHCgNQU1YQBBIHCgNQUzMQBRIHCgNQUzQQBhILCgdYQk9YMzYwEAcSCwoH",
+            "WEJPWE9ORRAIEggKBFdpaVUQCRIPCgtOaW50ZW5kbzNEUxAKKpMCCgtHYW1l",
+            "UGFkVHlwZRIMCghLZXlib2FyZBAAEhEKDUdsb2JhbEdhbWVQYWQQARIOCgpU",
+            "b3VjaFBhbmVsEAISDgoKRFMzQ29udHJvbBADEg4KCkRTNENvbnRyb2wQBBIO",
+            "CgpEUzVDb250cm9sEAUSFAoQU3dpdGNoUHJvQ29udHJvbBAGEhAKDFN3aXRj",
+            "aEpveUNvbhAHEhIKDlhCT1gzNjBDb250cm9sEAgSEgoOWEJPWE9ORUNvbnRy",
+            "b2wQCRIRCg1QU1ZpdGFDb250cm9sEAoSEgoOV2lpVVBhZENvbnRyb2wQCxIU",
+            "ChBXaWlSZW1vdGVDb250cm9sEAwSFgoSTmludGVuZG8zRFNDb250cm9sEA0q",
             "ZAoMUGxhdGZvcm1UeXBlEgcKA0FsbBAAEgcKA05lcxABEhEKDU1hc3Rlcl9T",
             "eXN0ZW0QAhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVf",
             "Qm95X0NvbG9yEAUqcAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVTdGF0",
@@ -134,7 +144,7 @@ namespace AxibugProtobuf {
             "ABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg), global::AxibugProtobuf.Protobuf_ChatMsg.Parser, new[]{ "ChatMsg" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_ChatMsg_RESP), global::AxibugProtobuf.Protobuf_ChatMsg_RESP.Parser, new[]{ "NickName", "ChatMsg", "Date" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Ping), global::AxibugProtobuf.Protobuf_Ping.Parser, new[]{ "Seed" }, null, null, null, null),
@@ -154,7 +164,7 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List), global::AxibugProtobuf.Protobuf_Room_List.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_List_RESP), global::AxibugProtobuf.Protobuf_Room_List_RESP.Parser, new[]{ "RoomMiniInfoList" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MiniInfo), global::AxibugProtobuf.Protobuf_Room_MiniInfo.Parser, new[]{ "RoomID", "GameRomID", "GameRomHash", "HostPlayerUID", "GameState", "ObsUserCount", "ScreenProviderUID", "GamePlaySlotList" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_GamePlaySlot), global::AxibugProtobuf.Protobuf_Room_GamePlaySlot.Parser, new[]{ "PlayerUID", "PlayerNickName", "PlayerLocalJoyIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_GamePlaySlot), global::AxibugProtobuf.Protobuf_Room_GamePlaySlot.Parser, new[]{ "PlayerUID", "PlayerNickName", "DeviceType", "PlayerLocalJoyIdx", "PlayerLocalGamePadType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Update_RESP), global::AxibugProtobuf.Protobuf_Room_Update_RESP.Parser, new[]{ "UpdateType", "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Screnn_Frame), global::AxibugProtobuf.Protobuf_Screnn_Frame.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData), global::AxibugProtobuf.Protobuf_Room_SinglePlayerInputData.Parser, new[]{ "FrameID", "InputData" }, null, null, null, null),
@@ -167,7 +177,7 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Leave_RESP), global::AxibugProtobuf.Protobuf_Room_Leave_RESP.Parser, new[]{ "RoomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_MyRoom_State_Change), global::AxibugProtobuf.Protobuf_Room_MyRoom_State_Change.Parser, new[]{ "RoomMiniInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy), global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy.Parser, new[]{ "SlotWithJoy" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx), global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx.Parser, new[]{ "PlayerSlotIdx", "PlayerLocalJoyIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx), global::AxibugProtobuf.Protobuf_PlaySlotIdxWithJoyIdx.Parser, new[]{ "PlayerSlotIdx", "PlayerLocalJoyIdx", "PlayerLocalGamePadType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy_RESP), global::AxibugProtobuf.Protobuf_Room_Change_PlaySlotWithJoy_RESP.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP), global::AxibugProtobuf.Protobuf_Room_WaitStep_RESP.Parser, new[]{ "WaitStep", "LoadStateRaw" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw), global::AxibugProtobuf.Protobuf_Room_HostPlayer_UpdateStateRaw.Parser, new[]{ "LoadStateRaw" }, null, null, null, null),
@@ -373,6 +383,32 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("XBOXONE")] Xboxone = 8,
     [pbr::OriginalName("WiiU")] WiiU = 9,
     [pbr::OriginalName("Nintendo3DS")] Nintendo3Ds = 10,
+  }
+
+  public enum GamePadType {
+    /// <summary>
+    ///键盘
+    /// </summary>
+    [pbr::OriginalName("Keyboard")] Keyboard = 0,
+    /// <summary>
+    ///通用手柄
+    /// </summary>
+    [pbr::OriginalName("GlobalGamePad")] GlobalGamePad = 1,
+    /// <summary>
+    ///触屏
+    /// </summary>
+    [pbr::OriginalName("TouchPanel")] TouchPanel = 2,
+    [pbr::OriginalName("DS3Control")] Ds3Control = 3,
+    [pbr::OriginalName("DS4Control")] Ds4Control = 4,
+    [pbr::OriginalName("DS5Control")] Ds5Control = 5,
+    [pbr::OriginalName("SwitchProControl")] SwitchProControl = 6,
+    [pbr::OriginalName("SwitchJoyCon")] SwitchJoyCon = 7,
+    [pbr::OriginalName("XBOX360Control")] Xbox360Control = 8,
+    [pbr::OriginalName("XBOXONEControl")] Xboxonecontrol = 9,
+    [pbr::OriginalName("PSVitaControl")] PsvitaControl = 10,
+    [pbr::OriginalName("WiiUPadControl")] WiiUpadControl = 11,
+    [pbr::OriginalName("WiiRemoteControl")] WiiRemoteControl = 12,
+    [pbr::OriginalName("Nintendo3DSControl")] Nintendo3Dscontrol = 13,
   }
 
   public enum PlatformType {
@@ -4586,7 +4622,9 @@ namespace AxibugProtobuf {
     public Protobuf_Room_GamePlaySlot(Protobuf_Room_GamePlaySlot other) : this() {
       playerUID_ = other.playerUID_;
       playerNickName_ = other.playerNickName_;
+      deviceType_ = other.deviceType_;
       playerLocalJoyIdx_ = other.playerLocalJoyIdx_;
+      playerLocalGamePadType_ = other.playerLocalGamePadType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4623,8 +4661,22 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "deviceType" field.</summary>
+    public const int DeviceTypeFieldNumber = 3;
+    private global::AxibugProtobuf.DeviceType deviceType_ = global::AxibugProtobuf.DeviceType.Default;
+    /// <summary>
+    ///用户设备类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.DeviceType DeviceType {
+      get { return deviceType_; }
+      set {
+        deviceType_ = value;
+      }
+    }
+
     /// <summary>Field number for the "PlayerLocalJoyIdx" field.</summary>
-    public const int PlayerLocalJoyIdxFieldNumber = 3;
+    public const int PlayerLocalJoyIdxFieldNumber = 4;
     private int playerLocalJoyIdx_;
     /// <summary>
     ///客户端JoyIdx
@@ -4634,6 +4686,20 @@ namespace AxibugProtobuf {
       get { return playerLocalJoyIdx_; }
       set {
         playerLocalJoyIdx_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PlayerLocalGamePadType" field.</summary>
+    public const int PlayerLocalGamePadTypeFieldNumber = 5;
+    private global::AxibugProtobuf.GamePadType playerLocalGamePadType_ = global::AxibugProtobuf.GamePadType.Keyboard;
+    /// <summary>
+    ///客户端手柄类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.GamePadType PlayerLocalGamePadType {
+      get { return playerLocalGamePadType_; }
+      set {
+        playerLocalGamePadType_ = value;
       }
     }
 
@@ -4652,7 +4718,9 @@ namespace AxibugProtobuf {
       }
       if (PlayerUID != other.PlayerUID) return false;
       if (PlayerNickName != other.PlayerNickName) return false;
+      if (DeviceType != other.DeviceType) return false;
       if (PlayerLocalJoyIdx != other.PlayerLocalJoyIdx) return false;
+      if (PlayerLocalGamePadType != other.PlayerLocalGamePadType) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4661,7 +4729,9 @@ namespace AxibugProtobuf {
       int hash = 1;
       if (PlayerUID != 0L) hash ^= PlayerUID.GetHashCode();
       if (PlayerNickName.Length != 0) hash ^= PlayerNickName.GetHashCode();
+      if (DeviceType != global::AxibugProtobuf.DeviceType.Default) hash ^= DeviceType.GetHashCode();
       if (PlayerLocalJoyIdx != 0) hash ^= PlayerLocalJoyIdx.GetHashCode();
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) hash ^= PlayerLocalGamePadType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4686,9 +4756,17 @@ namespace AxibugProtobuf {
         output.WriteRawTag(18);
         output.WriteString(PlayerNickName);
       }
-      if (PlayerLocalJoyIdx != 0) {
+      if (DeviceType != global::AxibugProtobuf.DeviceType.Default) {
         output.WriteRawTag(24);
+        output.WriteEnum((int) DeviceType);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        output.WriteRawTag(32);
         output.WriteInt32(PlayerLocalJoyIdx);
+      }
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) PlayerLocalGamePadType);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -4707,9 +4785,17 @@ namespace AxibugProtobuf {
         output.WriteRawTag(18);
         output.WriteString(PlayerNickName);
       }
-      if (PlayerLocalJoyIdx != 0) {
+      if (DeviceType != global::AxibugProtobuf.DeviceType.Default) {
         output.WriteRawTag(24);
+        output.WriteEnum((int) DeviceType);
+      }
+      if (PlayerLocalJoyIdx != 0) {
+        output.WriteRawTag(32);
         output.WriteInt32(PlayerLocalJoyIdx);
+      }
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) PlayerLocalGamePadType);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -4726,8 +4812,14 @@ namespace AxibugProtobuf {
       if (PlayerNickName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(PlayerNickName);
       }
+      if (DeviceType != global::AxibugProtobuf.DeviceType.Default) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) DeviceType);
+      }
       if (PlayerLocalJoyIdx != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerLocalJoyIdx);
+      }
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlayerLocalGamePadType);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4746,8 +4838,14 @@ namespace AxibugProtobuf {
       if (other.PlayerNickName.Length != 0) {
         PlayerNickName = other.PlayerNickName;
       }
+      if (other.DeviceType != global::AxibugProtobuf.DeviceType.Default) {
+        DeviceType = other.DeviceType;
+      }
       if (other.PlayerLocalJoyIdx != 0) {
         PlayerLocalJoyIdx = other.PlayerLocalJoyIdx;
+      }
+      if (other.PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        PlayerLocalGamePadType = other.PlayerLocalGamePadType;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4772,7 +4870,15 @@ namespace AxibugProtobuf {
             break;
           }
           case 24: {
+            DeviceType = (global::AxibugProtobuf.DeviceType) input.ReadEnum();
+            break;
+          }
+          case 32: {
             PlayerLocalJoyIdx = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            PlayerLocalGamePadType = (global::AxibugProtobuf.GamePadType) input.ReadEnum();
             break;
           }
         }
@@ -4798,7 +4904,15 @@ namespace AxibugProtobuf {
             break;
           }
           case 24: {
+            DeviceType = (global::AxibugProtobuf.DeviceType) input.ReadEnum();
+            break;
+          }
+          case 32: {
             PlayerLocalJoyIdx = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            PlayerLocalGamePadType = (global::AxibugProtobuf.GamePadType) input.ReadEnum();
             break;
           }
         }
@@ -7270,6 +7384,7 @@ namespace AxibugProtobuf {
     public Protobuf_PlaySlotIdxWithJoyIdx(Protobuf_PlaySlotIdxWithJoyIdx other) : this() {
       playerSlotIdx_ = other.playerSlotIdx_;
       playerLocalJoyIdx_ = other.playerLocalJoyIdx_;
+      playerLocalGamePadType_ = other.playerLocalGamePadType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7306,6 +7421,20 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "PlayerLocalGamePadType" field.</summary>
+    public const int PlayerLocalGamePadTypeFieldNumber = 3;
+    private global::AxibugProtobuf.GamePadType playerLocalGamePadType_ = global::AxibugProtobuf.GamePadType.Keyboard;
+    /// <summary>
+    ///客户端手柄类型
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.GamePadType PlayerLocalGamePadType {
+      get { return playerLocalGamePadType_; }
+      set {
+        playerLocalGamePadType_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Protobuf_PlaySlotIdxWithJoyIdx);
@@ -7321,6 +7450,7 @@ namespace AxibugProtobuf {
       }
       if (PlayerSlotIdx != other.PlayerSlotIdx) return false;
       if (PlayerLocalJoyIdx != other.PlayerLocalJoyIdx) return false;
+      if (PlayerLocalGamePadType != other.PlayerLocalGamePadType) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -7329,6 +7459,7 @@ namespace AxibugProtobuf {
       int hash = 1;
       if (PlayerSlotIdx != 0) hash ^= PlayerSlotIdx.GetHashCode();
       if (PlayerLocalJoyIdx != 0) hash ^= PlayerLocalJoyIdx.GetHashCode();
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) hash ^= PlayerLocalGamePadType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -7353,6 +7484,10 @@ namespace AxibugProtobuf {
         output.WriteRawTag(16);
         output.WriteInt32(PlayerLocalJoyIdx);
       }
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlayerLocalGamePadType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -7370,6 +7505,10 @@ namespace AxibugProtobuf {
         output.WriteRawTag(16);
         output.WriteInt32(PlayerLocalJoyIdx);
       }
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) PlayerLocalGamePadType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -7384,6 +7523,9 @@ namespace AxibugProtobuf {
       }
       if (PlayerLocalJoyIdx != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PlayerLocalJoyIdx);
+      }
+      if (PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) PlayerLocalGamePadType);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -7401,6 +7543,9 @@ namespace AxibugProtobuf {
       }
       if (other.PlayerLocalJoyIdx != 0) {
         PlayerLocalJoyIdx = other.PlayerLocalJoyIdx;
+      }
+      if (other.PlayerLocalGamePadType != global::AxibugProtobuf.GamePadType.Keyboard) {
+        PlayerLocalGamePadType = other.PlayerLocalGamePadType;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -7424,6 +7569,10 @@ namespace AxibugProtobuf {
             PlayerLocalJoyIdx = input.ReadInt32();
             break;
           }
+          case 24: {
+            PlayerLocalGamePadType = (global::AxibugProtobuf.GamePadType) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -7444,6 +7593,10 @@ namespace AxibugProtobuf {
           }
           case 16: {
             PlayerLocalJoyIdx = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            PlayerLocalGamePadType = (global::AxibugProtobuf.GamePadType) input.ReadEnum();
             break;
           }
         }

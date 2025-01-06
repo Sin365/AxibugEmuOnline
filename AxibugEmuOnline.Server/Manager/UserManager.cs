@@ -46,6 +46,7 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     NickName = client.NickName,
                     UID = client.UID,
+                    DeviceType = client.deviceType,
                 });
             }
             AppSrv.g_Log.Debug($"拉取用户列表->{respData.UserCount}个用户");
@@ -58,10 +59,12 @@ namespace AxibugEmuOnline.Server.Manager
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForUID(UID);
             if (_c == null)
                 return;
-            UserMiniInfo miniInfo = new UserMiniInfo();
-
-            miniInfo.NickName = _c.NickName;
-            UID = _c.UID;
+            UserMiniInfo miniInfo = new UserMiniInfo()
+            {
+                DeviceType = _c.deviceType,
+                NickName = _c.NickName,
+                UID = _c.UID
+            };
             Protobuf_UserJoin_RESP resp = new Protobuf_UserJoin_RESP()
             {
                 UserInfo = miniInfo
