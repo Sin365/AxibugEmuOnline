@@ -125,23 +125,24 @@ namespace AxibugProtobuf {
             "T1JfUk9PTV9DQU5UX0RPX0NVUlJfU1RBVEUQMhIfChpFUlJPUl9ST01fQUxS",
             "RUFEWV9IQURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9OVF9IQURfU1RBUhCU",
             "AypACglMb2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoKVXNlQWNjb3VudBAB",
-            "EhQKEFVzZUhhb1l1ZUFjY291bnQQAiqSAQoKRGV2aWNlVHlwZRIWChJEZXZp",
+            "EhQKEFVzZUhhb1l1ZUFjY291bnQQAiqlAQoKRGV2aWNlVHlwZRIWChJEZXZp",
             "Y2VUeXBlX0RlZmF1bHQQABIGCgJQQxABEgsKB0FuZHJvaWQQAhIHCgNJT1MQ",
             "AxIHCgNQU1YQBBIHCgNQUzMQBRIHCgNQUzQQBhILCgdYQk9YMzYwEAcSCwoH",
-            "WEJPWE9ORRAIEggKBFdpaVUQCRIPCgtOaW50ZW5kbzNEUxAKKpMCCgtHYW1l",
-            "UGFkVHlwZRIMCghLZXlib2FyZBAAEhEKDUdsb2JhbEdhbWVQYWQQARIOCgpU",
-            "b3VjaFBhbmVsEAISDgoKRFMzQ29udHJvbBADEg4KCkRTNENvbnRyb2wQBBIO",
-            "CgpEUzVDb250cm9sEAUSFAoQU3dpdGNoUHJvQ29udHJvbBAGEhAKDFN3aXRj",
-            "aEpveUNvbhAHEhIKDlhCT1gzNjBDb250cm9sEAgSEgoOWEJPWE9ORUNvbnRy",
-            "b2wQCRIRCg1QU1ZpdGFDb250cm9sEAoSEgoOV2lpVVBhZENvbnRyb2wQCxIU",
-            "ChBXaWlSZW1vdGVDb250cm9sEAwSFgoSTmludGVuZG8zRFNDb250cm9sEA0q",
-            "ZAoMUGxhdGZvcm1UeXBlEgcKA0FsbBAAEgcKA05lcxABEhEKDU1hc3Rlcl9T",
-            "eXN0ZW0QAhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVf",
-            "Qm95X0NvbG9yEAUqcAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVTdGF0",
-            "ZRAAEgwKCE9ubHlIb3N0EAESEQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdhaXRS",
-            "ZWFkeRADEgkKBVBhdXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9naW5S",
-            "ZXN1bHRTdGF0dXMSIQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1bHQQ",
-            "ABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
+            "WEJPWE9ORRAIEggKBFdpaVUQCRIPCgtOaW50ZW5kbzNEUxAKEhEKDUFuZHJv",
+            "aWRDYXJBcHAQCyqTAgoLR2FtZVBhZFR5cGUSDAoIS2V5Ym9hcmQQABIRCg1H",
+            "bG9iYWxHYW1lUGFkEAESDgoKVG91Y2hQYW5lbBACEg4KCkRTM0NvbnRyb2wQ",
+            "AxIOCgpEUzRDb250cm9sEAQSDgoKRFM1Q29udHJvbBAFEhQKEFN3aXRjaFBy",
+            "b0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxISCg5YQk9YMzYwQ29udHJv",
+            "bBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNWaXRhQ29udHJvbBAKEhIK",
+            "DldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3RlQ29udHJvbBAMEhYKEk5p",
+            "bnRlbmRvM0RTQ29udHJvbBANKmQKDFBsYXRmb3JtVHlwZRIHCgNBbGwQABIH",
+            "CgNOZXMQARIRCg1NYXN0ZXJfU3lzdGVtEAISDQoJR2FtZV9HZWFyEAMSDAoI",
+            "R2FtZV9Cb3kQBBISCg5HYW1lX0JveV9Db2xvchAFKnAKDVJvb21HYW1lU3Rh",
+            "dGUSEgoOTm9uZV9HYW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRS",
+            "YXdVcGRhdGUQAhINCglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25s",
+            "aW5lR2FtZRAFKk4KEUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0",
+            "U3RhdHVzX0Jhc2VEZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJC",
+            "AkgBYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.PlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -383,6 +384,10 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("XBOXONE")] Xboxone = 8,
     [pbr::OriginalName("WiiU")] WiiU = 9,
     [pbr::OriginalName("Nintendo3DS")] Nintendo3Ds = 10,
+    /// <summary>
+    ///汽车Android车机
+    /// </summary>
+    [pbr::OriginalName("AndroidCarApp")] AndroidCarApp = 11,
   }
 
   public enum GamePadType {

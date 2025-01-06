@@ -90,7 +90,7 @@ enum LoginType
 	UseHaoYueAccount = 2;//使用皓月通行证
 }
 
-enum DeviceType
+enum DeviceType //设备类型
 {
     DeviceType_Default = 0;//缺省不使用
 	PC = 1;
@@ -103,9 +103,10 @@ enum DeviceType
 	XBOXONE = 8;
 	WiiU = 9;
 	Nintendo3DS = 10;
+	AndroidCarApp = 11;//汽车Android车机
 }
 
-enum GamePadType
+enum GamePadType //手柄类型
 {
     Keyboard = 0;//键盘
 	GlobalGamePad = 1;//通用手柄
