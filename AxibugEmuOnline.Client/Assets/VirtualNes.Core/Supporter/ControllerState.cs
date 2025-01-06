@@ -19,7 +19,7 @@ namespace VirtualNes.Core
             raw3 = (uint)states[3];
             valid = true;
         }
-        
+
         public bool HasButton(int player, EnumButtonType button)
         {
             uint raw = player switch

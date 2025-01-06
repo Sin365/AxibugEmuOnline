@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client
         void Pause();
         void Resume();
         void SetupScheme();
-        void StartGame(RomFile romFile);
+        MsgBool StartGame(RomFile romFile);
         void DoReset();
         IControllerSetuper GetControllerSetuper();
 

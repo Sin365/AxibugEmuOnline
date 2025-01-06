@@ -96,11 +96,12 @@ namespace AxibugEmuOnline.Client
             if (Path.GetExtension(LocalFilePath).ToLower() == ".zip")
             {
                 var zip = new ZipInputStream(new MemoryStream(bytes));
-                var entry = zip.GetNextEntry() as ZipEntry;
-
-				while (entry != null)
+                while (true)
                 {
-					if (!entry.Name.ToLower().EndsWith(".nes")) continue;
+                    var currentEntry = zip.GetNextEntry();
+                    if (currentEntry == null) break;
+
+                    if (!currentEntry.Name.ToLower().EndsWith(".nes")) continue;
 
                     var buffer = new byte[1024];
                     MemoryStream output = new MemoryStream();
@@ -126,36 +127,36 @@ namespace AxibugEmuOnline.Client
         {
             downloadRequest = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{webData.url}");
 
-			while (!downloadRequest.downloadHandler.isDone)
-			{
-				yield return null;
-				Debug.Log($"下载进度：{downloadRequest.downloadHandler.DownLoadPr} ->{downloadRequest.downloadHandler.loadedLenght}/{downloadRequest.downloadHandler.NeedloadedLenght}");
-			}
-			AxiHttpProxy.ShowAxiHttpDebugInfo(downloadRequest.downloadHandler);
+            while (!downloadRequest.downloadHandler.isDone)
+            {
+                yield return null;
+                Debug.Log($"下载进度：{downloadRequest.downloadHandler.DownLoadPr} ->{downloadRequest.downloadHandler.loadedLenght}/{downloadRequest.downloadHandler.NeedloadedLenght}");
+            }
+            AxiHttpProxy.ShowAxiHttpDebugInfo(downloadRequest.downloadHandler);
 
             var request = downloadRequest;
             downloadRequest = null;
 
-			if (!request.downloadHandler.bHadErr)
+            if (!request.downloadHandler.bHadErr)
                 callback(request.downloadHandler.data);
-			else
+            else
                 callback(null);
 
-			//downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
-			//yield return downloadRequest.SendWebRequest();
+            //downloadRequest = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{webData.url}");
+            //yield return downloadRequest.SendWebRequest();
 
-			//var request = downloadRequest;
-			//downloadRequest = null;
+            //var request = downloadRequest;
+            //downloadRequest = null;
 
-			//if (request.result != UnityWebRequest.Result.Success)
-			//{
-			//	callback(null);
-			//}
-			//else
-			//{
-			//	callback(request.downloadHandler.data);
-			//}
-		}
+            //if (request.result != UnityWebRequest.Result.Success)
+            //{
+            //	callback(null);
+            //}
+            //else
+            //{
+            //	callback(request.downloadHandler.data);
+            //}
+        }
 
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {

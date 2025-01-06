@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client
         /// <summary>
         /// 指定ROM开始游戏
         /// </summary>
-        public void StartGame(RomFile rom)
+        public MsgBool StartGame(RomFile rom)
         {
             StopGame();
 
@@ -76,11 +76,13 @@ namespace AxibugEmuOnline.Client
             try
             {
                 NesCore = new NES(rom.FileName);
+                return true;
             }
             catch (Exception ex)
             {
                 NesCore = null;
                 App.log.Error(ex.ToString());
+                return ex.Message;
             }
         }
 
