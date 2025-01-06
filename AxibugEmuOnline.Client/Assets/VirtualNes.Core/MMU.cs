@@ -207,7 +207,7 @@ namespace VirtualNes
         {
             for (byte i = 0; i < 8; i++)
             {
-                SetCRAM_1K_Bank(i, bank * 8 + 1);
+                SetCRAM_1K_Bank(i, bank * 8 + i);
             }
         }
 

@@ -32,8 +32,6 @@
         _Power2("Power",Float)=50.0
         _Frequency2("Frequency",Float)=2.1
         _Speed2("Speed",Float)=0.3
-
-        _Gamma("GAMMA",float) = 2.2
     }
 
     SubShader
@@ -154,8 +152,6 @@
             float _Frequency2;
             float _Speed2;
 
-            float _Gamma;
-
             fixed4 frag(v2f IN) : SV_Target
             {
                  float2 uv= IN.texcoord;
@@ -199,8 +195,6 @@
                 #ifdef UNITY_UI_ALPHACLIP
                 clip (fragColor.a - 0.001);
                 #endif
-
-                fragColor = pow(fragColor,1/_Gamma);
 
                 return fragColor;
             }

@@ -56,19 +56,27 @@ namespace AxibugEmuOnline.Client.Manager
                     break;
             }
 
-            m_emuCore.StartGame(romFile);
-            LaunchUI.Instance.HideMainMenu();
-            InGameUI.Instance.Show(romFile, m_emuCore);
+            var result = m_emuCore.StartGame(romFile);
+            if (result)
+            {
+                LaunchUI.Instance.HideMainMenu();
+                InGameUI.Instance.Show(romFile, m_emuCore);
 
-            m_emuCore.SetupScheme();
+                m_emuCore.SetupScheme();
 
-            m_controllerSetuper = m_emuCore.GetControllerSetuper();
+                m_controllerSetuper = m_emuCore.GetControllerSetuper();
 
-            //自动分配0号手柄到0号手柄位
-            m_controllerSetuper.SetConnect(con0ToSlot: 0);
-            Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
+                //自动分配0号手柄到0号手柄位
+                m_controllerSetuper.SetConnect(con0ToSlot: 0);
+                Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
 
-            Eventer.Instance.RegisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
+                Eventer.Instance.RegisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
+            }
+            else
+            {
+                StopGame();
+                OverlayManager.PopTip(result);
+            }
         }
 
         private void OnSlotDataChanged()
