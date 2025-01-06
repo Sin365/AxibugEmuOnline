@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,21 +12,20 @@ namespace AxibugEmuOnline.Client
         public string WebHost = "http://emu.axibug.com";
         public string WebSiteApi => WebHost + "/api";
 
-        public delegate void GetRomListAPI(Action<Resp_GameList> callback, int page, int pageSize = 10);
-        public delegate void SearchRomListAPI(Action<Resp_GameList> callback, string searchKey, int page, int pageSize = 10);
-        
-        public void GetNesRomList(Action<Resp_GameList> callback, int page, int pageSize = 10)
+        public delegate void GetRomListAPI(Action<int, Resp_GameList> callback, int page, int pageSize = 10);
+        public delegate void SearchRomListAPI(Action<int, Resp_GameList> callback, string searchKey, int page, int pageSize = 10);
+
+        public void GetNesRomList(Action<int, Resp_GameList> callback, int page, int pageSize = 10)
         {
             App.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
         }
 
-        public void SearchNesRomList(Action<Resp_GameList> callback, string searchKey, int page, int pageSize = 10)
+        public void SearchNesRomList(Action<int, Resp_GameList> callback, string searchKey, int page, int pageSize = 10)
         {
             App.StartCoroutine(SearchNesRomListFlow(searchKey, page, pageSize, callback));
         }
-        private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<Resp_GameList> callback)
+        private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<int, Resp_GameList> callback)
         {
-
             if (!string.IsNullOrEmpty(searchKey))
             {
                 string oldsearch = searchKey;
@@ -48,19 +47,19 @@ namespace AxibugEmuOnline.Client
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
-                callback.Invoke(null);
+                callback.Invoke(page, null);
                 yield break;
             }
 
             if (!request.downloadHandler.bHadErr)
             {
                 var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
-                callback.Invoke(resp);
+                callback.Invoke(page, resp);
                 yield break;
             }
 
             App.log.Error(request.downloadHandler.ErrInfo);
-            callback.Invoke(null);
+            callback.Invoke(page, null);
 
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
@@ -73,7 +72,7 @@ namespace AxibugEmuOnline.Client
             }*/
 
         }
-        private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<Resp_GameList> callback)
+        private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<int, Resp_GameList> callback)
         {
             string url = $"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}";
             App.log.Info($"GetRomList=>{url}");
@@ -81,7 +80,7 @@ namespace AxibugEmuOnline.Client
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
-                callback.Invoke(null);
+                callback.Invoke(page, null);
                 yield break;
             }
 
@@ -89,12 +88,12 @@ namespace AxibugEmuOnline.Client
             if (!request.downloadHandler.bHadErr)
             {
                 var resp = JsonUtility.FromJson<Resp_GameList>(request.downloadHandler.text);
-                callback.Invoke(resp);
+                callback.Invoke(page, resp);
                 yield break;
             }
 
             App.log.Error(request.downloadHandler.ErrInfo);
-            callback.Invoke(null);
+            callback.Invoke(page, null);
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
             yield return request.SendWebRequest();
