@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
+using System;
 using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
@@ -125,18 +126,46 @@ namespace AxibugEmuOnline.Client.ClientCore
                 yield break;
             }
 
-            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
-            yield return request.SendWebRequest;
-            if (!request.downloadHandler.isDone)
-                yield break;
-
-            if (request.downloadHandler.bHadErr)
+            bool bHttpCheckDone = false;
+            Resp_CheckStandInfo resp = null;
+            while (true)
             {
-                App.log.Error(request.downloadHandler.ErrInfo);
-                yield break;
-            }
+                AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+                yield return request.SendWebRequest;
+                if (!request.downloadHandler.isDone)
+                {
+                    bHttpCheckDone = false;
+                }
+                else if (request.downloadHandler.bHadErr)
+                {
+                    bHttpCheckDone = false;
+                    App.log.Error(request.downloadHandler.ErrInfo);
+                }
+                else
+                {
+                    try
+                    {
+                        resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);
+                        bHttpCheckDone = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        bHttpCheckDone = false;
+                        App.log.Error(ex.ToString());
+                    }
+                }
 
-            Resp_CheckStandInfo resp = JsonUtility.FromJson<Resp_CheckStandInfo>(request.downloadHandler.text);
+                //请求成功
+                if (bHttpCheckDone)
+                {
+                    break;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(1);
+                    App.log.Debug("请求失败，重试请求API...");
+                }
+            }
 
             /*UnityWebRequest request = UnityWebRequest.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
             yield return request.SendWebRequest();
