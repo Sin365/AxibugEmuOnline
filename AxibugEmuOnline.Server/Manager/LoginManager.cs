@@ -188,6 +188,7 @@ namespace AxibugEmuOnline.Server.Manager
             }
             catch (Exception e)
             {
+                AppSrv.g_Log.Error($"ex=>{e.ToString()}");
                 bDone = false;
             }
             Haoyue_SQLPoolManager.EnqueueSQLConn(conn);

@@ -13,4 +13,5 @@ echo "==>>build finish"
 echo "==>>copy cs"
 
 copy %cd%\out\CS\ ..\AxibugEmuOnline.Server\Protobuf
+copy %cd%\out\CS\ ..\AxibugEmuOnline.Client\Assets\Script\AppMain\Protobuf
 pause

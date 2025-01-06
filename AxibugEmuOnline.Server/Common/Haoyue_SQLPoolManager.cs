@@ -54,7 +54,7 @@ namespace AxibugEmuOnline.Server.Common
                 {
                     _DicSqlRunFunNum[FuncStr] = 1L;
                 }
-                MySqlConnection _conn;
+                MySqlConnection _conn = null;
                 if (SQLPool.Count < 1)
                 {
                     Console.WriteLine("[DequeueSQLConn]创建新的SQLPool.Count>" + SQLPool.Count);
@@ -63,14 +63,38 @@ namespace AxibugEmuOnline.Server.Common
                 }
                 else
                 {
-                    Console.WriteLine("[DequeueSQLConn]取出一个SQLCount.Count>" + SQLPool.Count);
-                    _conn = SQLPool.Dequeue();
+                    MySqlConnection temp = null;
+                    while (SQLPool.Count > 0)
+                    {
+                        Console.WriteLine("[DequeueSQLConn]取出一个SQLCount.Count>" + SQLPool.Count);
+                        temp = SQLPool.Dequeue();
+                        if (temp.State == System.Data.ConnectionState.Closed)
+                        {
+                            Console.WriteLine("[DequeueSQLConn]已经断开SQLCount.Count>" + SQLPool.Count);
+                            temp.Dispose();
+                            temp = null;
+                            continue;
+                        }
+                    }
+
+                    if (temp != null)
+                    {
+                        _conn = temp;
+                    }
+                    else
+                    {
+                        Console.WriteLine("[DequeueSQLConn]连接池全部已断开，重新创建连接");
+                        _conn = conn();
+                        _conn.Open();
+                    }
                 }
+
                 _OutOfSQLPool.Add(_conn, new Haoyue_PoolTime
                 {
                     time = time(),
                     FuncStr = FuncStr
                 });
+
                 return _conn;
             }
         }
@@ -90,6 +114,7 @@ namespace AxibugEmuOnline.Server.Common
                 {
                     Console.WriteLine("已经不需要回收了,多余了,SQLPool.Count>" + SQLPool.Count);
                     BackConn.Close();
+                    BackConn.Dispose();
                     BackConn = null;
                 }
                 else

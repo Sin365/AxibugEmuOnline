@@ -97,12 +97,22 @@ enum DeviceType
 	Android = 2;
 	IOS = 3;
 	PSV = 4;
+	PS3 = 5;
+	PS4 = 6;
+	XBOX360 = 7;
+	XBOXONE = 8;
+	WiiU = 9;
+	Nintendo3DS = 10;
 }
 
 enum PlatformType
 {
     All = 0;
     Nes = 1;
+    Master_System = 2;
+	Game_Gear = 3;
+	Game_Boy = 4;
+	Game_Boy_Color = 5;
 }
 
 //enum RoomPlayerState
@@ -213,6 +223,7 @@ message UserMiniInfo
 {
 	int64 UID = 1;//用户ID
 	string NickName = 2;//昵称
+	DeviceType deviceType = 3;//设备类型
 }
 
 //修改昵称上行
