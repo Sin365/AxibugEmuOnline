@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
+using System;
 using System.Collections.Generic;
 
 namespace AxibugEmuOnline.Client
@@ -115,12 +116,16 @@ namespace AxibugEmuOnline.Client
             {
                 m_delayCreateRoom = false;
                 //延迟创建房间成功后,同步本地手柄连接状态
-                Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
+                Dictionary<uint, ValueTuple<uint, GamePadType>> temp = new Dictionary<uint, ValueTuple<uint, GamePadType>>();
                 var setuper = App.emu.Core.GetControllerSetuper();
                 for (int i = 0; i < 4; i++)
                 {
                     var joyIndex = setuper.GetSlotConnectingControllerIndex(i);
-                    if (joyIndex != null) temp[(uint)i] = (uint)joyIndex.Value;
+
+                    //TODO 手柄类型
+                    GamePadType gpType = GamePadType.GlobalGamePad;
+
+                    if (joyIndex != null) temp[(uint)i] = new ValueTuple<uint, GamePadType>((uint)joyIndex.Value, gpType);
                 }
                 App.roomMgr.SendChangePlaySlotIdxWithJoyIdx(temp);
             }

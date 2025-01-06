@@ -412,20 +412,19 @@ namespace AxibugEmuOnline.Client.Manager
         /// 发送修改玩家槽位,但是增量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
-        public void SendChangePlaySlotIdxWithJoyIdx(uint localJoyIndex, uint slotIndex)
+        public void SendChangePlaySlotIdxWithJoyIdx(uint localJoyIndex, uint slotIndex, GamePadType localGamePadType)
         {
             if (!App.roomMgr.InRoom) return;
 
-            Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
+            Dictionary<uint, ValueTuple<uint, GamePadType>> temp = new Dictionary<uint, ValueTuple<uint, GamePadType>>();
             for (int i = 0; i < App.roomMgr.mineRoomMiniInfo.GamePlaySlotList.Count; i++)
             {
                 var item = App.roomMgr.mineRoomMiniInfo.GamePlaySlotList[i];
-
                 if (item.PlayerUID <= 0) continue;
                 if (item.PlayerUID != App.user.userdata.UID) return;
-                temp[(uint)i] = (uint)item.PlayerLocalJoyIdx;
+                temp[(uint)i] = new ValueTuple<uint, GamePadType>((uint)item.PlayerLocalJoyIdx, item.PlayerLocalGamePadType);
             }
-            temp[slotIndex] = localJoyIndex;
+            temp[slotIndex] = new ValueTuple<uint, GamePadType>(localJoyIndex, localGamePadType);
 
             SendChangePlaySlotIdxWithJoyIdx(temp);
         }
@@ -433,7 +432,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// 发送修改玩家槽位,全量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
-        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, uint> dictSlotIdx2LocalJoyIdx)
+        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, ValueTuple<uint,GamePadType>> dictSlotIdx2LocalJoyIdx)
         {
             if (!InRoom)
                 return;
@@ -445,7 +444,8 @@ namespace AxibugEmuOnline.Client.Manager
                 _Protobuf_Room_Change_PlaySlotWithJoy.SlotWithJoy.Add(new Protobuf_PlaySlotIdxWithJoyIdx()
                 {
                     PlayerSlotIdx = (int)slotdata.Key,
-                    PlayerLocalJoyIdx = (int)slotdata.Value,
+                    PlayerLocalJoyIdx = (int)slotdata.Value.Item1,
+                    PlayerLocalGamePadType = slotdata.Value.Item2,
                 });
             }
 
@@ -605,6 +605,24 @@ namespace AxibugEmuOnline.Client.Manager
             if (roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerUID > 0)
                 PlayerName = roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerNickName;
             return string.IsNullOrEmpty(PlayerName);
+        }
+
+        /// <summary>
+        /// 获取玩家手柄类型
+        /// </summary>
+        /// <param name="roomMiniInfo"></param>
+        /// <param name="GameSlotIdx"></param>
+        /// <param name="gamePadType"></param>
+        /// <returns></returns>
+        public static bool GetPlayerGamePadTypeByPlayerIdx(this Protobuf_Room_MiniInfo roomMiniInfo, uint GameSlotIdx, out GamePadType gamePadType)
+        {
+            if (roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerUID > 0)
+            { 
+                gamePadType = roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerLocalGamePadType;
+                return true;
+            }
+            gamePadType = GamePadType.GlobalGamePad;
+            return false;
         }
     }
 }

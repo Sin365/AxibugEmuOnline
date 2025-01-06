@@ -25,14 +25,37 @@ namespace AxibugEmuOnline.Client.Manager
 
             App.user.userdata.Account = LastLoginGuid;
             AxibugProtobuf.DeviceType devType;
-            if (Application.platform == RuntimePlatform.PSP2)
-                devType = AxibugProtobuf.DeviceType.Psv;
-            else if (Application.platform == RuntimePlatform.Android)
-                devType = AxibugProtobuf.DeviceType.Android;
-            else if (Application.platform == RuntimePlatform.IPhonePlayer)
-                devType = AxibugProtobuf.DeviceType.Ios;
-            else
-                devType = AxibugProtobuf.DeviceType.Pc;
+            switch (Application.platform)
+            {
+                case RuntimePlatform.PSP2:
+                    devType = AxibugProtobuf.DeviceType.Psv;
+                    break;
+                case RuntimePlatform.PS4:
+                    devType = AxibugProtobuf.DeviceType.Ps4;
+                    break;
+                case RuntimePlatform.PS3:
+                    devType = AxibugProtobuf.DeviceType.Ps3;
+                    break;
+                case RuntimePlatform.WiiU:
+                    devType = AxibugProtobuf.DeviceType.WiiU;
+                    break;
+                case RuntimePlatform.XBOX360:
+                    devType = AxibugProtobuf.DeviceType.Xbox360;
+                    break;
+                case RuntimePlatform.XboxOne:
+                case RuntimePlatform.GameCoreXboxOne:
+                    devType = AxibugProtobuf.DeviceType.Xboxone;
+                    break;
+                //case RuntimePlatform.:
+                //    devType = AxibugProtobuf.DeviceType.Nintendo3Ds;
+                //    break;
+                case RuntimePlatform.IPhonePlayer:
+                    devType = AxibugProtobuf.DeviceType.Ios;
+                    break;
+                default:
+                    devType = AxibugProtobuf.DeviceType.Pc;
+                    break;
+            }
 
             Protobuf_Login msg = new Protobuf_Login()
             {
@@ -63,7 +86,7 @@ namespace AxibugEmuOnline.Client.Manager
             }
             else
             {
-                App.log.Info("登录失败"); 
+                App.log.Info("登录失败");
                 OverlayManager.PopTip("登录失败");
                 Eventer.Instance.PostEvent(EEvent.OnLoginFailed);
             }

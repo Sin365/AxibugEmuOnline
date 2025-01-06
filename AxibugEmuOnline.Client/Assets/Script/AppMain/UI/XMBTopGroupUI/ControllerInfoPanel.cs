@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
+using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,7 +29,11 @@ public class ControllerInfoPanel : MonoBehaviour
 
             //找到第一个空闲手柄插槽
             var freeSlotIndex = s_freeSlots[0];
-            App.roomMgr.SendChangePlaySlotIdxWithJoyIdx((uint)joyIndex, (uint)freeSlotIndex);
+
+            //TODO 手柄类型
+            GamePadType gpType = GamePadType.GlobalGamePad;
+
+            App.roomMgr.SendChangePlaySlotIdxWithJoyIdx((uint)joyIndex, (uint)freeSlotIndex, gpType);
         }
         else //不在房间中,直接设置
         {
