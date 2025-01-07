@@ -5,12 +5,6 @@
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
 
-        _StencilComp ("Stencil Comparison", Float) = 8
-        _Stencil ("Stencil ID", Float) = 0
-        _StencilOp ("Stencil Operation", Float) = 0
-        _StencilWriteMask ("Stencil Write Mask", Float) = 255
-        _StencilReadMask ("Stencil Read Mask", Float) = 255
-
         _ColorMask ("Color Mask", Float) = 15
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
@@ -45,15 +39,6 @@
             "CanUseSpriteAtlas"="True"
         }
 
-        Stencil
-        {
-            Ref [_Stencil]
-            Comp [_StencilComp]
-            Pass [_StencilOp]
-            ReadMask [_StencilReadMask]
-            WriteMask [_StencilWriteMask]
-        }
-
         Cull Off
         Lighting Off
         ZWrite Off
@@ -71,9 +56,6 @@
 
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
-
-            #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
-            #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
 
             struct appdata_t
             {
@@ -94,12 +76,7 @@
             };
 
             fixed4 _Color;
-            fixed4 _TextureSampleAdd;
-            float4 _ClipRect;     
             sampler2D _MainTex;
-            float4 _MainTex_ST;
-            float _UIMaskSoftnessX;
-            float _UIMaskSoftnessY;
 
             float wave(float x, float frequency, float speed, float midHeight, float maxHeight)
             {
@@ -128,10 +105,7 @@
                 float2 pixelSize = vPosition.w;
                 pixelSize /= float2(1, 1) * abs(mul((float2x2)UNITY_MATRIX_P, _ScreenParams.xy));
 
-                float4 clampedRect = clamp(_ClipRect, -2e10, 2e10);
-                float2 maskUV = (v.vertex.xy - clampedRect.xy) / (clampedRect.zw - clampedRect.xy);
-                OUT.texcoord = TRANSFORM_TEX(v.texcoord.xy, _MainTex);
-                OUT.mask = float4(v.vertex.xy * 2 - clampedRect.xy - clampedRect.zw, 0.25 / (0.25 * half2(_UIMaskSoftnessX, _UIMaskSoftnessY) + abs(pixelSize.xy)));
+                OUT.texcoord = v.texcoord.xy;
 
                 OUT.color = v.color * _Color;
                 return OUT;
@@ -186,15 +160,6 @@
 
                 // Output to screen
                 fixed4 fragColor = float4(col,1.0)*IN.color;
-
-                #ifdef UNITY_UI_CLIP_RECT
-                half2 m = saturate((_ClipRect.zw - _ClipRect.xy - abs(IN.mask.xy)) * IN.mask.zw);
-                fragColor.a *= m.x * m.y;
-                #endif
-
-                #ifdef UNITY_UI_ALPHACLIP
-                clip (fragColor.a - 0.001);
-                #endif
 
                 return fragColor;
             }
