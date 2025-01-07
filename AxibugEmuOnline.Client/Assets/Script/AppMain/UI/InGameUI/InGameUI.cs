@@ -42,6 +42,7 @@ namespace AxibugEmuOnline.Client
             m_stepPerformer = new StepPerformer(this);
 
             menus.Add(new InGameUI_FilterSetting(this));
+            menus.Add(new InGameUI_Scaler(this));
             menus.Add(new InGameUI_Reset(this));
             menus.Add(new InGameUI_SaveState(this));
             menus.Add(new InGameUI_LoadState(this));

@@ -32,6 +32,18 @@ namespace AxibugEmuOnline.Client
                 return (EnumScalerMode)setVal;
         }
 
+        public bool IsSetMode(RomPlatformType platform)
+        {
+            int setVal = PlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
+            return setVal != -1;
+        }
+
+        public void SetMode(RomPlatformType platform, EnumScalerMode? mode)
+        {
+            int setVal = mode == null ? -1 : (int)mode;
+            PlayerPrefs.SetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", setVal);
+        }
+
         /// <summary>
         /// 根据缩放模式设置UI的缩放
         /// </summary>
