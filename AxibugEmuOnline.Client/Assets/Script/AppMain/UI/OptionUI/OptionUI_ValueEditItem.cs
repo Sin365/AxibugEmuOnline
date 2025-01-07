@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+ï»¿using AxibugEmuOnline.Client.ClientCore;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -20,7 +20,7 @@ namespace AxibugEmuOnline.Client
             if (menuData is ValueSetMenu)
             {
                 var valueMenu = (ValueSetMenu)menuData;
-				if (valueMenu.ValueType == typeof(float))
+                if (valueMenu.ValueType == typeof(float))
                 {
                     m_currentCom = com_floatEdit;
                 }
@@ -30,7 +30,7 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
-                    App.log.Warning($"ÉĞÎ´Ö§³ÖµÄÊı¾İÀàĞÍ:{valueMenu.ValueType}");
+                    App.log.Warning($"å°šæœªæ”¯æŒçš„æ•°æ®ç±»å‹:{valueMenu.ValueType}");
                     return;
                 }
 

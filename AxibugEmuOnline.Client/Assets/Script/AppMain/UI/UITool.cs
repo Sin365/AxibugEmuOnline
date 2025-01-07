@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +10,7 @@ namespace AxibugEmuOnline.Client
         public static Material GetMaterial(this Graphic graphic)
         {
             Material material;
-			if (_caches.TryGetValue(graphic, out material))
+            if (_caches.TryGetValue(graphic, out material))
             {
                 return material;
             }

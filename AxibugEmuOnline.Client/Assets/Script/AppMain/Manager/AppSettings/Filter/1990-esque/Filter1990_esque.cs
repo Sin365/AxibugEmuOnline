@@ -1,6 +1,5 @@
-using AxibugEmuOnline.Client;
+﻿using AxibugEmuOnline.Client;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Filter1990_esque : FilterEffect
 {

@@ -66,7 +66,7 @@ namespace AxibugEmuOnline.Client.Network
         {
             lock (lockQueueObj)
             {
-                queueNetMsg.Enqueue(new ValueTuple<int,int,byte[]>(cmd, ERRCODE, arg));
+                queueNetMsg.Enqueue(new ValueTuple<int, int, byte[]>(cmd, ERRCODE, arg));
             }
         }
 
@@ -77,7 +77,7 @@ namespace AxibugEmuOnline.Client.Network
                 while (queueNetMsg.Count > 0)
                 {
 
-					var msgData = queueNetMsg.Dequeue();
+                    var msgData = queueNetMsg.Dequeue();
                     PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
                 }
             }
@@ -88,7 +88,7 @@ namespace AxibugEmuOnline.Client.Network
             ErrorCode err = ((ErrorCode)ERRCODE);
             if (err != ErrorCode.ErrorOk)
             {
-                OverlayManager.PopTip("错误:"+err.ToString());
+                OverlayManager.PopTip("错误:" + err.ToString());
             }
 
             List<Delegate> eventList = GetNetEventDicList(cmd);

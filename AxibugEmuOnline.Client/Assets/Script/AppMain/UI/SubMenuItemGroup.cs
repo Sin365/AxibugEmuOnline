@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.UI;
+ï»¿using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -185,8 +185,8 @@ namespace AxibugEmuOnline.Client
         {
 #if UNITY_EDITOR
 
-			//========================Ì×ÍŞºê========================
-#if UNITY_2019_1_OR_NEWER //ĞÂ°æUnity£¬ÒòUNITY2018.2ÓÃ²»ÁËÕâÍæÒâ¶ù£¬±à¼­Æ÷Ò²°Õ
+            //========================å¥—å¨ƒå®========================
+#if UNITY_2019_1_OR_NEWER //æ–°ç‰ˆUnityï¼Œå› UNITY2018.2ç”¨ä¸äº†è¿™ç©æ„å„¿ï¼Œç¼–è¾‘å™¨ä¹Ÿç½¢
 
             if (Application.isPlaying)
             {
@@ -205,13 +205,13 @@ namespace AxibugEmuOnline.Client
 			item.transform.localPosition = Vector3.zero;
 			return item;
 #endif
-			//========================Ì×ÍŞºê End========================
+            //========================å¥—å¨ƒå® End========================
 
 
 
 #else
             return GameObject.Instantiate(SubMenuItemTemplate.gameObject, parent).GetComponent<MenuItem>();
 #endif
-		}
-	}
+        }
+    }
 }

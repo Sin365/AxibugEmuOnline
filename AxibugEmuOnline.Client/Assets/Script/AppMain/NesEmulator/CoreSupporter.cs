@@ -107,9 +107,9 @@ namespace AxibugEmuOnline.Client
         public void SampleInput(uint frameIndex)
         {
             if (InGameUI.Instance.IsNetPlay)
-			{
+            {
                 int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
-				if (App.roomMgr.netReplay.TryGetNextFrame((int)frameIndex, out replayData, out frameDiff, out inputDiff))
+                if (App.roomMgr.netReplay.TryGetNextFrame((int)frameIndex, out replayData, out frameDiff, out inputDiff))
                 {
                     if (inputDiff)
                     {

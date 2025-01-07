@@ -1,9 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using AxibugProtobuf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -18,14 +16,14 @@ namespace AxibugEmuOnline.Client
 
         public void GetNesRomList(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, int page, int pageSize = 10)
         {
-            App.StartCoroutine(GetRomListFlow(platform,page, pageSize, callback));
+            App.StartCoroutine(GetRomListFlow(platform, page, pageSize, callback));
         }
 
         public void SearchNesRomList(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, string searchKey, int page, int pageSize = 10)
         {
-            App.StartCoroutine(SearchNesRomListFlow(platform,searchKey, page, pageSize, callback));
+            App.StartCoroutine(SearchNesRomListFlow(platform, searchKey, page, pageSize, callback));
         }
-        private IEnumerator SearchNesRomListFlow(AxibugProtobuf.RomPlatformType platform,string searchKey, int page, int pageSize, Action<int, Resp_GameList> callback)
+        private IEnumerator SearchNesRomListFlow(AxibugProtobuf.RomPlatformType platform, string searchKey, int page, int pageSize, Action<int, Resp_GameList> callback)
         {
             if (!string.IsNullOrEmpty(searchKey))
             {

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameObjectPool
@@ -41,7 +41,7 @@ public static class GameObjectPool
     {
         GameObject src;
         Queue<GameObject> pool;
-		s_instanceToSrc.TryGetValue(instance, out src);
+        s_instanceToSrc.TryGetValue(instance, out src);
         if (src != null && s_poolMap.TryGetValue(src, out pool))
         {
             pool.Enqueue(instance);

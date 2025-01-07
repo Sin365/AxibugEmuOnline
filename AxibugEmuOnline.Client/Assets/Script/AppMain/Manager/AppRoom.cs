@@ -432,7 +432,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// 发送修改玩家槽位,全量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
-        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, ValueTuple<uint,GamePadType>> dictSlotIdx2LocalJoyIdx)
+        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, ValueTuple<uint, GamePadType>> dictSlotIdx2LocalJoyIdx)
         {
             if (!InRoom)
                 return;
@@ -617,7 +617,7 @@ namespace AxibugEmuOnline.Client.Manager
         public static bool GetPlayerGamePadTypeByPlayerIdx(this Protobuf_Room_MiniInfo roomMiniInfo, uint GameSlotIdx, out GamePadType gamePadType)
         {
             if (roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerUID > 0)
-            { 
+            {
                 gamePadType = roomMiniInfo.GamePlaySlotList[(int)GameSlotIdx].PlayerLocalGamePadType;
                 return true;
             }

@@ -483,7 +483,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
         else if (dataList is IEnumerable)
         {
             var ienumrable = (IEnumerable)dataList;
-			List<object> temp = new List<object>();
+            List<object> temp = new List<object>();
             foreach (var item in ienumrable)
             {
                 temp.Add(item);

@@ -1,7 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using static AxibugEmuOnline.Client.ScreenScaler;
 
 namespace AxibugEmuOnline.Client

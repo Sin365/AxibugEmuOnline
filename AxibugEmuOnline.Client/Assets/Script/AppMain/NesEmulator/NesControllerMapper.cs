@@ -1,5 +1,4 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
-using AxibugEmuOnline.Client.Common;
+﻿using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +90,7 @@ namespace AxibugEmuOnline.Client
             Controller targetController;
             switch (conIndex)
             {
-                case 0: targetController = Controller0;break;
+                case 0: targetController = Controller0; break;
                 case 1: targetController = Controller1; break;
                 case 2: targetController = Controller2; break;
                 case 3: targetController = Controller3; break;
