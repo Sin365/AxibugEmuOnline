@@ -103,11 +103,6 @@ namespace AxibugEmuOnline.Client
             NesCore.Reset();
         }
 
-        public void SetupScheme()
-        {
-            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Gaming;
-        }
-
         public void LoadState(object state)
         {
             NesCore.LoadState((State)state);

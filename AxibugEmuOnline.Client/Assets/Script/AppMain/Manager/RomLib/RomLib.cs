@@ -135,10 +135,7 @@ namespace AxibugEmuOnline.Client
                     {
                         FetchPageCmd.Remove(page);
                         SaveRomInfoFromWeb(resp);
-                    },
-                    //TODO 平台参数
-                    AxibugProtobuf.RomPlatformType.Nes,
-                    lastSearchKey, pageNo, PAGE_SIZE);
+                    }, m_platform, lastSearchKey, pageNo, PAGE_SIZE);
                 }
                 else
                 {
@@ -146,10 +143,7 @@ namespace AxibugEmuOnline.Client
                     {
                         FetchPageCmd.Remove(page);
                         SaveRomInfoFromWeb(resp);
-                    },
-                    //TODO 平台参数
-                    AxibugProtobuf.RomPlatformType.Nes,
-                    pageNo, PAGE_SIZE);
+                    }, m_platform, pageNo, PAGE_SIZE);
                 }
             }
 
