@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
+using Coffee.UIExtensions;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -38,6 +39,12 @@ namespace AxibugEmuOnline.Client
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;
             romPreviewWraper = new AlphaWraper(XMBCG_For_RomPreviewBigPic, RomPreviewBigPic.GetComponent<CanvasGroup>(), false);
+
+            var uiEffect = RomPreviewBigPic.GetComponent<UIEffect>();
+            if (Application.platform == RuntimePlatform.PSP2)
+                uiEffect.blurMode = BlurMode.FastBlur;
+            else
+                uiEffect.blurMode = BlurMode.DetailBlur;
         }
 
         private void Start()
