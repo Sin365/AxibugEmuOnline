@@ -1,10 +1,10 @@
-﻿using System;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
-using AxibugEmuOnline.Client.ClientCore;
-using AxibugProtobuf;
 using UnityEditor;
 using UnityEngine;
 using VirtualNes.Core;

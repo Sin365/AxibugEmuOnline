@@ -2,10 +2,8 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using DG.Tweening;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
-using VirtualNes.Core;
 
 public class ControllerInfo : MonoBehaviour
 {

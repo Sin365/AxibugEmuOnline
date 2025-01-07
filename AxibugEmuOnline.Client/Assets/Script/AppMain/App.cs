@@ -6,7 +6,6 @@ using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 using static AxibugEmuOnline.Client.HttpAPI;
 using static AxibugEmuOnline.Client.Manager.LogManager;
 
@@ -47,7 +46,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init( bool isTest = false, string testSrvIP = "")
+        public static void Init(bool isTest = false, string testSrvIP = "")
         {
             log = new LogManager(OnLogOut);
 

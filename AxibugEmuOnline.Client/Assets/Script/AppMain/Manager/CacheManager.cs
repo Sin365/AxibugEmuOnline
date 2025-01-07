@@ -1,10 +1,9 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace AxibugEmuOnline.Client
 {
@@ -27,7 +26,7 @@ namespace AxibugEmuOnline.Client
 
         IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
         {
-			AxiHttpProxy.SendDownLoadProxy request = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{url}");
+            AxiHttpProxy.SendDownLoadProxy request = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{url}");
 
             while (!request.downloadHandler.isDone)
             {
@@ -62,13 +61,13 @@ namespace AxibugEmuOnline.Client
 
         private Dictionary<string, object> cachesInMemory = new Dictionary<string, object>();
         void GetCacheData<T>(string url, string path, Action<T, string> callback) where T : class
-		{
+        {
             object cacheObj;
 
-			if (cachesInMemory.TryGetValue(url, out cacheObj) && cacheObj is T)
+            if (cachesInMemory.TryGetValue(url, out cacheObj) && cacheObj is T)
             {
                 T obj = (T)cacheObj;
-				callback.Invoke(obj, url);
+                callback.Invoke(obj, url);
                 return;
             }
 

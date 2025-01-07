@@ -2,7 +2,6 @@
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -12,7 +11,6 @@ namespace AxibugEmuOnline.Client
     {
         [SerializeField]
         protected CanvasGroup RomGroupRoot;
-
 
         private TweenerCore<float, float, FloatOptions> m_showTween;
 

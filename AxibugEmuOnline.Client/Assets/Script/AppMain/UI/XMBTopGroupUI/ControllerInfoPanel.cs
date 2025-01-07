@@ -3,10 +3,8 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
 using AxibugProtobuf;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using VirtualNes.Core;
 
 public class ControllerInfoPanel : MonoBehaviour
 {

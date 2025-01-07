@@ -1,5 +1,5 @@
-/// <summary>
-/// StringºÍBoolµÄ·ìºÏ¹Ö
+ï»¿/// <summary>
+/// Stringå’ŒBoolçš„ç¼åˆæ€ª
 /// </summary>
 public struct MsgBool
 {
@@ -7,9 +7,9 @@ public struct MsgBool
     public bool Value;
 
     //low C# readonly
-	//public override readonly string ToString()
+    //public override readonly string ToString()
 
-	public override string ToString()
+    public override string ToString()
     {
         if (Value)
         {
@@ -36,13 +36,13 @@ public struct MsgBool
         return msgBool.Value;
     }
 
-	//low C# 
-	//public static implicit operator (bool, string)(MsgBool msgBool)
-	//{
-	//    return (msgBool.Value, msgBool.ErrorMsg);
-	//}
+    //low C# 
+    //public static implicit operator (bool, string)(MsgBool msgBool)
+    //{
+    //    return (msgBool.Value, msgBool.ErrorMsg);
+    //}
 
-	public static implicit operator string(MsgBool msgBool)
+    public static implicit operator string(MsgBool msgBool)
     {
         return msgBool.ToString();
     }

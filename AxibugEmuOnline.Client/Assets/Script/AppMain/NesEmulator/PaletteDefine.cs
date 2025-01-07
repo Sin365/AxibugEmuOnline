@@ -1,6 +1,4 @@
-﻿using VirtualNes.Core;
-
-namespace AxibugEmuOnline.Client
+﻿namespace AxibugEmuOnline.Client
 {
     public static class PaletteDefine
     {

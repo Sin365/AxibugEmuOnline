@@ -1,6 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
-using System;
 
 namespace AxibugEmuOnline.Client
 {

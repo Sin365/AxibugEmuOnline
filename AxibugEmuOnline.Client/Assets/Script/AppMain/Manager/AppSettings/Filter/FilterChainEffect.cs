@@ -1,6 +1,5 @@
 ﻿using Assets.Script.AppMain.Filter;
 using AxibugEmuOnline.Client;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;

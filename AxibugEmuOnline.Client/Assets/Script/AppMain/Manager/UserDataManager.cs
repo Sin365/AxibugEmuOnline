@@ -155,7 +155,7 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 UserMiniInfo mi = msg.UserList[i];
                 bool isNewUser;
-				UpdateOrAddUser(mi, out isNewUser);
+                UpdateOrAddUser(mi, out isNewUser);
             }
             Eventer.Instance.PostEvent(EEvent.OnUserListAllUpdate);
         }
@@ -163,9 +163,9 @@ namespace AxibugEmuOnline.Client.Manager
         {
             Protobuf_UserJoin_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserJoin_RESP>(reqData);
             bool isNewUser;
-			UpdateOrAddUser(msg.UserInfo, out isNewUser);
+            UpdateOrAddUser(msg.UserInfo, out isNewUser);
             if (isNewUser)
-            { 
+            {
                 Eventer.Instance.PostEvent(EEvent.OnUserLogin, msg.UserInfo.UID, msg.UserInfo.NickName);
                 OverlayManager.PopTip($"玩家[{msg.UserInfo.NickName}]上线了");
             }
