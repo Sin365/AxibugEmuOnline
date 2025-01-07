@@ -1,5 +1,8 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
+using Coffee.UIExtensions;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,11 +19,30 @@ namespace AxibugEmuOnline.Client
         Slider DownProgress;
         [SerializeField]
         GameObject FileReadyFlag;
+        [SerializeField]
+        UIShiny DownloadComplete;
 
         public int Index { get; set; }
 
         private RomLib m_romlib => App.nesRomLib;
         private RomFile m_romfile;
+
+        protected override void OnEnable()
+        {
+            Eventer.Instance.RegisterEvent<int>(EEvent.OnRomFileDownloaded, OnRomDownloaded);
+        }
+
+        protected override void OnDisable()
+        {
+            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRomFileDownloaded, OnRomDownloaded);
+        }
+
+        private void OnRomDownloaded(int romID)
+        {
+            if (m_romfile == null || m_romfile.ID != romID) return;
+
+            DownloadComplete.Play();
+        }
 
         public void SetData(object data)
         {

@@ -79,6 +79,11 @@
         /// 当本机手柄渴望插入时触发
         /// <para>参数: <see cref="int"/> 本地手柄序号[0,3]</para>
         /// </summary>
-        OnLocalJoyDesireInvert
+        OnLocalJoyDesireInvert,
+        /// <summary>
+        /// 当Rom文件下载完毕时触发
+        /// <para><see cref="int"/>RomID</para>
+        /// </summary>
+        OnRomFileDownloaded,
     }
 }

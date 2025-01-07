@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
@@ -79,6 +80,8 @@ namespace AxibugEmuOnline.Client
 
                     File.WriteAllBytes(LocalFilePath, bytes);
                     hasLocalFile = true;
+
+                    Eventer.Instance.PostEvent(EEvent.OnRomFileDownloaded, ID);
                 }
                 OnDownloadOver?.Invoke(this);
             }));
