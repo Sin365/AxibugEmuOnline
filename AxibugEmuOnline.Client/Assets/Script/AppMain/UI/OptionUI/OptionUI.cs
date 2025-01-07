@@ -37,16 +37,18 @@ namespace AxibugEmuOnline.Client
 
                 var gap = value - m_selectIndex;
 
+                var temp = value;
                 while (!m_runtimeMenuItems[value].Visible)
                 {
-                    var temp = value;
                     if (gap > 0)
                     {
                         temp++;
+                        if (temp >= m_runtimeMenuItems.Count) return;
                     }
                     else
                     {
                         temp--;
+                        if (temp < 0) return;
                     }
 
                     if (temp >= 0 && temp < m_runtimeMenuItems.Count)
@@ -386,7 +388,6 @@ namespace AxibugEmuOnline.Client
     {
         /// <summary> 设置这个值以控制菜单中显示"已应用"标记 </summary>
         public virtual bool IsApplied { get; }
-        protected ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
         public abstract void OnExcute(OptionUI optionUI, ref bool cancelHide);
     }
@@ -396,7 +397,7 @@ namespace AxibugEmuOnline.Client
     /// </summary>
     public abstract class ExpandMenu : ExecuteMenu
     {
-        protected ExpandMenu(string name, Sprite icon = null) : base(name, icon) { }
+        protected ExpandMenu() : base() { }
 
         public sealed override void OnExcute(OptionUI optionUI, ref bool cancelHide)
         {
@@ -411,7 +412,7 @@ namespace AxibugEmuOnline.Client
     /// </summary>
     public abstract class ValueSetMenu : OptionMenu
     {
-        protected ValueSetMenu(string name) : base(name) { }
+        protected ValueSetMenu() : base() { }
 
         public abstract Type ValueType { get; }
         public abstract object ValueRaw { get; }
@@ -423,16 +424,10 @@ namespace AxibugEmuOnline.Client
     /// <summary> 不要直接继承这个类 </summary>
     public abstract class OptionMenu
     {
-        public string Name { get; protected set; }
-        public Sprite Icon { get; protected set; }
+        public abstract string Name { get; }
+        public virtual Sprite Icon { get; }
         public virtual bool Visible => true;
         public virtual bool Enable => true;
-
-        protected OptionMenu(string name, Sprite icon = null)
-        {
-            Name = name;
-            Icon = icon;
-        }
 
         public virtual void OnFocus() { }
         public virtual void OnShow(OptionUI_MenuItem ui) { }

@@ -8,8 +8,8 @@ namespace AxibugEmuOnline.Client
     public class InGameUI_Scaler : ExpandMenu
     {
         private List<OptionMenu> m_subMenus = new List<OptionMenu>();
-
-        public InGameUI_Scaler(InGameUI inGameUI) : base("屏幕比例", null)
+        public override string Name => "屏幕比例";
+        public InGameUI_Scaler(InGameUI inGameUI)
         {
             m_subMenus.Add(new Scale(inGameUI, null));
             foreach (EnumScalerMode scaleModeValue in Enum.GetValues(typeof(EnumScalerMode)))
@@ -48,8 +48,8 @@ namespace AxibugEmuOnline.Client
                     else return false;
                 }
             }
-
-            public Scale(InGameUI inGameUI, EnumScalerMode? mode) : base(ModeToName(mode), null)
+            public override string Name => ModeToName(m_mode);
+            public Scale(InGameUI inGameUI, EnumScalerMode? mode)
             {
                 m_mode = mode;
                 m_gameUI = inGameUI;

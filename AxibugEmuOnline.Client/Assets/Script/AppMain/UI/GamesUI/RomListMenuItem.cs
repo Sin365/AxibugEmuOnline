@@ -68,8 +68,9 @@ namespace AxibugEmuOnline.Client
         public class OptMenu_Search : ExecuteMenu
         {
             private RomListMenuItem m_romListUI;
+            public override string Name => "搜索";
 
-            public OptMenu_Search(RomListMenuItem romListUI, Sprite icon = null) : base("搜索", icon)
+            public OptMenu_Search(RomListMenuItem romListUI)
             {
                 m_romListUI = romListUI;
             }
@@ -90,9 +91,10 @@ namespace AxibugEmuOnline.Client
         {
             private RomListMenuItem m_ui;
 
+            public override string Name => "显示全部";
             public override bool Visible => !string.IsNullOrWhiteSpace(m_ui.SearchKey);
 
-            public OptMenu_ShowAll(RomListMenuItem romListUI, Sprite icon = null) : base("显示全部", icon)
+            public OptMenu_ShowAll(RomListMenuItem romListUI)
             {
                 m_ui = romListUI;
             }
@@ -101,6 +103,31 @@ namespace AxibugEmuOnline.Client
             {
                 m_ui.SearchKey = null;
                 m_ui.RefreshUI();
+            }
+        }
+
+        public class OptMenu_Fav : ExecuteMenu
+        {
+            private RomListMenuItem m_romListUI;
+            private ThirdMenuRoot m_romListSub;
+
+            public override string Name
+            {
+                get
+                {
+                    var isFav = (m_romListSub.GetItemUIByIndex(m_romListSub.SelectIndex) as RomItem).IsFav;
+                    return isFav ? "收藏" : "取消收藏";
+                }
+            }
+
+            public OptMenu_Fav(RomListMenuItem romListUI)
+            {
+                m_romListUI = romListUI;
+                m_romListSub = m_romListUI.SubMenuItemGroup as ThirdMenuRoot;
+            }
+
+            public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+            {
             }
         }
     }

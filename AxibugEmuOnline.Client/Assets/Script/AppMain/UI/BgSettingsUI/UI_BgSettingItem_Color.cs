@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+ï»¿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
@@ -9,7 +9,7 @@ using UnityEngine;
 namespace AxibugEmuOnline.Client
 {
     /// <summary>
-    /// ±³¾°ÑÕÉ«ÉèÖÃUI
+    /// èƒŒæ™¯é¢œè‰²è®¾ç½®UI
     /// </summary>
     public class UI_BgSettingItem_Color : MenuItem, IVirtualItem
     {
@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
             var color = Datacontext.CurrentColor;
             Icon.GetMaterial().SetColor("_Color1", color.color1);
             Icon.GetMaterial().SetColor("_Color2", color.color2);
-            SetBaseInfo("Ö÷ÌâÉ«", "ÉèÖÃÖ÷ÌâÉ«", color.Name);
+            SetBaseInfo("ä¸»é¢˜è‰²", "è®¾ç½®ä¸»é¢˜è‰²", color.Name);
         }
 
         public void SetDependencyProperty(object data)
@@ -58,8 +58,9 @@ namespace AxibugEmuOnline.Client
         public class ColorOption : ExecuteMenu
         {
             public XMBColor Color;
+            public override string Name => Color.Name;
 
-            public ColorOption(XMBColor color) : base(color.Name)
+            public ColorOption(XMBColor color)
             {
                 Color = color;
             }

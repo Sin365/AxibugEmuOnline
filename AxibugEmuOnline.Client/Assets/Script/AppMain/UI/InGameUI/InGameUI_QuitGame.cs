@@ -1,11 +1,11 @@
-namespace AxibugEmuOnline.Client
+﻿namespace AxibugEmuOnline.Client
 {
     public class InGameUI_QuitGame : ExecuteMenu
     {
         private InGameUI m_gameUI;
+        public override string Name => "退出";
 
-
-        public InGameUI_QuitGame(InGameUI gameUI) : base("�˳�", null)
+        public InGameUI_QuitGame(InGameUI gameUI)
         {
             m_gameUI = gameUI;
         }

@@ -42,7 +42,7 @@ namespace AxibugEmuOnline.Client
             if (m_selectIndex == -1) SelectIndex = 0;
         }
 
-        protected virtual MenuItem GetItemUIByIndex(int index)
+        public virtual MenuItem GetItemUIByIndex(int index)
         {
             return m_runtimeMenuUI[SelectIndex];
         }

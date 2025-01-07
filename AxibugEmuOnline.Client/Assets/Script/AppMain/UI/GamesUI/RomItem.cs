@@ -24,6 +24,8 @@ namespace AxibugEmuOnline.Client
 
         public int Index { get; set; }
 
+        public bool IsFav { get; }
+
         private RomLib m_romlib => App.nesRomLib;
         private RomFile m_romfile;
 

@@ -70,7 +70,9 @@ namespace AxibugEmuOnline.Client
         {
             private Filter m_filter;
 
-            public Opt_CreatePreset(Filter filter) : base("创建滤镜预设", Resources.LoadAll<Sprite>("Icons/XMB-Icons/misc")[0])
+            public override string Name => "创建滤镜预设";
+            public override Sprite Icon => Resources.LoadAll<Sprite>("Icons/XMB-Icons/misc")[0];
+            public Opt_CreatePreset(Filter filter)
             {
                 m_filter = filter;
             }
@@ -101,7 +103,9 @@ namespace AxibugEmuOnline.Client
             private OptionUI_MenuItem m_ui;
             private List<OptionMenu> m_menu;
 
-            public Opt_Presets(Filter filter, FilterPreset preset) : base(preset.Name, null)
+            public override string Name => m_preset.Name;
+
+            public Opt_Presets(Filter filter, FilterPreset preset)
             {
                 m_filter = filter;
                 m_preset = preset;
@@ -151,8 +155,8 @@ namespace AxibugEmuOnline.Client
 
                 public override bool Visible => m_param.ValueType.IsEnum || m_param.ValueType == typeof(float);
 
+                public override string Name => m_param.Name;
                 public Opt_ParamEditor(Filter filter, FilterEffect.EditableParamerter editParam, FilterPreset preset)
-                    : base(editParam.Name)
                 {
                     m_filter = filter;
                     m_param = editParam;
@@ -179,8 +183,9 @@ namespace AxibugEmuOnline.Client
             {
                 private Filter m_filter;
                 private FilterPreset m_preset;
+                public override string Name => "删除预设";
 
-                public Opt_Delete(Filter filter, FilterPreset preset) : base("删除预设", null)
+                public Opt_Delete(Filter filter, FilterPreset preset)
                 {
                     m_filter = filter;
                     m_preset = preset;

@@ -8,8 +8,9 @@ namespace AxibugEmuOnline.Client
     public class InGameUI_FilterSetting : ExpandMenu
     {
         private InGameUI m_gameUI;
+        public override string Name => "滤镜";
 
-        public InGameUI_FilterSetting(InGameUI gameUI) : base("滤镜", null)
+        public InGameUI_FilterSetting(InGameUI gameUI)
         {
             m_gameUI = gameUI;
         }
@@ -26,12 +27,11 @@ namespace AxibugEmuOnline.Client
         {
             private RomFile m_rom;
 
+            public override string Name => "取消滤镜";
             public override bool IsApplied => App.settings.Filter.GetFilterSetting(m_rom).filter == null;
-            public FilterNone(RomFile rom) : base("取消滤镜", null)
+            public FilterNone(RomFile rom)
             {
                 m_rom = rom;
-
-                var currentFilterSetting = App.settings.Filter.GetFilterSetting(m_rom);
             }
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
@@ -58,8 +58,8 @@ namespace AxibugEmuOnline.Client
                     return false;
                 }
             }
-
-            public FilterMenu(RomFile rom, Filter filter) : base(filter.Name, null)
+            public override string Name => m_filter.Name;
+            public FilterMenu(RomFile rom, Filter filter)
             {
                 m_filter = filter;
                 m_presetsMenuItems = new List<OptionMenu> { new FilterPresetMenu(rom, m_filter, m_filter.DefaultPreset) };
@@ -87,8 +87,8 @@ namespace AxibugEmuOnline.Client
                 }
             }
 
-
-            public FilterPresetMenu(RomFile rom, Filter filter, FilterPreset preset) : base(preset.Name, null)
+            public override string Name => m_preset.Name;
+            public FilterPresetMenu(RomFile rom, Filter filter, FilterPreset preset)
             {
                 m_preset = preset;
                 m_rom = rom;
