@@ -176,7 +176,8 @@ namespace AxibugEmuOnline.Client
             if (filter != null)
             {
                 string presetName = value.Item2;
-                preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
+                if (presetName == filter.DefaultPreset.Name) preset = filter.DefaultPreset;
+                else preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
             }
 
             return new GetFilterSetting_result()

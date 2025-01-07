@@ -5,7 +5,7 @@ using static AxibugEmuOnline.Client.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {
-	public class InGameUI_FilterSetting : ExpandMenu
+    public class InGameUI_FilterSetting : ExpandMenu
     {
         private InGameUI m_gameUI;
 
@@ -26,15 +26,17 @@ namespace AxibugEmuOnline.Client
         {
             private RomFile m_rom;
 
+            public override bool IsApplied => App.settings.Filter.GetFilterSetting(m_rom).filter == null;
             public FilterNone(RomFile rom) : base("取消滤镜", null)
             {
                 m_rom = rom;
+
+                var currentFilterSetting = App.settings.Filter.GetFilterSetting(m_rom);
             }
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
                 App.settings.Filter.ShutDownFilter();
-
                 App.settings.Filter.SetupFilter(m_rom, null, null);
             }
         }
@@ -43,6 +45,19 @@ namespace AxibugEmuOnline.Client
         {
             private Filter m_filter;
             private List<OptionMenu> m_presetsMenuItems;
+
+            public override bool IsApplied
+            {
+                get
+                {
+                    foreach (FilterPresetMenu preset in m_presetsMenuItems)
+                    {
+                        if (preset.IsApplied) return true;
+                    }
+
+                    return false;
+                }
+            }
 
             public FilterMenu(RomFile rom, Filter filter) : base(filter.Name, null)
             {
@@ -62,6 +77,16 @@ namespace AxibugEmuOnline.Client
             private FilterPreset m_preset;
             private RomFile m_rom;
             private Filter m_filter;
+
+            public override bool IsApplied
+            {
+                get
+                {
+                    var setting = App.settings.Filter.GetFilterSetting(m_rom);
+                    return setting.filter == m_filter && setting.preset == m_preset;
+                }
+            }
+
 
             public FilterPresetMenu(RomFile rom, Filter filter, FilterPreset preset) : base(preset.Name, null)
             {

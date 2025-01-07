@@ -271,8 +271,8 @@ namespace AxibugEmuOnline.Client
         {
             if (menuData is ExecuteMenu)
             {
-				ExecuteMenu executeMenu = (ExecuteMenu)menuData;
-				var menuUI = Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
+                ExecuteMenu executeMenu = (ExecuteMenu)menuData;
+                var menuUI = Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
                 menuUI.gameObject.SetActive(true);
                 menuUI.SetData(this, executeMenu);
                 m_runtimeMenuItems.Add(menuUI);
@@ -280,7 +280,7 @@ namespace AxibugEmuOnline.Client
             else if (menuData is ValueSetMenu)
             {
                 var valueSetMenu = (ValueSetMenu)menuData;
-				var menuUI = Instantiate(TEMPLATE_VALUEEDITITEM.gameObject, TEMPLATE_VALUEEDITITEM.transform.parent).GetComponent<OptionUI_ValueEditItem>();
+                var menuUI = Instantiate(TEMPLATE_VALUEEDITITEM.gameObject, TEMPLATE_VALUEEDITITEM.transform.parent).GetComponent<OptionUI_ValueEditItem>();
                 menuUI.gameObject.SetActive(true);
                 menuUI.SetData(this, valueSetMenu);
                 m_runtimeMenuItems.Add(menuUI);
@@ -384,13 +384,15 @@ namespace AxibugEmuOnline.Client
     /// </summary>
     public abstract class ExecuteMenu : OptionMenu
     {
+        /// <summary> 设置这个值以控制菜单中显示"已应用"标记 </summary>
+        public virtual bool IsApplied { get; }
         protected ExecuteMenu(string name, Sprite icon = null) : base(name, icon) { }
 
         public abstract void OnExcute(OptionUI optionUI, ref bool cancelHide);
     }
 
     /// <summary>
-    /// 带有展开行为的菜单
+    /// 带有展开行为的可执行菜单
     /// </summary>
     public abstract class ExpandMenu : ExecuteMenu
     {
@@ -403,6 +405,19 @@ namespace AxibugEmuOnline.Client
         }
 
         protected abstract List<OptionMenu> GetOptionMenus();
+    }
+    /// <summary>
+    /// 带有值类型显示和编辑的菜单
+    /// </summary>
+    public abstract class ValueSetMenu : OptionMenu
+    {
+        protected ValueSetMenu(string name) : base(name) { }
+
+        public abstract Type ValueType { get; }
+        public abstract object ValueRaw { get; }
+        public abstract void OnValueChanged(object newValue);
+        public abstract object Min { get; }
+        public abstract object Max { get; }
     }
 
     /// <summary> 不要直接继承这个类 </summary>
@@ -423,17 +438,5 @@ namespace AxibugEmuOnline.Client
         public virtual void OnShow(OptionUI_MenuItem ui) { }
         public virtual void OnHide() { }
     }
-    /// <summary>
-    /// 带有值类型显示和编辑的菜单
-    /// </summary>
-    public abstract class ValueSetMenu : OptionMenu
-    {
-        protected ValueSetMenu(string name) : base(name) { }
 
-        public abstract Type ValueType { get; }
-        public abstract object ValueRaw { get; }
-        public abstract void OnValueChanged(object newValue);
-        public abstract object Min { get; }
-        public abstract object Max { get; }
-    }
 }
