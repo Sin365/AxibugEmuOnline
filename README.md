@@ -6,7 +6,7 @@
 
 #### **并不是基于RetroArch，Libretro等项目的套壳项目，也并不是XX前端**。请不要混淆。具体您可以看代码。
 
-#### A cross platform, multiplayer online, Net 9 Server , Unity Client , game simulator used C#. （on PSV/PS3,4/XBOX/3DS/Swith/PC/Mobile/or more...)
+#### A cross platform, multiplayer online, Net 9 Server , Unity Client , game emulator used C#. （on PSV/PS3,4/XBOX/3DS/Swith/PC/Mobile/or more...)
 
 #### It's not a shell project based on projects such as RetroArch and Libretro。Please do not confuse. You can see the code for details.
 
@@ -117,21 +117,6 @@
 
 [AlienJack](https://github.com/AlienJack "AlienJack") 
 
-## 引用
-
-### 本项目使用，我自构建的HaoYueNet高性能网络库作为基础而开发
-
-[HaoYueNet-Github](https://github.com/Sin365/HaoYueNet "HaoYueNet-Github")
-
-[HaoYueNet-自建Git站点](http://git.axibug.com/sin365/HaoYueNet "HaoYueNet-自建Git站点")
-
-[nesdev.org NES - 2.0 XML Database](https://forums.nesdev.org/viewtopic.php?t=19940 "nesdev.org - NES 2.0 XML Database")
-
-[VirtuaNES](http://virtuanes.s1.xrea.com/ "VirtuaNES")
-
-部分NES-Mapper扩展 https://github.com/yamanyandakure/VirtuaNES097
-
-部分NES-Mapper扩展 [VirtuaNESex](https://github.com/pengan1987/VirtuaNESex "VirtuaNESex")
 
 
 ### NES 模拟器内核
@@ -182,3 +167,38 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 	最终会继承到本项目中
 	
 	https://github.com/Sin365/Essgee.Unity
+
+
+## 引用 和 致谢 Acknowledgements & Attribution
+
+### 本项目使用，我自构建的HaoYueNet高性能网络库作为基础而开发
+
+[HaoYueNet-Github](https://github.com/Sin365/HaoYueNet "HaoYueNet-Github")
+
+[HaoYueNet-自建Git站点](http://git.axibug.com/sin365/HaoYueNet "HaoYueNet-自建Git站点")
+
+[MAME.Core](http://git.axibug.com/sin365/MAME.Core "MAME.Core")
+
+[Essgee.Unity](https://github.com/Sin365/Essgee.Unity "Essgee.Unity")
+
+[ShaderToy](https://www.shadertoy.com/ "shadertoy")
+
+[VirtuaNES](http://virtuanes.s1.xrea.com/ "VirtuaNES")
+
+* 部分NES-Mapper扩展 https://github.com/yamanyandakure/VirtuaNES097
+* 部分NES-Mapper扩展 [VirtuaNESex](https://github.com/pengan1987/VirtuaNESex "VirtuaNESex")
+
+[nesdev.org NES - 2.0 XML Database](https://forums.nesdev.org/viewtopic.php?t=19940 "nesdev.org - NES 2.0 XML Database")
+
+[Essgee](https://github.com/xdanieldzd/Essgee "Essgee")
+
+* The XML data files in `Assets\No-Intro` were created by the [No-Intro](http://www.no-intro.org) project; see the [DAT-o-MATIC website](https://datomatic.no-intro.org) for official downloads.
+
+[MAME-NET](https://www.codeproject.com/Articles/1275365/MAME-NET "MAME-NET")
+
+* MAME-Multiple Arcade Machine Emulator - https://github.com/mamedev
+* MSDN - https://msdn.microsoft.com
+* BizHawk M68000 and Z80 code - https://github.com/TASEmulators/BizHawk/tree/master/src/BizHawk.Emulation.Cores/CPUs
+* VCMAME detail by Bryan McPhail - https://www.codeproject.com/Articles/4923/VCMAME-Multiple-Arcade-Machine-Emulator-for-Visual
+* MAME and MAMEUI Visual C Project Files - http://www.mikesarcade.com/arcade/vcmame.html
+* CPS1.NET - https://www.codeproject.com/Articles/998595/CPS1-NET-A-Csharp-Based-CPS1-MAME-Emulator
