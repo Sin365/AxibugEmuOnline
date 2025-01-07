@@ -94,7 +94,7 @@ namespace AxibugEmuOnline.Server
                 List<(int id, string romurl, string name)> list = new List<(int id, string romurl, string name)>();
                 List<(int id, string romurl, string name)> Nonelist = new List<(int id, string romurl, string name)>();
 
-                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist_nes";
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 执行查询并处理结果  
@@ -122,7 +122,7 @@ namespace AxibugEmuOnline.Server
                     }
                     string romhash = Helper.FileMD5Hash(rompath);
                     AppSrv.g_Log.Info($"第{i}个，Name->{list[i].name},Hash->{romhash}");
-                    query = $"update romlist_nes SET `Hash` = '{romhash}' where Id ={list[i].id}";
+                    query = $"update romlist SET `Hash` = '{romhash}' where Id ={list[i].id}";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 执行查询并处理结果  

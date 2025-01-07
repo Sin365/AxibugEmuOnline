@@ -49,12 +49,11 @@ namespace AxibugEmuOnline.Server.Manager
                     }
                     else
                     {
-                        query = "INSERT INTO `haoyue_emu`.`rom_stars` (`uid`, `platform`, `romid`) VALUES (?uid, ?platform, ?romid);";
+                        query = "INSERT INTO `haoyue_emu`.`rom_stars` (`uid`,  `romid`) VALUES (?uid,  ?romid);";
                         using (var command = new MySqlCommand(query, conn))
                         {
                             // 设置参数值
                             command.Parameters.AddWithValue("?uid", _c.UID);
-                            command.Parameters.AddWithValue("?platform", (int)msg.PlatformType);
                             command.Parameters.AddWithValue("?romid", msg.RomID);
                             command.ExecuteNonQuery();
                         }
@@ -64,12 +63,11 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     if (bHad)
                     {
-                        query = "DELETE from rom_stars where uid = ?uid and romid = ?romid and platform = ?platform";
+                        query = "DELETE from rom_stars where uid = ?uid and romid = ?romid";
                         using (var command = new MySqlCommand(query, conn))
                         {
                             // 设置参数值
                             command.Parameters.AddWithValue("?uid", _c.UID);
-                            command.Parameters.AddWithValue("?platform", (int)msg.PlatformType);
                             command.Parameters.AddWithValue("?romid", msg.RomID);
                             command.ExecuteNonQuery();
                         }
@@ -81,10 +79,9 @@ namespace AxibugEmuOnline.Server.Manager
                     }
                 }
                 //更新收藏数
-                query = "update romlist_nes set stars = (SELECT COUNT(id) from rom_stars where rom_stars.romid = ?romid and rom_stars.platform = ?platform) where romlist_nes.id = ?romid";
+                query = "update romlist set stars = (SELECT COUNT(id) from rom_stars where rom_stars.romid = ?romid) where romlist.id = ?romid";
                 using (var command = new MySqlCommand(query, conn))
                 {
-                    command.Parameters.AddWithValue("?platform", (int)msg.PlatformType);
                     command.Parameters.AddWithValue("?romid", msg.RomID);
                     command.ExecuteNonQuery();
                 }
@@ -94,7 +91,6 @@ namespace AxibugEmuOnline.Server.Manager
             {
             }
             Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
-            respData.PlatformType = msg.PlatformType;
             respData.RomID = msg.RomID;
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(respData));
         }

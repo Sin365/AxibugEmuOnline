@@ -29,16 +29,20 @@ namespace AxibugEmuOnline.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult NesRomList(string SearchKey, int Ptype, int GType, int Page, int PageSize)
+        public JsonResult RomList(string SearchKey, int Ptype, int GType, int Page, int PageSize)
         {
             string searchPattern = $"%{SearchKey}%";
             Resp_GameList resp = new Resp_GameList();
             resp.gameList = new List<Resp_RomInfo>();
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("NesRomList");
+            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("RomList");
             {
+                string platformCond = "";
+                if (GType > 0)
+                {
+                    platformCond = $" and PlatformType = '{Ptype}' ";
+                }
 
                 GameType SearchGType = (GameType)GType;
-
                 string GameTypeCond = "";
                 switch (SearchGType)
                 {
@@ -53,7 +57,7 @@ namespace AxibugEmuOnline.Web.Controllers
                         break;
                 }
 
-                string query = "SELECT count(id) FROM romlist_nes where `Name` like ?searchPattern " + GameTypeCond;
+                string query = "SELECT count(id) FROM romlist where `Name` like ?searchPattern " + platformCond + GameTypeCond;
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -73,7 +77,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 string HotOrderBy = "ORDER BY playcount DESC, id ASC";
 
-                query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars` FROM romlist_nes where `Name` like ?searchPattern {GameTypeCond} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType` FROM romlist where `Name` like ?searchPattern {platformCond} {GameTypeCond} {HotOrderBy} LIMIT ?offset, ?pageSize;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -98,6 +102,7 @@ namespace AxibugEmuOnline.Web.Controllers
                                 hash = !reader.IsDBNull(6) ? reader.GetString(6) : string.Empty,
                                 playcount = reader.GetInt32(7),
                                 stars = reader.GetInt32(8),
+                                ptype = reader.GetInt32(9),
                             });
                         }
                     }
@@ -114,7 +119,7 @@ namespace AxibugEmuOnline.Web.Controllers
             Resp_RomInfo resp = new Resp_RomInfo();
             MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("NesRomList");
             {
-                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars` FROM romlist_nes where id = ?romid;";
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType` FROM romlist where id = ?romid;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -133,6 +138,7 @@ namespace AxibugEmuOnline.Web.Controllers
                             resp.hash = !reader.IsDBNull(6) ? reader.GetString(6) : string.Empty;
                             resp.playcount = reader.GetInt32(7);
                             resp.stars = reader.GetInt32(8);
+                            resp.ptype = reader.GetInt32(9);
                         }
                     }
                 }
@@ -141,11 +147,6 @@ namespace AxibugEmuOnline.Web.Controllers
             return new JsonResult(resp);
         }
 
-        enum PlatformType : byte
-        {
-            All = 0,
-            Nes,
-        }
 
         enum GameType : byte
         {
@@ -191,6 +192,7 @@ namespace AxibugEmuOnline.Web.Controllers
         {
             public int orderid { get; set; }
             public int id { get; set; }
+            public int ptype { get; set; }
             public string romName { get; set; }
             public string gType { get; set; }
             public string desc { get; set; }

@@ -126,7 +126,7 @@ namespace AxibugEmuOnline.Server
 
                 if (state == RoomLogType.Create)
                 {
-                    query = "update romlist_nes set playcount = playcount + 1 where id = ?romid";
+                    query = "update romlist set playcount = playcount + 1 where id = ?romid";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         command.Parameters.AddWithValue("?romid", RomID);

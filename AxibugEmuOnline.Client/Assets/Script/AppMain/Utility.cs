@@ -38,7 +38,7 @@ namespace AxibugEmuOnline.Client
         {
             RomFile romFile;
 
-			if (s_RomFileCahcesInRoomInfo.TryGetValue(roomInfo.GameRomID, out romFile))
+            if (s_RomFileCahcesInRoomInfo.TryGetValue(roomInfo.GameRomID, out romFile))
             {
                 callback.Invoke(roomInfo, romFile);
                 return;
@@ -46,10 +46,10 @@ namespace AxibugEmuOnline.Client
             switch (platform)
             {
                 case EnumSupportEmuPlatform.NES:
-                    App.StartCoroutine(App.httpAPI.GetNesRomInfo(roomInfo.GameRomID, (romWebData) =>
+                    App.StartCoroutine(App.httpAPI.GetRomInfo(roomInfo.GameRomID, (romWebData) =>
                     {
                         RomFile _romFile = new RomFile(EnumSupportEmuPlatform.NES, 0, 0);
-						_romFile.SetWebData(romWebData);
+                        _romFile.SetWebData(romWebData);
                         s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = _romFile;
 
                         callback.Invoke(roomInfo, _romFile);

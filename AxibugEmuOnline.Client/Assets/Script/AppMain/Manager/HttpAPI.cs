@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,19 +13,19 @@ namespace AxibugEmuOnline.Client
         public string WebHost = "http://emu.axibug.com";
         public string WebSiteApi => WebHost + "/api";
 
-        public delegate void GetRomListAPI(Action<int, Resp_GameList> callback, int page, int pageSize = 10);
-        public delegate void SearchRomListAPI(Action<int, Resp_GameList> callback, string searchKey, int page, int pageSize = 10);
+        public delegate void GetRomListAPI(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType Platform, int page, int pageSize = 10);
+        public delegate void SearchRomListAPI(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType Platform, string searchKey, int page, int pageSize = 10);
 
-        public void GetNesRomList(Action<int, Resp_GameList> callback, int page, int pageSize = 10)
+        public void GetNesRomList(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, int page, int pageSize = 10)
         {
-            App.StartCoroutine(GetNesRomListFlow(page, pageSize, callback));
+            App.StartCoroutine(GetRomListFlow(platform,page, pageSize, callback));
         }
 
-        public void SearchNesRomList(Action<int, Resp_GameList> callback, string searchKey, int page, int pageSize = 10)
+        public void SearchNesRomList(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, string searchKey, int page, int pageSize = 10)
         {
-            App.StartCoroutine(SearchNesRomListFlow(searchKey, page, pageSize, callback));
+            App.StartCoroutine(SearchNesRomListFlow(platform,searchKey, page, pageSize, callback));
         }
-        private IEnumerator SearchNesRomListFlow(string searchKey, int page, int pageSize, Action<int, Resp_GameList> callback)
+        private IEnumerator SearchNesRomListFlow(AxibugProtobuf.RomPlatformType platform,string searchKey, int page, int pageSize, Action<int, Resp_GameList> callback)
         {
             if (!string.IsNullOrEmpty(searchKey))
             {
@@ -72,9 +73,9 @@ namespace AxibugEmuOnline.Client
             }*/
 
         }
-        private IEnumerator GetNesRomListFlow(int page, int pageSize, Action<int, Resp_GameList> callback)
+        private IEnumerator GetRomListFlow(AxibugProtobuf.RomPlatformType platform, int page, int pageSize, Action<int, Resp_GameList> callback)
         {
-            string url = $"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}";
+            string url = $"{WebSiteApi}/RomList?Page={page}&PageSize={pageSize}&PType={(int)platform}";
             App.log.Info($"GetRomList=>{url}");
             AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
             yield return request.SendWebRequest;
@@ -106,10 +107,10 @@ namespace AxibugEmuOnline.Client
             */
         }
 
-        public IEnumerator GetNesRomInfo(int RomID, Action<Resp_RomInfo> callback)
+        public IEnumerator GetRomInfo(int RomID, Action<Resp_RomInfo> callback)
         {
 
-            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/RomInfo?PType={PlatformType.Nes}&RomID={RomID}");
+            AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{WebSiteApi}/RomInfo?RomID={RomID}");
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
             {
@@ -138,12 +139,6 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }*/
 
-        }
-
-        enum PlatformType : byte
-        {
-            All = 0,
-            Nes = 1,
         }
 
         enum GameType : byte
@@ -182,6 +177,8 @@ namespace AxibugEmuOnline.Client
         {
             public int orderid;
             public int id;
+            //TODO 后续根据ptype，启动游戏时选择核心。和列表设计和UI分组解耦，比如无视平台搜索列表，收藏列表
+            public int ptype;
             public string romName;
             public string gType;
             public string desc;

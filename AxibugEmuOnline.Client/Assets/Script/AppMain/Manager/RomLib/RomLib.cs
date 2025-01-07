@@ -94,7 +94,10 @@ namespace AxibugEmuOnline.Client
                     SaveRomInfoFromWeb(romList);
 
                     callback.Invoke(nesRomFetchList);
-                }, 0, PAGE_SIZE);
+                },
+                //TODO 平台参数
+                AxibugProtobuf.RomPlatformType.Nes
+                , 0, PAGE_SIZE);
             }
             else
             {
@@ -117,7 +120,10 @@ namespace AxibugEmuOnline.Client
                     SaveRomInfoFromWeb(romList);
 
                     callback.Invoke(nesRomFetchList);
-                }, searchKey, 0, PAGE_SIZE);
+                },
+                //TODO 平台参数
+                AxibugProtobuf.RomPlatformType.Nes
+                , searchKey, 0, PAGE_SIZE);
             }
         }
 
@@ -143,7 +149,10 @@ namespace AxibugEmuOnline.Client
                     {
                         FetchPageCmd.Remove(page);
                         SaveRomInfoFromWeb(resp);
-                    }, lastSearchKey, pageNo, PAGE_SIZE);
+                    },
+                    //TODO 平台参数
+                    AxibugProtobuf.RomPlatformType.Nes,
+                    lastSearchKey, pageNo, PAGE_SIZE);
                 }
                 else
                 {
@@ -151,7 +160,10 @@ namespace AxibugEmuOnline.Client
                     {
                         FetchPageCmd.Remove(page);
                         SaveRomInfoFromWeb(resp);
-                    }, pageNo, PAGE_SIZE);
+                    },
+                    //TODO 平台参数
+                    AxibugProtobuf.RomPlatformType.Nes,
+                    pageNo, PAGE_SIZE);
                 }
             }
 

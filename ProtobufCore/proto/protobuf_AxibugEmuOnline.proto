@@ -92,7 +92,7 @@ enum LoginType
 
 enum DeviceType //设备类型
 {
-    DeviceType_Default = 0;//缺省不使用
+    DeviceType_Default = 0;//通用
 	PC = 1;
 	Android = 2;
 	IOS = 3;
@@ -124,7 +124,7 @@ enum GamePadType //手柄类型
 	Nintendo3DSControl = 13;
 }
 
-enum PlatformType
+enum RomPlatformType
 {
     All = 0;
     Nes = 1;
@@ -132,6 +132,9 @@ enum PlatformType
 	Game_Gear = 3;
 	Game_Boy = 4;
 	Game_Boy_Color = 5;
+	Coleco_Vision = 6;
+	SC_3000 = 7;
+	SG_1000 = 8;
 }
 
 //enum RoomPlayerState
@@ -422,11 +425,9 @@ message Protobuf_Game_Mark
 {
 	int32 RomID = 1;//RomID
 	int32 state = 2;//[0]收藏 [1]取消收藏
-	PlatformType PlatformType = 3;//平台类型
 }
 
 message Protobuf_Game_Mark_RESP
 {
 	int32 RomID = 1;//RomID
-	PlatformType PlatformType = 2;//平台类型
 }

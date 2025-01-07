@@ -18,13 +18,12 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         /// <param name="RomID"></param>
         /// <param name="Motion">[0]收藏[1]取消收藏</param>
-        public void SendGameStar(int RomID, PlatformType Platform, int Motion)
+        public void SendGameStar(int RomID, int Motion)
         {
             Protobuf_Game_Mark req = new Protobuf_Game_Mark()
             {
                 State = Motion,
                 RomID = RomID,
-                PlatformType = Platform
             };
             App.log.Info($"LeavnRoom");
             App.network.SendToServer((int)CommandID.CmdGameMark, ProtoBufHelper.Serizlize(req));
@@ -37,7 +36,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvGameStar(byte[] reqData)
         {
             Protobuf_Game_Mark_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Game_Mark_RESP>(reqData);
-            Eventer.Instance.PostEvent(EEvent.OnDoStars, msg.PlatformType, msg.RomID);
+            Eventer.Instance.PostEvent(EEvent.OnDoStars, msg.RomID);
         }
 
     }
