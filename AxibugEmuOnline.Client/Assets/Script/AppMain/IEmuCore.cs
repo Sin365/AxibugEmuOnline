@@ -23,6 +23,8 @@ namespace AxibugEmuOnline.Client
         void Resume();
         /// <summary> 启动模拟器逻辑 </summary>
         MsgBool StartGame(RomFile romFile);
+        /// <summary> 释放模拟器核心 </summary>
+        void Dispose();
         /// <summary> 重置核心,通常由模拟器核心提供的功能 </summary>
         void DoReset();
         /// <summary> 获得模拟器核心的控制器设置器 </summary>
