@@ -4,7 +4,11 @@
 
 #### 注：本项目是完整的项目实现，包含客户端，服务端，网站API。 
 
-#### **并不是基于RetroArch，Libretro等项目的套壳项目，也并不是XX前端**。
+#### **并不是基于RetroArch，Libretro等项目的套壳项目，也并不是XX前端**。请不要混淆。具体您可以看代码。
+
+#### A cross platform, multiplayer online, Net 9 Server , Unity Client , game simulator used C#. （on PSV/PS3,4/XBOX/3DS/Swith/PC/Mobile/or more...)
+
+#### It's not a shell project based on projects such as RetroArch and Libretro。Please do not confuse. You can see the code for details.
 
 ## 意义
 
