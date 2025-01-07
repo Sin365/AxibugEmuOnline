@@ -56,6 +56,16 @@ namespace AxibugEmuOnline.Client
         /// <summary> 在查询结果中的所在页 </summary>
         public int Page { get; private set; }
         public string Hash => webData != null ? webData.hash : string.Empty;
+        /// <summary> 标记是否收藏 </summary>
+        public bool Star
+        {
+            get { return webData != null ? webData.isStar > 0 : false; }
+            set
+            {
+                if (webData == null) return;
+                webData.isStar = value ? 1 : 0;
+            }
+        }
 
         public event Action<RomFile> OnDownloadOver;
         public event Action OnInfoFilled;

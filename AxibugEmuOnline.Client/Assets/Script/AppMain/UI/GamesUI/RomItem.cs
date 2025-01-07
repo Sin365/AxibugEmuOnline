@@ -21,12 +21,24 @@ namespace AxibugEmuOnline.Client
         GameObject FileReadyFlag;
         [SerializeField]
         UIShiny DownloadComplete;
+        [SerializeField]
+        GameObject Star;
 
         public int Index { get; set; }
 
-        public bool IsFav { get; }
+        public bool IsStar
+        {
+            get
+            {
+                return m_romfile != null && m_romfile.InfoReady ? m_romfile.Star : false;
+            }
+        }
+        public int RomID { get { return m_romfile != null && m_romfile.InfoReady ? m_romfile.ID : -1; } }
 
         private RomLib m_romlib => App.nesRomLib;
+
+        public bool RomInfoReady => m_romfile != null && m_romfile.InfoReady;
+
         private RomFile m_romfile;
 
         protected override void OnEnable()
@@ -103,6 +115,7 @@ namespace AxibugEmuOnline.Client
                     m_romImage.sprite = img;
                     if (m_select) LaunchUI.Instance.SetRomPreview(img);
                 });
+                Star.SetActiveEx(m_romfile.Star);
             }
         }
 

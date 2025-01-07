@@ -85,5 +85,10 @@
         /// <para><see cref="int"/>RomID</para>
         /// </summary>
         OnRomFileDownloaded,
+        /// <summary>
+        /// 当Rom收藏状态变化时触发
+        /// <para><see cref="int"/>RomID</para>
+        /// </summary>
+        OnRomStarStateChanged, //TODO 实现这个事件
     }
 }

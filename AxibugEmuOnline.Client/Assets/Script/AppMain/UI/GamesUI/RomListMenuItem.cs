@@ -34,6 +34,7 @@ namespace AxibugEmuOnline.Client
             {
                 new OptMenu_Search(this),
                 new OptMenu_ShowAll(this),
+                new OptMenu_Fav(this),
             };
         }
 
@@ -111,14 +112,11 @@ namespace AxibugEmuOnline.Client
             private RomListMenuItem m_romListUI;
             private ThirdMenuRoot m_romListSub;
 
-            public override string Name
-            {
-                get
-                {
-                    var isFav = (m_romListSub.GetItemUIByIndex(m_romListSub.SelectIndex) as RomItem).IsFav;
-                    return isFav ? "收藏" : "取消收藏";
-                }
-            }
+            private RomItem m_currentSelect => m_romListSub.GetItemUIByIndex(m_romListSub.SelectIndex) as RomItem;
+
+            public override bool Visible => m_currentSelect.RomInfoReady;
+
+            public override string Name { get { return m_currentSelect.IsStar ? "取消收藏" : "收藏"; } }
 
             public OptMenu_Fav(RomListMenuItem romListUI)
             {
@@ -128,6 +126,11 @@ namespace AxibugEmuOnline.Client
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
+                var romItem = m_currentSelect;
+                if (!romItem.IsStar)
+                    App.share.SendGameStar(romItem.RomID, 0);
+                else
+                    App.share.SendGameStar(romItem.RomID, 1);
             }
         }
     }
