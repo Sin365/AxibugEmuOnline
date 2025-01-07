@@ -681,7 +681,7 @@ GameObject:
   - component: {fileID: 4672405243908051711}
   - component: {fileID: 3086674949377227884}
   m_Layer: 5
-  m_Name: RomGroupScroll
+  m_Name: SubGroupScroll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

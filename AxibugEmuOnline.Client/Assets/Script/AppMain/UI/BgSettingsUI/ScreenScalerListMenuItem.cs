@@ -20,11 +20,15 @@ namespace AxibugEmuOnline.Client
             return base.OnExitItem();
         }
 
-        protected override void GetVirtualListDatas(Action<object> datas)
+        protected override void GetVirtualListDatas(VirtualListDataHandle callback)
         {
             List<object> list = new List<object>();
             foreach (var enumValue in Enum.GetValues(typeof(ScreenScaler.EnumScalerMode))) list.Add(enumValue);
-            datas.Invoke(list);
+
+            var select = list.IndexOf(App.settings.ScreenScaler.GlobalMode);
+            if (select == -1) select = 0;
+
+            callback.Invoke(list, select);
         }
     }
 }

@@ -38,9 +38,9 @@ namespace AxibugEmuOnline.Client
         }
 
         public string SearchKey;
-        protected override void GetVirtualListDatas(Action<object> datas)
+        protected override void GetVirtualListDatas(VirtualListDataHandle callback)
         {
-            RomLib.FetchRomCount((roms) => datas.Invoke(roms), SearchKey);
+            RomLib.FetchRomCount((roms) => callback.Invoke(roms, 0), SearchKey);
         }
 
         public override bool OnEnterItem()

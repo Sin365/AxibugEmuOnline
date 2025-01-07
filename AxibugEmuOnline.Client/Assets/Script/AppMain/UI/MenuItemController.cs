@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.UI;
+﻿using AxibugEmuOnline.Client.UI;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ namespace AxibugEmuOnline.Client
             }
 
             Canvas.ForceUpdateCanvases();
-            SelectIndex = 0;
+            if (m_selectIndex == -1) SelectIndex = 0;
         }
 
         protected virtual MenuItem GetItemUIByIndex(int index)
