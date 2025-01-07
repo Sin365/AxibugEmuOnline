@@ -40,6 +40,11 @@ namespace AxibugEmuOnline.Server.Manager
             Console.WriteLine(str);
         }
 
+        public void Error(Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message}");
+        }
+
         public void Log(int logtype, string str)
         {
             Console.WriteLine(str);

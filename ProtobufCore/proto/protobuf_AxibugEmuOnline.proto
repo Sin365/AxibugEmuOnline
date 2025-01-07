@@ -289,11 +289,12 @@ message Protobuf_Room_MiniInfo
 	int32 RoomID = 1;//房间ID
 	int32 GameRomID = 2;//游戏ID
 	string GameRomHash = 3;
-	int64 HostPlayerUID = 4;//主机玩家ID
-	RoomGameState GameState = 5;//游戏状态
-	int32 ObsUserCount = 6;//观战用户数量
-	int64 ScreenProviderUID = 7;//屏幕数据供应者
-	repeated Protobuf_Room_GamePlaySlot GamePlaySlotList = 8;//游玩槽位信息P1~P4 固定4个
+	RomPlatformType GamePlatformType = 4;
+	int64 HostPlayerUID = 5;//主机玩家ID
+	RoomGameState GameState = 6;//游戏状态
+	int32 ObsUserCount = 7;//观战用户数量
+	int64 ScreenProviderUID = 8;//屏幕数据供应者
+	repeated Protobuf_Room_GamePlaySlot GamePlaySlotList = 9;//游玩槽位信息P1~P4 固定4个
 }
 
 message Protobuf_Room_GamePlaySlot

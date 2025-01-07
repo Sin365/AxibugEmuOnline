@@ -3,11 +3,13 @@ using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
 using System.Net.Sockets;
+using System.Security.Policy;
 
 namespace AxibugEmuOnline.Server.Manager
 {
     public class GameShareManager
     {
+        Dictionary<int, RomPlatformType> mDictRomID2Platform = new Dictionary<int, RomPlatformType>();
         public GameShareManager()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGameMark, RecvGameMark);
@@ -93,6 +95,43 @@ namespace AxibugEmuOnline.Server.Manager
             Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
             respData.RomID = msg.RomID;
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(respData));
+        }
+
+        public RomPlatformType GetRomPlatformType(int RomID)
+        {
+            if (mDictRomID2Platform.TryGetValue(RomID, out RomPlatformType ptype))
+                return ptype;
+
+            ptype = RomPlatformType.Invalid;
+            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("GetRomPlatformType");
+            try
+            {
+                string query = "SELECT PlatformType from romlist where Id = ?RomID ";
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    // 设置参数值  
+                    command.Parameters.AddWithValue("?RomID", RomID);
+                    // 执行查询并处理结果  
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ptype = (RomPlatformType)reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                AppSrv.g_Log.Error(e);
+            }
+
+            if (ptype == RomPlatformType.Invalid)
+                AppSrv.g_Log.Error($"RomID {RomID} 没找到平台配置");
+
+            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+
+            return ptype;
         }
     }
 }
