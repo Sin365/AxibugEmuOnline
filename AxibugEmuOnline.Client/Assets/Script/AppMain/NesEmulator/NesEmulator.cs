@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using UnityEditor;
 using UnityEngine;
 using VirtualNes.Core;
@@ -58,7 +59,7 @@ namespace AxibugEmuOnline.Client
             VideoProvider.ApplyFilterEffect();
         }
 
-        public EnumSupportEmuPlatform Platform => EnumSupportEmuPlatform.NES;
+        public RomPlatformType Platform => RomPlatformType.Nes;
         private CoreSupporter m_coreSupporter;
         /// <summary>
         /// 指定ROM开始游戏

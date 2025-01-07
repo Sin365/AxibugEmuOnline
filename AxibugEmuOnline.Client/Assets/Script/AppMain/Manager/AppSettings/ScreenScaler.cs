@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using AxibugProtobuf;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
@@ -22,7 +23,7 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         /// <param name="platform"></param>
         /// <returns></returns>
-        public EnumScalerMode GetMode(EnumSupportEmuPlatform platform)
+        public EnumScalerMode GetMode(RomPlatformType platform)
         {
             int setVal = PlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
             if (setVal == -1)
@@ -36,10 +37,10 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         /// <param name="m_rawImg"></param>
         /// <param name="platform">不指定模拟器平台时,使用全局设置的缩放模式</param>
-        public void CalcScale(RawImage rawImg, EnumSupportEmuPlatform? platform = null)
+        public void CalcScale(RawImage rawImg, RomPlatformType? platform = null)
         {
             var targetMode = platform == null ? GlobalMode : GetMode(platform.Value);
-            var resolution = GetRawResolution(platform == null ? EnumSupportEmuPlatform.NES : platform.Value);
+            var resolution = GetRawResolution(platform == null ? RomPlatformType.Nes : platform.Value);
             var canvasRect = (rawImg.canvas.transform as RectTransform).rect;
             switch (targetMode)
             {
@@ -88,11 +89,11 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public Vector2Int GetRawResolution(EnumSupportEmuPlatform platform)
+        public Vector2Int GetRawResolution(RomPlatformType platform)
         {
             switch (platform)
             {
-                case EnumSupportEmuPlatform.NES: return new Vector2Int(256, 240);
+                case RomPlatformType.Nes: return new Vector2Int(256, 240);
                 default: return new Vector2Int(256, 240);
             }
         }

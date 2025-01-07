@@ -86,7 +86,7 @@ namespace AxibugEmuOnline.Client
             SetBaseInfo("--", $"<b>{hostNick}</b>的房间", $"{cur}/{max}");
             SetIcon(null);
 
-            roomInfo.FetchRomFileInRoomInfo(EnumSupportEmuPlatform.NES, (room, romFile) =>
+            roomInfo.FetchRomFileInRoomInfo(RomPlatformType.Nes, (room, romFile) =>
             {
                 if (room.RoomID != RoomID) return;
 

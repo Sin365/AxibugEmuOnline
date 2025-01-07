@@ -126,7 +126,7 @@ enum GamePadType //手柄类型
 
 enum RomPlatformType
 {
-    All = 0;
+    Invalid = 0;
     Nes = 1;
     Master_System = 2;
 	Game_Gear = 3;
@@ -135,6 +135,7 @@ enum RomPlatformType
 	Coleco_Vision = 6;
 	SC_3000 = 7;
 	SG_1000 = 8;
+	All = 999;
 }
 
 //enum RoomPlayerState
