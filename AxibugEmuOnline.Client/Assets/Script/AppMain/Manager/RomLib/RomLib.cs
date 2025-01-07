@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Common;
+using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,28 +20,19 @@ namespace AxibugEmuOnline.Client
         private Dictionary<string, RomFile> nesRomFileNameMapper = new Dictionary<string, RomFile>();
         private HttpAPI.GetRomListAPI m_romGetFunc;
         private HttpAPI.SearchRomListAPI m_romSearchFunc;
-        private EnumSupportEmuPlatform m_platform;
+        private RomPlatformType m_platform;
         private string lastSearchKey;
 
-        public RomLib(EnumSupportEmuPlatform platform)
+        public RomLib(RomPlatformType platform)
         {
             m_platform = platform;
             switch (platform)
             {
-                case EnumSupportEmuPlatform.NES:
+                case RomPlatformType.Nes:
                     m_romGetFunc = App.httpAPI.GetNesRomList;
                     m_romSearchFunc = App.httpAPI.SearchNesRomList;
                     break;
             }
-        }
-
-        public RomFile GetExistRom(string fileName)
-        {
-            var res = RomFile.CreateExistRom(m_platform, fileName);
-
-            nesRomFileNameMapper[res.FileName] = res;
-
-            return res;
         }
 
         public RomFile GetRomFile(string romFileName)
@@ -89,15 +81,12 @@ namespace AxibugEmuOnline.Client
                     for (int i = 0; i < nesRomFetchList.Length; i++)
                     {
                         //以后考虑用对象池实例化RomFile
-                        nesRomFetchList[i] = new RomFile(m_platform, i, i / PAGE_SIZE);
+                        nesRomFetchList[i] = new RomFile(i, i / PAGE_SIZE);
                     }
                     SaveRomInfoFromWeb(romList);
 
                     callback.Invoke(nesRomFetchList);
-                },
-                //TODO 平台参数
-                AxibugProtobuf.RomPlatformType.Nes
-                , 0, PAGE_SIZE);
+                }, m_platform, 0, PAGE_SIZE);
             }
             else
             {
@@ -115,15 +104,12 @@ namespace AxibugEmuOnline.Client
                     for (int i = 0; i < nesRomFetchList.Length; i++)
                     {
                         //以后考虑用对象池实例化RomFile
-                        nesRomFetchList[i] = new RomFile(m_platform, i, i / PAGE_SIZE);
+                        nesRomFetchList[i] = new RomFile(i, i / PAGE_SIZE);
                     }
                     SaveRomInfoFromWeb(romList);
 
                     callback.Invoke(nesRomFetchList);
-                },
-                //TODO 平台参数
-                AxibugProtobuf.RomPlatformType.Nes
-                , searchKey, 0, PAGE_SIZE);
+                }, m_platform, searchKey, 0, PAGE_SIZE);
             }
         }
 

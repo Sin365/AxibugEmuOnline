@@ -1,3 +1,4 @@
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ public interface IVirtualLayout
 
 	void UpdateProxyVisualState();
 	void UpdateDependencyProperty(object dp);
-	void SetData(object dataList);
+	void SetData(IEnumerable dataList);
 	void MoveToScrollViewCenter(ScrollRect scrollRect, int dataIndex);
 }
 

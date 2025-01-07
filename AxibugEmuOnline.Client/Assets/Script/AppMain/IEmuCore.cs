@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using AxibugProtobuf;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
@@ -17,7 +18,7 @@ namespace AxibugEmuOnline.Client
         void DoReset();
         IControllerSetuper GetControllerSetuper();
 
-        EnumSupportEmuPlatform Platform { get; }
+        RomPlatformType Platform { get; }
         uint Frame { get; }
     }
 

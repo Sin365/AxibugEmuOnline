@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.UI;
+﻿using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,10 +39,10 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void ResetToFirst()
+        public void ResetToIndex(int selectIndex)
         {
             m_selectIndex = -1;
-            SelectIndex = 0;
+            SelectIndex = selectIndex;
         }
 
         protected override MenuItem GetItemUIByIndex(int index)

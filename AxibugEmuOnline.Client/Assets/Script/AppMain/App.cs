@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
+using AxibugProtobuf;
 using System;
 using System.Collections;
 using System.IO;
@@ -64,7 +65,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             emu = new AppEmu();
             //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
-            nesRomLib = new RomLib(EnumSupportEmuPlatform.NES);
+            nesRomLib = new RomLib(RomPlatformType.Nes);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();

@@ -133,15 +133,15 @@ namespace AxibugProtobuf {
             "U3dpdGNoSm95Q29uEAcSEgoOWEJPWDM2MENvbnRyb2wQCBISCg5YQk9YT05F",
             "Q29udHJvbBAJEhEKDVBTVml0YUNvbnRyb2wQChISCg5XaWlVUGFkQ29udHJv",
             "bBALEhQKEFdpaVJlbW90ZUNvbnRyb2wQDBIWChJOaW50ZW5kbzNEU0NvbnRy",
-            "b2wQDSqUAQoPUm9tUGxhdGZvcm1UeXBlEgcKA0FsbBAAEgcKA05lcxABEhEK",
-            "DU1hc3Rlcl9TeXN0ZW0QAhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAE",
-            "EhIKDkdhbWVfQm95X0NvbG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1ND",
-            "XzMwMDAQBxILCgdTR18xMDAwEAgqcAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25l",
-            "X0dhbWVTdGF0ZRAAEgwKCE9ubHlIb3N0EAESEQoNV2FpdFJhd1VwZGF0ZRAC",
-            "Eg0KCVdhaXRSZWFkeRADEgkKBVBhdXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUq",
-            "TgoRTG9naW5SZXN1bHRTdGF0dXMSIQodTG9naW5SZXN1bHRTdGF0dXNfQmFz",
-            "ZURlZmF1bHQQABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnByb3Rv",
-            "Mw=="));
+            "b2wQDSqiAQoPUm9tUGxhdGZvcm1UeXBlEgsKB0ludmFsaWQQABIHCgNOZXMQ",
+            "ARIRCg1NYXN0ZXJfU3lzdGVtEAISDQoJR2FtZV9HZWFyEAMSDAoIR2FtZV9C",
+            "b3kQBBISCg5HYW1lX0JveV9Db2xvchAFEhEKDUNvbGVjb19WaXNpb24QBhIL",
+            "CgdTQ18zMDAwEAcSCwoHU0dfMTAwMBAIEggKA0FsbBDnBypwCg1Sb29tR2Ft",
+            "ZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1X",
+            "YWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJ",
+            "bk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJl",
+            "c3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVy",
+            "chACQgJIAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -416,7 +416,7 @@ namespace AxibugProtobuf {
   }
 
   public enum RomPlatformType {
-    [pbr::OriginalName("All")] All = 0,
+    [pbr::OriginalName("Invalid")] Invalid = 0,
     [pbr::OriginalName("Nes")] Nes = 1,
     [pbr::OriginalName("Master_System")] MasterSystem = 2,
     [pbr::OriginalName("Game_Gear")] GameGear = 3,
@@ -425,6 +425,7 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("Coleco_Vision")] ColecoVision = 6,
     [pbr::OriginalName("SC_3000")] Sc3000 = 7,
     [pbr::OriginalName("SG_1000")] Sg1000 = 8,
+    [pbr::OriginalName("All")] All = 999,
   }
 
   public enum RoomGameState {

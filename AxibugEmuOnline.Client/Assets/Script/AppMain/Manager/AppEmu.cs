@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxibugProtobuf;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
@@ -31,7 +32,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (!m_emuCore.IsNull()) StopGame();
 
             var roomInfo = App.roomMgr.mineRoomMiniInfo;
-            roomInfo.FetchRomFileInRoomInfo(EnumSupportEmuPlatform.NES, (_, romFile) =>
+            roomInfo.FetchRomFileInRoomInfo(RomPlatformType.Nes, (_, romFile) =>
             {
                 if (!romFile.RomReady) //这个rom并没有下载,所以取消进入房间
                 {
@@ -51,7 +52,7 @@ namespace AxibugEmuOnline.Client.Manager
 
             switch (romFile.Platform)
             {
-                case EnumSupportEmuPlatform.NES:
+                case RomPlatformType.Nes:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("NES/NesEmulator")).GetComponent<IEmuCore>();
                     break;
             }
