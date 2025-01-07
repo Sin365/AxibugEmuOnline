@@ -1,8 +1,9 @@
-using AxibugEmuOnline.Client.UI;
+﻿using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -64,19 +65,22 @@ namespace AxibugEmuOnline.Client
             return true;
         }
 
+        public delegate void VirtualListDataHandle(IEnumerable data, int initialIndex);
+
+
         protected void RefreshUI()
         {
-            GetVirtualListDatas((datas) =>
+            GetVirtualListDatas((datas, initialIndex) =>
             {
                 var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
                 thirdMenuGroup.itemGroup.UpdateDependencyProperty(thirdMenuGroup);
                 thirdMenuGroup.itemGroup.SetData(datas);
                 thirdMenuGroup.itemGroup.UpdateProxyVisualState();
-                thirdMenuGroup.ResetToFirst();
+                thirdMenuGroup.ResetToIndex(initialIndex);
             });
         }
 
-        protected abstract void GetVirtualListDatas(Action<object> datas);
+        protected abstract void GetVirtualListDatas(VirtualListDataHandle callback);
 
         public override bool OnExitItem()
         {

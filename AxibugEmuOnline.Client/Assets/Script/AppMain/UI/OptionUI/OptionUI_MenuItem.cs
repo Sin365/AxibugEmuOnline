@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
@@ -31,6 +31,7 @@ namespace AxibugEmuOnline.Client
         }
 
         public bool IsExpandMenu => m_Menu is ExpandMenu;
+        public bool IsApplied => m_Menu is ExecuteMenu om && om.IsApplied;
 
         protected abstract void OnSetData(OptionMenu menuData);
 
@@ -39,6 +40,7 @@ namespace AxibugEmuOnline.Client
         public virtual void OnRight() { }
         public abstract void OnFocus();
         public virtual void OnHide() { }
+        protected virtual void Update() { }
     }
 
     public abstract class OptionUI_MenuItem<T> : OptionUI_MenuItem

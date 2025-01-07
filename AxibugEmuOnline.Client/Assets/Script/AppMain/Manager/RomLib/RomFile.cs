@@ -1,11 +1,10 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Networking;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace AxibugEmuOnline.Client
 {
@@ -13,7 +12,6 @@ namespace AxibugEmuOnline.Client
     {
         private HttpAPI.Resp_RomInfo webData;
         private bool hasLocalFile;
-        private EnumSupportEmuPlatform platform;
         //private UnityWebRequest downloadRequest;
         private AxiHttpProxy.SendDownLoadProxy downloadRequest;
 
@@ -22,8 +20,8 @@ namespace AxibugEmuOnline.Client
         /// <summary> 指示该Rom文件的存放路径 </summary>
         public string LocalFilePath =>
                                     IsUserRom ?
-                                    $"{App.PersistentDataPath}/UserRoms/{platform}/{FileName}" :
-                                    $"{App.PersistentDataPath}/RemoteRoms/{platform}/{FileName}";
+                                    $"{App.PersistentDataPath}/UserRoms/{Platform}/{FileName}" :
+                                    $"{App.PersistentDataPath}/RemoteRoms/{Platform}/{FileName}";
 
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;
@@ -36,7 +34,7 @@ namespace AxibugEmuOnline.Client
         public float Progress => IsDownloading ? downloadRequest.downloadHandler.DownLoadPr : 0;
 
 
-        public EnumSupportEmuPlatform Platform => platform;
+        public RomPlatformType Platform => webData != null ? (RomPlatformType)webData.ptype : RomPlatformType.Invalid;
         /// <summary> 指示该Rom信息是否已填充 </summary>
         public bool InfoReady => webData != null;
         /// <summary> 唯一标识 </summary>
@@ -61,9 +59,8 @@ namespace AxibugEmuOnline.Client
         public event Action<RomFile> OnDownloadOver;
         public event Action OnInfoFilled;
 
-        public RomFile(EnumSupportEmuPlatform platform, int index, int insidePage)
+        public RomFile(int index, int insidePage)
         {
-            this.platform = platform;
             Index = index;
             Page = insidePage;
         }
@@ -181,14 +178,5 @@ namespace AxibugEmuOnline.Client
             OnInfoFilled?.Invoke();
         }
 
-        private RomFile() { }
-        public static RomFile CreateExistRom(EnumSupportEmuPlatform platform, string fileName)
-        {
-            var res = new RomFile();
-            res.IsUserRom = true;
-            res.FileName = fileName;
-            res.hasLocalFile = File.Exists(res.LocalFilePath);
-            return res;
-        }
     }
 }

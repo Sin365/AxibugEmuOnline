@@ -1,4 +1,4 @@
-using System;
+锘縰sing System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -470,7 +470,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
     }
 
 
-    public void SetData(object dataList)
+    public void SetData(IEnumerable dataList)
     {
         Clear();
 
@@ -493,7 +493,7 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
         }
         else
         {
-            Debug.LogException(new Exception("ItemPresent SetData 传递的参数类型不受支持"), gameObject);
+            Debug.LogException(new Exception("ItemPresent SetData 浼犻�掔殑鍙傛暟绫诲瀷涓嶅彈鏀寔"), gameObject);
             return;
         }
 

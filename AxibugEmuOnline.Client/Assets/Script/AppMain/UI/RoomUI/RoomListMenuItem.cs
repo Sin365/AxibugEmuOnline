@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using System;
 
@@ -61,10 +61,10 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        protected override void GetVirtualListDatas(Action<object> datas)
+        protected override void GetVirtualListDatas(VirtualListDataHandle callback)
         {
             var roomList = App.roomMgr.GetRoomList();
-            datas.Invoke(roomList);
+            callback.Invoke(roomList, 0);
         }
 
     }

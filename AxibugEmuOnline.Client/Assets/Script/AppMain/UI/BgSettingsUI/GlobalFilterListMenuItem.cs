@@ -22,12 +22,12 @@ namespace AxibugEmuOnline.Client
             return base.OnExitItem();
         }
 
-        protected override void GetVirtualListDatas(Action<object> datas)
+        protected override void GetVirtualListDatas(VirtualListDataHandle callback)
         {
             List<object> list = new List<object>();
             list.Add(null);
             list.AddRange(App.settings.Filter.Filters.Select(f => (object)f));
-            datas.Invoke(list);
+            callback.Invoke(list, 0);
         }
     }
 }

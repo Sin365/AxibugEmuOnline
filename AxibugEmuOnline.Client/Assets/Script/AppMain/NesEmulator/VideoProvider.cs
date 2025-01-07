@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
@@ -84,7 +85,7 @@ namespace AxibugEmuOnline.Client
 
         public void ApplyScreenScaler()
         {
-            App.settings.ScreenScaler.CalcScale(Image, EnumSupportEmuPlatform.NES);
+            App.settings.ScreenScaler.CalcScale(Image, RomPlatformType.Nes);
         }
 
         private unsafe void PrepareUI(uint* screenData)

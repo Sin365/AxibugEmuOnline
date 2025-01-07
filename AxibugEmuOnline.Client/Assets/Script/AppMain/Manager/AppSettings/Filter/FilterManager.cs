@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace AxibugEmuOnline.Client
     public class FilterManager
     {
         private List<Filter> m_filters;
-        private Dictionary<EnumSupportEmuPlatform, Filter> m_filterPlatforms = new Dictionary<EnumSupportEmuPlatform, Filter>();
+        private Dictionary<RomPlatformType, Filter> m_filterPlatforms = new Dictionary<RomPlatformType, Filter>();
 
         private AlphaWraper m_previewFilterWraper;
         FilterRomSetting m_filterRomSetting;
@@ -176,7 +177,8 @@ namespace AxibugEmuOnline.Client
             if (filter != null)
             {
                 string presetName = value.Item2;
-                preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
+                if (presetName == filter.DefaultPreset.Name) preset = filter.DefaultPreset;
+                else preset = filter.Presets.FirstOrDefault(p => p.Name == presetName);
             }
 
             return new GetFilterSetting_result()
