@@ -216,5 +216,7 @@ namespace AxibugEmuOnline.Client
         {
             return ControllerMapper;
         }
+
+        public void Dispose() { }
     }
 }

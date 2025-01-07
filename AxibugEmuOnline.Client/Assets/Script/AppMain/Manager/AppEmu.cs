@@ -101,6 +101,7 @@ namespace AxibugEmuOnline.Client.Manager
         public void StopGame()
         {
             if (m_emuCore.IsNull()) return;
+            m_emuCore.Dispose();
             GameObject.Destroy(m_emuCore.gameObject);
             m_emuCore = null;
 
