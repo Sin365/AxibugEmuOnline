@@ -21,7 +21,6 @@ namespace AxibugEmuOnline.Server
                 {
                     case "rlist":
                         {
-
                             List<Data_RoomData> roomlist = ObjectPoolAuto.AcquireList<Data_RoomData>();
                             AppSrv.g_Room.GetRoomList(ref roomlist);
 
@@ -30,6 +29,7 @@ namespace AxibugEmuOnline.Server
                             {
                                 AppSrv.g_Log.Info($"-----    RoomID:{room.RoomID}   -----");
                                 AppSrv.g_Log.Info($"GameRomID:{room.GameRomID}");
+                                AppSrv.g_Log.Info($"RomPlatformType:{room.GameRomPlatformType}");
                                 AppSrv.g_Log.Info($"GameState:{room.GameState}");
                                 AppSrv.g_Log.Info($"HostUID:{room.HostUID}");
                                 AppSrv.g_Log.Info($"mCurrFrameId:{room.mCurrServerFrameId}");
@@ -50,8 +50,8 @@ namespace AxibugEmuOnline.Server
                                         AppSrv.g_Log.Info($"    UID->{room.PlayerSlot[i].UID}");
                                         AppSrv.g_Log.Info($"    NickName->{_c.NickName}");
                                         AppSrv.g_Log.Info($"    AveNetDelay->{_c.AveNetDelay}");
-										AppSrv.g_Log.Info($"    LocalJoyIdx->{room.PlayerSlot[i].LocalJoyIdx}");
-									}
+                                        AppSrv.g_Log.Info($"    LocalJoyIdx->{room.PlayerSlot[i].LocalJoyIdx}");
+                                    }
                                     else
                                     {
                                         AppSrv.g_Log.Info($"    None");

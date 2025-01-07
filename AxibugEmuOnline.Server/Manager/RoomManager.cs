@@ -152,6 +152,7 @@ namespace AxibugEmuOnline.Server
                 HostPlayerUID = room.HostUID,
                 GameState = room.GameState,
                 ObsUserCount = 0,//TODO
+                GamePlatformType = room.GameRomPlatformType
             };
 
             for (byte i = 0; i < room.PlayerSlot.Count(); i++)
@@ -236,9 +237,10 @@ namespace AxibugEmuOnline.Server
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
             Protobuf_Room_Create msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_Create>(reqData);
             Protobuf_Room_Create_RESP resp = new Protobuf_Room_Create_RESP();
-
             Data_RoomData newRoom = new Data_RoomData();
-            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash, _c.UID);
+
+            RomPlatformType ptype = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.GameRomID);
+            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash, _c.UID, false,ptype);
             AddRoom(newRoom);
             ErrorCode joinErrcode = ErrorCode.ErrorOk;
             //加入
@@ -610,10 +612,11 @@ namespace AxibugEmuOnline.Server
     {
         public int RoomID { get; private set; }
         public int GameRomID { get; private set; }
+        public RomPlatformType GameRomPlatformType { get; private set; }
         public string RomHash { get; private set; }
         public long HostUID { get; private set; }
         public long ScreenProviderUID { get; private set; }
-        public Data_RoomSlot[] PlayerSlot;
+        public Data_RoomSlot[] PlayerSlot { get; private set; }
         public long Player1_UID => PlayerSlot[0].UID;
         public long Player2_UID => PlayerSlot[1].UID;
         public long Player3_UID => PlayerSlot[2].UID;
@@ -658,11 +661,13 @@ namespace AxibugEmuOnline.Server
         /// 服务器提前帧数
         /// </summary>
         public uint SrvForwardFrames { get; set; }
-        public void Init(int roomID, int gameRomID, string roomHash, long hostUId, bool bloadState = false)
+
+        public void Init(int roomID, int gameRomID, string roomHash, long hostUId, bool bloadState = false, RomPlatformType ptype = default)
         {
             Dispose();
             RoomID = roomID;
             GameRomID = gameRomID;
+            GameRomPlatformType = ptype;
             RomHash = roomHash;
             HostUID = hostUId;
             ScreenProviderUID = hostUId;
