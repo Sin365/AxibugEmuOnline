@@ -1,42 +1,38 @@
 # AxibugEmuOnline
 
-### 一个跨平台的、自动化联机的、纯C#实现的、开源的模拟器项目
+#### 这是一个跨平台的，包含游戏机同服的，多人联机的，纯C#实现的，基于Unity客户端，.Net9实现服务端，模拟器开源项目。
 
-	用于游戏模拟器同步的联机纯C#实现
+#### 注：本项目是完整的项目实现，包含客户端，服务端，网站API。 
 
-	AxibugEmuOnline.Server 是服务端 .Net8
-	
-	AxibugEmuOnline.Web 是Asp.Net Core(.Net 8)的WebApi
+#### **并不是基于RetroArch，Libretro等项目的套壳项目，也并不是XX前端**。请不要混淆。具体您可以看代码。
 
-	AxibugEmuOnline.Client 是客户端 Unity
-		
-		- NES EmuCore NES模拟器核心
-		
-				VirtualNes （C++手动翻译到C#，并收纳民间各种扩展Mapper实现，接近于最全的游戏支持。实测，高倍速加速游戏的同时（几百fps），且进行网络同步，性能一致，完全同步）
-				
-				~~My Nes~~ (功能全，但是性能局限，不作为主要使用，但已经移植纯.Net Standard2.0归档)
-				
-				~~Emulator.NES~~ (较为初级，已经废弃)
-		
-		- 街机模拟器核心 Arcade EmuCore
-				
-				MAME.Net 来自于我另一个移植项目 ，http://git.axibug.com/sin365/MAME.Core 最终会迁移进来。源头上是MAME C/C++源码翻译C#
+#### A cross platform, multiplayer online, Net 9 Server , Unity Client , game simulator used C#. （on PSV/PS3,4/XBOX/3DS/Swith/PC/Mobile/or more...)
 
-		- 其他核心，长期补充
+#### It's not a shell project based on projects such as RetroArch and Libretro。Please do not confuse. You can see the code for details.
 
 ## 意义
 
 #### 1.跨平台
 
-	PC、手机、PSV、PS3、WIIU、PS4等破解游戏机，跨平台联机的模拟器（虽然目前只有NES），这是得益于Unity本身的跨平台能力。
+	PC、Android、iOS、PSVita、PS3、PS4、WIIU、XBOX360、XBOXONE等破解游戏机，以及Android汽车车机，跨平台联机的模拟器，这是得益于Unity本身的跨平台能力。
 	
-	目前其他跨平台联机，仅限于电脑和手机
+	目前其他跨平台多核心模拟器关键是跨平台统一联机的，几乎很少（好像我自己没看到）
 	
-#### 2.自动化联机
+	什么叫多端互通啊?(端茶)
+	
+#### 2.极简游戏体验 和 自动化联机
+
+	玩家任何事情都不用关心
 
 	玩家不用关心任何诸如IP或者任何联机配置，直接玩。服务器是直接提供的，玩家无感知。
 
-	甚至不用手动创建房间，游玩就是房间。加入放也不用专门下载，直接选择房间之后，自动化下载完成游戏并进入游戏。
+	做到只要你有设备，不管你是什么设备，有网络，就可以玩。
+
+	使用：
+
+	玩家：启动程序 -> 选游戏 -> 玩！ （登录后台按设备自动登录的，游戏是自动下载的，进入游戏后，房间是自动创建的，玩家无感）
+
+	加入者玩家：启动程序 -> 选房间 -> 玩！（游戏是根据房间自动下载的，手柄是自动分配的，玩家无感）
 
 #### 3.柔性网络架构
 
@@ -83,6 +79,40 @@
 		*PorotoBuf 传输使用的是bytes，但是Porotbuff只会对数组里每一个byte进行位压缩，整个byte[]不压缩。于是C#先GZIP压缩之后，在扔给protobuf。对面再解压。超级马里奥最复杂的画面情况是9k每秒的样子/。
 
 
+### 一个跨平台的、自动化联机的、纯C#实现的、开源的模拟器项目
+
+	用于游戏模拟器同步的联机纯C#实现
+
+	AxibugEmuOnline.Server 是服务端 .Net9
+	
+	AxibugEmuOnline.Web 是Asp.Net Core(.Net 9)的WebApi
+
+	AxibugEmuOnline.Client 是客户端 Unity
+		
+		- NES EmuCore NES模拟器核心
+		
+				VirtualNes （C++手动翻译到C#，并收纳民间各种扩展Mapper实现，接近于最全的游戏支持。实测，高倍速加速游戏的同时（几百fps），且进行网络同步，性能一致，完全同步）
+				
+				~~My Nes~~ (功能全，但是性能局限，不作为主要使用，但已经移植纯.Net Standard2.0归档)
+				
+				~~Emulator.NES~~ (较为初级，已经废弃)
+		
+		- 街机模拟器核心 Arcade EmuCore
+				
+				MAME.Net 来自于我另一个移植项目 ，http://git.axibug.com/sin365/MAME.Core 最终会迁移进来。源头上是MAME C/C++源码翻译C#
+				
+		- GameBoy
+		- GameBoyColor
+		- ColecoVision
+		- GameGear
+		- MasterSystem
+		- SC3000
+		- SG1000
+				
+				Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity 最终会迁移进来。
+
+		- 其他核心，长期补充
+
 ## 代码贡献/协作者
 
 [AlienJack](https://github.com/AlienJack "AlienJack") 
@@ -112,13 +142,9 @@
 
 ~~做帧缓，颜色查找下标缓存，做同步，加上网络库，并实现服务端。达到如上效果。~~
 
-~~----~~
-
 ~~随后，我们选择了更为全面的MyNes作为Nes模拟器核心，以此做二次开发和魔改。并实现自己的服务端和客户端联机逻辑~~
 
-~~----~~
-
-然后我们又开始尝试把 VirtualNes 的内核翻译为C#，在尝试内核的路上越走越远……
+最后，我们又开始尝试把 VirtualNes 的C++源码徒手翻译为C#，在尝试内核的路上越走越远……
 
 
 ### 关于 NES Mapper支持
@@ -147,3 +173,12 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 	最终会继承到本项目中
 	
 	http://git.axibug.com/sin365/MAME.Core
+
+	
+### 街机模拟器核心
+	
+	原本是我独立移植到Unity的C# Essgee实现，包含：	- GameBoy - GameBoyColor - ColecoVision - GameGear - MasterSystem - SC3000 - SG1000
+	
+	最终会继承到本项目中
+	
+	https://github.com/Sin365/Essgee.Unity
