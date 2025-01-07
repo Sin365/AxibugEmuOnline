@@ -3,6 +3,7 @@ using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
+using Sony.Vita.Dialog;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,6 +47,14 @@ namespace AxibugEmuOnline.Client
             RoomID = roomInfo.RoomID;
 
             UpdateUI(roomInfo);
+        }
+
+        protected override void OnSelected(float progress)
+        {
+            base.OnSelected(progress);
+
+            if (Icon.sprite == null) LaunchUI.Instance.HideRomPreview();
+            else LaunchUI.Instance.SetRomPreview(Icon.sprite);
         }
 
         public override bool OnEnterItem()
@@ -128,8 +137,9 @@ namespace AxibugEmuOnline.Client
         {
             if (m_romFile == null) return;
             if (m_romFile.ImageURL != url) return;
-
             SetIcon(sprite);
+
+            if (m_select) LaunchUI.Instance.SetRomPreview(sprite);
         }
 
         public void SetDependencyProperty(object data)

@@ -45,6 +45,14 @@ namespace AxibugEmuOnline.Client
             SetSelectState(data is ThirdMenuRoot && ((ThirdMenuRoot)data).SelectIndex == Index);
         }
 
+        protected override void OnSelected(float progress)
+        {
+            base.OnSelected(progress);
+
+            if (m_romImage.sprite == null) LaunchUI.Instance.HideRomPreview();
+            else LaunchUI.Instance.SetRomPreview(m_romImage.sprite);
+        }
+
         public void Release()
         {
             m_romfile.OnInfoFilled -= OnRomInfoFilled;
@@ -69,6 +77,7 @@ namespace AxibugEmuOnline.Client
                     if (!m_romfile.InfoReady || url != m_romfile.ImageURL) return;
 
                     m_romImage.sprite = img;
+                    if (m_select) LaunchUI.Instance.SetRomPreview(img);
                 });
             }
         }
