@@ -7,7 +7,8 @@ namespace AxibugEmuOnline.Web
         public static void Main(string[] args)
         {
             Config.LoadConfig();
-            Haoyue_SQLPoolManager.InitConnMgr();
+            AESHelper.LoadKeyIVCfg(Config.cfg.AesKey, Config.cfg.AesIv);
+            SQLPool.InitConnMgr();
 
             var builder = WebApplication.CreateBuilder(args);
 

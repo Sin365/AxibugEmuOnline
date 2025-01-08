@@ -46,7 +46,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
         public static string PersistentDataPath => Application.persistentDataPath;
 #endif
-        public static void Init(bool isTest = false, string testSrvIP = "")
+        public static void Init(bool isTest = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
 
@@ -64,6 +64,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             emu = new AppEmu();
             //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
+            if (bUseLocalWebApi)
+                httpAPI.WebHost = mLocalWebApi;
             nesRomLib = new RomLib(RomPlatformType.Nes);
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();

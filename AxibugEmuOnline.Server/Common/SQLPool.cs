@@ -2,18 +2,16 @@
 
 namespace AxibugEmuOnline.Server.Common
 {
-    public static class Haoyue_SQLPoolManager
+    public static class SQLPool
     {
-        private static Queue<MySqlConnection> SQLPool = new Queue<MySqlConnection>();
-        private static Dictionary<MySqlConnection, Haoyue_PoolTime> _OutOfSQLPool = new Dictionary<MySqlConnection, Haoyue_PoolTime>();
-        private static Dictionary<string, long> _DicSqlRunFunNum = new Dictionary<string, long>();
-        private static Dictionary<string, long> _DicTimeOutSqlRunFunNum = new Dictionary<string, long>();
-        private const int DefaultCount = 1;
-        private const int MaxLimit = 5;
-        private static readonly object _sync = new object();
-
-
-        private static MySqlConnectionStringBuilder connBuilder;
+        static Queue<MySqlConnection> _ConQueue = new Queue<MySqlConnection>();
+        static Dictionary<MySqlConnection, Haoyue_PoolTime> _OutOfSQLPool = new Dictionary<MySqlConnection, Haoyue_PoolTime>();
+        static Dictionary<string, long> _DicSqlRunFunNum = new Dictionary<string, long>();
+        static Dictionary<string, long> _DicTimeOutSqlRunFunNum = new Dictionary<string, long>();
+        const int DefaultCount = 1;
+        const int MaxLimit = 5;
+        static readonly object _sync = new object();
+        static MySqlConnectionStringBuilder connBuilder;
 
         public static void InitConnMgr()
         {
@@ -33,9 +31,9 @@ namespace AxibugEmuOnline.Server.Common
             {
                 MySqlConnection _conn = conn();
                 _conn.Open();
-                SQLPool.Enqueue(_conn);
+                _ConQueue.Enqueue(_conn);
             }
-            Console.WriteLine("SQLPool初始化完毕,连接数" + SQLPool.Count);
+            Console.WriteLine("SQLPool初始化完毕,连接数" + _ConQueue.Count);
         }
         public static MySqlConnection conn()
         {
@@ -55,22 +53,22 @@ namespace AxibugEmuOnline.Server.Common
                     _DicSqlRunFunNum[FuncStr] = 1L;
                 }
                 MySqlConnection _conn = null;
-                if (SQLPool.Count < 1)
+                if (_ConQueue.Count < 1)
                 {
-                    Console.WriteLine("[DequeueSQLConn]创建新的SQLPool.Count>" + SQLPool.Count);
+                    Console.WriteLine("[DequeueSQLConn]创建新的SQLPool.Count>" + _ConQueue.Count);
                     _conn = conn();
                     _conn.Open();
                 }
                 else
                 {
                     MySqlConnection temp = null;
-                    while (SQLPool.Count > 0)
+                    while (_ConQueue.Count > 0)
                     {
-                        Console.WriteLine("[DequeueSQLConn]取出一个SQLCount.Count>" + SQLPool.Count);
-                        temp = SQLPool.Dequeue();
+                        Console.WriteLine("[DequeueSQLConn]取出一个SQLCount.Count>" + _ConQueue.Count);
+                        temp = _ConQueue.Dequeue();
                         if (temp.State == System.Data.ConnectionState.Closed)
                         {
-                            Console.WriteLine("[DequeueSQLConn]已经断开SQLCount.Count>" + SQLPool.Count);
+                            Console.WriteLine("[DequeueSQLConn]已经断开SQLCount.Count>" + _ConQueue.Count);
                             temp.Dispose();
                             temp = null;
                             continue;
@@ -110,17 +108,17 @@ namespace AxibugEmuOnline.Server.Common
                 {
                     Console.WriteLine("出队遗漏的数据出现了！");
                 }
-                if (SQLPool.Count > MaxLimit)
+                if (_ConQueue.Count > MaxLimit)
                 {
-                    Console.WriteLine("已经不需要回收了,多余了,SQLPool.Count>" + SQLPool.Count);
+                    Console.WriteLine("已经不需要回收了,多余了,SQLPool.Count>" + _ConQueue.Count);
                     BackConn.Close();
                     BackConn.Dispose();
                     BackConn = null;
                 }
                 else
                 {
-                    SQLPool.Enqueue(BackConn);
-                    Console.WriteLine("回收SQLPool.Count>" + SQLPool.Count);
+                    _ConQueue.Enqueue(BackConn);
+                    Console.WriteLine("回收SQLPool.Count>" + _ConQueue.Count);
                 }
             }
         }
@@ -143,15 +141,15 @@ namespace AxibugEmuOnline.Server.Common
                         {
                             _DicTimeOutSqlRunFunNum[o2.Value.FuncStr] = 1L;
                         }
-                        if (SQLPool.Count > MaxLimit)
+                        if (_ConQueue.Count > MaxLimit)
                         {
-                            Console.WriteLine("[超时回收]" + o2.Value.FuncStr + "已经不需要回收了,多余了,SQLPool.Count>" + SQLPool.Count);
+                            Console.WriteLine("[超时回收]" + o2.Value.FuncStr + "已经不需要回收了,多余了,SQLPool.Count>" + _ConQueue.Count);
                             o2.Key.Close();
                         }
                         else
                         {
-                            Console.WriteLine("[超时回收]" + o2.Value.FuncStr + "回收SQLPool.Count>" + SQLPool.Count);
-                            SQLPool.Enqueue(o2.Key);
+                            Console.WriteLine("[超时回收]" + o2.Value.FuncStr + "回收SQLPool.Count>" + _ConQueue.Count);
+                            _ConQueue.Enqueue(o2.Key);
                         }
                         removeTemp.Add(o2.Key);
                     }
@@ -172,7 +170,7 @@ namespace AxibugEmuOnline.Server.Common
                         Console.WriteLine("[超时回收]_OutOfSQLPool清理异常？？？？？？？");
                     }
                 }
-                Console.WriteLine("[超时回收]处理结束SQLPool.Count>" + SQLPool.Count);
+                Console.WriteLine("[超时回收]处理结束SQLPool.Count>" + _ConQueue.Count);
             }
         }
         public static long time()

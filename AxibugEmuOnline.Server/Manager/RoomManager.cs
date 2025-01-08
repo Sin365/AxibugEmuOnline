@@ -109,7 +109,7 @@ namespace AxibugEmuOnline.Server
         }
         public void RoomLog(long uid, int platform, int RoomID, int RomID, RoomLogType state)
         {
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("RoomLog");
+            MySqlConnection conn = SQLPool.DequeueSQLConn("RoomLog");
             try
             {
                 string query = "INSERT INTO `haoyue_emu`.`room_log` (`uid`, `platform`, `romid`,`roomid`, `state`) VALUES ( ?uid, ?platform, ?romid, ?roomid, ?state);";
@@ -137,7 +137,7 @@ namespace AxibugEmuOnline.Server
             catch (Exception e)
             {
             }
-            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+            SQLPool.EnqueueSQLConn(conn);
         }
         #endregion
 

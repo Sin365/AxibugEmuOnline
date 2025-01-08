@@ -19,6 +19,8 @@ namespace AxibugEmuOnline.Web.Common
         public string ServerIp { get; set; }
         public ushort ServerPort { get; set; }
         public string ClientVersion { get; set; }
+        public string AesKey { get; set; }
+        public string AesIv { get; set; }
     }
 
 

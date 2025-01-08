@@ -210,6 +210,13 @@ message Protobuf_Login_RESP
 }
 
 
+//Token结构，但用于逻辑里配置加密密钥，放置于服务端加密后，发放token
+message Protobuf_Token_Struct
+{
+	int64 UID = 1;
+	int64 TokenGenDate = 2;
+	int64 Seed = 3;
+}
 
 //获取在线用户列表 上行
 message Protobuf_UserList
@@ -426,10 +433,12 @@ message Protobuf_Room_Get_Screen_RESP
 message Protobuf_Game_Mark
 {
 	int32 RomID = 1;//RomID
-	int32 state = 2;//[0]收藏 [1]取消收藏
+	int32 motion = 2;//[0]取消收藏[1]收藏
 }
 
 message Protobuf_Game_Mark_RESP
 {
 	int32 RomID = 1;//RomID
+	int32 IsStar = 2;//当前状态 [0]未收藏[1]已收藏
+	int32 stars = 3;//当前收藏计数
 }

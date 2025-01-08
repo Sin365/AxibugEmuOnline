@@ -170,7 +170,14 @@ public static class AxiHttp
         if (!dictIP2Address.ContainsKey(str))
         {
             IPHostEntry host = Dns.GetHostEntry(str);
-            IPAddress ip = host.AddressList[0];
+            IPAddress ip = null;
+            foreach (var item in host.AddressList)
+            {
+                if (item.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    ip = item; break;
+                }
+            }
             dictIP2Address[str] = ip;
         }
         return dictIP2Address[str];

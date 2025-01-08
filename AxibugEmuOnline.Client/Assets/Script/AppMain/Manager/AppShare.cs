@@ -17,12 +17,12 @@ namespace AxibugEmuOnline.Client.Manager
         /// 发送收藏
         /// </summary>
         /// <param name="RomID"></param>
-        /// <param name="Motion">[0]收藏[1]取消收藏</param>
+        /// <param name="Motion">[0]取消收藏[1]收藏</param>
         public void SendGameStar(int RomID, int Motion)
         {
             Protobuf_Game_Mark req = new Protobuf_Game_Mark()
             {
-                State = Motion,
+                Motion = Motion,
                 RomID = RomID,
             };
             App.log.Info($"LeavnRoom");

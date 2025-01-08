@@ -9,7 +9,6 @@ using UnityEditor;
 using UnityEngine;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
-using Debug = System.Diagnostics.Debug;
 
 namespace AxibugEmuOnline.Client
 {
@@ -196,7 +195,7 @@ namespace AxibugEmuOnline.Client
             var xmlStr = File.ReadAllText("nes20db.xml");
             var xml = XDocument.Parse(xmlStr);
             var games = xml.Element("nes20db")?.Elements("game");
-            Debug.Assert(games != null, nameof(games) + " != null");
+            System.Diagnostics.Debug.Assert(games != null, nameof(games) + " != null");
             foreach (var game in games)
             {
                 var crcStr = game.Element("rom")?.Attribute("crc32")?.Value;

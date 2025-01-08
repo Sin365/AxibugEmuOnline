@@ -128,9 +128,9 @@ namespace AxibugEmuOnline.Client
             {
                 var romItem = m_currentSelect;
                 if (!romItem.IsStar)
-                    App.share.SendGameStar(romItem.RomID, 0);
-                else
                     App.share.SendGameStar(romItem.RomID, 1);
+                else
+                    App.share.SendGameStar(romItem.RomID, 0);
             }
         }
     }

@@ -31,8 +31,8 @@ namespace AxibugEmuOnline.Client
             switch (platform)
             {
                 case RomPlatformType.Nes:
-                    m_romGetFunc = App.httpAPI.GetNesRomList;
-                    m_romSearchFunc = App.httpAPI.SearchNesRomList;
+                    m_romGetFunc = App.httpAPI.GetRomList;
+                    m_romSearchFunc = App.httpAPI.SearchRomList;
                     break;
             }
 

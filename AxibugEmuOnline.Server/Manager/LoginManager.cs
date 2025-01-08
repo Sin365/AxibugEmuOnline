@@ -3,17 +3,27 @@ using AxibugEmuOnline.Server.Event;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
+using Mysqlx;
+using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Ocsp;
+using System.Collections;
 using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Server.Manager
 {
     public class LoginManager
     {
+        static long tokenSeed = 1;
+
         public LoginManager()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdLogin, UserLogin);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdModifyNickName, OnCmdModifyNickName);
+        }
+
+        static long GetNextTokenSeed()
+        {
+            return tokenSeed++;
         }
 
         void UserLogin(Socket _socket, byte[] reqData)
@@ -47,7 +57,9 @@ namespace AxibugEmuOnline.Server.Manager
 
             ClientInfo _c = AppSrv.g_ClientMgr.JoinNewClient(_uid, _socket);
 
-            UpdateUserData(_uid, _c,msg.DeviceType);
+            UpdateUserData(_uid, _c, msg.DeviceType);
+
+            string tokenstr = GenToken(_c);
 
             EventSystem.Instance.PostEvent(EEvent.OnUserOnline, _c.UID);
 
@@ -56,10 +68,11 @@ namespace AxibugEmuOnline.Server.Manager
                 Status = LoginResultStatus.Ok,
                 RegDate = _c.RegisterDT.ToString("yyyy-MM-dd HH:mm:ss"),
                 LastLoginDate = _c.LastLogInDT.ToString("yyyy-MM-dd HH:mm:ss"),
-                Token = "",
+                Token = tokenstr,
                 NickName = _c.NickName,
                 UID = _c.UID
             });
+
             AppSrv.g_Log.Info($"玩家登录成功 UID->{_c.UID} NikeName->{_c.NickName}");
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdLogin, (int)ErrorCode.ErrorOk, respData);
         }
@@ -70,7 +83,7 @@ namespace AxibugEmuOnline.Server.Manager
             bool bDone = false;
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(socket);
             Protobuf_Modify_NickName msg = ProtoBufHelper.DeSerizlize<Protobuf_Modify_NickName>(reqData);
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("ModifyNikeName");
+            MySqlConnection conn = SQLPool.DequeueSQLConn("ModifyNikeName");
             try
             {
                 string query = "update users set nikename = ?nikename where uid = ?uid ";
@@ -88,7 +101,7 @@ namespace AxibugEmuOnline.Server.Manager
             catch (Exception e)
             {
             }
-            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+            SQLPool.EnqueueSQLConn(conn);
 
             if (bDone)
             {
@@ -123,7 +136,7 @@ namespace AxibugEmuOnline.Server.Manager
         {
             uid = 0;
             bool bDone = true;
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("GetUidByDevice");
+            MySqlConnection conn = SQLPool.DequeueSQLConn("GetUidByDevice");
             try
             {
                 string query = "SELECT uid from user_devices where device = ?deviceStr ";
@@ -193,7 +206,7 @@ namespace AxibugEmuOnline.Server.Manager
                 AppSrv.g_Log.Error($"ex=>{e.ToString()}");
                 bDone = false;
             }
-            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+            SQLPool.EnqueueSQLConn(conn);
 
             if (uid <= 0)
                 bDone = false;
@@ -202,7 +215,7 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void UpdateUserData(long uid, ClientInfo _c, DeviceType deviceType)
         {
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("UpdateUserData");
+            MySqlConnection conn = SQLPool.DequeueSQLConn("UpdateUserData");
             try
             {
                 string query = "SELECT account,nikename,regdate,lastlogindate from users where uid = ?uid ";
@@ -236,7 +249,30 @@ namespace AxibugEmuOnline.Server.Manager
             {
 
             }
-            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+            SQLPool.EnqueueSQLConn(conn);
+        }
+
+        static string GenToken(ClientInfo _c)
+        {
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            Protobuf_Token_Struct _resp = new Protobuf_Token_Struct()
+            {
+                UID = _c.UID,
+                TokenGenDate = timestamp,
+                Seed = GetNextTokenSeed()
+            };
+            byte[] protobufData = ProtoBufHelper.Serizlize(_resp);
+            ProtoBufHelper.DeSerizlize<Protobuf_Token_Struct>(protobufData);
+            byte[] encryptData = AESHelper.Encrypt(protobufData);
+            string tobase64 = Convert.ToBase64String(encryptData);
+            return tobase64;
+        }
+
+        static Protobuf_Token_Struct DecrypToken(string tokenStr)
+        {
+           byte[] encryptData = Convert.FromBase64String(tokenStr);
+            byte[] decryptData = AESHelper.Decrypt(encryptData);
+            return ProtoBufHelper.DeSerizlize<Protobuf_Token_Struct>(decryptData);
         }
 
         public string GetRandomNickName(long uid)
@@ -450,5 +486,7 @@ namespace AxibugEmuOnline.Server.Manager
     "红白机战士之魂",
     "超级时间探险家"
             ];
+
+
     }
 }

@@ -18,6 +18,7 @@ namespace AxibugEmuOnline.Client.Manager
     public class MainUserDataBase : UserDataBase
     {
         public bool IsLoggedIn { get; set; } = false;
+        public string Token { get; set; }
     }
 
     public class UserDataManager
@@ -39,13 +40,18 @@ namespace AxibugEmuOnline.Client.Manager
 
         public MainUserDataBase userdata { get; private set; } = new MainUserDataBase();
         public bool IsLoggedIn => userdata.IsLoggedIn;
+        public string Token => userdata.IsLoggedIn ? userdata.Token : string.Empty;
         Dictionary<long, UserDataBase> DictUID2User = new Dictionary<long, UserDataBase>();
         public int OnlinePlayerCount => DictUID2User.Count;
-        public void InitMainUserData(string UName, long UID)
+        public void InitMainUserData(string UName, long UID, string token)
         {
             userdata.NickName = UName;
             userdata.IsLoggedIn = true;
             userdata.UID = UID;
+            userdata.Token = token;
+#if UNITY_EDITOR
+            App.log.Debug($"收到登录token:{token}");
+#endif
             //以及其他数据初始化
             //...
         }

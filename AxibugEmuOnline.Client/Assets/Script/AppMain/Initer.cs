@@ -17,15 +17,17 @@ namespace AxibugEmuOnline.Client
 
 
 #if UNITY_EDITOR
-        public bool bTest = false;
+        public bool bTestSkipWebApiToConServer = false;
         public string mTestSrvIP = "192.168.0.47";
+        public bool bUseLocalWebApi = false;
+        public string mLocalWebApi = "http://localhost:5051";
         public bool bEditorUUID = false;
 #endif
 
         private void Awake()
         {
 #if UNITY_EDITOR
-            App.Init(bTest, mTestSrvIP);
+            App.Init(bTestSkipWebApiToConServer, mTestSrvIP, bUseLocalWebApi,mLocalWebApi);
             dev_UUID = SystemInfo.deviceUniqueIdentifier;
             if (bEditorUUID)
             {

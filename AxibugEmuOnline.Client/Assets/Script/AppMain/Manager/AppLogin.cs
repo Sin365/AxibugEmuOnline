@@ -73,7 +73,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (msg.Status == LoginResultStatus.Ok)
             {
                 App.log.Info("登录成功");
-                App.user.InitMainUserData(App.user.userdata.Account, msg.UID);
+                App.user.InitMainUserData(App.user.userdata.Account, msg.UID, msg.Token);
                 OverlayManager.PopTip("登录成功");
 
 

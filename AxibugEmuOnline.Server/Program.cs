@@ -77,6 +77,11 @@ namespace AxibugEmuOnline.Server
                             UpdateRomHash();
                         }
                         break;
+                    case "aesgen":
+                        {
+                            AESHelper.GenAesKeyIV();
+                        }
+                        break;
                     default:
                         Console.WriteLine("未知命令" + CommandStr);
                         break;
@@ -88,7 +93,7 @@ namespace AxibugEmuOnline.Server
         static void UpdateRomHash()
         {
             AppSrv.g_Log.Info("UpdateRomHash");
-            MySqlConnection conn = Haoyue_SQLPoolManager.DequeueSQLConn("UpdateRomHash");
+            MySqlConnection conn = SQLPool.DequeueSQLConn("UpdateRomHash");
             try
             {
                 List<(int id, string romurl, string name)> list = new List<(int id, string romurl, string name)>();
@@ -139,7 +144,7 @@ namespace AxibugEmuOnline.Server
             {
                 AppSrv.g_Log.Info($"err:{e.ToString()}");
             }
-            Haoyue_SQLPoolManager.EnqueueSQLConn(conn);
+            SQLPool.EnqueueSQLConn(conn);
         }
     }
 }
