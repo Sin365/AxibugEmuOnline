@@ -1,5 +1,6 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.UI;
+using Coffee.UIExtensions;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -14,7 +15,12 @@ namespace AxibugEmuOnline.Client
         RectTransform MainMenuRoot;
         [SerializeField]
         MainMenuController MainMenu;
-        public Image BG;
+        [SerializeField]
+        Image XMBBackground;
+        [SerializeField]
+        Image RomPreviewBigPic;
+        [SerializeField]
+        CanvasGroup XMBCG_For_RomPreviewBigPic;
 
         Vector2 m_mainLayoutPosition;
         [SerializeField]
@@ -25,12 +31,20 @@ namespace AxibugEmuOnline.Client
         public static LaunchUI Instance { get; private set; }
 
         TweenerCore<Vector2, Vector2, VectorOptions> m_layoutTween;
+        AlphaWraper romPreviewWraper;
 
         private void Awake()
         {
             Instance = this;
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;
+            romPreviewWraper = new AlphaWraper(XMBCG_For_RomPreviewBigPic, RomPreviewBigPic.GetComponent<CanvasGroup>(), false);
+
+            var uiEffect = RomPreviewBigPic.GetComponent<UIEffect>();
+            if (Application.platform == RuntimePlatform.PSP2)
+                uiEffect.blurMode = BlurMode.FastBlur;
+            else
+                uiEffect.blurMode = BlurMode.DetailBlur;
         }
 
         private void Start()
@@ -46,14 +60,40 @@ namespace AxibugEmuOnline.Client
 
         public void HideMainMenu()
         {
-            BG.gameObject.SetActiveEx(false);
+            XMBBackground.gameObject.SetActiveEx(false);
             MainMenuRoot.gameObject.SetActiveEx(false);
+            RomPreviewBigPic.gameObject.SetActiveEx(false);
         }
 
         public void ShowMainMenu()
         {
-            BG.gameObject.SetActiveEx(true);
+            XMBBackground.gameObject.SetActiveEx(true);
             MainMenuRoot.gameObject.SetActiveEx(true);
+
+            if (romPreviewWraper.On)
+            {
+                XMBCG_For_RomPreviewBigPic.gameObject.SetActive(false);
+                RomPreviewBigPic.gameObject.SetActive(true);                
+            }
+            else if (!romPreviewWraper.On)
+            {
+                XMBCG_For_RomPreviewBigPic.gameObject.SetActive(true);
+                XMBCG_For_RomPreviewBigPic.alpha = 1;
+                RomPreviewBigPic.gameObject.SetActive(false);
+            }
+        }
+
+        public void HideRomPreview()
+        {
+            romPreviewWraper.On = false;
+        }
+
+        public void SetRomPreview(Sprite sp)
+        {
+            if (MainMenu.ListenControlAction) return;
+
+            RomPreviewBigPic.sprite = sp;
+            romPreviewWraper.On = true;
         }
 
         public void ToDetailMenuLayout()
@@ -89,6 +129,8 @@ namespace AxibugEmuOnline.Client
                 .SetSpeedBased();
             MainMenu.ListenControlAction = true;
             MainMenu.ExitDetailState();
+
+            HideRomPreview();
         }
     }
 }

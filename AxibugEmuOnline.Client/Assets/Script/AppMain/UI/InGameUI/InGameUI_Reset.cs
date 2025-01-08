@@ -1,14 +1,14 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 
 namespace AxibugEmuOnline.Client
 {
     public class InGameUI_Reset : ExecuteMenu
     {
         private InGameUI m_gameUI;
-
+        public override string Name => "复位";
         public override bool Visible => !m_gameUI.IsNetPlay || App.roomMgr.IsHost;
 
-        public InGameUI_Reset(InGameUI gameUI) : base("��λ", null)
+        public InGameUI_Reset(InGameUI gameUI)
         {
             m_gameUI = gameUI;
         }

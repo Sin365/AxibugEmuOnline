@@ -190,7 +190,7 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// Blur effect mode(readonly).
         /// </summary>
-        public BlurMode blurMode { get { return m_BlurMode; } }
+        public BlurMode blurMode { get { return m_BlurMode; }set { m_BlurMode = value; } }
 
         /// <summary>
         /// Color for the color effect.

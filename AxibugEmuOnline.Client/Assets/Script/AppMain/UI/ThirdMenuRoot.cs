@@ -45,7 +45,7 @@ namespace AxibugEmuOnline.Client
             SelectIndex = selectIndex;
         }
 
-        protected override MenuItem GetItemUIByIndex(int index)
+        public override MenuItem GetItemUIByIndex(int index)
         {
             return itemGroup.GetItemUIByDataIndex(index)?.GetComponent<MenuItem>();
         }

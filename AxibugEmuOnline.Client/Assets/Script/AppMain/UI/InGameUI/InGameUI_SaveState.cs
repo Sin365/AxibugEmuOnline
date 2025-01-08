@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+锘縰sing AxibugEmuOnline.Client.ClientCore;
 using System.Diagnostics;
 
 namespace AxibugEmuOnline.Client
@@ -8,8 +8,9 @@ namespace AxibugEmuOnline.Client
         private InGameUI m_gameUI;
 
         public override bool Visible => !m_gameUI.IsNetPlay;
+        public override string Name => "淇濆瓨蹇収";
 
-        public InGameUI_SaveState(InGameUI gameUI) : base("保存快照", null)
+        public InGameUI_SaveState(InGameUI gameUI)
         {
             m_gameUI = gameUI;
         }
@@ -23,7 +24,7 @@ namespace AxibugEmuOnline.Client
 
             m_gameUI.SaveQuickState(state);
             sw.Stop();
-            App.log.Info($"{m_gameUI.RomFile.Platform}====>获取快照耗时:{sw.Elapsed.TotalMilliseconds}ms");
+            App.log.Info($"{m_gameUI.RomFile.Platform}====>鑾峰彇蹇収鑰楁椂:{sw.Elapsed.TotalMilliseconds}ms");
         }
     }
 }

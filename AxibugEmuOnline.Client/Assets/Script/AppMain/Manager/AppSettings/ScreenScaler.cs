@@ -106,7 +106,7 @@ namespace AxibugEmuOnline.Client
             switch (platform)
             {
                 case RomPlatformType.Nes: return new Vector2Int(256, 240);
-                default: return new Vector2Int(256, 240);
+                default: throw new System.NotImplementedException($"未实现的平台:{platform}");
             }
         }
 

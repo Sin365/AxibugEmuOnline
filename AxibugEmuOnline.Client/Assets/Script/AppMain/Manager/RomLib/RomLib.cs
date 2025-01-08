@@ -1,9 +1,11 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Common;
+using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static AxibugEmuOnline.Client.HttpAPI;
 
 namespace AxibugEmuOnline.Client
@@ -33,6 +35,16 @@ namespace AxibugEmuOnline.Client
                     m_romSearchFunc = App.httpAPI.SearchNesRomList;
                     break;
             }
+
+            Eventer.Instance.RegisterEvent<int, bool>(EEvent.OnRomStarStateChanged, OnRomStarStateChanged);
+        }
+
+        private void OnRomStarStateChanged(int romID, bool star)
+        {
+            var targetRom = nesRomFetchList.FirstOrDefault(rom => rom.ID == romID);
+            if (targetRom == null) return;
+
+            targetRom.Star = star;
         }
 
         public RomFile GetRomFile(string romFileName)
@@ -41,8 +53,6 @@ namespace AxibugEmuOnline.Client
             nesRomFileNameMapper.TryGetValue(romFileName, out romFile);
             return romFile;
         }
-
-
 
         /// <summary> 清除所有下载的Rom文件 </summary>
         public void ClearRomFile()

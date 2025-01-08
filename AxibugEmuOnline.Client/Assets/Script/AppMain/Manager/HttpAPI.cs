@@ -184,6 +184,7 @@ namespace AxibugEmuOnline.Client
             public string imgUrl;
             public string hash;
             public int stars;
+            public int isStar;//TODO 实现收藏标记
         }
         [Serializable]
         public class Resp_CheckStandInfo
