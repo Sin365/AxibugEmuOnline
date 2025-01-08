@@ -105,46 +105,66 @@ namespace AxibugProtobuf {
             "ASgFEg8KB0ZyYW1lSUQYAiABKAUSEQoJUmF3Qml0bWFwGAMgASgMIjMKElBy",
             "b3RvYnVmX0dhbWVfTWFyaxINCgVSb21JRBgBIAEoBRIOCgZtb3Rpb24YAiAB",
             "KAUiRwoXUHJvdG9idWZfR2FtZV9NYXJrX1JFU1ASDQoFUm9tSUQYASABKAUS",
-            "DgoGSXNTdGFyGAIgASgFEg0KBXN0YXJzGAMgASgFKqEFCglDb21tYW5kSUQS",
-            "DgoKQ01EX0RFRkFVTBAAEgwKCENNRF9QSU5HEAESDAoIQ01EX1BPTkcQAhIO",
-            "CglDTURfTE9HSU4Q0Q8SGAoTQ01EX1VTRVJfT05MSU5FTElTVBC4FxISCg1D",
-            "TURfVVNFUl9KT0lOENcXEhMKDkNNRF9VU0VSX0xFQVZFENgXEhoKFUNNRF9V",
-            "U0VSX1NUQVRFX1VQREFURRDZFxIYChNDTURfTW9kaWZ5X05pY2tOYW1lEJ0Y",
-            "EhwKF0NNRF9VcGRhdGVfU2VsZlVzZXJJbmZvEKYYEh0KGENNRF9VcGRhdGVf",
-            "T3RoZXJVc2VySW5mbxCoGBIQCgtDTURfQ0hBVE1TRxChHxISCg1DTURfUm9v",
-            "bV9MaXN0EIknEhkKFENNRF9Sb29tX0xpc3RfVXBkYXRlEIonEhgKE0NNRF9S",
-            "b29tX0dldF9TY3JlZW4QkycSFAoPQ01EX1Jvb21fQ3JlYXRlEO0nEhIKDUNN",
-            "RF9Sb29tX0pvaW4Q8ScSEwoOQ01EX1Jvb21fTGVhdmUQ8icSIgodQ01EX1Jv",
-            "b21fTXlSb29tX1N0YXRlX0NoYW5nZWQQ9icSIQocQ01EX1Jvb21fQ2hhbmdl",
-            "UGxheWVyV2l0aEpveRCKKBIWChFDTURfUm9vbV9XYWl0U3RlcBDRKBInCiJD",
-            "TURfUm9vbV9Ib3N0UGxheWVyX1VwZGF0ZVN0YXRlUmF3ENQoEhoKFUNNRF9S",
-            "b29tX1BsYXllcl9SZWFkeRDYKBIgChtDTURfUm9vbV9TaW5nZWxfUGxheWVy",
-            "SW5wdXQQ+i4SHQoYQ01EX1JPT01fU1lOX1BsYXllcklucHV0EP8uEg8KCkNN",
-            "RF9TY3JlZW4Q2TYSEgoNQ01EX0dBTUVfTUFSSxD1TirQAQoJRXJyb3JDb2Rl",
-            "EhAKDEVSUk9SX0RFRkFVTBAAEgwKCEVSUk9SX09LEAESGAoURVJST1JfUk9P",
-            "TV9OT1RfRk9VTkQQChInCiNFUlJPUl9ST09NX1NMT1RfQUxSRUFETFlfSEFE",
-            "X1BMQVlFUhALEiEKHUVSUk9SX1JPT01fQ0FOVF9ET19DVVJSX1NUQVRFEDIS",
-            "HwoaRVJST1JfUk9NX0FMUkVBRFlfSEFEX1NUQVIQkwMSHAoXRVJST1JfUk9N",
-            "X0RPTlRfSEFEX1NUQVIQlAMqQAoJTG9naW5UeXBlEg0KCVVzZURldmljZRAA",
-            "Eg4KClVzZUFjY291bnQQARIUChBVc2VIYW9ZdWVBY2NvdW50EAIqpQEKCkRl",
-            "dmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAASBgoCUEMQARILCgdB",
-            "bmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQSBwoDUFMzEAUSBwoDUFM0EAYS",
-            "CwoHWEJPWDM2MBAHEgsKB1hCT1hPTkUQCBIICgRXaWlVEAkSDwoLTmludGVu",
-            "ZG8zRFMQChIRCg1BbmRyb2lkQ2FyQXBwEAsqkwIKC0dhbWVQYWRUeXBlEgwK",
-            "CEtleWJvYXJkEAASEQoNR2xvYmFsR2FtZVBhZBABEg4KClRvdWNoUGFuZWwQ",
-            "AhIOCgpEUzNDb250cm9sEAMSDgoKRFM0Q29udHJvbBAEEg4KCkRTNUNvbnRy",
-            "b2wQBRIUChBTd2l0Y2hQcm9Db250cm9sEAYSEAoMU3dpdGNoSm95Q29uEAcS",
-            "EgoOWEJPWDM2MENvbnRyb2wQCBISCg5YQk9YT05FQ29udHJvbBAJEhEKDVBT",
-            "Vml0YUNvbnRyb2wQChISCg5XaWlVUGFkQ29udHJvbBALEhQKEFdpaVJlbW90",
-            "ZUNvbnRyb2wQDBIWChJOaW50ZW5kbzNEU0NvbnRyb2wQDSqiAQoPUm9tUGxh",
-            "dGZvcm1UeXBlEgsKB0ludmFsaWQQABIHCgNOZXMQARIRCg1NYXN0ZXJfU3lz",
-            "dGVtEAISDQoJR2FtZV9HZWFyEAMSDAoIR2FtZV9Cb3kQBBISCg5HYW1lX0Jv",
-            "eV9Db2xvchAFEhEKDUNvbGVjb19WaXNpb24QBhILCgdTQ18zMDAwEAcSCwoH",
-            "U0dfMTAwMBAIEggKA0FsbBDnBypwCg1Sb29tR2FtZVN0YXRlEhIKDk5vbmVf",
-            "R2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1XYWl0UmF3VXBkYXRlEAIS",
-            "DQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJbk9ubGluZUdhbWUQBSpO",
-            "ChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJlc3VsdFN0YXR1c19CYXNl",
-            "RGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVychACQgJIAWIGcHJvdG8z"));
+            "DgoGSXNTdGFyGAIgASgFEg0KBXN0YXJzGAMgASgFIi0KHFByb3RvYnVmX01p",
+            "bmVfR2V0R2FtZVNhdkxpc3QSDQoFUm9tSUQYASABKAUicgohUHJvdG9idWZf",
+            "TWluZV9HZXRHYW1lU2F2TGlzdF9SRVNQEg0KBVJvbUlEGAEgASgFEj4KC1Nh",
+            "dkRhdGFMaXN0GAIgAygLMikuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfTWlu",
+            "ZV9HYW1lU2F2SW5mbyLiAQoZUHJvdG9idWZfTWluZV9HYW1lU2F2SW5mbxIU",
+            "CgxiSGFkU2F2ZURhdGEYASABKAgSEgoKU2F2RGF0YUlkeBgCIAEoBRINCgVS",
+            "b21JRBgDIAEoBRI5ChBHYW1lUGxhdGZvcm1UeXBlGAQgASgOMh8uQXhpYnVn",
+            "UHJvdG9idWYuUm9tUGxhdGZvcm1UeXBlEg8KB1NhdkRhdGUYBSABKAkSDwoH",
+            "U2F2TmFtZRgGIAEoCRIMCgROb3RlGAcgASgJEhEKCVNhdkltZ1VybBgIIAEo",
+            "CRIOCgZTYXZVcmwYCSABKAkiPQoYUHJvdG9idWZfTWluZV9EZWxHYW1lU2F2",
+            "Eg0KBVJvbUlEGAEgASgFEhIKClNhdkRhdGFJZHgYAiABKAUiQgodUHJvdG9i",
+            "dWZfTWluZV9EZWxHYW1lU2F2X1JFU1ASDQoFUm9tSUQYASABKAUSEgoKU2F2",
+            "RGF0YUlkeBgCIAEoBSJiChtQcm90b2J1Zl9NaW5lX1VwTG9hZEdhbWVTYXYS",
+            "DQoFUm9tSUQYASABKAUSEgoKU2F2RGF0YUlkeBgCIAEoBRIOCgZTYXZJbWcY",
+            "AyABKAwSEAoIU3RhdGVSYXcYBCABKAwicwogUHJvdG9idWZfTWluZV9VcExv",
+            "YWRHYW1lU2F2X1JFU1ASDQoFUm9tSUQYASABKAUSQAoNVXBsb2FkU2V2SW5m",
+            "bxgCIAEoCzIpLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX01pbmVfR2FtZVNh",
+            "dkluZm8q/wUKCUNvbW1hbmRJRBIOCgpDTURfREVGQVVMEAASDAoIQ01EX1BJ",
+            "TkcQARIMCghDTURfUE9ORxACEg4KCUNNRF9MT0dJThDRDxIYChNDTURfVVNF",
+            "Ul9PTkxJTkVMSVNUELgXEhIKDUNNRF9VU0VSX0pPSU4Q1xcSEwoOQ01EX1VT",
+            "RVJfTEVBVkUQ2BcSGgoVQ01EX1VTRVJfU1RBVEVfVVBEQVRFENkXEhgKE0NN",
+            "RF9Nb2RpZnlfTmlja05hbWUQnRgSHAoXQ01EX1VwZGF0ZV9TZWxmVXNlcklu",
+            "Zm8QphgSHQoYQ01EX1VwZGF0ZV9PdGhlclVzZXJJbmZvEKgYEhAKC0NNRF9D",
+            "SEFUTVNHEKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01EX1Jvb21fTGlz",
+            "dF9VcGRhdGUQiicSGAoTQ01EX1Jvb21fR2V0X1NjcmVlbhCTJxIUCg9DTURf",
+            "Um9vbV9DcmVhdGUQ7ScSEgoNQ01EX1Jvb21fSm9pbhDxJxITCg5DTURfUm9v",
+            "bV9MZWF2ZRDyJxIiCh1DTURfUm9vbV9NeVJvb21fU3RhdGVfQ2hhbmdlZBD2",
+            "JxIhChxDTURfUm9vbV9DaGFuZ2VQbGF5ZXJXaXRoSm95EIooEhYKEUNNRF9S",
+            "b29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRl",
+            "U3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAKG0NN",
+            "RF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9TWU5f",
+            "UGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNhIfChpDTURfR0FNRVNB",
+            "Vl9HZXRHYW1lU2F2TGlzdBDBPhIbChZDTURfR0FNRVNBVl9EZWxHYW1lU2F2",
+            "EMU+Eh4KGUNNRF9HQU1FU0FWX1VwbG9hZEdhbWVTYXYQyj4SEgoNQ01EX0dB",
+            "TUVfTUFSSxD1TirxAQoJRXJyb3JDb2RlEhAKDEVSUk9SX0RFRkFVTBAAEgwK",
+            "CEVSUk9SX09LEAESGAoURVJST1JfUk9PTV9OT1RfRk9VTkQQChInCiNFUlJP",
+            "Ul9ST09NX1NMT1RfQUxSRUFETFlfSEFEX1BMQVlFUhALEiEKHUVSUk9SX1JP",
+            "T01fQ0FOVF9ET19DVVJSX1NUQVRFEDISHwobRVJST1JfUk9NX0RPTlRfSEFE",
+            "X1NBVkVEQVRBEFASHwoaRVJST1JfUk9NX0FMUkVBRFlfSEFEX1NUQVIQkwMS",
+            "HAoXRVJST1JfUk9NX0RPTlRfSEFEX1NUQVIQlAMqQAoJTG9naW5UeXBlEg0K",
+            "CVVzZURldmljZRAAEg4KClVzZUFjY291bnQQARIUChBVc2VIYW9ZdWVBY2Nv",
+            "dW50EAIqpQEKCkRldmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAAS",
+            "BgoCUEMQARILCgdBbmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQSBwoDUFMz",
+            "EAUSBwoDUFM0EAYSCwoHWEJPWDM2MBAHEgsKB1hCT1hPTkUQCBIICgRXaWlV",
+            "EAkSDwoLTmludGVuZG8zRFMQChIRCg1BbmRyb2lkQ2FyQXBwEAsqkwIKC0dh",
+            "bWVQYWRUeXBlEgwKCEtleWJvYXJkEAASEQoNR2xvYmFsR2FtZVBhZBABEg4K",
+            "ClRvdWNoUGFuZWwQAhIOCgpEUzNDb250cm9sEAMSDgoKRFM0Q29udHJvbBAE",
+            "Eg4KCkRTNUNvbnRyb2wQBRIUChBTd2l0Y2hQcm9Db250cm9sEAYSEAoMU3dp",
+            "dGNoSm95Q29uEAcSEgoOWEJPWDM2MENvbnRyb2wQCBISCg5YQk9YT05FQ29u",
+            "dHJvbBAJEhEKDVBTVml0YUNvbnRyb2wQChISCg5XaWlVUGFkQ29udHJvbBAL",
+            "EhQKEFdpaVJlbW90ZUNvbnRyb2wQDBIWChJOaW50ZW5kbzNEU0NvbnRyb2wQ",
+            "DSqiAQoPUm9tUGxhdGZvcm1UeXBlEgsKB0ludmFsaWQQABIHCgNOZXMQARIR",
+            "Cg1NYXN0ZXJfU3lzdGVtEAISDQoJR2FtZV9HZWFyEAMSDAoIR2FtZV9Cb3kQ",
+            "BBISCg5HYW1lX0JveV9Db2xvchAFEhEKDUNvbGVjb19WaXNpb24QBhILCgdT",
+            "Q18zMDAwEAcSCwoHU0dfMTAwMBAIEggKA0FsbBDnBypwCg1Sb29tR2FtZVN0",
+            "YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1XYWl0",
+            "UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJbk9u",
+            "bGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJlc3Vs",
+            "dFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVychAC",
+            "QgJIAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -190,7 +210,14 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen), global::AxibugProtobuf.Protobuf_Room_Get_Screen.Parser, new[]{ "RoomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP), global::AxibugProtobuf.Protobuf_Room_Get_Screen_RESP.Parser, new[]{ "RoomID", "FrameID", "RawBitmap" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark), global::AxibugProtobuf.Protobuf_Game_Mark.Parser, new[]{ "RomID", "Motion" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark_RESP), global::AxibugProtobuf.Protobuf_Game_Mark_RESP.Parser, new[]{ "RomID", "IsStar", "Stars" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark_RESP), global::AxibugProtobuf.Protobuf_Game_Mark_RESP.Parser, new[]{ "RomID", "IsStar", "Stars" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GetGameSavList), global::AxibugProtobuf.Protobuf_Mine_GetGameSavList.Parser, new[]{ "RomID" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GetGameSavList_RESP), global::AxibugProtobuf.Protobuf_Mine_GetGameSavList_RESP.Parser, new[]{ "RomID", "SavDataList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GameSavInfo), global::AxibugProtobuf.Protobuf_Mine_GameSavInfo.Parser, new[]{ "BHadSaveData", "SavDataIdx", "RomID", "GamePlatformType", "SavDate", "SavName", "Note", "SavImgUrl", "SavUrl" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_DelGameSav), global::AxibugProtobuf.Protobuf_Mine_DelGameSav.Parser, new[]{ "RomID", "SavDataIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_DelGameSav_RESP), global::AxibugProtobuf.Protobuf_Mine_DelGameSav_RESP.Parser, new[]{ "RomID", "SavDataIdx" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav), global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav.Parser, new[]{ "RomID", "SavDataIdx", "SavImg", "StateRaw" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav_RESP), global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav_RESP.Parser, new[]{ "RomID", "UploadSevInfo" }, null, null, null, null)
           }));
     }
     #endregion
@@ -321,7 +348,19 @@ namespace AxibugProtobuf {
     /// </summary>
     [pbr::OriginalName("CMD_Screen")] CmdScreen = 7001,
     /// <summary>
-    ///房间列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
+    ///即时存档
+    /// </summary>
+    [pbr::OriginalName("CMD_GAMESAV_GetGameSavList")] CmdGamesavGetGameSavList = 8001,
+    /// <summary>
+    ///玩家删除即时存档 上行 | 下行 对应 Protobuf_Mine_DelGameSavList | Protobuf_Mine_DelGameSavList_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_GAMESAV_DelGameSav")] CmdGamesavDelGameSav = 8005,
+    /// <summary>
+    ///玩家上传即时存档 上行 | 下行 对应 Protobuf_Mine_UpLoadGameSavList | Protobuf_Mine_UpLoadGameSavList_RESP
+    /// </summary>
+    [pbr::OriginalName("CMD_GAMESAV_UploadGameSav")] CmdGamesavUploadGameSav = 8010,
+    /// <summary>
+    ///获取即时存档列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
     /// </summary>
     [pbr::OriginalName("CMD_GAME_MARK")] CmdGameMark = 10101,
   }
@@ -347,6 +386,10 @@ namespace AxibugProtobuf {
     ///当前房间状态不允许本操作
     /// </summary>
     [pbr::OriginalName("ERROR_ROOM_CANT_DO_CURR_STATE")] ErrorRoomCantDoCurrState = 50,
+    /// <summary>
+    ///即时存档不存在
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROM_DONT_HAD_SAVEDATA")] ErrorRomDontHadSavedata = 80,
     /// <summary>
     ///已经收藏
     /// </summary>
@@ -9740,6 +9783,1796 @@ namespace AxibugProtobuf {
           }
           case 24: {
             Stars = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_GetGameSavList : pb::IMessage<Protobuf_Mine_GetGameSavList>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_GetGameSavList> _parser = new pb::MessageParser<Protobuf_Mine_GetGameSavList>(() => new Protobuf_Mine_GetGameSavList());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_GetGameSavList> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[43]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GetGameSavList() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GetGameSavList(Protobuf_Mine_GetGameSavList other) : this() {
+      romID_ = other.romID_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GetGameSavList Clone() {
+      return new Protobuf_Mine_GetGameSavList(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_GetGameSavList);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_GetGameSavList other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_GetGameSavList other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_GetGameSavList_RESP : pb::IMessage<Protobuf_Mine_GetGameSavList_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_GetGameSavList_RESP> _parser = new pb::MessageParser<Protobuf_Mine_GetGameSavList_RESP>(() => new Protobuf_Mine_GetGameSavList_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_GetGameSavList_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[44]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GetGameSavList_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GetGameSavList_RESP(Protobuf_Mine_GetGameSavList_RESP other) : this() {
+      romID_ = other.romID_;
+      savDataList_ = other.savDataList_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GetGameSavList_RESP Clone() {
+      return new Protobuf_Mine_GetGameSavList_RESP(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavDataList" field.</summary>
+    public const int SavDataListFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::AxibugProtobuf.Protobuf_Mine_GameSavInfo> _repeated_savDataList_codec
+        = pb::FieldCodec.ForMessage(18, global::AxibugProtobuf.Protobuf_Mine_GameSavInfo.Parser);
+    private readonly pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Mine_GameSavInfo> savDataList_ = new pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Mine_GameSavInfo>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::AxibugProtobuf.Protobuf_Mine_GameSavInfo> SavDataList {
+      get { return savDataList_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_GetGameSavList_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_GetGameSavList_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if(!savDataList_.Equals(other.savDataList_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      hash ^= savDataList_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      savDataList_.WriteTo(output, _repeated_savDataList_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      savDataList_.WriteTo(ref output, _repeated_savDataList_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      size += savDataList_.CalculateSize(_repeated_savDataList_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_GetGameSavList_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      savDataList_.Add(other.savDataList_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            savDataList_.AddEntriesFrom(input, _repeated_savDataList_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            savDataList_.AddEntriesFrom(ref input, _repeated_savDataList_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_GameSavInfo : pb::IMessage<Protobuf_Mine_GameSavInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_GameSavInfo> _parser = new pb::MessageParser<Protobuf_Mine_GameSavInfo>(() => new Protobuf_Mine_GameSavInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_GameSavInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[45]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GameSavInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GameSavInfo(Protobuf_Mine_GameSavInfo other) : this() {
+      bHadSaveData_ = other.bHadSaveData_;
+      savDataIdx_ = other.savDataIdx_;
+      romID_ = other.romID_;
+      gamePlatformType_ = other.gamePlatformType_;
+      savDate_ = other.savDate_;
+      savName_ = other.savName_;
+      note_ = other.note_;
+      savImgUrl_ = other.savImgUrl_;
+      savUrl_ = other.savUrl_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_GameSavInfo Clone() {
+      return new Protobuf_Mine_GameSavInfo(this);
+    }
+
+    /// <summary>Field number for the "bHadSaveData" field.</summary>
+    public const int BHadSaveDataFieldNumber = 1;
+    private bool bHadSaveData_;
+    /// <summary>
+    ///是否有存档
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool BHadSaveData {
+      get { return bHadSaveData_; }
+      set {
+        bHadSaveData_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavDataIdx" field.</summary>
+    public const int SavDataIdxFieldNumber = 2;
+    private int savDataIdx_;
+    /// <summary>
+    ///即时存档下标(其中第0个是自动存档位置)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SavDataIdx {
+      get { return savDataIdx_; }
+      set {
+        savDataIdx_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 3;
+    private int romID_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "GamePlatformType" field.</summary>
+    public const int GamePlatformTypeFieldNumber = 4;
+    private global::AxibugProtobuf.RomPlatformType gamePlatformType_ = global::AxibugProtobuf.RomPlatformType.Invalid;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.RomPlatformType GamePlatformType {
+      get { return gamePlatformType_; }
+      set {
+        gamePlatformType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavDate" field.</summary>
+    public const int SavDateFieldNumber = 5;
+    private string savDate_ = "";
+    /// <summary>
+    ///存档时间
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string SavDate {
+      get { return savDate_; }
+      set {
+        savDate_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "SavName" field.</summary>
+    public const int SavNameFieldNumber = 6;
+    private string savName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string SavName {
+      get { return savName_; }
+      set {
+        savName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Note" field.</summary>
+    public const int NoteFieldNumber = 7;
+    private string note_ = "";
+    /// <summary>
+    ///备注
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Note {
+      get { return note_; }
+      set {
+        note_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "SavImgUrl" field.</summary>
+    public const int SavImgUrlFieldNumber = 8;
+    private string savImgUrl_ = "";
+    /// <summary>
+    ///即时存档截图Url
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string SavImgUrl {
+      get { return savImgUrl_; }
+      set {
+        savImgUrl_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "SavUrl" field.</summary>
+    public const int SavUrlFieldNumber = 9;
+    private string savUrl_ = "";
+    /// <summary>
+    ///即时存档下载Url
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string SavUrl {
+      get { return savUrl_; }
+      set {
+        savUrl_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_GameSavInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_GameSavInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (BHadSaveData != other.BHadSaveData) return false;
+      if (SavDataIdx != other.SavDataIdx) return false;
+      if (RomID != other.RomID) return false;
+      if (GamePlatformType != other.GamePlatformType) return false;
+      if (SavDate != other.SavDate) return false;
+      if (SavName != other.SavName) return false;
+      if (Note != other.Note) return false;
+      if (SavImgUrl != other.SavImgUrl) return false;
+      if (SavUrl != other.SavUrl) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (BHadSaveData != false) hash ^= BHadSaveData.GetHashCode();
+      if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) hash ^= GamePlatformType.GetHashCode();
+      if (SavDate.Length != 0) hash ^= SavDate.GetHashCode();
+      if (SavName.Length != 0) hash ^= SavName.GetHashCode();
+      if (Note.Length != 0) hash ^= Note.GetHashCode();
+      if (SavImgUrl.Length != 0) hash ^= SavImgUrl.GetHashCode();
+      if (SavUrl.Length != 0) hash ^= SavUrl.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (BHadSaveData != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(BHadSaveData);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (RomID != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(RomID);
+      }
+      if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) GamePlatformType);
+      }
+      if (SavDate.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SavDate);
+      }
+      if (SavName.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SavName);
+      }
+      if (Note.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Note);
+      }
+      if (SavImgUrl.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(SavImgUrl);
+      }
+      if (SavUrl.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(SavUrl);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (BHadSaveData != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(BHadSaveData);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (RomID != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(RomID);
+      }
+      if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) GamePlatformType);
+      }
+      if (SavDate.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SavDate);
+      }
+      if (SavName.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SavName);
+      }
+      if (Note.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Note);
+      }
+      if (SavImgUrl.Length != 0) {
+        output.WriteRawTag(66);
+        output.WriteString(SavImgUrl);
+      }
+      if (SavUrl.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(SavUrl);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (BHadSaveData != false) {
+        size += 1 + 1;
+      }
+      if (SavDataIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
+      }
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) GamePlatformType);
+      }
+      if (SavDate.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SavDate);
+      }
+      if (SavName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SavName);
+      }
+      if (Note.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Note);
+      }
+      if (SavImgUrl.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SavImgUrl);
+      }
+      if (SavUrl.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SavUrl);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_GameSavInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.BHadSaveData != false) {
+        BHadSaveData = other.BHadSaveData;
+      }
+      if (other.SavDataIdx != 0) {
+        SavDataIdx = other.SavDataIdx;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) {
+        GamePlatformType = other.GamePlatformType;
+      }
+      if (other.SavDate.Length != 0) {
+        SavDate = other.SavDate;
+      }
+      if (other.SavName.Length != 0) {
+        SavName = other.SavName;
+      }
+      if (other.Note.Length != 0) {
+        Note = other.Note;
+      }
+      if (other.SavImgUrl.Length != 0) {
+        SavImgUrl = other.SavImgUrl;
+      }
+      if (other.SavUrl.Length != 0) {
+        SavUrl = other.SavUrl;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            BHadSaveData = input.ReadBool();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 32: {
+            GamePlatformType = (global::AxibugProtobuf.RomPlatformType) input.ReadEnum();
+            break;
+          }
+          case 42: {
+            SavDate = input.ReadString();
+            break;
+          }
+          case 50: {
+            SavName = input.ReadString();
+            break;
+          }
+          case 58: {
+            Note = input.ReadString();
+            break;
+          }
+          case 66: {
+            SavImgUrl = input.ReadString();
+            break;
+          }
+          case 74: {
+            SavUrl = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            BHadSaveData = input.ReadBool();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 32: {
+            GamePlatformType = (global::AxibugProtobuf.RomPlatformType) input.ReadEnum();
+            break;
+          }
+          case 42: {
+            SavDate = input.ReadString();
+            break;
+          }
+          case 50: {
+            SavName = input.ReadString();
+            break;
+          }
+          case 58: {
+            Note = input.ReadString();
+            break;
+          }
+          case 66: {
+            SavImgUrl = input.ReadString();
+            break;
+          }
+          case 74: {
+            SavUrl = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_DelGameSav : pb::IMessage<Protobuf_Mine_DelGameSav>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_DelGameSav> _parser = new pb::MessageParser<Protobuf_Mine_DelGameSav>(() => new Protobuf_Mine_DelGameSav());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_DelGameSav> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[46]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_DelGameSav() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_DelGameSav(Protobuf_Mine_DelGameSav other) : this() {
+      romID_ = other.romID_;
+      savDataIdx_ = other.savDataIdx_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_DelGameSav Clone() {
+      return new Protobuf_Mine_DelGameSav(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavDataIdx" field.</summary>
+    public const int SavDataIdxFieldNumber = 2;
+    private int savDataIdx_;
+    /// <summary>
+    ///即时存档下标(其中第0个是自动存档位置)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SavDataIdx {
+      get { return savDataIdx_; }
+      set {
+        savDataIdx_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_DelGameSav);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_DelGameSav other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (SavDataIdx != other.SavDataIdx) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (SavDataIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_DelGameSav other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.SavDataIdx != 0) {
+        SavDataIdx = other.SavDataIdx;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_DelGameSav_RESP : pb::IMessage<Protobuf_Mine_DelGameSav_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_DelGameSav_RESP> _parser = new pb::MessageParser<Protobuf_Mine_DelGameSav_RESP>(() => new Protobuf_Mine_DelGameSav_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_DelGameSav_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[47]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_DelGameSav_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_DelGameSav_RESP(Protobuf_Mine_DelGameSav_RESP other) : this() {
+      romID_ = other.romID_;
+      savDataIdx_ = other.savDataIdx_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_DelGameSav_RESP Clone() {
+      return new Protobuf_Mine_DelGameSav_RESP(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavDataIdx" field.</summary>
+    public const int SavDataIdxFieldNumber = 2;
+    private int savDataIdx_;
+    /// <summary>
+    ///删除的即时存档下标
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SavDataIdx {
+      get { return savDataIdx_; }
+      set {
+        savDataIdx_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_DelGameSav_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_DelGameSav_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (SavDataIdx != other.SavDataIdx) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (SavDataIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_DelGameSav_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.SavDataIdx != 0) {
+        SavDataIdx = other.SavDataIdx;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_UpLoadGameSav : pb::IMessage<Protobuf_Mine_UpLoadGameSav>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_UpLoadGameSav> _parser = new pb::MessageParser<Protobuf_Mine_UpLoadGameSav>(() => new Protobuf_Mine_UpLoadGameSav());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_UpLoadGameSav> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[48]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_UpLoadGameSav() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_UpLoadGameSav(Protobuf_Mine_UpLoadGameSav other) : this() {
+      romID_ = other.romID_;
+      savDataIdx_ = other.savDataIdx_;
+      savImg_ = other.savImg_;
+      stateRaw_ = other.stateRaw_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_UpLoadGameSav Clone() {
+      return new Protobuf_Mine_UpLoadGameSav(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavDataIdx" field.</summary>
+    public const int SavDataIdxFieldNumber = 2;
+    private int savDataIdx_;
+    /// <summary>
+    ///即时存档下标(其中第0个是自动存档位置)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SavDataIdx {
+      get { return savDataIdx_; }
+      set {
+        savDataIdx_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SavImg" field.</summary>
+    public const int SavImgFieldNumber = 3;
+    private pb::ByteString savImg_ = pb::ByteString.Empty;
+    /// <summary>
+    ///即时存档截图模拟器原生数据
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString SavImg {
+      get { return savImg_; }
+      set {
+        savImg_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "StateRaw" field.</summary>
+    public const int StateRawFieldNumber = 4;
+    private pb::ByteString stateRaw_ = pb::ByteString.Empty;
+    /// <summary>
+    ///即时存档byte数据
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString StateRaw {
+      get { return stateRaw_; }
+      set {
+        stateRaw_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_UpLoadGameSav);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_UpLoadGameSav other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (SavDataIdx != other.SavDataIdx) return false;
+      if (SavImg != other.SavImg) return false;
+      if (StateRaw != other.StateRaw) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
+      if (SavImg.Length != 0) hash ^= SavImg.GetHashCode();
+      if (StateRaw.Length != 0) hash ^= StateRaw.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (SavImg.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(SavImg);
+      }
+      if (StateRaw.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteBytes(StateRaw);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
+      if (SavImg.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(SavImg);
+      }
+      if (StateRaw.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteBytes(StateRaw);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (SavDataIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
+      }
+      if (SavImg.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(SavImg);
+      }
+      if (StateRaw.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(StateRaw);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_UpLoadGameSav other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.SavDataIdx != 0) {
+        SavDataIdx = other.SavDataIdx;
+      }
+      if (other.SavImg.Length != 0) {
+        SavImg = other.SavImg;
+      }
+      if (other.StateRaw.Length != 0) {
+        StateRaw = other.StateRaw;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            SavImg = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            StateRaw = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            SavImg = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            StateRaw = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class Protobuf_Mine_UpLoadGameSav_RESP : pb::IMessage<Protobuf_Mine_UpLoadGameSav_RESP>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Protobuf_Mine_UpLoadGameSav_RESP> _parser = new pb::MessageParser<Protobuf_Mine_UpLoadGameSav_RESP>(() => new Protobuf_Mine_UpLoadGameSav_RESP());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<Protobuf_Mine_UpLoadGameSav_RESP> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::AxibugProtobuf.ProtobufAxibugEmuOnlineReflection.Descriptor.MessageTypes[49]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_UpLoadGameSav_RESP() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_UpLoadGameSav_RESP(Protobuf_Mine_UpLoadGameSav_RESP other) : this() {
+      romID_ = other.romID_;
+      uploadSevInfo_ = other.uploadSevInfo_ != null ? other.uploadSevInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public Protobuf_Mine_UpLoadGameSav_RESP Clone() {
+      return new Protobuf_Mine_UpLoadGameSav_RESP(this);
+    }
+
+    /// <summary>Field number for the "RomID" field.</summary>
+    public const int RomIDFieldNumber = 1;
+    private int romID_;
+    /// <summary>
+    ///RomID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int RomID {
+      get { return romID_; }
+      set {
+        romID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "UploadSevInfo" field.</summary>
+    public const int UploadSevInfoFieldNumber = 2;
+    private global::AxibugProtobuf.Protobuf_Mine_GameSavInfo uploadSevInfo_;
+    /// <summary>
+    ///上传成功的存档详情
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::AxibugProtobuf.Protobuf_Mine_GameSavInfo UploadSevInfo {
+      get { return uploadSevInfo_; }
+      set {
+        uploadSevInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as Protobuf_Mine_UpLoadGameSav_RESP);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(Protobuf_Mine_UpLoadGameSav_RESP other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RomID != other.RomID) return false;
+      if (!object.Equals(UploadSevInfo, other.UploadSevInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (uploadSevInfo_ != null) hash ^= UploadSevInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (uploadSevInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(UploadSevInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RomID != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RomID);
+      }
+      if (uploadSevInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(UploadSevInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RomID != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (uploadSevInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UploadSevInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(Protobuf_Mine_UpLoadGameSav_RESP other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RomID != 0) {
+        RomID = other.RomID;
+      }
+      if (other.uploadSevInfo_ != null) {
+        if (uploadSevInfo_ == null) {
+          UploadSevInfo = new global::AxibugProtobuf.Protobuf_Mine_GameSavInfo();
+        }
+        UploadSevInfo.MergeFrom(other.UploadSevInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            if (uploadSevInfo_ == null) {
+              UploadSevInfo = new global::AxibugProtobuf.Protobuf_Mine_GameSavInfo();
+            }
+            input.ReadMessage(UploadSevInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            if (uploadSevInfo_ == null) {
+              UploadSevInfo = new global::AxibugProtobuf.Protobuf_Mine_GameSavInfo();
+            }
+            input.ReadMessage(UploadSevInfo);
             break;
           }
         }

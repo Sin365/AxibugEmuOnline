@@ -25,7 +25,7 @@ namespace AxibugEmuOnline.Client.Manager
                 Motion = Motion,
                 RomID = RomID,
             };
-            App.log.Info($"LeavnRoom");
+            App.log.Info($"SendGameStar");
             App.network.SendToServer((int)CommandID.CmdGameMark, ProtoBufHelper.Serizlize(req));
         }
 

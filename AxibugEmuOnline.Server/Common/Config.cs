@@ -21,6 +21,7 @@ namespace AxibugEmuOnline.Server.Common
         public string ClientVersion { get; set; }
         public string AesKey { get; set; }
         public string AesIv { get; set; }
+        public string savDataPath { get; set; }
     }
 
 

@@ -35,7 +35,8 @@ namespace AxibugEmuOnline.Client
                     PauseCore();
                     Debug.Log($"快照加载:{Helper.FileMD5Hash(App.roomMgr.RawData)}");
                     m_inGameUI.Core.LoadStateFromBytes(App.roomMgr.RawData);
-                    App.roomMgr.SendRoomPlayerReady();
+                    //TODO ready时上报性能指标
+                    App.roomMgr.SendRoomPlayerReady(0,0,0,0);
                     break;
                 case 2:
                     m_step = -1;

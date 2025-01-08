@@ -494,9 +494,17 @@ namespace AxibugEmuOnline.Client.Manager
         /// <summary>
         /// 即时存档加载完毕
         /// </summary>
-        public void SendRoomPlayerReady()
+        /// <param name="PushFrameNeedTimeUs">push帧所需平均时间（微秒）</param>
+        /// <param name="LoadStateNeedTimeUs">加载即时存档所需平均时间（微秒）</param>
+        /// <param name="VideoFrameShowNeedTimeUs">视频一帧所需时间（微秒）</param>
+        /// <param name="AudioFramePlayNeedTimeUs">音频处理一帧所需时间（微秒）</param>
+        public void SendRoomPlayerReady(float PushFrameNeedTimeUs,float LoadStateNeedTimeUs,float VideoFrameShowNeedTimeUs,float AudioFramePlayNeedTimeUs)
         {
             App.log.Debug("上报准备完毕");
+            _Protobuf_Room_Player_Ready.PushFrameNeedTimeUs = PushFrameNeedTimeUs;
+            _Protobuf_Room_Player_Ready.LoadStateNeedTimeUs = LoadStateNeedTimeUs;
+            _Protobuf_Room_Player_Ready.VideoFrameShowNeedTimeUs = VideoFrameShowNeedTimeUs;
+            _Protobuf_Room_Player_Ready.AudioFramePlayNeedTimeUs = AudioFramePlayNeedTimeUs;
             App.network.SendToServer((int)CommandID.CmdRoomPlayerReady, ProtoBufHelper.Serizlize(_Protobuf_Room_Player_Ready));
         }
 

@@ -90,5 +90,9 @@
         /// <para><see cref="int"/>RomID</para>
         /// </summary>
         OnRomStarStateChanged, //TODO 实现这个事件
+        /// <summary>
+        /// 网络即时存档列表更新
+        /// </summary>
+        OnNetGameSavListUpdate,
     }
 }

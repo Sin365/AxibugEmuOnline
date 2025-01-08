@@ -82,6 +82,11 @@ namespace AxibugEmuOnline.Server
                             AESHelper.GenAesKeyIV();
                         }
                         break;
+                    case "t1":
+                        {
+                            AppSrv.g_GameShareMgr.RecvGameMark(null, null);
+                        }
+                        break;
                     default:
                         Console.WriteLine("未知命令" + CommandStr);
                         break;

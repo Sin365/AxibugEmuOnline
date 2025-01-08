@@ -29,6 +29,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppRoom roomMgr;
         public static AppSettings settings;
         public static AppShare share;
+        private static object gameSavMgr;
         static bool bTest;
         static string mTestSrvIP;
         #region Mono
@@ -70,6 +71,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
+            gameSavMgr = new AppGameSavMgr();
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");

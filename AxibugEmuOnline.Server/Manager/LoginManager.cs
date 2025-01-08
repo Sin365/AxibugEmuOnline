@@ -3,10 +3,6 @@ using AxibugEmuOnline.Server.Event;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
-using Mysqlx;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Ocsp;
-using System.Collections;
 using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Server.Manager

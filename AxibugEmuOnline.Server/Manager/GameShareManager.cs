@@ -16,6 +16,7 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void RecvGameMark(Socket _socket, byte[] reqData)
         {
+            AppSrv.g_Log.DebugCmd("RecvGameMark");
             Protobuf_Game_Mark msg = ProtoBufHelper.DeSerizlize<Protobuf_Game_Mark>(reqData);
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
             Protobuf_Game_Mark_RESP respData = new Protobuf_Game_Mark_RESP();
@@ -34,7 +35,8 @@ namespace AxibugEmuOnline.Server.Manager
                     {
                         while (reader.Read())
                         {
-                            reader.GetInt32(0);
+                            bHad = true;
+                            break;
                         }
                     }
                 }
@@ -134,7 +136,7 @@ namespace AxibugEmuOnline.Server.Manager
             MySqlConnection conn = SQLPool.DequeueSQLConn("CheckIsRomStart");
             try
             {
-                string query = $"SELECT count(0) from rom_stars where uid = ?uid and = ?romid";
+                string query = $"SELECT count(id) from rom_stars where uid = ?uid and = ?romid";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -152,7 +154,7 @@ namespace AxibugEmuOnline.Server.Manager
             }
             catch (Exception e)
             {
-                AppSrv.g_Log.Error(e);
+                AppSrv.g_Log.Error("CheckIsRomStar："+e);
             }
             SQLPool.EnqueueSQLConn(conn);
             return bhad;
