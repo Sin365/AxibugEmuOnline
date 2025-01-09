@@ -43,6 +43,8 @@ namespace AxibugEmuOnline.Client
 
         private void OnRomStarStateChanged(int romID, bool star)
         {
+            if (nesRomFetchList == null) return;
+
             var targetRom = nesRomFetchList.FirstOrDefault(rom => rom.ID == romID);
             if (targetRom == null) return;
 
