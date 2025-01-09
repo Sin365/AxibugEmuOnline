@@ -206,7 +206,12 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 string HotOrderBy = "ORDER BY playcount DESC, id ASC";
 
-                query = $"SELECT romlist.id,romlist.`Name`,romlist.GameType,romlist.Note,romlist.RomUrl,romlist.ImgUrl,romlist.`Hash`,romlist.`playcount`,romlist.`stars`,romlist.`PlatformType` from rom_stars  LEFT JOIN romlist on romlist.Id = rom_stars.id where rom_stars.uid = ?uid and romlist.`Name` like ?searchPattern {platformCond} {GameTypeCond} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                query = @$"SELECT romlist.id,romlist.`Name`,romlist.GameType,romlist.Note,romlist.RomUrl,romlist.ImgUrl,romlist.`Hash`,romlist.`playcount`,romlist.`stars`,romlist.`PlatformType` 
+from rom_stars  
+LEFT JOIN romlist on romlist.Id = rom_stars.romid  
+where rom_stars.uid = ?uid 
+and romlist.`Name` like ?searchPattern {platformCond} {GameTypeCond} {HotOrderBy}
+LIMIT ?offset, ?pageSize;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -325,11 +330,11 @@ namespace AxibugEmuOnline.Web.Controllers
             MySqlConnection conn = SQLPool.DequeueSQLConn("CheckIsRomStart");
             try
             {
-                string query = $"SELECT count(0) from rom_stars where uid = ?uid and = ?romid";
+                string query = $"SELECT count(0) from rom_stars where uid = ?uid and romid = ?romid";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
-                    command.Parameters.AddWithValue("?RomID", RomId);
+                    command.Parameters.AddWithValue("?romid", RomId);
                     command.Parameters.AddWithValue("?uid", uid);
                     // 执行查询并处理结果  
                     using (var reader = command.ExecuteReader())

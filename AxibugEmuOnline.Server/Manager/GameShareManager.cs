@@ -136,11 +136,11 @@ namespace AxibugEmuOnline.Server.Manager
             MySqlConnection conn = SQLPool.DequeueSQLConn("CheckIsRomStart");
             try
             {
-                string query = $"SELECT count(id) from rom_stars where uid = ?uid and = ?romid";
+                string query = $"SELECT count(id) from rom_stars where uid = ?uid and romid = ?romid";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
-                    command.Parameters.AddWithValue("?RomID", RomId);
+                    command.Parameters.AddWithValue("?romid", RomId);
                     command.Parameters.AddWithValue("?uid", uid);
                     // 执行查询并处理结果  
                     using (var reader = command.ExecuteReader())
