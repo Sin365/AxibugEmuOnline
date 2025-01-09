@@ -889,7 +889,7 @@ MonoBehaviour:
   DownProgress: {fileID: 1484915906009859069}
   FileReadyFlag: {fileID: 6316945668089981796}
   DownloadComplete: {fileID: 6633045760783967661}
-  Star: {fileID: 0}
+  Star: {fileID: 2970190240800710577}
 --- !u!114 &5700455559359757662
 MonoBehaviour:
   m_ObjectHideFlags: 0
