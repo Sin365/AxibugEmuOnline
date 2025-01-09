@@ -130,8 +130,8 @@ namespace AxibugEmuOnline.Client
             //string utf8String = Encoding.UTF8.GetString(utf8Bytes);
             //searchKey = UrlEncode(utf8String);
             //App.log.Info($"search->{utf8String} ->{searchKey}");
-            string url = $"{WebSiteApi}/RomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}&Token={App.user.Token}";
-            App.log.Info($"GetRomList=>{url}");
+            string url = $"{WebSiteApi}/MarkList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}&Token={App.user.Token}";
+            App.log.Info($"MarkList=>{url}");
             AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
@@ -163,8 +163,8 @@ namespace AxibugEmuOnline.Client
         }
         private IEnumerator GetMarkListFlow(AxibugProtobuf.RomPlatformType platform, int page, int pageSize, Action<int, Resp_GameList> callback)
         {
-            string url = $"{WebSiteApi}/RomList?Page={page}&PageSize={pageSize}&PType={(int)platform}&Token={App.user.Token}";
-            App.log.Info($"GetRomList=>{url}");
+            string url = $"{WebSiteApi}/MarkList?Page={page}&PageSize={pageSize}&PType={(int)platform}&Token={App.user.Token}";
+            App.log.Info($"MarkList=>{url}");
             AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
             yield return request.SendWebRequest;
             if (!request.downloadHandler.isDone)
