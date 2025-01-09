@@ -13,6 +13,7 @@ namespace AxibugEmuOnline.Client
 
         public delegate void GetRomListAPI(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType Platform, int page, int pageSize = 10);
         public delegate void SearchRomListAPI(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType Platform, string searchKey, int page, int pageSize = 10);
+        public delegate void GetStarRomListAPI(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, int page, int pageSize = 10);
 
         public void GetRomList(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, int page, int pageSize = 10)
         {

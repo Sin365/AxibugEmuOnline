@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvGameStar(byte[] reqData)
         {
             Protobuf_Game_Mark_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Game_Mark_RESP>(reqData);
-            Eventer.Instance.PostEvent(EEvent.OnRomStarStateChanged, msg.RomID,msg.IsStar == 1);
+            Eventer.Instance.PostEvent(EEvent.OnRomStarStateChanged, msg.RomID, msg.IsStar == 1);
         }
 
     }

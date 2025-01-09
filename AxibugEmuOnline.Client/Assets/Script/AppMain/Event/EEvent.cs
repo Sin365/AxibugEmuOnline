@@ -87,7 +87,7 @@
         /// 当Rom收藏状态变化时触发
         /// <para><see cref="int"/>RomID</para>
         /// </summary>
-        OnRomStarStateChanged, //TODO 实现这个事件
+        OnRomStarStateChanged,
         /// <summary>
         /// 网络即时存档列表更新
         /// </summary>
