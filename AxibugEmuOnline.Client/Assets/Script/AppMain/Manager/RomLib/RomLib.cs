@@ -28,15 +28,17 @@ namespace AxibugEmuOnline.Client
         public RomLib(RomPlatformType platform)
         {
             m_platform = platform;
-            switch (platform)
-            {
-                case RomPlatformType.Nes:
-                    m_romGetFunc = App.httpAPI.GetRomList;
-                    m_romSearchFunc = App.httpAPI.SearchRomList;
-                    break;
-            }
+            m_romGetFunc = App.httpAPI.GetRomList;
+            m_romSearchFunc = App.httpAPI.SearchRomList;
 
             Eventer.Instance.RegisterEvent<int, bool>(EEvent.OnRomStarStateChanged, OnRomStarStateChanged);
+        }
+
+        /// <summary> 无参构造函数将会创建一个管理收藏的Rom列表 </summary>
+        public RomLib() : this(RomPlatformType.All)
+        {
+            m_romGetFunc = App.httpAPI.GetMarkList;
+            m_romSearchFunc = App.httpAPI.SearchMarkList;
         }
 
         private void OnRomStarStateChanged(int romID, bool star)
@@ -71,7 +73,6 @@ namespace AxibugEmuOnline.Client
         /// <summary>
         /// 获得所有Rom文件
         /// </summary>
-        /// <param name="callback"></param>
         public void FetchRomCount(Action<RomFile[]> callback, string searchKey = null)
         {
             lastSearchKey = searchKey;

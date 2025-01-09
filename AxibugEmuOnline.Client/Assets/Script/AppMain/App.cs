@@ -23,7 +23,14 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static UserDataManager user;
         //public static AppNetGame netgame;
         public static AppEmu emu;
+        /// <summary>
+        /// nes Rom库
+        /// </summary>
         public static RomLib nesRomLib;
+        /// <summary>
+        /// 收藏 Rom库
+        /// </summary>
+        public static RomLib starRomLib;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
         public static AppRoom roomMgr;
@@ -68,6 +75,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             if (bUseLocalWebApi)
                 httpAPI.WebHost = mLocalWebApi;
             nesRomLib = new RomLib(RomPlatformType.Nes);
+            starRomLib = new RomLib();
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
