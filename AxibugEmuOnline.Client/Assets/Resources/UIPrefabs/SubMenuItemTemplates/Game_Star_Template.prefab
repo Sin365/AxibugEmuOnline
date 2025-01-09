@@ -423,7 +423,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1998281097548910301}
-  - component: {fileID: 5825265660667204823}
+  - component: {fileID: -3959751710151339114}
   - component: {fileID: 5700455559359757662}
   m_Layer: 5
   m_Name: Game_Star_Template
@@ -452,7 +452,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 144, y: 104}
   m_Pivot: {x: 0, y: 0.5}
---- !u!114 &5825265660667204823
+--- !u!114 &-3959751710151339114
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -461,7 +461,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3189920797946144379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41a13aef8489f0c48a32d159ce1be947, type: 3}
+  m_Script: {fileID: 11500000, guid: e2f2e38adaa854144b67512333b1b363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Icon: {fileID: 6771349210554360888}
@@ -476,6 +476,9 @@ MonoBehaviour:
   SelectScale: 1
   UnSelectScale: 1
   RomGroupRoot: {fileID: 3086674949377227884}
+  StarRom: 1
+  Platform: 999
+  SearchKey: 
 --- !u!114 &5700455559359757662
 MonoBehaviour:
   m_ObjectHideFlags: 0

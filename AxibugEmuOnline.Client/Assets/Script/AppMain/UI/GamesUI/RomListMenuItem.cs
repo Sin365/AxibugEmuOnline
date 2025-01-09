@@ -8,18 +8,24 @@ namespace AxibugEmuOnline.Client
     public class RomListMenuItem : VirtualSubMenuItem
     {
         [SerializeField]
+        protected bool StarRom;
+        [SerializeField]
         protected RomPlatformType Platform;
 
         private RomLib RomLib
         {
             get
             {
-                switch (Platform)
+                if (StarRom) return App.starRomLib;
+                else
                 {
-                    case RomPlatformType.Nes:
-                        return App.nesRomLib;
-                    default:
-                        throw new System.NotImplementedException($"未实现的平台 {Platform}");
+                    switch (Platform)
+                    {
+                        case RomPlatformType.Nes:
+                            return App.nesRomLib;
+                        default:
+                            throw new System.NotImplementedException($"未实现的平台 {Platform}");
+                    }
                 }
             }
         }
