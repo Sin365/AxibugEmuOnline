@@ -153,7 +153,7 @@ namespace AxibugEmuOnline.Client
                 private FilterEffect.EditableParamerter m_param;
                 private FilterPreset m_preset;
 
-                public override bool Visible => m_param.ValueType.IsEnum || m_param.ValueType == typeof(float);
+                public override bool Visible => true;
 
                 public override string Name => m_param.Name;
                 public Opt_ParamEditor(Filter filter, FilterEffect.EditableParamerter editParam, FilterPreset preset)

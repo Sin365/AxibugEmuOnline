@@ -34,15 +34,40 @@ namespace Assets.Script.AppMain.Filter
     public class BoolParameter : FilterParameter<bool>
     {
         public BoolParameter(bool defaultValue) : base(defaultValue) { }
+
+        public static implicit operator bool(BoolParameter value)
+        {
+            return value.GetValue();
+        }
     }
 
     public class Vector2Parameter : FilterParameter<Vector2>
     {
         public Vector2Parameter(Vector2 defaultValue) : base(defaultValue) { }
+
+        public static implicit operator Vector2(Vector2Parameter value)
+        {
+            return value.GetValue();
+        }
     }
 
     public class FloatParameter : FilterParameter<float>
     {
         public FloatParameter(float defaultValue) : base(defaultValue) { }
+
+        public static implicit operator float(FloatParameter value)
+        {
+            return value.GetValue();
+        }
+    }
+
+    public class IntParameter : FilterParameter<int>
+    {
+        public IntParameter(int defaultValue) : base(defaultValue) { }
+
+        public static implicit operator int(IntParameter value)
+        {
+            return value.GetValue();
+        }
     }
 }

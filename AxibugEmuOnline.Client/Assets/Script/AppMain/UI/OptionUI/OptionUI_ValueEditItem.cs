@@ -8,6 +8,8 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         OptionUI_ValueEditItem_FloatEdit com_floatEdit;
         [SerializeField]
+        OptionUI_ValueEditItem_IntEdit com_intEdit;
+        [SerializeField]
         OptionUI_ValueEditItem_EnumEdit com_enumEdit;
 
         IValueEditControl m_currentCom;
@@ -15,6 +17,7 @@ namespace AxibugEmuOnline.Client
         protected override void OnSetData(OptionMenu menuData)
         {
             com_floatEdit.gameObject.SetActive(false);
+            com_intEdit.gameObject.SetActive(false);
             com_enumEdit.gameObject.SetActive(false);
 
             if (menuData is ValueSetMenu)
@@ -23,6 +26,10 @@ namespace AxibugEmuOnline.Client
                 if (valueMenu.ValueType == typeof(float))
                 {
                     m_currentCom = com_floatEdit;
+                }
+                else if(valueMenu.ValueType == typeof(int))
+                {
+                    m_currentCom = com_intEdit;
                 }
                 else if (valueMenu.ValueType.IsEnum)
                 {

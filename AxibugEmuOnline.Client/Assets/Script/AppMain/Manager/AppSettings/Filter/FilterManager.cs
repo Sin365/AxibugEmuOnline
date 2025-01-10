@@ -331,6 +331,12 @@ namespace AxibugEmuOnline.Client
                     float.TryParse(rawStr, out floatVal);
                     return floatVal;
                 }
+                else if (valueType == typeof(int))
+                {
+                    int intVal;
+                    int.TryParse(rawStr, out intVal);
+                    return intVal;
+                }
                 else if (valueType.IsEnum)
                 {
                     var names = Enum.GetNames(valueType);
