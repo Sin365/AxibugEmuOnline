@@ -21,7 +21,6 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppLogin login;
         public static AppChat chat;
         public static UserDataManager user;
-        //public static AppNetGame netgame;
         public static AppEmu emu;
         /// <summary>
         /// nes Rom库
@@ -36,6 +35,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppRoom roomMgr;
         public static AppSettings settings;
         public static AppShare share;
+        public static GamePadManager gamePadMgr;
         private static object gameSavMgr;
         static bool bTest;
         static string mTestSrvIP;
@@ -70,7 +70,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             chat = new AppChat();
             user = new UserDataManager();
             emu = new AppEmu();
-            //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
             if (bUseLocalWebApi)
                 httpAPI.WebHost = mLocalWebApi;
@@ -80,6 +79,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             roomMgr = new AppRoom();
             share = new AppShare();
             gameSavMgr = new AppGameSavMgr();
+            gamePadMgr = new GamePadManager();
+
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
@@ -202,6 +203,9 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static void Tick()
         {
             nesRomLib.ExecuteFetchRomInfo();
+            starRomLib.ExecuteFetchRomInfo();
+
+            gamePadMgr.Update();
         }
 
         public static Coroutine StartCoroutine(IEnumerator itor)
