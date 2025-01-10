@@ -11,57 +11,43 @@ public class SimpleCRT : FilterEffect
 
     protected override string ShaderName => "Filter/yunoda-3DCG/SimpleCRT";
 
-    [Range(0, 1000)]
-    [Description("White Noise Freq")]
-    public IntParameter whiteNoiseFrequency = new IntParameter(1);
-    [Range(0, 1)]
-    [Description("White Noise Time Left (sec)")]
-    public FloatParameter whiteNoiseLength = new FloatParameter(0.1f);
+    [Range(0, 1000)][Description("White Noise Freq")] public IntParameter whiteNoiseFrequency = new IntParameter(1);
+    [Range(0, 1)][Description("White Noise Time Left (sec)")] public FloatParameter whiteNoiseLength = new FloatParameter(0.1f);
     private float whiteNoiseTimeLeft;
 
-    public int screenJumpFrequency = 1;
-    public float screenJumpLength = 0.2f;
-    public float screenJumpMinLevel = 0.1f;
-    public float screenJumpMaxLevel = 0.9f;
+    [Range(0, 1000)][Description("Screen Jump Freq")] public IntParameter screenJumpFrequency = 1;
+    [Range(0, 1f)][Description("Screen Jump Length")] public FloatParameter screenJumpLength = 0.2f;
+    [Range(0, 1f)][Description("Jump Min")] public FloatParameter screenJumpMinLevel = 0.1f;
+    [Range(0, 1f)][Description("Jump Max")] public FloatParameter screenJumpMaxLevel = 0.9f;
     private float screenJumpTimeLeft;
 
-    public float flickeringStrength = 0.002f;
-    public float flickeringCycle = 111f;
+    [Range(0, 1f)][Description("Flickering Strength")] public FloatParameter flickeringStrength = 0.002f;
+    [Range(0, 333f)][Description("Flickering Cycle")] public FloatParameter flickeringCycle = 111f;
 
-    public bool isSlippage = true;
-    public bool isSlippageNoise = true;
-    public float slippageStrength = 0.005f;
-    public float slippageInterval = 1f;
-    public float slippageScrollSpeed = 33f;
-    public float slippageSize = 11f;
+    [Description("Slip Page")] public BoolParameter isSlippage = true;
+    [Description("Slip Noise")] public BoolParameter isSlippageNoise = true;
+    [Range(0, 1)][Description("Slip Strength")] public FloatParameter slippageStrength = 0.005f;
+    [Range(0, 100)][Description("Slip Intervalw")] public float slippageInterval = 1f;
+    [Range(0, 330)][Description("Slip Scroll Speed")] public float slippageScrollSpeed = 33f;
+    [Range(0, 100f)][Description("Slip Size")] public FloatParameter slippageSize = 11f;
 
-    public float chromaticAberrationStrength = 0.005f;
-    public bool isChromaticAberration = true;
+    [Range(0, 1f)][Description("Chromatic Aberration Strength")] public FloatParameter chromaticAberrationStrength = 0.005f;
+    [Description("Chromatic Aberration")] public bool isChromaticAberration = true;
 
-    public bool isMultipleGhost = true;
-    public float multipleGhostStrength = 0.01f;
+    [Description("Multiple Ghost")] public BoolParameter isMultipleGhost = true;
+    [Range(0, 1f)][Description("Multiple Ghost Strength")] public FloatParameter multipleGhostStrength = 0.01f;
 
-    public bool isScanline = true;
-    public bool isMonochrome = false;
+    [Description("Scanline")] public BoolParameter isScanline = true;
+    [Description("Monochrome")] public BoolParameter isMonochrome = false;
 
-    public bool isLetterBox = false;
+    [Description("Letter Box")] public bool isLetterBox = false;
     public bool isLetterBoxEdgeBlur = false;
-    public LeterBoxType letterBoxType;
+    [Description("Letter Box Type")] public FilterParameter<LeterBoxType> letterBoxType = default(LeterBoxType);
     public enum LeterBoxType
     {
         Black,
         Blur
     }
-
-    public bool isFilmDirt = false;
-    public Texture2D filmDirtTex;
-
-    public bool isDecalTex = false;
-    public Texture2D decalTex;
-    public Vector2 decalTexPos;
-    public Vector2 decalTexScale;
-
-    public Vector2Int resolutions;
 
     #region Properties in shader
     private int _WhiteNoiseOnOff;
@@ -148,7 +134,7 @@ public class SimpleCRT : FilterEffect
 
         material.SetInteger(_LetterBoxOnOff, isLetterBox ? 0 : 1);
         //material.SetInteger(_LetterBoxEdgeBlurOnOff, isLetterBoxEdgeBlur ? 0 : 1); 
-        material.SetInteger(_LetterBoxType, (int)letterBoxType);
+        material.SetInteger(_LetterBoxType, (int)letterBoxType.GetValue());
 
         material.SetInteger(_ScanlineOnOff, isScanline ? 1 : 0);
         material.SetInteger(_MonochormeOnOff, isMonochrome ? 1 : 0);
@@ -158,8 +144,6 @@ public class SimpleCRT : FilterEffect
         material.SetInteger(_ChromaticAberrationOnOff, isChromaticAberration ? 1 : 0);
         material.SetInteger(_MultipleGhostOnOff, isMultipleGhost ? 1 : 0);
         material.SetFloat(_MultipleGhostStrength, multipleGhostStrength);
-        material.SetInteger(_FilmDirtOnOff, isFilmDirt ? 1 : 0);
-        material.SetTexture(_FilmDirtTex, filmDirtTex);
 
         //////Slippage
         material.SetInteger(_SlippageOnOff, isSlippage ? 1 : 0);
@@ -185,12 +169,5 @@ public class SimpleCRT : FilterEffect
                 material.SetFloat(_ScreenJumpLevel, 0);
             }
         }
-        //////
-
-        //////Decal Texture
-        material.SetTexture(_DecalTex, decalTex);
-        material.SetInteger(_DecalTexOnOff, isDecalTex ? 1 : 0);
-        material.SetVector(_DecalTexPos, decalTexPos);
-        material.SetVector(_DecalTexScale, decalTexScale);
     }
 }

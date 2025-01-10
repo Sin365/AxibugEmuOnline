@@ -10,6 +10,8 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         OptionUI_ValueEditItem_IntEdit com_intEdit;
         [SerializeField]
+        OptionUI_ValueEditItem_BoolEdit com_boolEdit;
+        [SerializeField]
         OptionUI_ValueEditItem_EnumEdit com_enumEdit;
 
         IValueEditControl m_currentCom;
@@ -18,6 +20,7 @@ namespace AxibugEmuOnline.Client
         {
             com_floatEdit.gameObject.SetActive(false);
             com_intEdit.gameObject.SetActive(false);
+            com_boolEdit.gameObject.SetActive(false);
             com_enumEdit.gameObject.SetActive(false);
 
             if (menuData is ValueSetMenu)
@@ -31,13 +34,17 @@ namespace AxibugEmuOnline.Client
                 {
                     m_currentCom = com_intEdit;
                 }
+                else if(valueMenu.ValueType == typeof(bool))
+                {
+                    m_currentCom = com_boolEdit;
+                }
                 else if (valueMenu.ValueType.IsEnum)
                 {
                     m_currentCom = com_enumEdit;
                 }
                 else
                 {
-                    App.log.Warning($"尚未支持的数据类型:{valueMenu.ValueType}");
+                    App.log.Error($"尚未支持的数据类型:{valueMenu.ValueType}");
                     return;
                 }
 
