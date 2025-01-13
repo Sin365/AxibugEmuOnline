@@ -234,7 +234,7 @@ namespace VirtualNes.Core
                 case 246: return new Mapper246(parent);
                 case 248: return new Mapper248(parent);
                 case 249: return new Mapper249(parent);
-                case 251: return new Mapper251(parent);
+                case 251: return new Mapper251(parent); 
                 case 252: return new Mapper252(parent);
                 case 253: return new Mapper253(parent);
                 case 254: return new Mapper254(parent);
