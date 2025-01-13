@@ -466,14 +466,16 @@ message Protobuf_Mine_GetGameSavList_RESP
 message Protobuf_Mine_GameSavInfo
 {
 	bool bHadSaveData = 1;//是否有存档
-	int32 SavDataIdx = 2;//即时存档下标(其中第0个是自动存档位置)
-	int32 RomID = 3;
-	RomPlatformType GamePlatformType = 4;
-	string SavDate = 5;//存档时间
-	string SavName = 6;
-	string Note = 7;//备注
-	string SavImgUrl = 8;//即时存档截图Url
-	string SavUrl = 9;//即时存档下载Url
+	int64 SavID = 2;//即时存档唯一ID（用于今后分享）
+	int64 uid = 3;//所属用户UID（用于今后分享）
+	int32 SavDataIdx = 4;//即时存档下标(其中第0个是自动存档位置)
+	int32 RomID = 5;
+	RomPlatformType GamePlatformType = 6;
+	string SavDate = 7;//存档时间
+	string SavName = 8;
+	string Note = 9;//备注
+	string SavImgUrl = 10;//即时存档截图Url
+	string SavUrl = 11;//即时存档下载Url
 }
 
 message Protobuf_Mine_DelGameSav
@@ -492,12 +494,15 @@ message Protobuf_Mine_UpLoadGameSav
 {
 	int32 RomID = 1;//RomID
 	int32 SavDataIdx = 2;//即时存档下标(其中第0个是自动存档位置)
-	bytes SavImg = 3;//即时存档截图模拟器原生数据
-    bytes StateRaw = 4;//即时存档byte数据
+	string Name = 3;//存档名（留空时，服务器自动）
+	string Note = 4;//备注（留空时，服务器自动）
+	bytes SavImg = 5;//即时存档截图模拟器原生数据
+    bytes StateRaw = 6;//即时存档byte数据
 }
 
 message Protobuf_Mine_UpLoadGameSav_RESP
 {
 	int32 RomID = 1;//RomID
-	Protobuf_Mine_GameSavInfo UploadSevInfo = 2;//上传成功的存档详情
+	int32 SavDataIdx = 2;//即时存档下标(其中第0个是自动存档位置)
+	Protobuf_Mine_GameSavInfo UploadSevInfo = 3;//上传成功的存档详情
 }

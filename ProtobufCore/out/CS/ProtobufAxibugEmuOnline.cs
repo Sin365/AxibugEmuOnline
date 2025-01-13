@@ -109,62 +109,63 @@ namespace AxibugProtobuf {
             "bmVfR2V0R2FtZVNhdkxpc3QSDQoFUm9tSUQYASABKAUicgohUHJvdG9idWZf",
             "TWluZV9HZXRHYW1lU2F2TGlzdF9SRVNQEg0KBVJvbUlEGAEgASgFEj4KC1Nh",
             "dkRhdGFMaXN0GAIgAygLMikuQXhpYnVnUHJvdG9idWYuUHJvdG9idWZfTWlu",
-            "ZV9HYW1lU2F2SW5mbyLiAQoZUHJvdG9idWZfTWluZV9HYW1lU2F2SW5mbxIU",
-            "CgxiSGFkU2F2ZURhdGEYASABKAgSEgoKU2F2RGF0YUlkeBgCIAEoBRINCgVS",
-            "b21JRBgDIAEoBRI5ChBHYW1lUGxhdGZvcm1UeXBlGAQgASgOMh8uQXhpYnVn",
-            "UHJvdG9idWYuUm9tUGxhdGZvcm1UeXBlEg8KB1NhdkRhdGUYBSABKAkSDwoH",
-            "U2F2TmFtZRgGIAEoCRIMCgROb3RlGAcgASgJEhEKCVNhdkltZ1VybBgIIAEo",
-            "CRIOCgZTYXZVcmwYCSABKAkiPQoYUHJvdG9idWZfTWluZV9EZWxHYW1lU2F2",
-            "Eg0KBVJvbUlEGAEgASgFEhIKClNhdkRhdGFJZHgYAiABKAUiQgodUHJvdG9i",
-            "dWZfTWluZV9EZWxHYW1lU2F2X1JFU1ASDQoFUm9tSUQYASABKAUSEgoKU2F2",
-            "RGF0YUlkeBgCIAEoBSJiChtQcm90b2J1Zl9NaW5lX1VwTG9hZEdhbWVTYXYS",
-            "DQoFUm9tSUQYASABKAUSEgoKU2F2RGF0YUlkeBgCIAEoBRIOCgZTYXZJbWcY",
-            "AyABKAwSEAoIU3RhdGVSYXcYBCABKAwicwogUHJvdG9idWZfTWluZV9VcExv",
-            "YWRHYW1lU2F2X1JFU1ASDQoFUm9tSUQYASABKAUSQAoNVXBsb2FkU2V2SW5m",
-            "bxgCIAEoCzIpLkF4aWJ1Z1Byb3RvYnVmLlByb3RvYnVmX01pbmVfR2FtZVNh",
-            "dkluZm8q/wUKCUNvbW1hbmRJRBIOCgpDTURfREVGQVVMEAASDAoIQ01EX1BJ",
-            "TkcQARIMCghDTURfUE9ORxACEg4KCUNNRF9MT0dJThDRDxIYChNDTURfVVNF",
-            "Ul9PTkxJTkVMSVNUELgXEhIKDUNNRF9VU0VSX0pPSU4Q1xcSEwoOQ01EX1VT",
-            "RVJfTEVBVkUQ2BcSGgoVQ01EX1VTRVJfU1RBVEVfVVBEQVRFENkXEhgKE0NN",
-            "RF9Nb2RpZnlfTmlja05hbWUQnRgSHAoXQ01EX1VwZGF0ZV9TZWxmVXNlcklu",
-            "Zm8QphgSHQoYQ01EX1VwZGF0ZV9PdGhlclVzZXJJbmZvEKgYEhAKC0NNRF9D",
-            "SEFUTVNHEKEfEhIKDUNNRF9Sb29tX0xpc3QQiScSGQoUQ01EX1Jvb21fTGlz",
-            "dF9VcGRhdGUQiicSGAoTQ01EX1Jvb21fR2V0X1NjcmVlbhCTJxIUCg9DTURf",
-            "Um9vbV9DcmVhdGUQ7ScSEgoNQ01EX1Jvb21fSm9pbhDxJxITCg5DTURfUm9v",
-            "bV9MZWF2ZRDyJxIiCh1DTURfUm9vbV9NeVJvb21fU3RhdGVfQ2hhbmdlZBD2",
-            "JxIhChxDTURfUm9vbV9DaGFuZ2VQbGF5ZXJXaXRoSm95EIooEhYKEUNNRF9S",
-            "b29tX1dhaXRTdGVwENEoEicKIkNNRF9Sb29tX0hvc3RQbGF5ZXJfVXBkYXRl",
-            "U3RhdGVSYXcQ1CgSGgoVQ01EX1Jvb21fUGxheWVyX1JlYWR5ENgoEiAKG0NN",
-            "RF9Sb29tX1NpbmdlbF9QbGF5ZXJJbnB1dBD6LhIdChhDTURfUk9PTV9TWU5f",
-            "UGxheWVySW5wdXQQ/y4SDwoKQ01EX1NjcmVlbhDZNhIfChpDTURfR0FNRVNB",
-            "Vl9HZXRHYW1lU2F2TGlzdBDBPhIbChZDTURfR0FNRVNBVl9EZWxHYW1lU2F2",
-            "EMU+Eh4KGUNNRF9HQU1FU0FWX1VwbG9hZEdhbWVTYXYQyj4SEgoNQ01EX0dB",
-            "TUVfTUFSSxD1TirxAQoJRXJyb3JDb2RlEhAKDEVSUk9SX0RFRkFVTBAAEgwK",
-            "CEVSUk9SX09LEAESGAoURVJST1JfUk9PTV9OT1RfRk9VTkQQChInCiNFUlJP",
-            "Ul9ST09NX1NMT1RfQUxSRUFETFlfSEFEX1BMQVlFUhALEiEKHUVSUk9SX1JP",
-            "T01fQ0FOVF9ET19DVVJSX1NUQVRFEDISHwobRVJST1JfUk9NX0RPTlRfSEFE",
-            "X1NBVkVEQVRBEFASHwoaRVJST1JfUk9NX0FMUkVBRFlfSEFEX1NUQVIQkwMS",
-            "HAoXRVJST1JfUk9NX0RPTlRfSEFEX1NUQVIQlAMqQAoJTG9naW5UeXBlEg0K",
-            "CVVzZURldmljZRAAEg4KClVzZUFjY291bnQQARIUChBVc2VIYW9ZdWVBY2Nv",
-            "dW50EAIqpQEKCkRldmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAAS",
-            "BgoCUEMQARILCgdBbmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQSBwoDUFMz",
-            "EAUSBwoDUFM0EAYSCwoHWEJPWDM2MBAHEgsKB1hCT1hPTkUQCBIICgRXaWlV",
-            "EAkSDwoLTmludGVuZG8zRFMQChIRCg1BbmRyb2lkQ2FyQXBwEAsqkwIKC0dh",
-            "bWVQYWRUeXBlEgwKCEtleWJvYXJkEAASEQoNR2xvYmFsR2FtZVBhZBABEg4K",
-            "ClRvdWNoUGFuZWwQAhIOCgpEUzNDb250cm9sEAMSDgoKRFM0Q29udHJvbBAE",
-            "Eg4KCkRTNUNvbnRyb2wQBRIUChBTd2l0Y2hQcm9Db250cm9sEAYSEAoMU3dp",
-            "dGNoSm95Q29uEAcSEgoOWEJPWDM2MENvbnRyb2wQCBISCg5YQk9YT05FQ29u",
-            "dHJvbBAJEhEKDVBTVml0YUNvbnRyb2wQChISCg5XaWlVUGFkQ29udHJvbBAL",
-            "EhQKEFdpaVJlbW90ZUNvbnRyb2wQDBIWChJOaW50ZW5kbzNEU0NvbnRyb2wQ",
-            "DSqiAQoPUm9tUGxhdGZvcm1UeXBlEgsKB0ludmFsaWQQABIHCgNOZXMQARIR",
-            "Cg1NYXN0ZXJfU3lzdGVtEAISDQoJR2FtZV9HZWFyEAMSDAoIR2FtZV9Cb3kQ",
-            "BBISCg5HYW1lX0JveV9Db2xvchAFEhEKDUNvbGVjb19WaXNpb24QBhILCgdT",
-            "Q18zMDAwEAcSCwoHU0dfMTAwMBAIEggKA0FsbBDnBypwCg1Sb29tR2FtZVN0",
-            "YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1XYWl0",
-            "UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJbk9u",
-            "bGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJlc3Vs",
-            "dFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVychAC",
-            "QgJIAWIGcHJvdG8z"));
+            "ZV9HYW1lU2F2SW5mbyL+AQoZUHJvdG9idWZfTWluZV9HYW1lU2F2SW5mbxIU",
+            "CgxiSGFkU2F2ZURhdGEYASABKAgSDQoFU2F2SUQYAiABKAMSCwoDdWlkGAMg",
+            "ASgDEhIKClNhdkRhdGFJZHgYBCABKAUSDQoFUm9tSUQYBSABKAUSOQoQR2Ft",
+            "ZVBsYXRmb3JtVHlwZRgGIAEoDjIfLkF4aWJ1Z1Byb3RvYnVmLlJvbVBsYXRm",
+            "b3JtVHlwZRIPCgdTYXZEYXRlGAcgASgJEg8KB1Nhdk5hbWUYCCABKAkSDAoE",
+            "Tm90ZRgJIAEoCRIRCglTYXZJbWdVcmwYCiABKAkSDgoGU2F2VXJsGAsgASgJ",
+            "Ij0KGFByb3RvYnVmX01pbmVfRGVsR2FtZVNhdhINCgVSb21JRBgBIAEoBRIS",
+            "CgpTYXZEYXRhSWR4GAIgASgFIkIKHVByb3RvYnVmX01pbmVfRGVsR2FtZVNh",
+            "dl9SRVNQEg0KBVJvbUlEGAEgASgFEhIKClNhdkRhdGFJZHgYAiABKAUifgob",
+            "UHJvdG9idWZfTWluZV9VcExvYWRHYW1lU2F2Eg0KBVJvbUlEGAEgASgFEhIK",
+            "ClNhdkRhdGFJZHgYAiABKAUSDAoETmFtZRgDIAEoCRIMCgROb3RlGAQgASgJ",
+            "Eg4KBlNhdkltZxgFIAEoDBIQCghTdGF0ZVJhdxgGIAEoDCKHAQogUHJvdG9i",
+            "dWZfTWluZV9VcExvYWRHYW1lU2F2X1JFU1ASDQoFUm9tSUQYASABKAUSEgoK",
+            "U2F2RGF0YUlkeBgCIAEoBRJACg1VcGxvYWRTZXZJbmZvGAMgASgLMikuQXhp",
+            "YnVnUHJvdG9idWYuUHJvdG9idWZfTWluZV9HYW1lU2F2SW5mbyr/BQoJQ29t",
+            "bWFuZElEEg4KCkNNRF9ERUZBVUwQABIMCghDTURfUElORxABEgwKCENNRF9Q",
+            "T05HEAISDgoJQ01EX0xPR0lOENEPEhgKE0NNRF9VU0VSX09OTElORUxJU1QQ",
+            "uBcSEgoNQ01EX1VTRVJfSk9JThDXFxITCg5DTURfVVNFUl9MRUFWRRDYFxIa",
+            "ChVDTURfVVNFUl9TVEFURV9VUERBVEUQ2RcSGAoTQ01EX01vZGlmeV9OaWNr",
+            "TmFtZRCdGBIcChdDTURfVXBkYXRlX1NlbGZVc2VySW5mbxCmGBIdChhDTURf",
+            "VXBkYXRlX090aGVyVXNlckluZm8QqBgSEAoLQ01EX0NIQVRNU0cQoR8SEgoN",
+            "Q01EX1Jvb21fTGlzdBCJJxIZChRDTURfUm9vbV9MaXN0X1VwZGF0ZRCKJxIY",
+            "ChNDTURfUm9vbV9HZXRfU2NyZWVuEJMnEhQKD0NNRF9Sb29tX0NyZWF0ZRDt",
+            "JxISCg1DTURfUm9vbV9Kb2luEPEnEhMKDkNNRF9Sb29tX0xlYXZlEPInEiIK",
+            "HUNNRF9Sb29tX015Um9vbV9TdGF0ZV9DaGFuZ2VkEPYnEiEKHENNRF9Sb29t",
+            "X0NoYW5nZVBsYXllcldpdGhKb3kQiigSFgoRQ01EX1Jvb21fV2FpdFN0ZXAQ",
+            "0SgSJwoiQ01EX1Jvb21fSG9zdFBsYXllcl9VcGRhdGVTdGF0ZVJhdxDUKBIa",
+            "ChVDTURfUm9vbV9QbGF5ZXJfUmVhZHkQ2CgSIAobQ01EX1Jvb21fU2luZ2Vs",
+            "X1BsYXllcklucHV0EPouEh0KGENNRF9ST09NX1NZTl9QbGF5ZXJJbnB1dBD/",
+            "LhIPCgpDTURfU2NyZWVuENk2Eh8KGkNNRF9HQU1FU0FWX0dldEdhbWVTYXZM",
+            "aXN0EME+EhsKFkNNRF9HQU1FU0FWX0RlbEdhbWVTYXYQxT4SHgoZQ01EX0dB",
+            "TUVTQVZfVXBsb2FkR2FtZVNhdhDKPhISCg1DTURfR0FNRV9NQVJLEPVOKvEB",
+            "CglFcnJvckNvZGUSEAoMRVJST1JfREVGQVVMEAASDAoIRVJST1JfT0sQARIY",
+            "ChRFUlJPUl9ST09NX05PVF9GT1VORBAKEicKI0VSUk9SX1JPT01fU0xPVF9B",
+            "TFJFQURMWV9IQURfUExBWUVSEAsSIQodRVJST1JfUk9PTV9DQU5UX0RPX0NV",
+            "UlJfU1RBVEUQMhIfChtFUlJPUl9ST01fRE9OVF9IQURfU0FWRURBVEEQUBIf",
+            "ChpFUlJPUl9ST01fQUxSRUFEWV9IQURfU1RBUhCTAxIcChdFUlJPUl9ST01f",
+            "RE9OVF9IQURfU1RBUhCUAypACglMb2dpblR5cGUSDQoJVXNlRGV2aWNlEAAS",
+            "DgoKVXNlQWNjb3VudBABEhQKEFVzZUhhb1l1ZUFjY291bnQQAiqlAQoKRGV2",
+            "aWNlVHlwZRIWChJEZXZpY2VUeXBlX0RlZmF1bHQQABIGCgJQQxABEgsKB0Fu",
+            "ZHJvaWQQAhIHCgNJT1MQAxIHCgNQU1YQBBIHCgNQUzMQBRIHCgNQUzQQBhIL",
+            "CgdYQk9YMzYwEAcSCwoHWEJPWE9ORRAIEggKBFdpaVUQCRIPCgtOaW50ZW5k",
+            "bzNEUxAKEhEKDUFuZHJvaWRDYXJBcHAQCyqTAgoLR2FtZVBhZFR5cGUSDAoI",
+            "S2V5Ym9hcmQQABIRCg1HbG9iYWxHYW1lUGFkEAESDgoKVG91Y2hQYW5lbBAC",
+            "Eg4KCkRTM0NvbnRyb2wQAxIOCgpEUzRDb250cm9sEAQSDgoKRFM1Q29udHJv",
+            "bBAFEhQKEFN3aXRjaFByb0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxIS",
+            "Cg5YQk9YMzYwQ29udHJvbBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNW",
+            "aXRhQ29udHJvbBAKEhIKDldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3Rl",
+            "Q29udHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKqIBCg9Sb21QbGF0",
+            "Zm9ybVR5cGUSCwoHSW52YWxpZBAAEgcKA05lcxABEhEKDU1hc3Rlcl9TeXN0",
+            "ZW0QAhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVfQm95",
+            "X0NvbG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1NDXzMwMDAQBxILCgdT",
+            "R18xMDAwEAgSCAoDQWxsEOcHKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9uZV9H",
+            "YW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQAhIN",
+            "CglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAFKk4K",
+            "EUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jhc2VE",
+            "ZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -213,11 +214,11 @@ namespace AxibugProtobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Game_Mark_RESP), global::AxibugProtobuf.Protobuf_Game_Mark_RESP.Parser, new[]{ "RomID", "IsStar", "Stars" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GetGameSavList), global::AxibugProtobuf.Protobuf_Mine_GetGameSavList.Parser, new[]{ "RomID" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GetGameSavList_RESP), global::AxibugProtobuf.Protobuf_Mine_GetGameSavList_RESP.Parser, new[]{ "RomID", "SavDataList" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GameSavInfo), global::AxibugProtobuf.Protobuf_Mine_GameSavInfo.Parser, new[]{ "BHadSaveData", "SavDataIdx", "RomID", "GamePlatformType", "SavDate", "SavName", "Note", "SavImgUrl", "SavUrl" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_GameSavInfo), global::AxibugProtobuf.Protobuf_Mine_GameSavInfo.Parser, new[]{ "BHadSaveData", "SavID", "Uid", "SavDataIdx", "RomID", "GamePlatformType", "SavDate", "SavName", "Note", "SavImgUrl", "SavUrl" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_DelGameSav), global::AxibugProtobuf.Protobuf_Mine_DelGameSav.Parser, new[]{ "RomID", "SavDataIdx" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_DelGameSav_RESP), global::AxibugProtobuf.Protobuf_Mine_DelGameSav_RESP.Parser, new[]{ "RomID", "SavDataIdx" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav), global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav.Parser, new[]{ "RomID", "SavDataIdx", "SavImg", "StateRaw" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav_RESP), global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav_RESP.Parser, new[]{ "RomID", "UploadSevInfo" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav), global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav.Parser, new[]{ "RomID", "SavDataIdx", "Name", "Note", "SavImg", "StateRaw" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav_RESP), global::AxibugProtobuf.Protobuf_Mine_UpLoadGameSav_RESP.Parser, new[]{ "RomID", "SavDataIdx", "UploadSevInfo" }, null, null, null, null)
           }));
     }
     #endregion
@@ -10191,6 +10192,8 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Mine_GameSavInfo(Protobuf_Mine_GameSavInfo other) : this() {
       bHadSaveData_ = other.bHadSaveData_;
+      savID_ = other.savID_;
+      uid_ = other.uid_;
       savDataIdx_ = other.savDataIdx_;
       romID_ = other.romID_;
       gamePlatformType_ = other.gamePlatformType_;
@@ -10221,8 +10224,36 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "SavID" field.</summary>
+    public const int SavIDFieldNumber = 2;
+    private long savID_;
+    /// <summary>
+    ///即时存档唯一ID（用于今后分享）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long SavID {
+      get { return savID_; }
+      set {
+        savID_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "uid" field.</summary>
+    public const int UidFieldNumber = 3;
+    private long uid_;
+    /// <summary>
+    ///所属用户UID（用于今后分享）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Uid {
+      get { return uid_; }
+      set {
+        uid_ = value;
+      }
+    }
+
     /// <summary>Field number for the "SavDataIdx" field.</summary>
-    public const int SavDataIdxFieldNumber = 2;
+    public const int SavDataIdxFieldNumber = 4;
     private int savDataIdx_;
     /// <summary>
     ///即时存档下标(其中第0个是自动存档位置)
@@ -10236,7 +10267,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "RomID" field.</summary>
-    public const int RomIDFieldNumber = 3;
+    public const int RomIDFieldNumber = 5;
     private int romID_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int RomID {
@@ -10247,7 +10278,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "GamePlatformType" field.</summary>
-    public const int GamePlatformTypeFieldNumber = 4;
+    public const int GamePlatformTypeFieldNumber = 6;
     private global::AxibugProtobuf.RomPlatformType gamePlatformType_ = global::AxibugProtobuf.RomPlatformType.Invalid;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::AxibugProtobuf.RomPlatformType GamePlatformType {
@@ -10258,7 +10289,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "SavDate" field.</summary>
-    public const int SavDateFieldNumber = 5;
+    public const int SavDateFieldNumber = 7;
     private string savDate_ = "";
     /// <summary>
     ///存档时间
@@ -10272,7 +10303,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "SavName" field.</summary>
-    public const int SavNameFieldNumber = 6;
+    public const int SavNameFieldNumber = 8;
     private string savName_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string SavName {
@@ -10283,7 +10314,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "Note" field.</summary>
-    public const int NoteFieldNumber = 7;
+    public const int NoteFieldNumber = 9;
     private string note_ = "";
     /// <summary>
     ///备注
@@ -10297,7 +10328,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "SavImgUrl" field.</summary>
-    public const int SavImgUrlFieldNumber = 8;
+    public const int SavImgUrlFieldNumber = 10;
     private string savImgUrl_ = "";
     /// <summary>
     ///即时存档截图Url
@@ -10311,7 +10342,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "SavUrl" field.</summary>
-    public const int SavUrlFieldNumber = 9;
+    public const int SavUrlFieldNumber = 11;
     private string savUrl_ = "";
     /// <summary>
     ///即时存档下载Url
@@ -10338,6 +10369,8 @@ namespace AxibugProtobuf {
         return true;
       }
       if (BHadSaveData != other.BHadSaveData) return false;
+      if (SavID != other.SavID) return false;
+      if (Uid != other.Uid) return false;
       if (SavDataIdx != other.SavDataIdx) return false;
       if (RomID != other.RomID) return false;
       if (GamePlatformType != other.GamePlatformType) return false;
@@ -10353,6 +10386,8 @@ namespace AxibugProtobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (BHadSaveData != false) hash ^= BHadSaveData.GetHashCode();
+      if (SavID != 0L) hash ^= SavID.GetHashCode();
+      if (Uid != 0L) hash ^= Uid.GetHashCode();
       if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
       if (RomID != 0) hash ^= RomID.GetHashCode();
       if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) hash ^= GamePlatformType.GetHashCode();
@@ -10381,36 +10416,44 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteBool(BHadSaveData);
       }
-      if (SavDataIdx != 0) {
+      if (SavID != 0L) {
         output.WriteRawTag(16);
+        output.WriteInt64(SavID);
+      }
+      if (Uid != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(Uid);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(32);
         output.WriteInt32(SavDataIdx);
       }
       if (RomID != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(40);
         output.WriteInt32(RomID);
       }
       if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(48);
         output.WriteEnum((int) GamePlatformType);
       }
       if (SavDate.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(58);
         output.WriteString(SavDate);
       }
       if (SavName.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(66);
         output.WriteString(SavName);
       }
       if (Note.Length != 0) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(74);
         output.WriteString(Note);
       }
       if (SavImgUrl.Length != 0) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(82);
         output.WriteString(SavImgUrl);
       }
       if (SavUrl.Length != 0) {
-        output.WriteRawTag(74);
+        output.WriteRawTag(90);
         output.WriteString(SavUrl);
       }
       if (_unknownFields != null) {
@@ -10426,36 +10469,44 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteBool(BHadSaveData);
       }
-      if (SavDataIdx != 0) {
+      if (SavID != 0L) {
         output.WriteRawTag(16);
+        output.WriteInt64(SavID);
+      }
+      if (Uid != 0L) {
+        output.WriteRawTag(24);
+        output.WriteInt64(Uid);
+      }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(32);
         output.WriteInt32(SavDataIdx);
       }
       if (RomID != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(40);
         output.WriteInt32(RomID);
       }
       if (GamePlatformType != global::AxibugProtobuf.RomPlatformType.Invalid) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(48);
         output.WriteEnum((int) GamePlatformType);
       }
       if (SavDate.Length != 0) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(58);
         output.WriteString(SavDate);
       }
       if (SavName.Length != 0) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(66);
         output.WriteString(SavName);
       }
       if (Note.Length != 0) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(74);
         output.WriteString(Note);
       }
       if (SavImgUrl.Length != 0) {
-        output.WriteRawTag(66);
+        output.WriteRawTag(82);
         output.WriteString(SavImgUrl);
       }
       if (SavUrl.Length != 0) {
-        output.WriteRawTag(74);
+        output.WriteRawTag(90);
         output.WriteString(SavUrl);
       }
       if (_unknownFields != null) {
@@ -10469,6 +10520,12 @@ namespace AxibugProtobuf {
       int size = 0;
       if (BHadSaveData != false) {
         size += 1 + 1;
+      }
+      if (SavID != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(SavID);
+      }
+      if (Uid != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Uid);
       }
       if (SavDataIdx != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
@@ -10507,6 +10564,12 @@ namespace AxibugProtobuf {
       }
       if (other.BHadSaveData != false) {
         BHadSaveData = other.BHadSaveData;
+      }
+      if (other.SavID != 0L) {
+        SavID = other.SavID;
+      }
+      if (other.Uid != 0L) {
+        Uid = other.Uid;
       }
       if (other.SavDataIdx != 0) {
         SavDataIdx = other.SavDataIdx;
@@ -10551,34 +10614,42 @@ namespace AxibugProtobuf {
             break;
           }
           case 16: {
-            SavDataIdx = input.ReadInt32();
+            SavID = input.ReadInt64();
             break;
           }
           case 24: {
-            RomID = input.ReadInt32();
+            Uid = input.ReadInt64();
             break;
           }
           case 32: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 48: {
             GamePlatformType = (global::AxibugProtobuf.RomPlatformType) input.ReadEnum();
             break;
           }
-          case 42: {
+          case 58: {
             SavDate = input.ReadString();
             break;
           }
-          case 50: {
+          case 66: {
             SavName = input.ReadString();
             break;
           }
-          case 58: {
+          case 74: {
             Note = input.ReadString();
             break;
           }
-          case 66: {
+          case 82: {
             SavImgUrl = input.ReadString();
             break;
           }
-          case 74: {
+          case 90: {
             SavUrl = input.ReadString();
             break;
           }
@@ -10601,34 +10672,42 @@ namespace AxibugProtobuf {
             break;
           }
           case 16: {
-            SavDataIdx = input.ReadInt32();
+            SavID = input.ReadInt64();
             break;
           }
           case 24: {
-            RomID = input.ReadInt32();
+            Uid = input.ReadInt64();
             break;
           }
           case 32: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            RomID = input.ReadInt32();
+            break;
+          }
+          case 48: {
             GamePlatformType = (global::AxibugProtobuf.RomPlatformType) input.ReadEnum();
             break;
           }
-          case 42: {
+          case 58: {
             SavDate = input.ReadString();
             break;
           }
-          case 50: {
+          case 66: {
             SavName = input.ReadString();
             break;
           }
-          case 58: {
+          case 74: {
             Note = input.ReadString();
             break;
           }
-          case 66: {
+          case 82: {
             SavImgUrl = input.ReadString();
             break;
           }
-          case 74: {
+          case 90: {
             SavUrl = input.ReadString();
             break;
           }
@@ -11098,6 +11177,8 @@ namespace AxibugProtobuf {
     public Protobuf_Mine_UpLoadGameSav(Protobuf_Mine_UpLoadGameSav other) : this() {
       romID_ = other.romID_;
       savDataIdx_ = other.savDataIdx_;
+      name_ = other.name_;
+      note_ = other.note_;
       savImg_ = other.savImg_;
       stateRaw_ = other.stateRaw_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -11136,8 +11217,36 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "Name" field.</summary>
+    public const int NameFieldNumber = 3;
+    private string name_ = "";
+    /// <summary>
+    ///存档名（留空时，服务器自动）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Note" field.</summary>
+    public const int NoteFieldNumber = 4;
+    private string note_ = "";
+    /// <summary>
+    ///备注（留空时，服务器自动）
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Note {
+      get { return note_; }
+      set {
+        note_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "SavImg" field.</summary>
-    public const int SavImgFieldNumber = 3;
+    public const int SavImgFieldNumber = 5;
     private pb::ByteString savImg_ = pb::ByteString.Empty;
     /// <summary>
     ///即时存档截图模拟器原生数据
@@ -11151,7 +11260,7 @@ namespace AxibugProtobuf {
     }
 
     /// <summary>Field number for the "StateRaw" field.</summary>
-    public const int StateRawFieldNumber = 4;
+    public const int StateRawFieldNumber = 6;
     private pb::ByteString stateRaw_ = pb::ByteString.Empty;
     /// <summary>
     ///即时存档byte数据
@@ -11179,6 +11288,8 @@ namespace AxibugProtobuf {
       }
       if (RomID != other.RomID) return false;
       if (SavDataIdx != other.SavDataIdx) return false;
+      if (Name != other.Name) return false;
+      if (Note != other.Note) return false;
       if (SavImg != other.SavImg) return false;
       if (StateRaw != other.StateRaw) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -11189,6 +11300,8 @@ namespace AxibugProtobuf {
       int hash = 1;
       if (RomID != 0) hash ^= RomID.GetHashCode();
       if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Note.Length != 0) hash ^= Note.GetHashCode();
       if (SavImg.Length != 0) hash ^= SavImg.GetHashCode();
       if (StateRaw.Length != 0) hash ^= StateRaw.GetHashCode();
       if (_unknownFields != null) {
@@ -11215,12 +11328,20 @@ namespace AxibugProtobuf {
         output.WriteRawTag(16);
         output.WriteInt32(SavDataIdx);
       }
-      if (SavImg.Length != 0) {
+      if (Name.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(Name);
+      }
+      if (Note.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Note);
+      }
+      if (SavImg.Length != 0) {
+        output.WriteRawTag(42);
         output.WriteBytes(SavImg);
       }
       if (StateRaw.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(50);
         output.WriteBytes(StateRaw);
       }
       if (_unknownFields != null) {
@@ -11240,12 +11361,20 @@ namespace AxibugProtobuf {
         output.WriteRawTag(16);
         output.WriteInt32(SavDataIdx);
       }
-      if (SavImg.Length != 0) {
+      if (Name.Length != 0) {
         output.WriteRawTag(26);
+        output.WriteString(Name);
+      }
+      if (Note.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Note);
+      }
+      if (SavImg.Length != 0) {
+        output.WriteRawTag(42);
         output.WriteBytes(SavImg);
       }
       if (StateRaw.Length != 0) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(50);
         output.WriteBytes(StateRaw);
       }
       if (_unknownFields != null) {
@@ -11262,6 +11391,12 @@ namespace AxibugProtobuf {
       }
       if (SavDataIdx != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
+      }
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Note.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Note);
       }
       if (SavImg.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(SavImg);
@@ -11285,6 +11420,12 @@ namespace AxibugProtobuf {
       }
       if (other.SavDataIdx != 0) {
         SavDataIdx = other.SavDataIdx;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Note.Length != 0) {
+        Note = other.Note;
       }
       if (other.SavImg.Length != 0) {
         SavImg = other.SavImg;
@@ -11315,10 +11456,18 @@ namespace AxibugProtobuf {
             break;
           }
           case 26: {
-            SavImg = input.ReadBytes();
+            Name = input.ReadString();
             break;
           }
           case 34: {
+            Note = input.ReadString();
+            break;
+          }
+          case 42: {
+            SavImg = input.ReadBytes();
+            break;
+          }
+          case 50: {
             StateRaw = input.ReadBytes();
             break;
           }
@@ -11345,10 +11494,18 @@ namespace AxibugProtobuf {
             break;
           }
           case 26: {
-            SavImg = input.ReadBytes();
+            Name = input.ReadString();
             break;
           }
           case 34: {
+            Note = input.ReadString();
+            break;
+          }
+          case 42: {
+            SavImg = input.ReadBytes();
+            break;
+          }
+          case 50: {
             StateRaw = input.ReadBytes();
             break;
           }
@@ -11389,6 +11546,7 @@ namespace AxibugProtobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Protobuf_Mine_UpLoadGameSav_RESP(Protobuf_Mine_UpLoadGameSav_RESP other) : this() {
       romID_ = other.romID_;
+      savDataIdx_ = other.savDataIdx_;
       uploadSevInfo_ = other.uploadSevInfo_ != null ? other.uploadSevInfo_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -11412,8 +11570,22 @@ namespace AxibugProtobuf {
       }
     }
 
+    /// <summary>Field number for the "SavDataIdx" field.</summary>
+    public const int SavDataIdxFieldNumber = 2;
+    private int savDataIdx_;
+    /// <summary>
+    ///即时存档下标(其中第0个是自动存档位置)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SavDataIdx {
+      get { return savDataIdx_; }
+      set {
+        savDataIdx_ = value;
+      }
+    }
+
     /// <summary>Field number for the "UploadSevInfo" field.</summary>
-    public const int UploadSevInfoFieldNumber = 2;
+    public const int UploadSevInfoFieldNumber = 3;
     private global::AxibugProtobuf.Protobuf_Mine_GameSavInfo uploadSevInfo_;
     /// <summary>
     ///上传成功的存档详情
@@ -11440,6 +11612,7 @@ namespace AxibugProtobuf {
         return true;
       }
       if (RomID != other.RomID) return false;
+      if (SavDataIdx != other.SavDataIdx) return false;
       if (!object.Equals(UploadSevInfo, other.UploadSevInfo)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -11448,6 +11621,7 @@ namespace AxibugProtobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (RomID != 0) hash ^= RomID.GetHashCode();
+      if (SavDataIdx != 0) hash ^= SavDataIdx.GetHashCode();
       if (uploadSevInfo_ != null) hash ^= UploadSevInfo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -11469,8 +11643,12 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteInt32(RomID);
       }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
       if (uploadSevInfo_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(UploadSevInfo);
       }
       if (_unknownFields != null) {
@@ -11486,8 +11664,12 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteInt32(RomID);
       }
+      if (SavDataIdx != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SavDataIdx);
+      }
       if (uploadSevInfo_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(UploadSevInfo);
       }
       if (_unknownFields != null) {
@@ -11501,6 +11683,9 @@ namespace AxibugProtobuf {
       int size = 0;
       if (RomID != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(RomID);
+      }
+      if (SavDataIdx != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SavDataIdx);
       }
       if (uploadSevInfo_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(UploadSevInfo);
@@ -11518,6 +11703,9 @@ namespace AxibugProtobuf {
       }
       if (other.RomID != 0) {
         RomID = other.RomID;
+      }
+      if (other.SavDataIdx != 0) {
+        SavDataIdx = other.SavDataIdx;
       }
       if (other.uploadSevInfo_ != null) {
         if (uploadSevInfo_ == null) {
@@ -11543,7 +11731,11 @@ namespace AxibugProtobuf {
             RomID = input.ReadInt32();
             break;
           }
-          case 18: {
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 26: {
             if (uploadSevInfo_ == null) {
               UploadSevInfo = new global::AxibugProtobuf.Protobuf_Mine_GameSavInfo();
             }
@@ -11568,7 +11760,11 @@ namespace AxibugProtobuf {
             RomID = input.ReadInt32();
             break;
           }
-          case 18: {
+          case 16: {
+            SavDataIdx = input.ReadInt32();
+            break;
+          }
+          case 26: {
             if (uploadSevInfo_ == null) {
               UploadSevInfo = new global::AxibugProtobuf.Protobuf_Mine_GameSavInfo();
             }

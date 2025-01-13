@@ -3,33 +3,17 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AxibugEmuOnline.Client.Manager
 {
     public class AppGameSavMgr
     {
-        Dictionary<int, Protobuf_Mine_GameSavInfo[]> dictRomId2SavInfo = new Dictionary<int, Protobuf_Mine_GameSavInfo[]>();
         public AppGameSavMgr()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavGetGameSavList, RecvGetGameSavList);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavDelGameSav, RecvDelGameSavList);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavUploadGameSav, RecvUpLoadGameSav);
-        }
-
-        /// <summary>
-        /// 从数据层取存档列表数据（一般是OnNetGameSavListUpdate事件来了之后来取数据）
-        /// </summary>
-        /// <param name="RomID"></param>
-        /// <returns></returns>
-        public Protobuf_Mine_GameSavInfo[] GetRomSaveIDList(int RomID)
-        {
-            if (!dictRomId2SavInfo.ContainsKey(RomID))
-            {
-                dictRomId2SavInfo[RomID] = null;
-            }
-            return dictRomId2SavInfo[RomID];
         }
 
         /// <summary>
@@ -49,14 +33,13 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvGetGameSavList(byte[] reqData)
         {
             Protobuf_Mine_GetGameSavList_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_GetGameSavList_RESP>(reqData);
-
-            Protobuf_Mine_GameSavInfo[] savArr = GetRomSaveIDList(msg.RomID);
+            Protobuf_Mine_GameSavInfo[] savArr = new Protobuf_Mine_GameSavInfo[4];
             for (int i = 0; i < savArr.Length; i++)
             {
                 Protobuf_Mine_GameSavInfo info = msg.SavDataList.FirstOrDefault(w => w.SavDataIdx == i);
                 savArr[i] = info;
             }
-            Eventer.Instance.PostEvent(EEvent.OnNetGameSavListUpdate, msg.RomID);
+            Eventer.Instance.PostEvent(EEvent.OnNetGameSavListGot, msg.RomID, savArr);
         }
 
         /// <summary>
@@ -64,7 +47,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         /// <param name="RomID"></param>
         /// <param name="SavDataIdx"></param>
-        public void SendDelGameSavList(int RomID,int SavDataIdx)
+        public void SendDelGameSavList(int RomID, int SavDataIdx)
         {
             Protobuf_Mine_DelGameSav req = new Protobuf_Mine_DelGameSav()
             {
@@ -78,10 +61,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvDelGameSavList(byte[] reqData)
         {
             Protobuf_Mine_DelGameSav_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_DelGameSav_RESP>(reqData);
-
-            Protobuf_Mine_GameSavInfo[] savArr = GetRomSaveIDList(msg.RomID);
-            savArr[msg.SavDataIdx] = null;
-            Eventer.Instance.PostEvent(EEvent.OnNetGameSavListUpdate, msg.RomID);
+            Eventer.Instance.PostEvent(EEvent.OnNetGameSavDeleted, msg.RomID, msg.SavDataIdx);
         }
 
         /// <summary>
@@ -89,7 +69,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         /// <param name="RomID"></param>
         /// <param name="SavDataIdx"></param>
-        public void SendUpLoadGameSav(int RomID,int SavDataIdx, byte[] RawData, byte[] SavImgData)
+        public void SendUpLoadGameSav(int RomID, int SavDataIdx, byte[] RawData, byte[] SavImgData)
         {
             //压缩
             byte[] compressRawData = Helper.CompressByteArray(RawData);
@@ -115,10 +95,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvUpLoadGameSav(byte[] reqData)
         {
             Protobuf_Mine_UpLoadGameSav_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_UpLoadGameSav_RESP>(reqData);
-
-            Protobuf_Mine_GameSavInfo[] savArr = GetRomSaveIDList(msg.RomID);
-            savArr[msg.UploadSevInfo.SavDataIdx] = msg.UploadSevInfo;
-            Eventer.Instance.PostEvent(EEvent.OnNetGameSavListUpdate, msg.RomID);
+            Eventer.Instance.PostEvent(EEvent.OnNetUploaded, msg.RomID,msg.SavDataIdx, msg.UploadSevInfo);
         }
 
         /// <summary>

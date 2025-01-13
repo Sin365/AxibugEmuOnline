@@ -42,6 +42,7 @@ namespace AxibugEmuOnline.Server.Common
 
         public static MySqlConnection DequeueSQLConn(string FuncStr)
         {
+            Console.WriteLine($"[DequeueSQLConn]{FuncStr}");
             lock (_sync)
             {
                 if (_DicSqlRunFunNum.ContainsKey(FuncStr))
