@@ -21,8 +21,8 @@ namespace AxibugEmuOnline.Client
         /// <summary> 指示该Rom文件的存放路径 </summary>
         public string LocalFilePath =>
                                     IsUserRom ?
-                                    $"{App.PersistentDataPath}/UserRoms/{Platform}/{FileName}" :
-                                    $"{App.PersistentDataPath}/RemoteRoms/{Platform}/{FileName}";
+                                    $"{App.PersistentDataPath(Platform)}/UserRoms/{FileName}" :
+                                    $"{App.PersistentDataPath(Platform)}/RemoteRoms/{FileName}";
 
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady => hasLocalFile;

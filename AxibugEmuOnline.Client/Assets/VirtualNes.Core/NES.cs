@@ -355,6 +355,7 @@ namespace VirtualNes.Core
         private void LoadDISK()
         {
             //todo : 磁碟机读取支持
+            Debuger.LogError($"磁碟机尚未支持");
         }
 
         private void LoadSRAM()
@@ -1070,6 +1071,10 @@ namespace VirtualNes.Core
 
         public void Dispose()
         {
+            SaveSRAM();
+            SaveDISK();
+            SaveTurboFile();
+
             cpu?.Dispose();
             ppu?.Dispose();
             apu?.Dispose();
@@ -1081,7 +1086,7 @@ namespace VirtualNes.Core
         {
             int i;
             if (rom.IsNSF()) return;
-            if (rom.IsSAVERAM()) return;
+            if (!rom.IsSAVERAM()) return;
 
             for (i = 0; i < SAVERAM_SIZE; i++)
             {
@@ -1841,9 +1846,10 @@ namespace VirtualNes.Core
                 );
 
 
-                cpu.SetDmaCycles(state.reg.cpureg.DMA_cycles);
                 emul_cycles = state.reg.cpureg.emul_cycles;
                 base_cycles = state.reg.cpureg.base_cycles;
+
+                cpu.SetDmaCycles(state.reg.cpureg.DMA_cycles);
 
                 // LOAD PPU STATE
                 MMU.PPUREG[0] = state.reg.ppureg.reg0;
@@ -1856,6 +1862,8 @@ namespace VirtualNes.Core
                 MMU.loopy_x = state.reg.ppureg.loopy_x;
                 MMU.PPU56Toggle = state.reg.ppureg.toggle56;
             }
+
+            apu.QueueClear();
 
             //RAM STATE
             {

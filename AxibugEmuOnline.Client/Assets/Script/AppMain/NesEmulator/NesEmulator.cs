@@ -216,6 +216,9 @@ namespace AxibugEmuOnline.Client
             return ControllerMapper;
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            StopGame();
+        }
     }
 }
