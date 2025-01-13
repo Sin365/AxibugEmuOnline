@@ -48,7 +48,7 @@ namespace AxibugEmuOnline.Client
 
         public void SaveSRAMToFile(byte[] sramContent, string romName)
         {
-            string sramDirectoryPath = $"{App.PersistentDataPath}/sav";
+            string sramDirectoryPath = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{Config.path.szSavePath}";
             Directory.CreateDirectory(sramDirectoryPath);
             romName = Path.GetFileNameWithoutExtension(romName);
             File.WriteAllBytes($"{sramDirectoryPath}/{romName}.sav", sramContent);
@@ -56,7 +56,7 @@ namespace AxibugEmuOnline.Client
 
         public void SaveDISKToFile(byte[] diskFileContent, string romName)
         {
-            string diskFileDirectoryPath = $"{App.PersistentDataPath}/dsv";
+            string diskFileDirectoryPath = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/dsv";
             Directory.CreateDirectory(diskFileDirectoryPath);
             romName = Path.GetFileNameWithoutExtension(romName);
             File.WriteAllBytes($"{diskFileDirectoryPath}/{romName}.dsv", diskFileContent);
@@ -65,14 +65,14 @@ namespace AxibugEmuOnline.Client
         public EmulatorConfig Config { get; private set; } = new EmulatorConfig();
         public void PrepareDirectory(string directPath)
         {
-            Directory.CreateDirectory($"{App.PersistentDataPath}/{directPath}");
+            Directory.CreateDirectory($"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}");
         }
 
         public void SaveFile(byte[] fileData, string directPath, string fileName)
         {
             PrepareDirectory(directPath);
 
-            var fileFullpath = $"{App.PersistentDataPath}/{directPath}/{fileName}";
+            var fileFullpath = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}/{fileName}";
             File.WriteAllBytes(fileFullpath, fileData);
         }
 
@@ -80,7 +80,8 @@ namespace AxibugEmuOnline.Client
         {
             try
             {
-                var data = File.ReadAllBytes($"{App.PersistentDataPath}/{directPath}/{fileName}");
+                var path = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}/{fileName}";
+                var data = File.ReadAllBytes(path);
                 if (data == null) return null;
                 return new MemoryStream(data);
             }
@@ -88,7 +89,6 @@ namespace AxibugEmuOnline.Client
             {
                 return null;
             }
-
         }
 
         public bool TryGetMapperNo(ROM rom, out int mapperNo)

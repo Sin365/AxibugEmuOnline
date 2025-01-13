@@ -244,11 +244,11 @@ namespace VirtualNes.Core
 
                         FileNameCheck(fname);
 
-                        if (Supporter.S.TryGetMapperNo(this, out int mapperNo))
-                        {
-                            Debuger.Log($"ROMDB Set Mapper #{mapper:000} to #{mapperNo:000}");
-                            mapper = mapperNo;
-                        }
+                        //if (Supporter.S.TryGetMapperNo(this, out int mapperNo))
+                        //{
+                        //    Debuger.Log($"ROMDB Set Mapper #{mapper:000} to #{mapperNo:000}");
+                        //    mapper = mapperNo;
+                        //}
 
                         RomPatch.DoPatch(ref crc, ref lpPRG, ref lpCHR, ref mapper, ref header);
 

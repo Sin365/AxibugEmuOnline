@@ -21,7 +21,6 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppLogin login;
         public static AppChat chat;
         public static UserDataManager user;
-        //public static AppNetGame netgame;
         public static AppEmu emu;
         /// <summary>
         /// nes Rom库
@@ -36,6 +35,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppRoom roomMgr;
         public static AppSettings settings;
         public static AppShare share;
+        public static GamePadManager gamePadMgr;
         private static object gameSavMgr;
         static bool bTest;
         static string mTestSrvIP;
@@ -49,11 +49,19 @@ namespace AxibugEmuOnline.Client.ClientCore
 
         #endregion
 
+
+        static string s_persistentRoot =
 #if UNITY_PSP2 && !UNITY_EDITOR //PSV真机
-        public static string PersistentDataPath => "ux0:data/AxibugEmu";
+            "ux0:data/AxibugEmu";
 #else
-        public static string PersistentDataPath => Application.persistentDataPath;
+            Application.persistentDataPath;
 #endif
+        public static string PersistentDataPath(RomPlatformType emuPlatform)
+        {
+            return s_persistentRoot + "/" + emuPlatform.ToString();
+        }
+        public static string PersistentDataRoot() => s_persistentRoot;
+
         public static void Init(bool isTest = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
@@ -70,7 +78,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             chat = new AppChat();
             user = new UserDataManager();
             emu = new AppEmu();
-            //netgame = new AppNetGame();
             httpAPI = new HttpAPI();
             if (bUseLocalWebApi)
                 httpAPI.WebHost = mLocalWebApi;
@@ -80,6 +87,8 @@ namespace AxibugEmuOnline.Client.ClientCore
             roomMgr = new AppRoom();
             share = new AppShare();
             gameSavMgr = new AppGameSavMgr();
+            gamePadMgr = new GamePadManager();
+
             bTest = isTest;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
@@ -99,8 +108,8 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static void PSP2Init()
         {
             //PSVita最好手动创建目录
-            if (!Directory.Exists(PersistentDataPath))
-                Directory.CreateDirectory(PersistentDataPath);
+            if (!Directory.Exists("ux0:data/AxibugEmu"))
+                Directory.CreateDirectory("ux0:data/AxibugEmu");
 
 #if UNITY_PSP2
             //创建PSV弹窗UI
@@ -202,6 +211,9 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static void Tick()
         {
             nesRomLib.ExecuteFetchRomInfo();
+            starRomLib.ExecuteFetchRomInfo();
+
+            gamePadMgr.Update();
         }
 
         public static Coroutine StartCoroutine(IEnumerator itor)

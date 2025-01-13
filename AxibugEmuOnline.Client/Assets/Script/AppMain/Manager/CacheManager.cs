@@ -9,7 +9,7 @@ namespace AxibugEmuOnline.Client
 {
     public class CacheManager
     {
-        static readonly string CacheDirPath = $"{App.PersistentDataPath}/Caches";
+        static readonly string CacheDirPath = $"{App.PersistentDataRoot()}/Caches";
         static readonly string TextureCacheDirPath = $"{CacheDirPath}/Texture";
 
         public void GetSpriteCache(string url, Action<Sprite, string> callback)

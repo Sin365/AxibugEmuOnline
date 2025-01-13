@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
-using UnityEditor;
 using UnityEngine;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
@@ -181,6 +180,17 @@ namespace AxibugEmuOnline.Client
             return true;
         }
 
+
+        public IControllerSetuper GetControllerSetuper()
+        {
+            return ControllerMapper;
+        }
+
+        public void Dispose()
+        {
+            StopGame();
+        }
+
 #if UNITY_EDITOR
         /// <summary>
         ///     编辑器用
@@ -207,15 +217,9 @@ namespace AxibugEmuOnline.Client
                 db.AddInfo(new RomDB.RomInfo { CRC = crc, Mapper = mapper });
             }
 
-            EditorUtility.SetDirty(db);
-            AssetDatabase.SaveAssets();
+            UnityEditor.EditorUtility.SetDirty(db);
+            UnityEditor.AssetDatabase.SaveAssets();
         }
 #endif
-        public IControllerSetuper GetControllerSetuper()
-        {
-            return ControllerMapper;
-        }
-
-        public void Dispose() { }
     }
 }

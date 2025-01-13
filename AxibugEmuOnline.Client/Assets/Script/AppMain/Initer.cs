@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using System.Text;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client

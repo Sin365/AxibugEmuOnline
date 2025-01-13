@@ -139,6 +139,7 @@ namespace AxibugEmuOnline.Client
         {
             DownloadingFlag.SetActiveEx(false);
             FileReadyFlag.SetActiveEx(false);
+            Star.SetActiveEx(IsStar);
 
             if (m_romfile == null) return;
             if (!m_romfile.InfoReady) return;

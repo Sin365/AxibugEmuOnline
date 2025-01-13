@@ -319,6 +319,12 @@ namespace VirtualNes.Core
             return false;
         }
 
+        internal void QueueClear()
+        {
+            queue.Clear();
+            exqueue.Clear();
+        }
+
         private void QueueFlush()
         {
             while (queue.wrptr != queue.rdptr)
@@ -651,5 +657,11 @@ namespace VirtualNes.Core
         public int rdptr;
         public int wrptr;
         public QUEUEDATA[] data = new QUEUEDATA[8192];
+
+        public void Clear()
+        {
+            rdptr = 0;wrptr = 0;
+            data = new QUEUEDATA[8192];
+        }
     }
 }

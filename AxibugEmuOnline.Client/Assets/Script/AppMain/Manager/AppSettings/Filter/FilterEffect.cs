@@ -1,6 +1,7 @@
 ﻿using Assets.Script.AppMain.Filter;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -53,12 +54,12 @@ namespace AxibugEmuOnline.Client
                 var rangeAtt = param.GetCustomAttribute<RangeAttribute>();
                 float min = 0;
                 float max = 10;
-                if (rangeAtt != null)
-                {
-                    min = rangeAtt.min; max = rangeAtt.max;
-                }
+                if (rangeAtt != null) { min = rangeAtt.min; max = rangeAtt.max; }
 
-                var editableParam = new EditableParamerter(param.Name, paramObj, min, max);
+                var descrip = param.GetCustomAttribute<DescriptionAttribute>();
+                string name = descrip != null ? descrip.Description : param.Name;
+
+                var editableParam = new EditableParamerter(name, paramObj, min, max);
                 m_editableParamList.Add(editableParam);
             }
         }
@@ -86,15 +87,23 @@ namespace AxibugEmuOnline.Client
             public object MinValue { get; private set; }
             public object MaxValue { get; private set; }
 
-            public EditableParamerter(string name, FilterParameter paramObject, object minValue, object maxValue)
+            public EditableParamerter(string name, FilterParameter paramObject, float minValue, float maxValue)
             {
                 m_paramObject = paramObject;
                 Name = name;
 
                 var paramType = paramObject.GetType();
 
-                MinValue = minValue;
-                MaxValue = maxValue;
+                if (paramObject.ValueType == typeof(int))
+                {
+                    MinValue = (int)minValue;
+                    MaxValue = (int)maxValue;
+                }
+                else if (paramObject.ValueType == typeof(float))
+                {
+                    MinValue = minValue;
+                    MaxValue = maxValue;
+                }
             }
 
             public void ResetToDefault() => m_paramObject.Value = null;

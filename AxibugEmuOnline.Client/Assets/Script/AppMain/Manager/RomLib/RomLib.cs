@@ -43,6 +43,8 @@ namespace AxibugEmuOnline.Client
 
         private void OnRomStarStateChanged(int romID, bool star)
         {
+            if (nesRomFetchList == null) return;
+
             var targetRom = nesRomFetchList.FirstOrDefault(rom => rom.ID == romID);
             if (targetRom == null) return;
 
@@ -59,7 +61,7 @@ namespace AxibugEmuOnline.Client
         /// <summary> 清除所有下载的Rom文件 </summary>
         public void ClearRomFile()
         {
-            var path = $"{App.PersistentDataPath}/RemoteRoms/{m_platform}";
+            var path = $"{App.PersistentDataPath(m_platform)}/RemoteRoms";
             if (Directory.Exists(path)) Directory.Delete(path, true);
         }
 

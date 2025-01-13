@@ -12,7 +12,7 @@
         public bool bIpsPath = true;
 
         public string szRomPath = "roms";
-        public string szSavePath = "save";
+        public string szSavePath = "sav";
         public string szStatePath = "state";
         public string szSnapshotPath = "snapshot";
         public string szMoviePath = "movie";
