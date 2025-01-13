@@ -286,9 +286,6 @@ namespace VirtualNes.Core
     }
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////
 //// Mapper191 SACHEN Super Cartridge Xin1 (Ver.1-9)                      //
 ////           SACHEN Q-BOY Support                                       //
