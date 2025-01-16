@@ -21,6 +21,8 @@ namespace AxibugEmuOnline.Web.Common
         public string ClientVersion { get; set; }
         public string AesKey { get; set; }
         public string AesIv { get; set; }
+        public string downLoadUrl { get; set; }
+        public string downLoadSavUrl { get; set; }
     }
 
 

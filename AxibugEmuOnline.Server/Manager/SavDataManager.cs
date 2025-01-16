@@ -231,7 +231,7 @@ namespace AxibugEmuOnline.Server.Manager
         }
         public void GetNewRomPath(long uid, RomPlatformType ptype, int romid, int stateIdx, string filename, out string path)
         {
-            path = Path.Combine(uid.ToString(), ptype.ToString(), romid.ToString(), stateIdx.ToString(), filename);
+            path = Path.Combine("UserSav", uid.ToString(), ptype.ToString(), romid.ToString(), stateIdx.ToString(), filename);
         }
         public bool FileDelete(string path)
         {
