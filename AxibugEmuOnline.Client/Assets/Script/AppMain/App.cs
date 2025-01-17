@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppSettings settings;
         public static AppShare share;
         public static GamePadManager gamePadMgr;
-        private static object gameSavMgr;
+        public static SaveSlotManager SavMgr;
         static bool bTest;
         static string mTestSrvIP;
         #region Mono
@@ -86,8 +86,9 @@ namespace AxibugEmuOnline.Client.ClientCore
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            gameSavMgr = new AppGameSavMgr();
+            SavMgr = new SaveSlotManager();
             gamePadMgr = new GamePadManager();
+
 
             bTest = isTest;
             mTestSrvIP = testSrvIP;

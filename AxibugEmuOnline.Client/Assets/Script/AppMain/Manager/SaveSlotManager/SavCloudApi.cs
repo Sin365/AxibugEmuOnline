@@ -5,11 +5,14 @@ using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System.Linq;
 
-namespace AxibugEmuOnline.Client.Manager
+namespace AxibugEmuOnline.Client
 {
-    public class AppGameSavMgr
+    /// <summary>
+    /// 负责存档的云端保存和获取功能
+    /// </summary>
+    public class SavCloudApi
     {
-        public AppGameSavMgr()
+        public SavCloudApi()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavGetGameSavList, RecvGetGameSavList);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavDelGameSav, RecvDelGameSavList);
