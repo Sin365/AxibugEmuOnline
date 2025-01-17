@@ -46,7 +46,8 @@ namespace AxibugEmuOnline.Web.Controllers
                 clientVersion = Config.cfg.ClientVersion,
                 serverIp = Config.cfg.ServerIp,
                 serverPort = Config.cfg.ServerPort,
-                downLoadUrl = ""
+                downLoadUrl = Config.cfg.downLoadUrl,
+                downLoadSavUrl = Config.cfg.downLoadSavUrl,
             };
             return new JsonResult(resp);
         }
@@ -361,6 +362,7 @@ LIMIT ?offset, ?pageSize;";
             public ushort serverPort { get; set; }
             public string clientVersion { get; set; }
             public string downLoadUrl { get; set; }
+            public string downLoadSavUrl { get; set; }
         }
 
 

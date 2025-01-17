@@ -118,6 +118,8 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 
 后续补充二次，修正 Mapper163 175 176 178 192 199 参照叶枫VirtuaNESex_src(20191105)
 
+后续补充第三次，修正Mapper 191 支持madcell大字汉化的《热血时代剧》《热血物语》《快打旋风》《双截龙3》, 添加Mapper253 支持外星《龙珠 中文》 （参照VirtuaNES Plus 翻译代码)
+
 
 ### 街机模拟器核心 CPS1 / NEOGEO / PGM / Taito(b) / Tehkan / or other MAME platform
 	
