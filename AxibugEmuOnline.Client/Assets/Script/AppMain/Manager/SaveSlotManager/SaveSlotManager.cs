@@ -13,10 +13,16 @@ namespace AxibugEmuOnline.Client
         SavCloudApi m_cloudApi = new SavCloudApi();
         Dictionary<int, SaveFile[]> m_saveFileDict = new Dictionary<int, SaveFile[]>();
 
-        public void Save(int romID, RomPlatformType platform, int slotIndex, byte[] savData, byte[] screenShotData)
+
+        public List<SaveFile> GetSlotSaves(int romID, RomPlatformType platform)
         {
-            var fileIns = GetSaveFile(romID, platform, slotIndex);
-            fileIns.Save(savData, screenShotData);
+            List<SaveFile> result = new List<SaveFile>();
+            for (int i = 0; i < MAX_SLOT_COUNT; i++)
+            {
+                result.Add(GetSaveFile(romID, platform, i));
+            }
+
+            return result;
         }
 
         SaveFile GetSaveFile(int romID, RomPlatformType platform, int slotIndex)
