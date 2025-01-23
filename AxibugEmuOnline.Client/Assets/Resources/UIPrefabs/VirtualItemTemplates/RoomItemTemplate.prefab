@@ -738,6 +738,7 @@ MonoBehaviour:
   m_downloadProgress: {fileID: 1484915906009859069}
   m_downloadingFlag: {fileID: 1252956242765037133}
   m_romReadyFlag: {fileID: 6316945668089981796}
+  DownloadComplete: {fileID: 8449502431356192113}
 --- !u!114 &5700455559359757662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,6 +889,7 @@ GameObject:
   - component: {fileID: 8105925540140519754}
   - component: {fileID: 1377401926964550360}
   - component: {fileID: 67125096702760250}
+  - component: {fileID: 8449502431356192113}
   m_Layer: 5
   m_Name: PreviewImg
   m_TagString: Untagged
@@ -955,6 +957,39 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8449502431356192113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4643603390456494410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19b7e2285c104f6ca47d583f3e5444f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 300
+  m_EffectMaterial: {fileID: 2100000, guid: 9dc7e810a87b444ab96919f3215c2fe5, type: 2}
+  m_EffectFactor: 0
+  m_Width: 0.25
+  m_Rotation: -41
+  m_Softness: 1
+  m_Brightness: 1
+  m_Gloss: 1
+  m_EffectArea: 0
+  m_Player:
+    play: 0
+    initialPlayDelay: 0
+    duration: 0.5
+    loop: 0
+    loopDelay: 1
+    updateMode: 0
+  m_Play: 0
+  m_Loop: 0
+  m_Duration: 1
+  m_LoopDelay: 1
+  m_UpdateMode: 0
 --- !u!1 &5340761592919397836
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.UI;
 using AxibugProtobuf;
-using Sony.Vita.Dialog;
+using Coffee.UIExtensions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +17,8 @@ namespace AxibugEmuOnline.Client
         [SerializeField] Slider m_downloadProgress;
         [SerializeField] GameObject m_downloadingFlag;
         [SerializeField] GameObject m_romReadyFlag;
+        [SerializeField]
+        UIShiny DownloadComplete;
 
         private RomFile m_romFile;
 
@@ -28,6 +30,25 @@ namespace AxibugEmuOnline.Client
             base.Awake();
 
             Eventer.Instance.RegisterEvent<int>(EEvent.OnRoomListSingleUpdate, OnRoomSignelUpdate);
+        }
+
+        protected override void OnEnable()
+        {
+            Eventer.Instance.RegisterEvent<int>(EEvent.OnRomFileDownloaded, OnRomDownloaded);
+        }
+
+        protected override void OnDisable()
+        {
+            Eventer.Instance.UnregisterEvent<int>(EEvent.OnRomFileDownloaded, OnRomDownloaded);
+        }
+
+        private void OnRomDownloaded(int romID)
+        {
+            if (m_romFile == null) return;
+
+            m_romFile.CheckLocalFileState();
+            if (m_romFile.RomReady)
+                DownloadComplete.Play();
         }
 
         private void OnRoomSignelUpdate(int roomID)
