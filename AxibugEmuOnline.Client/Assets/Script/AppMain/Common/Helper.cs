@@ -1,8 +1,14 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
+using Unity.Android.Gradle.Manifest;
+using static UnityEngine.Analytics.IAnalytic;
 
 namespace AxibugEmuOnline.Client.Common
 {
@@ -59,19 +65,56 @@ namespace AxibugEmuOnline.Client.Common
                 }
             }
         }
-        public static string FileMD5Hash(byte[] data)
+
+        static byte[] FileMD5HashByte(byte[] data)
         {
             using (var md5 = MD5.Create())
             {
                 using (var stream = new MemoryStream(data))
                 {
-                    var hash = md5.ComputeHash(stream);
-                    var sb = new StringBuilder(hash.Length * 2);
-                    foreach (var b in hash)
-                        sb.AppendFormat("{0:x2}", b);
-                    return sb.ToString();
+                    return md5.ComputeHash(stream);
                 }
             }
+        }
+
+        /// <summary>
+        /// 单个文件hash
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string FileMD5Hash(byte[] data)
+        {
+            byte[] hash = FileMD5HashByte(data);
+            var sb = new StringBuilder(hash.Length * 2);
+            foreach (var b in hash)
+                sb.AppendFormat("{0:x2}", b);
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 多文件总hash (顺序不影响结果)
+        /// </summary>
+        /// <param name="dataList"></param>
+        /// <returns></returns>
+        public static string FileMD5Hash(List<byte[]> dataList)
+        {
+            string allhash = string.Empty;
+            List<string> temp = new List<string>();
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                if (dataList[i] == null)
+                    continue;
+                temp.Add(FileMD5Hash(dataList[i]));
+            }
+            temp.Sort();
+            var sb = new StringBuilder();
+            for (int i = 0; i < temp.Count; i++)
+            {
+                sb.AppendLine(temp[i].ToString());
+            }
+
+            //这里用Ascll
+            return FileMD5Hash(Encoding.ASCII.GetBytes(sb.ToString()));
         }
     }
 }
