@@ -1,9 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
-using AxibugProtobuf;
 using Coffee.UIExtensions;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
