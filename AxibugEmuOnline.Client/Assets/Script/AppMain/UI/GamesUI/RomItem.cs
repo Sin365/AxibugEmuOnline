@@ -2,7 +2,6 @@
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
 using Coffee.UIExtensions;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,7 +34,7 @@ namespace AxibugEmuOnline.Client
         }
         public int RomID { get { return m_romfile != null && m_romfile.InfoReady ? m_romfile.ID : -1; } }
 
-        private RomLib m_romlib => App.nesRomLib;
+        private RomLib m_romlib => App.GetRomLib(m_romfile.Platform);
 
         public bool RomInfoReady => m_romfile != null && m_romfile.InfoReady;
 
@@ -53,9 +52,11 @@ namespace AxibugEmuOnline.Client
 
         private void OnRomDownloaded(int romID)
         {
-            if (m_romfile == null || m_romfile.ID != romID) return;
+            if (m_romfile == null) return;
 
-            DownloadComplete.Play();
+            m_romfile.CheckLocalFileState();
+            if (m_romfile.RomReady)
+                DownloadComplete.Play();
         }
 
         public void SetData(object data)

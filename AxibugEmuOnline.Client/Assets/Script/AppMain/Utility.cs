@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
         }
 
         private static Dictionary<int, RomFile> s_RomFileCahcesInRoomInfo = new Dictionary<int, RomFile>();
-        public static void FetchRomFileInRoomInfo(this Protobuf_Room_MiniInfo roomInfo, RomPlatformType platform, Action<Protobuf_Room_MiniInfo, RomFile> callback)
+        public static void FetchRomFileInRoomInfo(this Protobuf_Room_MiniInfo roomInfo, Action<Protobuf_Room_MiniInfo, RomFile> callback)
         {
             RomFile romFile;
 
@@ -43,19 +43,15 @@ namespace AxibugEmuOnline.Client
                 callback.Invoke(roomInfo, romFile);
                 return;
             }
-            switch (platform)
-            {
-                case RomPlatformType.Nes:
-                    App.StartCoroutine(App.httpAPI.GetRomInfo(roomInfo.GameRomID, (romWebData) =>
-                    {
-                        RomFile _romFile = new RomFile(0, 0);
-                        _romFile.SetWebData(romWebData);
-                        s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = _romFile;
 
-                        callback.Invoke(roomInfo, _romFile);
-                    }));
-                    break;
-            }
+            App.StartCoroutine(App.httpAPI.GetRomInfo(roomInfo.GameRomID, (romWebData) =>
+            {
+                RomFile _romFile = new RomFile(0, 0, (RomPlatformType)romWebData.ptype);
+                _romFile.SetWebData(romWebData);
+                s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = _romFile;
+
+                callback.Invoke(roomInfo, _romFile);
+            }));
 
         }
     }

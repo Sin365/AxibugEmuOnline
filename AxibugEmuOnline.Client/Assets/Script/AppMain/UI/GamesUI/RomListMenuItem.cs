@@ -17,16 +17,7 @@ namespace AxibugEmuOnline.Client
             get
             {
                 if (StarRom) return App.starRomLib;
-                else
-                {
-                    switch (Platform)
-                    {
-                        case RomPlatformType.Nes:
-                            return App.nesRomLib;
-                        default:
-                            throw new System.NotImplementedException($"未实现的平台 {Platform}");
-                    }
-                }
+                else return App.GetRomLib(Platform);
             }
         }
 

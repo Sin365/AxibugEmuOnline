@@ -73,7 +73,7 @@ namespace AxibugEmuOnline.Client
             if (romPreviewWraper.On)
             {
                 XMBCG_For_RomPreviewBigPic.gameObject.SetActive(false);
-                RomPreviewBigPic.gameObject.SetActive(true);                
+                RomPreviewBigPic.gameObject.SetActive(true);
             }
             else if (!romPreviewWraper.On)
             {

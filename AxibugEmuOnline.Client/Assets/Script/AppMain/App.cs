@@ -3,6 +3,7 @@ using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -22,23 +23,22 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppChat chat;
         public static UserDataManager user;
         public static AppEmu emu;
-        /// <summary>
-        /// nes Rom库
-        /// </summary>
-        public static RomLib nesRomLib;
-        /// <summary>
-        /// 收藏 Rom库
-        /// </summary>
-        public static RomLib starRomLib;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
         public static AppRoom roomMgr;
         public static AppSettings settings;
         public static AppShare share;
         public static GamePadManager gamePadMgr;
-        private static object gameSavMgr;
+        public static SaveSlotManager SavMgr;
+        public static FileDownloader FileDownloader;
         static bool bTest;
         static string mTestSrvIP;
+
+
+        /// <summary> 收藏 Rom库 </summary>
+        public static RomLib starRomLib;
+        private static Dictionary<RomPlatformType, RomLib> s_romLibs = new Dictionary<RomPlatformType, RomLib>();
+
         #region Mono
         public static TickLoop tickLoop;
         private static CoroutineRunner coRunner;
@@ -62,6 +62,11 @@ namespace AxibugEmuOnline.Client.ClientCore
         }
         public static string PersistentDataRoot() => s_persistentRoot;
 
+        public static RomLib GetRomLib(RomPlatformType platform)
+        {
+            return s_romLibs[platform];
+        }
+
         public static void Init(bool isTest = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
@@ -71,7 +76,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             {
                 PSP2Init();
             }
-
+            FileDownloader = new FileDownloader();
             settings = new AppSettings();
             network = new NetworkHelper();
             login = new AppLogin();
@@ -81,13 +86,21 @@ namespace AxibugEmuOnline.Client.ClientCore
             httpAPI = new HttpAPI();
             if (bUseLocalWebApi)
                 httpAPI.WebHost = mLocalWebApi;
-            nesRomLib = new RomLib(RomPlatformType.Nes);
+
+            foreach (RomPlatformType plat in Enum.GetValues(typeof(RomPlatformType)))
+            {
+                if (plat == RomPlatformType.All || plat == RomPlatformType.Invalid) continue;
+
+                s_romLibs[plat] = new RomLib(plat);
+            }
+
             starRomLib = new RomLib();
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();
-            gameSavMgr = new AppGameSavMgr();
+            SavMgr = new SaveSlotManager();
             gamePadMgr = new GamePadManager();
+
 
             bTest = isTest;
             mTestSrvIP = testSrvIP;
@@ -119,6 +132,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 #endif
 
         }
+
 
         private static IEnumerator AppTickFlow()
         {
@@ -210,8 +224,9 @@ namespace AxibugEmuOnline.Client.ClientCore
 
         private static void Tick()
         {
-            nesRomLib.ExecuteFetchRomInfo();
+            foreach (var romLib in s_romLibs.Values) romLib.ExecuteFetchRomInfo();
             starRomLib.ExecuteFetchRomInfo();
+            FileDownloader.Update();
 
             gamePadMgr.Update();
         }

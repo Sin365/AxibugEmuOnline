@@ -17,9 +17,9 @@ namespace AxibugEmuOnline.Client
 
         /// <summary> 请求指令 </summary>
         private HashSet<int> FetchPageCmd = new HashSet<int>();
-        private RomFile[] nesRomFetchList;
-        private Dictionary<int, RomFile> nesRomFileIdMapper = new Dictionary<int, RomFile>();
-        private Dictionary<string, RomFile> nesRomFileNameMapper = new Dictionary<string, RomFile>();
+        private RomFile[] RomFetchList;
+        private Dictionary<int, RomFile> RomFileIdMapper = new Dictionary<int, RomFile>();
+        private Dictionary<string, RomFile> RomFileNameMapper = new Dictionary<string, RomFile>();
         private HttpAPI.GetRomListAPI m_romGetFunc;
         private HttpAPI.SearchRomListAPI m_romSearchFunc;
         private RomPlatformType m_platform;
@@ -43,9 +43,9 @@ namespace AxibugEmuOnline.Client
 
         private void OnRomStarStateChanged(int romID, bool star)
         {
-            if (nesRomFetchList == null) return;
+            if (RomFetchList == null) return;
 
-            var targetRom = nesRomFetchList.FirstOrDefault(rom => rom.ID == romID);
+            var targetRom = RomFetchList.FirstOrDefault(rom => rom.ID == romID);
             if (targetRom == null) return;
 
             targetRom.Star = star;
@@ -54,7 +54,7 @@ namespace AxibugEmuOnline.Client
         public RomFile GetRomFile(string romFileName)
         {
             RomFile romFile;
-            nesRomFileNameMapper.TryGetValue(romFileName, out romFile);
+            RomFileNameMapper.TryGetValue(romFileName, out romFile);
             return romFile;
         }
 
@@ -83,22 +83,22 @@ namespace AxibugEmuOnline.Client
                 m_romGetFunc((page, romList) =>
                 {
                     FetchPageCmd.Clear();
-                    nesRomFileIdMapper.Clear();
-                    nesRomFileNameMapper.Clear();
+                    RomFileIdMapper.Clear();
+                    RomFileNameMapper.Clear();
 
                     if (romList != null)
-                        nesRomFetchList = new RomFile[romList.resultAllCount];
+                        RomFetchList = new RomFile[romList.resultAllCount];
                     else
-                        nesRomFetchList = new RomFile[0];
+                        RomFetchList = new RomFile[0];
 
-                    for (int i = 0; i < nesRomFetchList.Length; i++)
+                    for (int i = 0; i < RomFetchList.Length; i++)
                     {
                         //以后考虑用对象池实例化RomFile
-                        nesRomFetchList[i] = new RomFile(i, i / PAGE_SIZE);
+                        RomFetchList[i] = new RomFile(i, i / PAGE_SIZE, m_platform);
                     }
                     SaveRomInfoFromWeb(romList);
 
-                    callback.Invoke(nesRomFetchList);
+                    callback.Invoke(RomFetchList);
                 }, m_platform, 0, PAGE_SIZE);
             }
             else
@@ -106,22 +106,22 @@ namespace AxibugEmuOnline.Client
                 m_romSearchFunc((page, romList) =>
                 {
                     FetchPageCmd.Clear();
-                    nesRomFileIdMapper.Clear();
-                    nesRomFileNameMapper.Clear();
+                    RomFileIdMapper.Clear();
+                    RomFileNameMapper.Clear();
 
                     if (romList != null)
-                        nesRomFetchList = new RomFile[romList.resultAllCount];
+                        RomFetchList = new RomFile[romList.resultAllCount];
                     else
-                        nesRomFetchList = new RomFile[0];
+                        RomFetchList = new RomFile[0];
 
-                    for (int i = 0; i < nesRomFetchList.Length; i++)
+                    for (int i = 0; i < RomFetchList.Length; i++)
                     {
                         //以后考虑用对象池实例化RomFile
-                        nesRomFetchList[i] = new RomFile(i, i / PAGE_SIZE);
+                        RomFetchList[i] = new RomFile(i, i / PAGE_SIZE, m_platform);
                     }
                     SaveRomInfoFromWeb(romList);
 
-                    callback.Invoke(nesRomFetchList);
+                    callback.Invoke(RomFetchList);
                 }, m_platform, searchKey, 0, PAGE_SIZE);
             }
         }
@@ -170,11 +170,11 @@ namespace AxibugEmuOnline.Client
             for (int i = 0; i < resp.gameList.Count; i++)
             {
                 var webData = resp.gameList[i];
-                RomFile targetRomFile = nesRomFetchList[webData.orderid];
+                RomFile targetRomFile = RomFetchList[webData.orderid];
 
                 targetRomFile.SetWebData(webData);
-                nesRomFileIdMapper[webData.id] = nesRomFetchList[webData.orderid];
-                nesRomFileNameMapper[targetRomFile.FileName] = targetRomFile;
+                RomFileIdMapper[webData.id] = RomFetchList[webData.orderid];
+                RomFileNameMapper[targetRomFile.FileName] = targetRomFile;
             }
         }
 
@@ -185,7 +185,7 @@ namespace AxibugEmuOnline.Client
 
         public void AddRomFile(RomFile rom)
         {
-            nesRomFileNameMapper[rom.FileName] = rom;
+            RomFileNameMapper[rom.FileName] = rom;
         }
     }
 }
