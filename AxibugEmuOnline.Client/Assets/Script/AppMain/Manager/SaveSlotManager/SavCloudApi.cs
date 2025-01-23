@@ -98,7 +98,7 @@ namespace AxibugEmuOnline.Client
         void RecvUpLoadGameSav(byte[] reqData)
         {
             Protobuf_Mine_UpLoadGameSav_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_UpLoadGameSav_RESP>(reqData);
-            Eventer.Instance.PostEvent(EEvent.OnNetUploaded, msg.RomID,msg.SavDataIdx, msg.UploadSevInfo);
+            Eventer.Instance.PostEvent(EEvent.OnNetUploaded, msg.RomID, msg.SavDataIdx, msg.UploadSevInfo);
         }
 
         /// <summary>

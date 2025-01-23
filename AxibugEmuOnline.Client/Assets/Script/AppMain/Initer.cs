@@ -1,5 +1,4 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using System.Text;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -28,7 +27,7 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
 #if UNITY_EDITOR
-            App.Init(bTestSkipWebApiToConServer, mTestSrvIP, bUseLocalWebApi,mLocalWebApi);
+            App.Init(bTestSkipWebApiToConServer, mTestSrvIP, bUseLocalWebApi, mLocalWebApi);
             dev_UUID = SystemInfo.deviceUniqueIdentifier;
             if (bEditorUUID)
             {

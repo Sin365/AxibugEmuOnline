@@ -30,11 +30,11 @@ namespace AxibugEmuOnline.Client
                 {
                     m_currentCom = com_floatEdit;
                 }
-                else if(valueMenu.ValueType == typeof(int))
+                else if (valueMenu.ValueType == typeof(int))
                 {
                     m_currentCom = com_intEdit;
                 }
-                else if(valueMenu.ValueType == typeof(bool))
+                else if (valueMenu.ValueType == typeof(bool))
                 {
                     m_currentCom = com_boolEdit;
                 }

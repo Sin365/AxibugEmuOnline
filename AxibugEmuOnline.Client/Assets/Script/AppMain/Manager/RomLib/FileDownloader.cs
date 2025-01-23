@@ -1,7 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
