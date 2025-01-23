@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Client
         private HttpAPI.Resp_RomInfo webData;
         /// <summary> 依赖的Rom文件 </summary>
         private List<RomFile> dependencies = new List<RomFile>();
+        RomPlatformType m_defaultPlatform;
 
         /// <summary> 指示该Rom是否是多文件Rom </summary>
         public bool MultiFileRom
@@ -111,7 +112,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public RomPlatformType Platform => webData != null ? (RomPlatformType)webData.ptype : RomPlatformType.Invalid;
+        public RomPlatformType Platform => webData != null ? (RomPlatformType)webData.ptype : m_defaultPlatform;
         /// <summary> 指示该Rom信息是否已填充 </summary>
         public bool InfoReady
         {
@@ -144,6 +145,7 @@ namespace AxibugEmuOnline.Client
         public int Index { get; private set; }
         /// <summary> 在查询结果中的所在页 </summary>
         public int Page { get; private set; }
+
         public string Hash => webData != null ? webData.hash : string.Empty;
         /// <summary> 标记是否收藏 </summary>
         public bool Star
@@ -159,10 +161,11 @@ namespace AxibugEmuOnline.Client
         public event Action<RomFile> OnDownloadOver;
         public event Action OnInfoFilled;
 
-        public RomFile(int index, int insidePage)
+        public RomFile(int index, int insidePage, RomPlatformType defaultPlatform)
         {
             Index = index;
             Page = insidePage;
+            m_defaultPlatform = defaultPlatform;
         }
 
         public void CheckLocalFileState()
@@ -305,7 +308,7 @@ namespace AxibugEmuOnline.Client
                 dependencies.Clear();
                 foreach (var romID in webData.parentRomIdsList)
                 {
-                    var romFile = new RomFile(Index, Page);
+                    var romFile = new RomFile(Index, Page, m_defaultPlatform);
                     dependencies.Add(romFile);
                     App.StartCoroutine(App.httpAPI.GetRomInfo(romID, (romInfo) =>
                     {

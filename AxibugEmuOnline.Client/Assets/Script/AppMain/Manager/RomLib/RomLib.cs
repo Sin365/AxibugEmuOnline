@@ -94,7 +94,7 @@ namespace AxibugEmuOnline.Client
                     for (int i = 0; i < RomFetchList.Length; i++)
                     {
                         //以后考虑用对象池实例化RomFile
-                        RomFetchList[i] = new RomFile(i, i / PAGE_SIZE);
+                        RomFetchList[i] = new RomFile(i, i / PAGE_SIZE, m_platform);
                     }
                     SaveRomInfoFromWeb(romList);
 
@@ -117,7 +117,7 @@ namespace AxibugEmuOnline.Client
                     for (int i = 0; i < RomFetchList.Length; i++)
                     {
                         //以后考虑用对象池实例化RomFile
-                        RomFetchList[i] = new RomFile(i, i / PAGE_SIZE);
+                        RomFetchList[i] = new RomFile(i, i / PAGE_SIZE, m_platform);
                     }
                     SaveRomInfoFromWeb(romList);
 

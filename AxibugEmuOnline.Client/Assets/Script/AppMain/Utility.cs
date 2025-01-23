@@ -46,7 +46,7 @@ namespace AxibugEmuOnline.Client
 
             App.StartCoroutine(App.httpAPI.GetRomInfo(roomInfo.GameRomID, (romWebData) =>
             {
-                RomFile _romFile = new RomFile(0, 0);
+                RomFile _romFile = new RomFile(0, 0, (RomPlatformType)romWebData.ptype);
                 _romFile.SetWebData(romWebData);
                 s_RomFileCahcesInRoomInfo[roomInfo.GameRomID] = _romFile;
 
