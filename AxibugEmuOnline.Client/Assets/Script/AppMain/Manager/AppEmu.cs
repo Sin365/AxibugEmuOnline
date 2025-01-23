@@ -32,7 +32,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (!m_emuCore.IsNull()) StopGame();
 
             var roomInfo = App.roomMgr.mineRoomMiniInfo;
-            roomInfo.FetchRomFileInRoomInfo(RomPlatformType.Nes, (_, romFile) =>
+            roomInfo.FetchRomFileInRoomInfo((_, romFile) =>
             {
                 if (!romFile.RomReady) //这个rom并没有下载,所以取消进入房间
                 {

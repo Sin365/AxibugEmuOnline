@@ -70,7 +70,7 @@ namespace AxibugEmuOnline.Client
             Supporter.Setup(m_coreSupporter);
             Debuger.Setup(new CoreDebuger());
 
-            App.nesRomLib.AddRomFile(rom);
+            App.GetRomLib(RomPlatformType.Nes).AddRomFile(rom);
 
             try
             {

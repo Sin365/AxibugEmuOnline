@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
+using AxibugProtobuf;
 using Coffee.UIExtensions;
 using System;
 using UnityEngine;
@@ -35,7 +36,7 @@ namespace AxibugEmuOnline.Client
         }
         public int RomID { get { return m_romfile != null && m_romfile.InfoReady ? m_romfile.ID : -1; } }
 
-        private RomLib m_romlib => App.nesRomLib;
+        private RomLib m_romlib => App.GetRomLib(m_romfile.Platform);
 
         public bool RomInfoReady => m_romfile != null && m_romfile.InfoReady;
 
