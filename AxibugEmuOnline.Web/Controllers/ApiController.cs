@@ -2,8 +2,7 @@ using AxibugEmuOnline.Web.Common;
 using AxibugProtobuf;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
-using System.Reflection.PortableExecutable;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AxibugEmuOnline.Web.Controllers
 {
@@ -16,7 +15,7 @@ namespace AxibugEmuOnline.Web.Controllers
             _logger = logger;
         }
 
-        static bool TryDecrypToken(string tokenStr,out Protobuf_Token_Struct tokenData)
+        static bool TryDecrypToken(string tokenStr, out Protobuf_Token_Struct tokenData)
         {
             if (string.IsNullOrEmpty(tokenStr) || string.IsNullOrEmpty(tokenStr.Trim()))
             {
@@ -53,7 +52,7 @@ namespace AxibugEmuOnline.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult RomList(string SearchKey, int Ptype, int GType, int Page, int PageSize,string Token)
+        public JsonResult RomList(string SearchKey, int Ptype, int GType, int Page, int PageSize, string Token)
         {
             long UID = 0;
             if (TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
@@ -99,7 +98,10 @@ namespace AxibugEmuOnline.Web.Controllers
                         {
                             resp.resultAllCount = reader.GetInt32(0);
                             resp.page = Page;
-                            resp.maxPage = (int)Math.Ceiling((float)resp.resultAllCount / PageSize);
+                            if (PageSize > 0)
+                                resp.maxPage = (int)Math.Ceiling((float)resp.resultAllCount / PageSize);
+                            else
+                                resp.maxPage = 0;
                         }
                     }
                 }
@@ -107,7 +109,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 string HotOrderBy = "ORDER BY playcount DESC, id ASC";
 
-                query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType` FROM romlist where `Name` like ?searchPattern {platformCond} {GameTypeCond} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType`,`parentids` FROM romlist where `Name` like ?searchPattern {platformCond} {GameTypeCond} {HotOrderBy} LIMIT ?offset, ?pageSize;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -134,7 +136,15 @@ namespace AxibugEmuOnline.Web.Controllers
                                 stars = reader.GetInt32(8),
                                 ptype = reader.GetInt32(9),
                             };
-
+                            string parentsStr = !reader.IsDBNull(10) ? reader.GetString(10) : string.Empty;
+                            if (!string.IsNullOrEmpty(parentsStr))
+                            {
+                                int[] arr = Array.ConvertAll(parentsStr.Split(',', StringSplitOptions.RemoveEmptyEntries), s => int.Parse(s));
+                                for (int i = 0; i < arr.Length; i++)
+                                {
+                                    data.parentRomIdsList.Add(arr[i]);
+                                }
+                            }
                             if (UID > 0)
                             {
                                 if (CheckIsRomStar(data.id, UID))
@@ -199,7 +209,10 @@ namespace AxibugEmuOnline.Web.Controllers
                         {
                             resp.resultAllCount = reader.GetInt32(0);
                             resp.page = Page;
-                            resp.maxPage = (int)Math.Ceiling((float)resp.resultAllCount / PageSize);
+                            if (PageSize > 0)
+                                resp.maxPage = (int)Math.Ceiling((float)resp.resultAllCount / PageSize);
+                            else
+                                resp.maxPage = 0;
                         }
                     }
                 }
@@ -207,7 +220,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 string HotOrderBy = "ORDER BY playcount DESC, id ASC";
 
-                query = @$"SELECT romlist.id,romlist.`Name`,romlist.GameType,romlist.Note,romlist.RomUrl,romlist.ImgUrl,romlist.`Hash`,romlist.`playcount`,romlist.`stars`,romlist.`PlatformType` 
+                query = @$"SELECT romlist.id,romlist.`Name`,romlist.GameType,romlist.Note,romlist.RomUrl,romlist.ImgUrl,romlist.`Hash`,romlist.`playcount`,romlist.`stars`,romlist.`PlatformType` ,mlist.`parentids` 
 from rom_stars  
 LEFT JOIN romlist on romlist.Id = rom_stars.romid  
 where rom_stars.uid = ?uid 
@@ -240,6 +253,15 @@ LIMIT ?offset, ?pageSize;";
                                 stars = reader.GetInt32(8),
                                 ptype = reader.GetInt32(9),
                             };
+                            string parentsStr = !reader.IsDBNull(10) ? reader.GetString(10) : string.Empty;
+                            if (!string.IsNullOrEmpty(parentsStr))
+                            {
+                                int[] arr = Array.ConvertAll(parentsStr.Split(',', StringSplitOptions.RemoveEmptyEntries), s => int.Parse(s));
+                                for (int i = 0; i < arr.Length; i++)
+                                {
+                                    data.parentRomIdsList.Add(arr[i]);
+                                }
+                            }
 
                             //毕竟都是已经收藏了的
                             data.isStar = 1;
@@ -266,7 +288,7 @@ LIMIT ?offset, ?pageSize;";
             Resp_RomInfo resp = new Resp_RomInfo();
             MySqlConnection conn = SQLPool.DequeueSQLConn("NesRomList");
             {
-                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType` FROM romlist where id = ?romid;";
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType`,mlist.`parentids` FROM romlist where id = ?romid;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
@@ -286,6 +308,15 @@ LIMIT ?offset, ?pageSize;";
                             resp.playcount = reader.GetInt32(7);
                             resp.stars = reader.GetInt32(8);
                             resp.ptype = reader.GetInt32(9);
+                            string parentsStr = !reader.IsDBNull(10) ? reader.GetString(10) : string.Empty;
+                            if (!string.IsNullOrEmpty(parentsStr))
+                            {
+                                int[] arr = Array.ConvertAll(parentsStr.Split(',', StringSplitOptions.RemoveEmptyEntries), s => int.Parse(s));
+                                for (int i = 0; i < arr.Length; i++)
+                                {
+                                    resp.parentRomIdsList.Add(arr[i]);
+                                }
+                            }
                         }
                     }
                 }
@@ -388,7 +419,7 @@ LIMIT ?offset, ?pageSize;";
             public int stars { get; set; }
             public int playcount { get; set; }
             public int isStar { get; set; }
-
+            public List<int> parentRomIdsList { get; set; } = new List<int>();
         }
     }
 }
