@@ -13,8 +13,6 @@ namespace AxibugEmuOnline.Client
     public class RomFile
     {
         private HttpAPI.Resp_RomInfo webData;
-        private bool hasLocalFile;
-        private AxiHttpProxy.SendDownLoadProxy downloadRequest;
         /// <summary> 依赖的Rom文件 </summary>
         private List<RomFile> dependencies = new List<RomFile>();
 
@@ -26,9 +24,29 @@ namespace AxibugEmuOnline.Client
                 switch (Platform)
                 {
                     case RomPlatformType.Nes: return false;
-                    case RomPlatformType.Cps1: return true;
+                    case RomPlatformType.Igs:
+                    case RomPlatformType.Cps1:
+                    case RomPlatformType.Cps2:
+                    case RomPlatformType.Neogeo:
+                        return true;
                     default: throw new NotImplementedException($"未实现的平台{Platform}");
                 }
+            }
+        }
+
+        bool m_hasLocalFile;
+        public bool HasLocalFile
+        {
+            get
+            {
+                if (!m_hasLocalFile) return false;
+
+                foreach (var depRom in dependencies)
+                {
+                    if (!depRom.HasLocalFile) return false;
+                }
+
+                return true;
             }
         }
 
@@ -40,7 +58,7 @@ namespace AxibugEmuOnline.Client
         {
             get
             {
-                if (!hasLocalFile) return false;
+                if (!HasLocalFile) return false;
 
                 foreach (var depRom in dependencies)
                 {
@@ -55,8 +73,10 @@ namespace AxibugEmuOnline.Client
         {
             get
             {
-                var selfDownloading = downloadRequest != null && !downloadRequest.downloadHandler.isDone;
-                if (selfDownloading) return true;
+                if (!InfoReady) return false;
+
+                var progress = App.FileDownloader.GetDownloadProgress(webData.url);
+                if (progress.HasValue) return true;
 
                 foreach (var depRom in dependencies)
                 {
@@ -73,15 +93,21 @@ namespace AxibugEmuOnline.Client
             {
                 if (!IsDownloading) return 0;
 
-                float total = 0f;
+                float progress = 0f;
 
-                total += downloadRequest != null ? downloadRequest.downloadHandler.DownLoadPr : 0;
-                foreach (var depRom in dependencies)
+                if (HasLocalFile) progress = 1f;
+                else
                 {
-                    total += depRom.Progress;
+                    var downloadProgress = App.FileDownloader.GetDownloadProgress(webData.url);
+                    progress = downloadProgress.HasValue ? downloadProgress.Value : 0;
                 }
 
-                return total;
+                foreach (var depRom in dependencies)
+                {
+                    progress += depRom.Progress;
+                }
+
+                return progress / (dependencies.Count + 1);
             }
         }
 
@@ -139,17 +165,38 @@ namespace AxibugEmuOnline.Client
             Page = insidePage;
         }
 
+        public void CheckLocalFileState()
+        {
+            if (webData == null) m_hasLocalFile = false;
+            else
+            {
+                if (App.FileDownloader.GetDownloadProgress(webData.url) == null)
+                {
+                    if (MultiFileRom)
+                        m_hasLocalFile = Directory.Exists(LocalFilePath);
+                    else
+                        m_hasLocalFile = File.Exists(LocalFilePath);
+                }
+            }
+
+            foreach (var depRom in dependencies)
+                depRom.CheckLocalFileState();
+        }
+
         public void BeginDownload()
         {
             if (RomReady) return;
             if (IsDownloading) return;
 
             //检查依赖Rom的下载情况            
-
-            App.StartCoroutine(DownloadRemoteRom((bytes) =>
+            foreach (var depRom in dependencies)
+            {
+                depRom.BeginDownload();
+            }
+            App.FileDownloader.BeginDownload(webData.url, (bytes) =>
             {
                 HandleRomFilePostProcess(bytes);
-            }));
+            });
         }
 
         private void HandleRomFilePostProcess(byte[] bytes)
@@ -161,6 +208,8 @@ namespace AxibugEmuOnline.Client
                 Dictionary<string, byte[]> unzipFiles = new Dictionary<string, byte[]>();
                 //多rom文件的平台,下载下来的数据直接解压放入文件夹内
                 var zip = new ZipInputStream(new MemoryStream(bytes));
+
+                List<string> depth0Files = new List<string>();
                 while (true)
                 {
                     var currentEntry = zip.GetNextEntry();
@@ -180,10 +229,18 @@ namespace AxibugEmuOnline.Client
                     unzipFiles[$"{LocalFilePath}/{currentEntry.Name}"] = output.ToArray();
                 }
 
+                string rootDirName = null;
+                //如果第一层目录只有一个文件并且是文件夹,则所有文件层级外提一层
+                if (depth0Files.Count == 1 && depth0Files[0].Contains('.'))
+                {
+                    rootDirName = depth0Files[0];
+                }
+
                 foreach (var item in unzipFiles)
                 {
-                    var path = item.Key;
+                    var path = rootDirName != null ? item.Key.Substring(0, rootDirName.Length + 1) : item.Key;
                     var data = item.Value;
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
                     File.WriteAllBytes(path, data);
                 }
             }
@@ -193,10 +250,8 @@ namespace AxibugEmuOnline.Client
                 Directory.CreateDirectory(directPath);
 
                 File.WriteAllBytes(LocalFilePath, bytes);
-                hasLocalFile = true;
-
-                Eventer.Instance.PostEvent(EEvent.OnRomFileDownloaded, ID);
             }
+            Eventer.Instance.PostEvent(EEvent.OnRomFileDownloaded, ID);
             OnDownloadOver?.Invoke(this);
         }
 
@@ -238,39 +293,16 @@ namespace AxibugEmuOnline.Client
             throw new Exception("Not Valid Rom Data");
         }
 
-        private IEnumerator DownloadRemoteRom(Action<byte[]> callback)
-        {
-            downloadRequest = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{webData.url}");
-
-            while (!downloadRequest.downloadHandler.isDone)
-            {
-                yield return null;
-                Debug.Log($"下载进度：{downloadRequest.downloadHandler.DownLoadPr} ->{downloadRequest.downloadHandler.loadedLenght}/{downloadRequest.downloadHandler.NeedloadedLenght}");
-            }
-            AxiHttpProxy.ShowAxiHttpDebugInfo(downloadRequest.downloadHandler);
-
-            var request = downloadRequest;
-            downloadRequest = null;
-            if (!request.downloadHandler.bHadErr)
-                callback(request.downloadHandler.data);
-            else
-                callback(null);
-        }
-
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
             webData = resp_RomInfo;
             FileName = MultiFileRom ? Path.GetFileNameWithoutExtension(webData.url) : Path.GetFileName(webData.url);
             FileName = System.Net.WebUtility.UrlDecode(FileName);
 
-            if (MultiFileRom)
-                hasLocalFile = Directory.Exists(LocalFilePath);
-            else
-                hasLocalFile = File.Exists(LocalFilePath);
-
             //收集依赖Rom
             if (webData.parentRomIdsList != null)
             {
+                dependencies.Clear();
                 foreach (var romID in webData.parentRomIdsList)
                 {
                     var romFile = new RomFile(Index, Page);
@@ -281,6 +313,8 @@ namespace AxibugEmuOnline.Client
                     }));
                 }
             }
+
+            CheckLocalFileState();
 
             App.StartCoroutine(WaitInfoReady());
         }

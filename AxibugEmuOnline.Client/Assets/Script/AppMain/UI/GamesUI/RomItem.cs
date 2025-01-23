@@ -54,9 +54,11 @@ namespace AxibugEmuOnline.Client
 
         private void OnRomDownloaded(int romID)
         {
-            if (m_romfile == null || m_romfile.ID != romID) return;
+            if (m_romfile == null) return;
 
-            DownloadComplete.Play();
+            m_romfile.CheckLocalFileState();
+            if (m_romfile.RomReady)
+                DownloadComplete.Play();
         }
 
         public void SetData(object data)

@@ -30,6 +30,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppShare share;
         public static GamePadManager gamePadMgr;
         public static SaveSlotManager SavMgr;
+        public static FileDownloader FileDownloader;
         static bool bTest;
         static string mTestSrvIP;
 
@@ -75,7 +76,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             {
                 PSP2Init();
             }
-
+            FileDownloader = new FileDownloader();
             settings = new AppSettings();
             network = new NetworkHelper();
             login = new AppLogin();
@@ -225,6 +226,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         {
             foreach (var romLib in s_romLibs.Values) romLib.ExecuteFetchRomInfo();
             starRomLib.ExecuteFetchRomInfo();
+            FileDownloader.Update();
 
             gamePadMgr.Update();
         }
