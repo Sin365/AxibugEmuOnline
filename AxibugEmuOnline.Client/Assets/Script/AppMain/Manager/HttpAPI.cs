@@ -283,6 +283,7 @@ namespace AxibugEmuOnline.Client
             /// 是否收藏
             /// </summary>
             public int isStar;
+            public List<int> parentRomIdsList;
         }
         [Serializable]
         public class Resp_CheckStandInfo
