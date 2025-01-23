@@ -143,6 +143,10 @@ enum RomPlatformType
 	Coleco_Vision = 6;
 	SC_3000 = 7;
 	SG_1000 = 8;
+	NEOGEO = 20;
+	IGS = 21;
+	CPS1 = 22;
+	CPS2 = 23;
 	All = 999;
 }
 
