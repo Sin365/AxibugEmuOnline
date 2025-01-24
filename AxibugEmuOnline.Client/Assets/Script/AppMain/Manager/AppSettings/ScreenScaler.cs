@@ -106,6 +106,11 @@ namespace AxibugEmuOnline.Client
             switch (platform)
             {
                 case RomPlatformType.Nes: return new Vector2Int(256, 240);
+                case RomPlatformType.Cps1:
+                case RomPlatformType.Cps2:
+                case RomPlatformType.Neogeo:
+                case RomPlatformType.Igs:
+                    return UMAME.instance.mUniVideoPlayer.mScreenSize;
                 default: throw new System.NotImplementedException($"未实现的平台:{platform}");
             }
         }
