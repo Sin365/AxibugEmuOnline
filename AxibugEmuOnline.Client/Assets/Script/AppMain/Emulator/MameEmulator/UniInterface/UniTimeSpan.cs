@@ -1,10 +1,36 @@
 using MAME.Core;
+using System.Diagnostics;
 
 public class UniTimeSpan : ITimeSpan
 {
     public ulong tick;
-    double tickDetailus = 16666.666667;
+    double startUs;
+    //double tickDetailus = 16666.666667;
+    double tickDetailus = 16.666667;//16微秒 （越小越决定tick精度越小）
     object tickLock = new object();
+
+    public void InitStandTime()
+    {
+        startUs = GetCurrUs();
+    }
+
+    /// <summary>
+    /// 获取当前毫秒
+    /// </summary>
+    /// <returns></returns>
+    public double GetCurrUs()
+    {
+        return (double)UMAME.sw.ElapsedTicks * 1000000 / Stopwatch.Frequency;
+    }
+
+    /// <summary>
+    /// 获取当前毫秒
+    /// </summary>
+    /// <returns></returns>
+    public double GetRunUs()
+    {
+        return ((double)UMAME.sw.ElapsedTicks * 1000000 / Stopwatch.Frequency) - startUs;
+    }
 
     public void SetTick(ulong nexttick)
     {
@@ -28,7 +54,8 @@ public class UniTimeSpan : ITimeSpan
     {
         lock (tickLock)
         {
-            lpPerformanceCount = (long)tick;
+            //lpPerformanceCount = (long)tick;
+            lpPerformanceCount = (long)(GetRunUs() / tickDetailus);
             return true;
         }
     }

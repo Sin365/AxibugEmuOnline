@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.Event;
 using MAME.Core;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,94 +6,25 @@ using UnityEngine;
 
 public class UniKeyboard : MonoBehaviour, IKeyboard
 {
-    #region UIButton
-    public UILongClickButton btnP1;
-    public UILongClickButton btnCoin1;
-    public UILongClickButton btnA;
-    public UILongClickButton btnB;
-    public UILongClickButton btnC;
-    public UILongClickButton btnD;
-    //public UILongClickButton btnE;
-    //public UILongClickButton btnF;
-    public UILongClickButton btnAB;
-    public UILongClickButton btnCD;
-    public UILongClickButton btnABC;
-    public Transform tfKeyPad;
-    public FloatingJoystick mJoystick;
-    public List<UILongClickButton> mUIBtns = new List<UILongClickButton>();
-    #endregion
-
-    public static Dictionary<KeyCode, MotionKey> dictKeyCfgs = new Dictionary<KeyCode, MotionKey>();
-    public static KeyCode[] CheckList;
+    public MameControllerMapper ControllerMapper { get; private set; }
     bool bReplayMode;
     PlayMode mPlayMode;
     ReplayMode mReplayMode;
-    ulong last_CurryInpuAllData_test = 0;
 
     void Awake()
     {
-        mJoystick = GameObject.Find("tfJoystick").GetComponent<FloatingJoystick>();
-        tfKeyPad = GameObject.Find("tfKeyPad").transform;
-        btnP1 = GameObject.Find("btnP1").GetComponent<UILongClickButton>();
-        btnCoin1 = GameObject.Find("btnCoin1").GetComponent<UILongClickButton>();
-        btnA = GameObject.Find("btnA").GetComponent<UILongClickButton>();
-        btnB = GameObject.Find("btnB").GetComponent<UILongClickButton>();
-        btnC = GameObject.Find("btnC").GetComponent<UILongClickButton>();
-        btnD = GameObject.Find("btnD").GetComponent<UILongClickButton>();
-        //btnE = GameObject.Find("btnE")?.GetComponent<UILongClickButton>();
-        //btnF = GameObject.Find("btnF")?.GetComponent<UILongClickButton>();
-        btnAB = GameObject.Find("btnAB").GetComponent<UILongClickButton>();
-        btnCD = GameObject.Find("btnCD").GetComponent<UILongClickButton>();
-        btnABC = GameObject.Find("btnABC").GetComponent<UILongClickButton>();
-
-        mUIBtns.Add(btnP1);
-        mUIBtns.Add(btnCoin1);
-        mUIBtns.Add(btnA);
-        mUIBtns.Add(btnB);
-        mUIBtns.Add(btnC);
-        mUIBtns.Add(btnD);
-        mUIBtns.Add(btnAB);
-        mUIBtns.Add(btnCD);
-        mUIBtns.Add(btnABC);
-
-        //if (btnE != null)
-        //{
-        //    mUIBtns.Add(btnE);
-        //    btnE.gameObject.SetActive(false);
-        //}
-        //else
-        //{ 
-        //    mUIBtns.Add(btnF);
-        //    btnF.gameObject.SetActive(false);
-        //}
-
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
-        tfKeyPad.gameObject.SetActive(false);
-#endif
+        ControllerMapper = new MameControllerMapper();
         Init(false);
     }
 
-    public MotionKey[] GetPressedKeys()
+    public ulong GetPressedKeys()
     {
-        MotionKey[] currkey;
         ulong InputData;
         if (!bReplayMode)
-            currkey = mPlayMode.GetPressedKeys(out InputData);
+            InputData = mPlayMode.GetPressedKeys();
         else
-            currkey = mReplayMode.GetPressedKeys(out InputData);
-#if UNITY_EDITOR
-        if (last_CurryInpuAllData_test != InputData)
-        {
-            string TempStr = "";
-            foreach (var item in currkey)
-            {
-                TempStr += $"{item.ToString()}|";
-            }
-            Debug.Log($"{UMAME.instance.mUniVideoPlayer.mFrame} | {EmuTimer.get_current_time().attoseconds} |{EmuTimer.get_current_time().seconds} |   {InputData} |   {TempStr}");
-            last_CurryInpuAllData_test = InputData;
-        }
-#endif
-        return currkey;
+            InputData = mReplayMode.GetPressedKeys();
+        return InputData;
     }
 
     public void UpdateInputKey()
@@ -110,42 +42,6 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
     public void Init(bool IsReplay)
     {
         bReplayMode = IsReplay;
-        dictKeyCfgs.Clear();
-        //dictKeyCfgs.Add(KeyCode.P, MotionKey.EMU_PAUSED);
-        dictKeyCfgs.Add(KeyCode.Alpha1, MotionKey.P1_GAMESTART);
-        dictKeyCfgs.Add(KeyCode.Alpha5, MotionKey.P1_INSERT_COIN);
-        dictKeyCfgs.Add(KeyCode.W, MotionKey.P1_UP);
-        dictKeyCfgs.Add(KeyCode.S, MotionKey.P1_DOWN);
-        dictKeyCfgs.Add(KeyCode.A, MotionKey.P1_LEFT);
-        dictKeyCfgs.Add(KeyCode.D, MotionKey.P1_RIGHT);
-        dictKeyCfgs.Add(KeyCode.J, MotionKey.P1_BTN_1);
-        dictKeyCfgs.Add(KeyCode.K, MotionKey.P1_BTN_2);
-        dictKeyCfgs.Add(KeyCode.L, MotionKey.P1_BTN_3);
-        dictKeyCfgs.Add(KeyCode.U, MotionKey.P1_BTN_4);
-        dictKeyCfgs.Add(KeyCode.KeypadDivide, MotionKey.P2_GAMESTART);
-        dictKeyCfgs.Add(KeyCode.KeypadMultiply, MotionKey.P2_INSERT_COIN);
-        dictKeyCfgs.Add(KeyCode.UpArrow, MotionKey.P2_UP);
-        dictKeyCfgs.Add(KeyCode.DownArrow, MotionKey.P2_DOWN);
-        dictKeyCfgs.Add(KeyCode.LeftArrow, MotionKey.P2_LEFT);
-        dictKeyCfgs.Add(KeyCode.RightArrow, MotionKey.P2_RIGHT);
-        dictKeyCfgs.Add(KeyCode.Keypad1, MotionKey.P2_BTN_1);
-        dictKeyCfgs.Add(KeyCode.Keypad2, MotionKey.P2_BTN_2);
-        dictKeyCfgs.Add(KeyCode.Keypad3, MotionKey.P2_BTN_3);
-        dictKeyCfgs.Add(KeyCode.Keypad4, MotionKey.P2_BTN_4);
-        CheckList = dictKeyCfgs.Keys.ToArray();
-
-        btnP1.Key = new long[] { (long)MotionKey.P1_GAMESTART };
-        btnCoin1.Key = new long[] { (long)MotionKey.P1_INSERT_COIN };
-        btnA.Key = new long[] { (long)MotionKey.P1_BTN_1 };
-        btnB.Key = new long[] { (long)MotionKey.P1_BTN_2 };
-        btnC.Key = new long[] { (long)MotionKey.P1_BTN_3 };
-        btnD.Key = new long[] { (long)MotionKey.P1_BTN_4 };
-        //btnE.Key = new long[] { (long)MotionKey.P1_BTN_5 };
-        //btnF.Key = new long[] { (long)MotionKey.P1_BTN_6 };
-        btnAB.Key = new long[] { (long)MotionKey.P1_BTN_1, (long)MotionKey.P1_BTN_2 };
-        btnCD.Key = new long[] { (long)MotionKey.P1_BTN_3, (long)MotionKey.P1_BTN_4 };
-        btnABC.Key = new long[] { (long)MotionKey.P1_BTN_1, (long)MotionKey.P1_BTN_2, (long)MotionKey.P1_BTN_3 };
-
         mPlayMode = new PlayMode(this);
         mReplayMode = new ReplayMode();
     }
@@ -157,13 +53,9 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
     }
     public class PlayMode
     {
-        Dictionary<KeyCode, MotionKey> dictKeyCfgs => UniKeyboard.dictKeyCfgs;
         UniKeyboard mUniKeyboard;
-        KeyCode[] CheckList => UniKeyboard.CheckList;
         ulong tempInputAllData = 0;
-        List<MotionKey> temp = new List<MotionKey>();
         public ulong CurryInpuAllData = 0;
-        public MotionKey[] mCurrKey = new MotionKey[0];
 
         public PlayMode(UniKeyboard uniKeyboard)
         {
@@ -173,127 +65,322 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
         public void UpdateLogic()
         {
             tempInputAllData = 0;
-            temp.Clear();
-            for (int i = 0; i < CheckList.Length; i++)
-            {
-                if (Input.GetKey(CheckList[i]))
-                {
-                    MotionKey mk = dictKeyCfgs[CheckList[i]];
-                    temp.Add(mk);
-                    tempInputAllData |= (ulong)mk;
-                }
-            }
-
-            for (int i = 0; i < mUniKeyboard.mUIBtns.Count; i++)
-            {
-                if (mUniKeyboard.mUIBtns[i].bHotKey)
-                {
-                    for (int j = 0; j < mUniKeyboard.mUIBtns[i].Key.Length; j++)
-                    {
-                        MotionKey mk = (MotionKey)mUniKeyboard.mUIBtns[i].Key[j];
-                        temp.Add(mk);
-                        tempInputAllData |= (ulong)mk;
-                    }
-                }
-            }
-
-            Vector2Int inputV2 = mUniKeyboard.mJoystick.RawInputV2;
-            //Debug.Log($"{inputV2.x},{inputV2.y}");
-            if (inputV2.x > 0)
-            {
-                temp.Add(MotionKey.P1_RIGHT);
-                tempInputAllData |= (ulong)MotionKey.P1_RIGHT;
-            }
-            else if (inputV2.x < 0)
-            {
-                temp.Add(MotionKey.P1_LEFT);
-                tempInputAllData |= (ulong)MotionKey.P1_LEFT;
-            }
-            if (inputV2.y > 0)
-            {
-                temp.Add(MotionKey.P1_UP);
-                tempInputAllData |= (ulong)MotionKey.P1_UP;
-            }
-            else if (inputV2.y < 0)
-            {
-                temp.Add(MotionKey.P1_DOWN);
-                tempInputAllData |= (ulong)MotionKey.P1_DOWN;
-            }
+            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller0.GetSingleAllInput();
+            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller1.GetSingleAllInput();
+            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller2.GetSingleAllInput();
+            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller3.GetSingleAllInput();
             CurryInpuAllData = tempInputAllData;
-            mCurrKey = temp.ToArray();
         }
 
-        public MotionKey[] GetPressedKeys(out ulong InputData)
+        public ulong GetPressedKeys()
         {
-            //UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, CurryInpuAllData);
             UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, CurryInpuAllData);
-            InputData = CurryInpuAllData;
-            return mCurrKey;
+            return CurryInpuAllData;
         }
     }
     public class ReplayMode
     {
-        public MotionKey[] mCurrKey = new MotionKey[0];
-        MotionKey[] ReplayCheckKey;
         ulong currInputData;
-        List<MotionKey> temp = new List<MotionKey>();
 
         public ReplayMode()
         {
-            ReplayCheckKey = dictKeyCfgs.Values.ToArray();
         }
 
-        public MotionKey[] GetPressedKeys(out ulong InputData)
+        public ulong GetPressedKeys()
         {
-            //有变化
-            //if (UMAME.instance.mReplayReader.NextFrame(out AxiReplay.ReplayStep stepData))
             int targetFrame = (int)UMAME.instance.mUniVideoPlayer.mFrame;
-            //if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out AxiReplay.ReplayStep stepData))
-            //{
-            //    temp.Clear();
-            //    //有数据
-            //    for (int i = 0; i < ReplayCheckKey.Length; i++)
-            //    {
-            //        if ((stepData.InPut & (ulong)ReplayCheckKey[i]) > 0)
-            //            temp.Add(ReplayCheckKey[i]);
-            //    }
-            //    mCurrKey = temp.ToArray();
-            //}
             AxiReplay.ReplayStep stepData;
-
+            //有变化
             if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
             {
-                temp.Clear();
-                //List<MotionKey> temp = new List<MotionKey>();
-                //temp.Clear();
-                ////有数据
-                //for (int i = 0; i < ReplayCheckKey.Length; i++)
-                //{
-                //    if ((stepData.InPut & (ulong)ReplayCheckKey[i]) > 0)
-                //        temp.Add(ReplayCheckKey[i]);
-                //}
-                //mCurrKey = temp.ToArray();
-                foreach (MotionKey key in GetStepDataToMotionKey(stepData))
-                {
-                    temp.Add(key);
-                }
-                mCurrKey = temp.ToArray();
                 currInputData = stepData.InPut;
             }
-            InputData = currInputData;
-            return mCurrKey;
+            return currInputData;
         }
-
-        IEnumerable<MotionKey> GetStepDataToMotionKey(AxiReplay.ReplayStep stepData)
-        {
-            //有数据
-            for (int i = 0; i < ReplayCheckKey.Length; i++)
-            {
-                if ((stepData.InPut & (ulong)ReplayCheckKey[i]) > 0)
-                    yield return ReplayCheckKey[i];
-            }
-        }
-
     }
     #endregion
 }
+
+public class MameControllerMapper : IControllerSetuper
+{
+    public MameSingleConoller Controller0 { get; } = new MameSingleConoller(0);
+    public MameSingleConoller Controller1 { get; } = new MameSingleConoller(1);
+    public MameSingleConoller Controller2 { get; } = new MameSingleConoller(2);
+    public MameSingleConoller Controller3 { get; } = new MameSingleConoller(3);
+
+    ulong mCurrAllInput;
+
+    public void SetConnect(uint? con0ToSlot = null,
+            uint? con1ToSlot = null,
+            uint? con2ToSlot = null,
+            uint? con3ToSlot = null)
+    {
+        Controller0.ConnectSlot = con0ToSlot;
+        Controller1.ConnectSlot = con1ToSlot;
+        Controller2.ConnectSlot = con2ToSlot;
+        Controller3.ConnectSlot = con3ToSlot;
+    }
+
+    public int? GetSlotConnectingControllerIndex(int slotIndex)
+    {
+        if (Controller0.ConnectSlot.HasValue && Controller0.ConnectSlot.Value == slotIndex) return 0;
+        else if (Controller1.ConnectSlot.HasValue && Controller1.ConnectSlot.Value == slotIndex) return 1;
+        else if (Controller2.ConnectSlot.HasValue && Controller2.ConnectSlot.Value == slotIndex) return 2;
+        else if (Controller3.ConnectSlot.HasValue && Controller3.ConnectSlot.Value == slotIndex) return 3;
+        else return null;
+    }
+
+    public IController GetSlotConnectingController(int slotIndex)
+    {
+        if (Controller0.ConnectSlot.HasValue && Controller0.ConnectSlot.Value == slotIndex) return Controller0;
+        else if (Controller1.ConnectSlot.HasValue && Controller1.ConnectSlot.Value == slotIndex) return Controller1;
+        else if (Controller2.ConnectSlot.HasValue && Controller2.ConnectSlot.Value == slotIndex) return Controller2;
+        else if (Controller3.ConnectSlot.HasValue && Controller3.ConnectSlot.Value == slotIndex) return Controller3;
+        else return null;
+    }
+    static HashSet<uint> s_temp = new HashSet<uint>();
+    public uint? GetFreeSlotIndex()
+    {
+        s_temp.Clear();
+        s_temp.Add(0);
+        s_temp.Add(1);
+        s_temp.Add(2);
+        s_temp.Add(3);
+
+        if (Controller0.ConnectSlot.HasValue) s_temp.Remove(Controller0.ConnectSlot.Value);
+        if (Controller1.ConnectSlot.HasValue) s_temp.Remove(Controller1.ConnectSlot.Value);
+        if (Controller2.ConnectSlot.HasValue) s_temp.Remove(Controller2.ConnectSlot.Value);
+        if (Controller3.ConnectSlot.HasValue) s_temp.Remove(Controller3.ConnectSlot.Value);
+
+        if (s_temp.Count > 0) return s_temp.First();
+        else return null;
+    }
+
+
+    public void LetControllerConnect(int conIndex, uint slotIndex)
+    {
+        MameSingleConoller targetController;
+        switch (conIndex)
+        {
+            case 0: targetController = Controller0; break;
+            case 1: targetController = Controller1; break;
+            case 2: targetController = Controller2; break;
+            case 3: targetController = Controller3; break;
+            default:
+                throw new System.Exception($"Not Allowed conIndex Range: {conIndex}");
+                break;
+        }
+        if (targetController.ConnectSlot.HasValue) return;
+
+        targetController.ConnectSlot = slotIndex;
+        Eventer.Instance.PostEvent(EEvent.OnControllerConnectChanged);
+    }
+
+}
+
+/// <summary>
+/// MAME控制器
+/// </summary>
+public class MameSingleConoller : IController
+{
+    public KeyCode INSERT_COIN, GAMESTART,
+    UP, DOWN, LEFT, RIGHT,
+    BTN_A, BTN_B, BTN_C, BTN_D, BTN_E, BTN_F;
+
+    public MotionKey tg_INSERT_COIN, tg_GAMESTART,
+    tg_UP, tg_DOWN, tg_LEFT, tg_RIGHT,
+    tg_BTN_A, tg_BTN_B, tg_BTN_C, tg_BTN_D, tg_BTN_E, tg_BTN_F;
+
+    ulong mTempSingleAllInput;
+
+    int mControllerIndex;
+    uint? mConnectSlot;
+
+    /// <summary>
+    /// 指示该手柄连接的手柄插槽
+    /// <para><c>这个值代表了该手柄在实际游戏中控制的Player</c></para>
+    /// <value>[0,3] 例外:为空代表未连接</value>
+    /// </summary>
+    public uint? ConnectSlot
+    {
+        get { return mConnectSlot; }
+        set { mConnectSlot = value; this.ResetTargetMotionKey(); }
+    }
+
+    /// <summary>
+    /// 控制器编号
+    /// <para><c>此编号并非对应游戏中的player1,player2,player3,player4,仅仅作为本地4个手柄的实例</c></para>
+    /// <value>[0,3]</value>
+    /// </summary>
+    public int ControllerIndex
+    {
+        get { return mControllerIndex; }
+        set { mControllerIndex = value; this.LoadControlKeyForConfig(); }
+    }
+    public MameSingleConoller(int controllerIndex)
+    {
+        ControllerIndex = controllerIndex;
+    }
+
+    public bool AnyButtonDown()
+    {
+        //if (Input.GetKeyDown(INSERT_COIN)) return true;
+        //if (Input.GetKeyDown(GAMESTART)) return true;
+        //if (Input.GetKeyDown(UP)) return true;
+        //if (Input.GetKeyDown(DOWN)) return true;
+        //if (Input.GetKeyDown(LEFT)) return true;
+        //if (Input.GetKeyDown(RIGHT)) return true;
+        //if (Input.GetKeyDown(BTN_A)) return true;
+        //if (Input.GetKeyDown(BTN_B)) return true;
+        //if (Input.GetKeyDown(BTN_C)) return true;
+        //if (Input.GetKeyDown(BTN_D)) return true;
+        //if (Input.GetKeyDown(BTN_E)) return true;
+        //if (Input.GetKeyDown(BTN_F)) return true;
+        return mTempSingleAllInput > 0;
+    }
+    public ulong GetSingleAllInput()
+    {
+        if (!ConnectSlot.HasValue)
+            return 0;
+        mTempSingleAllInput = 0;
+        if (Input.GetKey(INSERT_COIN)) return mTempSingleAllInput |= (ulong)tg_INSERT_COIN;
+        if (Input.GetKey(GAMESTART)) return mTempSingleAllInput |= (ulong)tg_GAMESTART;
+        if (Input.GetKey(UP)) return mTempSingleAllInput |= (ulong)tg_UP;
+        if (Input.GetKey(DOWN)) return mTempSingleAllInput |= (ulong)tg_DOWN;
+        if (Input.GetKey(LEFT)) return mTempSingleAllInput |= (ulong)tg_LEFT;
+        if (Input.GetKey(RIGHT)) return mTempSingleAllInput |= (ulong)tg_RIGHT;
+        if (Input.GetKey(BTN_A)) return mTempSingleAllInput |= (ulong)tg_BTN_A;
+        if (Input.GetKey(BTN_B)) return mTempSingleAllInput |= (ulong)tg_BTN_B;
+        if (Input.GetKey(BTN_C)) return mTempSingleAllInput |= (ulong)tg_BTN_C;
+        if (Input.GetKey(BTN_D)) return mTempSingleAllInput |= (ulong)tg_BTN_D;
+        if (Input.GetKey(BTN_E)) return mTempSingleAllInput |= (ulong)tg_BTN_E;
+        if (Input.GetKey(BTN_F)) return mTempSingleAllInput |= (ulong)tg_BTN_F;
+        return mTempSingleAllInput;
+    }
+
+}
+
+public static class MameSingleControllSetter
+{
+    public static void LoadControlKeyForConfig(this MameSingleConoller singlecontrol)
+    {
+        //TODO 等待支持配置，或统一
+        switch (singlecontrol.ControllerIndex)
+        {
+            case 0:
+                singlecontrol.INSERT_COIN = KeyCode.Alpha5;
+                singlecontrol.GAMESTART = KeyCode.Alpha1;
+                singlecontrol.UP = KeyCode.W;
+                singlecontrol.DOWN = KeyCode.S;
+                singlecontrol.LEFT = KeyCode.A;
+                singlecontrol.RIGHT = KeyCode.D;
+                singlecontrol.BTN_A = KeyCode.J;
+                singlecontrol.BTN_B = KeyCode.K;
+                singlecontrol.BTN_C = KeyCode.L;
+                singlecontrol.BTN_D = KeyCode.U;
+                singlecontrol.BTN_E = KeyCode.I;
+                singlecontrol.BTN_F = KeyCode.O;
+                break;
+            case 1:
+                singlecontrol.INSERT_COIN = KeyCode.KeypadMultiply;
+                singlecontrol.GAMESTART = KeyCode.KeypadDivide;
+                singlecontrol.UP = KeyCode.UpArrow;
+                singlecontrol.DOWN = KeyCode.DownArrow;
+                singlecontrol.LEFT = KeyCode.LeftArrow;
+                singlecontrol.RIGHT = KeyCode.RightArrow;
+                singlecontrol.BTN_A = KeyCode.Keypad1;
+                singlecontrol.BTN_B = KeyCode.Keypad2;
+                singlecontrol.BTN_C = KeyCode.Keypad3;
+                singlecontrol.BTN_D = KeyCode.Keypad4;
+                singlecontrol.BTN_E = KeyCode.Keypad5;
+                singlecontrol.BTN_F = KeyCode.Keypad6;
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
+    }
+
+    public static void ResetTargetMotionKey(this MameSingleConoller singlecontrol)
+    {
+        if (!singlecontrol.ConnectSlot.HasValue)
+        {
+            singlecontrol.tg_INSERT_COIN
+            = singlecontrol.tg_GAMESTART
+            = singlecontrol.tg_UP
+            = singlecontrol.tg_DOWN
+            = singlecontrol.tg_LEFT
+            = singlecontrol.tg_RIGHT
+            = singlecontrol.tg_BTN_A
+            = singlecontrol.tg_BTN_B
+            = singlecontrol.tg_BTN_C
+            = singlecontrol.tg_BTN_D
+            = singlecontrol.tg_BTN_E
+            = singlecontrol.tg_BTN_F
+            = MotionKey.FinalKey;
+            return;
+        }
+        switch (singlecontrol.ConnectSlot.Value)
+        {
+            case 0:
+                singlecontrol.tg_INSERT_COIN = MotionKey.P1_INSERT_COIN;
+                singlecontrol.tg_GAMESTART = MotionKey.P1_GAMESTART;
+                singlecontrol.tg_UP = MotionKey.P1_UP;
+                singlecontrol.tg_DOWN = MotionKey.P1_DOWN;
+                singlecontrol.tg_LEFT = MotionKey.P1_LEFT;
+                singlecontrol.tg_RIGHT = MotionKey.P1_RIGHT;
+                singlecontrol.tg_BTN_A = MotionKey.P1_BTN_1;
+                singlecontrol.tg_BTN_B = MotionKey.P1_BTN_2;
+                singlecontrol.tg_BTN_C = MotionKey.P1_BTN_3;
+                singlecontrol.tg_BTN_D = MotionKey.P1_BTN_4;
+                singlecontrol.tg_BTN_E = MotionKey.P1_BTN_5;
+                singlecontrol.tg_BTN_F = MotionKey.P1_BTN_6;
+                break;
+            case 1:
+                singlecontrol.tg_INSERT_COIN = MotionKey.P2_INSERT_COIN;
+                singlecontrol.tg_GAMESTART = MotionKey.P2_GAMESTART;
+                singlecontrol.tg_UP = MotionKey.P2_UP;
+                singlecontrol.tg_DOWN = MotionKey.P2_DOWN;
+                singlecontrol.tg_LEFT = MotionKey.P2_LEFT;
+                singlecontrol.tg_RIGHT = MotionKey.P2_RIGHT;
+                singlecontrol.tg_BTN_A = MotionKey.P2_BTN_1;
+                singlecontrol.tg_BTN_B = MotionKey.P2_BTN_2;
+                singlecontrol.tg_BTN_C = MotionKey.P2_BTN_3;
+                singlecontrol.tg_BTN_D = MotionKey.P2_BTN_4;
+                singlecontrol.tg_BTN_E = MotionKey.P2_BTN_5;
+                singlecontrol.tg_BTN_F = MotionKey.P2_BTN_6;
+                break;
+            //后续修改后 支持P3 P4
+            case 2:
+                singlecontrol.tg_INSERT_COIN = MotionKey.FinalKey;
+                singlecontrol.tg_GAMESTART = MotionKey.FinalKey;
+                singlecontrol.tg_UP = MotionKey.FinalKey;
+                singlecontrol.tg_DOWN = MotionKey.FinalKey;
+                singlecontrol.tg_LEFT = MotionKey.FinalKey;
+                singlecontrol.tg_RIGHT = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_A = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_B = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_C = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_D = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_E = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_F = MotionKey.FinalKey;
+                break;
+            case 3:
+                singlecontrol.tg_INSERT_COIN = MotionKey.FinalKey;
+                singlecontrol.tg_GAMESTART = MotionKey.FinalKey;
+                singlecontrol.tg_UP = MotionKey.FinalKey;
+                singlecontrol.tg_DOWN = MotionKey.FinalKey;
+                singlecontrol.tg_LEFT = MotionKey.FinalKey;
+                singlecontrol.tg_RIGHT = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_A = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_B = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_C = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_D = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_E = MotionKey.FinalKey;
+                singlecontrol.tg_BTN_F = MotionKey.FinalKey;
+                break;
+        }
+    }
+}
+

@@ -1,3 +1,5 @@
+using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
 using MAME.Core;
 using System;
 using UnityEngine;
@@ -5,10 +7,7 @@ using UnityEngine.UI;
 
 public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
 {
-    [SerializeField]
-    private int mWidth;
-    [SerializeField]
-    private int mHeight;
+    public Vector2Int mScreenSize { get; private set; }
     [SerializeField]
     private int mDataLenght;
     [SerializeField]
@@ -36,14 +35,13 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
     {
         m_drawCanvas.color = Color.white;
 
-        if (m_rawBufferWarper == null || mWidth != width || mHeight != height)
+        if (m_rawBufferWarper == null || mScreenSize.x != width || mScreenSize.y != height)
         {
-            mWidth = width;
-            mHeight = height;
+            mScreenSize = new Vector2Int(width, height);
             mDataLenght = width * height * 4;
             //mFrameData = new int[mWidth * mHeight];
             //MAME来的是BGRA32，好好好 BGRA->RGBA
-            m_rawBufferWarper = new Texture2D(mWidth, mHeight, TextureFormat.RGBA32, false);
+            m_rawBufferWarper = new Texture2D(mScreenSize.x, mScreenSize.y, TextureFormat.RGBA32, false);
             m_rawBufferWarper.filterMode = FilterMode.Point;
         }
 
@@ -51,8 +49,8 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
         m_drawCanvas.texture = m_rawBufferWarper;
         bInit = true;
 
-        float targetWidth = ((float)mWidth / mHeight) * m_drawCanvasrect.rect.height ;
-        m_drawCanvasrect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetWidth);
+        //float targetWidth = ((float)mScreenSize.x/ mScreenSize.y) * m_drawCanvasrect.rect.height ;
+        //m_drawCanvasrect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetWidth);
     }
 
     public void StopVideo()
@@ -61,12 +59,12 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
         m_drawCanvas.color = new Color(0,0,0,0);
     }
 
-    void Update()
-    {
-        if (!bInit) return;
-        m_rawBufferWarper.LoadRawTextureData(mFrameDataPtr, mDataLenght);
-        m_rawBufferWarper.Apply();
-    }
+    //void Update()
+    //{
+    //    if (!bInit) return;
+    //    //m_rawBufferWarper.LoadRawTextureData(mFrameDataPtr, mDataLenght);
+    //    //m_rawBufferWarper.Apply();
+    //}
 
     public void SubmitVideo(int[] data, long frame_number)
     {
@@ -79,10 +77,24 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
         //mFrameData = data;
 
         //Debug.Log($"frame_number -> {frame_number}");
+        m_rawBufferWarper.LoadRawTextureData(mFrameDataPtr, mDataLenght);
+        m_rawBufferWarper.Apply();
+
     }
 
     public byte[] GetScreenImg()
     {
         return (m_drawCanvas.texture as Texture2D).EncodeToJPG();
+    }
+
+
+    public void ApplyFilterEffect()
+    {
+        App.settings.Filter.ExecuteFilterRender(m_rawBufferWarper, m_drawCanvas);
+    }
+
+    public void ApplyScreenScaler()
+    {
+        App.settings.ScreenScaler.CalcScale(m_drawCanvas, UMAME.instance.Platform);
     }
 }

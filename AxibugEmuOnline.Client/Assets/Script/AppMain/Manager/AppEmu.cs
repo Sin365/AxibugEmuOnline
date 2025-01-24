@@ -55,6 +55,12 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.Nes:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("NES/NesEmulator")).GetComponent<IEmuCore>();
                     break;
+                case RomPlatformType.Cps1:
+                case RomPlatformType.Cps2:
+                case RomPlatformType.Igs:
+                case RomPlatformType.Neogeo:
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<IEmuCore>();
+                    break;
             }
 
             var result = m_emuCore.StartGame(romFile);
