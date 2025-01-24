@@ -728,14 +728,38 @@ namespace AxibugEmuOnline.Server
         /// 按照SlotIdx设置Input
         /// </summary>
         /// <param name="slotIdx"></param>
-        void SetInputDataBySlotIdx(uint slotIdx, byte val)
+        void SetInputDataBySlotIdx(uint slotIdx, ushort val)
         {
-            switch (slotIdx)
+            switch (GameRomPlatformType)
             {
-                case 0: mCurrInputData.p1_byte = val; break;
-                case 1: mCurrInputData.p2_byte = val; break;
-                case 2: mCurrInputData.p3_byte = val; break;
-                case 4: mCurrInputData.p3_byte = val; break;
+                case RomPlatformType.Cps1:
+                case RomPlatformType.Cps2:
+                case RomPlatformType.Neogeo:
+                case RomPlatformType.Igs:
+                case RomPlatformType.ArcadeOld:
+                    {
+                        //ushort 类型作为单个玩家操作
+                        switch (slotIdx)
+                        {
+                            case 0: mCurrInputData.p1_ushort = val; break;
+                            case 1: mCurrInputData.p2_ushort = val; break;
+                            case 2: mCurrInputData.p3_ushort = val; break;
+                            case 4: mCurrInputData.p3_ushort = val; break;
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        //byte 类型作为单个玩家操作
+                        switch (slotIdx)
+                        {
+                            case 0: mCurrInputData.p1_byte = (byte)val; break;
+                            case 1: mCurrInputData.p2_byte = (byte)val; break;
+                            case 2: mCurrInputData.p3_byte = (byte)val; break;
+                            case 4: mCurrInputData.p3_byte = (byte)val; break;
+                        }
+                    }
+                    break;
             }
         }
         /// <summary>
@@ -766,13 +790,38 @@ namespace AxibugEmuOnline.Server
         /// <param name="slotIdx"></param>
         void ClearInputDataBySlotIdx(uint slotIdx)
         {
-            switch (slotIdx)
+            switch (GameRomPlatformType)
             {
-                case 0: mCurrInputData.p1_byte = 0; break;
-                case 1: mCurrInputData.p2_byte = 0; break;
-                case 2: mCurrInputData.p3_byte = 0; break;
-                case 4: mCurrInputData.p3_byte = 0; break;
+                case RomPlatformType.Cps1:
+                case RomPlatformType.Cps2:
+                case RomPlatformType.Neogeo:
+                case RomPlatformType.Igs:
+                case RomPlatformType.ArcadeOld:
+                    {
+                        //ushort 类型作为单个玩家操作
+                        switch (slotIdx)
+                        {
+                            case 0: mCurrInputData.p1_ushort = 0; break;
+                            case 1: mCurrInputData.p2_ushort = 0; break;
+                            case 2: mCurrInputData.p3_ushort = 0; break;
+                            case 4: mCurrInputData.p4_ushort = 0; break;
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        //byte 类型作为单个玩家操作
+                        switch (slotIdx)
+                        {
+                            case 0: mCurrInputData.p1_byte = 0; break;
+                            case 1: mCurrInputData.p2_byte = 0; break;
+                            case 2: mCurrInputData.p3_byte = 0; break;
+                            case 4: mCurrInputData.p3_byte = 0; break;
+                        }
+                    }
+                    break;
             }
+            
         }
         /// <summary>
         /// 更新同步名单
@@ -981,7 +1030,9 @@ namespace AxibugEmuOnline.Server
             //mDictPlayerIdx2SendQueue.Clear();
 
             mCurrServerFrameId = 0;
-            mCurrInputData.all = 1;
+            //??????????=>>mCurrInputData.all = 1;
+
+            mCurrInputData.all = 0;
 
             UpdateRoomForwardNum();
 
