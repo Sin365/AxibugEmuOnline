@@ -243,23 +243,22 @@ public class MameSingleConoller : IController
         if (!ConnectSlot.HasValue)
             return 0;
         mTempSingleAllInput = 0;
-        if (Input.GetKey(INSERT_COIN)) return mTempSingleAllInput |= (ulong)tg_INSERT_COIN;
-        if (Input.GetKey(GAMESTART)) return mTempSingleAllInput |= (ulong)tg_GAMESTART;
-        if (Input.GetKey(UP)) return mTempSingleAllInput |= (ulong)tg_UP;
-        if (Input.GetKey(DOWN)) return mTempSingleAllInput |= (ulong)tg_DOWN;
-        if (Input.GetKey(LEFT)) return mTempSingleAllInput |= (ulong)tg_LEFT;
-        if (Input.GetKey(RIGHT)) return mTempSingleAllInput |= (ulong)tg_RIGHT;
-        if (Input.GetKey(BTN_A)) return mTempSingleAllInput |= (ulong)tg_BTN_A;
-        if (Input.GetKey(BTN_B)) return mTempSingleAllInput |= (ulong)tg_BTN_B;
-        if (Input.GetKey(BTN_C)) return mTempSingleAllInput |= (ulong)tg_BTN_C;
-        if (Input.GetKey(BTN_D)) return mTempSingleAllInput |= (ulong)tg_BTN_D;
-        if (Input.GetKey(BTN_E)) return mTempSingleAllInput |= (ulong)tg_BTN_E;
-        if (Input.GetKey(BTN_F)) return mTempSingleAllInput |= (ulong)tg_BTN_F;
+        if (Input.GetKey(INSERT_COIN)) mTempSingleAllInput |= (ulong)tg_INSERT_COIN;
+        if (Input.GetKey(GAMESTART)) mTempSingleAllInput |= (ulong)tg_GAMESTART;
+        if (Input.GetKey(UP)) mTempSingleAllInput |= (ulong)tg_UP;
+        if (Input.GetKey(DOWN)) mTempSingleAllInput |= (ulong)tg_DOWN;
+        if (Input.GetKey(LEFT)) mTempSingleAllInput |= (ulong)tg_LEFT;
+        if (Input.GetKey(RIGHT)) mTempSingleAllInput |= (ulong)tg_RIGHT;
+        if (Input.GetKey(BTN_A)) mTempSingleAllInput |= (ulong)tg_BTN_A;
+        if (Input.GetKey(BTN_B)) mTempSingleAllInput |= (ulong)tg_BTN_B;
+        if (Input.GetKey(BTN_C)) mTempSingleAllInput |= (ulong)tg_BTN_C;
+        if (Input.GetKey(BTN_D)) mTempSingleAllInput |= (ulong)tg_BTN_D;
+        if (Input.GetKey(BTN_E)) mTempSingleAllInput |= (ulong)tg_BTN_E;
+        if (Input.GetKey(BTN_F)) mTempSingleAllInput |= (ulong)tg_BTN_F;
         return mTempSingleAllInput;
     }
 
 }
-
 public static class MameSingleControllSetter
 {
     public static void LoadControlKeyForConfig(this MameSingleConoller singlecontrol)

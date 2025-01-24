@@ -157,15 +157,16 @@ namespace AxibugProtobuf {
             "bBAFEhQKEFN3aXRjaFByb0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxIS",
             "Cg5YQk9YMzYwQ29udHJvbBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNW",
             "aXRhQ29udHJvbBAKEhIKDldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3Rl",
-            "Q29udHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKqIBCg9Sb21QbGF0",
+            "Q29udHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKssBCg9Sb21QbGF0",
             "Zm9ybVR5cGUSCwoHSW52YWxpZBAAEgcKA05lcxABEhEKDU1hc3Rlcl9TeXN0",
             "ZW0QAhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVfQm95",
             "X0NvbG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1NDXzMwMDAQBxILCgdT",
-            "R18xMDAwEAgSCAoDQWxsEOcHKnAKDVJvb21HYW1lU3RhdGUSEgoOTm9uZV9H",
-            "YW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRSYXdVcGRhdGUQAhIN",
-            "CglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25saW5lR2FtZRAFKk4K",
-            "EUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0U3RhdHVzX0Jhc2VE",
-            "ZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJCAkgBYgZwcm90bzM="));
+            "R18xMDAwEAgSCgoGTkVPR0VPEBQSBwoDSUdTEBUSCAoEQ1BTMRAWEggKBENQ",
+            "UzIQFxIICgNBbGwQ5wcqcAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVT",
+            "dGF0ZRAAEgwKCE9ubHlIb3N0EAESEQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdh",
+            "aXRSZWFkeRADEgkKBVBhdXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9n",
+            "aW5SZXN1bHRTdGF0dXMSIQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1",
+            "bHQQABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -473,6 +474,10 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("Coleco_Vision")] ColecoVision = 6,
     [pbr::OriginalName("SC_3000")] Sc3000 = 7,
     [pbr::OriginalName("SG_1000")] Sg1000 = 8,
+    [pbr::OriginalName("NEOGEO")] Neogeo = 20,
+    [pbr::OriginalName("IGS")] Igs = 21,
+    [pbr::OriginalName("CPS1")] Cps1 = 22,
+    [pbr::OriginalName("CPS2")] Cps2 = 23,
     [pbr::OriginalName("All")] All = 999,
   }
 

@@ -147,6 +147,7 @@ enum RomPlatformType
 	IGS = 21;
 	CPS1 = 22;
 	CPS2 = 23;
+	Arcade_OLD = 30
 	All = 999;
 }
 
