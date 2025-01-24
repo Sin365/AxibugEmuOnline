@@ -40,7 +40,7 @@ namespace AxibugEmuOnline.Client
             //string utf8String = Encoding.UTF8.GetString(utf8Bytes);
             //searchKey = UrlEncode(utf8String);
             //App.log.Info($"search->{utf8String} ->{searchKey}");
-            string url = $"{WebSiteApi}/RomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}&Token={App.user.Token}";
+            string url = $"{WebSiteApi}/RomList?Page={page}&PageSize={pageSize}&PType={(int)platform}&SearchKey={searchKey}&Token={App.user.Token}";
             App.log.Info($"GetRomList=>{url}");
             AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
             yield return request.SendWebRequest;
