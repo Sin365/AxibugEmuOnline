@@ -42,9 +42,15 @@ namespace AxibugEmuOnline.Client
 
             var uiEffect = RomPreviewBigPic.GetComponent<UIEffect>();
             if (Application.platform == RuntimePlatform.PSP2)
+            {
                 uiEffect.blurMode = BlurMode.FastBlur;
+                uiEffect.blurFactor = 0.6f;
+            }
             else
+            {
                 uiEffect.blurMode = BlurMode.DetailBlur;
+                uiEffect.blurFactor = 0.6f;
+            }
         }
 
         private void Start()
