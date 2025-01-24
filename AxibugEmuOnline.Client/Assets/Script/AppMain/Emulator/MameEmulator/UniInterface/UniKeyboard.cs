@@ -1,5 +1,9 @@
+using AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxiReplay;
 using MAME.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,16 +24,16 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
     public ulong GetPressedKeys()
     {
         ulong InputData;
-        if (!bReplayMode)
-            InputData = mPlayMode.GetPressedKeys();
-        else
-            InputData = mReplayMode.GetPressedKeys();
-        return InputData;
+        if (!bReplayMode)//游玩模式（单机或联机）
+            return mPlayMode.GetPressedKeys();
+        else//Replay模式
+            return mReplayMode.GetPressedKeys();
     }
 
-    public void UpdateInputKey()
+    public bool SampleInput()
     {
-        UpdateLogic();
+        if (bReplayMode) return true;
+        return mPlayMode.SampleInput();
     }
 
     #region
@@ -46,37 +50,96 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
         mReplayMode = new ReplayMode();
     }
 
-    public void UpdateLogic()
+    public static IEnumerable<string> GetInputpDataToMotionKey(ulong inputdata)
     {
-        if (bReplayMode) return;
-        mPlayMode.UpdateLogic();
+        if (inputdata == 0)
+            yield break;
+        for (int i = 0; i < MotionKey.AllNeedCheckList.Length; i++)
+        {
+            if ((inputdata & MotionKey.AllNeedCheckList[i]) > 0)
+                yield return MotionKey.GetKeyName(MotionKey.AllNeedCheckList[i]);
+        }
     }
     public class PlayMode
     {
         UniKeyboard mUniKeyboard;
-        ulong tempInputAllData = 0;
-        public ulong CurryInpuAllData = 0;
+        public ulong CurrLocalInpuAllData = 0;
+        public ulong CurrRemoteInpuAllData = 0;
 
         public PlayMode(UniKeyboard uniKeyboard)
         {
             this.mUniKeyboard = uniKeyboard;
         }
 
-        public void UpdateLogic()
-        {
-            tempInputAllData = 0;
-            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller0.GetSingleAllInput();
-            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller1.GetSingleAllInput();
-            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller2.GetSingleAllInput();
-            tempInputAllData |= mUniKeyboard.ControllerMapper.Controller3.GetSingleAllInput();
-            CurryInpuAllData = tempInputAllData;
-        }
-
         public ulong GetPressedKeys()
         {
-            UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, CurryInpuAllData);
-            return CurryInpuAllData;
+            if (InGameUI.Instance.IsNetPlay)
+                return CurrRemoteInpuAllData;
+            else
+                return CurrLocalInpuAllData;
         }
+
+        public bool SampleInput()
+        {
+            //Net模式
+            if (InGameUI.Instance.IsNetPlay)
+            {
+                bool bHadNetData = false;
+                int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
+                if (App.roomMgr.netReplay.TryGetNextFrame((int)UMAME.instance.Frame, out replayData, out frameDiff, out inputDiff))
+                {
+                    if (inputDiff)
+                    {
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
+                            $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
+                    }
+                    CurrRemoteInpuAllData = replayData.InPut;
+
+                    bHadNetData = true;
+                }
+                else//无输入
+                {
+                    CurrRemoteInpuAllData = 0;
+                }
+                //发送本地操作
+                App.roomMgr.SendRoomSingelPlayerInput(UMAME.instance.Frame, DoLocalPressedKeys());
+                return bHadNetData;
+            }
+            //单人模式
+            else
+            {
+                DoLocalPressedKeys();
+                return true;
+            }
+        }
+
+        ulong DoLocalPressedKeys()
+        {
+            ulong tempLocalInputAllData = 0;
+            tempLocalInputAllData |= mUniKeyboard.ControllerMapper.Controller0.GetSingleAllInput();
+            tempLocalInputAllData |= mUniKeyboard.ControllerMapper.Controller1.GetSingleAllInput();
+            tempLocalInputAllData |= mUniKeyboard.ControllerMapper.Controller2.GetSingleAllInput();
+            tempLocalInputAllData |= mUniKeyboard.ControllerMapper.Controller3.GetSingleAllInput();
+
+#if UNITY_EDITOR
+            if (CurrLocalInpuAllData != tempLocalInputAllData)
+            {
+                string ShowKeyNames = string.Empty;
+                foreach (string keyname in GetInputpDataToMotionKey(CurrLocalInpuAllData))
+                {
+                    ShowKeyNames += keyname + "   |";
+                }
+                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
+            }
+#endif
+
+            CurrLocalInpuAllData = tempLocalInputAllData;
+            //写入replay
+            UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, CurrLocalInpuAllData);
+
+            return CurrLocalInpuAllData;
+        }
+
     }
     public class ReplayMode
     {
@@ -93,6 +156,14 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
             //有变化
             if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
             {
+#if UNITY_EDITOR
+                string ShowKeyNames = string.Empty;
+                foreach (string keyname in GetInputpDataToMotionKey(currInputData))
+                {
+                    ShowKeyNames += keyname + "   |";
+                }
+                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
+#endif
                 currInputData = stepData.InPut;
             }
             return currInputData;
@@ -187,7 +258,7 @@ public class MameSingleConoller : IController
     UP, DOWN, LEFT, RIGHT,
     BTN_A, BTN_B, BTN_C, BTN_D, BTN_E, BTN_F;
 
-    public MotionKey tg_INSERT_COIN, tg_GAMESTART,
+    public ulong tg_INSERT_COIN, tg_GAMESTART,
     tg_UP, tg_DOWN, tg_LEFT, tg_RIGHT,
     tg_BTN_A, tg_BTN_B, tg_BTN_C, tg_BTN_D, tg_BTN_E, tg_BTN_F;
 

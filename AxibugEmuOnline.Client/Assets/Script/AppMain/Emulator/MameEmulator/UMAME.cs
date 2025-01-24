@@ -170,16 +170,35 @@ public class UMAME : MonoBehaviour, IEmuCore
 
         if (bLogicUpdatePause)
         {
-            //采集本帧Input
-            mUniKeyboard.UpdateInputKey();
-            //放行下一帧
-            //emu.UnlockNextFreme();
-            //推帧
-            emu.UpdateFrame();
+            PushEmulatorFrame();
+            if (InGameUI.Instance.IsNetPlay)
+                FixEmulatorFrame();
         }
-
         mUniVideoPlayer.ApplyFilterEffect();
         mUniVideoPlayer.ApplyScreenScaler();
+    }
+
+    //是否跳帧，单机无效
+    void FixEmulatorFrame()
+    {
+        var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
+        if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
+        for (var i = 0; i < skipFrameCount; i++)
+            if (!PushEmulatorFrame())
+                break;
+    }
+
+    bool PushEmulatorFrame()
+    {
+        //采集本帧Input
+        bool bhadNext = mUniKeyboard.SampleInput();
+        //如果未收到Input数据,核心帧不推进
+        if (!bhadNext) return false;
+        //放行下一帧
+        //emu.UnlockNextFreme();
+        //推帧
+        emu.UpdateFrame();
+        return true;
     }
     public void SaveReplay()
     {

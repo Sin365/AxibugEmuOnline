@@ -72,7 +72,7 @@ namespace AxibugProtobuf {
             "aW5pSW5mbyJLChVQcm90b2J1Zl9TY3Jlbm5fRnJhbWUSDgoGUm9vbUlEGAEg",
             "ASgFEg8KB0ZyYW1lSUQYAiABKAUSEQoJUmF3Qml0bWFwGAMgASgMIkkKI1By",
             "b3RvYnVmX1Jvb21fU2luZ2xlUGxheWVySW5wdXREYXRhEg8KB0ZyYW1lSUQY",
-            "ASABKA0SEQoJSW5wdXREYXRhGAIgASgNIoABCidQcm90b2J1Zl9Sb29tX1N5",
+            "ASABKA0SEQoJSW5wdXREYXRhGAIgASgEIoABCidQcm90b2J1Zl9Sb29tX1N5",
             "bl9Sb29tRnJhbWVBbGxJbnB1dERhdGESDwoHRnJhbWVJRBgBIAEoDRIRCglJ",
             "bnB1dERhdGEYAiABKAQSFQoNU2VydmVyRnJhbWVJRBgDIAEoDRIaChJTZXJ2",
             "ZXJGb3J3YXJkQ291bnQYBCABKA0iPgoUUHJvdG9idWZfUm9vbV9DcmVhdGUS",
@@ -157,16 +157,17 @@ namespace AxibugProtobuf {
             "bBAFEhQKEFN3aXRjaFByb0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxIS",
             "Cg5YQk9YMzYwQ29udHJvbBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNW",
             "aXRhQ29udHJvbBAKEhIKDldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3Rl",
-            "Q29udHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKssBCg9Sb21QbGF0",
+            "Q29udHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKtsBCg9Sb21QbGF0",
             "Zm9ybVR5cGUSCwoHSW52YWxpZBAAEgcKA05lcxABEhEKDU1hc3Rlcl9TeXN0",
             "ZW0QAhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVfQm95",
             "X0NvbG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1NDXzMwMDAQBxILCgdT",
             "R18xMDAwEAgSCgoGTkVPR0VPEBQSBwoDSUdTEBUSCAoEQ1BTMRAWEggKBENQ",
-            "UzIQFxIICgNBbGwQ5wcqcAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVT",
-            "dGF0ZRAAEgwKCE9ubHlIb3N0EAESEQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdh",
-            "aXRSZWFkeRADEgkKBVBhdXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9n",
-            "aW5SZXN1bHRTdGF0dXMSIQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1",
-            "bHQQABIGCgJPSxABEg4KCkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
+            "UzIQFxIOCgpBcmNhZGVfT0xEEB4SCAoDQWxsEOcHKnAKDVJvb21HYW1lU3Rh",
+            "dGUSEgoOTm9uZV9HYW1lU3RhdGUQABIMCghPbmx5SG9zdBABEhEKDVdhaXRS",
+            "YXdVcGRhdGUQAhINCglXYWl0UmVhZHkQAxIJCgVQYXVzZRAEEhAKDEluT25s",
+            "aW5lR2FtZRAFKk4KEUxvZ2luUmVzdWx0U3RhdHVzEiEKHUxvZ2luUmVzdWx0",
+            "U3RhdHVzX0Jhc2VEZWZhdWx0EAASBgoCT0sQARIOCgpBY2NvdW50RXJyEAJC",
+            "AkgBYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -478,6 +479,7 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("IGS")] Igs = 21,
     [pbr::OriginalName("CPS1")] Cps1 = 22,
     [pbr::OriginalName("CPS2")] Cps2 = 23,
+    [pbr::OriginalName("Arcade_OLD")] ArcadeOld = 30,
     [pbr::OriginalName("All")] All = 999,
   }
 
@@ -5797,12 +5799,12 @@ namespace AxibugProtobuf {
 
     /// <summary>Field number for the "InputData" field.</summary>
     public const int InputDataFieldNumber = 2;
-    private uint inputData_;
+    private ulong inputData_;
     /// <summary>
     ///单个玩家操作位运算汇总
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint InputData {
+    public ulong InputData {
       get { return inputData_; }
       set {
         inputData_ = value;
@@ -5831,7 +5833,7 @@ namespace AxibugProtobuf {
     public override int GetHashCode() {
       int hash = 1;
       if (FrameID != 0) hash ^= FrameID.GetHashCode();
-      if (InputData != 0) hash ^= InputData.GetHashCode();
+      if (InputData != 0UL) hash ^= InputData.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5852,9 +5854,9 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteUInt32(FrameID);
       }
-      if (InputData != 0) {
+      if (InputData != 0UL) {
         output.WriteRawTag(16);
-        output.WriteUInt32(InputData);
+        output.WriteUInt64(InputData);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -5869,9 +5871,9 @@ namespace AxibugProtobuf {
         output.WriteRawTag(8);
         output.WriteUInt32(FrameID);
       }
-      if (InputData != 0) {
+      if (InputData != 0UL) {
         output.WriteRawTag(16);
-        output.WriteUInt32(InputData);
+        output.WriteUInt64(InputData);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -5885,8 +5887,8 @@ namespace AxibugProtobuf {
       if (FrameID != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FrameID);
       }
-      if (InputData != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(InputData);
+      if (InputData != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(InputData);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5902,7 +5904,7 @@ namespace AxibugProtobuf {
       if (other.FrameID != 0) {
         FrameID = other.FrameID;
       }
-      if (other.InputData != 0) {
+      if (other.InputData != 0UL) {
         InputData = other.InputData;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -5924,7 +5926,7 @@ namespace AxibugProtobuf {
             break;
           }
           case 16: {
-            InputData = input.ReadUInt32();
+            InputData = input.ReadUInt64();
             break;
           }
         }
@@ -5946,7 +5948,7 @@ namespace AxibugProtobuf {
             break;
           }
           case 16: {
-            InputData = input.ReadUInt32();
+            InputData = input.ReadUInt64();
             break;
           }
         }

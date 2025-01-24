@@ -131,6 +131,7 @@ namespace AxibugEmuOnline.Client
                 }
                 App.roomMgr.SendRoomSingelPlayerInput(frameIndex, rawData);
             }
+            //单机模式
             else
             {
                 m_sampledState = m_controllerMapper.CreateState();
