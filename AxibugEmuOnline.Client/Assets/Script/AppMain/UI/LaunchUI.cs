@@ -38,19 +38,8 @@ namespace AxibugEmuOnline.Client
             Instance = this;
             m_mainLayoutPosition = MainMenuRoot.anchoredPosition;
             MainMenu.ListenControlAction = true;
+            
             romPreviewWraper = new AlphaWraper(XMBCG_For_RomPreviewBigPic, RomPreviewBigPic.GetComponent<CanvasGroup>(), false);
-
-            var uiEffect = RomPreviewBigPic.GetComponent<UIEffect>();
-            if (Application.platform == RuntimePlatform.PSP2)
-            {
-                uiEffect.blurMode = BlurMode.FastBlur;
-                uiEffect.blurFactor = 0.6f;
-            }
-            else
-            {
-                uiEffect.blurMode = BlurMode.DetailBlur;
-                uiEffect.blurFactor = 0.6f;
-            }
         }
 
         private void Start()
