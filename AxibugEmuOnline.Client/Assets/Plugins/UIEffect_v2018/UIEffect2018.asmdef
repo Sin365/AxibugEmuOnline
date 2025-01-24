@@ -1,12 +1,8 @@
 {
-    "name": "UIEffect.Editor",
+    "name": "UIEffect2018",
     "rootNamespace": "",
-    "references": [
-        "UIEffect"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
