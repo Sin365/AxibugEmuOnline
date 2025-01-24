@@ -66,7 +66,7 @@ namespace AxibugEmuOnline.Web.Controllers
             MySqlConnection conn = SQLPool.DequeueSQLConn("RomList");
             {
                 string platformCond = "";
-                if (GType > (int)RomPlatformType.Invalid && GType < (int)RomPlatformType.All)
+                if (Ptype > (int)RomPlatformType.Invalid && Ptype < (int)RomPlatformType.All)
                 {
                     platformCond = $" and PlatformType = '{Ptype}' ";
                 }
@@ -176,7 +176,7 @@ namespace AxibugEmuOnline.Web.Controllers
             MySqlConnection conn = SQLPool.DequeueSQLConn("MarkList");
             {
                 string platformCond = "";
-                if (GType > (int)RomPlatformType.Invalid && GType < (int)RomPlatformType.All)
+                if (Ptype > (int)RomPlatformType.Invalid && Ptype < (int)RomPlatformType.All)
                 {
                     platformCond = $" and romlist.PlatformType = '{Ptype}' ";
                 }
@@ -288,7 +288,7 @@ LIMIT ?offset, ?pageSize;";
             Resp_RomInfo resp = new Resp_RomInfo();
             MySqlConnection conn = SQLPool.DequeueSQLConn("NesRomList");
             {
-                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType`,mlist.`parentids` FROM romlist where id = ?romid;";
+                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType`,`parentids` FROM romlist where id = ?romid;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
