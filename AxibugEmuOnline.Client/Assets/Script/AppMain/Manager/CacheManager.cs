@@ -35,6 +35,7 @@ namespace AxibugEmuOnline.Client
             }
             AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler);
 
+
             if (!request.downloadHandler.bHadErr)
             {
                 Directory.CreateDirectory(path);
@@ -42,7 +43,9 @@ namespace AxibugEmuOnline.Client
                 callback.Invoke(request.downloadHandler.data);
             }
             else
+            {
                 callback.Invoke(null);
+            }
 
             /*
             var request = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{url}");
@@ -105,10 +108,19 @@ namespace AxibugEmuOnline.Client
             if (vt == t_texture2d || vt == t_sprite)
             {
                 Texture2D texture = new Texture2D(2, 2);
-                texture.LoadImage(data);
+                if (data == null)
+                {
+                    var errorSpr = Resources.Load<Sprite>("UIImage/error");
+                    if (vt == t_texture2d) return errorSpr.texture as T;
+                    else return errorSpr as T;
+                }
+                else
+                {
+                    texture.LoadImage(data);
 
-                if (vt == t_texture2d) return texture as T;
-                else return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f)) as T;
+                    if (vt == t_texture2d) return texture as T;
+                    else return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f)) as T;
+                }
             }
             else if (vt == t_byteArray)
             {
