@@ -71,6 +71,10 @@ public static class AxiHttpProxy
         Debug.Log($"respInfo.fileName =>{resp.fileName}");
         Debug.Log($"respInfo.NeedloadedLenght =>{resp.NeedloadedLenght}");
         Debug.Log($"respInfo.loadedLenght =>{resp.loadedLenght}");
+        if (resp.bHadErr)
+        {
+            Debug.LogError($"code->{resp.code} err->{resp.ErrInfo} url->{resp.url}");
+        }
 #else
 		Debug.Log($"==== request url => { resp.url}");
 		Debug.Log($"code =>{resp.code}");

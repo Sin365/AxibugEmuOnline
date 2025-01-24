@@ -60,6 +60,9 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdOptionMenu()
         {
+            var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
+            if (thirdMenuGroup.itemGroup.DataList == null || thirdMenuGroup.itemGroup.DataList.Count == 0) return;
+
             OverlayManager.PopSideBar(m_options);
         }
 

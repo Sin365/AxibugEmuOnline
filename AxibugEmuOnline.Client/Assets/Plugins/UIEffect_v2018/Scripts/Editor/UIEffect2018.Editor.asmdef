@@ -1,14 +1,14 @@
 {
-    "name": "AxibugEmuOnline.Client",
+    "name": "UIEffect.Editor",
     "rootNamespace": "",
     "references": [
-        "AxiReplay",
-        "VirtualNes.Core",
         "UIEffect2018"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
-    "allowUnsafeCode": true,
+    "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,

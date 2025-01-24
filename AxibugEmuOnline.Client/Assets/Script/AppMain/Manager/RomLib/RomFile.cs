@@ -96,7 +96,7 @@ namespace AxibugEmuOnline.Client
 
                 float progress = 0f;
 
-                if (HasLocalFile) progress = 1f;
+                if (m_hasLocalFile) progress = 1f;
                 else
                 {
                     var downloadProgress = App.FileDownloader.GetDownloadProgress(webData.url);
@@ -294,7 +294,7 @@ namespace AxibugEmuOnline.Client
             }
 
             throw new Exception("Not Valid Rom Data");
-        }
+        }        
 
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
