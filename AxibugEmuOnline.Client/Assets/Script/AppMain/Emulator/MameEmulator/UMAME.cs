@@ -125,6 +125,7 @@ public class UMAME : MonoBehaviour, IEmuCore
     #endregion
     bool LoadGame(string loadRom, bool bReplay = false)
     {
+        emu.ResetRomRoot(RomPath);
         //Application.targetFrameRate = 60;
         mReplayWriter = new ReplayWriter(mChangeRomName, "fuck", ReplayData.ReplayFormat.FM32IP64, Encoding.UTF8);
         mChangeRomName = loadRom;

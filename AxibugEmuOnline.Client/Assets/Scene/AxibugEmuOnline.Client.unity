@@ -164,8 +164,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IMPORTENT: {fileID: 4747871931704546037, guid: e6f56a07c0ec38946a0257a1e0b8926d, type: 3}
-  bTest: 0
+  bTestSkipWebApiToConServer: 0
   mTestSrvIP: 192.168.0.47
+  bUseLocalWebApi: 0
+  mLocalWebApi: http://localhost:5051
+  bEditorUUID: 0
 --- !u!1 &1498586261
 GameObject:
   m_ObjectHideFlags: 3
