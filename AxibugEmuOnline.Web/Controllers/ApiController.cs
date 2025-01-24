@@ -220,7 +220,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 string HotOrderBy = "ORDER BY playcount DESC, id ASC";
 
-                query = @$"SELECT romlist.id,romlist.`Name`,romlist.GameType,romlist.Note,romlist.RomUrl,romlist.ImgUrl,romlist.`Hash`,romlist.`playcount`,romlist.`stars`,romlist.`PlatformType` ,mlist.`parentids` 
+                query = @$"SELECT romlist.id,romlist.`Name`,romlist.GameType,romlist.Note,romlist.RomUrl,romlist.ImgUrl,romlist.`Hash`,romlist.`playcount`,romlist.`stars`,romlist.`PlatformType` ,romlist.`parentids` 
 from rom_stars  
 LEFT JOIN romlist on romlist.Id = rom_stars.romid  
 where rom_stars.uid = ?uid 
