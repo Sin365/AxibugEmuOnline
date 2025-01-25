@@ -147,7 +147,7 @@ enum RomPlatformType
 	IGS = 21;
 	CPS1 = 22;
 	CPS2 = 23;
-	Arcade_OLD = 30
+	Arcade_OLD = 30;
 	All = 999;
 }
 
@@ -342,7 +342,7 @@ message Protobuf_Screnn_Frame
 message Protobuf_Room_SinglePlayerInputData
 {
 	uint32 FrameID = 1;//帧编号
-	uint32 InputData = 2;//单个玩家操作位运算汇总
+	uint64 InputData = 2;//单个玩家操作位运算汇总
 }
 
 message Protobuf_Room_Syn_RoomFrameAllInputData

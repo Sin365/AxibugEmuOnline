@@ -4,7 +4,8 @@
     "references": [
         "AxiReplay",
         "VirtualNes.Core",
-        "UIEffect2018"
+        "UIEffect2018",
+        "Mame.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

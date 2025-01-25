@@ -511,7 +511,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <summary>
         /// 同步上行
         /// </summary>
-        public void SendRoomSingelPlayerInput(uint FrameID, uint InputData)
+        public void SendRoomSingelPlayerInput(uint FrameID, ulong InputData)
         {
             _Protobuf_Room_SinglePlayerInputData.FrameID = FrameID;
             _Protobuf_Room_SinglePlayerInputData.InputData = InputData;
