@@ -416,7 +416,7 @@ namespace MAME.Core
         public static void Init()
         {
             FreeAllGCHandle();
-            set_TempBuffer = new byte[0x20000];
+            set_TempBuffer = new byte[0x40000];
         }
 
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref uint* ptr)
@@ -490,23 +490,21 @@ namespace MAME.Core
 
         public static void Write(this BinaryWriter bw, byte* bufferPtr, int offset, int count)
         {
-            // 使用指针复制数据到临时数组
-            Buffer.MemoryCopy(bufferPtr + offset, TempBuffer, 0, count);
-            // 使用BinaryWriter写入临时数组
+            int singlesize = sizeof(byte);
+            long totalBytesToCopy = count * singlesize;
+            Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
             bw.Write(TempBuffer_src, 0, count);
         }
         public static void Write(this FileStream fs, byte* bufferPtr, int offset, int count)
         {
-            // 使用指针复制数据到临时数组
-            Buffer.MemoryCopy(bufferPtr + offset, TempBuffer, 0, count);
-            // 使用BinaryWriter写入临时数组
+            int singlesize = sizeof(byte);
+            long totalBytesToCopy = count * singlesize;
+            Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
             fs.Write(TempBuffer_src, 0, count);
         }
         public static int Read(this FileStream fs, byte* bufferPtr, int offset, int count)
         {
-            // 使用BinaryWriter写入临时数组
             count = fs.Read(TempBuffer_src, offset, count);
-            // 使用指针复制数据到临时数组
             Buffer.MemoryCopy(TempBuffer, bufferPtr + offset, 0, count);
             return count;
         }
