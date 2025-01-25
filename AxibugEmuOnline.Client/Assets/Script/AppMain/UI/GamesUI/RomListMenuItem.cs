@@ -60,9 +60,6 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdOptionMenu()
         {
-            var thirdMenuGroup = SubMenuItemGroup as ThirdMenuRoot;
-            if (thirdMenuGroup.itemGroup.DataList == null || thirdMenuGroup.itemGroup.DataList.Count == 0) return;
-
             OverlayManager.PopSideBar(m_options);
         }
 
@@ -114,9 +111,9 @@ namespace AxibugEmuOnline.Client
 
             private RomItem m_currentSelect => m_romListSub.GetItemUIByIndex(m_romListSub.SelectIndex) as RomItem;
 
-            public override bool Visible => m_currentSelect.RomInfoReady;
+            public override bool Visible => m_currentSelect != null && m_currentSelect.RomInfoReady;
 
-            public override string Name { get { return m_currentSelect.IsStar ? "取消收藏" : "收藏"; } }
+            public override string Name { get { return m_currentSelect != null && m_currentSelect.IsStar ? "取消收藏" : "收藏"; } }
 
             public OptMenu_Fav(RomListMenuItem romListUI)
             {
