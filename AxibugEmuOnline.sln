@@ -11,6 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualNes.Core", "Core\Vir
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxibugEmuOnline.GameScreenConvert", "AxibugEmuOnline.GameScreenConvert\AxibugEmuOnline.GameScreenConvert.csproj", "{A70AD410-E2F2-4792-AEC1-A0DB83392E52}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{516B4BC8-EC46-484F-A83A-01493A480FB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckFilesExist", "Tools\CheckFilesExist\CheckFilesExist.csproj", "{39F90FC2-0EE9-4663-97CF-985FAEBB91A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlTable", "Tools\HtmlTable\HtmlTable.csproj", "{A29088C4-FAFA-4F8D-B9CC-57BB8CF454CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAMEHashTool", "Tools\MAMEHashTool\MAMEHashTool.csproj", "{FA3B23B9-B8A5-422F-BC85-64069174A99D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +41,26 @@ Global
 		{A70AD410-E2F2-4792-AEC1-A0DB83392E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A70AD410-E2F2-4792-AEC1-A0DB83392E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A70AD410-E2F2-4792-AEC1-A0DB83392E52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39F90FC2-0EE9-4663-97CF-985FAEBB91A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39F90FC2-0EE9-4663-97CF-985FAEBB91A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39F90FC2-0EE9-4663-97CF-985FAEBB91A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39F90FC2-0EE9-4663-97CF-985FAEBB91A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A29088C4-FAFA-4F8D-B9CC-57BB8CF454CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A29088C4-FAFA-4F8D-B9CC-57BB8CF454CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A29088C4-FAFA-4F8D-B9CC-57BB8CF454CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A29088C4-FAFA-4F8D-B9CC-57BB8CF454CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA3B23B9-B8A5-422F-BC85-64069174A99D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA3B23B9-B8A5-422F-BC85-64069174A99D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA3B23B9-B8A5-422F-BC85-64069174A99D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA3B23B9-B8A5-422F-BC85-64069174A99D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{39F90FC2-0EE9-4663-97CF-985FAEBB91A2} = {516B4BC8-EC46-484F-A83A-01493A480FB1}
+		{A29088C4-FAFA-4F8D-B9CC-57BB8CF454CB} = {516B4BC8-EC46-484F-A83A-01493A480FB1}
+		{FA3B23B9-B8A5-422F-BC85-64069174A99D} = {516B4BC8-EC46-484F-A83A-01493A480FB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {979933DC-FDAB-4ED1-974D-61FC7F814963}
