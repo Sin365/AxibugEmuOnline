@@ -5,8 +5,8 @@ public class UniTimeSpan : ITimeSpan
 {
     public ulong tick;
     double startUs;
-    //double tickDetailus = 16666.666667;
-    double tickDetailus = 16.666667;//16微秒 （越小越决定tick精度越小）
+    double tickDetailus = 16666.666667;
+    //double tickDetailus = 16.666667;//16微秒 （越小越决定tick精度越小）
     object tickLock = new object();
 
     public void InitStandTime()
@@ -54,8 +54,8 @@ public class UniTimeSpan : ITimeSpan
     {
         lock (tickLock)
         {
-            //lpPerformanceCount = (long)tick;
-            lpPerformanceCount = (long)(GetRunUs() / tickDetailus);
+            lpPerformanceCount = (long)tick;
+            //lpPerformanceCount = (long)(GetRunUs() / tickDetailus);
             return true;
         }
     }
