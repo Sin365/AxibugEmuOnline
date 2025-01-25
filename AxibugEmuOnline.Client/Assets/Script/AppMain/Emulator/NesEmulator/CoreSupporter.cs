@@ -120,7 +120,10 @@ namespace AxibugEmuOnline.Client
 
                     m_sampledState = FromNet(replayData);
                 }
-                else m_sampledState = default(ControllerState);
+                else
+                {
+                    m_sampledState = default(ControllerState);
+                }
 
                 var localState = m_controllerMapper.CreateState();
                 var rawData = ToNet(localState);
