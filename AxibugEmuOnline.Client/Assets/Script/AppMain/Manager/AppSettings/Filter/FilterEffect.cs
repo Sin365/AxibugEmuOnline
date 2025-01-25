@@ -34,7 +34,12 @@ namespace AxibugEmuOnline.Client
 
         protected virtual void Init()
         {
-            m_material = new Material(Shader.Find(ShaderName));
+            if (ShaderName != null)
+            {
+                var shader = Shader.Find(ShaderName);
+                if (shader != null) m_material = new Material(Shader.Find(ShaderName));
+            }
+
             OnInit(m_material);
         }
 
@@ -66,7 +71,7 @@ namespace AxibugEmuOnline.Client
 
         public virtual void Render(Texture src, RenderTexture result)
         {
-            m_material.SetVector(m_iResolutionID, new Vector4(result.width, result.height));
+            if (m_material != null) m_material.SetVector(m_iResolutionID, new Vector4(result.width, result.height));
             OnRenderer(m_material, src, result);
         }
 

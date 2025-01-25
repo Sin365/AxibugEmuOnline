@@ -1,14 +1,16 @@
-﻿using AxibugEmuOnline.Client;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Filter1990_esque : FilterEffect
+namespace AxibugEmuOnline.Client.Filters
 {
-    public override string Name => "1990-esque";
-
-    protected override string ShaderName => "Filter/1990-esque";
-
-    protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
+    public class Filter1990_esque : FilterEffect
     {
-        Graphics.Blit(src, result, renderMat, 1);
+        public override string Name => "1990-esque";
+
+        protected override string ShaderName => "Filter/1990-esque";
+
+        protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
+        {
+            Graphics.Blit(src, result, renderMat, 1);
+        }
     }
 }

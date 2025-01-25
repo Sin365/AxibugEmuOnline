@@ -33,7 +33,7 @@ namespace AxibugEmuOnline.Client
             slider.minValue = (float)valueMenu.Min;
             slider.maxValue = (float)valueMenu.Max;
             slider.value = (float)valueMenu.ValueRaw;
-            m_step = (slider.maxValue - slider.minValue) * 0.05f;
+            m_step = (slider.maxValue - slider.minValue) * 0.01f;
             m_dataSetting = false;
         }
 
