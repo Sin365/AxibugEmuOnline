@@ -163,8 +163,6 @@ public class UMAME : MonoBehaviour, IEmuCore
     }
     void Update()
     {
-        mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")}");
-
         if (!bInGame)
             return;
 
@@ -176,13 +174,15 @@ public class UMAME : MonoBehaviour, IEmuCore
         }
         mUniVideoPlayer.ApplyFilterEffect();
         mUniVideoPlayer.ApplyScreenScaler();
+
+        mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");
     }
 
     //是否跳帧，单机无效
     void FixEmulatorFrame()
     {
         var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-        if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
+        if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
         for (var i = 0; i < skipFrameCount; i++)
             if (!PushEmulatorFrame())
                 break;

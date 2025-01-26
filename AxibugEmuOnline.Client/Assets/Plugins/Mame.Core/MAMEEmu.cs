@@ -46,6 +46,7 @@ namespace MAME.Core
             Thread.Sleep(20);
             State.loadstate_callback.Invoke(sr);
             Mame.postload();
+            mameMainMotion.ResetFreameIndex();
             Thread.Sleep(20);
             Mame.paused = false;
         }

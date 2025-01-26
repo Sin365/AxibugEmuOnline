@@ -289,6 +289,15 @@ namespace MAME.Core
             }
         }
 
+        public void ResetFreameIndex()
+        {
+            Mame.paused = true;
+            Thread.Sleep(20);
+            Video.screenstate.frame_number = 0;
+            Thread.Sleep(20);
+            Mame.paused = false;
+        }
+
         private void itemSelect()
         {
             switch (Machine.sBoard)

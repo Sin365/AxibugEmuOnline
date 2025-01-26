@@ -83,7 +83,7 @@ namespace AxibugEmuOnline.Client.Network
             {
                 //抛出网络数据
                 //网络线程直接抛
-                if (CMDID == (int)CommandID.CmdPing || CMDID == (int)CommandID.CmdPong)
+                if (CMDID <= (int)CommandID.CmdPong)
                     NetMsg.Instance.PostNetMsgEvent(CMDID, ERRCODE, data);
                 else//加入队列，主线程来取
                     NetMsg.Instance.EnqueueNesMsg(CMDID, ERRCODE, data);
