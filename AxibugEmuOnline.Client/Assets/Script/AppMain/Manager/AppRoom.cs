@@ -331,7 +331,6 @@ namespace AxibugEmuOnline.Client.Manager
                 Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, newJoin);
             }
 
-            bool bChangeSlot = false;
             for (int i = 0; i < 4; i++)
             {
                 var oldSlot = oldslotArr[i];
@@ -344,7 +343,6 @@ namespace AxibugEmuOnline.Client.Manager
                     oldSlot.PlayerLocalJoyIdx != newSlot.PlayerLocalJoyIdx
                     )
                 {
-                    bChangeSlot = true;
                     if (newSlot.PlayerUID > 0)
                     {
                         OverlayManager.PopTip($"[{newSlot.PlayerNickName}]使用:P{i}");
@@ -352,10 +350,8 @@ namespace AxibugEmuOnline.Client.Manager
                 }
             }
 
-            if (bChangeSlot)
-            {
-                Eventer.Instance.PostEvent(EEvent.OnRoomSlotDataChanged);
-            }
+            Eventer.Instance.PostEvent(EEvent.OnRoomSlotDataChanged);
+
 
             //for (int i = 0; i < 4; i++)
             //{
