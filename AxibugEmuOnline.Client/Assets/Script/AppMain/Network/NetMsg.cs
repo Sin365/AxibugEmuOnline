@@ -2,6 +2,7 @@
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Network
 {
@@ -76,7 +77,6 @@ namespace AxibugEmuOnline.Client.Network
             {
                 while (queueNetMsg.Count > 0)
                 {
-
                     var msgData = queueNetMsg.Dequeue();
                     PostNetMsgEvent(msgData.Item1, msgData.Item2, msgData.Item3);
                 }
