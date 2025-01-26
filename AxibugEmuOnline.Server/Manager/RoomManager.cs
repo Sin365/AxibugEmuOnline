@@ -735,8 +735,9 @@ namespace AxibugEmuOnline.Server
         /// 按照SlotIdx设置Input
         /// </summary>
         /// <param name="slotIdx"></param>
-        void SetInputDataBySlotIdx(uint slotIdx, ushort val)
+        void SetInputDataBySlotIdx(uint slotIdx, ServerInputSnapShot data)
         {
+            ushort val = 0;
             switch (GameRomPlatformType)
             {
                 case RomPlatformType.Cps1:
@@ -745,6 +746,14 @@ namespace AxibugEmuOnline.Server
                 case RomPlatformType.Igs:
                 case RomPlatformType.ArcadeOld:
                     {
+                        switch (slotIdx)
+                        {
+                            case 0: val = data.p1_ushort; break;
+                            case 1: val = data.p2_ushort; break;
+                            case 2: val = data.p3_ushort; break;
+                            case 4: val = data.p4_ushort; break;
+                        }
+
                         //ushort 类型作为单个玩家操作
                         switch (slotIdx)
                         {
@@ -757,6 +766,13 @@ namespace AxibugEmuOnline.Server
                     break;
                 default:
                     {
+                        switch (slotIdx)
+                        {
+                            case 0: val = data.p1_byte; break;
+                            case 1: val = data.p2_byte; break;
+                            case 2: val = data.p3_byte; break;
+                            case 4: val = data.p4_byte; break;
+                        }
                         //byte 类型作为单个玩家操作
                         switch (slotIdx)
                         {
@@ -999,10 +1015,10 @@ namespace AxibugEmuOnline.Server
         {
             switch (LocalJoyIdx)
             {
-                case 0: SetInputDataBySlotIdx(SlotIdx, clieninput.p1_byte); break;
-                case 1: SetInputDataBySlotIdx(SlotIdx, clieninput.p2_byte); break;
-                case 2: SetInputDataBySlotIdx(SlotIdx, clieninput.p3_byte); break;
-                case 3: SetInputDataBySlotIdx(SlotIdx, clieninput.p4_byte); break;
+                case 0: SetInputDataBySlotIdx(SlotIdx, clieninput); break;
+                case 1: SetInputDataBySlotIdx(SlotIdx, clieninput); break;
+                case 2: SetInputDataBySlotIdx(SlotIdx, clieninput); break;
+                case 3: SetInputDataBySlotIdx(SlotIdx, clieninput); break;
             }
         }
         public int GetPlayerCount()
