@@ -327,7 +327,7 @@ namespace AxibugEmuOnline.Client.Manager
             {
                 UserDataBase newplayer = App.user.GetUserByUid(newJoin);
                 string newplayerName = newplayer != null ? newplayer.NickName : "Player";
-                OverlayManager.PopTip($"[{newplayer}]进入房间");
+                OverlayManager.PopTip($"[{newplayer.NickName}]进入房间");
                 Eventer.Instance.PostEvent(EEvent.OnOtherPlayerJoinRoom, newJoin);
             }
 
@@ -527,7 +527,7 @@ namespace AxibugEmuOnline.Client.Manager
                 TestAllData = msg.InputData;
                 App.log.Debug($"ServerFrameID->{msg.ServerFrameID} FrameID->{msg.FrameID} ClientFrame->{netReplay.mCurrClientFrameIdx} InputData->{msg.InputData}");
             }
-            netReplay.InData(new ReplayStep() { FrameStartID = (int)msg.FrameID, InPut = msg.InputData }, (int)msg.ServerFrameID);
+            netReplay.InData(new ReplayStep() { FrameStartID = (int)msg.FrameID, InPut = msg.InputData }, (int)msg.ServerFrameID, msg.ServerForwardCount);
         }
 
         public void SendScreen(byte[] RenderBuffer)

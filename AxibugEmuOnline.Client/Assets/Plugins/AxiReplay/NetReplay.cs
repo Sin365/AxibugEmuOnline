@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace AxiReplay
 {
@@ -23,7 +24,7 @@ namespace AxiReplay
         /// <summary>
         /// 网络数据队列
         /// </summary>
-        Queue<ReplayStep> mNetReplayQueue = new Queue<ReplayStep>();
+        public Queue<ReplayStep> mNetReplayQueue { get; private set; } = new Queue<ReplayStep>();
         /// <summary>
         /// 当前数据
         /// </summary>
@@ -45,9 +46,11 @@ namespace AxiReplay
             mCurrReplay.FrameStartID = int.MinValue;
             bNetInit = false;
         }
-        public void InData(ReplayStep inputData, int ServerFrameIdx)
+        public void InData(ReplayStep inputData, int ServerFrameIdx, uint ServerForwardCount)
         {
+            mRemoteForwardCount = (int)ServerForwardCount;
             mNetReplayQueue.Enqueue(inputData);
+            Debug.Log($"InData=>{inputData.FrameStartID} QCount = >{mNetReplayQueue.Count}");
             mRemoteFrameIdx = inputData.FrameStartID;
             if (!bNetInit)
             {
@@ -90,7 +93,8 @@ namespace AxiReplay
         {
             bool result;
             inputDiff = false;
-            if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
+            //if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
+            if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= mRemoteForwardCount)
             {
                 //当前帧追加
                 mCurrClientFrameIdx = targetFrame;
@@ -112,7 +116,7 @@ namespace AxiReplay
 
         public int GetSkipFrameCount()
         {
-            if(!bNetInit)
+            if (!bNetInit)
                 return 0;
             //本地队列差异高于服务器提前量的值
             int moreNum = mDiffFrameCount - mRemoteForwardCount;
@@ -125,12 +129,22 @@ namespace AxiReplay
 
             int skip = 0;
             if (mDiffFrameCount > short.MaxValue) skip = 0;
-            else if (moreNum <= 1) skip = 0;
-            else if (moreNum <= 3) skip = 2;
-            else if (moreNum <= 6) skip = 2;
-            else if (moreNum <= 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
+            else if (moreNum <= mRemoteForwardCount) skip = 0;
+            else if (moreNum <= mRemoteForwardCount + 2) skip = 0;
+            else if (moreNum <= mRemoteForwardCount + 5) skip = 1;
+            else if (moreNum <= mRemoteForwardCount + 6) skip = 2;
+            else if (moreNum <= mRemoteForwardCount + 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
             else skip = moreNum;//完全追上
             return skip;
+
+            //int skip = 0;
+            //if (mDiffFrameCount > short.MaxValue) skip = 0;
+            //else if (moreNum <= 1) skip = 0;
+            //else if (moreNum <= 3) skip = 2;
+            //else if (moreNum <= 6) skip = 2;
+            //else if (moreNum <= 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
+            //else skip = moreNum;//完全追上
+            //return skip;
 
             //var frameGap = mDiffFrameCount;
             //if (frameGap > 10000) return 0;
