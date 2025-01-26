@@ -10,6 +10,9 @@ namespace AxibugEmuOnline.Client
 {
     public class VideoProvider : MonoBehaviour
     {
+        public RenderTexture OutputPixel => rt_gpu;
+        public RawImage Drawer => Image;
+
         #region UI_REF
         public NesEmulator NesEmu;
         public Canvas DrawCanvas;

@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using VirtualNes.Core;
 using VirtualNes.Core.Debug;
 
@@ -36,25 +37,6 @@ namespace AxibugEmuOnline.Client
             Application.targetFrameRate = 60;
             VideoProvider.NesEmu = this;
             AudioProvider.NesEmu = this;
-        }
-
-        /// <summary>
-        ///     Unity的逐帧驱动
-        /// </summary>
-        private unsafe void Update()
-        {
-            if (NesCore != null && !IsPause)
-            {
-                PushEmulatorFrame();
-                if (InGameUI.Instance.IsNetPlay)
-                    FixEmulatorFrame();
-
-                var screenBuffer = NesCore.ppu.GetScreenPtr();
-                VideoProvider.SetDrawData(screenBuffer);
-            }
-
-            VideoProvider.ApplyScreenScaler();
-            VideoProvider.ApplyFilterEffect();
         }
 
         public RomPlatformType Platform => RomPlatformType.Nes;
@@ -148,20 +130,11 @@ namespace AxibugEmuOnline.Client
 #if UNITY_EDITOR
         private ControllerState m_lastState;
 #endif
-        //是否跳帧，单机无效
-        private void FixEmulatorFrame()
-        {
-            var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-
-            if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount}");
-            for (var i = 0; i < skipFrameCount; i++)
-                if (!PushEmulatorFrame())
-                    break;
-        }
-
         //推进帧
-        private bool PushEmulatorFrame()
+        public bool PushEmulatorFrame()
         {
+            if (NesCore == null || IsPause) return false;
+
             m_coreSupporter.SampleInput(NesCore.FrameCount);
             var controlState = m_coreSupporter.GetControllerState();
 
@@ -180,6 +153,12 @@ namespace AxibugEmuOnline.Client
             return true;
         }
 
+
+        public unsafe void AfterPushFrame()
+        {
+            var screenBuffer = NesCore.ppu.GetScreenPtr();
+            VideoProvider.SetDrawData(screenBuffer);
+        }
 
         public IControllerSetuper GetControllerSetuper()
         {
@@ -220,6 +199,10 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
+
+        public Texture OutputPixel => VideoProvider.OutputPixel;
+        public RawImage DrawCanvas => VideoProvider.Drawer;
+
 #endif
     }
 }

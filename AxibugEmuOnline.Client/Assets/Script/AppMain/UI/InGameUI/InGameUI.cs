@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,36 @@ namespace AxibugEmuOnline.Client
             menus.Add(new InGameUI_QuitGame(this));
 
             base.Awake();
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            PushCoreFrame();
+
+            App.settings.Filter.ExecuteFilterRender(Core.OutputPixel, Core.DrawCanvas);
+            App.settings.ScreenScaler.CalcScale(Core.DrawCanvas, Core.Platform);
+        }
+
+        void PushCoreFrame()
+        {
+            if (Core.IsNull()) return;
+            //fluash netMsg
+            NetMsg.Instance.DequeueNesMsg();
+
+            if (!Core.PushEmulatorFrame()) return;
+
+            if (IsNetPlay) //skip frame handle
+            {
+                var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
+                if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
+                for (var i = 0; i < skipFrameCount; i++)
+                    if (!Core.PushEmulatorFrame())
+                        break;
+            }
+
+            Core.AfterPushFrame();
         }
 
         protected override void OnDestroy()

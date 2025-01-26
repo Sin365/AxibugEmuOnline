@@ -1,5 +1,6 @@
 ﻿using AxibugProtobuf;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
@@ -34,6 +35,12 @@ namespace AxibugEmuOnline.Client
         RomPlatformType Platform { get; }
         /// <summary> 获取当前模拟器帧序号,在加载快照和Reset后,应当重置为0 </summary>
         uint Frame { get; }
+        /// <summary> 模拟器核心推帧 </summary>
+        bool PushEmulatorFrame();
+        /// <summary> 模拟器核心推帧结束 </summary>
+        void AfterPushFrame();
+        Texture OutputPixel { get; }
+        RawImage DrawCanvas { get; }
     }
 
     public static class IEnumCoreTool

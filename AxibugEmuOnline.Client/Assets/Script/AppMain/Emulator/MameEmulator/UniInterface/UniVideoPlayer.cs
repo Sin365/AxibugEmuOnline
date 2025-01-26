@@ -1,4 +1,4 @@
-using AxibugEmuOnline.Client.ClientCore;
+锘縰sing AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using MAME.Core;
 using System;
@@ -24,6 +24,9 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
     public ulong mFrame { get; private set; }
     bool bInit = false;
 
+    public Texture2D rawBufferWarper => m_rawBufferWarper;
+    public RawImage DrawCanvas => m_drawCanvas;
+
     private void Awake()
     {
         mFrame = 0;
@@ -31,7 +34,7 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
         m_drawCanvasrect = m_drawCanvas.GetComponent<RectTransform>();
     }
 
-    public void Initialize(int width, int height,IntPtr framePtr)
+    public void Initialize(int width, int height, IntPtr framePtr)
     {
         m_drawCanvas.color = Color.white;
 
@@ -40,7 +43,7 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
             mScreenSize = new Vector2Int(width, height);
             mDataLenght = width * height * 4;
             //mFrameData = new int[mWidth * mHeight];
-            //MAME来的是BGRA32，好好好 BGRA->RGBA
+            //MAME鏉ョ殑鏄疊GRA32锛屽ソ濂藉ソ BGRA->RGBA
             m_rawBufferWarper = new Texture2D(mScreenSize.x, mScreenSize.y, TextureFormat.RGBA32, false);
             m_rawBufferWarper.filterMode = FilterMode.Point;
         }
@@ -56,7 +59,7 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
     public void StopVideo()
     {
         bInit = false;
-        m_drawCanvas.color = new Color(0,0,0,0);
+        m_drawCanvas.color = new Color(0, 0, 0, 0);
     }
 
     //void Update()

@@ -1,14 +1,16 @@
-﻿using AxibugEmuOnline.Client;
-using UnityEngine;
+﻿using UnityEngine;
 
-public sealed class LCDPostEffect : FilterEffect
+namespace AxibugEmuOnline.Client.Filters
 {
-    public override string Name => nameof(LCDPostEffect);
-
-    protected override string ShaderName => "Filter/LCDPostEffect";
-
-    protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
+    public sealed class LCDPostEffect : FilterEffect
     {
-        Graphics.Blit(src, result, renderMat);
+        public override string Name => nameof(LCDPostEffect);
+
+        protected override string ShaderName => "Filter/LCDPostEffect";
+
+        protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
+        {
+            Graphics.Blit(src, result, renderMat);
+        }
     }
 }

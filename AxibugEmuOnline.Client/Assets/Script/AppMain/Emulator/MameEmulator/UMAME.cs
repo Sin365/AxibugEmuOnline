@@ -1,3 +1,7 @@
+Ôªøusing AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Network;
+using AxibugProtobuf;
 using AxiReplay;
 using MAME.Core;
 using System;
@@ -6,13 +10,6 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-using AxibugEmuOnline.Client;
-using AxibugEmuOnline.Client.ClientCore;
-using AxibugProtobuf;
-using static AxibugEmuOnline.Client.NesControllerMapper;
-using VirtualNes.Core;
-using System.Linq;
-using AxibugEmuOnline.Client.Event;
 
 public class UMAME : MonoBehaviour, IEmuCore
 {
@@ -49,9 +46,9 @@ public class UMAME : MonoBehaviour, IEmuCore
     {
 
 
-        //…ËŒ™60÷°
-        Application.targetFrameRate = 60;
-        // «ø÷∆∫·∆¡
+        //ËÆæ‰∏∫60Â∏ß
+        Application.targetFrameRate = 120;
+        // Âº∫Âà∂Ê®™Â±è
         Screen.orientation = ScreenOrientation.LandscapeLeft;
         instance = this;
         mFPS = GameObject.Find("FPS").GetComponent<Text>();
@@ -75,7 +72,7 @@ public class UMAME : MonoBehaviour, IEmuCore
     {
         StopGame();
     }
-    #region  µœ÷Ω”ø⁄
+    #region ÂÆûÁé∞Êé•Âè£
     public object GetState()
     {
         return SaveState();
@@ -107,7 +104,7 @@ public class UMAME : MonoBehaviour, IEmuCore
         if (LoadGame(romFile.FileName, false))
             return true;
         else
-            return "Romº”‘ÿ ß∞‹";
+            return "RomÂä†ËΩΩÂ§±Ë¥•";
     }
     public void Dispose()
     {
@@ -130,9 +127,9 @@ public class UMAME : MonoBehaviour, IEmuCore
         mReplayWriter = new ReplayWriter(mChangeRomName, "fuck", ReplayData.ReplayFormat.FM32IP64, Encoding.UTF8);
         mChangeRomName = loadRom;
         StopGame();
-        //∂¡»°ROM
+        //ËØªÂèñROM
         emu.LoadRom(mChangeRomName);
-        //∂¡»°≥…π¶
+        //ËØªÂèñÊàêÂäü
         if (emu.bRom)
         {
             if (bReplay)
@@ -142,14 +139,14 @@ public class UMAME : MonoBehaviour, IEmuCore
                 mUniKeyboard.SetRePlay(true);
             }
 
-            //∂¡»°ROM÷Æ∫ÛªÒµ√øÌ∏ﬂ≥ı ºªØª≠√Ê
+            //ËØªÂèñROM‰πãÂêéËé∑ÂæóÂÆΩÈ´òÂàùÂßãÂåñÁîªÈù¢
             int _width; int _height; IntPtr _framePtr;
             emu.GetGameScreenSize(out _width, out _height, out _framePtr);
             App.log.Debug($"_width->{_width}, _height->{_height}, _framePtr->{_framePtr}");
             mUniVideoPlayer.Initialize(_width, _height, _framePtr);
-            //≥ı ºªØ“Ù∆µ
+            //ÂàùÂßãÂåñÈü≥È¢ë
             mUniSoundPlayer.Initialize();
-            //ø™ º”Œœ∑
+            //ÂºÄÂßãÊ∏∏Êàè
             emu.StartGame();
             bInGame = true;
             bLogicUpdatePause = true;
@@ -157,48 +154,29 @@ public class UMAME : MonoBehaviour, IEmuCore
         }
         else
         {
-            App.log.Debug($"ROMº”‘ÿ ß∞‹");
+            App.log.Debug($"ROMÂä†ËΩΩÂ§±Ë¥•");
             return false;
         }
     }
-    void Update()
+
+    public bool PushEmulatorFrame()
     {
-        if (!bInGame)
-            return;
+        if (!bInGame) return false;
+        if (!bLogicUpdatePause) return false;
 
-        if (bLogicUpdatePause)
-        {
-            PushEmulatorFrame();
-            if (InGameUI.Instance.IsNetPlay)
-                FixEmulatorFrame();
-        }
-        mUniVideoPlayer.ApplyFilterEffect();
-        mUniVideoPlayer.ApplyScreenScaler();
-
-        mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");
-    }
-
-    // «∑ÒÃ¯÷°£¨µ•ª˙Œﬁ–ß
-    void FixEmulatorFrame()
-    {
-        var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-        if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
-        for (var i = 0; i < skipFrameCount; i++)
-            if (!PushEmulatorFrame())
-                break;
-    }
-
-    bool PushEmulatorFrame()
-    {
-        //≤…ºØ±æ÷°Input
+        //ÈááÈõÜÊú¨Â∏ßInput
         bool bhadNext = mUniKeyboard.SampleInput();
-        //»Áπ˚Œ¥ ’µΩInput ˝æ›,∫À–ƒ÷°≤ªÕ∆Ω¯
+        //Â¶ÇÊûúÊú™Êî∂Âà∞InputÊï∞ÊçÆ,Ê†∏ÂøÉÂ∏ß‰∏çÊé®Ëøõ
         if (!bhadNext) return false;
-        //∑≈––œ¬“ª÷°
+        //ÊîæË°å‰∏ã‰∏ÄÂ∏ß
         //emu.UnlockNextFreme();
-        //Õ∆÷°
+        //Êé®Â∏ß
         emu.UpdateFrame();
         return true;
+    }
+    public void AfterPushFrame()
+    {
+        mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");
     }
     public void SaveReplay()
     {
@@ -246,4 +224,10 @@ public class UMAME : MonoBehaviour, IEmuCore
         br.Close();
         fs.Close();
     }
+
+    public Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
+
+    public RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
+
+
 }

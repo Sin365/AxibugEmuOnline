@@ -45,6 +45,8 @@ public class ControllerInfo : MonoBehaviour
         Eventer.Instance.RegisterEvent(EEvent.OnLossLoginState, OnLossLoginState);
         Eventer.Instance.RegisterEvent(EEvent.OnControllerConnectChanged, OnControlConnectChanged);
         UpdateConnectInfo();
+
+        m_indexIcon.rectTransform.anchoredPosition = Vector3.zero;
     }
 
     private void OnDisable()
