@@ -47,7 +47,7 @@ public class UMAME : MonoBehaviour, IEmuCore
 
 
         //设为60帧
-        Application.targetFrameRate = 120;
+        Application.targetFrameRate = 60;
         // 强制横屏
         Screen.orientation = ScreenOrientation.LandscapeLeft;
         instance = this;
