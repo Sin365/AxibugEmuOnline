@@ -465,8 +465,13 @@ namespace AxibugEmuOnline.Server
             //取玩家操作数据中的第一个
             ServerInputSnapShot temp = new ServerInputSnapShot();
             temp.all = msg.InputData;
-            //room.SetPlayerInput(_c.RoomState.PlayerIdx, msg.FrameID, temp);
 
+            #region 服务器推帧方案
+            room.SetPlayerInput(_c.UID, msg.FrameID, temp);
+            #endregion
+
+            #region 客户端推帧方案
+            /*
             //是否需要推帧
             if (room.GetNeedForwardTick(msg.FrameID, out long forwaFrame))
             {
@@ -490,6 +495,8 @@ namespace AxibugEmuOnline.Server
                 //虽然不推帧，但是存入Input
                 room.SetPlayerInput(_c.UID, msg.FrameID, temp);
             }
+            */
+            #endregion
 
             if (room.LastTestRecv != room.mCurrInputData.all)
             {
@@ -599,8 +606,8 @@ namespace AxibugEmuOnline.Server
                 int roomid = mKeyRoomList[i];
                 if (!mDictRoom.TryGetValue(roomid, out Data_RoomData room) || room.GameState < RoomGameState.InOnlineGame)
                     continue;
-                //更新帧
-                //room.TakeFrame();
+                //更新帧（服务器主动跑时用）
+                room.TakeFrame();
                 //广播
                 room.SynInputData();
             }
@@ -632,7 +639,7 @@ namespace AxibugEmuOnline.Server
         public Queue<(uint, ServerInputSnapShot)> mInputQueue;
 
         public List<double> send2time;
-        const int SynLimitOnSec = 63;
+        const int SynLimitOnSec = 61;
 
         object synInputLock = new object();
         //TODO
@@ -1037,10 +1044,11 @@ namespace AxibugEmuOnline.Server
             UpdateRoomForwardNum();
 
             uint StartForwardFrames = (SrvForwardFrames * 2) + 5;
-            StartForwardFrames = Math.Min(10, StartForwardFrames);
+            StartForwardFrames = Math.Max(10, StartForwardFrames);
             //服务器提前跑帧数
-            for (int i = 0; i < SrvForwardFrames; i++)
+            for (int i = 0; i < StartForwardFrames; i++)
                 TakeFrame();
+
             AppSrv.g_Log.Info($"房间初始提前量=>{StartForwardFrames}，当前延迟提前量=>{SrvForwardFrames}");
         }
         public void TakeFrame()
@@ -1066,39 +1074,61 @@ namespace AxibugEmuOnline.Server
         /// </summary>
         public void SynInputData()
         {
-            List<(uint frameId, ServerInputSnapShot inputdata)> temp = null;
+            List<(uint frameId, ServerInputSnapShot inputdata)> temp = new List<(uint frameId, ServerInputSnapShot inputdata)>();
             bool flagInitList = false;
             lock (synInputLock)
             {
-                double timeNow = AppSrv.g_Tick.timeNow;
-                while (mInputQueue.Count > 0)
-                {
-                    if (send2time.Count >= SynLimitOnSec)
-                    {
-                        //AppSrv.g_Log.Info($"{timeNow} - {send2time[0]} =>{timeNow - send2time[0]}");
-                        if (timeNow - send2time[0] < 1f) //最早的历史发送还在一秒之内
-                            break;
-                        else
-                            send2time.RemoveAt(0);
-                    }
-
-                    if (!flagInitList)
-                    {
-                        flagInitList = true;
-                        //temp = new List<(uint frameId, ServerInputSnapShot inputdata)>();
-                        temp = ObjectPoolAuto.AcquireList<(uint frameId, ServerInputSnapShot inputdata)>();
-                    }
-                    temp.Add(mInputQueue.Dequeue());
-                    send2time.Add(timeNow);
-                }
+                #region 限制帧速率
+                //double timeNow = AppSrv.g_Tick.timeNow;
                 //while (mInputQueue.Count > 0)
                 //{
+                //    if (send2time.Count >= SynLimitOnSec)
+                //    {
+                //        //AppSrv.g_Log.Info($"{timeNow} - {send2time[0]} =>{timeNow - send2time[0]}");
+                //        if (timeNow - send2time[0] < 1f) //最早的历史发送还在一秒之内
+                //            break;
+                //        else
+                //            send2time.RemoveAt(0);
+                //    }
+                //    if (!flagInitList)
+                //    {
+                //        flagInitList = true;
+                //        //temp = new List<(uint frameId, ServerInputSnapShot inputdata)>();
+                //        temp = ObjectPoolAuto.AcquireList<(uint frameId, ServerInputSnapShot inputdata)>();
+                //    }
                 //    temp.Add(mInputQueue.Dequeue());
+                //    send2time.Add(timeNow);
                 //}
+
+                //第二种限制速率办法
+                //int SendCount = 0; ;
+                //while (mInputQueue.Count > 0)
+                //{
+                //    SendCount++;
+                //    temp.Add(mInputQueue.Dequeue());
+                //    if (SendCount >= SynLimitOnSec)
+                //    {
+                //        AppSrv.g_Log.Debug($"outSide SendCount=>{SendCount},morequeue.count->{mInputQueue.Count}");
+                //        break;
+                //    }
+                //}
+                #endregion
+
+                int SendCount = 0; ;
+                while (mInputQueue.Count > 0)
+                {
+                    SendCount++;
+                    temp.Add(mInputQueue.Dequeue());
+                    if (SendCount >= SynLimitOnSec)
+                    {
+                        AppSrv.g_Log.Debug($"outSide SendCount=>{SendCount},morequeue.count->{mInputQueue.Count}");
+                        break;
+                    }
+                }
             }
 
-            if (!flagInitList)
-                return;
+            //if (!flagInitList)
+            //    return;
 
             for (int i = 0; i < temp.Count; i++)
             {
@@ -1270,7 +1300,7 @@ namespace AxibugEmuOnline.Server
             return true;
         }
         #endregion
-        public void SetPlayerInput(long UID, uint LocalJoyIdx, ServerInputSnapShot clieninput)
+        public void SetPlayerInput(long UID, uint FrameID, ServerInputSnapShot clieninput)
         {
             for (uint i = 0; i < PlayerSlot.Count(); i++)
             {
@@ -1301,6 +1331,9 @@ namespace AxibugEmuOnline.Server
         {
             this.ScreenRaw = NextStateRaw;
         }
+
+
+        #region 客户端推帧方案
         public bool GetNeedForwardTick(uint clientFrame, out long forwaFrame)
         {
             forwaFrame = 0;
@@ -1310,6 +1343,7 @@ namespace AxibugEmuOnline.Server
                 forwaFrame = targetFrame - mCurrServerFrameId;
             return forwaFrame > 0;
         }
+        #endregion
 
         #endregion
     }

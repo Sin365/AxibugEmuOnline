@@ -27,7 +27,8 @@ namespace AxibugEmuOnline.Server.Manager
             mAREList32ms = new List<AutoResetEvent>();
             mAREList2000ms = new List<AutoResetEvent>();
 
-            mTimer16ms = new System.Timers.Timer(16);//实例化Timer类，设置间隔时间为10000毫秒；
+            //mTimer16ms = new System.Timers.Timer(16);//实例化Timer类，设置间隔时间为10000毫秒；
+            mTimer16ms = new System.Timers.Timer(16.666f);//实例化Timer类，设置间隔时间为10000毫秒；
             mTimer16ms.Elapsed += new System.Timers.ElapsedEventHandler((source, e) => { UpdateARE(mAREList16ms); });//到达时间的时候执行事件；
             mTimer16ms.AutoReset = true;//设置是执行一次（false）还是一直执行(true)；
             mTimer16ms.Enabled = true;//是否执行System.Timers.Timer.Elapsed事件；
