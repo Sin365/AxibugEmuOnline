@@ -80,7 +80,7 @@
 		
 	- 8Bit EmuCore
 
-		Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity 即将并入本项目。。
+		Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity 即将并入本项目。
 		
 		支持平台：
 		- GameBoy
@@ -159,6 +159,7 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 
 * HaoYueNet-Github - https://github.com/Sin365/HaoYueNet 本项目使用，我自构建的HaoYueNet高性能网络库作为基础而开发
 * HaoYueNet-自建Git站点 - http://git.axibug.com/sin365/HaoYueNet
+* AxiReplay - https://github.com/Sin365/AxiReplay 自写的一套Replay系统，用于Replay支持和部分用于网络Input逻辑。
 * MAME.Core - http://git.axibug.com/sin365/MAME.Core
 * Essgee.Unity - https://github.com/Sin365/Essgee.Unity
 * ShaderToy - https://www.shadertoy.com/
