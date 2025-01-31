@@ -34,6 +34,8 @@ namespace AxiReplay
         /// </summary>
         ReplayStep mNextReplay;
 
+        FrameProfiler frameProfiler = new FrameProfiler();
+
         bool bNetInit = false;
         public NetReplay()
         {
@@ -45,6 +47,8 @@ namespace AxiReplay
             mCurrReplay = default(ReplayStep);
             mCurrReplay.FrameStartID = int.MinValue;
             bNetInit = false;
+
+            frameProfiler.Reset();
         }
         public void InData(ReplayStep inputData, int ServerFrameIdx, uint ServerForwardCount)
         {
@@ -57,7 +61,10 @@ namespace AxiReplay
                 bNetInit = true;
                 mNextReplay = mNetReplayQueue.Dequeue();
             }
+
+            frameProfiler.InputHead(inputData.FrameStartID);
         }
+
         public bool TryGetNextFrame(out ReplayStep data, out int frameDiff, out bool inputDiff)
         {
             if (!bNetInit)
@@ -93,6 +100,8 @@ namespace AxiReplay
         {
             bool result;
             inputDiff = false;
+
+
             //if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
             if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= mRemoteForwardCount)
             {
