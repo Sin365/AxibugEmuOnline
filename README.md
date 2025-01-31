@@ -56,19 +56,33 @@
 	AxibugEmuOnline.Web 是Asp.Net Core(.Net 9)的WebApi
 
 	AxibugEmuOnline.Client 是客户端 Unity
+	
+	AxibugEmuOnline.Client.PSVita 是PSVita平台，因较为特殊，单独归档。本质是Client的分支。
+
+### 模拟器核心 
+
+	- NES/FC EmuCore NES/FC 模拟器核心
 		
-		- NES EmuCore NES模拟器核心
+		VirtuaNes.Core（C#）：我们自己参照VirtuaNes源码将C++手动翻译到C#重写，并收纳民间各种扩展Mapper实现，接近于最全的游戏支持。实测，高倍速加速游戏的同时（几百fps），且进行网络同步，性能一致，完全同步
 		
-				VirtualNes （C++手动翻译到C#，并收纳民间各种扩展Mapper实现，接近于最全的游戏支持。实测，高倍速加速游戏的同时（几百fps），且进行网络同步，性能一致，完全同步）
+	- Arcade EmuCore 街机模拟器核心
 				
-				~~My Nes~~ (功能全，但是性能局限，不作为主要使用，但已经移植纯.Net Standard2.0归档)
-				
-				~~Emulator.NES~~ (较为初级，已经废弃)
+		MAME.Core 来自于我另一个移植项目 - https://github.com/sin365/MAME.Core 源头上是将著名街机模拟器核心 MAME C/C++源码核心逻辑翻译到C#重写的项目MAME.NET。
+			MAME.Core 改变MAME.NET解耦了其中的WIN32API和GDI依赖，并大量unsafe指针化操作优化程序效率，以及改写CPU时钟推进方式，移除了不必要的Cheat和CPU-Debug行为。使其成为更注重运行的高性能模拟器核心。
+			并作为本项目的主要街机核心。
+
+		支持平台：
+		-CPS1
+		-CPS2
+		-NEOGEO
+		-IGS
+		-以及其他更老的街机平台。
 		
-		- 街机模拟器核心 Arcade EmuCore
-				
-				MAME.Net 来自于我另一个移植项目 ，http://git.axibug.com/sin365/MAME.Core 最终会迁移进来。源头上是MAME C/C++源码翻译C#
-				
+	- 8Bit EmuCore
+
+		Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity 即将并入本项目。。
+		
+		支持平台：
 		- GameBoy
 		- GameBoyColor
 		- ColecoVision
@@ -76,15 +90,14 @@
 		- MasterSystem
 		- SC3000
 		- SG1000
-				
-				Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity 最终会迁移进来。
 
-		- 其他核心，长期补充
+	- 其他核心：
+
+		长期补充
 
 ## 代码贡献/协作者
 
 [AlienJack](https://github.com/AlienJack "AlienJack") 
-
 
 
 ### NES 模拟器内核
@@ -97,7 +110,7 @@
 
 ~~随后，我们选择了更为全面的MyNes作为Nes模拟器核心，以此做二次开发和魔改。并实现自己的服务端和客户端联机逻辑~~
 
-最后，我们又开始尝试把 VirtualNes 的C++源码徒手翻译为C#，在尝试内核的路上越走越远……
+最后，我们又花了一个多月把 VirtualNes 的C++源码徒手翻译为C#，在尝试内核的路上越走越远……
 
 
 ### 关于 NES Mapper支持
@@ -114,63 +127,49 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 
 我们的项目也必须支持上! 咱们也同步要进行一个补充
 
-追加了特殊的失传Mapper 35,111,162,163,175,176,178,192,195,199,216 (from https://github.com/yamanyandakure/VirtuaNES097)
+追加了特殊的失传Mapper:35,111,162,163,175,176,178,192,195,199,216 (from https://github.com/yamanyandakure/VirtuaNES097)
 
-后续补充二次，修正 Mapper163 175 176 178 192 199 参照叶枫VirtuaNESex_src(20191105)
+后续补充二次，修正 Mapper:163,175,176,178,192,199 参照叶枫VirtuaNESex_src(20191105)
 
-后续补充第三次，修正Mapper 191 支持madcell大字汉化的《热血时代剧》《热血物语》《快打旋风》《双截龙3》, 添加Mapper253 支持外星《龙珠 中文》 （参照VirtuaNES Plus 翻译代码)
+后续补充第三次，修正Mapper:191 支持madcell大字汉化的《热血时代剧》《热血物语》《快打旋风》《双截龙3》, 添加Mapper253 支持外星《龙珠 中文》 （参照VirtuaNES Plus 翻译代码)
 
 
 ### 街机模拟器核心 CPS1 / NEOGEO / PGM / Taito(b) / Tehkan / or other MAME platform
 	
 	原本是我独立移植到Unity的C# MAME.Core实现
-	
-	最终会继承到本项目中
-	
 	http://git.axibug.com/sin365/MAME.Core
 
 	
 ### 8bit 其他模拟器核心 GameBoy / GameBoyColor / ColecoVision / GameGear / MasterSystem / SC3000 / SG1000
 	
-	原本是我独立移植到Unity的C# Essgee实现，包含：
-	
-	最终会继承到本项目中
-	
+	原本是我独立移植到Unity的实现
 	https://github.com/Sin365/Essgee.Unity
 
 ## 各种有意义的探索（作为额外功能，和核心功能：联机 无关）
 
 	应该是Unity引擎中对于模拟器内核的画面接入良好的范例
-	
 	除了联机同步之外，模拟器本身的一些云游戏探索，如用模拟器帧缓存做视频直播
+
+## 废弃内容 
+
+	~~My Nes~~ (功能全，但是性能局限，不再使用，但已经移植纯.Net Standard2.0归档)
+	~~Emulator.NES~~ (较为初级，不再使用)
 
 ## 引用 和 致谢 Acknowledgements & Attribution
 
-### 本项目使用，我自构建的HaoYueNet高性能网络库作为基础而开发
-
-[HaoYueNet-Github](https://github.com/Sin365/HaoYueNet "HaoYueNet-Github")
-
-[HaoYueNet-自建Git站点](http://git.axibug.com/sin365/HaoYueNet "HaoYueNet-自建Git站点")
-
-[MAME.Core](http://git.axibug.com/sin365/MAME.Core "MAME.Core")
-
-[Essgee.Unity](https://github.com/Sin365/Essgee.Unity "Essgee.Unity")
-
-[ShaderToy](https://www.shadertoy.com/ "shadertoy")
-
-[VirtuaNES](http://virtuanes.s1.xrea.com/ "VirtuaNES")
-
-* 部分NES-Mapper扩展 https://github.com/yamanyandakure/VirtuaNES097
-* 部分NES-Mapper扩展 [VirtuaNESex](https://github.com/pengan1987/VirtuaNESex "VirtuaNESex")
-
-[nesdev.org NES - 2.0 XML Database](https://forums.nesdev.org/viewtopic.php?t=19940 "nesdev.org - NES 2.0 XML Database")
-
-[Essgee](https://github.com/xdanieldzd/Essgee "Essgee")
-
-* The XML data files in `Assets\No-Intro` were created by the [No-Intro](http://www.no-intro.org) project; see the [DAT-o-MATIC website](https://datomatic.no-intro.org) for official downloads.
-
-[MAME-NET](https://www.codeproject.com/Articles/1275365/MAME-NET "MAME-NET")
-
+* HaoYueNet-Github - https://github.com/Sin365/HaoYueNet 本项目使用，我自构建的HaoYueNet高性能网络库作为基础而开发
+* HaoYueNet-自建Git站点 - http://git.axibug.com/sin365/HaoYueNet
+* MAME.Core - http://git.axibug.com/sin365/MAME.Core
+* Essgee.Unity - https://github.com/Sin365/Essgee.Unity
+* ShaderToy - https://www.shadertoy.com/
+* VirtuaNES - http://virtuanes.s1.xrea.com/
+* 部分NES-Mapper扩展 - VirtuaNES097 https://github.com/yamanyandakure/VirtuaNES097
+* 部分NES-Mapper扩展 - VirtuaNESex https://github.com/pengan1987/VirtuaNESex
+* 部分NES-Mapper扩展 - VirtuaNESPlus/VirtuaNESUp https://github.com/dragon2snow/VirtuaNESUp
+* nesdev.org NES - 2.0 XML Database - https://forums.nesdev.org/viewtopic.php?t=19940
+* Essgee - https://github.com/xdanieldzd/Essgee
+* No-Intro - http://www.no-intro.org project; see the [DAT-o-MATIC website](https://datomatic.no-intro.org) for official downloads.
+* MAME-NET - https://www.codeproject.com/Articles/1275365/MAME-NET
 * MAME-Multiple Arcade Machine Emulator - https://github.com/mamedev
 * MSDN - https://msdn.microsoft.com
 * BizHawk M68000 and Z80 code - https://github.com/TASEmulators/BizHawk/tree/master/src/BizHawk.Emulation.Cores/CPUs
