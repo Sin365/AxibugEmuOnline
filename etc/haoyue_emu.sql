@@ -11,7 +11,7 @@
  Target Server Version : 100311
  File Encoding         : 65001
 
- Date: 28/11/2024 19:55:49
+ Date: 05/02/2025 11:46:40
 */
 
 SET NAMES utf8mb4;
@@ -24,18 +24,19 @@ DROP TABLE IF EXISTS `rom_stars`;
 CREATE TABLE `rom_stars`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
-  `platform` int(11) NOT NULL,
   `romid` int(11) NOT NULL,
   `logdate` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uid_romid`(`uid`, `romid`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
--- Table structure for romlist_nes
+-- Table structure for romlist
 -- ----------------------------
-DROP TABLE IF EXISTS `romlist_nes`;
-CREATE TABLE `romlist_nes`  (
+DROP TABLE IF EXISTS `romlist`;
+CREATE TABLE `romlist`  (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `PlatformType` int(11) NOT NULL,
   `Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `RomUrl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ImgUrl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -44,8 +45,9 @@ CREATE TABLE `romlist_nes`  (
   `Hash` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `playcount` int(11) NOT NULL DEFAULT 0,
   `stars` int(11) NOT NULL DEFAULT 0,
+  `parentids` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`Id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 2702 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 10940 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for room_log
@@ -60,7 +62,7 @@ CREATE TABLE `room_log`  (
   `state` int(11) NOT NULL,
   `logdate` datetime NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 867 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Table structure for room_log_state
@@ -83,6 +85,23 @@ CREATE TABLE `user_devices`  (
 ) ENGINE = MyISAM CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for user_gamesavedata
+-- ----------------------------
+DROP TABLE IF EXISTS `user_gamesavedata`;
+CREATE TABLE `user_gamesavedata`  (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `romid` int(11) NOT NULL,
+  `savidx` int(11) NOT NULL DEFAULT current_timestamp(),
+  `savName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `savNote` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `savUrl` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `savImgUrl` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `savDate` datetime NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for users
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
@@ -94,6 +113,6 @@ CREATE TABLE `users`  (
   `nikename` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `lastlogindate` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`uid`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

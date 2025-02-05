@@ -355,7 +355,6 @@ LIMIT ?offset, ?pageSize;";
             ALLINONE,
         }
 
-
         public bool CheckIsRomStar(int RomId, long uid)
         {
             bool bhad = false;
@@ -365,17 +364,11 @@ LIMIT ?offset, ?pageSize;";
                 string query = $"SELECT count(0) from rom_stars where uid = ?uid and romid = ?romid";
                 using (var command = new MySqlCommand(query, conn))
                 {
-                    // 设置参数值  
+                    // 设置参数值
                     command.Parameters.AddWithValue("?romid", RomId);
                     command.Parameters.AddWithValue("?uid", uid);
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            bhad = reader.GetInt32(0) > 0;
-                        }
-                    }
+                    // 执行查询并获取结果
+                    bhad = (int)command.ExecuteScalar() > 0;
                 }
             }
             catch (Exception e)
