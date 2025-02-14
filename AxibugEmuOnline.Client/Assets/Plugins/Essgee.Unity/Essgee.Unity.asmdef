@@ -1,13 +1,7 @@
 {
-    "name": "AxibugEmuOnline.Client",
+    "name": "Essgee.Unity",
     "rootNamespace": "",
-    "references": [
-        "AxiReplay",
-        "VirtualNes.Core",
-        "UIEffect2018",
-        "Mame.Core",
-        "Essgee.Unity"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
