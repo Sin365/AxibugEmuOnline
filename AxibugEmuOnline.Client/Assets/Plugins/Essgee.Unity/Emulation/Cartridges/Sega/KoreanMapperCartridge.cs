@@ -1,6 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
+using System.Linq;
 
 namespace Essgee.Emulation.Cartridges.Sega
 {
@@ -10,6 +11,27 @@ namespace Essgee.Emulation.Cartridges.Sega
 
         [StateRequired]
         byte bankMask, pagingRegister;
+
+
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            bankMask = data.MemberData[nameof(bankMask)].First();
+            pagingRegister = data.MemberData[nameof(pagingRegister)].First();
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            data.MemberData[nameof(bankMask)] = BitConverter.GetBytes(bankMask);
+            data.MemberData[nameof(pagingRegister)] = BitConverter.GetBytes(pagingRegister);
+
+            return data;
+        }
+        #endregion
 
         public KoreanMapperCartridge(int romSize, int ramSize)
         {

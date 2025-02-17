@@ -10,8 +10,9 @@ namespace Essgee.Emulation.Cartridges.Sega
     {
         byte[] romData;
 
-        [StateRequired]
-        readonly int romMask;
+        [StateRequired]//TODO 感觉不用保存 保留readonly
+        int romMask;
+        //readonly int romMask;
 
         [StateRequired]
         int romBank0, romBank1, romBank2;
@@ -27,6 +28,26 @@ namespace Essgee.Emulation.Cartridges.Sega
             romBank0 = romBank1 = romBank2 = 0;
         }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            romMask = BitConverter.ToInt32(data.MemberData[nameof(romMask)]);
+            romBank0 = BitConverter.ToInt32(data.MemberData[nameof(romBank0)]);
+            romBank1 = BitConverter.ToInt32(data.MemberData[nameof(romBank1)]);
+            romBank2 = BitConverter.ToInt32(data.MemberData[nameof(romBank2)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(romMask)] = BitConverter.GetBytes(romMask);
+            data.MemberData[nameof(romBank0)] = BitConverter.GetBytes(romBank0);
+            data.MemberData[nameof(romBank1)] = BitConverter.GetBytes(romBank1);
+            data.MemberData[nameof(romBank2)] = BitConverter.GetBytes(romBank2);
+            return data;
+        }
+        #endregion
         public void LoadRom(byte[] data)
         {
             Buffer.BlockCopy(data, 0, romData, 0, Math.Min(data.Length, romData.Length));

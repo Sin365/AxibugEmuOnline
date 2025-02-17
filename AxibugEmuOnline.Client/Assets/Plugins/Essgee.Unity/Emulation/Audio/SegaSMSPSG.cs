@@ -15,5 +15,20 @@
 
             noiseLfsr = 0x8000;
         }
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            base.LoadAxiStatus(data);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = base.SaveAxiStatus();
+            return data;
+        }
+        #endregion
+
     }
 }

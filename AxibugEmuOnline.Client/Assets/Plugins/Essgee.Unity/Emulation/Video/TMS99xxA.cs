@@ -2,6 +2,7 @@
 using Essgee.Utilities;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using static Essgee.Emulation.Utilities;
 
@@ -90,6 +91,82 @@ namespace Essgee.Emulation.Video
         [StateRequired]
         protected (int Number, int Y, int X, int Pattern, int Attribute)[][] spriteBuffer;
 
+        // 序列化方法
+        public byte[] spriteBuffer_Serialize()
+        {
+            // 首先，我们需要计算序列化后的总字节数
+            int totalBytes = 0;
+            foreach (var row in spriteBuffer)
+            {
+                if (row != null)
+                {
+                    totalBytes += row.Length * 5 * sizeof(int); // 每个元组有5个int，每个int占4个字节
+                }
+            }
+
+            // 分配一个足够大的字节数组
+            byte[] data = new byte[totalBytes];
+            int offset = 0;
+
+            // 填充字节数组
+            foreach (var row in spriteBuffer)
+            {
+                if (row != null)
+                {
+                    foreach (var tuple in row)
+                    {
+                        Buffer.BlockCopy(BitConverter.GetBytes(tuple.Number), 0, data, offset, sizeof(int));
+                        offset += sizeof(int);
+                        Buffer.BlockCopy(BitConverter.GetBytes(tuple.Y), 0, data, offset, sizeof(int));
+                        offset += sizeof(int);
+                        Buffer.BlockCopy(BitConverter.GetBytes(tuple.X), 0, data, offset, sizeof(int));
+                        offset += sizeof(int);
+                        Buffer.BlockCopy(BitConverter.GetBytes(tuple.Pattern), 0, data, offset, sizeof(int));
+                        offset += sizeof(int);
+                        Buffer.BlockCopy(BitConverter.GetBytes(tuple.Attribute), 0, data, offset, sizeof(int));
+                        offset += sizeof(int);
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        // 反序列化方法
+        public void spriteBuffer_SetData(byte[] data)
+        {
+            // 假设我们已经知道spriteBuffer的维度（这通常需要在序列化时保存并在反序列化时读取）
+            // 为了简化，这里假设维度是已知的，并且与原始spriteBuffer相同
+            int rowCount = spriteBuffer.Length;
+            int[] columnCounts = new int[rowCount];
+            for (int i = 0; i < rowCount; i++)
+            {
+                if (spriteBuffer[i] != null)
+                {
+                    columnCounts[i] = spriteBuffer[i].Length;
+                }
+            }
+
+            int offset = 0;
+            spriteBuffer = new (int, int, int, int, int)[rowCount][];
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                spriteBuffer[i] = new (int, int, int, int, int)[columnCounts[i]];
+                for (int j = 0; j < columnCounts[i]; j++)
+                {
+                    spriteBuffer[i][j] = (
+                        BitConverter.ToInt32(data, offset),
+                        BitConverter.ToInt32(data, offset + sizeof(int)),
+                        BitConverter.ToInt32(data, offset + 2 * sizeof(int)),
+                        BitConverter.ToInt32(data, offset + 3 * sizeof(int)),
+                        BitConverter.ToInt32(data, offset + 4 * sizeof(int))
+                    );
+                    offset += 5 * sizeof(int);
+                }
+            }
+        }
+
         //protected ushort vramMask16k => 0x3FFF;
         //protected ushort vramMask4k => 0x0FFF;
         protected const ushort vramMask16k = 0x3FFF;
@@ -103,7 +180,7 @@ namespace Essgee.Emulation.Video
         protected byte readBuffer;
 
         protected byte codeRegister => (byte)((controlWord >> 14) & 0x03);
-        
+
         protected ushort addressRegister
         {
             get { return (ushort)(controlWord & 0x3FFF); }
@@ -245,6 +322,43 @@ namespace Essgee.Emulation.Video
             layerSpritesForceEnable = true;
             layerBordersForceEnable = true;
         }
+
+
+        #region AxiState
+
+        public virtual void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            registers_set = data.MemberData[nameof(registers)];
+            vram_set = data.MemberData[nameof(vram)];
+            spriteBuffer_SetData(data.MemberData[nameof(spriteBuffer)]);
+            isSecondControlWrite = BitConverter.ToBoolean(data.MemberData[nameof(isSecondControlWrite)]);
+            controlWord = BitConverter.ToUInt16(data.MemberData[nameof(controlWord)]);
+            readBuffer = data.MemberData[nameof(readBuffer)].First();
+            statusFlags = data.MemberData[nameof(statusFlags)].ToEnum<StatusFlags>();
+            InterruptLine = data.MemberData[nameof(InterruptLine)].ToEnum<InterruptState>();
+            currentScanline = BitConverter.ToInt32(data.MemberData[nameof(currentScanline)]);
+            screenUsage = data.MemberData[nameof(screenUsage)];
+            cycleCount = BitConverter.ToInt32(data.MemberData[nameof(cycleCount)]);
+        }
+
+        public virtual AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(registers)] = registers_src;
+            data.MemberData[nameof(vram)] = vram_src;
+            data.MemberData[nameof(spriteBuffer)] = spriteBuffer_Serialize();
+            data.MemberData[nameof(isSecondControlWrite)] = BitConverter.GetBytes(isSecondControlWrite);
+            data.MemberData[nameof(controlWord)] = BitConverter.GetBytes(controlWord);
+            data.MemberData[nameof(readBuffer)] = BitConverter.GetBytes(readBuffer);
+            data.MemberData[nameof(statusFlags)] = statusFlags.ToByteArray();
+            data.MemberData[nameof(InterruptLine)] = InterruptLine.ToByteArray();
+            data.MemberData[nameof(currentScanline)] = BitConverter.GetBytes(currentScanline);
+            data.MemberData[nameof(screenUsage)] = screenUsage;
+            data.MemberData[nameof(cycleCount)] = BitConverter.GetBytes(cycleCount);
+            return data;
+        }
+
+        #endregion
 
         public object GetRuntimeOption(string name)
         {

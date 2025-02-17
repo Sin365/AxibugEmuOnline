@@ -1,5 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
+using System;
+using System.Linq;
 
 namespace Essgee.Emulation.Peripherals
 {
@@ -31,6 +33,39 @@ namespace Essgee.Emulation.Peripherals
         bool isSetBitOperation => ((setResetControlByte & 0x01) == 0x01);
 
         public Intel8255() { }
+
+
+        #region AxiState
+
+        public virtual void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            PortAInput = data.MemberData[nameof(PortAInput)].First();
+            PortBInput = data.MemberData[nameof(PortBInput)].First();
+            PortCInput = data.MemberData[nameof(PortCInput)].First();
+            PortAOutput = data.MemberData[nameof(PortAOutput)].First();
+            PortBOutput = data.MemberData[nameof(PortBOutput)].First();
+            PortCOutput = data.MemberData[nameof(PortCOutput)].First();
+            configByte = data.MemberData[nameof(configByte)].First();
+            setResetControlByte = data.MemberData[nameof(setResetControlByte)].First();
+        }
+
+        public virtual AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            PortAInput = data.MemberData[nameof(PortAInput)].First();
+            PortBInput = data.MemberData[nameof(PortBInput)].First();
+            PortCInput = data.MemberData[nameof(PortCInput)].First();
+            data.MemberData[nameof(PortAInput)] = BitConverter.GetBytes(PortAInput);
+            data.MemberData[nameof(PortBInput)] = BitConverter.GetBytes(PortBInput);
+            data.MemberData[nameof(PortCInput)] = BitConverter.GetBytes(PortCInput);
+            data.MemberData[nameof(PortAOutput)] = BitConverter.GetBytes(PortAOutput);
+            data.MemberData[nameof(PortBOutput)] = BitConverter.GetBytes(PortBOutput);
+            data.MemberData[nameof(PortCOutput)] = BitConverter.GetBytes(PortCOutput);
+            data.MemberData[nameof(configByte)] = BitConverter.GetBytes(configByte);
+            data.MemberData[nameof(setResetControlByte)] = BitConverter.GetBytes(setResetControlByte);
+            return data;
+        }
+        #endregion
 
         public void Startup()
         {

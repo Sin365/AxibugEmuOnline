@@ -18,6 +18,8 @@ public class UEGVideoPlayer : MonoBehaviour
     private RectTransform m_drawCanvasrect;
     //byte[] mFrameData;
     IntPtr mFrameDataPtr;
+    public Texture2D rawBufferWarper => m_rawBufferWarper;
+    public RawImage DrawCanvas => m_drawCanvas;
 
     private TimeSpan lastElapsed;
     public double videoFPS { get; private set; }

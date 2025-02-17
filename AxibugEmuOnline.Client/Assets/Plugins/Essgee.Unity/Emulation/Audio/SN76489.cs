@@ -2,7 +2,6 @@
 using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using static Essgee.Emulation.Utilities;
@@ -157,6 +156,46 @@ namespace Essgee.Emulation.Audio
             channel4ForceEnable = true;
         }
 
+        #region AxiState
+
+        public virtual void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            volumeRegisters = data.MemberData[nameof(volumeRegisters)].ToUShortArray();
+            toneRegisters = data.MemberData[nameof(toneRegisters)].ToUShortArray();
+
+            channelCounters = data.MemberData[nameof(channelCounters)].ToUShortArray();
+            channelOutput = data.MemberData[nameof(channelOutput)].ToBoolArray();
+
+            latchedChannel = data.MemberData[nameof(latchedChannel)].First();
+            latchedType = data.MemberData[nameof(latchedType)].First();
+
+            noiseLfsr = BitConverter.ToUInt16(data.MemberData[nameof(noiseLfsr)]);
+
+            sampleCycleCount = BitConverter.ToInt32(data.MemberData[nameof(sampleCycleCount)]);
+            frameCycleCount = BitConverter.ToInt32(data.MemberData[nameof(frameCycleCount)]);
+            dividerCount = BitConverter.ToInt32(data.MemberData[nameof(dividerCount)]);
+        }
+
+        public virtual AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(volumeRegisters)] = volumeRegisters.ToByteArray();
+            data.MemberData[nameof(toneRegisters)] = toneRegisters.ToByteArray();
+
+            data.MemberData[nameof(channelCounters)] = channelCounters.ToByteArray();
+            data.MemberData[nameof(channelOutput)] = channelOutput.ToByteArray();
+
+            data.MemberData[nameof(latchedChannel)] = BitConverter.GetBytes(latchedChannel);
+            data.MemberData[nameof(latchedType)] = BitConverter.GetBytes(latchedType);
+
+            data.MemberData[nameof(noiseLfsr)] = BitConverter.GetBytes(noiseLfsr);
+
+            data.MemberData[nameof(sampleCycleCount)] = BitConverter.GetBytes(sampleCycleCount);
+            data.MemberData[nameof(frameCycleCount)] = BitConverter.GetBytes(frameCycleCount);
+            data.MemberData[nameof(dividerCount)] = BitConverter.GetBytes(dividerCount);
+            return data;
+        }
+        #endregion
         public object GetRuntimeOption(string name)
         {
             switch (name)

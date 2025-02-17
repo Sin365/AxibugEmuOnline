@@ -1,5 +1,6 @@
 ﻿using Essgee.Utilities;
 using System;
+using System.Linq;
 
 namespace Essgee.Emulation.Cartridges.Sega
 {
@@ -10,8 +11,9 @@ namespace Essgee.Emulation.Cartridges.Sega
         [StateRequired]
         byte[] ramData;
 
-        [StateRequired]
-        readonly int romMask, ramMask;
+        [StateRequired]//TODO 感觉不用保存 保留readonly
+        int romMask, ramMask;
+        //readonly int romMask, ramMask;
 
         public SegaSGCartridge(int romSize, int ramSize)
         {
@@ -24,6 +26,25 @@ namespace Essgee.Emulation.Cartridges.Sega
 
             ramMask = (ramSize - 1);
         }
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            ramData = data.MemberData[nameof(romMask)];
+            romMask = data.MemberData[nameof(romMask)].First();
+            ramMask = data.MemberData[nameof(ramMask)].First();
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(romMask)] = BitConverter.GetBytes(romMask);
+            data.MemberData[nameof(ramMask)] = BitConverter.GetBytes(ramMask);
+            return data;
+        }
+        #endregion
 
         public void LoadRom(byte[] data)
         {

@@ -20,7 +20,7 @@ namespace Essgee.EventArguments
         //}
 
         //public static EnqueueSamplesEventArgs Create(int numChannels, short[][] channelSamples, bool[] isMuted, short[] mixedSamples)
-        public static EnqueueSamplesEventArgs Create(int numChannels, short*[] channelSamples, bool[] isMuted, short* mixedSamples,int mixedSamplesLength)
+        public static EnqueueSamplesEventArgs Create(int numChannels, short*[] channelSamples, bool[] isMuted, short* mixedSamples, int mixedSamplesLength)
         {
             var eventArgs = ObjectPoolAuto.Acquire<EnqueueSamplesEventArgs>();
             eventArgs.NumChannels = numChannels;

@@ -74,6 +74,51 @@ namespace Essgee.Emulation.CPU
             }
         }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            af.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(af)]);
+            bc.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(bc)]);
+            de.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(de)]);
+            hl.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(hl)]);
+
+            sp = BitConverter.ToUInt16(data.MemberData[nameof(sp)]);
+            pc = BitConverter.ToUInt16(data.MemberData[nameof(pc)]);
+
+            ime = BitConverter.ToBoolean(data.MemberData[nameof(ime)]);
+            imeDelay = BitConverter.ToBoolean(data.MemberData[nameof(imeDelay)]);
+            halt = BitConverter.ToBoolean(data.MemberData[nameof(halt)]);
+            doHaltBug = BitConverter.ToBoolean(data.MemberData[nameof(doHaltBug)]);
+
+            op = data.MemberData[nameof(op)].First();
+
+            currentCycles = BitConverter.ToInt32(data.MemberData[nameof(currentCycles)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            data.MemberData[nameof(af)] = BitConverter.GetBytes(af.axi_AllData);
+            data.MemberData[nameof(bc)] = BitConverter.GetBytes(bc.axi_AllData);
+            data.MemberData[nameof(de)] = BitConverter.GetBytes(de.axi_AllData);
+            data.MemberData[nameof(hl)] = BitConverter.GetBytes(hl.axi_AllData);
+
+            data.MemberData[nameof(sp)] = BitConverter.GetBytes(sp);
+            data.MemberData[nameof(pc)] = BitConverter.GetBytes(pc);
+
+            data.MemberData[nameof(ime)] = BitConverter.GetBytes(ime);
+            data.MemberData[nameof(imeDelay)] = BitConverter.GetBytes(imeDelay);
+            data.MemberData[nameof(halt)] = BitConverter.GetBytes(halt);
+            data.MemberData[nameof(doHaltBug)] = BitConverter.GetBytes(doHaltBug);
+
+            data.MemberData[nameof(op)] = BitConverter.GetBytes(op);
+
+            data.MemberData[nameof(currentCycles)] = BitConverter.GetBytes(currentCycles);
+            return data;
+        }
+        #endregion
         public virtual void Startup()
         {
             Reset();

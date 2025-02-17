@@ -219,44 +219,79 @@ namespace Essgee.Emulation.Machines
         }
 
         //public void SetState(Dictionary<string, dynamic> state)
-        public void SetState(Dictionary<string, object> state)
+        //public void SetState(Dictionary<string, object> state)
+        //{
+        //    SaveStateHandler.PerformSetState(cartridge, (Dictionary<string, object>)state[nameof(cartridge)]);
+        //    wram = (byte[])state[nameof(wram)];
+        //    SaveStateHandler.PerformSetState(cpu, (Dictionary<string, object>)state[nameof(cpu)]);
+        //    SaveStateHandler.PerformSetState(vdp, (Dictionary<string, object>)state[nameof(vdp)]);
+        //    SaveStateHandler.PerformSetState(psg, (Dictionary<string, object>)state[nameof(psg)]);
+
+        //    portControls1 = (ushort)state[nameof(portControls1)];
+        //    portControls2 = (ushort)state[nameof(portControls2)];
+        //    controlsReadMode = (byte)state[nameof(controlsReadMode)];
+        //    isNmi = (bool)state[nameof(isNmi)];
+        //    isNmiPending = (bool)state[nameof(isNmiPending)];
+
+        //    ReconfigureSystem();
+        //}
+
+        //public Dictionary<string, object> GetState()
+        //{
+        //    return new Dictionary<string, object>
+        //    {
+        //        [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
+        //        [nameof(wram)] = wram,
+        //        [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
+        //        [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
+        //        [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
+
+        //        [nameof(portControls1)] = portControls1,
+        //        [nameof(portControls2)] = portControls2,
+        //        [nameof(controlsReadMode)] = controlsReadMode,
+        //        [nameof(isNmi)] = isNmi,
+        //        [nameof(isNmiPending)] = isNmiPending
+        //    };
+        //}
+
+        #region
+        public void LoadAxiStatus(AxiEssgssStatusData data)
         {
-            SaveStateHandler.PerformSetState(cartridge, (Dictionary<string, object>)state[nameof(cartridge)]);
-            wram = (byte[])state[nameof(wram)];
-            SaveStateHandler.PerformSetState(cpu, (Dictionary<string, object>)state[nameof(cpu)]);
-            SaveStateHandler.PerformSetState(vdp, (Dictionary<string, object>)state[nameof(vdp)]);
-            SaveStateHandler.PerformSetState(psg, (Dictionary<string, object>)state[nameof(psg)]);
+            cartridge.LoadAxiStatus(data.ClassData[nameof(cartridge)]);
+            wram = data.MemberData[nameof(wram)];
+            cpu.LoadAxiStatus(data.ClassData[nameof(cpu)]);
+            vdp.LoadAxiStatus(data.ClassData[nameof(vdp)]);
+            psg.LoadAxiStatus(data.ClassData[nameof(psg)]);
 
-            portControls1 = (ushort)state[nameof(portControls1)];
-            portControls2 = (ushort)state[nameof(portControls2)];
-            controlsReadMode = (byte)state[nameof(controlsReadMode)];
-            isNmi = (bool)state[nameof(isNmi)];
-            isNmiPending = (bool)state[nameof(isNmiPending)];
-
-            ReconfigureSystem();
+            portControls1 = BitConverter.ToUInt16(data.MemberData[nameof(portControls1)]);
+            portControls2 = BitConverter.ToUInt16(data.MemberData[nameof(portControls2)]);
+            controlsReadMode = data.MemberData[nameof(controlsReadMode)].First();
+            isNmi = BitConverter.ToBoolean(data.MemberData[nameof(isNmi)]);
+            isNmiPending = BitConverter.ToBoolean(data.MemberData[nameof(isNmiPending)]);
         }
 
-        public Dictionary<string, dynamic> GetState()
+        public AxiEssgssStatusData SaveAxiStatus()
         {
-            return new Dictionary<string, dynamic>
-            {
-                [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
-                [nameof(wram)] = wram,
-                [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
-                [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
-                [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.ClassData[nameof(cartridge)] = cartridge.SaveAxiStatus();
+            data.MemberData[nameof(wram)] = wram;
+            data.ClassData[nameof(cpu)] = cpu.SaveAxiStatus();
+            data.ClassData[nameof(vdp)] = vdp.SaveAxiStatus();
+            data.ClassData[nameof(psg)] = psg.SaveAxiStatus();
 
-                [nameof(portControls1)] = portControls1,
-                [nameof(portControls2)] = portControls2,
-                [nameof(controlsReadMode)] = controlsReadMode,
-                [nameof(isNmi)] = isNmi,
-                [nameof(isNmiPending)] = isNmiPending
-            };
+            data.MemberData[nameof(portControls1)] = BitConverter.GetBytes(portControls1);
+            data.MemberData[nameof(portControls2)] = BitConverter.GetBytes(portControls2);
+            data.MemberData[nameof(controlsReadMode)] = BitConverter.GetBytes(controlsReadMode);
+            data.MemberData[nameof(isNmi)] = BitConverter.GetBytes(isNmi);
+            data.MemberData[nameof(isNmiPending)] = BitConverter.GetBytes(isNmiPending);
+
+            return data;
+
         }
-
-        public Dictionary<string, dynamic> GetDebugInformation()
+        #endregion
+        public Dictionary<string, object> GetDebugInformation()
         {
-            var dict = new Dictionary<string, dynamic>
+            var dict = new Dictionary<string, object>
             {
                 { "CyclesInFrame", currentMasterClockCyclesInFrame },
             };

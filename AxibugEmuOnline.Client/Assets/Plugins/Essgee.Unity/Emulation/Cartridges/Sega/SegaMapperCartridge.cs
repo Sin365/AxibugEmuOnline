@@ -1,6 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
+using System.Linq;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.Cartridges.Sega
@@ -13,7 +14,7 @@ namespace Essgee.Emulation.Cartridges.Sega
         byte[] ramData;
 
         [StateRequired]
-        readonly byte[] pagingRegisters;
+        byte[] pagingRegisters;
 
         [StateRequired]
         byte romBankMask;
@@ -26,6 +27,7 @@ namespace Essgee.Emulation.Cartridges.Sega
         int romBank0 { get { return pagingRegisters[1]; } }
         int romBank1 { get { return pagingRegisters[2]; } }
         int romBank2 { get { return pagingRegisters[3]; } }
+
 
         public SegaMapperCartridge(int romSize, int ramSize)
         {
@@ -43,6 +45,27 @@ namespace Essgee.Emulation.Cartridges.Sega
             romBankMask = 0xFF;
             hasCartRam = false;
         }
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            ramData = data.MemberData[nameof(ramData)];
+            pagingRegisters = data.MemberData[nameof(pagingRegisters)];
+            romBankMask = data.MemberData[nameof(romBankMask)].First();
+            hasCartRam = BitConverter.ToBoolean(data.MemberData[nameof(hasCartRam)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(pagingRegisters)] = pagingRegisters;
+            data.MemberData[nameof(romBankMask)] = BitConverter.GetBytes(romBankMask);
+            data.MemberData[nameof(hasCartRam)] = BitConverter.GetBytes(hasCartRam);
+            return data;
+        }
+        #endregion
 
         public void LoadRom(byte[] data)
         {
@@ -143,5 +166,6 @@ namespace Essgee.Emulation.Cartridges.Sega
 
             /* Otherwise ignore writes to ROM, as some games seem to be doing that? (ex. Gunstar Heroes GG to 0000) */
         }
+
     }
 }

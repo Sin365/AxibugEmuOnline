@@ -2,7 +2,6 @@
 using Essgee.Emulation.ExtDevices.Nintendo;
 using Essgee.Utilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 
 namespace Essgee.Emulation.Configuration

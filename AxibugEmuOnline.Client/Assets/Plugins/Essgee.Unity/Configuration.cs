@@ -1,7 +1,4 @@
 ﻿using Essgee.Emulation.Configuration;
-using Essgee.Utilities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using System.Drawing;
 

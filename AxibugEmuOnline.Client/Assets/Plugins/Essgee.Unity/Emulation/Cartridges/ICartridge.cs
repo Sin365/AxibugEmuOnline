@@ -1,6 +1,6 @@
 ﻿namespace Essgee.Emulation.Cartridges
 {
-    public interface ICartridge
+    internal interface ICartridge : IAxiStatus
     {
         void LoadRom(byte[] data);
         void LoadRam(byte[] data);

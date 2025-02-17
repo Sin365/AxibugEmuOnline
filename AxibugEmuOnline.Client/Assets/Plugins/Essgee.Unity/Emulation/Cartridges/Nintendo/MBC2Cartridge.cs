@@ -21,6 +21,18 @@ namespace Essgee.Emulation.Cartridges.Nintendo
 
             hasBattery = false;
         }
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            return data;
+        }
+        #endregion
 
         public void LoadRom(byte[] data)
         {

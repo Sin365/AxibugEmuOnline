@@ -5,7 +5,7 @@ namespace Essgee.Emulation.Cartridges.Nintendo
 {
     public static class SpecializedLoader
     {
-        public static IGameBoyCartridge CreateCartridgeInstance(byte[] romData, byte[] ramData, Type mapperType)
+        internal static IGameBoyCartridge CreateCartridgeInstance(byte[] romData, byte[] ramData, Type mapperType)
         {
             var romSize = -1;
             switch (romData[0x0148])

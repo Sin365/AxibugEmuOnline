@@ -3,7 +3,7 @@ using System;
 
 namespace Essgee.Emulation.Audio
 {
-    interface IAudio
+    interface IAudio : IAxiStatus
     {
         event EventHandler<EnqueueSamplesEventArgs> EnqueueSamples;
         void OnEnqueueSamples(EnqueueSamplesEventArgs e);

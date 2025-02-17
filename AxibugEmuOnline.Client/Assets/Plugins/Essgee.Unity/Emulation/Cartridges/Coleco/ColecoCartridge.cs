@@ -8,6 +8,18 @@ namespace Essgee.Emulation.Cartridges.Coleco
 
         byte[] romData;
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            return data;
+        }
+        #endregion
         public ColecoCartridge(int romSize, int ramSize)
         {
             romData = new byte[romSize];

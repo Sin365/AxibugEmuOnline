@@ -1,6 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
+using System.Linq;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.CPU
@@ -71,6 +72,80 @@ namespace Essgee.Emulation.CPU
             portWriteDelegate = portWrite;
         }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            af.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(af)]);
+            bc.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(bc)]);
+            de.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(de)]);
+            hl.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(hl)]);
+
+            af_.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(af_)]);
+            bc_.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(bc_)]);
+            de_.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(de_)]);
+            hl_.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(hl_)]);
+
+            ix.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(ix)]);
+            iy.axi_AllData = BitConverter.ToUInt16(data.MemberData[nameof(iy)]);
+
+            i = data.MemberData[nameof(i)].First();
+            r = data.MemberData[nameof(r)].First();
+
+            sp = BitConverter.ToUInt16(data.MemberData[nameof(sp)]);
+            pc = BitConverter.ToUInt16(data.MemberData[nameof(pc)]);
+
+            iff1 = BitConverter.ToBoolean(data.MemberData[nameof(iff1)]);
+            iff2 = BitConverter.ToBoolean(data.MemberData[nameof(iff2)]);
+            eiDelay = BitConverter.ToBoolean(data.MemberData[nameof(eiDelay)]);
+            halt = BitConverter.ToBoolean(data.MemberData[nameof(halt)]);
+
+            im = data.MemberData[nameof(im)].First();
+            op = data.MemberData[nameof(op)].First();
+
+            intState = data.MemberData[nameof(intState)].ToEnum<InterruptState>();
+            nmiState = data.MemberData[nameof(nmiState)].ToEnum<InterruptState>();
+
+            currentCycles = BitConverter.ToInt32(data.MemberData[nameof(currentCycles)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            data.MemberData[nameof(af)] = BitConverter.GetBytes(af.axi_AllData);
+            data.MemberData[nameof(bc)] = BitConverter.GetBytes(bc.axi_AllData);
+            data.MemberData[nameof(de)] = BitConverter.GetBytes(de.axi_AllData);
+            data.MemberData[nameof(hl)] = BitConverter.GetBytes(hl.axi_AllData);
+
+            data.MemberData[nameof(af_)] = BitConverter.GetBytes(af_.axi_AllData);
+            data.MemberData[nameof(bc_)] = BitConverter.GetBytes(bc_.axi_AllData);
+            data.MemberData[nameof(de_)] = BitConverter.GetBytes(de_.axi_AllData);
+            data.MemberData[nameof(hl_)] = BitConverter.GetBytes(hl_.axi_AllData);
+
+            data.MemberData[nameof(i)] = BitConverter.GetBytes(i);
+            data.MemberData[nameof(r)] = BitConverter.GetBytes(r);
+
+            data.MemberData[nameof(ix)] = BitConverter.GetBytes(ix.axi_AllData);
+            data.MemberData[nameof(iy)] = BitConverter.GetBytes(iy.axi_AllData);
+
+            data.MemberData[nameof(sp)] = BitConverter.GetBytes(sp);
+            data.MemberData[nameof(pc)] = BitConverter.GetBytes(pc);
+
+            data.MemberData[nameof(iff1)] = BitConverter.GetBytes(iff1);
+            data.MemberData[nameof(iff2)] = BitConverter.GetBytes(iff2);
+            data.MemberData[nameof(eiDelay)] = BitConverter.GetBytes(eiDelay);
+            data.MemberData[nameof(halt)] = BitConverter.GetBytes(halt);
+
+            data.MemberData[nameof(im)] = BitConverter.GetBytes(im);
+
+            data.MemberData[nameof(op)] = BitConverter.GetBytes(op);
+            data.MemberData[nameof(intState)] = intState.ToByteArray();
+            data.MemberData[nameof(nmiState)] = nmiState.ToByteArray();
+            data.MemberData[nameof(currentCycles)] = BitConverter.GetBytes(currentCycles);
+            return data;
+        }
+        #endregion
         public virtual void Startup()
         {
             Reset();

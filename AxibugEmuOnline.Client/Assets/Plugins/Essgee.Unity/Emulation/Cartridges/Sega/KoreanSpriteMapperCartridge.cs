@@ -1,6 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
+using System.Linq;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.Cartridges.Sega
@@ -17,8 +18,10 @@ namespace Essgee.Emulation.Cartridges.Sega
         [StateRequired]
         byte[] ramData;
 
-        [StateRequired]
-        readonly byte[] pagingRegisters;
+
+        [StateRequired]//TODO 感觉不用保存 保留readonly
+        byte[] pagingRegisters;
+        //readonly byte[] pagingRegisters;
 
         [StateRequired]
         byte romBankMask;
@@ -52,6 +55,31 @@ namespace Essgee.Emulation.Cartridges.Sega
             isBitReverseBank1 = isBitReverseBank2 = false;
         }
 
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            ramData = data.MemberData[nameof(ramData)];
+            pagingRegisters = data.MemberData[nameof(pagingRegisters)];
+            romBankMask = data.MemberData[nameof(romBankMask)].First();
+            hasCartRam = BitConverter.ToBoolean(data.MemberData[nameof(hasCartRam)]);
+            isBitReverseBank1 = BitConverter.ToBoolean(data.MemberData[nameof(isBitReverseBank1)]);
+            isBitReverseBank2 = BitConverter.ToBoolean(data.MemberData[nameof(isBitReverseBank2)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(pagingRegisters)] = pagingRegisters;
+            data.MemberData[nameof(romBankMask)] = BitConverter.GetBytes(romBankMask);
+            data.MemberData[nameof(hasCartRam)] = BitConverter.GetBytes(hasCartRam);
+            data.MemberData[nameof(isBitReverseBank1)] = BitConverter.GetBytes(isBitReverseBank1);
+            data.MemberData[nameof(isBitReverseBank2)] = BitConverter.GetBytes(isBitReverseBank2);
+            return data;
+        }
+        #endregion
         public void LoadRom(byte[] data)
         {
             Buffer.BlockCopy(data, 0, romData, 0, Math.Min(data.Length, romData.Length));

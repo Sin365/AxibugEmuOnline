@@ -1,6 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
+using System.Linq;
 
 namespace Essgee.Emulation.Cartridges.Sega
 {
@@ -8,8 +9,10 @@ namespace Essgee.Emulation.Cartridges.Sega
     {
         byte[] romData;
 
-        [StateRequired]
-        readonly byte[] pagingRegisters;
+
+        [StateRequired]//TODO 感觉不用保存 保留readonly
+        byte[] pagingRegisters;
+        //readonly byte[] pagingRegisters;
 
         [StateRequired]
         byte bankMask;
@@ -21,6 +24,25 @@ namespace Essgee.Emulation.Cartridges.Sega
             romData = new byte[romSize];
         }
 
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            pagingRegisters = data.MemberData[nameof(pagingRegisters)];
+            bankMask = data.MemberData[nameof(bankMask)].First();
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            data.MemberData[nameof(pagingRegisters)] = pagingRegisters;
+            data.MemberData[nameof(bankMask)] = BitConverter.GetBytes(bankMask);
+
+            return data;
+        }
+        #endregion
         public void LoadRom(byte[] data)
         {
             Buffer.BlockCopy(data, 0, romData, 0, Math.Min(data.Length, romData.Length));

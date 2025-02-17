@@ -64,6 +64,20 @@ namespace Essgee.Emulation.Video.Nintendo
             objPaletteData = new byte[64];
         }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            base.LoadAxiStatus(data);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = base.SaveAxiStatus();
+            return data;
+        }
+        #endregion
+
         public override void Reset()
         {
             base.Reset();
@@ -93,6 +107,7 @@ namespace Essgee.Emulation.Video.Nintendo
             hdmaIsActive = false;
             hdmaBytesLeft = 0;
         }
+
 
         //
 

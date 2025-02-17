@@ -5,7 +5,6 @@ using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -204,7 +203,7 @@ namespace Essgee.Emulation
             }
         }
 
-        public Dictionary<string, dynamic> GetDebugInformation()
+        public Dictionary<string, object> GetDebugInformation()
         {
             return emulator.GetDebugInformation();
         }
@@ -255,115 +254,148 @@ namespace Essgee.Emulation
 
         }
 
-        private void ThreadMainLoop()
+        //private void ThreadMainLoop()
+        //{
+        //    // TODO: rework fps limiter/counter - AGAIN - because the counter is inaccurate at sampleTimespan=0.25 and the limiter CAN cause sound crackling at sampleTimespan>0.25
+        //    // try this maybe? https://stackoverflow.com/a/34839411
+
+        //    var stopWatch = Stopwatch.StartNew();
+
+        //    TimeSpan accumulatedTime = TimeSpan.Zero, lastStartTime = TimeSpan.Zero, lastEndTime = TimeSpan.Zero;
+
+        //    var frameCounter = 0;
+        //    var sampleTimespan = TimeSpan.FromSeconds(0.5);
+
+        //    try
+        //    {
+        //        while (true)
+        //        {
+        //            if (!emulationThreadRunning)
+        //                break;
+
+        //            if (stateLoadRequested && stateNumber != -1)
+        //            {
+        //                var statePath = GetSaveStateFilename(stateNumber);
+        //                if (File.Exists(statePath))
+        //                {
+        //                    using (var stream = new FileStream(statePath, FileMode.Open))
+        //                    {
+        //                        emulator.SetState(SaveStateHandler.Load(stream, emulator.GetType().Name));
+        //                    }
+        //                }
+
+        //                stateLoadRequested = false;
+        //                stateNumber = -1;
+        //            }
+
+        //            var refreshRate = emulator.RefreshRate;
+        //            var targetElapsedTime = TimeSpan.FromTicks((long)Math.Round(TimeSpan.TicksPerSecond / refreshRate));
+
+        //            var startTime = stopWatch.Elapsed;
+
+        //            while (pauseStateChangesRequested.Count > 0)
+        //            {
+        //                var newPauseState = pauseStateChangesRequested.Dequeue();
+        //                emulationThreadPaused = newPauseState;
+
+        //                PauseChanged?.Invoke(this, EventArgs.Empty);
+        //            }
+
+        //            if (!emulationThreadPaused)
+        //            {
+        //                if (limitFps)
+        //                {
+        //                    var elapsedTime = (startTime - lastStartTime);
+        //                    lastStartTime = startTime;
+
+        //                    if (elapsedTime < targetElapsedTime)
+        //                    {
+        //                        accumulatedTime += elapsedTime;
+
+        //                        while (accumulatedTime >= targetElapsedTime)
+        //                        {
+        //                            emulator.RunFrame();
+        //                            frameCounter++;
+
+        //                            accumulatedTime -= targetElapsedTime;
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    emulator.RunFrame();
+        //                    frameCounter++;
+        //                }
+
+        //                if ((stopWatch.Elapsed - lastEndTime) >= sampleTimespan)
+        //                {
+        //                    FramesPerSecond = (int)((frameCounter * 1000.0) / sampleTimespan.TotalMilliseconds);
+        //                    frameCounter = 0;
+        //                    lastEndTime = stopWatch.Elapsed;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                lastEndTime = stopWatch.Elapsed;
+        //            }
+
+        //            if (configChangeRequested)
+        //            {
+        //                emulator.SetConfiguration(newConfiguration);
+        //                configChangeRequested = false;
+        //            }
+
+        //            if (stateSaveRequested && stateNumber != -1)
+        //            {
+        //                var statePath = GetSaveStateFilename(stateNumber);
+        //                using (var stream = new FileStream(statePath, FileMode.OpenOrCreate))
+        //                {
+        //                    SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.GetState());
+        //                }
+
+        //                stateSaveRequested = false;
+        //                stateNumber = -1;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex) when (!AppEnvironment.DebugMode)
+        //    {
+        //        ex.Data.Add("Thread", Thread.CurrentThread.Name);
+        //        exceptionHandler(ex);
+        //    }
+        //}
+
+        public void SaveSnapShotToFile(int stateNumber)
         {
-            // TODO: rework fps limiter/counter - AGAIN - because the counter is inaccurate at sampleTimespan=0.25 and the limiter CAN cause sound crackling at sampleTimespan>0.25
-            // try this maybe? https://stackoverflow.com/a/34839411
-
-            var stopWatch = Stopwatch.StartNew();
-
-            TimeSpan accumulatedTime = TimeSpan.Zero, lastStartTime = TimeSpan.Zero, lastEndTime = TimeSpan.Zero;
-
-            var frameCounter = 0;
-            var sampleTimespan = TimeSpan.FromSeconds(0.5);
-
-            try
+            var statePath = GetSaveStateFilename(stateNumber);
+            using (var stream = new FileStream(statePath, FileMode.OpenOrCreate))
             {
-                while (true)
+                //SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.GetState());
+                SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.SaveAxiStatus());
+            }
+        }
+
+        public void LoadSnapShotFromFile(int stateNumber)
+        {
+            var statePath = GetSaveStateFilename(stateNumber);
+            if (File.Exists(statePath))
+            {
+                using (var stream = new FileStream(statePath, FileMode.Open))
                 {
-                    if (!emulationThreadRunning)
-                        break;
-
-                    if (stateLoadRequested && stateNumber != -1)
-                    {
-                        var statePath = GetSaveStateFilename(stateNumber);
-                        if (File.Exists(statePath))
-                        {
-                            using (var stream = new FileStream(statePath, FileMode.Open))
-                            {
-                                emulator.SetState(SaveStateHandler.Load(stream, emulator.GetType().Name));
-                            }
-                        }
-
-                        stateLoadRequested = false;
-                        stateNumber = -1;
-                    }
-
-                    var refreshRate = emulator.RefreshRate;
-                    var targetElapsedTime = TimeSpan.FromTicks((long)Math.Round(TimeSpan.TicksPerSecond / refreshRate));
-
-                    var startTime = stopWatch.Elapsed;
-
-                    while (pauseStateChangesRequested.Count > 0)
-                    {
-                        var newPauseState = pauseStateChangesRequested.Dequeue();
-                        emulationThreadPaused = newPauseState;
-
-                        PauseChanged?.Invoke(this, EventArgs.Empty);
-                    }
-
-                    if (!emulationThreadPaused)
-                    {
-                        if (limitFps)
-                        {
-                            var elapsedTime = (startTime - lastStartTime);
-                            lastStartTime = startTime;
-
-                            if (elapsedTime < targetElapsedTime)
-                            {
-                                accumulatedTime += elapsedTime;
-
-                                while (accumulatedTime >= targetElapsedTime)
-                                {
-                                    emulator.RunFrame();
-                                    frameCounter++;
-
-                                    accumulatedTime -= targetElapsedTime;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            emulator.RunFrame();
-                            frameCounter++;
-                        }
-
-                        if ((stopWatch.Elapsed - lastEndTime) >= sampleTimespan)
-                        {
-                            FramesPerSecond = (int)((frameCounter * 1000.0) / sampleTimespan.TotalMilliseconds);
-                            frameCounter = 0;
-                            lastEndTime = stopWatch.Elapsed;
-                        }
-                    }
-                    else
-                    {
-                        lastEndTime = stopWatch.Elapsed;
-                    }
-
-                    if (configChangeRequested)
-                    {
-                        emulator.SetConfiguration(newConfiguration);
-                        configChangeRequested = false;
-                    }
-
-                    if (stateSaveRequested && stateNumber != -1)
-                    {
-                        var statePath = GetSaveStateFilename(stateNumber);
-                        using (var stream = new FileStream(statePath, FileMode.OpenOrCreate))
-                        {
-                            SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.GetState());
-                        }
-
-                        stateSaveRequested = false;
-                        stateNumber = -1;
-                    }
+                    //emulator.SetState(SaveStateHandler.Load(stream, emulator.GetType().Name));
+                    emulator.LoadAxiStatus(SaveStateHandler.LoadAxiStatus(stream, emulator.GetType().Name));
                 }
             }
-            catch (Exception ex) when (!AppEnvironment.DebugMode)
-            {
-                ex.Data.Add("Thread", Thread.CurrentThread.Name);
-                exceptionHandler(ex);
-            }
+        }
+
+        public byte[] GetStateData()
+        { 
+            return emulator.SaveAxiStatus().ToByteArray();
+        }
+
+        public void SetStateData(byte[] data)
+        {
+            emulator.LoadAxiStatus(data.ToAxiEssgssStatusData());
         }
     }
 }

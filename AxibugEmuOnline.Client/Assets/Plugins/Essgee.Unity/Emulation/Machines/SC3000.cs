@@ -245,40 +245,75 @@ namespace Essgee.Emulation.Machines
             psg?.Shutdown();
         }
 
-        //public void SetState(Dictionary<string, dynamic> state)
-        public void SetState(Dictionary<string, object> state)
-        {
-            configuration.TVStandard = (TVStandard)state[nameof(configuration.TVStandard)];
+        ////public void SetState(Dictionary<string, dynamic> state)
+        //public void SetState(Dictionary<string, object> state)
+        //{
+        //    configuration.TVStandard = (TVStandard)state[nameof(configuration.TVStandard)];
 
-            SaveStateHandler.PerformSetState(cartridge, (Dictionary<string, object>)state[nameof(cartridge)]);
-            wram = (byte[])state[nameof(wram)];
-            SaveStateHandler.PerformSetState(cpu, (Dictionary<string, object>)state[nameof(cpu)]);
-            SaveStateHandler.PerformSetState(vdp, (Dictionary<string, object>)state[nameof(vdp)]);
-            SaveStateHandler.PerformSetState(psg, (Dictionary<string, object>)state[nameof(psg)]);
-            SaveStateHandler.PerformSetState(ppi, (Dictionary<string, object>)state[nameof(ppi)]);
-            keyboard = (bool[,])(state[nameof(keyboard)]);
-            ReconfigureSystem();
+        //    SaveStateHandler.PerformSetState(cartridge, (Dictionary<string, object>)state[nameof(cartridge)]);
+        //    wram = (byte[])state[nameof(wram)];
+        //    SaveStateHandler.PerformSetState(cpu, (Dictionary<string, object>)state[nameof(cpu)]);
+        //    SaveStateHandler.PerformSetState(vdp, (Dictionary<string, object>)state[nameof(vdp)]);
+        //    SaveStateHandler.PerformSetState(psg, (Dictionary<string, object>)state[nameof(psg)]);
+        //    SaveStateHandler.PerformSetState(ppi, (Dictionary<string, object>)state[nameof(ppi)]);
+        //    keyboard = (bool[,])(state[nameof(keyboard)]);
+        //    ReconfigureSystem();
+        //}
+
+        //public Dictionary<string, object> GetState()
+        //{
+        //    return new Dictionary<string, object>
+        //    {
+        //        [nameof(configuration.TVStandard)] = configuration.TVStandard,
+
+        //        [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
+        //        [nameof(wram)] = wram,
+        //        [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
+        //        [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
+        //        [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
+        //        [nameof(ppi)] = SaveStateHandler.PerformGetState(ppi),
+        //        [nameof(keyboard)] = keyboard
+        //    };
+        //}
+
+        #region
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            configuration.TVStandard = data.MemberData[nameof(configuration.TVStandard)].ToEnum<TVStandard>();
+
+            cartridge.LoadAxiStatus(data.ClassData[nameof(cartridge)]);
+            wram = data.MemberData[nameof(wram)];
+            cpu.LoadAxiStatus(data.ClassData[nameof(cpu)]);
+            vdp.LoadAxiStatus(data.ClassData[nameof(vdp)]);
+            psg.LoadAxiStatus(data.ClassData[nameof(psg)]);
+            ppi.LoadAxiStatus(data.ClassData[nameof(ppi)]);
+            //TODO keyboard  怕是不用保存哦
+            //keyboard.LoadAxiStatus(data.ClassData[nameof(ppi)]);
+
         }
 
-        public Dictionary<string, dynamic> GetState()
+        public AxiEssgssStatusData SaveAxiStatus()
         {
-            return new Dictionary<string, dynamic>
-            {
-                [nameof(configuration.TVStandard)] = configuration.TVStandard,
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(configuration.TVStandard)] = configuration.TVStandard.ToByteArray();
 
-                [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
-                [nameof(wram)] = wram,
-                [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
-                [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
-                [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
-                [nameof(ppi)] = SaveStateHandler.PerformGetState(ppi),
-                [nameof(keyboard)] = keyboard
-            };
+            data.ClassData[nameof(cartridge)] = cartridge.SaveAxiStatus();
+            data.MemberData[nameof(wram)] = wram;
+            data.ClassData[nameof(cpu)] = cpu.SaveAxiStatus();
+            data.ClassData[nameof(vdp)] = vdp.SaveAxiStatus();
+            data.ClassData[nameof(psg)] = psg.SaveAxiStatus();
+            data.ClassData[nameof(ppi)] = ppi.SaveAxiStatus();
+            //TODO keyboard  怕是不用保存哦
+            //keyboard
+
+            return data;
+
         }
+        #endregion
 
-        public Dictionary<string, dynamic> GetDebugInformation()
+        public Dictionary<string, object> GetDebugInformation()
         {
-            var dict = new Dictionary<string, dynamic>
+            var dict = new Dictionary<string, object>
             {
                 { "CyclesInFrame", currentMasterClockCyclesInFrame },
             };

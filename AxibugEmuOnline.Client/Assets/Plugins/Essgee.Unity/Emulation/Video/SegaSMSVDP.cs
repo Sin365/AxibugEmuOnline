@@ -2,6 +2,7 @@
 using Essgee.Utilities;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using static Essgee.Emulation.Utilities;
 
@@ -357,6 +358,39 @@ namespace Essgee.Emulation.Video
             spriteBuffer = new (int Number, int Y, int X, int Pattern, int Attribute)[NumActiveScanlinesHigh][];
             for (int i = 0; i < spriteBuffer.Length; i++) spriteBuffer[i] = new (int Number, int Y, int X, int Pattern, int Attribute)[NumSpritesPerLineMode4];
         }
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            base.LoadAxiStatus(data);
+            cram_set = data.MemberData[nameof(cram)];
+            vCounter = BitConverter.ToInt32(data.MemberData[nameof(vCounter)]);
+            hCounter = BitConverter.ToInt32(data.MemberData[nameof(hCounter)]);
+            lineInterruptCounter = BitConverter.ToInt32(data.MemberData[nameof(lineInterruptCounter)]);
+            isLineInterruptPending = BitConverter.ToBoolean(data.MemberData[nameof(isLineInterruptPending)]);
+            horizontalScrollLatched = data.MemberData[nameof(horizontalScrollLatched)].First();
+            verticalScrollLatched = data.MemberData[nameof(verticalScrollLatched)].First();
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = base.SaveAxiStatus();
+
+            data.MemberData[nameof(cram)] = cram_src;
+            data.MemberData[nameof(vCounter)] = BitConverter.GetBytes(vCounter);
+            data.MemberData[nameof(hCounter)] = BitConverter.GetBytes(hCounter);
+
+            data.MemberData[nameof(lineInterruptCounter)] = BitConverter.GetBytes(lineInterruptCounter);
+
+            data.MemberData[nameof(isLineInterruptPending)] = BitConverter.GetBytes(isLineInterruptPending);
+
+            data.MemberData[nameof(horizontalScrollLatched)] = BitConverter.GetBytes(horizontalScrollLatched);
+            data.MemberData[nameof(verticalScrollLatched)] = BitConverter.GetBytes(verticalScrollLatched);
+
+            return data;
+        }
+        #endregion
 
         public override void Reset()
         {

@@ -268,54 +268,124 @@ namespace Essgee.Emulation.Machines
         }
 
         //public void SetState(Dictionary<string, dynamic> state)
-        public void SetState(Dictionary<string, object> state)
+        //public void SetState(Dictionary<string, object> state)
+        //{
+        //    configuration.TVStandard = (TVStandard)state[nameof(configuration.TVStandard)];
+        //    configuration.Region = (Region)state[nameof(configuration.Region)];
+
+        //    SaveStateHandler.PerformSetState(bootstrap, (Dictionary<string, object>)state[nameof(bootstrap)]);
+        //    SaveStateHandler.PerformSetState(cartridge, (Dictionary<string, object>)state[nameof(cartridge)]);
+        //    wram = (byte[])state[nameof(wram)];
+        //    SaveStateHandler.PerformSetState(cpu, (Dictionary<string, object>)state[nameof(cpu)]);
+        //    SaveStateHandler.PerformSetState(vdp, (Dictionary<string, object>)state[nameof(vdp)]);
+        //    SaveStateHandler.PerformSetState(psg, (Dictionary<string, object>)state[nameof(psg)]);
+
+        //    inputDevices = (InputDevice[])state[nameof(inputDevices)];
+        //    lightgunLatched = (bool)state[nameof(lightgunLatched)];
+
+        //    portMemoryControl = (byte)state[nameof(portMemoryControl)];
+        //    portIoControl = (byte)state[nameof(portIoControl)];
+        //    hCounterLatched = (byte)state[nameof(hCounterLatched)];
+
+        //    ReconfigureSystem();
+        //}
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
         {
-            configuration.TVStandard = (TVStandard)state[nameof(configuration.TVStandard)];
-            configuration.Region = (Region)state[nameof(configuration.Region)];
+            configuration.TVStandard = data.MemberData[nameof(configuration.TVStandard)].ToEnum<TVStandard>();
+            configuration.Region = data.MemberData[nameof(configuration.Region)].ToEnum<Region>();
 
-            SaveStateHandler.PerformSetState(bootstrap, (Dictionary<string, object>)state[nameof(bootstrap)]);
-            SaveStateHandler.PerformSetState(cartridge, (Dictionary<string, object>)state[nameof(cartridge)]);
-            wram = (byte[])state[nameof(wram)];
-            SaveStateHandler.PerformSetState(cpu, (Dictionary<string, object>)state[nameof(cpu)]);
-            SaveStateHandler.PerformSetState(vdp, (Dictionary<string, object>)state[nameof(vdp)]);
-            SaveStateHandler.PerformSetState(psg, (Dictionary<string, object>)state[nameof(psg)]);
+            if (data.ClassData.ContainsKey(nameof(bootstrap)))
+                bootstrap.LoadAxiStatus(data.ClassData[nameof(bootstrap)]);
+            cartridge.LoadAxiStatus(data.ClassData[nameof(cartridge)]);
+            wram = data.MemberData[nameof(wram)];
+            cpu.LoadAxiStatus(data.ClassData[nameof(cpu)]);
+            vdp.LoadAxiStatus(data.ClassData[nameof(vdp)]);
+            psg.LoadAxiStatus(data.ClassData[nameof(psg)]);
 
-            inputDevices = (InputDevice[])state[nameof(inputDevices)];
-            lightgunLatched = (bool)state[nameof(lightgunLatched)];
+            inputDevices = data.MemberData[nameof(inputDevices)].ToEnumArray<InputDevice>();
+            lightgunLatched = BitConverter.ToBoolean(data.MemberData[nameof(lightgunLatched)]);
 
-            portMemoryControl = (byte)state[nameof(portMemoryControl)];
-            portIoControl = (byte)state[nameof(portIoControl)];
-            hCounterLatched = (byte)state[nameof(hCounterLatched)];
+            portMemoryControl = data.MemberData[nameof(portMemoryControl)].First();
+            portIoControl = data.MemberData[nameof(portIoControl)].First();
+            hCounterLatched = data.MemberData[nameof(hCounterLatched)].First();
 
             ReconfigureSystem();
         }
 
-        public Dictionary<string, dynamic> GetState()
+        //public Dictionary<string, object> GetState()
+        //{
+        //    return new Dictionary<string, object>
+        //    {
+        //        [nameof(configuration.TVStandard)] = configuration.TVStandard,
+        //        [nameof(configuration.Region)] = configuration.Region,
+
+        //        [nameof(bootstrap)] = SaveStateHandler.PerformGetState(bootstrap),
+        //        [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
+        //        [nameof(wram)] = wram,
+        //        [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
+        //        [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
+        //        [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
+
+        //        [nameof(inputDevices)] = inputDevices,
+        //        [nameof(lightgunLatched)] = lightgunLatched,
+
+        //        [nameof(portMemoryControl)] = portMemoryControl,
+        //        [nameof(portIoControl)] = portIoControl,
+        //        [nameof(hCounterLatched)] = hCounterLatched
+        //    };
+        //}
+
+        public AxiEssgssStatusData SaveAxiStatus()
         {
-            return new Dictionary<string, dynamic>
-            {
-                [nameof(configuration.TVStandard)] = configuration.TVStandard,
-                [nameof(configuration.Region)] = configuration.Region,
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(configuration.TVStandard)] = configuration.TVStandard.ToByteArray();
+            data.MemberData[nameof(configuration.Region)] = configuration.Region.ToByteArray();
 
-                [nameof(bootstrap)] = SaveStateHandler.PerformGetState(bootstrap),
-                [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
-                [nameof(wram)] = wram,
-                [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
-                [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
-                [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
+            if (bootstrap != null)
+                data.ClassData[nameof(bootstrap)] = bootstrap.SaveAxiStatus();
 
-                [nameof(inputDevices)] = inputDevices,
-                [nameof(lightgunLatched)] = lightgunLatched,
+            data.ClassData[nameof(cartridge)] = cartridge.SaveAxiStatus();
+            data.MemberData[nameof(wram)] = wram;
+            data.ClassData[nameof(cpu)] = cpu.SaveAxiStatus();
+            data.ClassData[nameof(vdp)] = vdp.SaveAxiStatus();
+            data.ClassData[nameof(psg)] = psg.SaveAxiStatus();
 
-                [nameof(portMemoryControl)] = portMemoryControl,
-                [nameof(portIoControl)] = portIoControl,
-                [nameof(hCounterLatched)] = hCounterLatched
-            };
+            data.MemberData[nameof(inputDevices)] = inputDevices.ToByteArray();
+            data.MemberData[nameof(lightgunLatched)] = BitConverter.GetBytes(lightgunLatched);
+
+            data.MemberData[nameof(portMemoryControl)] = BitConverter.GetBytes((int)portMemoryControl);
+            data.MemberData[nameof(portIoControl)] = BitConverter.GetBytes((int)portIoControl);
+            data.MemberData[nameof(hCounterLatched)] = BitConverter.GetBytes(hCounterLatched);
+
+
+            return data;
+
+
+            //return new Dictionary<string, object>
+            //{
+            //    [nameof(configuration.TVStandard)] = configuration.TVStandard,
+            //    [nameof(configuration.Region)] = configuration.Region,
+
+            //    [nameof(bootstrap)] = SaveStateHandler.PerformGetState(bootstrap),
+            //    [nameof(cartridge)] = SaveStateHandler.PerformGetState(cartridge),
+            //    [nameof(wram)] = wram,
+            //    [nameof(cpu)] = SaveStateHandler.PerformGetState(cpu),
+            //    [nameof(vdp)] = SaveStateHandler.PerformGetState(vdp),
+            //    [nameof(psg)] = SaveStateHandler.PerformGetState(psg),
+
+            //    [nameof(inputDevices)] = inputDevices,
+            //    [nameof(lightgunLatched)] = lightgunLatched,
+
+            //    [nameof(portMemoryControl)] = portMemoryControl,
+            //    [nameof(portIoControl)] = portIoControl,
+            //    [nameof(hCounterLatched)] = hCounterLatched
+            //};
         }
 
-        public Dictionary<string, dynamic> GetDebugInformation()
+        public Dictionary<string, object> GetDebugInformation()
         {
-            var dict = new Dictionary<string, dynamic>
+            var dict = new Dictionary<string, object>
             {
                 { "CyclesInFrame", currentMasterClockCyclesInFrame },
             };

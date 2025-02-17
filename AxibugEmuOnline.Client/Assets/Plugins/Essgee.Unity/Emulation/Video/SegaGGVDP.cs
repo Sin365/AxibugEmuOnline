@@ -1,7 +1,6 @@
 ﻿using Essgee.EventArguments;
 using Essgee.Utilities;
 using System;
-using System.Runtime.InteropServices;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.Video

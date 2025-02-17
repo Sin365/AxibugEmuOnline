@@ -18,7 +18,7 @@ namespace Essgee.Metadata
     public interface IGameMetaReources
     {
         public bool GetCartMetadataDatabase(out string loadedData);
-        public bool GetDatBytes(string DatName,out byte[] loadedData);
+        public bool GetDatBytes(string DatName, out byte[] loadedData);
     }
 
     public class GameMetadataHandler
@@ -37,7 +37,7 @@ namespace Essgee.Metadata
         {
             gameMetaReources = metaresources;
 
-            if(!gameMetaReources.GetCartMetadataDatabase(out string loadedData))
+            if (!gameMetaReources.GetCartMetadataDatabase(out string loadedData))
                 throw new HandlerException("CartMetadataDatabase file not found");
 
             cartMetadataDatabase = JsonConvert.DeserializeObject<List<CartridgeJSON>>(loadedData);

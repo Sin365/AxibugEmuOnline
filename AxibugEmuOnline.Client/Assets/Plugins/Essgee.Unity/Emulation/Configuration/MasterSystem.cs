@@ -1,6 +1,4 @@
 ﻿using Essgee.Utilities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Essgee.Emulation.Configuration
 {

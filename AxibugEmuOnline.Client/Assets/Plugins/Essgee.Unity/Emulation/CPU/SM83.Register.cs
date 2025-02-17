@@ -20,6 +20,10 @@ namespace Essgee.Emulation.CPU
 
             [FieldOffset(0)]
             public ushort Word;
+
+
+            [FieldOffset(0)]
+            public ushort axi_AllData;
         }
     }
 }

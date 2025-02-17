@@ -1,6 +1,7 @@
 ﻿using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
+using System.Linq;
 
 namespace Essgee.Emulation.Cartridges.Sega
 {
@@ -11,13 +12,38 @@ namespace Essgee.Emulation.Cartridges.Sega
         [StateRequired]
         byte[] ramData;
 
-        [StateRequired]
-        readonly byte[] pagingRegisters;
-        [StateRequired]
-        readonly byte bankMask;
+        [StateRequired]//TODO 感觉不用保存 保留readonly
+        byte[] pagingRegisters;
+        //readonly byte[] pagingRegisters;
+        [StateRequired]//TODO 感觉不用保存 保留readonly
+        byte bankMask;
+        //readonly byte bankMask;
 
         [StateRequired]
         bool isRamEnabled;
+
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            ramData = data.MemberData[nameof(ramData)];
+            pagingRegisters = data.MemberData[nameof(pagingRegisters)];
+            bankMask = data.MemberData[nameof(bankMask)].First();
+            isRamEnabled = BitConverter.ToBoolean(data.MemberData[nameof(isRamEnabled)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(pagingRegisters)] = pagingRegisters;
+            data.MemberData[nameof(bankMask)] = BitConverter.GetBytes(bankMask);
+            data.MemberData[nameof(isRamEnabled)] = BitConverter.GetBytes(isRamEnabled);
+
+            return data;
+        }
+        #endregion
 
         public CodemastersCartridge(int romSize, int ramSize)
         {
@@ -116,5 +142,6 @@ namespace Essgee.Emulation.Cartridges.Sega
             if (isRamEnabled && ((address & 0xF000) == 0xA000 || (address & 0xF000) == 0xB000))
                 ramData[address & 0x1FFF] = value;
         }
+
     }
 }

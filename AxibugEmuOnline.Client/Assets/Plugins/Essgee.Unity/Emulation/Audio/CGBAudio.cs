@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Essgee.Emulation.Audio
+﻿namespace Essgee.Emulation.Audio
 {
     public partial class CGBAudio : DMGAudio, IAudio
     {

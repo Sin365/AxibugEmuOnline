@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace Essgee.Emulation.Configuration
+﻿namespace Essgee.Emulation.Configuration
 {
     //todo Unity [ElementPriority(0)]
     public class SG1000 : IConfiguration

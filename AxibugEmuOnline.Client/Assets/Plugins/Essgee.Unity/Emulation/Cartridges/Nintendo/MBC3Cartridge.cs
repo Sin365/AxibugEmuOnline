@@ -32,6 +32,8 @@ namespace Essgee.Emulation.Cartridges.Nintendo
                 IsLatched = false;
             }
 
+
+
             public void FromSaveData(byte[] ramData)
             {
                 var rtcOffset = ramData.Length - 0x30;
@@ -129,6 +131,18 @@ namespace Essgee.Emulation.Cartridges.Nintendo
             rtc = new RTC();
         }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            return data;
+        }
+        #endregion
         public void LoadRom(byte[] data)
         {
             Buffer.BlockCopy(data, 0, romData, 0, Math.Min(data.Length, romData.Length));
@@ -257,5 +271,6 @@ namespace Essgee.Emulation.Cartridges.Nintendo
                     ramData[(ramBank << 13) | (address & 0x1FFF)] = value;
             }
         }
+
     }
 }

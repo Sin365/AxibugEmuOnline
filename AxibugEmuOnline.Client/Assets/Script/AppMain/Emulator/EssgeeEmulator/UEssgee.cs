@@ -1,3 +1,5 @@
+using AxibugEmuOnline.Client;
+using AxibugProtobuf;
 using Essgee;
 using Essgee.Emulation;
 using Essgee.Emulation.Configuration;
@@ -13,13 +15,25 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Essgeeinit : MonoBehaviour
+public class Essgeeinit : MonoBehaviour, IEmuCore
 {
-    static Essgeeinit instance;
+    public static Essgeeinit instance;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
     public static bool bInGame => instance?.emulatorHandler?.IsRunning == true ? true : false;
+
+    public RomPlatformType Platform => mPlatform;
+
+    public uint Frame => throw new NotImplementedException();
+
+    public Texture OutputPixel => graphicsHandler.rawBufferWarper;
+
+    public RawImage DrawCanvas => graphicsHandler.DrawCanvas;
+
+    public static bool bLogicUpdatePause { get; private set; }
     #region
+
     UEGVideoPlayer graphicsHandler;
     UEGSoundPlayer soundHandler;
     GameMetadataHandler gameMetadataHandler;
@@ -29,22 +43,19 @@ public class Essgeeinit : MonoBehaviour
     UEGLog uegLog;
 
     bool lastUserPauseState;
-    (int x, int y, int width, int height) currentViewport;
     double currentPixelAspectRatio;
-    byte[] lastFramebufferData;
-    (int width, int height) lastFramebufferSize;
     private UEGKeyboard mUniKeyboard;
+    private RomPlatformType mPlatform = RomPlatformType.MasterSystem;
 
     #endregion
 
     void Awake()
     {
         instance = this;
-
         uegResources = new UEGResources();
         uegLog = new UEGLog();
         InitAll(uegResources, Application.persistentDataPath);
-        LoadAndRunCartridge("G:/psjapa.sms");
+        //LoadAndRunCartridge("G:/psjapa.sms");
         //LoadAndRunCartridge("G:/Ninja_Gaiden_(UE)_type_A_[!].sms");
         //LoadAndRunCartridge("G:/SML2.gb");
     }
@@ -55,16 +66,96 @@ public class Essgeeinit : MonoBehaviour
         Dispose(false);
     }
 
-    private void Update()
-    {
-        if (!emulatorHandler.IsRunning)
-            return;
-        mUniKeyboard.UpdateInputKey();
 
-        emulatorHandler.Update_Frame();
+    #region EmuCore接入实现
+
+    public object GetState()
+    {
+        return emulatorHandler.GetStateData();
     }
 
-    void InitAll(IGameMetaReources metaresources,string CustonDataDir)
+    public byte[] GetStateBytes()
+    {
+        return emulatorHandler.GetStateData();
+    }
+
+    public void LoadState(object state)
+    {
+        Application.targetFrameRate = 60;
+        emulatorHandler.SetStateData((byte[])state);
+    }
+
+    public void LoadStateFromBytes(byte[] data)
+    {
+        emulatorHandler.SetStateData(data);
+    }
+
+    public void Pause()
+    {
+        bLogicUpdatePause = false;
+    }
+    public void Resume()
+    {
+        bLogicUpdatePause = true;
+    }
+
+    public MsgBool StartGame(RomFile romFile)
+    {
+        mPlatform = romFile.Platform;
+        bLogicUpdatePause = true;
+
+        //保存当前正在进行的游戏存档
+        if (!emulatorHandler.IsRunning)
+        {
+            emulatorHandler.SaveCartridge();
+        }
+
+        if (LoadAndRunCartridge(romFile.FileName))
+            return true;
+        else
+            return "Rom加载失败";
+    }
+
+    public void Dispose()
+    {
+        if (!emulatorHandler.IsRunning)
+        { 
+            emulatorHandler.SaveCartridge();
+        }
+        ShutdownEmulation();
+    }
+
+    public void DoReset()
+    {
+        emulatorHandler.SaveCartridge();
+        emulatorHandler.Reset();
+    }
+
+    public IControllerSetuper GetControllerSetuper()
+    {
+        return mUniKeyboard.ControllerMapper;
+    }
+
+    public bool PushEmulatorFrame()
+    {
+        if (!emulatorHandler.IsRunning) return false;
+        if (!bLogicUpdatePause) return false;
+
+        //采集本帧Input
+        bool bhadNext = mUniKeyboard.SampleInput();
+        //如果未收到Input数据,核心帧不推进
+        if (!bhadNext) return false;
+
+        emulatorHandler.Update_Frame();
+        return true;
+    }
+
+    public void AfterPushFrame()
+    {
+    }
+    #endregion
+
+    void InitAll(IGameMetaReources metaresources, string CustonDataDir)
     {
         //初始化配置
         InitAppEnvironment(CustonDataDir);
@@ -344,11 +435,11 @@ public class Essgeeinit : MonoBehaviour
     }
 
 
-    private void LoadAndRunCartridge(string fileName)
+    private bool LoadAndRunCartridge(string fileName)
     {
-        Application.targetFrameRate = 60;
         try
         {
+
             var (machineType, romData) = CartridgeLoader.Load(fileName, "ROM image");
 
             //TODO IsRecording?? 可能需要实现
@@ -389,10 +480,13 @@ public class Essgeeinit : MonoBehaviour
             //SetWindowTitleAndStatus();
 
             EssgeeLogger.EnqueueMessage($"Loaded '{lastGameMetadata?.KnownName ?? "unrecognized game"}'.");
+
+            return true;
         }
         catch (Exception ex) when (!AppEnvironment.DebugMode)
         {
             ExceptionHandler(ex);
+            return false;
         }
     }
     private void InitializeEmulation(Type machineType)
@@ -549,8 +643,6 @@ public class Essgeeinit : MonoBehaviour
         emulatorHandler = null;
         GC.Collect();
 
-        //graphicsHandler?.FlushTextures();
-
         EssgeeLogger.WriteLine("Emulation stopped.");
     }
     #endregion
@@ -618,7 +710,7 @@ public class Essgeeinit : MonoBehaviour
         //TODO Input实现
 
         //e.Keyboard = mUniKeyboard.mKeyCodeCore.GetPressedKeys();
-        e.Keyboard.AddRange(mUniKeyboard.mKeyCodeCore.GetPressedKeys());
+        e.Keyboard.AddRange(mUniKeyboard.GetPressedKeys());
         e.MouseButtons = default;
         e.MousePosition = default;
 
@@ -721,6 +813,7 @@ public class Essgeeinit : MonoBehaviour
         //soundHandler.SubmitSamples(e.MixedSamples, e.ChannelSamples, e.MixedSamples.Length);
         soundHandler.SubmitSamples(e.MixedSamples, e.ChannelSamples, e.MixedSamplesLength);
     }
+
     #endregion
 }
 

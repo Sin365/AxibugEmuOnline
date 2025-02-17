@@ -145,6 +145,22 @@ namespace Essgee.Emulation.Video.Nintendo
             layerSpritesForceEnable = true;
         }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            vram = data.Array2DMemberData[nameof(vram)].Get2DArrayBytesData();
+            oam = data.MemberData[nameof(oam)];
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.Array2DMemberData[nameof(vram)] = new AxiEssgssStatusData_2DArray(vram);
+            data.MemberData[nameof(oam)] = oam;
+            return data;
+        }
+        #endregion
         public object GetRuntimeOption(string name)
         {
             switch (name)
