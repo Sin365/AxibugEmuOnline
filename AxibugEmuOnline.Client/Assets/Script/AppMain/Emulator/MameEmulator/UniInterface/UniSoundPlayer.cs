@@ -11,14 +11,20 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer
     public double audioFPS { get; private set; }
     float lastData = 0;
 
-
     void Awake()
     {
-        AudioClip dummy = AudioClip.Create("dummy", 1, 2, AudioSettings.outputSampleRate, false);
-        dummy.SetData(new float[] { 1, 1 }, 0);
-        m_as.clip = dummy;
+        //TODO 采样率需要更准确，而且和clip并没有关系
+        var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
+        dummy.SetData(new float[] { 1 }, 0);
+        m_as.clip = dummy; //just to let unity play the audiosource
         m_as.loop = true;
         m_as.spatialBlend = 1;
+        m_as.Play();
+    }
+    public void GetAudioParams(out int frequency, out int channels)
+    {
+        frequency = m_as.clip.samples;
+        channels = m_as.clip.channels;
     }
 
     public void Initialize()

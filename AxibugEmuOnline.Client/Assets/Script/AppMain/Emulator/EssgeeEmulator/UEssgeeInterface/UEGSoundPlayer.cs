@@ -1,25 +1,52 @@
+using AxibugEmuOnline.Client.ClientCore;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
-public class UEGSoundPlayer : MonoBehaviour//, ISoundPlayer
+public class UEGSoundPlayer : MonoBehaviour
 {
     [SerializeField]
     private AudioSource m_as;
-    private RingBuffer<float> _buffer = new RingBuffer<float>(4096);
+    private RingBuffer<float> _buffer = new RingBuffer<float>(44100 * 2);
     private TimeSpan lastElapsed;
     public double audioFPS { get; private set; }
-    float lastData = 0;
-
+    public bool IsRecording { get; private set; }
+    [HideInInspector]
+    public int sampleRate = 44100;
+    [HideInInspector]
+    public int channle = 2;
 
     void Awake()
     {
-        AudioClip dummy = AudioClip.Create("dummy", 1, 2, AudioSettings.outputSampleRate, false);
-        //AudioClip dummy = AudioClip.Create("dummy", 1, 2, 44100, false);
-        dummy.SetData(new float[] { 1, 1 }, 0);
-        m_as.clip = dummy;
-        m_as.loop = true;
-        m_as.spatialBlend = 1;
+        // 获取当前音频配置
+        AudioConfiguration config = AudioSettings.GetConfiguration();
+        // 设置目标音频配置
+        config.sampleRate = sampleRate;       // 采样率为 44100Hz
+        config.numRealVoices = 32;      // 设置最大音频源数量（可选）
+        config.numVirtualVoices = 512;   // 设置虚拟音频源数量（可选）
+        config.dspBufferSize = 1024;     // 设置 DSP 缓冲区大小（可选）
+        config.speakerMode = AudioSpeakerMode.Stereo; // 设置为立体声（2 声道）
+        App.audioMgr.SetAudioConfig(config);
     }
+
+    private Queue<float> sampleQueue = new Queue<float>();
+
+
+    // Unity 音频线程回调
+    void OnAudioFilterRead(float[] data, int channels)
+    {
+        for (int i = 0; i < data.Length; i++)
+        {
+            if (_buffer.TryRead(out float rawData))
+                data[i] = rawData;
+            else
+                data[i] = 0; // 无数据时静音
+        }
+    }
+
 
     public void Initialize()
     {
@@ -37,48 +64,19 @@ public class UEGSoundPlayer : MonoBehaviour//, ISoundPlayer
         }
     }
 
-    void OnAudioFilterRead(float[] data, int channels)
-    {
-        if (!Essgeeinit.bInGame) return;
-        int step = channels;
-        for (int i = 0; i < data.Length; i += step)
-        {
-            float rawFloat = lastData;
-            if (_buffer.TryRead(out float rawData))
-            {
-                rawFloat = rawData;
-            }
-
-            data[i] = rawFloat;
-            for (int fill = 1; fill < step; fill++)
-                data[i + fill] = rawFloat;
-            lastData = rawFloat;
-        }
-    }
-
     public unsafe void SubmitSamples(short* buffer, short*[] ChannelSamples, int samples_a)
     {
-        var current = Essgeeinit.sw.Elapsed;
+        var current = UEssgee.sw.Elapsed;
         var delta = current - lastElapsed;
         lastElapsed = current;
         audioFPS = 1d / delta.TotalSeconds;
 
-
-        //for (int i = 0; i < samples_a; i++)
-        //{
-        //    short left = BitConverter.ToInt16(buffer, i * 2 * 2);
-        //    //short right = BitConverter.ToInt16(buffer, i * 2 * 2 + 2);
-        //    _buffer.Write(left / 32767.0f);
-        //    //_buffer.Write(right / 32767.0f);
-        //}
-
-        for (int i = 0; i < samples_a; i += 2)
+        for (int i = 0; i < samples_a; i += 1)
         {
             _buffer.Write(buffer[i] / 32767.0f);
-            //_buffer.Write(buffer[i] / 32767.0f);
         }
+        App.audioMgr.WriteToRecord(buffer, samples_a);
     }
-
     public void BufferWirte(int Off, byte[] Data)
     {
     }

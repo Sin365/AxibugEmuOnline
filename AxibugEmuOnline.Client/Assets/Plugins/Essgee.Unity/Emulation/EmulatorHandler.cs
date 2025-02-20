@@ -87,6 +87,7 @@ namespace Essgee.Emulation
         public event EventHandler<EventArgs> PauseChanged;
 
         GameMetadata currentGameMetadata;
+        public int AxiEmuRunFrame { get; private set; }
 
         public bool IsCartridgeLoaded { get; private set; }
 
@@ -187,6 +188,8 @@ namespace Essgee.Emulation
             emulator.Load(romData, ramData, currentGameMetadata.MapperType);
 
             IsCartridgeLoaded = true;
+
+            AxiEmuRunFrame = 0;
         }
 
         public void SaveCartridge()
@@ -244,6 +247,7 @@ namespace Essgee.Emulation
             }
 
             emulator.RunFrame();
+            AxiEmuRunFrame++;
 
 
             if (configChangeRequested)
@@ -396,6 +400,7 @@ namespace Essgee.Emulation
         public void SetStateData(byte[] data)
         {
             emulator.LoadAxiStatus(data.ToAxiEssgssStatusData());
+            AxiEmuRunFrame = 0;
         }
     }
 }

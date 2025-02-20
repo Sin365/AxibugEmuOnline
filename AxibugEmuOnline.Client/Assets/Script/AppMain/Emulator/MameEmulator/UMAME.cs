@@ -118,6 +118,13 @@ public class UMAME : MonoBehaviour, IEmuCore
     {
         return mUniKeyboard.ControllerMapper;
     }
+
+
+    public void GetAudioParams(out int frequency, out int channels)
+    {
+        mUniSoundPlayer.GetAudioParams(out frequency, out channels);
+    }
+
     #endregion
     bool LoadGame(string loadRom, bool bReplay = false)
     {
@@ -223,6 +230,7 @@ public class UMAME : MonoBehaviour, IEmuCore
         br.Close();
         fs.Close();
     }
+
 
     public Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
 

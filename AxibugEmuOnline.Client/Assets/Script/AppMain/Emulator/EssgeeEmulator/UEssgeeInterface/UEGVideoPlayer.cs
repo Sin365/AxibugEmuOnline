@@ -1,9 +1,11 @@
 using System;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UEGVideoPlayer : MonoBehaviour
 {
+    public Vector2Int mScreenSize { get; private set; }
     [SerializeField]
     private int mWidth;
     [SerializeField]
@@ -88,7 +90,7 @@ public class UEGVideoPlayer : MonoBehaviour
     {
 
         mFrame = (ulong)frame_number;
-        var current = Essgeeinit.sw.Elapsed;
+        var current = UEssgee.sw.Elapsed;
         var delta = current - lastElapsed;
         lastElapsed = current;
         videoFPS = 1d / delta.TotalSeconds;
@@ -97,6 +99,7 @@ public class UEGVideoPlayer : MonoBehaviour
 
         if (!bHadData)
         {
+            mScreenSize = new Vector2Int(width, height);
             mWidth = width;
             mHeight = height;
             bHadData = true;

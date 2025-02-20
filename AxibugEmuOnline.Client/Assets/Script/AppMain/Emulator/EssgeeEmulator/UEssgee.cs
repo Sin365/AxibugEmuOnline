@@ -1,4 +1,5 @@
 using AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using Essgee;
 using Essgee.Emulation;
@@ -17,15 +18,15 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Essgeeinit : MonoBehaviour, IEmuCore
+public class UEssgee : MonoBehaviour, IEmuCore
 {
-    public static Essgeeinit instance;
+    public static UEssgee instance;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
     public static bool bInGame => instance?.emulatorHandler?.IsRunning == true ? true : false;
 
     public RomPlatformType Platform => mPlatform;
 
-    public uint Frame => throw new NotImplementedException();
+    public uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
 
     public Texture OutputPixel => graphicsHandler.rawBufferWarper;
 
@@ -34,7 +35,7 @@ public class Essgeeinit : MonoBehaviour, IEmuCore
     public static bool bLogicUpdatePause { get; private set; }
     #region
 
-    UEGVideoPlayer graphicsHandler;
+    public UEGVideoPlayer graphicsHandler;
     UEGSoundPlayer soundHandler;
     GameMetadataHandler gameMetadataHandler;
     GameMetadata lastGameMetadata;
@@ -54,10 +55,7 @@ public class Essgeeinit : MonoBehaviour, IEmuCore
         instance = this;
         uegResources = new UEGResources();
         uegLog = new UEGLog();
-        InitAll(uegResources, Application.persistentDataPath);
-        //LoadAndRunCartridge("G:/psjapa.sms");
-        //LoadAndRunCartridge("G:/Ninja_Gaiden_(UE)_type_A_[!].sms");
-        //LoadAndRunCartridge("G:/SML2.gb");
+        //InitAll(uegResources, App.PersistentDataPath(mPlatform));
     }
 
     void OnDisable()
@@ -102,15 +100,18 @@ public class Essgeeinit : MonoBehaviour, IEmuCore
     public MsgBool StartGame(RomFile romFile)
     {
         mPlatform = romFile.Platform;
+
+        InitAll(uegResources, App.PersistentDataPath(mPlatform));
+
         bLogicUpdatePause = true;
 
         //保存当前正在进行的游戏存档
-        if (!emulatorHandler.IsRunning)
+        if (emulatorHandler != null && !emulatorHandler.IsRunning)
         {
             emulatorHandler.SaveCartridge();
         }
 
-        if (LoadAndRunCartridge(romFile.FileName))
+        if (LoadAndRunCartridge(romFile.LocalFilePath))
             return true;
         else
             return "Rom加载失败";
@@ -152,6 +153,12 @@ public class Essgeeinit : MonoBehaviour, IEmuCore
 
     public void AfterPushFrame()
     {
+    }
+
+    public void GetAudioParams(out int frequency, out int channels)
+    {
+        frequency = soundHandler.sampleRate;
+        channels = soundHandler.channle;
     }
     #endregion
 
@@ -813,6 +820,7 @@ public class Essgeeinit : MonoBehaviour, IEmuCore
         //soundHandler.SubmitSamples(e.MixedSamples, e.ChannelSamples, e.MixedSamples.Length);
         soundHandler.SubmitSamples(e.MixedSamples, e.ChannelSamples, e.MixedSamplesLength);
     }
+
 
     #endregion
 }

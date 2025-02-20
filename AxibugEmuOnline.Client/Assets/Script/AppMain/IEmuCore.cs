@@ -39,6 +39,7 @@ namespace AxibugEmuOnline.Client
         bool PushEmulatorFrame();
         /// <summary> 模拟器核心推帧结束 </summary>
         void AfterPushFrame();
+        public void GetAudioParams(out int frequency, out int channels);
         Texture OutputPixel { get; }
         RawImage DrawCanvas { get; }
     }

@@ -61,6 +61,15 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.Neogeo:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<IEmuCore>();
                     break;
+                case RomPlatformType.MasterSystem:
+                case RomPlatformType.GameGear:
+                case RomPlatformType.GameBoy:
+                case RomPlatformType.GameBoyColor:
+                case RomPlatformType.ColecoVision:
+                case RomPlatformType.Sc3000:
+                case RomPlatformType.Sg1000:
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("EssgeeUnity/EssgeeUnity")).GetComponent<IEmuCore>();
+                    break;
             }
 
             var result = m_emuCore.StartGame(romFile);

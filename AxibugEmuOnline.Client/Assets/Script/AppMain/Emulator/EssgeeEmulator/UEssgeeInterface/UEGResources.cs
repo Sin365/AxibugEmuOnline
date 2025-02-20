@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class UEGResources : IGameMetaReources
 {
-    const string ResourceRoot = "Essgee.Unity/";
+    const string ResourceRoot = "EssgeeUnity/emu/";
 
     public bool GetCartMetadataDatabase(out string loadedData)
     {

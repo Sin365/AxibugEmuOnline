@@ -111,6 +111,14 @@ namespace AxibugEmuOnline.Client
                 case RomPlatformType.Neogeo:
                 case RomPlatformType.Igs:
                     return UMAME.instance.mUniVideoPlayer.mScreenSize;
+                case RomPlatformType.MasterSystem:
+                case RomPlatformType.GameGear:
+                case RomPlatformType.GameBoy:
+                case RomPlatformType.GameBoyColor:
+                case RomPlatformType.ColecoVision:
+                case RomPlatformType.Sc3000:
+                case RomPlatformType.Sg1000:
+                    return UEssgee.instance.graphicsHandler.mScreenSize;
                 default: throw new System.NotImplementedException($"未实现的平台:{platform}");
             }
         }

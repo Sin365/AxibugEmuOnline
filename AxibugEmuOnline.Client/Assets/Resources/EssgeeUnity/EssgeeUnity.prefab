@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1697793132499616605}
   - component: {fileID: 736821097941426334}
-  - component: {fileID: 1479243231233559559}
-  - component: {fileID: 7015183808095004452}
+  - component: {fileID: 8271949118339714180}
+  - component: {fileID: 3772519294605500755}
   - component: {fileID: 6011412303868462633}
   m_Layer: 0
   m_Name: EssgeeUnity
@@ -48,7 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee8551c24327cd04a81ffb5de0146f9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1479243231233559559
+  graphicsHandler: {fileID: 0}
+--- !u!114 &8271949118339714180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,16 +58,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 70883439141109485}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f675565b1f4ed7744a8ea9788c92429d, type: 3}
+  m_Script: {fileID: 11500000, guid: ac6bf3b2881889b418e5926193ca59f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mWidth: 160
-  mHeight: 144
+  mWidth: 0
+  mHeight: 0
   mDataLenght: 0
   m_rawBufferWarper: {fileID: 0}
   m_drawCanvas: {fileID: 1415903496979242101}
   m_drawCanvasrect: {fileID: 4829774629647575852}
---- !u!114 &7015183808095004452
+--- !u!114 &3772519294605500755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -75,10 +76,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 70883439141109485}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89abab1d3b1020340a147d74e60751ce, type: 3}
+  m_Script: {fileID: 11500000, guid: a6b878f13700e454ebfa9b7eb26ad804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_as: {fileID: 6011412303868462633}
+  sampleRate: 44100
+  channle: 2
 --- !u!82 &6011412303868462633
 AudioSource:
   m_ObjectHideFlags: 0
@@ -296,7 +299,7 @@ Canvas:
   m_GameObject: {fileID: 5558964681998005947}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0

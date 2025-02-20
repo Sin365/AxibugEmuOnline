@@ -321,7 +321,7 @@ public class UEGKeyboard : MonoBehaviour
         {
             bool bHadNetData = false;
             int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
-            if (App.roomMgr.netReplay.TryGetNextFrame((int)Essgeeinit.instance.Frame, out replayData, out frameDiff, out inputDiff))
+            if (App.roomMgr.netReplay.TryGetNextFrame((int)UEssgee.instance.Frame, out replayData, out frameDiff, out inputDiff))
             {
                 if (inputDiff)
                 {
@@ -338,7 +338,7 @@ public class UEGKeyboard : MonoBehaviour
             }
 
             //发送本地操作
-            App.roomMgr.SendRoomSingelPlayerInput(Essgeeinit.instance.Frame,
+            App.roomMgr.SendRoomSingelPlayerInput(UEssgee.instance.Frame,
              DoLocalPressedKeys());
 
             return bHadNetData;

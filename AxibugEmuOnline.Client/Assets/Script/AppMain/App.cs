@@ -41,6 +41,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 
         #region Mono
         public static TickLoop tickLoop;
+        public static AudioMgr audioMgr;
         private static CoroutineRunner coRunner;
 
 #if UNITY_PSP2
@@ -107,6 +108,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
             tickLoop = go.AddComponent<TickLoop>();
+            audioMgr = go.AddComponent<AudioMgr>();
             coRunner = go.AddComponent<CoroutineRunner>();
 
 

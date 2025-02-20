@@ -124,5 +124,10 @@ namespace AxibugEmuOnline.Client
                 AveNetDelay = NetDelays.Average(w => w);
             }
         }
+
+        internal object GetDateTimeStr()
+        {
+            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        }
     }
 }

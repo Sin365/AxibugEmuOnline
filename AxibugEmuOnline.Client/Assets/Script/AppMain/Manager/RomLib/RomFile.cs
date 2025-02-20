@@ -24,12 +24,44 @@ namespace AxibugEmuOnline.Client
             {
                 switch (Platform)
                 {
-                    case RomPlatformType.Nes: return false;
+                    case RomPlatformType.Nes:
+                    case RomPlatformType.MasterSystem:
+                    case RomPlatformType.GameGear:
+                    case RomPlatformType.GameBoy:
+                    case RomPlatformType.GameBoyColor:
+                    case RomPlatformType.ColecoVision:
+                    case RomPlatformType.Sc3000:
+                    case RomPlatformType.Sg1000:
+                        return false;
                     case RomPlatformType.Igs:
                     case RomPlatformType.Cps1:
                     case RomPlatformType.Cps2:
                     case RomPlatformType.Neogeo:
+                    case RomPlatformType.ArcadeOld:
                         return true;
+                    default: throw new NotImplementedException($"未实现的平台{Platform}");
+                }
+            }
+        }
+
+        public string FileExtentionName
+        {
+            get
+            {
+                switch (Platform)
+                {
+                    case RomPlatformType.Nes: return ".nes";
+
+                    case RomPlatformType.MasterSystem: //return ".sms";
+                    case RomPlatformType.GameGear:
+                    case RomPlatformType.GameBoy: //return ".gb";
+                    case RomPlatformType.GameBoyColor: //return ".gbc";
+                    case RomPlatformType.ColecoVision: 
+                    case RomPlatformType.Sc3000:
+                    case RomPlatformType.Sg1000:
+                        throw new NotImplementedException($"该平台使用核心内zip解压{Platform}");
+
+
                     default: throw new NotImplementedException($"未实现的平台{Platform}");
                 }
             }
@@ -274,7 +306,8 @@ namespace AxibugEmuOnline.Client
                     var currentEntry = zip.GetNextEntry();
                     if (currentEntry == null) break;
 
-                    if (!currentEntry.Name.ToLower().EndsWith(".nes")) continue;
+                    //当前平台单文件rom扩展名判断
+                    if (!currentEntry.Name.ToLower().EndsWith(FileExtentionName)) continue;
 
                     var buffer = new byte[1024];
                     MemoryStream output = new MemoryStream();
@@ -294,7 +327,7 @@ namespace AxibugEmuOnline.Client
             }
 
             throw new Exception("Not Valid Rom Data");
-        }        
+        }
 
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
