@@ -52,6 +52,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     void Awake()
     {
+        App.tick.SetFrameRate(60);
         instance = this;
         uegResources = new UEGResources();
         uegLog = new UEGLog();
@@ -79,7 +80,6 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     public void LoadState(object state)
     {
-        Application.targetFrameRate = 60;
         emulatorHandler.SetStateData((byte[])state);
     }
 

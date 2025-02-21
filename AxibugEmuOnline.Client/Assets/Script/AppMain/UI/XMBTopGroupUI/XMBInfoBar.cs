@@ -77,7 +77,7 @@ public class XMBInfoBar : MonoBehaviour
         {
             if (App.user.IsLoggedIn)
             {
-                DelayValue.text = $"{App.tickLoop.AveNetDelay * 1000:0}ms";
+                DelayValue.text = $"{App.tick.AveNetDelay * 1000:0}ms";
                 OnlinePlayerCount.text = App.user.OnlinePlayerCount.ToString();
             }
             else

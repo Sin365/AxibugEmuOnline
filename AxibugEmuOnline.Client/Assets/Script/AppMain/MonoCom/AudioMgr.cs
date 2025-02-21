@@ -71,7 +71,7 @@ namespace AxibugEmuOnline.Client
             {
                 Directory.CreateDirectory(dir);
             }
-            return $"{dir}/{App.tickLoop.GetDateTimeStr()}";
+            return $"{dir}/{App.tick.GetDateTimeStr()}";
         }
 
         void BeginRecording(int frequency, int channels)

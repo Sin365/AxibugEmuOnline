@@ -40,7 +40,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static Dictionary<RomPlatformType, RomLib> s_romLibs = new Dictionary<RomPlatformType, RomLib>();
 
         #region Mono
-        public static TickLoop tickLoop;
+        public static TickLoop tick;
         public static AudioMgr audioMgr;
         private static CoroutineRunner coRunner;
 
@@ -107,7 +107,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);
-            tickLoop = go.AddComponent<TickLoop>();
+            tick = go.AddComponent<TickLoop>();
             audioMgr = go.AddComponent<AudioMgr>();
             coRunner = go.AddComponent<CoroutineRunner>();
 

@@ -53,7 +53,7 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
-                    Debug.LogError(overTask.downloadHandler.ErrInfo);
+                    Debug.LogError($"{overTask.downloadHandler.ErrInfo}:{overTask.downloadHandler.url}");
                 }
             }
         }

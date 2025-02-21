@@ -78,7 +78,7 @@ namespace AxibugEmuOnline.Client
 
             int randSeed = new System.Random().Next(0, int.MaxValue);
             LastPingSeed = randSeed;
-            LastStartPingTime = App.tickLoop.sw.Elapsed;
+            LastStartPingTime = App.tick.sw.Elapsed;
             Protobuf_Ping resp = new Protobuf_Ping()
             {
                 Seed = randSeed,
@@ -105,7 +105,7 @@ namespace AxibugEmuOnline.Client
 
             if (LastPingSeed == msg.Seed)
             {
-                TimeSpan current = App.tickLoop.sw.Elapsed;
+                TimeSpan current = App.tick.sw.Elapsed;
                 TimeSpan delta = current - LastStartPingTime;
                 NetDelays.Add(delta.TotalSeconds);
 
@@ -128,6 +128,13 @@ namespace AxibugEmuOnline.Client
         internal object GetDateTimeStr()
         {
             return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        }
+
+        internal void SetFrameRate(int rate)
+        {//关闭垂直同步
+            QualitySettings.vSyncCount = 0;
+            //设为60帧
+            Application.targetFrameRate = rate;
         }
     }
 }

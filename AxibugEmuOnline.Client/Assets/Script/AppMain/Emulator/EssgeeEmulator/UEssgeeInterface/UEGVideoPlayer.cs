@@ -1,5 +1,4 @@
 using System;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.UI;
 
