@@ -42,7 +42,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     EmulatorHandler emulatorHandler;
     UEGResources uegResources;
     UEGLog uegLog;
-
+    private Canvas mCanvas;
     bool lastUserPauseState;
     double currentPixelAspectRatio;
     private UEGKeyboard mUniKeyboard;
@@ -56,6 +56,8 @@ public class UEssgee : MonoBehaviour, IEmuCore
         instance = this;
         uegResources = new UEGResources();
         uegLog = new UEGLog();
+        mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        mCanvas.worldCamera = Camera.main;
         //InitAll(uegResources, App.PersistentDataPath(mPlatform));
     }
 
