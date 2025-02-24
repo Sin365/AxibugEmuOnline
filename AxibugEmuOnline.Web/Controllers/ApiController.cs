@@ -2,6 +2,7 @@ using AxibugEmuOnline.Web.Common;
 using AxibugProtobuf;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AxibugEmuOnline.Web.Controllers
@@ -60,37 +61,40 @@ namespace AxibugEmuOnline.Web.Controllers
                 UID = tokenData.UID;
             }
 
-            string searchPattern = $"%{SearchKey}%";
+            bool bHadSearchKey = !string.IsNullOrEmpty(SearchKey);
+
             Resp_GameList resp = new Resp_GameList();
             resp.gameList = new List<Resp_RomInfo>();
             MySqlConnection conn = SQLPool.DequeueSQLConn("RomList");
             {
-                string platformCond = "";
+                List<string> condition = new List<string>();
+
+                if (bHadSearchKey)
+                    condition.Add("r.`Name` like ?searchPattern");
+
                 if (Ptype > (int)RomPlatformType.Invalid && Ptype < (int)RomPlatformType.All)
-                {
-                    platformCond = $" and PlatformType = '{Ptype}' ";
-                }
+                    condition.Add($"r.PlatformType = '{Ptype}'");
 
                 GameType SearchGType = (GameType)GType;
-                string GameTypeCond = "";
                 switch (SearchGType)
                 {
                     case GameType.NONE:
-                        GameTypeCond = string.Empty;
                         break;
                     case GameType.ALLINONE:
-                        GameTypeCond = $" and GameType = '合卡' ";
+                        condition.Add($"r.GameType = '合卡' ");
                         break;
                     default:
-                        GameTypeCond = $" and GameType = '{SearchGType.ToString()}' ";
+                        condition.Add($"r.GameType = '{SearchGType.ToString()}' ");
                         break;
                 }
 
-                string query = "SELECT count(id) FROM romlist where `Name` like ?searchPattern " + platformCond + GameTypeCond;
+                string query = "SELECT count(id) FROM romlist r " + GetWhereCmd(condition);
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
-                    command.Parameters.AddWithValue("?searchPattern", searchPattern);
+                    if (bHadSearchKey)
+                        command.Parameters.AddWithValue("?searchPattern", $"%{SearchKey}%");
+
                     // 执行查询并处理结果  
                     using (var reader = command.ExecuteReader())
                     {
@@ -106,14 +110,23 @@ namespace AxibugEmuOnline.Web.Controllers
                     }
                 }
 
+                string HotOrderBy = "ORDER BY r.playcount DESC, id ASC";
 
-                string HotOrderBy = "ORDER BY playcount DESC, id ASC";
+                if (UID > 0)
+                {
+                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids`,IF(s.uid IS NOT NULL, TRUE, FALSE) AS is_collected FROM romlist r left join rom_stars s on r.id = s.romid {GetWhereCmd(condition)} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                }
+                else
+                {
+                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids` FROM romlist r {GetWhereCmd(condition)} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                }
 
-                query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType`,`parentids` FROM romlist where `Name` like ?searchPattern {platformCond} {GameTypeCond} {HotOrderBy} LIMIT ?offset, ?pageSize;";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值  
-                    command.Parameters.AddWithValue("?searchPattern", searchPattern);
+                    if (bHadSearchKey)
+                        command.Parameters.AddWithValue("?searchPattern", $"%{SearchKey}%");
+
                     command.Parameters.AddWithValue("?offset", Page * PageSize);
                     command.Parameters.AddWithValue("?pageSize", PageSize);
                     // 执行查询并处理结果  
@@ -145,10 +158,10 @@ namespace AxibugEmuOnline.Web.Controllers
                                     data.parentRomIdsList.Add(arr[i]);
                                 }
                             }
+
                             if (UID > 0)
                             {
-                                if (CheckIsRomStar(data.id, UID))
-                                    data.isStar = 1;
+                                data.isStar = reader.GetInt32(11) > 0 ? 1 : 0;
                             }
 
                             resp.gameList.Add(data);
@@ -160,6 +173,20 @@ namespace AxibugEmuOnline.Web.Controllers
             return new JsonResult(resp);
         }
 
+        public static string GetWhereCmd(List<string> conditionCmd)
+        {
+            string wherecmd = string.Empty;
+            for (int i = 0; i < conditionCmd.Count; i++)
+            {
+                if (i == 0)
+                    wherecmd += " where ";
+                else
+                    wherecmd += " and ";
+
+                wherecmd += conditionCmd[i];
+            }
+            return wherecmd;
+        }
 
         [HttpGet]
         public JsonResult MarkList(string SearchKey, int Ptype, int GType, int Page, int PageSize, string Token)
