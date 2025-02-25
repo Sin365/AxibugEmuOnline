@@ -109,10 +109,9 @@ namespace AxibugEmuOnline.Server
         }
         public void RoomLog(long uid, int platform, int RoomID, int RomID, RoomLogType state)
         {
-            MySqlConnection conn = SQLPool.DequeueSQLConn("RoomLog");
-            try
+            string query = "INSERT INTO `haoyue_emu`.`room_log` (`uid`, `platform`, `romid`,`roomid`, `state`) VALUES ( ?uid, ?platform, ?romid, ?roomid, ?state);";
+            using (MySqlConnection conn = SQLRUN.GetConn("RoomLog"))
             {
-                string query = "INSERT INTO `haoyue_emu`.`room_log` (`uid`, `platform`, `romid`,`roomid`, `state`) VALUES ( ?uid, ?platform, ?romid, ?roomid, ?state);";
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值
@@ -134,10 +133,6 @@ namespace AxibugEmuOnline.Server
                     }
                 }
             }
-            catch (Exception e)
-            {
-            }
-            SQLPool.EnqueueSQLConn(conn);
         }
         #endregion
 
@@ -240,7 +235,7 @@ namespace AxibugEmuOnline.Server
             Data_RoomData newRoom = new Data_RoomData();
 
             RomPlatformType ptype = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.GameRomID);
-            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash, _c.UID, false,ptype);
+            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash, _c.UID, false, ptype);
             AddRoom(newRoom);
             ErrorCode joinErrcode = ErrorCode.ErrorOk;
             //加入
@@ -844,7 +839,7 @@ namespace AxibugEmuOnline.Server
                     }
                     break;
             }
-            
+
         }
         /// <summary>
         /// 更新同步名单
@@ -1291,7 +1286,7 @@ namespace AxibugEmuOnline.Server
             }
             AppSrv.g_Log.Debug($"Join _c.UID->{_c.UID} RoomID->{RoomID}");
             Dictionary<uint, (uint, GamePadType)> slotInfo = new Dictionary<uint, (uint, GamePadType)>();
-            slotInfo[slotIdx] = (joyIdx,GamePadType.GlobalGamePad);
+            slotInfo[slotIdx] = (joyIdx, GamePadType.GlobalGamePad);
             SetPlayerSlotData(_c, ref slotInfo);
             int newPlayerCount = GetPlayerCount();
             errcode = ErrorCode.ErrorOk;

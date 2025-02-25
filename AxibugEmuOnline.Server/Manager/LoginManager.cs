@@ -79,25 +79,26 @@ namespace AxibugEmuOnline.Server.Manager
             bool bDone = false;
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(socket);
             Protobuf_Modify_NickName msg = ProtoBufHelper.DeSerizlize<Protobuf_Modify_NickName>(reqData);
-            MySqlConnection conn = SQLPool.DequeueSQLConn("ModifyNikeName");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("ModifyNikeName"))
             {
-                string query = "update users set nikename = ?nikename where uid = ?uid ";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值
-                    command.Parameters.AddWithValue("?uid", _c.UID);
-                    command.Parameters.AddWithValue("?nikename", msg.NickName);
-                    if (command.ExecuteNonQuery() > 0)
+                    string query = "update users set nikename = ?nikename where uid = ?uid ";
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        bDone = true;
+                        // 设置参数值
+                        command.Parameters.AddWithValue("?uid", _c.UID);
+                        command.Parameters.AddWithValue("?nikename", msg.NickName);
+                        if (command.ExecuteNonQuery() > 0)
+                        {
+                            bDone = true;
+                        }
                     }
                 }
+                catch (Exception e)
+                {
+                }
             }
-            catch (Exception e)
-            {
-            }
-            SQLPool.EnqueueSQLConn(conn);
 
             if (bDone)
             {
@@ -132,34 +133,15 @@ namespace AxibugEmuOnline.Server.Manager
         {
             uid = 0;
             bool bDone = true;
-            MySqlConnection conn = SQLPool.DequeueSQLConn("GetUidByDevice");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("GetUidByDevice"))
             {
-                string query = "SELECT uid from user_devices where device = ?deviceStr ";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值  
-                    command.Parameters.AddWithValue("?deviceStr", deviceStr);
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            uid = reader.GetInt64(0);
-                        }
-                    }
-                }
-
-                if (uid > 0)
-                {
-                    AppSrv.g_Log.Info($"设备串：{deviceStr} 对应 UID:{uid}");
-                }
-                else
-                {
-                    query = "INSERT INTO `haoyue_emu`.`users` (`nikename`, `regdate`,`lastlogindate`) VALUES (NULL,now(),now());SELECT LAST_INSERT_ID(); ";
+                    string query = "SELECT uid from user_devices where device = ?deviceStr ";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值  
+                        command.Parameters.AddWithValue("?deviceStr", deviceStr);
                         // 执行查询并处理结果  
                         using (var reader = command.ExecuteReader())
                         {
@@ -170,39 +152,59 @@ namespace AxibugEmuOnline.Server.Manager
                         }
                     }
 
-                    //设置默认名字
-                    query = "update users set nikename = ?nikename where uid = ?uid ";
-                    using (var command = new MySqlCommand(query, conn))
+                    if (uid > 0)
                     {
-                        // 设置参数值
-                        command.Parameters.AddWithValue("?uid", uid);
-                        command.Parameters.AddWithValue("?nikename", GetRandomNickName(uid));
-                        if (command.ExecuteNonQuery() < 1)
+                        AppSrv.g_Log.Info($"设备串：{deviceStr} 对应 UID:{uid}");
+                    }
+                    else
+                    {
+                        query = "INSERT INTO `haoyue_emu`.`users` (`nikename`, `regdate`,`lastlogindate`) VALUES (NULL,now(),now());SELECT LAST_INSERT_ID(); ";
+                        using (var command = new MySqlCommand(query, conn))
                         {
-                            bDone = false;
+                            // 设置参数值  
+                            // 执行查询并处理结果  
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    uid = reader.GetInt64(0);
+                                }
+                            }
                         }
+
+                        //设置默认名字
+                        query = "update users set nikename = ?nikename where uid = ?uid ";
+                        using (var command = new MySqlCommand(query, conn))
+                        {
+                            // 设置参数值
+                            command.Parameters.AddWithValue("?uid", uid);
+                            command.Parameters.AddWithValue("?nikename", GetRandomNickName(uid));
+                            if (command.ExecuteNonQuery() < 1)
+                            {
+                                bDone = false;
+                            }
+                        }
+
+                        query = "INSERT INTO `haoyue_emu`.`user_devices` (`device`, `devicetype`, `uid`) VALUES (?deviceStr, ?DeviceType, ?uid);";
+                        using (var command = new MySqlCommand(query, conn))
+                        {
+                            command.Parameters.AddWithValue("?deviceStr", deviceStr);
+                            command.Parameters.AddWithValue("?DeviceType", (int)DeviceType);
+                            command.Parameters.AddWithValue("?uid", uid);
+                            if (command.ExecuteNonQuery() < 1)
+                                bDone = false;
+                        }
+
+                        AppSrv.g_Log.Info($"创建新账户，设备:{deviceStr},设备类型:{DeviceType.ToString()},是否成功:{bDone}");
                     }
 
-                    query = "INSERT INTO `haoyue_emu`.`user_devices` (`device`, `devicetype`, `uid`) VALUES (?deviceStr, ?DeviceType, ?uid);";
-                    using (var command = new MySqlCommand(query, conn))
-                    {
-                        command.Parameters.AddWithValue("?deviceStr", deviceStr);
-                        command.Parameters.AddWithValue("?DeviceType", (int)DeviceType);
-                        command.Parameters.AddWithValue("?uid", uid);
-                        if (command.ExecuteNonQuery() < 1)
-                            bDone = false;
-                    }
-
-                    AppSrv.g_Log.Info($"创建新账户，设备:{deviceStr},设备类型:{DeviceType.ToString()},是否成功:{bDone}");
                 }
-
+                catch (Exception e)
+                {
+                    AppSrv.g_Log.Error($"ex=>{e.ToString()}");
+                    bDone = false;
+                }
             }
-            catch (Exception e)
-            {
-                AppSrv.g_Log.Error($"ex=>{e.ToString()}");
-                bDone = false;
-            }
-            SQLPool.EnqueueSQLConn(conn);
 
             if (uid <= 0)
                 bDone = false;
@@ -211,41 +213,42 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void UpdateUserData(long uid, ClientInfo _c, DeviceType deviceType)
         {
-            MySqlConnection conn = SQLPool.DequeueSQLConn("UpdateUserData");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("UpdateUserData"))
             {
-                string query = "SELECT account,nikename,regdate,lastlogindate from users where uid = ?uid ";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值
-                    command.Parameters.AddWithValue("?uid", uid);
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
+                    string query = "SELECT account,nikename,regdate,lastlogindate from users where uid = ?uid ";
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        // 设置参数值
+                        command.Parameters.AddWithValue("?uid", uid);
+                        // 执行查询并处理结果  
+                        using (var reader = command.ExecuteReader())
                         {
+                            while (reader.Read())
+                            {
 
-                            _c.Account = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
-                            _c.NickName = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
-                            _c.LogInDT = DateTime.Now;
-                            _c.RegisterDT = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2);
-                            _c.LastLogInDT = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3);
-                            _c.deviceType = deviceType;
+                                _c.Account = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                                _c.NickName = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+                                _c.LogInDT = DateTime.Now;
+                                _c.RegisterDT = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2);
+                                _c.LastLogInDT = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3);
+                                _c.deviceType = deviceType;
+                            }
                         }
                     }
+                    query = "update users set lastlogindate = now() where uid = ?uid ";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        command.Parameters.AddWithValue("?uid", uid);
+                        command.ExecuteNonQuery();
+                    }
                 }
-                query = "update users set lastlogindate = now() where uid = ?uid ";
-                using (var command = new MySqlCommand(query, conn))
+                catch (Exception e)
                 {
-                    command.Parameters.AddWithValue("?uid", uid);
-                    command.ExecuteNonQuery();
+
                 }
             }
-            catch (Exception e)
-            {
-
-            }
-            SQLPool.EnqueueSQLConn(conn);
         }
 
         static string GenToken(ClientInfo _c)

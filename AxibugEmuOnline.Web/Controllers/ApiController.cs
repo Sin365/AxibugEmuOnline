@@ -65,7 +65,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
             Resp_GameList resp = new Resp_GameList();
             resp.gameList = new List<Resp_RomInfo>();
-            MySqlConnection conn = SQLPool.DequeueSQLConn("RomList");
+            using (MySqlConnection conn = SQLRUN.GetConn("RomList"))
             {
                 List<string> condition = new List<string>();
 
@@ -168,7 +168,6 @@ namespace AxibugEmuOnline.Web.Controllers
                         }
                     }
                 }
-                SQLPool.EnqueueSQLConn(conn);
             }
             return new JsonResult(resp);
         }
@@ -200,7 +199,7 @@ namespace AxibugEmuOnline.Web.Controllers
             string searchPattern = $"%{SearchKey}%";
             Resp_GameList resp = new Resp_GameList();
             resp.gameList = new List<Resp_RomInfo>();
-            MySqlConnection conn = SQLPool.DequeueSQLConn("MarkList");
+            using (MySqlConnection conn = SQLRUN.GetConn("MarkList"))
             {
                 string platformCond = "";
                 if (Ptype > (int)RomPlatformType.Invalid && Ptype < (int)RomPlatformType.All)
@@ -297,7 +296,6 @@ LIMIT ?offset, ?pageSize;";
                         }
                     }
                 }
-                SQLPool.EnqueueSQLConn(conn);
             }
             return new JsonResult(resp);
         }
@@ -313,7 +311,7 @@ LIMIT ?offset, ?pageSize;";
 
             string searchPattern = $"%{RomInfo}%";
             Resp_RomInfo resp = new Resp_RomInfo();
-            MySqlConnection conn = SQLPool.DequeueSQLConn("NesRomList");
+            using (MySqlConnection conn = SQLRUN.GetConn("NesRomList"))
             {
                 string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash`,`playcount`,`stars`,`PlatformType`,`parentids` FROM romlist where id = ?romid;";
                 using (var command = new MySqlCommand(query, conn))
@@ -347,7 +345,6 @@ LIMIT ?offset, ?pageSize;";
                         }
                     }
                 }
-                SQLPool.EnqueueSQLConn(conn);
             }
 
             if (UID > 0)
@@ -385,24 +382,25 @@ LIMIT ?offset, ?pageSize;";
         public bool CheckIsRomStar(int RomId, long uid)
         {
             bool bhad = false;
-            MySqlConnection conn = SQLPool.DequeueSQLConn("CheckIsRomStart");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("CheckIsRomStart"))
             {
-                string query = $"SELECT count(0) from rom_stars where uid = ?uid and romid = ?romid";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值
-                    command.Parameters.AddWithValue("?romid", RomId);
-                    command.Parameters.AddWithValue("?uid", uid);
-                    // 执行查询并获取结果
-                    bhad = (int)command.ExecuteScalar() > 0;
+                    string query = $"SELECT count(0) from rom_stars where uid = ?uid and romid = ?romid";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        // 设置参数值
+                        command.Parameters.AddWithValue("?romid", RomId);
+                        command.Parameters.AddWithValue("?uid", uid);
+                        // 执行查询并获取结果
+                        bhad = (int)command.ExecuteScalar() > 0;
+                    }
+                }
+                catch (Exception e)
+                {
+                    //AppSrv.g_Log.Error(e);
                 }
             }
-            catch (Exception e)
-            {
-                //AppSrv.g_Log.Error(e);
-            }
-            SQLPool.EnqueueSQLConn(conn);
             return bhad;
         }
 

@@ -24,7 +24,7 @@ namespace AxibugEmuOnline.Server
             g_Log = new LogManager();
             Config.LoadConfig();
             AESHelper.LoadKeyIVCfg(Config.cfg.AesKey, Config.cfg.AesIv);
-            SQLPool.InitConnMgr();
+            SQLRUN.InitConnMgr();
             g_Tick = new TickManager();
             g_ClientMgr = new ClientManager();
             g_ClientMgr.Init(45000, 120);

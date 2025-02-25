@@ -87,6 +87,11 @@ namespace AxibugEmuOnline.Server
                             AppSrv.g_GameShareMgr.RecvGameMark(null, null);
                         }
                         break;
+                    case "sql":
+                        {
+                            SQLRUN.GetPoolState();
+                        }
+                        break;
                     default:
                         Console.WriteLine("未知命令" + CommandStr);
                         break;
@@ -98,58 +103,59 @@ namespace AxibugEmuOnline.Server
         static void UpdateRomHash()
         {
             AppSrv.g_Log.Info("UpdateRomHash");
-            MySqlConnection conn = SQLPool.DequeueSQLConn("UpdateRomHash");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("UpdateRomHash"))
             {
-                List<(int id, string romurl, string name)> list = new List<(int id, string romurl, string name)>();
-                List<(int id, string romurl, string name)> Nonelist = new List<(int id, string romurl, string name)>();
-
-                string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(
-                                (reader.GetInt32(0),
-                                !reader.IsDBNull(4) ? reader.GetString(4) : string.Empty,
-                                !reader.IsDBNull(1) ? reader.GetString(1) : string.Empty
-                                ));
-                        }
-                    }
-                }
+                    List<(int id, string romurl, string name)> list = new List<(int id, string romurl, string name)>();
+                    List<(int id, string romurl, string name)> Nonelist = new List<(int id, string romurl, string name)>();
 
-                for (int i = 0; i < list.Count; i++)
-                {
-                    string rompath = Config.cfg.RomDir + "/" + list[i].romurl;
-                    rompath = System.Net.WebUtility.UrlDecode(rompath);
-                    if (!File.Exists(rompath))
-                    {
-                        Nonelist.Add(list[i]);
-                        continue;
-                    }
-                    string romhash = Helper.FileMD5Hash(rompath);
-                    AppSrv.g_Log.Info($"第{i}个，Name->{list[i].name},Hash->{romhash}");
-                    query = $"update romlist SET `Hash` = '{romhash}' where Id ={list[i].id}";
+                    string query = $"SELECT id,`Name`,GameType,Note,RomUrl,ImgUrl,`Hash` FROM romlist";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 执行查询并处理结果  
-                        int reader = command.ExecuteNonQuery();
-                        if (reader > 0)
-                            AppSrv.g_Log.Info($"第{i}个，处理成功");
-                        else
-                            AppSrv.g_Log.Info($"第{i}个，处理失败");
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                list.Add(
+                                    (reader.GetInt32(0),
+                                    !reader.IsDBNull(4) ? reader.GetString(4) : string.Empty,
+                                    !reader.IsDBNull(1) ? reader.GetString(1) : string.Empty
+                                    ));
+                            }
+                        }
                     }
+
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        string rompath = Config.cfg.RomDir + "/" + list[i].romurl;
+                        rompath = System.Net.WebUtility.UrlDecode(rompath);
+                        if (!File.Exists(rompath))
+                        {
+                            Nonelist.Add(list[i]);
+                            continue;
+                        }
+                        string romhash = Helper.FileMD5Hash(rompath);
+                        AppSrv.g_Log.Info($"第{i}个，Name->{list[i].name},Hash->{romhash}");
+                        query = $"update romlist SET `Hash` = '{romhash}' where Id ={list[i].id}";
+                        using (var command = new MySqlCommand(query, conn))
+                        {
+                            // 执行查询并处理结果  
+                            int reader = command.ExecuteNonQuery();
+                            if (reader > 0)
+                                AppSrv.g_Log.Info($"第{i}个，处理成功");
+                            else
+                                AppSrv.g_Log.Info($"第{i}个，处理失败");
+                        }
+                    }
+                    AppSrv.g_Log.Info($"处理完毕，共{Nonelist.Count}个文件没有找到");
                 }
-                AppSrv.g_Log.Info($"处理完毕，共{Nonelist.Count}个文件没有找到");
+                catch (Exception e)
+                {
+                    AppSrv.g_Log.Info($"err:{e.ToString()}");
+                }
             }
-            catch (Exception e)
-            {
-                AppSrv.g_Log.Info($"err:{e.ToString()}");
-            }
-            SQLPool.EnqueueSQLConn(conn);
         }
     }
 }

@@ -21,82 +21,83 @@ namespace AxibugEmuOnline.Server.Manager
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
             Protobuf_Game_Mark_RESP respData = new Protobuf_Game_Mark_RESP();
 
-            MySqlConnection conn = SQLPool.DequeueSQLConn("RecvGameMark");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("RecvGameMark"))
             {
-                string query = "SELECT id from rom_stars where uid = ?uid and romid = ?romid";
-                bool bHad = false;
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值
-                    command.Parameters.AddWithValue("?uid", _c.UID);
-                    command.Parameters.AddWithValue("?romid", msg.RomID);
-                    using (var reader = command.ExecuteReader())
+                    string query = "SELECT id from rom_stars where uid = ?uid and romid = ?romid";
+                    bool bHad = false;
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        // 设置参数值
+                        command.Parameters.AddWithValue("?uid", _c.UID);
+                        command.Parameters.AddWithValue("?romid", msg.RomID);
+                        using (var reader = command.ExecuteReader())
                         {
-                            bHad = true;
-                            break;
+                            while (reader.Read())
+                            {
+                                bHad = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                //收藏
-                if (msg.Motion == 1)
-                {
-                    if (bHad)
+                    //收藏
+                    if (msg.Motion == 1)
                     {
-                        AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorRomAlreadyHadStar, ProtoBufHelper.Serizlize(respData));
-                        return;
-                    }
-                    else
-                    {
-                        query = "INSERT INTO `haoyue_emu`.`rom_stars` (`uid`,  `romid`) VALUES (?uid,  ?romid);";
-                        using (var command = new MySqlCommand(query, conn))
+                        if (bHad)
                         {
-                            // 设置参数值
-                            command.Parameters.AddWithValue("?uid", _c.UID);
-                            command.Parameters.AddWithValue("?romid", msg.RomID);
-                            command.ExecuteNonQuery();
+                            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorRomAlreadyHadStar, ProtoBufHelper.Serizlize(respData));
+                            return;
+                        }
+                        else
+                        {
+                            query = "INSERT INTO `haoyue_emu`.`rom_stars` (`uid`,  `romid`) VALUES (?uid,  ?romid);";
+                            using (var command = new MySqlCommand(query, conn))
+                            {
+                                // 设置参数值
+                                command.Parameters.AddWithValue("?uid", _c.UID);
+                                command.Parameters.AddWithValue("?romid", msg.RomID);
+                                command.ExecuteNonQuery();
+                            }
                         }
                     }
-                }
-                else//取消收藏
-                {
-                    if (bHad)
+                    else//取消收藏
                     {
-                        query = "DELETE from rom_stars where uid = ?uid and romid = ?romid";
-                        using (var command = new MySqlCommand(query, conn))
+                        if (bHad)
                         {
-                            // 设置参数值
-                            command.Parameters.AddWithValue("?uid", _c.UID);
-                            command.Parameters.AddWithValue("?romid", msg.RomID);
-                            command.ExecuteNonQuery();
+                            query = "DELETE from rom_stars where uid = ?uid and romid = ?romid";
+                            using (var command = new MySqlCommand(query, conn))
+                            {
+                                // 设置参数值
+                                command.Parameters.AddWithValue("?uid", _c.UID);
+                                command.Parameters.AddWithValue("?romid", msg.RomID);
+                                command.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorRomDontHadStar, ProtoBufHelper.Serizlize(respData));
+                            return;
                         }
                     }
-                    else
+                    //更新收藏数
+                    query = "update romlist set stars = (SELECT COUNT(id) from rom_stars where rom_stars.romid = ?romid) where romlist.id = ?romid";
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorRomDontHadStar, ProtoBufHelper.Serizlize(respData));
-                        return;
+                        command.Parameters.AddWithValue("?romid", msg.RomID);
+                        command.ExecuteNonQuery();
                     }
-                }
-                //更新收藏数
-                query = "update romlist set stars = (SELECT COUNT(id) from rom_stars where rom_stars.romid = ?romid) where romlist.id = ?romid";
-                using (var command = new MySqlCommand(query, conn))
-                {
-                    command.Parameters.AddWithValue("?romid", msg.RomID);
-                    command.ExecuteNonQuery();
-                }
 
-            }
-            catch (Exception e)
-            {
+                }
+                catch (Exception e)
+                {
+                }
             }
 
             respData.Stars = GetRomStart(msg.RomID);
             respData.IsStar = CheckIsRomStar(msg.RomID, _c.UID) ? 1 : 0;
 
-            SQLPool.EnqueueSQLConn(conn);
             respData.RomID = msg.RomID;
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(respData));
         }
@@ -104,59 +105,61 @@ namespace AxibugEmuOnline.Server.Manager
         public int GetRomStart(int RomId)
         {
             int stars = 0;
-            MySqlConnection conn = SQLPool.DequeueSQLConn("GetStart");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("GetStart"))
             {
-                string query = $"SELECT `stars` FROM romlist where id = ?romid;";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值  
-                    command.Parameters.AddWithValue("?RomID", RomId);
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
+                    string query = $"SELECT `stars` FROM romlist where id = ?romid;";
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        // 设置参数值  
+                        command.Parameters.AddWithValue("?RomID", RomId);
+                        // 执行查询并处理结果  
+                        using (var reader = command.ExecuteReader())
                         {
-                            stars = reader.GetInt32(0);
+                            while (reader.Read())
+                            {
+                                stars = reader.GetInt32(0);
+                            }
                         }
                     }
                 }
+                catch (Exception e)
+                {
+                    AppSrv.g_Log.Error(e);
+                }
             }
-            catch (Exception e)
-            {
-                AppSrv.g_Log.Error(e);
-            }
-            SQLPool.EnqueueSQLConn(conn);
             return stars;
         }
 
         public bool CheckIsRomStar(int RomId, long uid)
         {
             bool bhad = false;
-            MySqlConnection conn = SQLPool.DequeueSQLConn("CheckIsRomStart");
-            try
+            using (MySqlConnection conn = SQLRUN.GetConn("CheckIsRomStart"))
             {
-                string query = $"SELECT count(id) from rom_stars where uid = ?uid and romid = ?romid";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值  
-                    command.Parameters.AddWithValue("?romid", RomId);
-                    command.Parameters.AddWithValue("?uid", uid);
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
+                    string query = $"SELECT count(id) from rom_stars where uid = ?uid and romid = ?romid";
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        // 设置参数值  
+                        command.Parameters.AddWithValue("?romid", RomId);
+                        command.Parameters.AddWithValue("?uid", uid);
+                        // 执行查询并处理结果  
+                        using (var reader = command.ExecuteReader())
                         {
-                            bhad = reader.GetInt32(0) > 0;
+                            while (reader.Read())
+                            {
+                                bhad = reader.GetInt32(0) > 0;
+                            }
                         }
                     }
                 }
+                catch (Exception e)
+                {
+                    AppSrv.g_Log.Error("CheckIsRomStar：" + e);
+                }
             }
-            catch (Exception e)
-            {
-                AppSrv.g_Log.Error("CheckIsRomStar："+e);
-            }
-            SQLPool.EnqueueSQLConn(conn);
             return bhad;
         }
 
@@ -166,7 +169,8 @@ namespace AxibugEmuOnline.Server.Manager
                 return ptype;
 
             ptype = RomPlatformType.Invalid;
-            MySqlConnection conn = SQLPool.DequeueSQLConn("GetRomPlatformType");
+            using (MySqlConnection conn = SQLRUN.GetConn("GetRomPlatformType"))
+            { 
             try
             {
                 string query = "SELECT PlatformType from romlist where Id = ?RomID ";
@@ -188,11 +192,10 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 AppSrv.g_Log.Error(e);
             }
+            }
 
             if (ptype == RomPlatformType.Invalid)
                 AppSrv.g_Log.Error($"RomID {RomID} 没找到平台配置");
-
-            SQLPool.EnqueueSQLConn(conn);
 
             return ptype;
         }
