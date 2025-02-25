@@ -42,6 +42,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     EmulatorHandler emulatorHandler;
     UEGResources uegResources;
     UEGLog uegLog;
+    UEGSaveByteConvert uegSaveByteConvert;
     private Canvas mCanvas;
     bool lastUserPauseState;
     double currentPixelAspectRatio;
@@ -56,6 +57,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         instance = this;
         uegResources = new UEGResources();
         uegLog = new UEGLog();
+        uegSaveByteConvert = new UEGSaveByteConvert();
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         mCanvas.worldCamera = Camera.main;
         //InitAll(uegResources, App.PersistentDataPath(mPlatform));
@@ -503,7 +505,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         if (emulatorHandler != null)
             ShutdownEmulation();
 
-        emulatorHandler = new EmulatorHandler(machineType, ExceptionHandler);
+        emulatorHandler = new EmulatorHandler(machineType, ExceptionHandler, uegSaveByteConvert);
         emulatorHandler.Initialize();
 
         emulatorHandler.SendLogMessage += EmulatorHandler_SendLogMessage;

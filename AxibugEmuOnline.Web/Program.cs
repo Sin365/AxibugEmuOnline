@@ -8,7 +8,7 @@ namespace AxibugEmuOnline.Web
         {
             Config.LoadConfig();
             AESHelper.LoadKeyIVCfg(Config.cfg.AesKey, Config.cfg.AesIv);
-            SQLPool.InitConnMgr();
+            SQLRUN.InitConnMgr();
 
             var builder = WebApplication.CreateBuilder(args);
 

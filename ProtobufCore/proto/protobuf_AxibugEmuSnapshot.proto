@@ -1,0 +1,30 @@
+syntax = "proto3";
+package AxibugProtobuf;
+option optimize_for = SPEED;
+
+message pb_AxiEssgssStatusData
+{
+	repeated pb_AxiEssgssStatusData_ByteData MemberData = 1;
+    repeated pb_AxiEssgssStatusData_2DArray Array2DMemberData = 2;
+    repeated pb_AxiEssgssStatusData_ClassData ClassData = 3;
+}
+
+message pb_AxiEssgssStatusData_ByteData
+{
+	string KeyName = 1;
+    bytes Raw = 2;
+}
+
+message pb_AxiEssgssStatusData_2DArray
+{
+	string KeyName = 1;
+	int32 rows = 2;
+	int32 cols = 3;
+    bytes Raw = 4;
+}
+
+message pb_AxiEssgssStatusData_ClassData
+{
+	string KeyName = 1;
+	pb_AxiEssgssStatusData classData = 2;
+}
