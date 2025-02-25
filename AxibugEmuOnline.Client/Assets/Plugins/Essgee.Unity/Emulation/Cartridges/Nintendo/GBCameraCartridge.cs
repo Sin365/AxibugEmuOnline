@@ -70,6 +70,7 @@ namespace Essgee.Emulation.Cartridges.Nintendo
 
         public void LoadAxiStatus(AxiEssgssStatusData data)
         {
+            //TODO GB相机暂时不实现
         }
 
         public AxiEssgssStatusData SaveAxiStatus()

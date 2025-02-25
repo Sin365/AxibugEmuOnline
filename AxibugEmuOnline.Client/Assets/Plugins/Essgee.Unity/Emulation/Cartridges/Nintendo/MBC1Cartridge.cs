@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Essgee.Emulation.Cartridges.Nintendo
 {
@@ -31,11 +32,26 @@ namespace Essgee.Emulation.Cartridges.Nintendo
 
         public void LoadAxiStatus(AxiEssgssStatusData data)
         {
+            ramData = data.MemberData[nameof(ramData)];
+            hasBattery = BitConverter.ToBoolean(data.MemberData[nameof(hasBattery)]);
+
+            romBank = data.MemberData[nameof(romBank)].First();
+            ramBank = data.MemberData[nameof(ramBank)].First();
+            ramEnable = BitConverter.ToBoolean(data.MemberData[nameof(ramEnable)]);
+            bankingMode = data.MemberData[nameof(bankingMode)].First();
+            //看是否还需要补存储字段
         }
 
         public AxiEssgssStatusData SaveAxiStatus()
         {
             AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(hasBattery)] = BitConverter.GetBytes(hasBattery);
+            //看是否还需要补存储字段
+            data.MemberData[nameof(romBank)] = BitConverter.GetBytes(romBank);
+            data.MemberData[nameof(ramBank)] = BitConverter.GetBytes(ramBank);
+            data.MemberData[nameof(ramEnable)] = BitConverter.GetBytes(ramEnable);
+            data.MemberData[nameof(bankingMode)] = BitConverter.GetBytes(bankingMode);
             return data;
         }
         #endregion

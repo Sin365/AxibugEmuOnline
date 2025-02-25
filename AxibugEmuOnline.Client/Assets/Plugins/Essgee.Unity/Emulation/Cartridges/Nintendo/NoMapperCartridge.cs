@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 
 namespace Essgee.Emulation.Cartridges.Nintendo
 {
@@ -17,11 +18,17 @@ namespace Essgee.Emulation.Cartridges.Nintendo
 
         public void LoadAxiStatus(AxiEssgssStatusData data)
         {
+            ramData = data.MemberData[nameof(ramData)];
+            hasBattery = BitConverter.ToBoolean(data.MemberData[nameof(hasBattery)]);
+            //看是否还需要补存储字段
         }
 
         public AxiEssgssStatusData SaveAxiStatus()
         {
             AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(hasBattery)] = BitConverter.GetBytes(hasBattery);
+            //看是否还需要补存储字段
             return data;
         }
         #endregion

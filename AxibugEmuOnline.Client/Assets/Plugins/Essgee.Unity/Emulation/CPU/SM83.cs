@@ -68,9 +68,9 @@ namespace Essgee.Emulation.CPU
 
             if (AppEnvironment.EnableSuperSlowCPULogger)
             {
-                logFile = @"D:\Temp\Essgee\log-lr35902.txt";
-                numLogEntries = 0;
-                logEntries = new string[2000];
+                //logFile = @"D:\Temp\Essgee\log-lr35902.txt";
+                //numLogEntries = 0;
+                //logEntries = new string[2000];
             }
         }
 

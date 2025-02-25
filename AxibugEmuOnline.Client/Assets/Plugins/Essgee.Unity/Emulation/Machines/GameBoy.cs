@@ -136,11 +136,93 @@ namespace Essgee.Emulation.Machines
 
         public void LoadAxiStatus(AxiEssgssStatusData data)
         {
+            //config 暂时不需要存什么？
+            //configuration. = data.MemberData[nameof(configuration.)].ToEnum<TVStandard>();
+
+            if (data.MemberData.ContainsKey(nameof(bootstrap)))
+                bootstrap = data.MemberData[nameof(bootstrap)];
+
+            cartridge.LoadAxiStatus(data.ClassData[nameof(cartridge)]);
+            wram = data.MemberData[nameof(wram)];
+            hram = data.MemberData[nameof(hram)];
+            ie = data.MemberData[nameof(ie)].First();
+            cpu.LoadAxiStatus(data.ClassData[nameof(cpu)]);
+            video.LoadAxiStatus(data.ClassData[nameof(video)]);
+            audio.LoadAxiStatus(data.ClassData[nameof(audio)]);
+
+            //看是否还需要补存储字段
+
+
+            joypadRegister = data.MemberData[nameof(joypadRegister)].First();
+            serialData = data.MemberData[nameof(serialData)].First();
+            serialUseInternalClock = BitConverter.ToBoolean(data.MemberData[nameof(serialUseInternalClock)]);
+            divider = data.MemberData[nameof(divider)].First();
+            timerCounter = data.MemberData[nameof(timerCounter)].First();
+            clockCycleCount = BitConverter.ToUInt16(data.MemberData[nameof(clockCycleCount)]);
+            timerModulo = data.MemberData[nameof(timerModulo)].First();
+            timerRunning = BitConverter.ToBoolean(data.MemberData[nameof(timerRunning)]);
+            timerInputClock = data.MemberData[nameof(timerInputClock)].First();
+            timerOverflow = BitConverter.ToBoolean(data.MemberData[nameof(timerOverflow)]);
+            timerLoading = BitConverter.ToBoolean(data.MemberData[nameof(timerLoading)]);
+            irqVBlank = BitConverter.ToBoolean(data.MemberData[nameof(irqVBlank)]);
+            irqLCDCStatus = BitConverter.ToBoolean(data.MemberData[nameof(irqLCDCStatus)]);
+            irqTimerOverflow = BitConverter.ToBoolean(data.MemberData[nameof(irqTimerOverflow)]);
+            irqSerialIO = BitConverter.ToBoolean(data.MemberData[nameof(irqSerialIO)]);
+            irqKeypad = BitConverter.ToBoolean(data.MemberData[nameof(irqKeypad)]);
+            bootstrapDisabled = BitConverter.ToBoolean(data.MemberData[nameof(bootstrapDisabled)]);
+
+
+            serialBitsCounter = BitConverter.ToInt32(data.MemberData[nameof(serialBitsCounter)]);
+            serialCycles = BitConverter.ToInt32(data.MemberData[nameof(serialCycles)]);
+            currentMasterClockCyclesInFrame = BitConverter.ToInt32(data.MemberData[nameof(currentMasterClockCyclesInFrame)]);
+            totalMasterClockCyclesInFrame = BitConverter.ToInt32(data.MemberData[nameof(totalMasterClockCyclesInFrame)]);
+
+            ReconfigureSystem();
         }
 
         public AxiEssgssStatusData SaveAxiStatus()
         {
             AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            //config 暂时不需要存什么？
+            //data.MemberData[nameof(configuration.TVStandard)] = configuration.TVStandard.ToByteArray();
+
+            if (bootstrap != null)
+                data.MemberData[nameof(bootstrap)] = bootstrap;
+
+            data.ClassData[nameof(cartridge)] = cartridge.SaveAxiStatus();
+            data.MemberData[nameof(wram)] = wram;
+            data.MemberData[nameof(hram)] = hram;
+            data.MemberData[nameof(ie)] = BitConverter.GetBytes(ie);
+            data.ClassData[nameof(cpu)] = cpu.SaveAxiStatus();
+            data.ClassData[nameof(video)] = video.SaveAxiStatus();
+            data.ClassData[nameof(audio)] = audio.SaveAxiStatus();
+
+            //看是否还需要补存储字段
+
+            data.MemberData[nameof(joypadRegister)] = BitConverter.GetBytes(joypadRegister);
+            data.MemberData[nameof(serialData)] = BitConverter.GetBytes(serialData);
+            data.MemberData[nameof(serialUseInternalClock)] = BitConverter.GetBytes(serialUseInternalClock);
+            data.MemberData[nameof(divider)] = BitConverter.GetBytes(divider);
+            data.MemberData[nameof(timerCounter)] = BitConverter.GetBytes(timerCounter);
+            data.MemberData[nameof(clockCycleCount)] = BitConverter.GetBytes(clockCycleCount);
+            data.MemberData[nameof(timerModulo)] = BitConverter.GetBytes(timerModulo);
+            data.MemberData[nameof(timerRunning)] = BitConverter.GetBytes(timerRunning);
+            data.MemberData[nameof(timerInputClock)] = BitConverter.GetBytes(timerInputClock);
+            data.MemberData[nameof(timerOverflow)] = BitConverter.GetBytes(timerOverflow);
+            data.MemberData[nameof(timerLoading)] = BitConverter.GetBytes(timerLoading);
+            data.MemberData[nameof(irqVBlank)] = BitConverter.GetBytes(irqVBlank);
+            data.MemberData[nameof(irqLCDCStatus)] = BitConverter.GetBytes(irqLCDCStatus);
+            data.MemberData[nameof(irqTimerOverflow)] = BitConverter.GetBytes(irqTimerOverflow);
+            data.MemberData[nameof(irqSerialIO)] = BitConverter.GetBytes(irqSerialIO);
+            data.MemberData[nameof(irqKeypad)] = BitConverter.GetBytes(irqKeypad);
+            data.MemberData[nameof(bootstrapDisabled)] = BitConverter.GetBytes(bootstrapDisabled);
+
+            data.MemberData[nameof(serialBitsCounter)] = BitConverter.GetBytes(serialBitsCounter);
+            data.MemberData[nameof(serialCycles)] = BitConverter.GetBytes(serialCycles);
+            data.MemberData[nameof(currentMasterClockCyclesInFrame)] = BitConverter.GetBytes(currentMasterClockCyclesInFrame);
+            data.MemberData[nameof(totalMasterClockCyclesInFrame)] = BitConverter.GetBytes(totalMasterClockCyclesInFrame);
+
             return data;
         }
         #endregion

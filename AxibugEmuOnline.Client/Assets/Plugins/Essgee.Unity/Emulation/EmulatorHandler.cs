@@ -99,11 +99,12 @@ namespace Essgee.Emulation
         public (string Manufacturer, string Model, string DatFileName, double RefreshRate, double PixelAspectRatio, (string Name, string Description)[] RuntimeOptions) Information =>
             (emulator.ManufacturerName, emulator.ModelName, emulator.DatFilename, emulator.RefreshRate, emulator.PixelAspectRatio, emulator.RuntimeOptions);
 
-        public EmulatorHandler(Type type, Action<Exception> exceptionHandler = null)
+        public EmulatorHandler(Type type, Action<Exception> exceptionHandler = null, IAxiEssgssStatusBytesCover statusBytesCover = null)
         {
             this.exceptionHandler = exceptionHandler;
 
             emulator = (IMachine)Activator.CreateInstance(type);
+            AxiStatus.Init(statusBytesCover);
         }
 
         public void SetConfiguration(IConfiguration config)

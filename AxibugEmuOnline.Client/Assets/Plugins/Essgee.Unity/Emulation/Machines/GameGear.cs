@@ -301,7 +301,9 @@ namespace Essgee.Emulation.Machines
         {
             configuration.Region = data.MemberData[nameof(configuration.Region)].ToEnum<Region>();
 
-            bootstrap.LoadAxiStatus(data.ClassData[nameof(bootstrap)]);
+            if (data.ClassData.ContainsKey(nameof(bootstrap)))
+                bootstrap.LoadAxiStatus(data.ClassData[nameof(bootstrap)]);
+
             cartridge.LoadAxiStatus(data.ClassData[nameof(cartridge)]);
             wram = data.MemberData[nameof(wram)];
             cpu.LoadAxiStatus(data.ClassData[nameof(cpu)]);
@@ -327,7 +329,9 @@ namespace Essgee.Emulation.Machines
             AxiEssgssStatusData data = new AxiEssgssStatusData();
             data.MemberData[nameof(configuration.Region)] = configuration.Region.ToByteArray();
 
-            data.ClassData[nameof(bootstrap)] = bootstrap.SaveAxiStatus();
+            if (bootstrap != null)
+                data.ClassData[nameof(bootstrap)] = bootstrap.SaveAxiStatus();
+
             data.ClassData[nameof(cartridge)] = cartridge.SaveAxiStatus();
             data.MemberData[nameof(wram)] = wram;
             data.ClassData[nameof(cpu)] = cpu.SaveAxiStatus();

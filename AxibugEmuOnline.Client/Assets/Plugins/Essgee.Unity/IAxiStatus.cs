@@ -12,6 +12,7 @@ public class AxiEssgssStatusData
     public Dictionary<string, AxiEssgssStatusData> ClassData = new Dictionary<string, AxiEssgssStatusData>();
 }
 
+
 [Serializable]
 public class AxiEssgssStatusData_2DArray
 {
@@ -30,25 +31,16 @@ public class AxiEssgssStatusData_2DArray
         return array1D.CreateByteArray2D(rows, cols);
     }
 }
-public static class AxiEssgssStatusDataExtention
+internal static class AxiEssgssStatusDataExtention
 {
-    public static byte[] ToByteArray(this AxiEssgssStatusData data)
+    internal static byte[] ToByteArray(this AxiEssgssStatusData data)
     {
-        using (MemoryStream ms = new MemoryStream())
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(ms, data);
-            return ms.ToArray();
-        }
+        return AxiStatus.saveCover.ToByteArray(data);
     }
 
-    public static AxiEssgssStatusData ToAxiEssgssStatusData(this byte[] byteArray)
+    internal static AxiEssgssStatusData ToAxiEssgssStatusData(this byte[] byteArray)
     {
-        using (MemoryStream ms = new MemoryStream(byteArray))
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            return (AxiEssgssStatusData)formatter.Deserialize(ms);
-        }
+        return AxiStatus.saveCover.ToAxiEssgssStatusData(byteArray);
     }
 }
 public interface IAxiStatus
@@ -57,8 +49,19 @@ public interface IAxiStatus
     public AxiEssgssStatusData SaveAxiStatus();
 }
 
+public interface IAxiEssgssStatusBytesCover
+{
+    public byte[] ToByteArray(AxiEssgssStatusData data);
+    public AxiEssgssStatusData ToAxiEssgssStatusData(byte[] byteArray);
+}
+
 internal static class AxiStatus
 {
+    public static IAxiEssgssStatusBytesCover saveCover { get; private set; }
+    public static void Init(IAxiEssgssStatusBytesCover coverter)
+    {
+        saveCover = coverter;
+    }
     // 将任意枚举数组转换为byte[]
     public static byte[] ToByteArray<TEnum>(this TEnum[] enumArray) where TEnum : struct, Enum
     {
