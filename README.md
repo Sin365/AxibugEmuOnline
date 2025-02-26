@@ -80,7 +80,9 @@
 		
 	- 8Bit EmuCore
 
-		Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity 即将并入本项目。
+		Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/Essgee.Unity
+
+		按照Unity的方式，重写了一些逻辑。补全了本不支持的，GB，GBC即时存档。
 		
 		支持平台：
 		- GameBoy
@@ -90,6 +92,14 @@
 		- MasterSystem
 		- SC3000
 		- SG1000
+		
+	- WS/WSC WonderSwan/WonderSwan Color EmuCore 万代神奇天鹅模拟器核心
+
+		Essgee.Unity 来自于我另一个移植项目 ，https://github.com/Sin365/StoicGoose.Unity 即将并入本项目。
+
+		支持平台：
+		- WonderSwan
+		- WonderSwan Color
 
 	- 其他核心：
 
@@ -138,14 +148,20 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 	
 	原本是我独立移植到Unity的C# MAME.Core实现
 	http://git.axibug.com/sin365/MAME.Core
-
 	
 ### 8bit 其他模拟器核心 GameBoy / GameBoyColor / ColecoVision / GameGear / MasterSystem / SC3000 / SG1000
 	
 	原本是我独立移植到Unity的实现
 	https://github.com/Sin365/Essgee.Unity
+	按照Unity的方式，重写了一些逻辑。补全了本不支持的，GB，GBC即时存档。
+	干掉绝大多数GC
 
-## 各种有意义的探索（作为额外功能，和核心功能：联机 无关）
+### WS/WSC 模拟器核心 WonderSwan / WonderSwan Color
+	
+	原本是我独立移植到Unity的实现
+	https://github.com/Sin365/StoicGoose.Unity
+
+## 各种有意义的探索（作为额外功能，和核心功能 PS：联机无关）
 
 	应该是Unity引擎中对于模拟器内核的画面接入良好的范例
 	除了联机同步之外，模拟器本身的一些云游戏探索，如用模拟器帧缓存做视频直播
