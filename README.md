@@ -177,7 +177,6 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 * HaoYueNet-自建Git站点 - http://git.axibug.com/sin365/HaoYueNet
 * AxiReplay - https://github.com/Sin365/AxiReplay 自写的一套Replay系统，用于Replay支持和部分用于网络Input逻辑。
 * MAME.Core - http://git.axibug.com/sin365/MAME.Core
-* Essgee.Unity - https://github.com/Sin365/Essgee.Unity
 * ShaderToy - https://www.shadertoy.com/
 * VirtuaNES - http://virtuanes.s1.xrea.com/
 * 部分NES-Mapper扩展 - VirtuaNES097 https://github.com/yamanyandakure/VirtuaNES097
@@ -193,3 +192,9 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 * VCMAME detail by Bryan McPhail - https://www.codeproject.com/Articles/4923/VCMAME-Multiple-Arcade-Machine-Emulator-for-Visual
 * MAME and MAMEUI Visual C Project Files - http://www.mikesarcade.com/arcade/vcmame.html
 * CPS1.NET - https://www.codeproject.com/Articles/998595/CPS1-NET-A-Csharp-Based-CPS1-MAME-Emulator
+* Essgee.Unity - https://github.com/Sin365/Essgee.Unity
+* Essgee uses [DejaVu](https://dejavu-fonts.github.io) Sans Condensed as its OSD font; see the [DejaVu Fonts License](https://dejavu-fonts.github.io/License.html) for applicable information.
+* The XML data files in `No-Intro` were created by the [No-Intro](http://www.no-intro.org) project; see the [DAT-o-MATIC website](https://datomatic.no-intro.org) for official downloads.
+* StoicGoose.Unity - http://github.com/sin365/StoicGoose.Unity
+* The XML data files in `StoicGoose.WinForms\Assets\No-Intro` were created by the [No-Intro](http://www.no-intro.org) project; see the [DAT-o-MATIC website](https://datomatic.no-intro.org) for official downloads.
+* My personal thanks and gratitude to the late Near, who has always been encouraging and inspiring on my amateur emulator developer journey. They are sorely missed.
