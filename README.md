@@ -110,18 +110,9 @@
 [AlienJack](https://github.com/AlienJack "AlienJack") 
 
 
-### NES 模拟器内核
-
-~~模拟器内核采用 Emulator.NES  https://github.com/Xyene/Emulator.NES~~
-
-~~这是一个单机的 NES模拟器C#实现，我在此基础上做修改~~
-
-~~做帧缓，颜色查找下标缓存，做同步，加上网络库，并实现服务端。达到如上效果。~~
-
-~~随后，我们选择了更为全面的MyNes作为Nes模拟器核心，以此做二次开发和魔改。并实现自己的服务端和客户端联机逻辑~~
+## NES 模拟器内核
 
 最后，我们又花了一个多月把 VirtualNes 的C++源码徒手翻译为C#，在尝试内核的路上越走越远……
-
 
 ### 关于 NES Mapper支持
 
@@ -144,19 +135,19 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 后续补充第三次，修正Mapper:191 支持madcell大字汉化的《热血时代剧》《热血物语》《快打旋风》《双截龙3》, 添加Mapper253 支持外星《龙珠 中文》 （参照VirtuaNES Plus 翻译代码)
 
 
-### 街机模拟器核心 CPS1 / NEOGEO / PGM / Taito(b) / Tehkan / or other MAME platform
+## 街机模拟器核心 CPS1 / NEOGEO / PGM / Taito(b) / Tehkan / or other MAME platform
 	
 	原本是我独立移植到Unity的C# MAME.Core实现
 	http://git.axibug.com/sin365/MAME.Core
 	
-### 8bit 其他模拟器核心 GameBoy / GameBoyColor / ColecoVision / GameGear / MasterSystem / SC3000 / SG1000
+## 8bit 其他模拟器核心 GameBoy / GameBoyColor / ColecoVision / GameGear / MasterSystem / SC3000 / SG1000
 	
 	原本是我独立移植到Unity的实现
 	https://github.com/Sin365/Essgee.Unity
 	按照Unity的方式，重写了一些逻辑。补全了本不支持的，GB，GBC即时存档。
 	干掉绝大多数GC
 
-### WS/WSC 模拟器核心 WonderSwan / WonderSwan Color
+## WS/WSC 模拟器核心 WonderSwan / WonderSwan Color
 	
 	原本是我独立移植到Unity的实现
 	https://github.com/Sin365/StoicGoose.Unity
@@ -168,8 +159,17 @@ Mapper支持越多，通俗讲就是支持更多卡带。
 
 ## 废弃内容 
 
-	~~My Nes~~ (功能全，但是性能局限，不再使用，但已经移植纯.Net Standard2.0归档)
-	~~Emulator.NES~~ (较为初级，不再使用)
+~~模拟器内核采用 Emulator.NES  https://github.com/Xyene/Emulator.NES~~
+
+~~这是一个单机的 NES模拟器C#实现，我在此基础上做修改~~
+
+~~做帧缓，颜色查找下标缓存，做同步，加上网络库，并实现服务端。达到如上效果。~~
+
+~~随后，我们选择了更为全面的MyNes作为Nes模拟器核心，以此做二次开发和魔改。并实现自己的服务端和客户端联机逻辑~
+
+~~Emulator.NES~~ (较为初级，不再使用)
+
+~~My Nes~~ (功能全，但是性能局限，不再使用，但已经移植纯.Net Standard2.0归档)
 
 ## 引用 和 致谢 Acknowledgements & Attribution
 
