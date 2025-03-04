@@ -1,12 +1,14 @@
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxibugEmuOnline.Client.Manager;
 using AxiReplay;
 using MAME.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static AxibugEmuOnline.Client.Manager.MAMEKSingleKeysSeting;
 
 public class UniKeyboard : MonoBehaviour, IKeyboard
 {
@@ -268,9 +270,9 @@ public class MameControllerMapper : IControllerSetuper
 /// </summary>
 public class MameSingleConoller : IController
 {
-    public KeyCode INSERT_COIN, GAMESTART,
-    UP, DOWN, LEFT, RIGHT,
-    BTN_A, BTN_B, BTN_C, BTN_D, BTN_E, BTN_F;
+    //public KeyCode INSERT_COIN, GAMESTART,
+    //UP, DOWN, LEFT, RIGHT,
+    //BTN_A, BTN_B, BTN_C, BTN_D, BTN_E, BTN_F;
 
     public ulong tg_INSERT_COIN, tg_GAMESTART,
     tg_UP, tg_DOWN, tg_LEFT, tg_RIGHT,
@@ -300,7 +302,10 @@ public class MameSingleConoller : IController
     public int ControllerIndex
     {
         get { return mControllerIndex; }
-        set { mControllerIndex = value; this.LoadControlKeyForConfig(); }
+        set { mControllerIndex = value; 
+            //this.LoadControlKeyForConfig();
+            //走统一配置
+        }
     }
     public MameSingleConoller(int controllerIndex)
     {
@@ -309,82 +314,100 @@ public class MameSingleConoller : IController
 
     public bool AnyButtonDown()
     {
-        if (Input.GetKeyDown(INSERT_COIN)) return true;
-        if (Input.GetKeyDown(GAMESTART)) return true;
-        if (Input.GetKeyDown(UP)) return true;
-        if (Input.GetKeyDown(DOWN)) return true;
-        if (Input.GetKeyDown(LEFT)) return true;
-        if (Input.GetKeyDown(RIGHT)) return true;
-        if (Input.GetKeyDown(BTN_A)) return true;
-        if (Input.GetKeyDown(BTN_B)) return true;
-        if (Input.GetKeyDown(BTN_C)) return true;
-        if (Input.GetKeyDown(BTN_D)) return true;
-        if (Input.GetKeyDown(BTN_E)) return true;
-        if (Input.GetKeyDown(BTN_F)) return true;
-        return false;
+        return App.input.mame.HadAnyKeyDown(ControllerIndex);
+        //if (Input.GetKeyDown(INSERT_COIN)) return true;
+        //if (Input.GetKeyDown(GAMESTART)) return true;
+        //if (Input.GetKeyDown(UP)) return true;
+        //if (Input.GetKeyDown(DOWN)) return true;
+        //if (Input.GetKeyDown(LEFT)) return true;
+        //if (Input.GetKeyDown(RIGHT)) return true;
+        //if (Input.GetKeyDown(BTN_A)) return true;
+        //if (Input.GetKeyDown(BTN_B)) return true;
+        //if (Input.GetKeyDown(BTN_C)) return true;
+        //if (Input.GetKeyDown(BTN_D)) return true;
+        //if (Input.GetKeyDown(BTN_E)) return true;
+        //if (Input.GetKeyDown(BTN_F)) return true;
+        //return false;
     }
     public ulong GetSingleAllInput()
     {
         if (!ConnectSlot.HasValue)
             return 0;
         CurrLocalSingleAllInput = 0;
-        if (Input.GetKey(INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
-        if (Input.GetKey(GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
-        if (Input.GetKey(UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
-        if (Input.GetKey(DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
-        if (Input.GetKey(LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
-        if (Input.GetKey(RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
-        if (Input.GetKey(BTN_A)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
-        if (Input.GetKey(BTN_B)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
-        if (Input.GetKey(BTN_C)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
-        if (Input.GetKey(BTN_D)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
-        if (Input.GetKey(BTN_E)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
-        if (Input.GetKey(BTN_F)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
+
+        MAMEKSingleKeysSeting keys = App.input.mame.controllers[ControllerIndex];
+        if (keys.GetKey(MAMEKSingleKey.INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
+        if (keys.GetKey(MAMEKSingleKey.GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
+        if (keys.GetKey(MAMEKSingleKey.UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
+        if (keys.GetKey(MAMEKSingleKey.DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
+        if (keys.GetKey(MAMEKSingleKey.LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
+        if (keys.GetKey(MAMEKSingleKey.RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
+        if (keys.GetKey(MAMEKSingleKey.BTN_A)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
+        if (keys.GetKey(MAMEKSingleKey.BTN_B)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
+        if (keys.GetKey(MAMEKSingleKey.BTN_C)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
+        if (keys.GetKey(MAMEKSingleKey.BTN_D)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
+        if (keys.GetKey(MAMEKSingleKey.BTN_E)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
+        if (keys.GetKey(MAMEKSingleKey.BTN_F)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
+
+        //if (Input.GetKey(INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
+        //if (Input.GetKey(GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
+        //if (Input.GetKey(UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
+        //if (Input.GetKey(DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
+        //if (Input.GetKey(LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
+        //if (Input.GetKey(RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
+        //if (Input.GetKey(BTN_A)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
+        //if (Input.GetKey(BTN_B)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
+        //if (Input.GetKey(BTN_C)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
+        //if (Input.GetKey(BTN_D)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
+        //if (Input.GetKey(BTN_E)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
+        //if (Input.GetKey(BTN_F)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
+
         return CurrLocalSingleAllInput;
     }
 
 }
 public static class MameSingleControllSetter
 {
-    public static void LoadControlKeyForConfig(this MameSingleConoller singlecontrol)
-    {
-        //TODO 等待支持配置，或统一
-        switch (singlecontrol.ControllerIndex)
-        {
-            case 0:
-                singlecontrol.INSERT_COIN = KeyCode.Alpha5;
-                singlecontrol.GAMESTART = KeyCode.Alpha1;
-                singlecontrol.UP = KeyCode.W;
-                singlecontrol.DOWN = KeyCode.S;
-                singlecontrol.LEFT = KeyCode.A;
-                singlecontrol.RIGHT = KeyCode.D;
-                singlecontrol.BTN_A = KeyCode.J;
-                singlecontrol.BTN_B = KeyCode.K;
-                singlecontrol.BTN_C = KeyCode.L;
-                singlecontrol.BTN_D = KeyCode.U;
-                singlecontrol.BTN_E = KeyCode.I;
-                singlecontrol.BTN_F = KeyCode.O;
-                break;
-            case 1:
-                singlecontrol.INSERT_COIN = KeyCode.KeypadMultiply;
-                singlecontrol.GAMESTART = KeyCode.KeypadDivide;
-                singlecontrol.UP = KeyCode.UpArrow;
-                singlecontrol.DOWN = KeyCode.DownArrow;
-                singlecontrol.LEFT = KeyCode.LeftArrow;
-                singlecontrol.RIGHT = KeyCode.RightArrow;
-                singlecontrol.BTN_A = KeyCode.Keypad1;
-                singlecontrol.BTN_B = KeyCode.Keypad2;
-                singlecontrol.BTN_C = KeyCode.Keypad3;
-                singlecontrol.BTN_D = KeyCode.Keypad4;
-                singlecontrol.BTN_E = KeyCode.Keypad5;
-                singlecontrol.BTN_F = KeyCode.Keypad6;
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-        }
-    }
+    //不再需要
+    //public static void LoadControlKeyForConfig(this MameSingleConoller singlecontrol)
+    //{
+    //    //TODO 等待支持配置，或统一
+    //    switch (singlecontrol.ControllerIndex)
+    //    {
+    //        case 0:
+    //            singlecontrol.INSERT_COIN = KeyCode.Alpha5;
+    //            singlecontrol.GAMESTART = KeyCode.Alpha1;
+    //            singlecontrol.UP = KeyCode.W;
+    //            singlecontrol.DOWN = KeyCode.S;
+    //            singlecontrol.LEFT = KeyCode.A;
+    //            singlecontrol.RIGHT = KeyCode.D;
+    //            singlecontrol.BTN_A = KeyCode.J;
+    //            singlecontrol.BTN_B = KeyCode.K;
+    //            singlecontrol.BTN_C = KeyCode.L;
+    //            singlecontrol.BTN_D = KeyCode.U;
+    //            singlecontrol.BTN_E = KeyCode.I;
+    //            singlecontrol.BTN_F = KeyCode.O;
+    //            break;
+    //        case 1:
+    //            singlecontrol.INSERT_COIN = KeyCode.KeypadMultiply;
+    //            singlecontrol.GAMESTART = KeyCode.KeypadDivide;
+    //            singlecontrol.UP = KeyCode.UpArrow;
+    //            singlecontrol.DOWN = KeyCode.DownArrow;
+    //            singlecontrol.LEFT = KeyCode.LeftArrow;
+    //            singlecontrol.RIGHT = KeyCode.RightArrow;
+    //            singlecontrol.BTN_A = KeyCode.Keypad1;
+    //            singlecontrol.BTN_B = KeyCode.Keypad2;
+    //            singlecontrol.BTN_C = KeyCode.Keypad3;
+    //            singlecontrol.BTN_D = KeyCode.Keypad4;
+    //            singlecontrol.BTN_E = KeyCode.Keypad5;
+    //            singlecontrol.BTN_F = KeyCode.Keypad6;
+    //            break;
+    //        case 2:
+    //            break;
+    //        case 3:
+    //            break;
+    //    }
+    //}
     public static void ResetTargetMotionKey(this MameSingleConoller singlecontrol)
     {
         if (!singlecontrol.ConnectSlot.HasValue)

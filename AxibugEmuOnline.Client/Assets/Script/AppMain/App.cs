@@ -22,6 +22,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppLogin login;
         public static AppChat chat;
         public static UserDataManager user;
+        public static AppInput input;
         public static AppEmu emu;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
@@ -83,6 +84,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             login = new AppLogin();
             chat = new AppChat();
             user = new UserDataManager();
+            input = new AppInput();
             emu = new AppEmu();
             httpAPI = new HttpAPI();
             if (bUseLocalWebApi)
