@@ -162,7 +162,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             if (AxiInputArr == null)
                 return false;
 
-            for (int i = 0; AxiInputArr.Length > 0; i++)
+            for (int i = 0; i < AxiInputArr.Length; i++)
             {
                 if (AxiInputArr[i].IsKey())
                     return true;

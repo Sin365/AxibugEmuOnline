@@ -55,6 +55,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             controllers[0].SetKey((ulong)EnumCommand.SelectItemLeft, AxiInputEx.ByKeyCode(KeyCode.A));
             controllers[0].SetKey((ulong)EnumCommand.SelectItemRight, AxiInputEx.ByKeyCode(KeyCode.D));
             controllers[0].SetKey((ulong)EnumCommand.Enter, AxiInputEx.ByKeyCode(KeyCode.J));
+            controllers[0].SetKey((ulong)EnumCommand.Enter, AxiInputEx.ByKeyCode(KeyCode.Return));
             controllers[0].SetKey((ulong)EnumCommand.Back, AxiInputEx.ByKeyCode(KeyCode.K));
             controllers[0].SetKey((ulong)EnumCommand.OptionMenu, AxiInputEx.ByKeyCode(KeyCode.I));
 
@@ -132,7 +133,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             if (AxiInputArr == null)
                 return false;
 
-            for (int i = 0; AxiInputArr.Length > 0; i++)
+            for (int i = 0; i < AxiInputArr.Length; i++)
             {
                 if (AxiInputArr[i].IsKey())
                     return true;

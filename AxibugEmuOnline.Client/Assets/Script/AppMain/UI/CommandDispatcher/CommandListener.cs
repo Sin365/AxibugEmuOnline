@@ -1,8 +1,9 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Manager;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 namespace AxibugEmuOnline.Client
 {
@@ -21,6 +22,8 @@ namespace AxibugEmuOnline.Client
             //    if (Input.GetKeyDown(item.Key)) m_commands.Add(new CommandState { Cmd = item.Value, Cancel = false });
             //    if (Input.GetKeyUp(item.Key)) m_commands.Add(new CommandState { Cmd = item.Value, Cancel = true });
             //}
+
+            //不再依赖KeyDown KeyUp的做法，兼容UGUI，或者Axis
             if (m_checkCmds != null)
             {
                 foreach (var cmd in m_checkCmds)
@@ -41,11 +44,15 @@ namespace AxibugEmuOnline.Client
         {
             //var cfg = (Dictionary<KeyCode, EnumCommand>)changer.GetConfig();
             singleKeysSetting = changer.GetKeySetting();
-            m_dictLastState.Clear();
+            App.log.Debug($"CommandListener ApplyKeyMapper | {Time.frameCount} {changer.Name}");
             EnumCommand[] arr = changer.GetConfig();
-            for (int i = 0; i < arr.Length; i++)
+            //不要直接清m_dictLastState.Clear()，同样的Key维持状态，避免造成多余CommandState
+            EnumCommand[] temp = m_dictLastState.Keys.ToArray();
+            //仅添加新增
+            foreach (var cmd in arr)
             {
-                m_dictLastState[arr[i]] = false;
+                if(!m_dictLastState.ContainsKey(cmd))
+                    m_dictLastState[cmd] = false;
             }
             m_checkCmds = arr;
         }
@@ -56,7 +63,7 @@ namespace AxibugEmuOnline.Client
             {
                 foreach (var executer in executers)
                 {
-                    App.log.Debug($"{cmd.Cmd}|{cmd.Cancel}");
+                    App.log.Debug($"CommandListener GetCommand | {Time.frameCount}|{executer.name}| {cmd.Cmd}|{cmd.Cancel}");
                     executer.ExecuteCommand(cmd.Cmd, cmd.Cancel);
                 }
             }
