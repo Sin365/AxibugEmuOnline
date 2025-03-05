@@ -72,19 +72,18 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static void Init(bool isTest = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
-
             //其他平台必要的初始化
             if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
             {
                 PSP2Init();
             }
+            input = new AppInput();
             FileDownloader = new FileDownloader();
             settings = new AppSettings();
             network = new NetworkHelper();
             login = new AppLogin();
             chat = new AppChat();
             user = new UserDataManager();
-            input = new AppInput();
             emu = new AppEmu();
             httpAPI = new HttpAPI();
             if (bUseLocalWebApi)

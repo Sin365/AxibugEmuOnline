@@ -15,5 +15,6 @@ namespace AxibugEmuOnline.Client.Common
         public static KeyCode L3 => KeyCode.Joystick1Button8;
         public static KeyCode R3 => KeyCode.Joystick1Button9;
         public static KeyCode L => KeyCode.Joystick1Button10;
+        public static KeyCode R => KeyCode.Joystick1Button11;
     }
 }

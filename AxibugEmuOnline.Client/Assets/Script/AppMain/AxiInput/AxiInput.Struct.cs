@@ -50,5 +50,6 @@ namespace Assets.Script.AppMain.AxiInput
         POTION_2,
         POTION_3,
         POTION_4,
+        HOME,
     }
 }

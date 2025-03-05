@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using AxibugEmuOnline.Client.Manager;
+using System.Collections.Generic;
 
 namespace AxibugEmuOnline.Client
 {
     public interface IKeyMapperChanger
     {
         string Name { get; }
-        object GetConfig();
+        EnumCommand[] GetConfig();
+        SingleKeysSetting GetKeySetting();
     }
     public interface ICommandListener
     {
