@@ -1,7 +1,7 @@
-using Assets.Script.AppMain.AxiInput.Settings;
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxiInputSP.Setting;
 using AxiReplay;
 using MAME.Core;
 using System;

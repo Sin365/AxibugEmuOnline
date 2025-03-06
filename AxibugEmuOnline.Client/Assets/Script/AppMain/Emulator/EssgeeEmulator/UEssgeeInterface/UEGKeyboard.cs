@@ -1,14 +1,13 @@
-using Assets.Script.AppMain.AxiInput.Settings;
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
+using AxiInputSP.Setting;
 using AxiReplay;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Assets.Script.AppMain.AxiInput.Settings.MasterSystemMultiKeysSetting;
 
 public class UEGKeyboard : MonoBehaviour
 {
