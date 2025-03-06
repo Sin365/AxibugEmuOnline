@@ -76,32 +76,35 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdBack()
         {
+            if (m_enteredItem != null)
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
+
             base.OnCmdBack();
 
             LaunchUI.Instance.ToMainMenuLayout();
             var item = GetItemUIByIndex(SelectIndex);
             item.SetSelectState(true);
-            //TODO 已经关闭三级菜单的情况下 不播放
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
         }
 
         protected override void OnCmdSelectItemUp()
         {
             if (m_enteredItem == null)
-            { 
+            {
+                int old = SelectIndex;
                 SelectIndex--;
-                //TODO 已经到底的情况下，不播放音效
-                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+                if (old != SelectIndex)
+                    App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cursor);
             }
         }
 
         protected override void OnCmdSelectItemDown()
         {
             if (m_enteredItem == null)
-            { 
+            {
+                int old = SelectIndex;
                 SelectIndex++;
-                //TODO 已经到顶的情况下，不播放音效
-                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+                if (old != SelectIndex)
+                    App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cursor);
             }
         }
 
@@ -130,9 +133,13 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdSelectItemLeft()
         {
+            if(m_enteredItem != null)
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
+            else
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+
             base.OnCmdSelectItemLeft();
             OnCmdBack();
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
         }
 
         protected override void OnSelectMenuChanged()

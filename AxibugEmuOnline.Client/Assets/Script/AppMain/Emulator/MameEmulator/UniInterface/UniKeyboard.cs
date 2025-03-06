@@ -335,18 +335,18 @@ public class MameSingleConoller : IController
         CurrLocalSingleAllInput = 0;
 
         var keys = App.input.mame.controllers[ControllerIndex];
-        if (keys.GetKey(UMAMEKSingleKey.INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
-        if (keys.GetKey(UMAMEKSingleKey.GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
-        if (keys.GetKey(UMAMEKSingleKey.UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
-        if (keys.GetKey(UMAMEKSingleKey.DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
-        if (keys.GetKey(UMAMEKSingleKey.LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
-        if (keys.GetKey(UMAMEKSingleKey.RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
-        if (keys.GetKey(UMAMEKSingleKey.BTN_A)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
-        if (keys.GetKey(UMAMEKSingleKey.BTN_B)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
-        if (keys.GetKey(UMAMEKSingleKey.BTN_C)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
-        if (keys.GetKey(UMAMEKSingleKey.BTN_D)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
-        if (keys.GetKey(UMAMEKSingleKey.BTN_E)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
-        if (keys.GetKey(UMAMEKSingleKey.BTN_F)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_A)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_B)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_C)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_D)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_E)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
+        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_F)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
 
         //if (Input.GetKey(INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
         //if (Input.GetKey(GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;

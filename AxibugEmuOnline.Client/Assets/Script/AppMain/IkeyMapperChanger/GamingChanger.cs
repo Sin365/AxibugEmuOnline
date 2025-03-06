@@ -1,5 +1,7 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
+﻿using Assets.Script.AppMain.AxiInput.Settings;
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Manager;
+using System;
 
 namespace AxibugEmuOnline.Client
 {
@@ -7,7 +9,7 @@ namespace AxibugEmuOnline.Client
     {
         public override EnumCommand[] GetConfig()
         {
-            return App.input.gaming.controllers[0].GetAllCmd();
+            return App.input.gaming.controllers[0].GetAllCmd<EnumCommand>();
         }
 
         public override SingleKeysSetting GetKeySetting()

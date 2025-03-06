@@ -1,7 +1,4 @@
-﻿using AxibugEmuOnline.Client;
-using AxibugEmuOnline.Client.Common;
-using AxibugEmuOnline.Client.Manager;
-using System.Collections.Generic;
+﻿using AxibugEmuOnline.Client.Manager;
 using UnityEngine;
 
 namespace Assets.Script.AppMain.AxiInput.Settings
@@ -21,32 +18,16 @@ namespace Assets.Script.AppMain.AxiInput.Settings
         BTN_E,
         BTN_F
     }
-    public class UMAMEMultiKeysSetting : MultiKeysSetting
+    public class UMAMEMultiKeysSetting : MultiKeysSettingBase
     {
-        public UMAMEKSingleKeysSeting[] controllers;
-
         public UMAMEMultiKeysSetting()
         {
-            controllers = new UMAMEKSingleKeysSeting[4];
+            controllers = new UMAMEKSingleKeysSeting[1];
             for (int i = 0; i < controllers.Length; i++)
                 controllers[i] = new UMAMEKSingleKeysSeting();
         }
 
-        public bool HadAnyKeyDown(int index)
-        {
-            if (index >= controllers.Length)
-                return false;
-            return controllers[index].HadAnyKeyDown();
-        }
-        public void ClearAll()
-        {
-            for (int i = 0; i < controllers.Length; i++)
-            {
-                controllers[i].ClearAll();
-            }
-        }
-
-        public void LoadDefaultSetting()
+        public override void LoadDefaultSetting()
         {
             ClearAll();
 #if UNITY_PSP2 && !UNITY_EDITOR
@@ -110,100 +91,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             #endregion
         }
     }
-    public class UMAMEKSingleKeysSeting : SingleKeysSetting
+    public class UMAMEKSingleKeysSeting : SingleKeySettingBase
     {
-        Dictionary<UMAMEKSingleKey, List<AxiInput>> DictSkey2AxiInput = new Dictionary<UMAMEKSingleKey, List<AxiInput>>();
-        AxiInput[] AxiInputArr = null;
-
-        public void SetKey(ulong Key, AxiInput input)
-        {
-            List<AxiInput> list;
-            if (!DictSkey2AxiInput.TryGetValue((UMAMEKSingleKey)Key, out list))
-                list = DictSkey2AxiInput[(UMAMEKSingleKey)Key] = ObjectPoolAuto.AcquireList<AxiInput>();
-            list.Add(input);
-        }
-
-        public bool GetKey(UMAMEKSingleKey Key)
-        {
-            List<AxiInput> list;
-            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
-                return false;
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].GetKey())
-                    return true;
-            }
-            return false;
-        }
-        public bool GetKeyUp(UMAMEKSingleKey Key)
-        {
-            List<AxiInput> list;
-            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
-                return false;
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].GetKeyUp())
-                    return true;
-            }
-            return false;
-        }
-
-        public bool GetKeyDown(UMAMEKSingleKey Key)
-        {
-            List<AxiInput> list;
-            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
-                return false;
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].GetKeyDown())
-                    return true;
-            }
-            return false;
-        }
-
-
-        public bool GetKey(ulong Key)
-        {
-            return GetKey((UMAMEKSingleKey)Key);
-        }
-        public bool GetKeyDown(ulong Key)
-        {
-            return GetKeyDown((UMAMEKSingleKey)Key);
-        }
-        public bool GetKeyUp(ulong Key)
-        {
-            return GetKeyUp((UMAMEKSingleKey)Key);
-        }
-
-        public void ClearAll()
-        {
-            foreach (List<AxiInput> singlelist in DictSkey2AxiInput.Values)
-                ObjectPoolAuto.Release(singlelist);
-            DictSkey2AxiInput.Clear();
-            AxiInputArr = null;
-        }
-
-        public void ColletAllKey()
-        {
-            List<AxiInput> list = ObjectPoolAuto.AcquireList<AxiInput>();
-            foreach (List<AxiInput> singlelist in DictSkey2AxiInput.Values)
-                list.AddRange(singlelist);
-            AxiInputArr = list.ToArray();
-            ObjectPoolAuto.Release(list);
-        }
-
-        public bool HadAnyKeyDown()
-        {
-            if (AxiInputArr == null)
-                return false;
-
-            for (int i = 0; i < AxiInputArr.Length; i++)
-            {
-                if (AxiInputArr[i].GetKey())
-                    return true;
-            }
-            return false;
-        }
-
     }
 }

@@ -129,14 +129,18 @@ namespace AxibugEmuOnline.Client.UI
 
         protected override void OnCmdSelectItemLeft()
         {
+            int old = SelectIndex;
             SelectIndex--;
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+            if (old != SelectIndex)
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
         protected override void OnCmdSelectItemRight()
         {
+            int old = SelectIndex;
             SelectIndex++;
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+            if (old != SelectIndex)
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
 #if UNITY_EDITOR

@@ -303,16 +303,18 @@ namespace AxibugEmuOnline.Client
 
         protected override void OnCmdSelectItemDown()
         {
+            int old = SelectIndex;
             SelectIndex++;
-            //TODO 已经到底的情况下，不播放音效
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+            if (old != SelectIndex)
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
         protected override void OnCmdSelectItemUp()
         {
+            int old = SelectIndex;
             SelectIndex--;
-            //TODO 已经到顶的情况下，不播放音效
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+            if (old != SelectIndex)
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
         protected override void OnCmdBack()
