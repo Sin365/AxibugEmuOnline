@@ -108,7 +108,6 @@ namespace AxibugEmuOnline.Client.UI
                     if (m_select) OnSelected(m_progress);
                 });
 
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cursor);
         }
 
         protected virtual void OnSelected(float progress) { }

@@ -120,7 +120,6 @@ namespace AxibugEmuOnline.Client.UI
                     targetPosition,
                     HoriRollSpd)
                     .SetSpeedBased();
-                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
             }
             else
             {
@@ -131,11 +130,13 @@ namespace AxibugEmuOnline.Client.UI
         protected override void OnCmdSelectItemLeft()
         {
             SelectIndex--;
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
         protected override void OnCmdSelectItemRight()
         {
             SelectIndex++;
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
 #if UNITY_EDITOR

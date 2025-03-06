@@ -29,7 +29,7 @@ namespace Assets.Script.AppMain.AxiInput
             return data;
         }
 
-        public static bool IsKeyDown(this AxiInput axiInput)
+        public static bool GetKeyDown(this AxiInput axiInput)
         {
             switch (axiInput.type)
             {
@@ -44,7 +44,7 @@ namespace Assets.Script.AppMain.AxiInput
             }
         }
 
-        public static bool IsKeyUp(this AxiInput axiInput)
+        public static bool GetKeyUp(this AxiInput axiInput)
         {
             switch (axiInput.type)
             {
@@ -59,7 +59,7 @@ namespace Assets.Script.AppMain.AxiInput
             }
         }
 
-        public static bool IsKey(this AxiInput axiInput)
+        public static bool GetKey(this AxiInput axiInput)
         {
             switch (axiInput.type)
             {

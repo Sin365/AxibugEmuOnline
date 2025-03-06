@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -303,16 +304,21 @@ namespace AxibugEmuOnline.Client
         protected override void OnCmdSelectItemDown()
         {
             SelectIndex++;
+            //TODO 已经到底的情况下，不播放音效
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
         protected override void OnCmdSelectItemUp()
         {
             SelectIndex--;
+            //TODO 已经到顶的情况下，不播放音效
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
         }
 
         protected override void OnCmdBack()
         {
             Hide();
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
         }
 
         protected override void OnCmdSelectItemLeft()
@@ -342,7 +348,7 @@ namespace AxibugEmuOnline.Client
             bool cancelHide = false;
             executer.OnExecute(this, ref cancelHide);
             if (!cancelHide) Hide();
-
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
             return false;
         }
 

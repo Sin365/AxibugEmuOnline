@@ -106,7 +106,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
                 return false;
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].IsKey())
+                if (list[i].GetKey())
                     return true;
             }
             return false;
@@ -118,7 +118,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
                 return false;
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].IsKeyUp())
+                if (list[i].GetKeyUp())
                     return true;
             }
             return false;
@@ -131,7 +131,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
                 return false;
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].IsKeyDown())
+                if (list[i].GetKeyDown())
                     return true;
             }
             return false;
@@ -161,7 +161,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
 
             for (int i = 0; i < AxiInputArr.Length; i++)
             {
-                if (AxiInputArr[i].IsKey())
+                if (AxiInputArr[i].GetKey())
                     return true;
             }
             return false;

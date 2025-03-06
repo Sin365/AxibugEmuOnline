@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.UI;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -69,7 +70,7 @@ namespace AxibugEmuOnline.Client
             LaunchUI.Instance.ToDetailMenuLayout();
             var item = GetItemUIByIndex(SelectIndex);
             item.SetSelectState(false);
-
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
             return true;
         }
 
@@ -80,18 +81,28 @@ namespace AxibugEmuOnline.Client
             LaunchUI.Instance.ToMainMenuLayout();
             var item = GetItemUIByIndex(SelectIndex);
             item.SetSelectState(true);
+            //TODO 已经关闭三级菜单的情况下 不播放
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
         }
 
         protected override void OnCmdSelectItemUp()
         {
             if (m_enteredItem == null)
+            { 
                 SelectIndex--;
+                //TODO 已经到底的情况下，不播放音效
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+            }
         }
 
         protected override void OnCmdSelectItemDown()
         {
             if (m_enteredItem == null)
+            { 
                 SelectIndex++;
+                //TODO 已经到顶的情况下，不播放音效
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
+            }
         }
 
         public virtual void SetSelect(bool select)
@@ -120,8 +131,8 @@ namespace AxibugEmuOnline.Client
         protected override void OnCmdSelectItemLeft()
         {
             base.OnCmdSelectItemLeft();
-
             OnCmdBack();
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cancel);
         }
 
         protected override void OnSelectMenuChanged()

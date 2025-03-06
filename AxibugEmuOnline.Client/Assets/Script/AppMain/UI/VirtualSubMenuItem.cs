@@ -40,7 +40,6 @@ namespace AxibugEmuOnline.Client
 
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });
-            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cursor);
         }
 
         public override bool OnEnterItem()
