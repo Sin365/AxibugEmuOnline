@@ -1,11 +1,14 @@
+using Assets.Script.AppMain.AxiInput.Settings;
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxibugEmuOnline.Client.Manager;
 using AxiReplay;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Assets.Script.AppMain.AxiInput.Settings.MasterSystemMultiKeysSetting;
 
 public class UEGKeyboard : MonoBehaviour
 {
@@ -539,7 +542,7 @@ public class EssgeeControllerMapper : IControllerSetuper
 }
 public class EssgssSingleController : IController
 {
-    public KeyCode UP, DOWN, LEFT, RIGHT, BTN_1, BTN_2, BTN_3, BTN_4, OPTION_1, OPTION_2;
+    //public KeyCode UP, DOWN, LEFT, RIGHT, BTN_1, BTN_2, BTN_3, BTN_4, OPTION_1, OPTION_2;
 
     public ulong tg_UP, tg_DOWN, tg_LEFT, tg_RIGHT, tg_BTN_1, tg_BTN_2, tg_BTN_3, tg_BTN_4, tg_OPTION_1, tg_OPTION_2;
     public ulong CurrLocalSingleAllInput { get; private set; }
@@ -566,7 +569,7 @@ public class EssgssSingleController : IController
     public int ControllerIndex
     {
         get { return mControllerIndex; }
-        set { mControllerIndex = value; this.LoadControlKeyForConfig(); }
+        set { mControllerIndex = value; /*this.LoadControlKeyForConfig();*/ }
     }
 
     public EssgssSingleController(int controllerIndex)
@@ -576,33 +579,65 @@ public class EssgssSingleController : IController
 
     public bool AnyButtonDown()
     {
-        if (Input.GetKeyDown(UP)) return true;
-        if (Input.GetKeyDown(DOWN)) return true;
-        if (Input.GetKeyDown(LEFT)) return true;
-        if (Input.GetKeyDown(RIGHT)) return true;
-        if (Input.GetKeyDown(BTN_1)) return true;
-        if (Input.GetKeyDown(BTN_2)) return true;
-        if (Input.GetKeyDown(BTN_3)) return true;
-        if (Input.GetKeyDown(BTN_4)) return true;
-        if (Input.GetKeyDown(OPTION_1)) return true;
-        if (Input.GetKeyDown(OPTION_2)) return true;
-        return false;
+        //if (Input.GetKeyDown(UP)) return true;
+        //if (Input.GetKeyDown(DOWN)) return true;
+        //if (Input.GetKeyDown(LEFT)) return true;
+        //if (Input.GetKeyDown(RIGHT)) return true;
+        //if (Input.GetKeyDown(BTN_1)) return true;
+        //if (Input.GetKeyDown(BTN_2)) return true;
+        //if (Input.GetKeyDown(BTN_3)) return true;
+        //if (Input.GetKeyDown(BTN_4)) return true;
+        //if (Input.GetKeyDown(OPTION_1)) return true;
+        //if (Input.GetKeyDown(OPTION_2)) return true;
+        //return false;
+
+        return GetSingleKeys().HadAnyKeyDown();
     }
+
+    public SingleKeySettingBase GetSingleKeys()
+    {
+        switch (UEssgee.instance.Platform)
+        {
+            case AxibugProtobuf.RomPlatformType.MasterSystem: return App.input.sms.controllers[mControllerIndex];
+            case AxibugProtobuf.RomPlatformType.GameBoy: return App.input.gb.controllers[mControllerIndex];
+            case AxibugProtobuf.RomPlatformType.GameBoyColor: return App.input.gbc.controllers[mControllerIndex];
+            case AxibugProtobuf.RomPlatformType.ColecoVision: return App.input.cv.controllers[mControllerIndex];
+            case AxibugProtobuf.RomPlatformType.GameGear: return App.input.gg.controllers[mControllerIndex];
+            case AxibugProtobuf.RomPlatformType.Sc3000: return App.input.sc3000.controllers[mControllerIndex];
+            case AxibugProtobuf.RomPlatformType.Sg1000: return App.input.sg1000.controllers[mControllerIndex];
+            default: throw new NotImplementedException("err essgee platform");
+        }
+    }
+
     public ulong GetSingleAllInput()
     {
         if (!ConnectSlot.HasValue)
             return 0;
         CurrLocalSingleAllInput = 0;
-        if (Input.GetKey(UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
-        if (Input.GetKey(DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
-        if (Input.GetKey(LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
-        if (Input.GetKey(RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
-        if (Input.GetKey(BTN_1)) CurrLocalSingleAllInput |= (ulong)tg_BTN_1;
-        if (Input.GetKey(BTN_2)) CurrLocalSingleAllInput |= (ulong)tg_BTN_2;
-        if (Input.GetKey(BTN_3)) CurrLocalSingleAllInput |= (ulong)tg_BTN_3;
-        if (Input.GetKey(BTN_4)) CurrLocalSingleAllInput |= (ulong)tg_BTN_4;
-        if (Input.GetKey(OPTION_1)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
-        if (Input.GetKey(OPTION_2)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
+
+        SingleKeySettingBase essgeeKeys = GetSingleKeys();
+
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_1)) CurrLocalSingleAllInput |= (ulong)tg_BTN_1;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_2)) CurrLocalSingleAllInput |= (ulong)tg_BTN_2;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_3)) CurrLocalSingleAllInput |= (ulong)tg_BTN_3;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_4)) CurrLocalSingleAllInput |= (ulong)tg_BTN_4;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.OPTION_1)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
+        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.OPTION_2)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_2;
+
+        //if (Input.GetKey(UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
+        //if (Input.GetKey(DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
+        //if (Input.GetKey(LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
+        //if (Input.GetKey(RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
+        //if (Input.GetKey(BTN_1)) CurrLocalSingleAllInput |= (ulong)tg_BTN_1;
+        //if (Input.GetKey(BTN_2)) CurrLocalSingleAllInput |= (ulong)tg_BTN_2;
+        //if (Input.GetKey(BTN_3)) CurrLocalSingleAllInput |= (ulong)tg_BTN_3;
+        //if (Input.GetKey(BTN_4)) CurrLocalSingleAllInput |= (ulong)tg_BTN_4;
+        //if (Input.GetKey(OPTION_1)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
+        //if (Input.GetKey(OPTION_2)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
         return CurrLocalSingleAllInput;
     }
 }
@@ -610,41 +645,41 @@ public class EssgssSingleController : IController
 
 public static class EssgssSingleControllerSetter
 {
-    public static void LoadControlKeyForConfig(this EssgssSingleController singlecontrol)
-    {
-        //TODO 等待支持配置，或统一
-        switch (singlecontrol.ControllerIndex)
-        {
-            case 0:
-                singlecontrol.UP = KeyCode.W;
-                singlecontrol.DOWN = KeyCode.S;
-                singlecontrol.LEFT = KeyCode.A;
-                singlecontrol.RIGHT = KeyCode.D;
-                singlecontrol.BTN_1 = KeyCode.J;
-                singlecontrol.BTN_2 = KeyCode.K;
-                singlecontrol.BTN_3 = KeyCode.L;
-                singlecontrol.BTN_4 = KeyCode.U;
-                singlecontrol.OPTION_1 = KeyCode.Return;
-                singlecontrol.OPTION_2 = KeyCode.LeftShift;
-                break;
-            case 1:
-                singlecontrol.UP = KeyCode.UpArrow;
-                singlecontrol.DOWN = KeyCode.DownArrow;
-                singlecontrol.LEFT = KeyCode.LeftArrow;
-                singlecontrol.RIGHT = KeyCode.RightArrow;
-                singlecontrol.BTN_1 = KeyCode.Keypad1;
-                singlecontrol.BTN_2 = KeyCode.Keypad2;
-                singlecontrol.BTN_3 = KeyCode.Keypad3;
-                singlecontrol.BTN_4 = KeyCode.Keypad4;
-                singlecontrol.OPTION_1 = KeyCode.Keypad0;
-                singlecontrol.OPTION_2 = KeyCode.KeypadPeriod;
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-        }
-    }
+    //public static void LoadControlKeyForConfig(this EssgssSingleController singlecontrol)
+    //{
+    //    //TODO 等待支持配置，或统一
+    //    switch (singlecontrol.ControllerIndex)
+    //    {
+    //        case 0:
+    //            singlecontrol.UP = KeyCode.W;
+    //            singlecontrol.DOWN = KeyCode.S;
+    //            singlecontrol.LEFT = KeyCode.A;
+    //            singlecontrol.RIGHT = KeyCode.D;
+    //            singlecontrol.BTN_1 = KeyCode.J;
+    //            singlecontrol.BTN_2 = KeyCode.K;
+    //            singlecontrol.BTN_3 = KeyCode.L;
+    //            singlecontrol.BTN_4 = KeyCode.U;
+    //            singlecontrol.OPTION_1 = KeyCode.Return;
+    //            singlecontrol.OPTION_2 = KeyCode.LeftShift;
+    //            break;
+    //        case 1:
+    //            singlecontrol.UP = KeyCode.UpArrow;
+    //            singlecontrol.DOWN = KeyCode.DownArrow;
+    //            singlecontrol.LEFT = KeyCode.LeftArrow;
+    //            singlecontrol.RIGHT = KeyCode.RightArrow;
+    //            singlecontrol.BTN_1 = KeyCode.Keypad1;
+    //            singlecontrol.BTN_2 = KeyCode.Keypad2;
+    //            singlecontrol.BTN_3 = KeyCode.Keypad3;
+    //            singlecontrol.BTN_4 = KeyCode.Keypad4;
+    //            singlecontrol.OPTION_1 = KeyCode.Keypad0;
+    //            singlecontrol.OPTION_2 = KeyCode.KeypadPeriod;
+    //            break;
+    //        case 2:
+    //            break;
+    //        case 3:
+    //            break;
+    //    }
+    //}
     public static void ResetTargetMotionKey(this EssgssSingleController singlecontrol)
     {
         if (!singlecontrol.ConnectSlot.HasValue)
@@ -688,7 +723,6 @@ public static class EssgssSingleControllerSetter
                 singlecontrol.tg_OPTION_1 = EssgeeUnityKey.P2_POTION_1;
                 singlecontrol.tg_OPTION_2 = EssgeeUnityKey.P2_POTION_2;
                 break;
-            //后续修改后 支持P3 P4
             case 2:
                 singlecontrol.tg_UP = EssgeeUnityKey.P3_UP;
                 singlecontrol.tg_DOWN = EssgeeUnityKey.P3_DOWN;

@@ -22,7 +22,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
     {
         public UMAMEMultiKeysSetting()
         {
-            controllers = new UMAMEKSingleKeysSeting[1];
+            controllers = new UMAMEKSingleKeysSeting[4];
             for (int i = 0; i < controllers.Length; i++)
                 controllers[i] = new UMAMEKSingleKeysSeting();
         }

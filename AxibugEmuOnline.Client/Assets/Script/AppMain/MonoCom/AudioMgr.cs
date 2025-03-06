@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 namespace AxibugEmuOnline.Client
 {

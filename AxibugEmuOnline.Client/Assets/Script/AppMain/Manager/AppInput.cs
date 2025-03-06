@@ -14,11 +14,27 @@ namespace AxibugEmuOnline.Client.Manager
         public XMBMultiKeysSetting xmb;
         public GamingMultiKeysSetting gaming;
         public UMAMEMultiKeysSetting mame;
+        public NESMultiKeysSetting nes;
+        public MasterSystemMultiKeysSetting sms;
+        public ColecoVisionMultiKeysSetting cv;
+        public GameBoyColorMultiKeysSetting gbc;
+        public GameBoyMultiKeysSetting gb;
+        public GameGearMultiKeysSetting gg;
+        public SC3000MultiKeysSetting sc3000;
+        public SG1000MultiKeysSetting sg1000;
         public AppInput()
         {
             xmb = new XMBMultiKeysSetting();
             gaming = new GamingMultiKeysSetting();
             mame = new UMAMEMultiKeysSetting();
+            nes = new NESMultiKeysSetting();
+            sms = new MasterSystemMultiKeysSetting();
+            cv = new ColecoVisionMultiKeysSetting();
+            gbc = new GameBoyColorMultiKeysSetting();
+            gb = new GameBoyMultiKeysSetting();
+            gg = new GameGearMultiKeysSetting();
+            sc3000 = new SC3000MultiKeysSetting();
+            sg1000 = new SG1000MultiKeysSetting();
             LoadDefaultSetting();
         }
 
@@ -27,6 +43,14 @@ namespace AxibugEmuOnline.Client.Manager
             xmb.LoadDefaultSetting();
             gaming.LoadDefaultSetting();
             mame.LoadDefaultSetting();
+            nes.LoadDefaultSetting();
+            sms.LoadDefaultSetting();
+            cv.LoadDefaultSetting();
+            gbc.LoadDefaultSetting();
+            gb.LoadDefaultSetting();
+            gg.LoadDefaultSetting();
+            sc3000.LoadDefaultSetting();
+            sg1000.LoadDefaultSetting();
         }
     }
 

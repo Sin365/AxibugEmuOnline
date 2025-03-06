@@ -1,5 +1,7 @@
-﻿using AxibugEmuOnline.Client.Common;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -133,59 +135,70 @@ namespace AxibugEmuOnline.Client
             /// </summary>
             public uint? ConnectSlot { get; set; }
 
-            public Button UP { get; }
-            public Button DOWN { get; }
-            public Button LEFT { get; }
-            public Button RIGHT { get; }
-            public Button A { get; }
-            public Button B { get; }
-            public Button SELECT { get; }
-            public Button START { get; }
-            public Button MIC { get; }
+            //public Button UP { get; }
+            //public Button DOWN { get; }
+            //public Button LEFT { get; }
+            //public Button RIGHT { get; }
+            //public Button A { get; }
+            //public Button B { get; }
+            //public Button SELECT { get; }
+            //public Button START { get; }
+            //public Button MIC { get; }
 
             public Controller(int controllerIndex)
             {
                 ControllerIndex = controllerIndex;
-                UP = new Button(this, EnumButtonType.UP);
-                DOWN = new Button(this, EnumButtonType.DOWN);
-                LEFT = new Button(this, EnumButtonType.LEFT);
-                RIGHT = new Button(this, EnumButtonType.RIGHT);
-                A = new Button(this, EnumButtonType.A);
-                B = new Button(this, EnumButtonType.B);
-                SELECT = new Button(this, EnumButtonType.SELECT);
-                START = new Button(this, EnumButtonType.START);
-                MIC = new Button(this, EnumButtonType.MIC);
+                //UP = new Button(this, EnumButtonType.UP);
+                //DOWN = new Button(this, EnumButtonType.DOWN);
+                //LEFT = new Button(this, EnumButtonType.LEFT);
+                //RIGHT = new Button(this, EnumButtonType.RIGHT);
+                //A = new Button(this, EnumButtonType.A);
+                //B = new Button(this, EnumButtonType.B);
+                //SELECT = new Button(this, EnumButtonType.SELECT);
+                //START = new Button(this, EnumButtonType.START);
+                //MIC = new Button(this, EnumButtonType.MIC);
             }
 
             public EnumButtonType GetButtons()
             {
                 EnumButtonType res = 0;
 
-                res |= UP.SampleKey();
-                res |= DOWN.SampleKey();
-                res |= LEFT.SampleKey();
-                res |= RIGHT.SampleKey();
-                res |= A.SampleKey();
-                res |= B.SampleKey();
-                res |= SELECT.SampleKey();
-                res |= START.SampleKey();
-                res |= MIC.SampleKey();
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.UP)) res |= EnumButtonType.UP;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.DOWN)) res |= EnumButtonType.DOWN;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.LEFT)) res |= EnumButtonType.LEFT;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.RIGHT)) res |= EnumButtonType.RIGHT;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.A)) res |= EnumButtonType.A;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.B)) res |= EnumButtonType.B;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.SELECT)) res |= EnumButtonType.SELECT;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.START)) res |= EnumButtonType.START;
+                if(App.input.nes.controllers[ControllerIndex].GetKey((ulong)EnumButtonType.MIC)) res |= EnumButtonType.MIC;
+
+                //res |= UP.SampleKey();
+                //res |= DOWN.SampleKey();
+                //res |= LEFT.SampleKey();
+                //res |= RIGHT.SampleKey();
+                //res |= A.SampleKey();
+                //res |= B.SampleKey();
+                //res |= SELECT.SampleKey();
+                //res |= START.SampleKey();
+                //res |= MIC.SampleKey();
 
                 return res;
             }
 
             public bool AnyButtonDown()
             {
-                return
-                    UP.IsDown ||
-                    DOWN.IsDown ||
-                    LEFT.IsDown ||
-                    RIGHT.IsDown ||
-                    A.IsDown ||
-                    B.IsDown ||
-                    SELECT.IsDown ||
-                    START.IsDown ||
-                    MIC.IsDown;
+                return App.input.nes.controllers[ControllerIndex].HadAnyKeyDown();
+                //return
+                //    UP.IsDown ||
+                //    DOWN.IsDown ||
+                //    LEFT.IsDown ||
+                //    RIGHT.IsDown ||
+                //    A.IsDown ||
+                //    B.IsDown ||
+                //    SELECT.IsDown ||
+                //    START.IsDown ||
+                //    MIC.IsDown;
             }
 
             public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
@@ -211,47 +224,47 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        /// <summary>
-        /// NES控制器按键类
-        /// </summary>
-        public class Button
-        {
-            /// <summary> 所属控制器 </summary>
-            readonly Controller m_hostController;
+        ///// <summary>
+        ///// NES控制器按键类
+        ///// </summary>
+        //public class Button
+        //{
+        //    /// <summary> 所属控制器 </summary>
+        //    readonly Controller m_hostController;
 
-            /// <summary> 按键 </summary>
-            readonly EnumButtonType m_buttonType;
+        //    /// <summary> 按键 </summary>
+        //    readonly EnumButtonType m_buttonType;
 
-            /// <summary> 按键监听器 </summary>
-            KeyListener m_keyListener;
+        //    /// <summary> 按键监听器 </summary>
+        //    KeyListener m_keyListener;
 
-            /// <summary> 指示按钮是否正在按下状态 </summary>
-            public bool IsPressing => m_keyListener.IsPressing();
-            /// <summary> 指示按钮是否被按下 </summary>
-            public bool IsDown => m_keyListener.IsDown();
+        //    /// <summary> 指示按钮是否正在按下状态 </summary>
+        //    public bool IsPressing => m_keyListener.IsPressing();
+        //    /// <summary> 指示按钮是否被按下 </summary>
+        //    public bool IsDown => m_keyListener.IsDown();
 
-            public Button(Controller controller, EnumButtonType buttonType)
-            {
-                m_hostController = controller;
-                m_buttonType = buttonType;
+        //    public Button(Controller controller, EnumButtonType buttonType)
+        //    {
+        //        m_hostController = controller;
+        //        m_buttonType = buttonType;
 
-                CreateListener();
-            }
+        //        CreateListener();
+        //    }
 
-            /// <summary>
-            /// 采集按钮按下状态
-            /// </summary>
-            /// <returns></returns>
-            public EnumButtonType SampleKey()
-            {
-                return IsPressing ? m_buttonType : 0;
-            }
+        //    /// <summary>
+        //    /// 采集按钮按下状态
+        //    /// </summary>
+        //    /// <returns></returns>
+        //    public EnumButtonType SampleKey()
+        //    {
+        //        return IsPressing ? m_buttonType : 0;
+        //    }
 
-            private void CreateListener()
-            {
-                m_keyListener = Controller.GetKey(m_hostController.ControllerIndex, m_buttonType);
-            }
-        }
+        //    private void CreateListener()
+        //    {
+        //        m_keyListener = Controller.GetKey(m_hostController.ControllerIndex, m_buttonType);
+        //    }
+        //}
         //low C# readonly
         //public readonly struct KeyListener
 
