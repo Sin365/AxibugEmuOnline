@@ -37,6 +37,8 @@ namespace AxibugEmuOnline.Client.Manager
         void ClearAll();
         void SetKey(ulong Key, AxiInput input);
         bool GetKey(ulong Key);
+        bool GetKeyDown(ulong Key);
+        bool GetKeyUp(ulong Key);
         void ColletAllKey();
         bool HadAnyKeyDown();
     }

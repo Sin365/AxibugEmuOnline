@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.UI;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -39,6 +40,7 @@ namespace AxibugEmuOnline.Client
 
                     Root.localScale = Vector3.one * Mathf.Lerp(UnSelectScale, SelectScale, m_progress);
                 });
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cursor);
         }
 
         public override bool OnEnterItem()

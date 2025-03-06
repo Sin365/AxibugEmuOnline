@@ -1,9 +1,11 @@
-﻿using AxibugEmuOnline.Client.ClientCore;
+﻿using Assets.Script.AppMain.AxiInput;
+using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Manager;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 namespace AxibugEmuOnline.Client
 {
@@ -14,29 +16,58 @@ namespace AxibugEmuOnline.Client
         Dictionary<EnumCommand, bool> m_dictLastState = new Dictionary<EnumCommand, bool>();
         EnumCommand[] m_checkCmds;
         List<CommandState> m_commands = new List<CommandState>();
+        long CheckFrame = -1;
         IEnumerable<CommandState> GetCommand()
         {
-            m_commands.Clear();
             //foreach (var item in m_keyMapper)
             //{
             //    if (Input.GetKeyDown(item.Key)) m_commands.Add(new CommandState { Cmd = item.Value, Cancel = false });
             //    if (Input.GetKeyUp(item.Key)) m_commands.Add(new CommandState { Cmd = item.Value, Cancel = true });
             //}
 
+            if (CheckFrame == Time.frameCount)
+                return m_commands;
+            CheckFrame = Time.frameCount;
+
+            m_commands.Clear();
+
             //不再依赖KeyDown KeyUp的做法，兼容UGUI，或者Axis
             if (m_checkCmds != null)
             {
                 foreach (var cmd in m_checkCmds)
                 {
-                    bool oldstate = m_dictLastState[cmd];
-                    bool newstate = singleKeysSetting.GetKey((ulong)cmd);
-                    m_dictLastState[cmd] = newstate;
-                    if (oldstate != newstate)
-                    {
-                        m_commands.Add(new CommandState { Cmd = cmd, Cancel = !newstate });
-                    }
+                    if (singleKeysSetting.GetKeyDown((ulong)cmd)) m_commands.Add(new CommandState { Cmd = cmd, Cancel = false });
+                    if (singleKeysSetting.GetKeyUp((ulong)cmd)) m_commands.Add(new CommandState { Cmd = cmd, Cancel = true });
+
+                    //if (m_dictLastState[cmd] && !singleKeysSetting.GetKey((ulong)cmd))
+                    //{
+                    //    m_commands.Add(new CommandState { Cmd = cmd, Cancel = true });
+                    //    m_dictLastState[cmd] = false;
+                    //}
+                    //else if (!m_dictLastState[cmd] && singleKeysSetting.GetKey((ulong)cmd))
+                    //{ 
+                    //    m_commands.Add(new CommandState { Cmd = cmd, Cancel = false });
+                    //    m_dictLastState[cmd] = true;
+                    //}
+
+                    //bool oldstate = m_dictLastState[cmd];
+                    //bool newstate = singleKeysSetting.GetKey((ulong)cmd);
+                    //m_dictLastState[cmd] = newstate;
+                    //if (oldstate != newstate)
+                    //{
+                    //    m_commands.Add(new CommandState { Cmd = cmd, Cancel = !newstate });
+                    //}
+
+
                 }
             }
+
+
+            //foreach (var item in m_keyMapper)
+            //{
+            //    if (Input.GetKeyDown(item.Key)) m_commands.Add(new CommandState { Cmd = item.Value, Cancel = false });
+            //    if (Input.GetKeyUp(item.Key)) m_commands.Add(new CommandState { Cmd = item.Value, Cancel = true });
+            //}
 
             return m_commands;
         }
@@ -52,7 +83,7 @@ namespace AxibugEmuOnline.Client
             foreach (var cmd in arr)
             {
                 if(!m_dictLastState.ContainsKey(cmd))
-                    m_dictLastState[cmd] = false;
+                    m_dictLastState[cmd] = true;
             }
             m_checkCmds = arr;
         }

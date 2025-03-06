@@ -35,19 +35,25 @@ namespace Assets.Script.AppMain.AxiInput
             {
                 case AxiInputType.UNITY_KEYCODE:
                     return Input.GetKeyDown(axiInput.KeyCodeValue);
-                case AxiInputType.UNITY_AXIS://AXIS 不考虑KeyDown情况
-                    {
-                        switch (axiInput.AxisType)
-                        {
-                            case AxiInputAxisType.RIGHT: return Input.GetAxis("Horizontal") > 0;
-                            case AxiInputAxisType.LEFT: return Input.GetAxis("Horizontal") < 0;
-                            case AxiInputAxisType.UP: return Input.GetAxis("Vertical") > 0;
-                            case AxiInputAxisType.DOWN: return Input.GetAxis("Vertical") < 0;
-                            default: return false;
-                        }
-                    }
+                case AxiInputType.UNITY_AXIS:
+                    return AxiInputAxisCenter.GetKeyDown(axiInput.AxisType);
                 case AxiInputType.UNITY_UGUI_BTN:
-                    return AxiInputUGUICenter.IsKeyDown(axiInput.UguiBtn);
+                    return AxiInputUGUICenter.GetKeyDown(axiInput.UguiBtn);
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsKeyUp(this AxiInput axiInput)
+        {
+            switch (axiInput.type)
+            {
+                case AxiInputType.UNITY_KEYCODE:
+                    return Input.GetKeyUp(axiInput.KeyCodeValue);
+                case AxiInputType.UNITY_AXIS:
+                    return AxiInputAxisCenter.GetKeyUp(axiInput.AxisType);
+                case AxiInputType.UNITY_UGUI_BTN:
+                    return AxiInputUGUICenter.GetKeyUp(axiInput.UguiBtn);
                 default:
                     return false;
             }
@@ -59,10 +65,10 @@ namespace Assets.Script.AppMain.AxiInput
             {
                 case AxiInputType.UNITY_KEYCODE:
                     return Input.GetKey(axiInput.KeyCodeValue);
-                case AxiInputType.UNITY_AXIS://AXIS 不考虑KeyDown情况
-                    return false;
+                case AxiInputType.UNITY_AXIS: 
+                    return AxiInputAxisCenter.GetKey(axiInput.AxisType);
                 case AxiInputType.UNITY_UGUI_BTN:
-                    return AxiInputUGUICenter.IsKeyDown(axiInput.UguiBtn);
+                    return AxiInputUGUICenter.GetKey(axiInput.UguiBtn);
                 default:
                     return false;
             }

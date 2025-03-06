@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -119,6 +120,7 @@ namespace AxibugEmuOnline.Client.UI
                     targetPosition,
                     HoriRollSpd)
                     .SetSpeedBased();
+                App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Option);
             }
             else
             {

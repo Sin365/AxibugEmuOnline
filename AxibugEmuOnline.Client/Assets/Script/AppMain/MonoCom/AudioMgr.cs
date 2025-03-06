@@ -5,11 +5,32 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 namespace AxibugEmuOnline.Client
 {
     public class AudioMgr : MonoBehaviour
     {
+        public enum E_SFXTYPE
+        {
+            Cancel,
+            Cursor,
+            Option,
+            Launch,
+            system_ng,
+            system_ok
+        }
+
+        public Dictionary<E_SFXTYPE, AudioClip> dictAudioClip = new Dictionary<E_SFXTYPE, AudioClip>();
+
+        private AudioSource mSource;
+        private void Awake()
+        {
+            mSource = this.gameObject.AddComponent<AudioSource>();
+            LoadAudioClip();
+            PlaySFX(E_SFXTYPE.Launch);
+        }
+
         /// <summary>
         /// 手动设置AudioCfg 主要用于模拟器各核心采样率对齐
         /// </summary>
@@ -44,6 +65,22 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public void LoadAudioClip()
+        {
+            dictAudioClip[E_SFXTYPE.Cancel] = Resources.Load<AudioClip>("Sound/XMBSFX/cancel");
+            dictAudioClip[E_SFXTYPE.Cursor] = Resources.Load<AudioClip>("Sound/XMBSFX/cursor");
+            dictAudioClip[E_SFXTYPE.Option] = Resources.Load<AudioClip>("Sound/XMBSFX/option");
+            dictAudioClip[E_SFXTYPE.Launch] = Resources.Load<AudioClip>("Sound/XMBSFX/StartPSP");
+            dictAudioClip[E_SFXTYPE.system_ng] = Resources.Load<AudioClip>("Sound/XMBSFX/system_ng");
+            dictAudioClip[E_SFXTYPE.system_ok] = Resources.Load<AudioClip>("Sound/XMBSFX/system_ok");
+        }
+
+        public void PlaySFX(E_SFXTYPE type, bool isLoop = false)
+        {
+            mSource.clip = dictAudioClip[type];
+            mSource.loop = isLoop;
+            mSource.Play();
+        }
 
         #region 录音功能实现
 

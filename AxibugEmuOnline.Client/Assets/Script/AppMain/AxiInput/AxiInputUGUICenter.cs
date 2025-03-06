@@ -1,5 +1,4 @@
-﻿using AxibugEmuOnline.Client.Manager;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Assets.Script.AppMain.AxiInput
 {
@@ -37,27 +36,40 @@ namespace Assets.Script.AppMain.AxiInput
             }
         }
 
-        public static bool IsKeyDown(AxiInputUGuiBtnType btntype)
+        public static bool GetKeyUp(AxiInputUGuiBtnType btntype)
         {
             List<AxiInputUGUIHandleBase> list;
             if (!dictBtnType2BtnList.TryGetValue(btntype, out list))
                 return false;
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].IsKeyDown())
+                if (list[i].GetKeyUp())
                     return true;
             }
             return false;
         }
 
-        public static bool IsKey(AxiInputUGuiBtnType btntype)
+        public static bool GetKeyDown(AxiInputUGuiBtnType btntype)
         {
             List<AxiInputUGUIHandleBase> list;
             if (!dictBtnType2BtnList.TryGetValue(btntype, out list))
                 return false;
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].IsKey())
+                if (list[i].GetKeyDown())
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool GetKey(AxiInputUGuiBtnType btntype)
+        {
+            List<AxiInputUGUIHandleBase> list;
+            if (!dictBtnType2BtnList.TryGetValue(btntype, out list))
+                return false;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].GetKey())
                     return true;
             }
             return false;

@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.Common;
+﻿using AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Manager;
 using System.Collections.Generic;
 using UnityEngine;
@@ -134,10 +135,44 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             }
             return false;
         }
+        public bool GetKeyUp(UMAMEKSingleKey Key)
+        {
+            List<AxiInput> list;
+            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
+                return false;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].IsKeyUp())
+                    return true;
+            }
+            return false;
+        }
+
+        public bool GetKeyDown(UMAMEKSingleKey Key)
+        {
+            List<AxiInput> list;
+            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
+                return false;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].IsKeyDown())
+                    return true;
+            }
+            return false;
+        }
+
 
         public bool GetKey(ulong Key)
         {
             return GetKey((UMAMEKSingleKey)Key);
+        }
+        public bool GetKeyDown(ulong Key)
+        {
+            return GetKeyDown((UMAMEKSingleKey)Key);
+        }
+        public bool GetKeyUp(ulong Key)
+        {
+            return GetKeyUp((UMAMEKSingleKey)Key);
         }
 
         public void ClearAll()

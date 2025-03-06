@@ -57,6 +57,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             controllers[0].SetKey((ulong)EnumCommand.Enter, AxiInputEx.ByKeyCode(KeyCode.J));
             controllers[0].SetKey((ulong)EnumCommand.Enter, AxiInputEx.ByKeyCode(KeyCode.Return));
             controllers[0].SetKey((ulong)EnumCommand.Back, AxiInputEx.ByKeyCode(KeyCode.K));
+            controllers[0].SetKey((ulong)EnumCommand.Back, AxiInputEx.ByKeyCode(KeyCode.Escape));
             controllers[0].SetKey((ulong)EnumCommand.OptionMenu, AxiInputEx.ByKeyCode(KeyCode.I));
 
             //Axis
@@ -110,6 +111,31 @@ namespace Assets.Script.AppMain.AxiInput.Settings
             }
             return false;
         }
+        public bool GetKeyUp(EnumCommand Key)
+        {
+            List<AxiInput> list;
+            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
+                return false;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].IsKeyUp())
+                    return true;
+            }
+            return false;
+        }
+
+        public bool GetKeyDown(EnumCommand Key)
+        {
+            List<AxiInput> list;
+            if (!DictSkey2AxiInput.TryGetValue(Key, out list))
+                return false;
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].IsKeyDown())
+                    return true;
+            }
+            return false;
+        }
 
         public void ClearAll()
         {
@@ -144,6 +170,14 @@ namespace Assets.Script.AppMain.AxiInput.Settings
         public bool GetKey(ulong Key)
         {
             return GetKey((EnumCommand)Key);
+        }
+        public bool GetKeyDown(ulong Key)
+        {
+            return GetKeyDown((EnumCommand)Key);
+        }
+        public bool GetKeyUp(ulong Key)
+        {
+            return GetKeyUp((EnumCommand)Key);
         }
 
         internal EnumCommand[] GetAllCmd()

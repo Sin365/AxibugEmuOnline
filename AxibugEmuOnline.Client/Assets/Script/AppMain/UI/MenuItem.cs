@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
@@ -106,6 +107,8 @@ namespace AxibugEmuOnline.Client.UI
 
                     if (m_select) OnSelected(m_progress);
                 });
+
+            App.audioMgr.PlaySFX(AudioMgr.E_SFXTYPE.Cursor);
         }
 
         protected virtual void OnSelected(float progress) { }

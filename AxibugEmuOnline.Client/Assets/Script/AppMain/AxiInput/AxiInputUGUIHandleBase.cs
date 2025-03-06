@@ -15,8 +15,9 @@ namespace Assets.Script.AppMain.AxiInput
             this.UguiBtnType = uguiBtnType;
             AxiInputUGUICenter.RegHandle(this);
         }
-        public abstract bool IsKeyDown();
-        public abstract bool IsKey();
+        public abstract bool GetKeyDown();
+        public abstract bool GetKey();
+        public abstract bool GetKeyUp();
 
         public void Dispose()
         {
