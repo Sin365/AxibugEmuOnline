@@ -1,15 +1,15 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using UnityEngine;
 
-namespace Assets.Script.AppMain.AxiInput.Settings
+namespace AxiInputSP.Setting
 {
-    public class GameGearMultiKeysSetting : MultiKeysSettingBase
+    public class SG1000MultiKeysSetting : MultiKeysSettingBase
     {
-        public GameGearMultiKeysSetting()
+        public SG1000MultiKeysSetting()
         {
-            controllers = new GameGearSingleKeysSeting[4];
+            controllers = new SG1000SingleKeysSeting[4];
             for (int i = 0; i < controllers.Length; i++)
-                controllers[i] = new GameGearSingleKeysSeting();
+                controllers[i] = new SG1000SingleKeysSeting();
         }
 
         public override void LoadDefaultSetting()
@@ -78,7 +78,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
         }
     }
 
-    public class GameGearSingleKeysSeting : SingleKeySettingBase
+    public class SG1000SingleKeysSeting : SingleKeySettingBase
     {
     }
 }

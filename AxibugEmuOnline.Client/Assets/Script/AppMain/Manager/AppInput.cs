@@ -1,11 +1,9 @@
-﻿using Assets.Script.AppMain.AxiInput;
-using Assets.Script.AppMain.AxiInput.Settings;
-using AxibugEmuOnline.Client.Common;
+﻿using AxibugEmuOnline.Client.Common;
+using AxiInputSP;
+using AxiInputSP.Setting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using UnityEngine.UIElements.Experimental;
 
 namespace AxibugEmuOnline.Client.Manager
 {

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.Script.AppMain.AxiInput
+namespace AxiInputSP.Axis
 {
     public static class AxiInputAxisCenter
     {
         static long LastCheckFrame = -1;
 
-        public enum AxisState
+        enum AxisState
         {
             None,
             KeyUp,

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace AxibugEmuOnline.Client.Common
+namespace AxiInputSP
 {
     public static class PC_XBOXKEY
     {

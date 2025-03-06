@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-namespace Assets.Script.AppMain.AxiInput
+namespace AxiInputSP
 {
     [StructLayout(LayoutKind.Explicit, Size = 8)]
     public struct AxiInput

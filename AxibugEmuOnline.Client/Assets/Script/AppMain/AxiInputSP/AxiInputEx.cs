@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using AxiInputSP.Axis;
+using AxiInputSP.UGUI;
+using UnityEngine;
 
-namespace Assets.Script.AppMain.AxiInput
+namespace AxiInputSP
 {
     public static class AxiInputEx
     {

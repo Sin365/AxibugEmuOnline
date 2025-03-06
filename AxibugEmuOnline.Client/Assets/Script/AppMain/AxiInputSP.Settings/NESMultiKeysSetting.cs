@@ -1,8 +1,9 @@
 ﻿using AxibugEmuOnline.Client.Manager;
+using AxiInputSP;
 using UnityEngine;
 using VirtualNes.Core;
 
-namespace Assets.Script.AppMain.AxiInput.Settings
+namespace AxiInputSP.Setting
 {
     public class NESMultiKeysSetting : MultiKeysSettingBase
     {

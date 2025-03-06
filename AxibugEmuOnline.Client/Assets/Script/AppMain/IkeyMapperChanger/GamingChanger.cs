@@ -1,7 +1,5 @@
-﻿using Assets.Script.AppMain.AxiInput.Settings;
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Manager;
-using System;
 
 namespace AxibugEmuOnline.Client
 {

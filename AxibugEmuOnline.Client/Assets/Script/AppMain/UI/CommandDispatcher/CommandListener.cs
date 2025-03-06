@@ -1,11 +1,8 @@
-﻿using Assets.Script.AppMain.AxiInput;
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Manager;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 namespace AxibugEmuOnline.Client
 {

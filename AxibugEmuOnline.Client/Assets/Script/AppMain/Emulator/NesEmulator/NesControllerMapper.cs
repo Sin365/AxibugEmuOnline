@@ -201,27 +201,27 @@ namespace AxibugEmuOnline.Client
                 //    MIC.IsDown;
             }
 
-            public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
-            {
-                string configKey = $"NES_{controllerInput}_{nesConBtnType}";
+            //public static KeyListener GetKey(int controllerInput, EnumButtonType nesConBtnType)
+            //{
+            //    string configKey = $"NES_{controllerInput}_{nesConBtnType}";
 
-                //PSV平台固定键值
-                if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
-                {
-                    return KeyListener.GetPSVitaKey(controllerInput, nesConBtnType);
-                }
+            //    //PSV平台固定键值
+            //    if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
+            //    {
+            //        return KeyListener.GetPSVitaKey(controllerInput, nesConBtnType);
+            //    }
 
-                if (PlayerPrefs.HasKey(configKey))
-                {
-                    return new KeyListener(PlayerPrefs.GetString(configKey));
-                }
-                else
-                {
-                    var defaultKeyCode = KeyListener.GetDefaultKey(controllerInput, nesConBtnType);
-                    PlayerPrefs.SetString(configKey, defaultKeyCode.ToString());
-                    return defaultKeyCode;
-                }
-            }
+            //    if (PlayerPrefs.HasKey(configKey))
+            //    {
+            //        return new KeyListener(PlayerPrefs.GetString(configKey));
+            //    }
+            //    else
+            //    {
+            //        var defaultKeyCode = KeyListener.GetDefaultKey(controllerInput, nesConBtnType);
+            //        PlayerPrefs.SetString(configKey, defaultKeyCode.ToString());
+            //        return defaultKeyCode;
+            //    }
+            //}
         }
 
         ///// <summary>
@@ -268,127 +268,127 @@ namespace AxibugEmuOnline.Client
         //low C# readonly
         //public readonly struct KeyListener
 
-        public struct KeyListener
-        {
-            private readonly KeyCode m_key;
+        //public struct KeyListener
+        //{
+        //    private readonly KeyCode m_key;
 
-            public KeyListener(KeyCode key)
-            {
-                m_key = key;
-            }
+        //    public KeyListener(KeyCode key)
+        //    {
+        //        m_key = key;
+        //    }
 
-            /// <summary> 从配置字符串构建 </summary>
-            public KeyListener(string confStr)
-            {
-                m_key = KeyCode.None;
+        //    /// <summary> 从配置字符串构建 </summary>
+        //    public KeyListener(string confStr)
+        //    {
+        //        m_key = KeyCode.None;
 
-                int result;
-                if (int.TryParse(confStr, out result))
-                    m_key = (KeyCode)result;
-            }
+        //        int result;
+        //        if (int.TryParse(confStr, out result))
+        //            m_key = (KeyCode)result;
+        //    }
 
-            public bool IsPressing()
-            {
-                return Input.GetKey(m_key);
-            }
-            public bool IsDown()
-            {
-                return Input.GetKeyDown(m_key);
-            }
+        //    public bool IsPressing()
+        //    {
+        //        return Input.GetKey(m_key);
+        //    }
+        //    public bool IsDown()
+        //    {
+        //        return Input.GetKeyDown(m_key);
+        //    }
 
-            public override string ToString()
-            {
-                return ((int)(m_key)).ToString();
-            }
+        //    public override string ToString()
+        //    {
+        //        return ((int)(m_key)).ToString();
+        //    }
 
-            public static KeyListener GetDefaultKey(int controllerIndex, EnumButtonType nesConBtnType)
-            {
-                switch (controllerIndex)
-                {
-                    case 0:
-                        switch (nesConBtnType)
-                        {
-                            case EnumButtonType.LEFT:
-                                return new KeyListener(KeyCode.A);
-                            case EnumButtonType.RIGHT:
-                                return new KeyListener(KeyCode.D);
-                            case EnumButtonType.UP:
-                                return new KeyListener(KeyCode.W);
-                            case EnumButtonType.DOWN:
-                                return new KeyListener(KeyCode.S);
-                            case EnumButtonType.START:
-                                return new KeyListener(KeyCode.B);
-                            case EnumButtonType.SELECT:
-                                return new KeyListener(KeyCode.V);
-                            case EnumButtonType.A:
-                                return new KeyListener(KeyCode.K);
-                            case EnumButtonType.B:
-                                return new KeyListener(KeyCode.J);
-                            case EnumButtonType.MIC:
-                                return new KeyListener(KeyCode.M);
-                        }
+        //    public static KeyListener GetDefaultKey(int controllerIndex, EnumButtonType nesConBtnType)
+        //    {
+        //        switch (controllerIndex)
+        //        {
+        //            case 0:
+        //                switch (nesConBtnType)
+        //                {
+        //                    case EnumButtonType.LEFT:
+        //                        return new KeyListener(KeyCode.A);
+        //                    case EnumButtonType.RIGHT:
+        //                        return new KeyListener(KeyCode.D);
+        //                    case EnumButtonType.UP:
+        //                        return new KeyListener(KeyCode.W);
+        //                    case EnumButtonType.DOWN:
+        //                        return new KeyListener(KeyCode.S);
+        //                    case EnumButtonType.START:
+        //                        return new KeyListener(KeyCode.B);
+        //                    case EnumButtonType.SELECT:
+        //                        return new KeyListener(KeyCode.V);
+        //                    case EnumButtonType.A:
+        //                        return new KeyListener(KeyCode.K);
+        //                    case EnumButtonType.B:
+        //                        return new KeyListener(KeyCode.J);
+        //                    case EnumButtonType.MIC:
+        //                        return new KeyListener(KeyCode.M);
+        //                }
 
-                        break;
-                    case 1:
-                        switch (nesConBtnType)
-                        {
-                            case EnumButtonType.LEFT:
-                                return new KeyListener(KeyCode.Delete);
-                            case EnumButtonType.RIGHT:
-                                return new KeyListener(KeyCode.PageDown);
-                            case EnumButtonType.UP:
-                                return new KeyListener(KeyCode.Home);
-                            case EnumButtonType.DOWN:
-                                return new KeyListener(KeyCode.End);
-                            case EnumButtonType.START:
-                                return new KeyListener(KeyCode.PageUp);
-                            case EnumButtonType.SELECT:
-                                return new KeyListener(KeyCode.Insert);
-                            case EnumButtonType.A:
-                                return new KeyListener(KeyCode.Keypad5);
-                            case EnumButtonType.B:
-                                return new KeyListener(KeyCode.Keypad4);
-                            case EnumButtonType.MIC:
-                                return new KeyListener(KeyCode.KeypadPeriod);
-                        }
+        //                break;
+        //            case 1:
+        //                switch (nesConBtnType)
+        //                {
+        //                    case EnumButtonType.LEFT:
+        //                        return new KeyListener(KeyCode.Delete);
+        //                    case EnumButtonType.RIGHT:
+        //                        return new KeyListener(KeyCode.PageDown);
+        //                    case EnumButtonType.UP:
+        //                        return new KeyListener(KeyCode.Home);
+        //                    case EnumButtonType.DOWN:
+        //                        return new KeyListener(KeyCode.End);
+        //                    case EnumButtonType.START:
+        //                        return new KeyListener(KeyCode.PageUp);
+        //                    case EnumButtonType.SELECT:
+        //                        return new KeyListener(KeyCode.Insert);
+        //                    case EnumButtonType.A:
+        //                        return new KeyListener(KeyCode.Keypad5);
+        //                    case EnumButtonType.B:
+        //                        return new KeyListener(KeyCode.Keypad4);
+        //                    case EnumButtonType.MIC:
+        //                        return new KeyListener(KeyCode.KeypadPeriod);
+        //                }
 
-                        break;
-                }
+        //                break;
+        //        }
 
-                return default(KeyListener);
-            }
+        //        return default(KeyListener);
+        //    }
 
 
-            public static KeyListener GetPSVitaKey(int controllerIndex, EnumButtonType nesConBtnType)
-            {
-                switch (controllerIndex)
-                {
-                    case 0:
-                        switch (nesConBtnType)
-                        {
-                            case EnumButtonType.LEFT:
-                                return new KeyListener(PSVitaKey.Left);
-                            case EnumButtonType.RIGHT:
-                                return new KeyListener(PSVitaKey.Right);
-                            case EnumButtonType.UP:
-                                return new KeyListener(PSVitaKey.Up);
-                            case EnumButtonType.DOWN:
-                                return new KeyListener(PSVitaKey.Down);
-                            case EnumButtonType.START:
-                                return new KeyListener(PSVitaKey.Start);
-                            case EnumButtonType.SELECT:
-                                return new KeyListener(PSVitaKey.Select);
-                            case EnumButtonType.A:
-                                return new KeyListener(PSVitaKey.Circle);
-                            case EnumButtonType.B:
-                                return new KeyListener(PSVitaKey.Cross);
-                            case EnumButtonType.MIC:
-                                return new KeyListener(PSVitaKey.Block);
-                        }
-                        break;
-                }
-                return default(KeyListener);
-            }
-        }
+        //    //public static KeyListener GetPSVitaKey(int controllerIndex, EnumButtonType nesConBtnType)
+        //    //{
+        //    //    switch (controllerIndex)
+        //    //    {
+        //    //        case 0:
+        //    //            switch (nesConBtnType)
+        //    //            {
+        //    //                case EnumButtonType.LEFT:
+        //    //                    return new KeyListener(PSVitaKey.Left);
+        //    //                case EnumButtonType.RIGHT:
+        //    //                    return new KeyListener(PSVitaKey.Right);
+        //    //                case EnumButtonType.UP:
+        //    //                    return new KeyListener(PSVitaKey.Up);
+        //    //                case EnumButtonType.DOWN:
+        //    //                    return new KeyListener(PSVitaKey.Down);
+        //    //                case EnumButtonType.START:
+        //    //                    return new KeyListener(PSVitaKey.Start);
+        //    //                case EnumButtonType.SELECT:
+        //    //                    return new KeyListener(PSVitaKey.Select);
+        //    //                case EnumButtonType.A:
+        //    //                    return new KeyListener(PSVitaKey.Circle);
+        //    //                case EnumButtonType.B:
+        //    //                    return new KeyListener(PSVitaKey.Cross);
+        //    //                case EnumButtonType.MIC:
+        //    //                    return new KeyListener(PSVitaKey.Block);
+        //    //            }
+        //    //            break;
+        //    //    }
+        //    //    return default(KeyListener);
+        //    //}
+        //}
     }
 }

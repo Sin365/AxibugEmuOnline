@@ -1,7 +1,7 @@
 ﻿using AxibugEmuOnline.Client.Manager;
 using UnityEngine;
 
-namespace Assets.Script.AppMain.AxiInput.Settings
+namespace AxiInputSP.Setting
 {
     public class GameBoyMultiKeysSetting : MultiKeysSettingBase
     {

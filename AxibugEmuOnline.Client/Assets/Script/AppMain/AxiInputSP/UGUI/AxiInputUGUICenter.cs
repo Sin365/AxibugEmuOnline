@@ -1,34 +1,34 @@
 ﻿using System.Collections.Generic;
 
-namespace Assets.Script.AppMain.AxiInput
+namespace AxiInputSP.UGUI
 {
     public static class AxiInputUGUICenter
     {
         static int handleSeed = 0;
-        static Dictionary<int, AxiInputUGUIHandleBase> dictHandle2AxiUgui = new Dictionary<int, AxiInputUGUIHandleBase>();
-        static Dictionary<AxiInputUGuiBtnType, List<AxiInputUGUIHandleBase>> dictBtnType2BtnList = new Dictionary<AxiInputUGuiBtnType, List<AxiInputUGUIHandleBase>>();
+        static Dictionary<int, AxiInputUGUIHandle> dictHandle2AxiUgui = new Dictionary<int, AxiInputUGUIHandle>();
+        static Dictionary<AxiInputUGuiBtnType, List<AxiInputUGUIHandle>> dictBtnType2BtnList = new Dictionary<AxiInputUGuiBtnType, List<AxiInputUGUIHandle>>();
 
         public static int GetNextSeed()
         {
             return ++handleSeed;
         }
-        public static void RegHandle(AxiInputUGUIHandleBase uiHandle)
+        public static void RegHandle(AxiInputUGUIHandle uiHandle)
         {
             dictHandle2AxiUgui[uiHandle.Handle] = uiHandle;
-            List<AxiInputUGUIHandleBase> list;
+            List<AxiInputUGUIHandle> list;
             if (dictBtnType2BtnList.TryGetValue(uiHandle.UguiBtnType, out list))
-                list = dictBtnType2BtnList[uiHandle.UguiBtnType] = new List<AxiInputUGUIHandleBase>();
+                list = dictBtnType2BtnList[uiHandle.UguiBtnType] = new List<AxiInputUGUIHandle>();
 
             if (!list.Contains(uiHandle))
                 list.Add(uiHandle);
         }
-        public static void UnregHandle(AxiInputUGUIHandleBase uiHandle)
+        public static void UnregHandle(AxiInputUGUIHandle uiHandle)
         {
             if (!dictHandle2AxiUgui.ContainsKey(uiHandle.Handle))
                 return;
             dictHandle2AxiUgui.Remove(uiHandle.Handle);
 
-            List<AxiInputUGUIHandleBase> list;
+            List<AxiInputUGUIHandle> list;
             if (dictBtnType2BtnList.TryGetValue(uiHandle.UguiBtnType, out list))
             {
                 if (list.Contains(uiHandle))
@@ -38,7 +38,7 @@ namespace Assets.Script.AppMain.AxiInput
 
         public static bool GetKeyUp(AxiInputUGuiBtnType btntype)
         {
-            List<AxiInputUGUIHandleBase> list;
+            List<AxiInputUGUIHandle> list;
             if (!dictBtnType2BtnList.TryGetValue(btntype, out list))
                 return false;
             for (int i = 0; i < list.Count; i++)
@@ -51,7 +51,7 @@ namespace Assets.Script.AppMain.AxiInput
 
         public static bool GetKeyDown(AxiInputUGuiBtnType btntype)
         {
-            List<AxiInputUGUIHandleBase> list;
+            List<AxiInputUGUIHandle> list;
             if (!dictBtnType2BtnList.TryGetValue(btntype, out list))
                 return false;
             for (int i = 0; i < list.Count; i++)
@@ -64,7 +64,7 @@ namespace Assets.Script.AppMain.AxiInput
 
         public static bool GetKey(AxiInputUGuiBtnType btntype)
         {
-            List<AxiInputUGUIHandleBase> list;
+            List<AxiInputUGUIHandle> list;
             if (!dictBtnType2BtnList.TryGetValue(btntype, out list))
                 return false;
             for (int i = 0; i < list.Count; i++)

@@ -1,15 +1,32 @@
 ﻿using AxibugEmuOnline.Client.Manager;
+using System;
 using UnityEngine;
 
-namespace Assets.Script.AppMain.AxiInput.Settings
+namespace AxiInputSP.Setting
 {
-    public class SC3000MultiKeysSetting : MultiKeysSettingBase
+    [Flags]
+    public enum EssgeeSingleKey : ushort
     {
-        public SC3000MultiKeysSetting()
+        NONE = 0,
+        UP = 1,
+        DOWN = 1 << 1,
+        LEFT = 1 << 2,
+        RIGHT = 1 << 3,
+        BTN_1 = 1 << 4,
+        BTN_2 = 1 << 5,
+        BTN_3 = 1 << 6,
+        BTN_4 = 1 << 7,
+        OPTION_1 = 1 << 8,
+        OPTION_2 = 1 << 9,
+    }
+    public class MasterSystemMultiKeysSetting : MultiKeysSettingBase
+    {
+
+        public MasterSystemMultiKeysSetting()
         {
-            controllers = new SC3000SingleKeysSeting[4];
+            controllers = new MasterSystemSingleKeysSeting[4];
             for (int i = 0; i < controllers.Length; i++)
-                controllers[i] = new SC3000SingleKeysSeting();
+                controllers[i] = new MasterSystemSingleKeysSeting();
         }
 
         public override void LoadDefaultSetting()
@@ -78,7 +95,7 @@ namespace Assets.Script.AppMain.AxiInput.Settings
         }
     }
 
-    public class SC3000SingleKeysSeting : SingleKeySettingBase
+    public class MasterSystemSingleKeysSeting : SingleKeySettingBase
     {
     }
 }
