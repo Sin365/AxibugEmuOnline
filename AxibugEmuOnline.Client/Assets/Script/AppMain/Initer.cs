@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -12,8 +13,12 @@ namespace AxibugEmuOnline.Client
         public static string dev_UUID;
 
         [SerializeField]
+        List<Shader> SHADER;
+
+        [SerializeField]
         GameObject IMPORTENT;
 
+        public DebuggerByGUI debugger;
 
 
 #if UNITY_EDITOR
@@ -27,9 +32,10 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
+            GameObject.DontDestroyOnLoad(debugger);
             bool UseJoyStack = false;
 
-            if (Application.platform == RuntimePlatform.Android)
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.WindowsEditor)
             {
                 UseJoyStack = true;
             }

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using AxiInputSP.UGUI;
 using UnityEditor;
 using UnityEditorInternal;
@@ -66,3 +67,4 @@ namespace AxibugEmuOnline.Editors
         }
     }
 }
+#endif

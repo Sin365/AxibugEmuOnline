@@ -31,6 +31,7 @@ namespace AxiInputSP.Setting
             //TODO 待补全
             controllers[0].SetKey((ulong)EnumCommand.OptionMenu, AxiInputEx.ByKeyCode(PC_XBOXKEY.L));
             controllers[0].SetKey((ulong)EnumCommand.OptionMenu, AxiInputEx.ByKeyCode(PC_XBOXKEY.R));
+            controllers[0].SetKey((ulong)EnumCommand.OptionMenu, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.HOME));
 
             controllers[0].ColletAllKey();
         }

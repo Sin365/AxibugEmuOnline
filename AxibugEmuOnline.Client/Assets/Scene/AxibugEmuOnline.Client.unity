@@ -119,6 +119,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &408101310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 408101311}
+  - component: {fileID: 408101312}
+  m_Layer: 0
+  m_Name: debugger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &408101311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408101310}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.5490109, y: -3.056903, z: -0.117817014}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &408101312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 408101310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96aeece13cf7354390e892fd61111b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowDebugging: 1
 --- !u!1 &1335662458
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,12 +208,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 980f937ad27ad8540afeb8b7f100997e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SHADER:
+  - {fileID: 4800000, guid: e44382c7b3957134cb4533224ff9eeaa, type: 3}
+  - {fileID: 4800000, guid: 57c38351364c92e45aef2dc17245b3ce, type: 3}
+  - {fileID: 4800000, guid: bab7d8f2e62367743930d118a37e824a, type: 3}
+  - {fileID: 4800000, guid: 5dd9160e7dde4dd4db07347ce4780217, type: 3}
+  - {fileID: 4800000, guid: 8e9191ac23b05c14fa2a62f037ce8261, type: 3}
+  - {fileID: 4800000, guid: fdf9f1937116ab84c97a58a4cf82fbf8, type: 3}
+  - {fileID: 4800000, guid: e36189d8343a744ff946d70df1adb684, type: 3}
+  - {fileID: 4800000, guid: 1fed85d45421d45a6ac770579285b756, type: 3}
+  - {fileID: 4800000, guid: d96e49db3173e49a4a0fcf6125cc7f4e, type: 3}
   IMPORTENT: {fileID: 4747871931704546037, guid: e6f56a07c0ec38946a0257a1e0b8926d, type: 3}
+  debugger: {fileID: 408101312}
   bTestSkipWebApiToConServer: 0
   mTestSrvIP: 192.168.0.47
   bUseLocalWebApi: 0
   mLocalWebApi: http://localhost:5051
   bEditorUUID: 0
+  bEditorOpenGUIJoyStick: 0
 --- !u!1 &1498586261
 GameObject:
   m_ObjectHideFlags: 3
@@ -219,3 +276,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1498586263}
   - {fileID: 1335662459}
+  - {fileID: 408101311}

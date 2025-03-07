@@ -196,15 +196,14 @@ namespace AxibugEmuOnline.Client
             UnityEditor.EditorUtility.SetDirty(db);
             UnityEditor.AssetDatabase.SaveAssets();
         }
+#endif
 
+        public Texture OutputPixel => VideoProvider.OutputPixel;
+        public RawImage DrawCanvas => VideoProvider.Drawer;
         public void GetAudioParams(out int frequency, out int channels)
         {
             AudioProvider.GetAudioParams(out frequency, out channels);
         }
 
-        public Texture OutputPixel => VideoProvider.OutputPixel;
-        public RawImage DrawCanvas => VideoProvider.Drawer;
-
-#endif
     }
 }
