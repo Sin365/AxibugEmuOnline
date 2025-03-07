@@ -22,19 +22,29 @@ namespace AxibugEmuOnline.Client
         public bool bUseLocalWebApi = false;
         public string mLocalWebApi = "http://localhost:5051";
         public bool bEditorUUID = false;
+        public bool bEditorOpenGUIJoyStick = false;
 #endif
 
         private void Awake()
         {
+            bool UseJoyStack = false;
+
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                UseJoyStack = true;
+            }
+
 #if UNITY_EDITOR
-            App.Init(bTestSkipWebApiToConServer, mTestSrvIP, bUseLocalWebApi, mLocalWebApi);
+            if (bEditorOpenGUIJoyStick)
+                UseJoyStack = true;
+            App.Init(bTestSkipWebApiToConServer, UseJoyStack, mTestSrvIP, bUseLocalWebApi, mLocalWebApi);
             dev_UUID = SystemInfo.deviceUniqueIdentifier;
             if (bEditorUUID)
             {
                 dev_UUID += "_Editor";
             }
 #else
-            App.Init(this);
+            App.Init(false,UseJoyStack);
             dev_UUID = SystemInfo.deviceUniqueIdentifier;
 #endif
 

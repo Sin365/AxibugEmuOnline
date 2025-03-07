@@ -55,9 +55,9 @@ namespace AxiInputSP.Setting
             controllers[0].SetKey((ulong)EnumButtonType.DOWN, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.DOWN));
             controllers[0].SetKey((ulong)EnumButtonType.LEFT, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.LEFT));
             controllers[0].SetKey((ulong)EnumButtonType.RIGHT, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.RIGHT));
-            controllers[0].SetKey((ulong)EnumButtonType.A, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_2));
-            controllers[0].SetKey((ulong)EnumButtonType.B, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_1));
-            controllers[0].SetKey((ulong)EnumButtonType.MIC, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_3));
+            controllers[0].SetKey((ulong)EnumButtonType.A, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_B));
+            controllers[0].SetKey((ulong)EnumButtonType.B, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_A));
+            controllers[0].SetKey((ulong)EnumButtonType.MIC, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_C));
 
             //P2 键盘
             controllers[1].SetKey((ulong)EnumButtonType.START, AxiInputEx.ByKeyCode(KeyCode.Keypad0));

@@ -51,8 +51,8 @@ namespace AxiInputSP.Setting
             controllers[0].SetKey((ulong)EnumCommand.SelectItemDown, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.DOWN));
             controllers[0].SetKey((ulong)EnumCommand.SelectItemLeft, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.LEFT));
             controllers[0].SetKey((ulong)EnumCommand.SelectItemRight, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.RIGHT));
-            controllers[0].SetKey((ulong)EnumCommand.Enter, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_1));
-            controllers[0].SetKey((ulong)EnumCommand.Back, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_2));
+            controllers[0].SetKey((ulong)EnumCommand.Enter, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_A));
+            controllers[0].SetKey((ulong)EnumCommand.Back, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_B));
             controllers[0].SetKey((ulong)EnumCommand.OptionMenu, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.HOME));
 
             //PC XBOX

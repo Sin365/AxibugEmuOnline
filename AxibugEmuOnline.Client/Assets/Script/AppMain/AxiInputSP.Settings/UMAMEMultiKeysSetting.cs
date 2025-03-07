@@ -80,12 +80,12 @@ namespace AxiInputSP.Setting
             controllers[0].SetKey((ulong)UMAMEKSingleKey.DOWN, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.DOWN));
             controllers[0].SetKey((ulong)UMAMEKSingleKey.LEFT, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.LEFT));
             controllers[0].SetKey((ulong)UMAMEKSingleKey.RIGHT, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.RIGHT));
-            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_A, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_1));
-            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_B, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_2));
-            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_C, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_3));
-            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_D, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_4));
-            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_E, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_5));
-            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_F, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_6));
+            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_A, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_A));
+            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_B, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_B));
+            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_C, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_C));
+            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_D, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_D));
+            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_E, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_E));
+            controllers[0].SetKey((ulong)UMAMEKSingleKey.BTN_F, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_F));
 
             controllers[0].ColletAllKey();
             #endregion

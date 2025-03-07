@@ -1,4 +1,5 @@
-﻿using UnityEngine.EventSystems;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace AxiInputSP.UGUI
 {
@@ -17,6 +18,7 @@ namespace AxiInputSP.UGUI
         /// <summary>
         /// 键值（支持组合键）
         /// </summary>
+        [SerializeField]
         public AxiInputUGuiBtnType[] axiBtnTypeList;
         protected override void Awake()
         {

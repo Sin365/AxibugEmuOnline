@@ -16,7 +16,7 @@ namespace AxiInputSP.UGUI
         {
             dictHandle2AxiUgui[uiHandle.Handle] = uiHandle;
             List<AxiInputUGUIHandle> list;
-            if (dictBtnType2BtnList.TryGetValue(uiHandle.UguiBtnType, out list))
+            if (!dictBtnType2BtnList.TryGetValue(uiHandle.UguiBtnType, out list))
                 list = dictBtnType2BtnList[uiHandle.UguiBtnType] = new List<AxiInputUGUIHandle>();
 
             if (!list.Contains(uiHandle))

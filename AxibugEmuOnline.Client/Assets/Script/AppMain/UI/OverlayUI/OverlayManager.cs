@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ namespace AxibugEmuOnline.Client
 
         [SerializeField] InputUI m_InputUI;
         [SerializeField] OptionUI m_OptionUI;
+        [SerializeField] Transform m_Joystick;
         [SerializeField] PopTipsUI m_popTipsUI;
 
         private void Awake()
@@ -18,6 +20,8 @@ namespace AxibugEmuOnline.Client
             s_ins = this;
 
             m_InputUI.gameObject.SetActive(false);
+
+            m_Joystick.gameObject.SetActive(App.bUseGUIButton);
         }
 
         public static void Input(Action<string> callback, string placeHolder, string defaultText)

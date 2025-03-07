@@ -34,6 +34,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static FileDownloader FileDownloader;
         static bool bTest;
         static string mTestSrvIP;
+        public static bool bUseGUIButton;
 
 
         /// <summary> 收藏 Rom库 </summary>
@@ -69,7 +70,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             return s_romLibs[platform];
         }
 
-        public static void Init(bool isTest = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
+        public static void Init(bool isTest = false,bool isUseGUIButton = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
             //其他平台必要的初始化
@@ -105,6 +106,7 @@ namespace AxibugEmuOnline.Client.ClientCore
 
 
             bTest = isTest;
+            bUseGUIButton = isUseGUIButton;
             mTestSrvIP = testSrvIP;
             var go = new GameObject("[AppAxibugEmuOnline]");
             GameObject.DontDestroyOnLoad(go);

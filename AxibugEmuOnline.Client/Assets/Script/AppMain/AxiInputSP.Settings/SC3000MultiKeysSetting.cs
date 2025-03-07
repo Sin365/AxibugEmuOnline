@@ -56,10 +56,10 @@ namespace AxiInputSP.Setting
             controllers[0].SetKey((ulong)EssgeeSingleKey.DOWN, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.DOWN));
             controllers[0].SetKey((ulong)EssgeeSingleKey.LEFT, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.LEFT));
             controllers[0].SetKey((ulong)EssgeeSingleKey.RIGHT, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.RIGHT));
-            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_1, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_1));
-            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_2, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_2));
-            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_3, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_3));
-            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_4, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_4));
+            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_1, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_A));
+            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_2, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_B));
+            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_3, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_C));
+            controllers[0].SetKey((ulong)EssgeeSingleKey.BTN_4, AxiInputEx.ByUGUIBtn(AxiInputUGuiBtnType.BTN_D));
 
             //P2 键盘
             controllers[1].SetKey((ulong)EssgeeSingleKey.OPTION_1, AxiInputEx.ByKeyCode(KeyCode.Keypad0));
