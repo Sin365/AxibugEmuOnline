@@ -402,15 +402,6 @@ namespace Essgee.Emulation.Machines
             audio?.Shutdown();
         }
 
-        public void SetState(Dictionary<string, object> state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<string, object> GetState()
-        {
-            throw new NotImplementedException();
-        }
 
         public Dictionary<string, object> GetDebugInformation()
         {

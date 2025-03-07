@@ -1,4 +1,9 @@
-﻿namespace Essgee.Emulation.CPU
+﻿using Essgee.Emulation.Cartridges;
+using Essgee.Emulation.Video;
+using System;
+using UnityEngine.UIElements;
+
+namespace Essgee.Emulation.CPU
 {
     public class SM83CGB : SM83
     {
@@ -7,6 +12,21 @@
 
         public SM83CGB(MemoryReadDelegate memoryRead, MemoryWriteDelegate memoryWrite) : base(memoryRead, memoryWrite) { }
 
+        #region AxiState
+
+        public void LoadAxiStatus(AxiEssgssStatusData data)
+        {
+            base.LoadAxiStatus(data);
+            IsDoubleSpeed = BitConverter.ToBoolean(data.MemberData[nameof(IsDoubleSpeed)]);
+        }
+
+        public AxiEssgssStatusData SaveAxiStatus()
+        {
+            AxiEssgssStatusData data = base.SaveAxiStatus();
+            data.MemberData[nameof(IsDoubleSpeed)] = BitConverter.GetBytes(IsDoubleSpeed);
+            return data;
+        }
+        #endregion
         protected override void EnterHaltState()
         {
             if (ime)

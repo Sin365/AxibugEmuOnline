@@ -35,7 +35,7 @@ namespace AxibugEmuOnline.Client
             GameObject.DontDestroyOnLoad(debugger);
             bool UseJoyStack = false;
 
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.WindowsEditor)
+            if (Application.platform == RuntimePlatform.Android && Application.platform != RuntimePlatform.WindowsEditor)
             {
                 UseJoyStack = true;
             }

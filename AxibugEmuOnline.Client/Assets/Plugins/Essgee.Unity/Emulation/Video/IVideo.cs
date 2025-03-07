@@ -3,7 +3,7 @@ using System;
 
 namespace Essgee.Emulation.Video
 {
-    interface IVideo : IAxiStatus
+    interface IVideo : IAxiEssgssStatus
     {
         (int X, int Y, int Width, int Height) Viewport { get; }
 

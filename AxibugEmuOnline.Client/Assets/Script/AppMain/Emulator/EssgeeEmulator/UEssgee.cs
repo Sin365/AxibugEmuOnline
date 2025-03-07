@@ -9,7 +9,6 @@ using Essgee.Exceptions;
 using Essgee.Extensions;
 using Essgee.Metadata;
 using Essgee.Utilities;
-using Essgee.Utilities.XInput;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -395,7 +394,8 @@ public class UEssgee : MonoBehaviour, IEmuCore
     }
     public static void SaveConfiguration()
     {
-        EmuStandInfo.Configuration.SerializeToFile(EmuStandInfo.programConfigPath);
+        //不用保存这个配置
+        //EmuStandInfo.Configuration.SerializeToFile(EmuStandInfo.programConfigPath);
     }
     #endregion
 
@@ -690,7 +690,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         graphicsHandler.SubmitVideo(e.Width, e.Height, e.FrameDataPtr, 0);
 
         // TODO: create emulation "EndOfFrame" event for this?
-        ControllerManager.Update();
+        //ControllerManager.Update();
         //});
     }
 
@@ -786,8 +786,8 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     private void EmulatorHandler_EnableRumble(object sender, EventArgs e)
     {
-        if (EmuStandInfo.Configuration.EnableXInput && EmuStandInfo.Configuration.EnableRumble)
-            ControllerManager.GetController(0).Vibrate(0.0f, 0.5f, TimeSpan.FromSeconds(0.1f));
+        //if (EmuStandInfo.Configuration.EnableXInput && EmuStandInfo.Configuration.EnableRumble)
+        //    ControllerManager.GetController(0).Vibrate(0.0f, 0.5f, TimeSpan.FromSeconds(0.1f));
     }
 
     private void EmulatorHandler_PauseChanged(object sender, EventArgs e)

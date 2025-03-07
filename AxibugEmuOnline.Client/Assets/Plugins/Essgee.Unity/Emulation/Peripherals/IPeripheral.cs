@@ -1,6 +1,6 @@
 ﻿namespace Essgee.Emulation.Peripherals
 {
-    interface IPeripheral : IAxiStatus
+    interface IPeripheral : IAxiEssgssStatus
     {
         void Startup();
         void Shutdown();

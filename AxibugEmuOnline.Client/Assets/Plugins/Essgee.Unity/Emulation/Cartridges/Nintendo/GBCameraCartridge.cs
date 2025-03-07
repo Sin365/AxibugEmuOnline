@@ -70,12 +70,25 @@ namespace Essgee.Emulation.Cartridges.Nintendo
 
         public void LoadAxiStatus(AxiEssgssStatusData data)
         {
-            //TODO GB相机暂时不实现
+            ramData = data.MemberData[nameof(ramData)];
+            hasBattery = BitConverter.ToBoolean(data.MemberData[nameof(hasBattery)]);
+            romBank = data.MemberData[nameof(romBank)].First();
+            ramBank = data.MemberData[nameof(ramBank)].First();
+            ramEnable = BitConverter.ToBoolean(data.MemberData[nameof(ramEnable)]);
+            cameraCycles = BitConverter.ToInt32(data.MemberData[nameof(cameraCycles)]);
+            camClocksLeft = BitConverter.ToInt32(data.MemberData[nameof(camClocksLeft)]);
         }
 
         public AxiEssgssStatusData SaveAxiStatus()
         {
             AxiEssgssStatusData data = new AxiEssgssStatusData();
+            data.MemberData[nameof(ramData)] = ramData;
+            data.MemberData[nameof(hasBattery)] = BitConverter.GetBytes(hasBattery);
+            data.MemberData[nameof(romBank)] = BitConverter.GetBytes(romBank);
+            data.MemberData[nameof(ramBank)] = BitConverter.GetBytes(ramBank);
+            data.MemberData[nameof(ramEnable)] = BitConverter.GetBytes(ramEnable);
+            data.MemberData[nameof(cameraCycles)] = BitConverter.GetBytes(cameraCycles);
+            data.MemberData[nameof(camClocksLeft)] = BitConverter.GetBytes(camClocksLeft);
             return data;
         }
         #endregion

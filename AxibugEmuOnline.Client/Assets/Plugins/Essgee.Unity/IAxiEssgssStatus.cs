@@ -43,7 +43,7 @@ internal static class AxiEssgssStatusDataExtention
         return AxiStatus.saveCover.ToAxiEssgssStatusData(byteArray);
     }
 }
-public interface IAxiStatus
+public interface IAxiEssgssStatus
 {
     public void LoadAxiStatus(AxiEssgssStatusData data);
     public AxiEssgssStatusData SaveAxiStatus();
@@ -221,5 +221,51 @@ internal static class AxiStatus
         }
 
         return array2D;
+    }
+
+    public static byte[] FlattenByteArray3D(this byte[,,] array3D)
+    {
+        int layer = array3D.GetLength(0);
+        int rows = array3D.GetLength(1);
+        int cols = array3D.GetLength(2);
+        byte[] array1D = new byte[layer * rows * cols];
+
+        int index = 0;
+        for (int i = 0; i < layer; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                for (int k = 0; k < cols; k++)
+                {
+                    array1D[index++] = array3D[i, j, k];
+                }
+            }
+        }
+
+        return array1D;
+    }
+
+    public static byte[,,] CreateByteArray3D(this byte[] array1D, int layer, int rows, int cols)
+    {
+        if (array1D.Length != layer * rows * cols)
+        {
+            throw new ArgumentException("The length of the 1D array does not match the specified dimensions for the 3D array.");
+        }
+
+        byte[,,] array3D = new byte[layer, rows, cols];
+
+        int index = 0;
+        for (int i = 0; i < layer; i++)
+        {
+            for (int j = 0; j < rows; j++)
+            {
+                for (int k = 0; k < cols; k++)
+                {
+                    array3D[i, j, k] = array1D[index++];
+                }
+            }
+        }
+
+        return array3D;
     }
 }

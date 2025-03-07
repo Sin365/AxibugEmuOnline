@@ -133,15 +133,60 @@ namespace Essgee.Emulation.Audio
 
         public void LoadAxiStatus(AxiEssgssStatusData data)
         {
+            volumeRightLeft = data.MemberData[nameof(volumeRightLeft)];
+            vinEnableRightLeft = data.MemberData[nameof(vinEnableRightLeft)].ToBoolArray();
+
+            clockRate = BitConverter.ToDouble(data.MemberData[nameof(clockRate)]);
+            refreshRate = BitConverter.ToDouble(data.MemberData[nameof(refreshRate)]);
+
+            channel1Enable = data.MemberData[nameof(channel1Enable)].ToBoolArray();
+            channel2Enable = data.MemberData[nameof(channel2Enable)].ToBoolArray();
+            channel3Enable = data.MemberData[nameof(channel3Enable)].ToBoolArray();
+            channel4Enable = data.MemberData[nameof(channel4Enable)].ToBoolArray();
+
+            isSoundHwEnabled = BitConverter.ToBoolean(data.MemberData[nameof(isSoundHwEnabled)]);
+
+            samplesPerFrame = BitConverter.ToInt32(data.MemberData[nameof(samplesPerFrame)]);
+            cyclesPerFrame = BitConverter.ToInt32(data.MemberData[nameof(cyclesPerFrame)]);
+            cyclesPerSample = BitConverter.ToInt32(data.MemberData[nameof(cyclesPerSample)]);
+
             sampleCycleCount = BitConverter.ToInt32(data.MemberData[nameof(sampleCycleCount)]);
             frameCycleCount = BitConverter.ToInt32(data.MemberData[nameof(frameCycleCount)]);
+
+            channel1ForceEnable = BitConverter.ToBoolean(data.MemberData[nameof(channel1ForceEnable)]);
+            channel2ForceEnable = BitConverter.ToBoolean(data.MemberData[nameof(channel2ForceEnable)]);
+            channel3ForceEnable = BitConverter.ToBoolean(data.MemberData[nameof(channel3ForceEnable)]);
+            channel4ForceEnable = BitConverter.ToBoolean(data.MemberData[nameof(channel4ForceEnable)]);
         }
 
         public AxiEssgssStatusData SaveAxiStatus()
         {
             AxiEssgssStatusData data = new AxiEssgssStatusData();
+
+            data.MemberData[nameof(volumeRightLeft)] = volumeRightLeft;
+            data.MemberData[nameof(vinEnableRightLeft)] = vinEnableRightLeft.ToByteArray();
+
+            data.MemberData[nameof(clockRate)] = BitConverter.GetBytes(clockRate);
+            data.MemberData[nameof(refreshRate)] = BitConverter.GetBytes(refreshRate);
+
+            data.MemberData[nameof(channel1Enable)] = channel1Enable.ToByteArray();
+            data.MemberData[nameof(channel2Enable)] = channel2Enable.ToByteArray();
+            data.MemberData[nameof(channel3Enable)] = channel3Enable.ToByteArray();
+            data.MemberData[nameof(channel4Enable)] = channel4Enable.ToByteArray();
+
+            data.MemberData[nameof(isSoundHwEnabled)] = BitConverter.GetBytes(isSoundHwEnabled);
+
+            data.MemberData[nameof(samplesPerFrame)] = BitConverter.GetBytes(samplesPerFrame);
+            data.MemberData[nameof(cyclesPerFrame)] = BitConverter.GetBytes(cyclesPerFrame);
+            data.MemberData[nameof(cyclesPerSample)] = BitConverter.GetBytes(cyclesPerSample);
+
             data.MemberData[nameof(sampleCycleCount)] = BitConverter.GetBytes(sampleCycleCount);
             data.MemberData[nameof(frameCycleCount)] = BitConverter.GetBytes(frameCycleCount);
+
+            data.MemberData[nameof(channel1ForceEnable)] = BitConverter.GetBytes(channel1ForceEnable);
+            data.MemberData[nameof(channel2ForceEnable)] = BitConverter.GetBytes(channel2ForceEnable);
+            data.MemberData[nameof(channel3ForceEnable)] = BitConverter.GetBytes(channel3ForceEnable);
+            data.MemberData[nameof(channel4ForceEnable)] = BitConverter.GetBytes(channel4ForceEnable);
             return data;
         }
         #endregion

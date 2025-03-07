@@ -30,6 +30,8 @@ namespace AxibugEmuOnline.Client
 
             LoopAction_3s += Ping;
 
+            SetFrameRate(60);
+
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged += (state) =>
             {

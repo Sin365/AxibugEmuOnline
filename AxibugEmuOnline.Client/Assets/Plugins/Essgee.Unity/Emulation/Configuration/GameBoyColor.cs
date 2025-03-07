@@ -1,7 +1,6 @@
 ﻿using Essgee.Emulation.Cartridges.Nintendo;
 using Essgee.Emulation.ExtDevices.Nintendo;
 using Essgee.Utilities;
-using Newtonsoft.Json;
 using System;
 
 namespace Essgee.Emulation.Configuration
@@ -15,7 +14,7 @@ namespace Essgee.Emulation.Configuration
         //todo Unity [FileBrowserControl("General", "Bootstrap Path", "Game Boy Color Bootstrap ROM (*.gbc;*.bin;*.zip)|*.gbc;*.bin;*.zip")]
         public string BootstrapRom { get; set; }
         //todo Unity [DropDownControl("General", "Serial Device", typeof(ISerialDevice))]
-        [JsonConverter(typeof(TypeNameJsonConverter), "Essgee.Emulation.ExtDevices.Nintendo")]
+        //[JsonConverter(typeof(TypeNameJsonConverter), "Essgee.Emulation.ExtDevices.Nintendo")]
         public Type SerialDevice { get; set; }
 
         //todo Unity [DropDownControl("GB Camera", "Camera Source", typeof(GBCameraCartridge.ImageSources))]

@@ -1,6 +1,6 @@
 ﻿namespace Essgee.Emulation.CPU
 {
-    interface ICPU : IAxiStatus
+    interface ICPU : IAxiEssgssStatus
     {
         void Startup();
         void Shutdown();
