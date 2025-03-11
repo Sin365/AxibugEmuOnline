@@ -1,23 +1,24 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System;
-using UnityEditor;
+using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Editors
 {
     public class AxibugNSPTools : Editor
     {
-        static string WorkRoot = Path.GetFullPath(Path.Combine(Application.dataPath,"AxiProjectTools/AxiNSPack"));
+        static string WorkRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "AxiProjectTools/AxiNSPack"));
         static string switch_keys = Path.GetFullPath(Path.Combine(Application.dataPath, "AxiProjectTools/AxiNSPack/switch_keys"));
         static string hacpack_root = Path.GetFullPath(Path.Combine(Application.dataPath, "AxiProjectTools/AxiNSPack/hacpack"));
         static Dictionary<string, string> tools = new Dictionary<string, string>();
         static string prodKeysPath;
-        
-        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/RepackNSP")]
+
+        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/RepackNSP(仅重新构建NPS）")]
         static void RepackNSP()
         {
             if (!CheckEnvironmentVariable())
@@ -25,7 +26,7 @@ namespace AxibugEmuOnline.Editors
 
             string path = EditorUtility.OpenFilePanel(
                 title: "选择 .nsp 文件",
-                directory: Path.Combine(Application.dataPath,".."), // 默认路径为项目 Assets 目录
+                directory: Path.Combine(Application.dataPath, ".."), // 默认路径为项目 Assets 目录
                 extension: "nsp" // 限制文件类型为 .nsp
             );
 
@@ -34,6 +35,62 @@ namespace AxibugEmuOnline.Editors
 
             RepackNSP(path);
         }
+
+        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/Build With RepackNSP(打包NSP并重新构建NPS）")]
+        static void BuildWithRepackNSP()
+        {
+            if (!CheckEnvironmentVariable())
+                return;
+
+            if (!EditorUtility.DisplayDialog("确认包信息", $"继续打包?", "继续", "取消"))
+                return;
+
+            var levels = new List<string>();
+            foreach (var scene in EditorBuildSettings.scenes)
+            {
+                if (scene.enabled)
+                    levels.Add(scene.path);
+            }
+
+            var buildOpt = EditorUserBuildSettings.development ? BuildOptions.Development : BuildOptions.None;
+            if (EditorUserBuildSettings.buildWithDeepProfilingSupport)
+                buildOpt |= BuildOptions.EnableDeepProfilingSupport;
+            if (EditorUserBuildSettings.allowDebugging)
+                buildOpt |= BuildOptions.AllowDebugging;
+
+            //勾选构建NSP包
+            EditorUserBuildSettings.switchCreateRomFile = true;
+
+#if UNITY_2018_1_OR_NEWER && !UNITY_6000_0_OR_NEWER
+            string titleid = PlayerSettings.Switch.applicationID;
+#else
+            string titleid = "null";
+#endif
+            string targetName = $"{Application.productName}_{titleid}.nsp";
+
+            string _locationPathName = $"Output/NSPBuild/{targetName}";
+            var options = new BuildPlayerOptions
+            {
+                scenes = levels.ToArray(),
+                locationPathName = _locationPathName,
+                target = BuildTarget.Switch,
+                options = buildOpt
+            };
+
+            try
+            {
+                BuildReport report = BuildPipeline.BuildPlayer(options);
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError($"[AxibugNSPTools] Unity Build NSP 错误:{ex.ToString()}");
+                return;
+            }
+
+            string NSPFullPath = Path.GetFullPath(Path.Combine(Application.dataPath, "..", _locationPathName));
+            RepackNSP(NSPFullPath);
+        }
+
         static bool CheckEnvironmentVariable()
         {
             // 获取环境变量（需要添加环境变量检查）
@@ -66,7 +123,7 @@ namespace AxibugEmuOnline.Editors
             // 获取环境变量（需要添加环境变量检查）
             string sdkRoot = Environment.GetEnvironmentVariable("NINTENDO_SDK_ROOT");
             tools["authoringTool"] = Path.Combine(sdkRoot, "Tools/CommandLineTools/AuthoringTool/AuthoringTool.exe");
-            tools["hacPack"] = hacpack_root;
+            tools["hacPack"] = Path.Combine(hacpack_root, "hacpack");
             #endregion
 
             #region 处理NSP文件路径
@@ -76,21 +133,30 @@ namespace AxibugEmuOnline.Editors
             #endregion
 
             #region 提取Title ID
-            string titleID = ExtractTitleID(nspFilePath) ?? ManualTitleIDInput();
+            string titleID = ExtractTitleID(nspFilePath);
+            if (string.IsNullOrEmpty(titleID))
+            {
+                Debug.LogError($"[AxibugNSPTools]NSP文件名一部分，必须包含TitleID");
+                return;
+            }
             Debug.Log($"[AxibugNSPTools]Using Title ID: {titleID}");
             #endregion
 
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"清理临时目录", 0);
             #region 清理临时目录
             CleanDirectory(Path.Combine(nspParentDir, "repacker_extract"));
             CleanDirectory(Path.Combine(Path.GetTempPath(), "NCA"));
             CleanDirectory(Path.Combine(WorkRoot, "hacpack_backup"));
             #endregion
 
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"解包NSP文件", 0.2f);
             #region 解包NSP文件
             string extractPath = Path.Combine(nspParentDir, "repacker_extract");
             ExecuteCommand($"{tools["authoringTool"]} extract -o \"{extractPath}\" \"{nspFilePath}\"");
 
-            var (controlPath, programPath) = FindNACPAndNPDPaths(extractPath);
+            string controlPath = null;
+            string programPath = null;
+            FindNACPAndNPDPaths(extractPath, ref controlPath, ref programPath);
             if (controlPath == null || programPath == null)
             {
                 Debug.LogError("[AxibugNSPTools] Critical directory structure not found!");
@@ -100,12 +166,17 @@ namespace AxibugEmuOnline.Editors
 
             #region 重建NCA/NSP
             string tmpPath = Path.Combine(Path.GetTempPath(), "NCA");
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NCA", 0.6f);
             string programNCA = BuildProgramNCA(tmpPath, titleID, programPath);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NCA", 0.7f);
             string controlNCA = BuildControlNCA(tmpPath, titleID, controlPath);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NCA", 0.8f);
             BuildMetaNCA(tmpPath, titleID, programNCA, controlNCA);
-
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NSP", 0.9f);
             string outputNSP = BuildFinalNSP(nspFilePath, nspParentDir, tmpPath, titleID);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NSP", 1f);
             Debug.Log($"[AxibugNSPTools]Repacking completed: {outputNSP}");
+            EditorUtility.ClearProgressBar();
             #endregion
         }
 
@@ -122,11 +193,6 @@ namespace AxibugEmuOnline.Editors
             return match.Success ? match.Value : null;
         }
 
-        static string ManualTitleIDInput()
-        {
-            Console.Write("Enter Title ID manually: ");
-            return Console.ReadLine().Trim();
-        }
 
         static void CleanDirectory(string path)
         {
@@ -137,16 +203,15 @@ namespace AxibugEmuOnline.Editors
             }
         }
 
-        static (string, string) FindNACPAndNPDPaths(string basePath)
+        static void FindNACPAndNPDPaths(string basePath, ref string controlPath, ref string programPath)
         {
             foreach (var dir in Directory.GetDirectories(basePath))
             {
                 if (File.Exists(Path.Combine(dir, "fs0/control.nacp")))
-                    return (dir, null);
+                    controlPath = dir;
                 if (File.Exists(Path.Combine(dir, "fs0/main.npdm")))
-                    return (null, dir);
+                    programPath = dir;
             }
-            return (null, null);
         }
 
         static string ExecuteCommand(string command)
@@ -225,6 +290,7 @@ namespace AxibugEmuOnline.Editors
                           $"--type nca --ncatype control --romfsdir \"{controlDir}/fs0\"";
 
             string output = ExecuteCommand($"{tools["hacPack"]} {args}");
+
             return ParseNCAOutput(output, "Control");
         }
 
@@ -254,7 +320,6 @@ namespace AxibugEmuOnline.Editors
         {
             var line = output.Split('\n')
                 .FirstOrDefault(l => l.Contains($"Created {type} NCA:"));
-
             return line?.Split(':').Last().Trim();
         }
         #endregion
