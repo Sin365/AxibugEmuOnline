@@ -1,3 +1,4 @@
+#if UNITY_EDITOR_WIN
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,12 +38,12 @@ namespace AxibugEmuOnline.Editors
         }
 
         [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/Build With RepackNSP(打包NSP并重新构建NPS）")]
-        static void BuildWithRepackNSP()
+        public static void BuildWithRepackNSP()
         {
             if (!CheckEnvironmentVariable())
                 return;
 
-            if (!EditorUtility.DisplayDialog("确认包信息", $"继续打包?", "继续", "取消"))
+            if (!EditorUtility.DisplayDialog("打包", $"确认打包NSP?", "继续", "取消"))
                 return;
 
             var levels = new List<string>();
@@ -325,3 +326,4 @@ namespace AxibugEmuOnline.Editors
         #endregion
     }
 }
+#endif

@@ -36,7 +36,7 @@ namespace AxiInputSP.Setting
             controllers[0].ColletAllKey();
             return;
 #endif
-            #region P1
+            #region 
             //P1 键盘
             controllers[0].SetKey((ulong)EnumButtonType.START, AxiInputEx.ByKeyCode(KeyCode.Return));
             controllers[0].SetKey((ulong)EnumButtonType.SELECT, AxiInputEx.ByKeyCode(KeyCode.RightShift));

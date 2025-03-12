@@ -103,7 +103,8 @@ namespace AxiReplay
 
 
             //if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
-            if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= mRemoteForwardCount)
+            //if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= mRemoteForwardCount)
+            if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= frameProfiler.TempFrameCount(mRemoteForwardCount))
             {
                 //当前帧追加
                 mCurrClientFrameIdx = targetFrame;
