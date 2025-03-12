@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.Manager;
+﻿using AxibugEmuOnline.Client.InputDevices;
+using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
 using System;
@@ -23,13 +24,13 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppChat chat;
         public static UserDataManager user;
         public static AppInput input;
+        public static InputDevicesManager inputDevicesMgr;
         public static AppEmu emu;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
         public static AppRoom roomMgr;
         public static AppSettings settings;
         public static AppShare share;
-        public static GamePadManager gamePadMgr;
         public static SaveSlotManager SavMgr;
         public static FileDownloader FileDownloader;
         static bool bTest;
@@ -70,15 +71,15 @@ namespace AxibugEmuOnline.Client.ClientCore
             return s_romLibs[platform];
         }
 
-        public static void Init(bool isTest = false,bool isUseGUIButton = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
+        public static void Init(bool isTest = false, bool isUseGUIButton = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
+
             //其他平台必要的初始化
-            if (UnityEngine.Application.platform == RuntimePlatform.PSP2)
-            {
-                PSP2Init();
-            }
+            if (UnityEngine.Application.platform == RuntimePlatform.PSP2) PSP2Init();
+
             input = new AppInput();
+            inputDevicesMgr = new InputDevicesManager();
             FileDownloader = new FileDownloader();
             settings = new AppSettings();
             network = new NetworkHelper();
@@ -102,7 +103,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             roomMgr = new AppRoom();
             share = new AppShare();
             SavMgr = new SaveSlotManager();
-            gamePadMgr = new GamePadManager();
 
 
             bTest = isTest;
@@ -233,7 +233,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             starRomLib.ExecuteFetchRomInfo();
             FileDownloader.Update();
 
-            gamePadMgr.Update();
         }
 
         public static Coroutine StartCoroutine(IEnumerator itor)
