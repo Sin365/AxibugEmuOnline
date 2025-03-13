@@ -10,7 +10,7 @@ namespace AxibugEmuOnline.Server.Common
 
         const int DefaultCount = 1;
         const int MaxLimit = 10;
-        static readonly object _sync = new object();
+        static readonly Lock _sync = new Lock();
         static MySqlConnectionStringBuilder connBuilder;
 
         public static void InitConnMgr()

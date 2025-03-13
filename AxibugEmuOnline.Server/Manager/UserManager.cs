@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Server.Common;
 using AxibugEmuOnline.Server.Event;
+using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using System.Net.Sockets;

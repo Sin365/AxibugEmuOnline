@@ -1,5 +1,7 @@
 ﻿using AxibugEmuOnline.Server.Common;
 using AxibugEmuOnline.Server.Manager;
+using AxibugEmuOnline.Server.Manager.Client;
+using AxibugEmuOnline.Server.Manager.Room;
 using MySql.Data.MySqlClient;
 
 namespace AxibugEmuOnline.Server
@@ -21,7 +23,7 @@ namespace AxibugEmuOnline.Server
                 {
                     case "rlist":
                         {
-                            List<Data_RoomData> roomlist = ObjectPoolAuto.AcquireList<Data_RoomData>();
+                            List<GameRoom> roomlist = ObjectPoolAuto.AcquireList<GameRoom>();
                             AppSrv.g_Room.GetRoomList(ref roomlist);
 
                             AppSrv.g_Log.Info($"RoomCount:{roomlist.Count}");

@@ -1,7 +1,4 @@
-﻿using AxibugProtobuf;
-using static Mysqlx.Expect.Open.Types;
-
-namespace AxibugEmuOnline.Server.Manager
+﻿namespace AxibugEmuOnline.Server.Manager
 {
     public class LogManager
     {
