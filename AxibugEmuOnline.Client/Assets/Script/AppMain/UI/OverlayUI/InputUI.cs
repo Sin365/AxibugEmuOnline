@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +14,6 @@ namespace AxibugEmuOnline.Client
 
         public static bool IsInputing { get; private set; }
 
-
-
         protected override void OnShow(object param)
         {
             ValueTuple<Action<string>, string, string> t = (ValueTuple<Action<string>, string, string>)param;
@@ -30,7 +28,7 @@ namespace AxibugEmuOnline.Client
             base.Update();
 
             IsInputing = m_input.isFocused;
-
+            
             if (IsInputing && Input.GetButtonDown("Submit"))
             {
                 OnCmdEnter();

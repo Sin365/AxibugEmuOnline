@@ -1,13 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
-    public class KeyBoard : InputDevice
+    public partial class KeyBoard : InputDevice
     {
-        #region HardCodeForKeyboard
+        public override string UniqueName => nameof(KeyBoard);
+        public override bool Online => true;
+
+        public KeyBoard(InputResolver resolver) : base(resolver) { }
+
+        protected override IEnumerable<KeyBase> DefineKeys()
+        {
+            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc) as KeyBase);
+            return keys;
+        }
+
+        public class KeyboardKey : KeyBase
+        {
+            internal KeyCode m_listenKey;
+
+            public KeyboardKey(KeyCode listenKey)
+            {
+                m_listenKey = listenKey;
+            }
+
+            public override bool GetButtonDown()
+            {
+                return Input.GetKeyDown(m_listenKey);
+            }
+
+            public override bool GetButtonUp()
+            {
+                return Input.GetKeyUp(m_listenKey);
+            }
+
+            public override bool IsPressing()
+            {
+                return Input.GetKey(m_listenKey);
+            }
+
+            public override string KeyName => m_listenKey.ToString();
+        }
+    }
+
+    #region HardCodeForKeyboard
+    public partial class KeyBoard : InputDevice
+    {
         static readonly List<KeyCode> s_keyboardKeys = new List<KeyCode>
         {
             // 字母键 A-Z
@@ -50,6 +90,7 @@ namespace AxibugEmuOnline.Client.InputDevices
             KeyCode.End, KeyCode.PageUp, KeyCode.PageDown, KeyCode.Pause, KeyCode.ScrollLock,
             KeyCode.Clear
         };
+
         // 字母键 A-Z
         public KeyboardKey A { get; private set; } = new KeyboardKey(KeyCode.A);
         public KeyboardKey B { get; private set; } = new KeyboardKey(KeyCode.B);
@@ -174,42 +215,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         public KeyboardKey Pause { get; private set; } = new KeyboardKey(KeyCode.Pause);
         public KeyboardKey ScrollLock { get; private set; } = new KeyboardKey(KeyCode.ScrollLock);
         public KeyboardKey Clear { get; private set; } = new KeyboardKey(KeyCode.Clear);
-        #endregion
-
-        public override string UniqueName => nameof(KeyBoard);
-        public override bool Online => true;
-
-        protected override IEnumerable<KeyBase> DefineKeys()
-        {
-            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc) as KeyBase);
-            return keys;
-        }
-
-        public class KeyboardKey : KeyBase
-        {
-            internal KeyCode m_listenKey;
-
-            public KeyboardKey(KeyCode listenKey)
-            {
-                m_listenKey = listenKey;
-            }
-
-            public override bool GetButtonDown()
-            {
-                return Input.GetKeyDown(m_listenKey);
-            }
-
-            public override bool GetButtonUp()
-            {
-                return Input.GetKeyUp(m_listenKey);
-            }
-
-            public override bool IsPressing()
-            {
-                return Input.GetKey(m_listenKey);
-            }
-
-            public override string KeyName => m_listenKey.ToString();
-        }
     }
+    #endregion
 }

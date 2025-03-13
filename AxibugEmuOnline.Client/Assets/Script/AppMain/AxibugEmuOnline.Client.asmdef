@@ -6,7 +6,8 @@
         "VirtualNes.Core",
         "UIEffect2018",
         "Mame.Core",
-        "Essgee.Unity"
+        "Essgee.Unity",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

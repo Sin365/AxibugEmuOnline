@@ -1,15 +1,30 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
     public class InputDevicesManager
     {
+        InputResolver m_inputResolver = InputResolver.Create();
         Dictionary<string, InputDevice> m_devices = new Dictionary<string, InputDevice>();
 
         public InputDevicesManager()
         {
-            AddDevice(new KeyBoard());
+            m_inputResolver.OnDeviceConnected += OnDeviceConnected;
+            m_inputResolver.OnDeviceLost += OnDeviceLost;
+            foreach (var device in m_inputResolver.GetDevices())
+                AddDevice(device);
+        }
+
+        private void OnDeviceLost(InputDevice lostDevice)
+        {
+
+        }
+
+        private void OnDeviceConnected(InputDevice connectDevice)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void AddDevice(InputDevice device)
@@ -77,9 +92,10 @@ namespace AxibugEmuOnline.Client.InputDevices
         public bool AnyKeyDown { get; private set; }
 
         protected Dictionary<string, KeyBase> m_keyMapper = new Dictionary<string, KeyBase>();
-
-        public InputDevice()
+        protected InputResolver m_resolver;
+        public InputDevice(InputResolver resolver)
         {
+            m_resolver = resolver;
             foreach (var key in DefineKeys())
             {
                 m_keyMapper[key.KeyName] = key;
