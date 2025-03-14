@@ -1,4 +1,5 @@
-﻿using AxibugEmuOnline.Client.InputDevices;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.InputDevices;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
@@ -61,8 +62,7 @@ namespace AxibugEmuOnline.Client
             {
                 m_bindingPages.Add(new BindingPage(i, this));
             }
-
-            LoadDefaultMapper();
+            LoadDefaultKeyboardMapper();
         }
 
         IEnumerable<T> DefineKeys()
@@ -71,18 +71,41 @@ namespace AxibugEmuOnline.Client
         }
 
         /// <summary>
-        /// 加载默认映射
+        /// 加载默认键盘映射
         /// </summary>
-        public void LoadDefaultMapper()
+        public void LoadDefaultKeyboardMapper()
         {
             foreach (var binding in m_bindingPages)
             {
-                binding.ClearBinding();
-                OnLoadDefaultMapper(binding);
+                binding.ClearKeyboardBinding();
+                var keyboard = App.inputDevicesMgr.GetKeyboard();
+                if (keyboard != null) OnLoadDefaultKeyboardMapper(keyboard, binding);
             }
         }
 
-        protected abstract void OnLoadDefaultMapper(BindingPage binding);
+        protected abstract void OnLoadDefaultKeyboardMapper(KeyBoard keyboard, BindingPage binding);
+
+        public bool Start(T emuControl, int controllerIndex)
+        {
+            var binding = m_bindingPages[controllerIndex];
+            foreach (var key in binding.GetBinding(emuControl))
+            {
+                if (key.Start) return true;
+            }
+
+            return false;
+        }
+
+        public bool Release(T emuControl, int controllerIndex)
+        {
+            var binding = m_bindingPages[controllerIndex];
+            foreach (var key in binding.GetBinding(emuControl))
+            {
+                if (key.Release) return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// 获取指定控件是否处于按下状态
@@ -177,9 +200,23 @@ namespace AxibugEmuOnline.Client
                     m_mapSetting[emuBtn] = new List<InputDevice.InputControl>();
             }
 
-            public void ClearBinding()
+            /// <summary>
+            /// 移除与键盘设备建立的绑定设置
+            /// </summary>
+            public void ClearKeyboardBinding()
             {
-                foreach (var list in m_mapSetting.Values) list.Clear();
+                foreach (var list in m_mapSetting.Values)
+                {
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        var inputControl = list[i];
+                        if (inputControl.Device is KeyBoard)
+                        {
+                            list.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                }
             }
 
             public void SetBinding(T emuBtn, InputDevice.InputControl key, int settingSlot)

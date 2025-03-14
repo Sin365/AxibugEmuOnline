@@ -8,7 +8,7 @@ namespace AxibugEmuOnline.Client.InputDevices
         public static InputResolver Create()
         {
 #if ENABLE_INPUT_SYSTEM //InputSystem
-            return new InputSystemResolver();
+            return new ForInputSystem.InputSystemResolver();
 #elif UNITY_PSP2 //SDK
             throw new System.NotImplementedException();
 #elif UNITY_PS3 //SDK
@@ -75,5 +75,11 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// <param name="key">键盘按键枚举值</param>
         public abstract bool GetKey(KeyBoard keyboard, KeyCode key);
 
+        /// <summary>
+        /// 获得输入设备的唯一名称
+        /// </summary>
+        /// <param name="inputDevice">这个设备必须是由resolver提供,并且保持着连接</param>
+        /// <returns></returns>
+        public abstract string GetDeviceName(InputDevice inputDevice);
     }
 }

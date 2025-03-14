@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.InputDevices;
 using AxibugProtobuf;
 using VirtualNes.Core;
 
@@ -9,9 +10,8 @@ namespace AxibugEmuOnline.Client
         public override RomPlatformType Platform => RomPlatformType.Nes;
         public override int ControllerCount => 4;
 
-        protected override void OnLoadDefaultMapper(BindingPage binding)
+        protected override void OnLoadDefaultKeyboardMapper(KeyBoard keyboard, BindingPage binding)
         {
-            var keyboard = App.inputDevicesMgr.GetKeyboard();
             switch (binding.ControllerIndex)
             {
                 case 0:

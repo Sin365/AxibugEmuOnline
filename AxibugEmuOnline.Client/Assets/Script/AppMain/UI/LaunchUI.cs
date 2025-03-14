@@ -44,13 +44,13 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
-            CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
+            CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
         }
 
         private void Update()
         {
-            if (CommandDispatcher.Instance.Current == CommandDispatcher.Instance.Gaming && App.emu.Core.IsNull())
-                CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
+            if (CommandDispatcher.Instance.Mode == CommandListener.ScheduleType.Gaming && App.emu.Core.IsNull())
+                CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
         }
 
         public void HideMainMenu()

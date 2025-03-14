@@ -4,9 +4,11 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
+    /// <summary>
+    /// 通用键盘设备
+    /// </summary>
     public partial class KeyBoard : InputDevice
     {
-        public override string UniqueName => nameof(KeyBoard);
         public KeyBoard(InputResolver resolver) : base(resolver) { }
 
         protected override IEnumerable<InputControl> DefineControls()
@@ -156,6 +158,9 @@ namespace AxibugEmuOnline.Client.InputDevices
         public KeyboardKey Return { get; private set; } = new KeyboardKey(KeyCode.Return);
         public KeyboardKey Escape { get; private set; } = new KeyboardKey(KeyCode.Escape);
         public KeyboardKey Tab { get; private set; } = new KeyboardKey(KeyCode.Tab);
+        /// <summary>
+        /// <img src="./test.png" alt="test"/>
+        /// </summary>
         public KeyboardKey Backspace { get; private set; } = new KeyboardKey(KeyCode.Backspace);
         public KeyboardKey CapsLock { get; private set; } = new KeyboardKey(KeyCode.CapsLock);
         public KeyboardKey LeftShift { get; private set; } = new KeyboardKey(KeyCode.LeftShift);

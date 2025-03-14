@@ -58,8 +58,7 @@ namespace AxibugEmuOnline.Client.InputDevices
         }
 
         /// <summary>
-        /// 获得键盘设备
-        /// <para>键盘设备被设计为有且仅有一个,所以这里应该总是能获得键盘设备</para>
+        /// 获得一个键盘设备
         /// </summary>
         public KeyBoard GetKeyboard()
         {
@@ -80,7 +79,7 @@ namespace AxibugEmuOnline.Client.InputDevices
 
     public abstract class InputDevice
     {
-        public abstract string UniqueName { get; }
+        public string UniqueName => m_resolver.GetDeviceName(this);
 
         /// <summary> 指示该设备是否在线 </summary>
         public bool Online => m_resolver.CheckOnline(this);

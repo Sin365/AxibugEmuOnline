@@ -6,7 +6,7 @@ using IP = UnityEngine.InputSystem.InputSystem;
 using IPDevice = UnityEngine.InputSystem.InputDevice;
 using IPKeyboard = UnityEngine.InputSystem.Keyboard;
 
-namespace AxibugEmuOnline.Client.InputDevices
+namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
 {
     /// <summary> InputSystem对接类 </summary>
     public partial class InputSystemResolver : InputResolver
@@ -39,6 +39,14 @@ namespace AxibugEmuOnline.Client.InputDevices
                 m_devices.Remove(ipdev);
                 RaiseDeviceLost(device);
             }
+        }
+
+        public override string GetDeviceName(InputDevice inputDevice)
+        {
+            m_devices.TryGetKey(inputDevice, out var ipdev);
+            Debug.Assert(ipdev != null, "不能对已离线的设备获取名称");
+
+            return $"{ipdev.description.deviceClass}_{ipdev.description.interfaceName}_{ipdev.deviceId}";
         }
 
         public override bool CheckOnline(InputDevice device)
