@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
@@ -53,5 +54,26 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             OnDeviceConnected?.Invoke(connectDevice);
         }
+
+        /// <summary>
+        /// 获取一个键盘设备的指定按键当前调用帧是否触发了按下动作
+        /// </summary>
+        /// <param name="keyboard">键盘设备实例,来自Resolver提供的设备实例</param>
+        /// <param name="key">键盘按键枚举值</param>
+        /// <returns></returns>
+        public abstract bool GetKeyDown(KeyBoard keyboard, KeyCode key);
+        /// <summary>
+        /// 获取一个键盘设备的指定按键当前调用帧是否触发了放开动作
+        /// </summary>
+        /// <param name="keyboard">键盘设备实例,来自Resolver提供的设备实例</param>
+        /// <param name="key">键盘按键枚举值</param>
+        public abstract bool GetKeyUp(KeyBoard keyboard, KeyCode key);
+        /// <summary>
+        /// 获取一个键盘设备的指定按键当前调用帧是否处于按下状态
+        /// </summary>
+        /// <param name="keyboard">键盘设备实例,来自Resolver提供的设备实例</param>
+        /// <param name="key">键盘按键枚举值</param>
+        public abstract bool GetKey(KeyBoard keyboard, KeyCode key);
+
     }
 }

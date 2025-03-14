@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
@@ -19,12 +18,12 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         private void OnDeviceLost(InputDevice lostDevice)
         {
-
+            RemoveDevice(lostDevice);
         }
 
         private void OnDeviceConnected(InputDevice connectDevice)
         {
-            throw new System.NotImplementedException();
+            AddDevice(connectDevice);
         }
 
         public void AddDevice(InputDevice device)
@@ -37,7 +36,7 @@ namespace AxibugEmuOnline.Client.InputDevices
             m_devices.Remove(device.UniqueName);
         }
 
-        public InputDevice.KeyBase GetKeyByPath(string path)
+        public InputDevice.InputControl GetKeyByPath(string path)
         {
             var temp = path.Split("/");
             Debug.Assert(temp.Length == 2, "Invalid Path Format");
@@ -48,7 +47,7 @@ namespace AxibugEmuOnline.Client.InputDevices
             var targetDevice = FindDeviceByName(deviceName);
             if (targetDevice == null) return null;
 
-            var key = targetDevice.FindKeyByKeyName(keyName);
+            var key = targetDevice.FindControlByName(keyName);
             return key;
         }
 
@@ -83,22 +82,22 @@ namespace AxibugEmuOnline.Client.InputDevices
     {
         public abstract string UniqueName { get; }
 
-        public delegate void OnKeyStateChangedHandle(KeyBase sender);
-        public event OnKeyStateChangedHandle OnKeyStateChanged;
-
         /// <summary> 指示该设备是否在线 </summary>
-        public abstract bool Online { get; }
-        /// <summary> 指示该设备当前帧是否有任意键被按下 </summary>
+        public bool Online => m_resolver.CheckOnline(this);
+        /// <summary> 指示该设备当前帧是否有任意控件被激发 </summary>
         public bool AnyKeyDown { get; private set; }
+        /// <summary> 获得输入解决器 </summary>
+        internal InputResolver Resolver => m_resolver;
 
-        protected Dictionary<string, KeyBase> m_keyMapper = new Dictionary<string, KeyBase>();
+        protected Dictionary<string, InputControl> m_controlMapper = new Dictionary<string, InputControl>();
         protected InputResolver m_resolver;
         public InputDevice(InputResolver resolver)
         {
             m_resolver = resolver;
-            foreach (var key in DefineKeys())
+
+            foreach (var control in DefineControls())
             {
-                m_keyMapper[key.KeyName] = key;
+                m_controlMapper.Add(control.ControlName, control);
             }
         }
 
@@ -106,49 +105,54 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             AnyKeyDown = false;
 
-            foreach (var key in m_keyMapper.Values)
+            foreach (var control in m_controlMapper.Values)
             {
-                if (key.GetButtonDown())
+                if (control.Start)
                 {
                     AnyKeyDown = true;
-                    RaiseKeyEvent(key);
                 }
             }
         }
 
-        protected abstract IEnumerable<KeyBase> DefineKeys();
-        protected void RaiseKeyEvent(KeyBase sender)
-        {
-            OnKeyStateChanged?.Invoke(sender);
-        }
+        /// <summary> 用于列出这个输入设备的所有输入控件实例 </summary>
+        /// <returns></returns>
+        protected abstract IEnumerable<InputControl> DefineControls();
 
-        public KeyBase FindKeyByKeyName(string keyName)
+        /// <summary> 通过控件名称,找到对应的控件 </summary>
+        /// <param name="keyName"></param>
+        /// <returns></returns>
+        public InputControl FindControlByName(string controlName)
         {
-            m_keyMapper.TryGetValue(keyName, out var key);
+            m_controlMapper.TryGetValue(controlName, out var key);
             return key;
         }
 
         /// <summary>
-        /// 输入设备的键接口
+        /// 输入设备的抽象控件接口
         /// </summary>
-        public abstract class KeyBase
+        public abstract class InputControl
         {
-            public InputDevice HostDevice { get; internal set; }
-            /// <summary> 获取该键是否在当前调用帧被按下 </summary>
-            public abstract bool GetButtonDown();
-            /// <summary> 获取该键是否在当前调用帧被抬起 </summary>
-            public abstract bool GetButtonUp();
-            /// <summary> 获取该键是否在当前调用帧是否处于按下状态 </summary>
-            public abstract bool IsPressing();
+            /// <summary> 控件所属设备 </summary>
+            public InputDevice Device { get; internal set; }
 
-            public virtual Vector2 GetVector2() { throw new System.NotImplementedException(); }
-            public virtual float GetFlaot() { throw new System.NotImplementedException(); }
+            /// <summary> 获取该控件是否在当前调用帧被激发 </summary>
+            public abstract bool Start { get; }
+            /// <summary> 获取该控件是否在当前调用帧被释放 </summary>
+            public abstract bool Release { get; }
+            /// <summary> 获取该控件是否在当前调用帧是否处于活动状态 </summary>
+            public abstract bool Performing { get; }
 
-            /// <summary> 键名 </summary>
-            public abstract string KeyName { get; }
+            /// <summary> 获得该控件的以二维向量表达的值 </summary>
+            /// <returns></returns>
+            public abstract Vector2 GetVector2();
+            /// <summary> 获得该控件的以浮点数表达的值 </summary>
+            public abstract float GetFlaot();
+
+            /// <summary> 控件名,这个控件名称必须是唯一的 </summary>
+            public abstract string ControlName { get; }
             public string GetPath()
             {
-                return $"{HostDevice.UniqueName}/{KeyName}";
+                return $"{Device.UniqueName}/{ControlName}";
             }
         }
 

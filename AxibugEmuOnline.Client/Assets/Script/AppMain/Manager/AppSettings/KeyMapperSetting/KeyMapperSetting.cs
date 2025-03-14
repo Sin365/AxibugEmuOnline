@@ -85,17 +85,18 @@ namespace AxibugEmuOnline.Client
         protected abstract void OnLoadDefaultMapper(BindingPage binding);
 
         /// <summary>
-        /// 获取指定按键是否处于按下状态
+        /// 获取指定控件是否处于按下状态
+        /// <para>如果绑定了多个物理按键,则只有这多个物理按键全部不处于按下状态时,才会返回false</para>
         /// </summary>
-        /// <param name="emuBtn"></param>
+        /// <param name="emuControl"></param>
         /// <param name="controllerIndex"></param>
         /// <returns></returns>
-        public bool GetKey(T emuBtn, int controllerIndex)
+        public bool GetKey(T emuControl, int controllerIndex)
         {
             var binding = m_bindingPages[controllerIndex];
-            foreach (var key in binding.GetBinding(emuBtn))
+            foreach (var key in binding.GetBinding(emuControl))
             {
-                if (key.IsPressing()) return true;
+                if (key.Performing) return true;
             }
 
             return false;
@@ -113,46 +114,56 @@ namespace AxibugEmuOnline.Client
         }
 
         /// <summary>
-        /// 获取指定按键的值
+        /// 获取指定控件的向量值
+        /// <para>通常用于摇杆类型的控件</para>
+        /// <para>如果同时绑定了多个物理输入设备,只会返回其中一个物理设备的向量值</para>
         /// </summary>
-        /// <param name="emuBtn">模拟器平台的具体键枚举</param>
+        /// <param name="emuControl">模拟器平台的具体键枚举</param>
         /// <param name="controllerIndex">模拟器平台的控制器序号</param>
         /// <returns></returns>
-        public Vector2 GetVector2(T emuBtn, int controllerIndex)
+        public Vector2 GetVector2(T emuControl, int controllerIndex)
         {
             var binding = m_bindingPages[controllerIndex];
-            foreach (var key in binding.GetBinding(emuBtn))
+            foreach (var control in binding.GetBinding(emuControl))
             {
-                if (!key.IsPressing()) continue;
+                if (!control.Performing) continue;
 
-                return key.GetVector2();
+                return control.GetVector2();
             }
 
             return default(Vector2);
         }
 
         /// <summary>
-        /// 获取指定按键的值
+        /// 获取指定控件的浮点值,取值范围为[0f,1f]
+        /// <para>通常用于线性类按键,例如PS手柄的扳机键</para>
+        /// <para>普通的按键也能读取这个值,但返回值只会有0f和1f两种值</para>
+        /// <para>如果同时绑定了多个物理控件,则会从所有处于按下状态的物理控件中取平均值</para>
         /// </summary>
-        /// <param name="emuBtn">模拟器平台的具体键枚举</param>
+        /// <param name="emuControl">模拟器平台的具体键枚举</param>
         /// <param name="controllerIndex">模拟器平台的控制器序号</param>
         /// <returns></returns>
-        public float GetFloat(T emuBtn, int controllerIndex)
+        public float GetFloat(T emuControl, int controllerIndex)
         {
-            var binding = m_bindingPages[controllerIndex];
-            foreach (var key in binding.GetBinding(emuBtn))
-            {
-                if (!key.IsPressing()) continue;
+            var totalFloat = 0f;
+            var totalControl = 0;
 
-                return key.GetFlaot();
+            var binding = m_bindingPages[controllerIndex];
+            foreach (var key in binding.GetBinding(emuControl))
+            {
+                if (!key.Performing) continue;
+
+                totalControl++;
+                totalFloat += key.GetFlaot();
             }
 
-            return default(float);
+            if (totalControl == 0) return default(float);
+            else return totalFloat / totalControl;
         }
 
         public class BindingPage
         {
-            Dictionary<T, List<InputDevice.KeyBase>> m_mapSetting = new Dictionary<T, List<InputDevice.KeyBase>>();
+            Dictionary<T, List<InputDevice.InputControl>> m_mapSetting = new Dictionary<T, List<InputDevice.InputControl>>();
 
             public int ControllerIndex { get; }
             public EmuCoreControllerKeyBinding<T> Host { get; }
@@ -163,7 +174,7 @@ namespace AxibugEmuOnline.Client
                 Host = host;
 
                 foreach (var emuBtn in host.DefineKeys())
-                    m_mapSetting[emuBtn] = new List<InputDevice.KeyBase>();
+                    m_mapSetting[emuBtn] = new List<InputDevice.InputControl>();
             }
 
             public void ClearBinding()
@@ -171,7 +182,7 @@ namespace AxibugEmuOnline.Client
                 foreach (var list in m_mapSetting.Values) list.Clear();
             }
 
-            public void SetBinding(T emuBtn, InputDevice.KeyBase key, int settingSlot)
+            public void SetBinding(T emuBtn, InputDevice.InputControl key, int settingSlot)
             {
                 var settingList = m_mapSetting[emuBtn];
 
@@ -181,14 +192,14 @@ namespace AxibugEmuOnline.Client
                 settingList[settingSlot] = key;
             }
 
-            public InputDevice.KeyBase GetBinding(T emuBtn, int settingSlot)
+            public InputDevice.InputControl GetBinding(T emuBtn, int settingSlot)
             {
                 var settingList = m_mapSetting[emuBtn];
                 if (settingSlot >= settingList.Count) return null;
                 return settingList[settingSlot];
             }
 
-            public List<InputDevice.KeyBase> GetBinding(T emuBtn)
+            public List<InputDevice.InputControl> GetBinding(T emuBtn)
             {
                 return m_mapSetting[emuBtn];
             }
@@ -199,7 +210,7 @@ namespace AxibugEmuOnline.Client
                 {
                     foreach (var key in item.Value)
                     {
-                        if (key.GetButtonDown()) return true;
+                        if (key.Start) return true;
                     }
                 }
 

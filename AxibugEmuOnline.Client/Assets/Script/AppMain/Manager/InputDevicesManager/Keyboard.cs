@@ -7,41 +7,38 @@ namespace AxibugEmuOnline.Client.InputDevices
     public partial class KeyBoard : InputDevice
     {
         public override string UniqueName => nameof(KeyBoard);
-        public override bool Online => true;
-
         public KeyBoard(InputResolver resolver) : base(resolver) { }
 
-        protected override IEnumerable<KeyBase> DefineKeys()
+        protected override IEnumerable<InputControl> DefineControls()
         {
-            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc) as KeyBase);
+            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc) as InputControl);
             return keys;
         }
 
-        public class KeyboardKey : KeyBase
+        public class KeyboardKey : InputControl
         {
-            internal KeyCode m_listenKey;
+            KeyCode m_keycode;
+
+            public override bool Start => Device.Resolver.GetKeyDown(Device as KeyBoard, m_keycode);
+            public override bool Release => Device.Resolver.GetKeyUp(Device as KeyBoard, m_keycode);
+            public override bool Performing => Device.Resolver.GetKey(Device as KeyBoard, m_keycode);
 
             public KeyboardKey(KeyCode listenKey)
             {
-                m_listenKey = listenKey;
+                m_keycode = listenKey;
             }
 
-            public override bool GetButtonDown()
+            public override string ControlName => m_keycode.ToString();
+
+            public override Vector2 GetVector2()
             {
-                return Input.GetKeyDown(m_listenKey);
+                return default(Vector2);
             }
 
-            public override bool GetButtonUp()
+            public override float GetFlaot()
             {
-                return Input.GetKeyUp(m_listenKey);
+                return Performing ? 1 : 0;
             }
-
-            public override bool IsPressing()
-            {
-                return Input.GetKey(m_listenKey);
-            }
-
-            public override string KeyName => m_listenKey.ToString();
         }
     }
 
