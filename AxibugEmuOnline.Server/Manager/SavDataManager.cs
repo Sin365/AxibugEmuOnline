@@ -247,11 +247,12 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 string dir = Path.GetDirectoryName(path);
                 if (!Directory.Exists(dir))
-                {
                     Directory.CreateDirectory(dir);
-                }
 
-                File.WriteAllBytes(path, data);
+                using (var fs = new FileStream(path, FileMode.Create))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
                 return true;
             }
             catch (Exception ex)

@@ -33,8 +33,6 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void RecvGetUserList(Socket _socket, byte[] reqData)
         {
-            Protobuf_UserList msg = ProtoBufHelper.DeSerizlize<Protobuf_UserList>(reqData);
-
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
             Protobuf_UserList_RESP respData = new Protobuf_UserList_RESP();
 

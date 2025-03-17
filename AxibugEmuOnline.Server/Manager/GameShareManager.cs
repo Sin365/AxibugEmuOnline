@@ -171,32 +171,34 @@ namespace AxibugEmuOnline.Server.Manager
 
             ptype = RomPlatformType.Invalid;
             using (MySqlConnection conn = SQLRUN.GetConn("GetRomPlatformType"))
-            { 
-            try
             {
-                string query = "SELECT PlatformType from romlist where Id = ?RomID ";
-                using (var command = new MySqlCommand(query, conn))
+                try
                 {
-                    // 设置参数值  
-                    command.Parameters.AddWithValue("?RomID", RomID);
-                    // 执行查询并处理结果  
-                    using (var reader = command.ExecuteReader())
+                    string query = "SELECT PlatformType from romlist where Id = ?RomID ";
+                    using (var command = new MySqlCommand(query, conn))
                     {
-                        while (reader.Read())
+                        // 设置参数值  
+                        command.Parameters.AddWithValue("?RomID", RomID);
+                        // 执行查询并处理结果  
+                        using (var reader = command.ExecuteReader())
                         {
-                            ptype = (RomPlatformType)reader.GetInt32(0);
+                            while (reader.Read())
+                            {
+                                ptype = (RomPlatformType)reader.GetInt32(0);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                AppSrv.g_Log.Error(e);
-            }
+                catch (Exception e)
+                {
+                    AppSrv.g_Log.Error(e);
+                }
             }
 
             if (ptype == RomPlatformType.Invalid)
                 AppSrv.g_Log.Error($"RomID {RomID} 没找到平台配置");
+            else
+                mDictRomID2Platform[RomID] = ptype;
 
             return ptype;
         }
