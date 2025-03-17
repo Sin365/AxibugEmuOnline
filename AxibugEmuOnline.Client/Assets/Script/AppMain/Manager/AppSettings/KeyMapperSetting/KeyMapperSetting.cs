@@ -55,6 +55,7 @@ namespace AxibugEmuOnline.Client
         where T : Enum
     {
         List<BindingPage> m_bindingPages = new List<BindingPage>();
+        KeyBoard m_currentKeyboard;
 
         public EmuCoreControllerKeyBinding()
         {
@@ -62,7 +63,31 @@ namespace AxibugEmuOnline.Client
             {
                 m_bindingPages.Add(new BindingPage(i, this));
             }
-            LoadDefaultKeyboardMapper();
+            m_currentKeyboard = App.inputDevicesMgr.GetKeyboard();
+
+            if (m_currentKeyboard != null)
+                LoadKeyboardMapper();
+
+            App.inputDevicesMgr.OnDeviceLost += InputDevicesMgr_OnDeviceLost;
+            App.inputDevicesMgr.OnDeviceConnected += InputDevicesMgr_OnDeviceConnected;
+        }
+
+        private void InputDevicesMgr_OnDeviceConnected(InputDevice connectDevice)
+        {
+            if (m_currentKeyboard == null && connectDevice is KeyBoard) //未建立键盘按键映射设置时,并且有新的键盘连接时,建立键盘映射设置
+            {
+                m_currentKeyboard = connectDevice as KeyBoard;
+                LoadKeyboardMapper();
+            }
+        }
+
+        private void InputDevicesMgr_OnDeviceLost(InputDevice lostDevice)
+        {
+            if (lostDevice == m_currentKeyboard) //当前键盘设备丢失,与其他键盘重新建立连接
+            {
+                m_currentKeyboard = App.inputDevicesMgr.GetKeyboard();
+                LoadKeyboardMapper();
+            }
         }
 
         IEnumerable<T> DefineKeys()
@@ -71,19 +96,21 @@ namespace AxibugEmuOnline.Client
         }
 
         /// <summary>
-        /// 加载默认键盘映射
+        /// 加载键盘映射配置
         /// </summary>
-        public void LoadDefaultKeyboardMapper()
+        void LoadKeyboardMapper()
         {
             foreach (var binding in m_bindingPages)
             {
                 binding.ClearKeyboardBinding();
-                var keyboard = App.inputDevicesMgr.GetKeyboard();
-                if (keyboard != null) OnLoadDefaultKeyboardMapper(keyboard, binding);
+                if (m_currentKeyboard != null) OnLoadKeyboardMapper(m_currentKeyboard, binding);
             }
         }
 
-        protected abstract void OnLoadDefaultKeyboardMapper(KeyBoard keyboard, BindingPage binding);
+        /// <summary> 当加载键盘映射设置时触发 </summary>
+        /// <param name="keyboard"></param>
+        /// <param name="binding"></param>
+        protected abstract void OnLoadKeyboardMapper(KeyBoard keyboard, BindingPage binding);
 
         public bool Start(T emuControl, int controllerIndex)
         {
@@ -203,7 +230,7 @@ namespace AxibugEmuOnline.Client
             /// <summary>
             /// 移除与键盘设备建立的绑定设置
             /// </summary>
-            public void ClearKeyboardBinding()
+            internal void ClearKeyboardBinding()
             {
                 foreach (var list in m_mapSetting.Values)
                 {

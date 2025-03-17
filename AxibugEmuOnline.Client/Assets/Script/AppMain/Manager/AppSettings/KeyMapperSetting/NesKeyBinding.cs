@@ -10,7 +10,7 @@ namespace AxibugEmuOnline.Client
         public override RomPlatformType Platform => RomPlatformType.Nes;
         public override int ControllerCount => 4;
 
-        protected override void OnLoadDefaultKeyboardMapper(KeyBoard keyboard, BindingPage binding)
+        protected override void OnLoadKeyboardMapper(KeyBoard keyboard, BindingPage binding)
         {
             switch (binding.ControllerIndex)
             {

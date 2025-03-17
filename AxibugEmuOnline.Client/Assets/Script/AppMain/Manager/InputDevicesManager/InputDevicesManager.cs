@@ -8,53 +8,39 @@ namespace AxibugEmuOnline.Client.InputDevices
         InputResolver m_inputResolver = InputResolver.Create();
         Dictionary<string, InputDevice> m_devices = new Dictionary<string, InputDevice>();
 
+        public delegate void OnDeviceConnectedHandle(InputDevice connectDevice);
+        public event OnDeviceConnectedHandle OnDeviceConnected;
+        public delegate void OnDeviceLostHandle(InputDevice lostDevice);
+        public event OnDeviceLostHandle OnDeviceLost;
+
         public InputDevicesManager()
         {
-            m_inputResolver.OnDeviceConnected += OnDeviceConnected;
-            m_inputResolver.OnDeviceLost += OnDeviceLost;
+            m_inputResolver.OnDeviceConnected += Resolver_OnDeviceConnected;
+            m_inputResolver.OnDeviceLost += Resolver_OnDeviceLost;
             foreach (var device in m_inputResolver.GetDevices())
                 AddDevice(device);
         }
 
-        private void OnDeviceLost(InputDevice lostDevice)
+        private void Resolver_OnDeviceLost(InputDevice lostDevice)
         {
             RemoveDevice(lostDevice);
         }
 
-        private void OnDeviceConnected(InputDevice connectDevice)
+        private void Resolver_OnDeviceConnected(InputDevice connectDevice)
         {
             AddDevice(connectDevice);
         }
 
-        public void AddDevice(InputDevice device)
+        void AddDevice(InputDevice device)
         {
             m_devices[device.UniqueName] = device;
+            OnDeviceConnected?.Invoke(device);
         }
 
-        public void RemoveDevice(InputDevice device)
+        void RemoveDevice(InputDevice device)
         {
             m_devices.Remove(device.UniqueName);
-        }
-
-        public InputDevice.InputControl GetKeyByPath(string path)
-        {
-            var temp = path.Split("/");
-            Debug.Assert(temp.Length == 2, "Invalid Path Format");
-
-            var deviceName = temp[0];
-            var keyName = temp[1];
-
-            var targetDevice = FindDeviceByName(deviceName);
-            if (targetDevice == null) return null;
-
-            var key = targetDevice.FindControlByName(keyName);
-            return key;
-        }
-
-        public InputDevice FindDeviceByName(string deviceName)
-        {
-            m_devices.TryGetValue(deviceName, out var device);
-            return device;
+            OnDeviceLost?.Invoke(device);
         }
 
         /// <summary>
