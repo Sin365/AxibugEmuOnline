@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static AxibugEmuOnline.Client.Settings.EmuCoreControllerKeyBinding<T>;
 
 namespace AxibugEmuOnline.Client.Settings
 {
@@ -231,10 +232,12 @@ namespace AxibugEmuOnline.Client.Settings
             else return totalFloat / totalControl;
         }
 
+        public class MapSetting : Dictionary<T, List<InputDevice.InputControl>> { }
+
         public class BindingPage
         {
-            Dictionary<T, List<InputDevice.InputControl>> m_mapSetting = new Dictionary<T, List<InputDevice.InputControl>>();
             Dictionary<Type, InputDevice> m_registedDevices = new Dictionary<Type, InputDevice>();
+            Dictionary<InputDevice, MapSetting> m_mapSetting = new Dictionary<InputDevice, MapSetting>();
 
             public int ControllerIndex { get; }
             public EmuCoreControllerKeyBinding<T> Host { get; }
@@ -243,9 +246,6 @@ namespace AxibugEmuOnline.Client.Settings
             {
                 ControllerIndex = controllerIndex;
                 Host = host;
-
-                foreach (var emuBtn in host.DefineKeys())
-                    m_mapSetting[emuBtn] = new List<InputDevice.InputControl>();
             }
 
             internal bool IsRegisted<DEVICE>() where DEVICE : InputDevice
@@ -264,6 +264,7 @@ namespace AxibugEmuOnline.Client.Settings
                 if (IsRegisted(type)) return;
 
                 m_registedDevices.Add(type, device);
+                m_mapSetting[device] = new MapSetting();
                 Host.RaiseDeviceRegist(device, this);
             }
 
@@ -273,19 +274,7 @@ namespace AxibugEmuOnline.Client.Settings
                 if (!IsRegisted(type)) return;
 
                 m_registedDevices.Remove(type);
-
-                foreach (var list in m_mapSetting.Values)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        var inputControl = list[i];
-                        if (inputControl.Device == device)
-                        {
-                            list.RemoveAt(i);
-                            i--;
-                        }
-                    }
-                }
+                m_mapSetting.Remove(device);
             }
 
             public void SetBinding(T emuBtn, InputDevice.InputControl key, int settingSlot)
@@ -295,7 +284,12 @@ namespace AxibugEmuOnline.Client.Settings
 
                 Debug.Assert(inputDevice == device);
 
-                var settingList = m_mapSetting[emuBtn];
+                var setting = m_mapSetting[inputDevice];
+                if (!setting.TryGetValue(emuBtn, out var settingList))
+                {
+                    settingList = new List<InputDevice.InputControl>();
+                    setting[emuBtn] = settingList;
+                }
 
                 int needFixCount = settingSlot - settingList.Count + 1;
                 if (needFixCount > 0) for (int i = 0; i < needFixCount; i++) settingList.Add(null);
@@ -303,25 +297,41 @@ namespace AxibugEmuOnline.Client.Settings
                 settingList[settingSlot] = key;
             }
 
-            public InputDevice.InputControl GetBinding(T emuBtn, int settingSlot)
+            public InputDevice.InputControl GetBinding(T emuBtn, InputDevice device, int settingSlot)
             {
-                var settingList = m_mapSetting[emuBtn];
-                if (settingSlot >= settingList.Count) return null;
+                m_mapSetting.TryGetValue(device, out var mapSetting);
+                if (mapSetting == null) return null;
+
+                mapSetting.TryGetValue(emuBtn, out var settingList);
+                if (settingList == null || settingSlot >= settingList.Count) return null;
+
                 return settingList[settingSlot];
             }
 
-            public List<InputDevice.InputControl> GetBinding(T emuBtn)
+            public IEnumerable<InputDevice.InputControl> GetBinding(T emuBtn)
             {
-                return m_mapSetting[emuBtn];
+                foreach (var mapSettings in m_mapSetting.Values)
+                {
+                    mapSettings.TryGetValue(emuBtn, out var bindControls);
+                    if (bindControls != null)
+                    {
+                        return bindControls;
+                    }
+                }
+
+                return null;
             }
 
             public bool AnyKeyDown()
             {
-                foreach (var item in m_mapSetting)
+                foreach (var mapSettings in m_mapSetting.Values)
                 {
-                    foreach (var key in item.Value)
+                    foreach (var keys in mapSettings.Values)
                     {
-                        if (key.Start) return true;
+                        foreach (var key in keys)
+                        {
+                            if (key.Start) return true;
+                        }
                     }
                 }
 
