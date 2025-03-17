@@ -1,4 +1,6 @@
-﻿namespace AxibugEmuOnline.Client
+﻿using AxibugEmuOnline.Client.Settings;
+
+namespace AxibugEmuOnline.Client
 {
     public class AppSettings
     {

@@ -9,11 +9,11 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
 #if ENABLE_INPUT_SYSTEM //InputSystem
             return new ForInputSystem.InputSystemResolver();
-#elif UNITY_PSP2 //SDK
-            throw new System.NotImplementedException();
+#elif UNITY_PSP2 //特化实现
+            return new ForPSV.PSVResolver();
 #elif UNITY_PS3 //SDK
             throw new System.NotImplementedException();
-#else //使用旧Input
+#else 
             throw new System.NotImplementedException();    
 #endif
         }
@@ -55,19 +55,6 @@ namespace AxibugEmuOnline.Client.InputDevices
             OnDeviceConnected?.Invoke(connectDevice);
         }
 
-        /// <summary>
-        /// 获取一个键盘设备的指定按键当前调用帧是否触发了按下动作
-        /// </summary>
-        /// <param name="keyboard">键盘设备实例,来自Resolver提供的设备实例</param>
-        /// <param name="key">键盘按键枚举值</param>
-        /// <returns></returns>
-        public abstract bool GetKeyDown(KeyBoard keyboard, KeyCode key);
-        /// <summary>
-        /// 获取一个键盘设备的指定按键当前调用帧是否触发了放开动作
-        /// </summary>
-        /// <param name="keyboard">键盘设备实例,来自Resolver提供的设备实例</param>
-        /// <param name="key">键盘按键枚举值</param>
-        public abstract bool GetKeyUp(KeyBoard keyboard, KeyCode key);
         /// <summary>
         /// 获取一个键盘设备的指定按键当前调用帧是否处于按下状态
         /// </summary>

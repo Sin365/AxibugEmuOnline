@@ -1,23 +1,9 @@
 ﻿using AxibugEmuOnline.Client.Manager;
+using AxibugEmuOnline.Client.Settings;
 using UnityEngine;
 
 namespace AxiInputSP.Setting
 {
-    public enum UMAMEKSingleKey
-    {
-        INSERT_COIN,
-        GAMESTART,
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        BTN_A,
-        BTN_B,
-        BTN_C,
-        BTN_D,
-        BTN_E,
-        BTN_F
-    }
     public class UMAMEMultiKeysSetting : MultiKeysSettingBase
     {
         public UMAMEMultiKeysSetting()

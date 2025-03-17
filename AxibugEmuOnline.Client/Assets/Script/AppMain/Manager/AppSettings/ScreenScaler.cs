@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AxibugEmuOnline.Client
+namespace AxibugEmuOnline.Client.Settings
 {
     /// <summary>
     /// 实现模拟器输出画面的比例调整类

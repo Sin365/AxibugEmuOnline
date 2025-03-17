@@ -68,34 +68,6 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             return m_devices.Values;
         }
 
-        public override bool GetKeyDown(KeyBoard keyboard, KeyCode key)
-        {
-            if (m_devices.TryGetKey(keyboard, out var ipdev))
-            {
-                var ipKeyboard = ipdev as IPKeyboard;
-                if (ipKeyboard == null) return false;
-
-                var k = GetIPKeyboardKey(ipKeyboard, key);
-                return k.wasPressedThisFrame;
-            }
-
-            return false;
-        }
-
-        public override bool GetKeyUp(KeyBoard keyboard, KeyCode key)
-        {
-            if (m_devices.TryGetKey(keyboard, out var ipdev))
-            {
-                var ipKeyboard = ipdev as IPKeyboard;
-                if (ipKeyboard == null) return false;
-
-                var k = GetIPKeyboardKey(ipKeyboard, key);
-                return k.wasReleasedThisFrame;
-            }
-
-            return false;
-        }
-
         public override bool GetKey(KeyBoard keyboard, KeyCode key)
         {
             if (m_devices.TryGetKey(keyboard, out var ipdev))

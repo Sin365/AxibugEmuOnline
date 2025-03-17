@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace AxibugEmuOnline.Client
+namespace AxibugEmuOnline.Client.Settings
 {
     /// <summary>
     /// 管理键位映射设置
@@ -34,6 +34,12 @@ namespace AxibugEmuOnline.Client
             m_bindersByType.TryGetValue(typeof(T), out var binder);
             return binder as T;
         }
+
+        public T GetBinder<T>(RomPlatformType romType) where T : EmuCoreControllerKeyBinding
+        {
+            m_binders.TryGetValue(romType, out var binder);
+            return binder as T;
+        }
     }
 
     /// <summary>
@@ -55,7 +61,6 @@ namespace AxibugEmuOnline.Client
         where T : Enum
     {
         List<BindingPage> m_bindingPages = new List<BindingPage>();
-        KeyBoard m_currentKeyboard;
 
         public EmuCoreControllerKeyBinding()
         {
@@ -63,30 +68,56 @@ namespace AxibugEmuOnline.Client
             {
                 m_bindingPages.Add(new BindingPage(i, this));
             }
-            m_currentKeyboard = App.inputDevicesMgr.GetKeyboard();
 
-            if (m_currentKeyboard != null)
-                LoadKeyboardMapper();
+            var keyboard = App.input.GetDevice<KeyBoard>();
+            if (keyboard != null)
+            {
+                foreach (var binding in m_bindingPages)
+                {
+                    binding.RegistInputDevice(keyboard);
+                }
+            }
 
-            App.inputDevicesMgr.OnDeviceLost += InputDevicesMgr_OnDeviceLost;
-            App.inputDevicesMgr.OnDeviceConnected += InputDevicesMgr_OnDeviceConnected;
+            var psvController = App.input.GetDevice<PSVController>();
+            if (psvController != null)
+            {
+                foreach (var binding in m_bindingPages)
+                {
+                    binding.RegistInputDevice(psvController);
+                }
+            }
+
+            App.input.OnDeviceLost += InputDevicesMgr_OnDeviceLost;
+            App.input.OnDeviceConnected += InputDevicesMgr_OnDeviceConnected;
         }
 
         private void InputDevicesMgr_OnDeviceConnected(InputDevice connectDevice)
         {
-            if (m_currentKeyboard == null && connectDevice is KeyBoard) //未建立键盘按键映射设置时,并且有新的键盘连接时,建立键盘映射设置
+            if (connectDevice is KeyBoard)
             {
-                m_currentKeyboard = connectDevice as KeyBoard;
-                LoadKeyboardMapper();
+                foreach (var binding in m_bindingPages)
+                {
+                    binding.RegistInputDevice(connectDevice);
+                }
             }
         }
 
         private void InputDevicesMgr_OnDeviceLost(InputDevice lostDevice)
         {
-            if (lostDevice == m_currentKeyboard) //当前键盘设备丢失,与其他键盘重新建立连接
+            foreach (var binding in m_bindingPages)
             {
-                m_currentKeyboard = App.inputDevicesMgr.GetKeyboard();
-                LoadKeyboardMapper();
+                binding.UnregistInputDevice(lostDevice);
+            }
+            if (lostDevice is KeyBoard) //键盘丢失,立即查找还存在的键盘并建立连接
+            {
+                var anotherKeyboard = App.input.GetDevice<KeyBoard>();
+                if (anotherKeyboard != null)
+                {
+                    foreach (var binding in m_bindingPages)
+                    {
+                        binding.UnregistInputDevice(lostDevice);
+                    }
+                }
             }
         }
 
@@ -95,22 +126,11 @@ namespace AxibugEmuOnline.Client
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
 
-        /// <summary>
-        /// 加载键盘映射配置
-        /// </summary>
-        void LoadKeyboardMapper()
+        internal void RaiseDeviceRegist(InputDevice device, BindingPage binding)
         {
-            foreach (var binding in m_bindingPages)
-            {
-                binding.ClearKeyboardBinding();
-                if (m_currentKeyboard != null) OnLoadKeyboardMapper(m_currentKeyboard, binding);
-            }
+            OnRegistDevices(device, binding);
         }
-
-        /// <summary> 当加载键盘映射设置时触发 </summary>
-        /// <param name="keyboard"></param>
-        /// <param name="binding"></param>
-        protected abstract void OnLoadKeyboardMapper(KeyBoard keyboard, BindingPage binding);
+        protected abstract void OnRegistDevices(InputDevice device, BindingPage binding);
 
         public bool Start(T emuControl, int controllerIndex)
         {
@@ -214,6 +234,7 @@ namespace AxibugEmuOnline.Client
         public class BindingPage
         {
             Dictionary<T, List<InputDevice.InputControl>> m_mapSetting = new Dictionary<T, List<InputDevice.InputControl>>();
+            Dictionary<Type, InputDevice> m_registedDevices = new Dictionary<Type, InputDevice>();
 
             public int ControllerIndex { get; }
             public EmuCoreControllerKeyBinding<T> Host { get; }
@@ -227,17 +248,38 @@ namespace AxibugEmuOnline.Client
                     m_mapSetting[emuBtn] = new List<InputDevice.InputControl>();
             }
 
-            /// <summary>
-            /// 移除与键盘设备建立的绑定设置
-            /// </summary>
-            internal void ClearKeyboardBinding()
+            internal bool IsRegisted<DEVICE>() where DEVICE : InputDevice
             {
+                var type = typeof(T);
+                return IsRegisted(type);
+            }
+            internal bool IsRegisted(Type deviceType)
+            {
+                return m_registedDevices.ContainsKey(deviceType);
+            }
+
+            internal void RegistInputDevice(InputDevice device)
+            {
+                var type = device.GetType();
+                if (IsRegisted(type)) return;
+
+                m_registedDevices.Add(type, device);
+                Host.RaiseDeviceRegist(device, this);
+            }
+
+            internal void UnregistInputDevice(InputDevice device)
+            {
+                var type = device.GetType();
+                if (!IsRegisted(type)) return;
+
+                m_registedDevices.Remove(type);
+
                 foreach (var list in m_mapSetting.Values)
                 {
                     for (int i = 0; i < list.Count; i++)
                     {
                         var inputControl = list[i];
-                        if (inputControl.Device is KeyBoard)
+                        if (inputControl.Device == device)
                         {
                             list.RemoveAt(i);
                             i--;
@@ -248,6 +290,11 @@ namespace AxibugEmuOnline.Client
 
             public void SetBinding(T emuBtn, InputDevice.InputControl key, int settingSlot)
             {
+                var device = key.Device;
+                m_registedDevices.TryGetValue(device.GetType(), out var inputDevice);
+
+                Debug.Assert(inputDevice == device);
+
                 var settingList = m_mapSetting[emuBtn];
 
                 int needFixCount = settingSlot - settingList.Count + 1;

@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Settings;
 using AxibugEmuOnline.Client.UI;
 
 namespace AxibugEmuOnline.Client

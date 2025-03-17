@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.Manager;
+using AxibugEmuOnline.Client.Settings;
 using UnityEngine;
 
 namespace AxiInputSP.Setting

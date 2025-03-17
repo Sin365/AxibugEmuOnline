@@ -13,12 +13,12 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         public KeyBoard(InputResolver resolver) : base(resolver) { }
 
-        protected override IEnumerable<InputControl> DefineControls()
+        protected override List<InputControl> DefineControls()
         {
-            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc, this) as InputControl);
+            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc, this) as InputControl).ToList();
             foreach (KeyboardKey key in keys)
             {
-                m_keyControllerMap[key.m_keycode] = key;
+                m_keyControllerMap.Add(key.m_keycode, key);
             }
             return keys;
         }
@@ -27,8 +27,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             internal KeyCode m_keycode;
 
-            public override bool Start => Device.Resolver.GetKeyDown(Device as KeyBoard, m_keycode);
-            public override bool Release => Device.Resolver.GetKeyUp(Device as KeyBoard, m_keycode);
             public override bool Performing => Device.Resolver.GetKey(Device as KeyBoard, m_keycode);
 
             internal KeyboardKey(KeyCode listenKey, KeyBoard keyboard)
@@ -69,7 +67,6 @@ namespace AxibugEmuOnline.Client.InputDevices
             // 功能键 F1-F15
             KeyCode.F1, KeyCode.F2, KeyCode.F3, KeyCode.F4, KeyCode.F5, KeyCode.F6,
             KeyCode.F7, KeyCode.F8, KeyCode.F9, KeyCode.F10, KeyCode.F11, KeyCode.F12,
-            KeyCode.F13, KeyCode.F14, KeyCode.F15,
 
             // 方向键
             KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.LeftArrow, KeyCode.RightArrow,
@@ -78,12 +75,12 @@ namespace AxibugEmuOnline.Client.InputDevices
             KeyCode.Space, KeyCode.Return, KeyCode.Escape, KeyCode.Tab, KeyCode.Backspace,
             KeyCode.CapsLock, KeyCode.LeftShift, KeyCode.RightShift, KeyCode.LeftControl,
             KeyCode.RightControl, KeyCode.LeftAlt, KeyCode.RightAlt, KeyCode.LeftCommand,
-            KeyCode.RightCommand, KeyCode.Menu,
+            KeyCode.RightCommand,
 
             // 符号键
             KeyCode.Comma, KeyCode.Period, KeyCode.Slash, KeyCode.BackQuote, KeyCode.Quote,
             KeyCode.Semicolon, KeyCode.LeftBracket, KeyCode.RightBracket, KeyCode.Backslash,
-            KeyCode.Minus, KeyCode.Equals, KeyCode.Tilde,
+            KeyCode.Minus, KeyCode.Equals, 
 
             // 小键盘
             KeyCode.Keypad0, KeyCode.Keypad1, KeyCode.Keypad2, KeyCode.Keypad3, KeyCode.Keypad4,
@@ -94,7 +91,6 @@ namespace AxibugEmuOnline.Client.InputDevices
             // 其他标准键
             KeyCode.Print,  KeyCode.Insert, KeyCode.Delete, KeyCode.Home,
             KeyCode.End, KeyCode.PageUp, KeyCode.PageDown, KeyCode.Pause, KeyCode.ScrollLock,
-            KeyCode.Clear
         };
 
         public KeyboardKey A => m_keyControllerMap[KeyCode.A];
@@ -166,7 +162,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         public KeyboardKey RightAlt => m_keyControllerMap[KeyCode.RightAlt];
         public KeyboardKey LeftCommand => m_keyControllerMap[KeyCode.LeftCommand];
         public KeyboardKey RightCommand => m_keyControllerMap[KeyCode.RightCommand];
-        public KeyboardKey Menu => m_keyControllerMap[KeyCode.Menu];
         public KeyboardKey Comma => m_keyControllerMap[KeyCode.Comma];
         public KeyboardKey Period => m_keyControllerMap[KeyCode.Period];
         public KeyboardKey Slash => m_keyControllerMap[KeyCode.Slash];
@@ -178,7 +173,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         public KeyboardKey Backslash => m_keyControllerMap[KeyCode.Backslash];
         public KeyboardKey Minus => m_keyControllerMap[KeyCode.Minus];
         public KeyboardKey Equals_k => m_keyControllerMap[KeyCode.Equals];
-        public KeyboardKey Tilde => m_keyControllerMap[KeyCode.Tilde];
         public KeyboardKey Keypad0 => m_keyControllerMap[KeyCode.Keypad0];
         public KeyboardKey Keypad1 => m_keyControllerMap[KeyCode.Keypad1];
         public KeyboardKey Keypad2 => m_keyControllerMap[KeyCode.Keypad2];
@@ -205,7 +199,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         public KeyboardKey PageDown => m_keyControllerMap[KeyCode.PageDown];
         public KeyboardKey Pause => m_keyControllerMap[KeyCode.Pause];
         public KeyboardKey ScrollLock => m_keyControllerMap[KeyCode.ScrollLock];
-        public KeyboardKey Clear => m_keyControllerMap[KeyCode.Clear];
     }
     #endregion
 }

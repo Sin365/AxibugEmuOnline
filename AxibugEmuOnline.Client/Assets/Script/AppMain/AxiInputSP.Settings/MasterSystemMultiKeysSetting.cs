@@ -1,24 +1,10 @@
 ﻿using AxibugEmuOnline.Client.Manager;
+using AxibugEmuOnline.Client.Settings;
 using System;
 using UnityEngine;
 
 namespace AxiInputSP.Setting
 {
-    [Flags]
-    public enum EssgeeSingleKey : ushort
-    {
-        NONE = 0,
-        UP = 1,
-        DOWN = 1 << 1,
-        LEFT = 1 << 2,
-        RIGHT = 1 << 3,
-        BTN_1 = 1 << 4,
-        BTN_2 = 1 << 5,
-        BTN_3 = 1 << 6,
-        BTN_4 = 1 << 7,
-        OPTION_1 = 1 << 8,
-        OPTION_2 = 1 << 9,
-    }
     public class MasterSystemMultiKeysSetting : MultiKeysSettingBase
     {
 

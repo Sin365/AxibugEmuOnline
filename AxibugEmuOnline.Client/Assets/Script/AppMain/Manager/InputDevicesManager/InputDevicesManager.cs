@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices
@@ -44,13 +45,13 @@ namespace AxibugEmuOnline.Client.InputDevices
         }
 
         /// <summary>
-        /// 获得一个键盘设备
+        /// 获得一个指定类型的设备
         /// </summary>
-        public KeyBoard GetKeyboard()
+        public T GetDevice<T>() where T : InputDevice
         {
             foreach (var d in m_devices.Values)
             {
-                if (d is KeyBoard kb) return kb;
+                if (d is T) return d as T;
             }
 
             return null;
@@ -92,6 +93,7 @@ namespace AxibugEmuOnline.Client.InputDevices
 
             foreach (var control in m_controlMapper.Values)
             {
+                control.Update();
                 if (control.Start)
                 {
                     AnyKeyDown = true;
@@ -101,7 +103,7 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         /// <summary> 用于列出这个输入设备的所有输入控件实例 </summary>
         /// <returns></returns>
-        protected abstract IEnumerable<InputControl> DefineControls();
+        protected abstract List<InputControl> DefineControls();
 
         /// <summary> 通过控件名称,找到对应的控件 </summary>
         /// <param name="keyName"></param>
@@ -121,9 +123,11 @@ namespace AxibugEmuOnline.Client.InputDevices
             public InputDevice Device { get; internal set; }
 
             /// <summary> 获取该控件是否在当前调用帧被激发 </summary>
-            public abstract bool Start { get; }
+            public bool Start { get; private set; }
             /// <summary> 获取该控件是否在当前调用帧被释放 </summary>
-            public abstract bool Release { get; }
+            public bool Release { get; private set; }
+
+            bool m_performingLastFrame;
             /// <summary> 获取该控件是否在当前调用帧是否处于活动状态 </summary>
             public abstract bool Performing { get; }
 
@@ -132,6 +136,29 @@ namespace AxibugEmuOnline.Client.InputDevices
             public abstract Vector2 GetVector2();
             /// <summary> 获得该控件的以浮点数表达的值 </summary>
             public abstract float GetFlaot();
+
+            internal void Update()
+            {
+                UpdateReleaseStartState();
+                OnUpdate();
+            }
+
+            private void UpdateReleaseStartState()
+            {
+                var oldPerforming = m_performingLastFrame;
+                var newPerforming = Performing;
+
+                Start = false;
+                Release = false;
+                if (oldPerforming != newPerforming)
+                {
+                    if (oldPerforming == false) Start = true;
+                    else Release = true;
+                }
+                m_performingLastFrame = Performing;
+            }
+
+            protected virtual void OnUpdate() { }
 
             /// <summary> 控件名,这个控件名称必须是唯一的 </summary>
             public abstract string ControlName { get; }

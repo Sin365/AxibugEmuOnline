@@ -23,8 +23,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppLogin login;
         public static AppChat chat;
         public static UserDataManager user;
-        public static AppInput input;
-        public static InputDevicesManager inputDevicesMgr;
+        public static InputDevicesManager input;
         public static AppEmu emu;
         public static HttpAPI httpAPI;
         public static CacheManager CacheMgr;
@@ -78,8 +77,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             //其他平台必要的初始化
             if (UnityEngine.Application.platform == RuntimePlatform.PSP2) PSP2Init();
 
-            input = new AppInput();
-            inputDevicesMgr = new InputDevicesManager();
+            input = new InputDevicesManager();
             FileDownloader = new FileDownloader();
             settings = new AppSettings();
             network = new NetworkHelper();
@@ -232,7 +230,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             foreach (var romLib in s_romLibs.Values) romLib.ExecuteFetchRomInfo();
             starRomLib.ExecuteFetchRomInfo();
             FileDownloader.Update();
-
+            input.Update();
         }
 
         public static Coroutine StartCoroutine(IEnumerator itor)

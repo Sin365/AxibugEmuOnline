@@ -1,6 +1,7 @@
-using AxibugEmuOnline.Client;
+ï»¿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
+using AxibugEmuOnline.Client.Settings;
 using AxiInputSP.Setting;
 using AxiReplay;
 using MAME.Core;
@@ -25,9 +26,9 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
     public ulong GetPressedKeys()
     {
         ulong InputData;
-        if (!bReplayMode)//ÓÎÍæÄ£Ê½£¨µ¥»ú»òÁª»ú£©
+        if (!bReplayMode)//æ¸¸ç©æ¨¡å¼ï¼ˆå•æœºæˆ–è”æœºï¼‰
             return mPlayMode.GetPressedKeys();
-        else//ReplayÄ£Ê½
+        else//Replayæ¨¡å¼
             return mReplayMode.GetPressedKeys();
     }
 
@@ -82,7 +83,7 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
 
         public bool SampleInput()
         {
-            //NetÄ£Ê½
+            //Netæ¨¡å¼
             if (InGameUI.Instance.IsNetPlay)
             {
                 bool bHadNetData = false;
@@ -98,15 +99,15 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
 
                     bHadNetData = true;
                 }
-                else//ÎŞÊäÈë
+                else//æ— è¾“å…¥
                 {
                     CurrRemoteInpuAllData = 0;
                 }
-                //·¢ËÍ±¾µØ²Ù×÷
+                //å‘é€æœ¬åœ°æ“ä½œ
                 App.roomMgr.SendRoomSingelPlayerInput(UMAME.instance.Frame, DoLocalPressedKeys());
                 return bHadNetData;
             }
-            //µ¥ÈËÄ£Ê½
+            //å•äººæ¨¡å¼
             else
             {
                 DoLocalPressedKeys();
@@ -135,7 +136,7 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
 #endif
 
             CurrLocalInpuAllData = tempLocalInputAllData;
-            //Ğ´Èëreplay
+            //å†™å…¥replay
             UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, CurrLocalInpuAllData);
 
             CheckPlayerSlotChanged();
@@ -146,16 +147,16 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
 
         void CheckPlayerSlotChanged()
         {
-            if (!mUniKeyboard.ControllerMapper.Controller0.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller0.AnyButtonDown()) 
+            if (!mUniKeyboard.ControllerMapper.Controller0.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller0.AnyButtonDown())
                 Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 0);
 
-            if (!mUniKeyboard.ControllerMapper.Controller1.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller1.AnyButtonDown()) 
+            if (!mUniKeyboard.ControllerMapper.Controller1.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller1.AnyButtonDown())
                 Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 1);
-            
-            if (!mUniKeyboard.ControllerMapper.Controller2.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller2.AnyButtonDown()) 
+
+            if (!mUniKeyboard.ControllerMapper.Controller2.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller2.AnyButtonDown())
                 Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 2);
-            
-            if (!mUniKeyboard.ControllerMapper.Controller3.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller3.AnyButtonDown()) 
+
+            if (!mUniKeyboard.ControllerMapper.Controller3.ConnectSlot.HasValue && mUniKeyboard.ControllerMapper.Controller3.AnyButtonDown())
                 Eventer.Instance.PostEvent(EEvent.OnLocalJoyDesireInvert, 3);
         }
 
@@ -172,7 +173,7 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
         {
             int targetFrame = (int)UMAME.instance.mUniVideoPlayer.mFrame;
             AxiReplay.ReplayStep stepData;
-            //ÓĞ±ä»¯
+            //æœ‰å˜åŒ–
             if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
             {
 #if UNITY_EDITOR
@@ -265,7 +266,7 @@ public class MameControllerMapper : IControllerSetuper
 }
 
 /// <summary>
-/// MAME¿ØÖÆÆ÷
+/// MAMEæ§åˆ¶å™¨
 /// </summary>
 public class MameSingleConoller : IController
 {
@@ -279,13 +280,14 @@ public class MameSingleConoller : IController
 
     public ulong CurrLocalSingleAllInput { get; private set; }
 
+    private MAMEKeyBinding m_keyMapper;
     int mControllerIndex;
     uint? mConnectSlot;
 
     /// <summary>
-    /// Ö¸Ê¾¸ÃÊÖ±úÁ¬½ÓµÄÊÖ±ú²å²Û
-    /// <para><c>Õâ¸öÖµ´ú±íÁË¸ÃÊÖ±úÔÚÊµ¼ÊÓÎÏ·ÖĞ¿ØÖÆµÄPlayer</c></para>
-    /// <value>[0,3] ÀıÍâ:Îª¿Õ´ú±íÎ´Á¬½Ó</value>
+    /// æŒ‡ç¤ºè¯¥æ‰‹æŸ„è¿æ¥çš„æ‰‹æŸ„æ’æ§½
+    /// <para><c>è¿™ä¸ªå€¼ä»£è¡¨äº†è¯¥æ‰‹æŸ„åœ¨å®é™…æ¸¸æˆä¸­æ§åˆ¶çš„Player</c></para>
+    /// <value>[0,3] ä¾‹å¤–:ä¸ºç©ºä»£è¡¨æœªè¿æ¥</value>
     /// </summary>
     public uint? ConnectSlot
     {
@@ -294,26 +296,29 @@ public class MameSingleConoller : IController
     }
 
     /// <summary>
-    /// ¿ØÖÆÆ÷±àºÅ
-    /// <para><c>´Ë±àºÅ²¢·Ç¶ÔÓ¦ÓÎÏ·ÖĞµÄplayer1,player2,player3,player4,½ö½ö×÷Îª±¾µØ4¸öÊÖ±úµÄÊµÀı</c></para>
+    /// æ§åˆ¶å™¨ç¼–å·
+    /// <para><c>æ­¤ç¼–å·å¹¶éå¯¹åº”æ¸¸æˆä¸­çš„player1,player2,player3,player4,ä»…ä»…ä½œä¸ºæœ¬åœ°4ä¸ªæ‰‹æŸ„çš„å®ä¾‹</c></para>
     /// <value>[0,3]</value>
     /// </summary>
     public int ControllerIndex
     {
         get { return mControllerIndex; }
-        set { mControllerIndex = value; 
+        set
+        {
+            mControllerIndex = value;
             //this.LoadControlKeyForConfig();
-            //×ßÍ³Ò»ÅäÖÃ
+            //èµ°ç»Ÿä¸€é…ç½®
         }
     }
     public MameSingleConoller(int controllerIndex)
     {
         ControllerIndex = controllerIndex;
+        m_keyMapper = App.settings.KeyMapper.GetBinder<MAMEKeyBinding>(UMAME.instance.Platform);
     }
 
     public bool AnyButtonDown()
     {
-        return App.input.mame.HadAnyKeyDown(ControllerIndex);
+        return m_keyMapper.AnyKeyDown(ControllerIndex);
         //if (Input.GetKeyDown(INSERT_COIN)) return true;
         //if (Input.GetKeyDown(GAMESTART)) return true;
         //if (Input.GetKeyDown(UP)) return true;
@@ -334,19 +339,19 @@ public class MameSingleConoller : IController
             return 0;
         CurrLocalSingleAllInput = 0;
 
-        var keys = App.input.mame.controllers[ControllerIndex];
-        if (keys.GetKey((ulong)UMAMEKSingleKey.INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_A)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_B)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_C)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_D)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_E)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
-        if (keys.GetKey((ulong)UMAMEKSingleKey.BTN_F)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
+
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.INSERT_COIN, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.GAMESTART, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.UP, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_UP;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.DOWN, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.LEFT, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.RIGHT, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.BTN_A, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_BTN_A;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.BTN_B, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_BTN_B;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.BTN_C, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_BTN_C;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.BTN_D, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_BTN_D;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.BTN_E, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_BTN_E;
+        if (m_keyMapper.GetKey(UMAMEKSingleKey.BTN_F, ControllerIndex)) CurrLocalSingleAllInput |= (ulong)tg_BTN_F;
 
         //if (Input.GetKey(INSERT_COIN)) CurrLocalSingleAllInput |= (ulong)tg_INSERT_COIN;
         //if (Input.GetKey(GAMESTART)) CurrLocalSingleAllInput |= (ulong)tg_GAMESTART;
@@ -367,10 +372,10 @@ public class MameSingleConoller : IController
 }
 public static class MameSingleControllSetter
 {
-    //²»ÔÙĞèÒª
+    //ä¸å†éœ€è¦
     //public static void LoadControlKeyForConfig(this MameSingleConoller singlecontrol)
     //{
-    //    //TODO µÈ´ıÖ§³ÖÅäÖÃ£¬»òÍ³Ò»
+    //    //TODO ç­‰å¾…æ”¯æŒé…ç½®ï¼Œæˆ–ç»Ÿä¸€
     //    switch (singlecontrol.ControllerIndex)
     //    {
     //        case 0:
@@ -456,7 +461,7 @@ public static class MameSingleControllSetter
                 singlecontrol.tg_BTN_E = MotionKey.P2_BTN_5;
                 singlecontrol.tg_BTN_F = MotionKey.P2_BTN_6;
                 break;
-            //ºóĞøĞŞ¸Äºó Ö§³ÖP3 P4
+            //åç»­ä¿®æ”¹å æ”¯æŒP3 P4
             case 2:
                 singlecontrol.tg_INSERT_COIN = MotionKey.FinalKey;
                 singlecontrol.tg_GAMESTART = MotionKey.FinalKey;
