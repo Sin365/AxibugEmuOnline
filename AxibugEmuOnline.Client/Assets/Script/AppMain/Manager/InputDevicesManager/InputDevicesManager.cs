@@ -135,9 +135,10 @@ namespace AxibugEmuOnline.Client.InputDevices
 
             /// <summary> 控件名,这个控件名称必须是唯一的 </summary>
             public abstract string ControlName { get; }
-            public string GetPath()
+
+            internal InputControl(InputDevice device)
             {
-                return $"{Device.UniqueName}/{ControlName}";
+                Device = device;
             }
         }
 
