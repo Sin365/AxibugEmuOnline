@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Client.InputDevices;
 using AxibugProtobuf;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -307,18 +308,21 @@ namespace AxibugEmuOnline.Client.Settings
                 return settingList[settingSlot];
             }
 
+            private List<InputDevice.InputControl> m_caches = new List<InputDevice.InputControl>();
             public IEnumerable<InputDevice.InputControl> GetBinding(T emuBtn)
             {
+                m_caches.Clear();
+
                 foreach (var mapSettings in m_mapSetting.Values)
                 {
                     mapSettings.TryGetValue(emuBtn, out var bindControls);
                     if (bindControls != null)
                     {
-                        return bindControls;
+                        m_caches.AddRange(bindControls);
                     }
                 }
 
-                return Enumerable.Empty<InputDevice.InputControl>();
+                return m_caches;
             }
 
             public bool AnyKeyDown()
@@ -337,5 +341,6 @@ namespace AxibugEmuOnline.Client.Settings
                 return false;
             }
         }
+
     }
 }
