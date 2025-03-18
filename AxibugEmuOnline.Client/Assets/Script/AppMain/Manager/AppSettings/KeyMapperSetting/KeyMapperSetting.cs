@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static AxibugEmuOnline.Client.Settings.EmuCoreControllerKeyBinding<T>;
 
 namespace AxibugEmuOnline.Client.Settings
 {
@@ -319,7 +318,7 @@ namespace AxibugEmuOnline.Client.Settings
                     }
                 }
 
-                return null;
+                return Enumerable.Empty<InputDevice.InputControl>();
             }
 
             public bool AnyKeyDown()
