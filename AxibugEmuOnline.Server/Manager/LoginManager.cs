@@ -265,12 +265,15 @@ namespace AxibugEmuOnline.Server.Manager
             ProtoBufHelper.DeSerizlize<Protobuf_Token_Struct>(protobufData);
             byte[] encryptData = AESHelper.Encrypt(protobufData);
             string tobase64 = Convert.ToBase64String(encryptData);
-            return tobase64;
+            AppSrv.g_Log.Debug("token_base64=>" + tobase64);
+            string result = Uri.EscapeDataString(tobase64);
+            AppSrv.g_Log.Debug("token_urlcode=>" + result);
+            return result;
         }
 
         static Protobuf_Token_Struct DecrypToken(string tokenStr)
         {
-           byte[] encryptData = Convert.FromBase64String(tokenStr);
+            byte[] encryptData = Convert.FromBase64String(tokenStr);
             byte[] decryptData = AESHelper.Decrypt(encryptData);
             return ProtoBufHelper.DeSerizlize<Protobuf_Token_Struct>(decryptData);
         }
