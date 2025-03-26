@@ -27,8 +27,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             internal KeyCode m_keycode;
 
-            public override bool Performing => Device.Resolver.GetKey(Device as KeyBoard, m_keycode);
-
             internal KeyboardKey(KeyCode listenKey, KeyBoard keyboard)
                 : base(keyboard)
             {
@@ -36,16 +34,6 @@ namespace AxibugEmuOnline.Client.InputDevices
             }
 
             public override string ControlName => m_keycode.ToString();
-
-            public override Vector2 GetVector2()
-            {
-                return default(Vector2);
-            }
-
-            public override float GetFlaot()
-            {
-                return Performing ? 1 : 0;
-            }
         }
     }
 

@@ -21,7 +21,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         public Button Right { get; private set; }
         public Button Down { get; private set; }
         public Button Left { get; private set; }
-
         public Stick LeftStick { get; private set; }
         public Stick RightStick { get; private set; }
 
@@ -31,46 +30,32 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             List<InputControl> result = new List<InputControl>();
 
-            Cross = new Button(KeyCode.Joystick1Button0, this, "X");
-            Circle = new Button(KeyCode.Joystick1Button1, this, "⭕");
-            Square = new Button(KeyCode.Joystick1Button2, this, "□");
-            Triangle = new Button(KeyCode.Joystick1Button3, this, "△");
+            Cross = new Button(this, "X");
+            Circle = new Button(this, "⭕");
+            Square = new Button(this, "□");
+            Triangle = new Button(this, "△");
 
-            L = new Button(KeyCode.Joystick1Button4, this, "L");
-            R = new Button(KeyCode.Joystick1Button5, this, "R");
+            L = new Button(this, "L");
+            R = new Button(this, "R");
 
-            Select = new Button(KeyCode.Joystick1Button6, this, "SELECT");
-            Start = new Button(KeyCode.Joystick1Button7, this, "START");
+            Select = new Button(this, "SELECT");
+            Start = new Button(this, "START");
 
-            Up = new Button(KeyCode.Joystick1Button8, this, "UP");
-            Right = new Button(KeyCode.Joystick1Button9, this, "RIGHT");
-            Down = new Button(KeyCode.Joystick1Button10, this, "DOWN");
-            Left = new Button(KeyCode.Joystick1Button11, this, "LEFT");
+            Up = new Button(this, "UP");
+            Right = new Button(this, "RIGHT");
+            Down = new Button(this, "DOWN");
+            Left = new Button(this, "LEFT");
 
             return result;
         }
 
         public class Button : InputControl
         {
-            private KeyCode m_keyCode;
-            private string m_controlName;
+            internal string m_controlName;
 
-            public Button(KeyCode keycode, InputDevice device, string controlName) : base(device)
+            public Button(InputDevice device, string controlName) : base(device)
             {
-                m_keyCode = keycode;
                 m_controlName = controlName;
-            }
-
-            public override bool Performing => Input.GetKey(m_keyCode);
-
-            public override Vector2 GetVector2()
-            {
-                return default;
-            }
-
-            public override float GetFlaot()
-            {
-                return Performing ? 1 : 0;
             }
 
             public override string ControlName => m_controlName;
@@ -78,7 +63,7 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         public class Stick : InputControl
         {
-            private bool m_left;
+            internal bool m_left;
 
             public VirtualButton UP { get; private set; }
             public VirtualButton Down { get; private set; }
@@ -110,31 +95,6 @@ namespace AxibugEmuOnline.Client.InputDevices
 
                 Right.m_performing = axis.x > 0f;
                 Right.Update();
-            }
-
-            public override bool Performing => GetVector2().x != 0 || GetVector2().y != 0;
-
-            public override Vector2 GetVector2()
-            {
-                Vector2 result = Vector2.zero;
-
-                if (m_left)
-                {
-                    result.x = Input.GetAxis("Horizontal");
-                    result.y = Input.GetAxis("Vertical");
-                }
-                else
-                {
-                    result.x = Input.GetAxis("HorizontalR");
-                    result.y = Input.GetAxis("VerticalR");
-                }
-
-                return result;
-            }
-
-            public override float GetFlaot()
-            {
-                return Performing ? 1 : 0;
             }
 
             public override string ControlName => $"{nameof(Stick)}_{(m_left ? "left" : "right")}";

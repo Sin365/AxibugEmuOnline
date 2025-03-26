@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices
@@ -129,13 +128,13 @@ namespace AxibugEmuOnline.Client.InputDevices
 
             bool m_performingLastFrame;
             /// <summary> 获取该控件是否在当前调用帧是否处于活动状态 </summary>
-            public abstract bool Performing { get; }
+            public virtual bool Performing => Device.Resolver.CheckPerforming(this);
 
             /// <summary> 获得该控件的以二维向量表达的值 </summary>
             /// <returns></returns>
-            public abstract Vector2 GetVector2();
+            public virtual Vector2 GetVector2() => Device.Resolver.GetVector2(this);
             /// <summary> 获得该控件的以浮点数表达的值 </summary>
-            public abstract float GetFlaot();
+            public virtual float GetFlaot() => Device.Resolver.GetFloat(this);
 
             internal void Update()
             {

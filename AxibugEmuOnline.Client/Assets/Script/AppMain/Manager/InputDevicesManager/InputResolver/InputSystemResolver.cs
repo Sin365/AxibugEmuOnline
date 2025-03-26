@@ -1,6 +1,7 @@
 ﻿#if ENABLE_INPUT_SYSTEM
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using IP = UnityEngine.InputSystem.InputSystem;
 using IPDevice = UnityEngine.InputSystem.InputDevice;
@@ -68,18 +69,37 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             return m_devices.Values;
         }
 
-        public override bool GetKey(KeyBoard keyboard, KeyCode key)
+        public override bool CheckPerforming<CONTROLLER>(CONTROLLER control)
         {
-            if (m_devices.TryGetKey(keyboard, out var ipdev))
+            if (control.Device is KeyBoard keyboard)
             {
-                var ipKeyboard = ipdev as IPKeyboard;
-                if (ipKeyboard == null) return false;
+                if (control is KeyBoard.KeyboardKey key)
+                {
+                    if (m_devices.TryGetKey(keyboard, out var ipdev))
+                    {
+                        var ipKeyboard = ipdev as IPKeyboard;
+                        if (ipKeyboard == null) return false;
 
-                var k = GetIPKeyboardKey(ipKeyboard, key);
-                return k.isPressed;
+                        var k = GetIPKeyboardKey(ipKeyboard, key.m_keycode);
+                        return k.isPressed;
+                    }
+
+                    return false;
+                }
             }
 
-            return false;
+
+            throw new System.NotImplementedException();
+        }
+
+        public override Vector2 GetVector2<CONTROLLER>(CONTROLLER control)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override float GetFloat<CONTROLLER>(CONTROLLER control)
+        {
+            throw new System.NotImplementedException();
         }
     }
 

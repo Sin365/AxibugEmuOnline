@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
@@ -55,13 +56,9 @@ namespace AxibugEmuOnline.Client.InputDevices
             OnDeviceConnected?.Invoke(connectDevice);
         }
 
-        /// <summary>
-        /// 获取一个键盘设备的指定按键当前调用帧是否处于按下状态
-        /// </summary>
-        /// <param name="keyboard">键盘设备实例,来自Resolver提供的设备实例</param>
-        /// <param name="key">键盘按键枚举值</param>
-        public abstract bool GetKey(KeyBoard keyboard, KeyCode key);
-
+        public abstract bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputDevice.InputControl;
+        public abstract Vector2 GetVector2<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputDevice.InputControl;
+        public abstract float GetFloat<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputDevice.InputControl;
         /// <summary>
         /// 获得输入设备的唯一名称
         /// </summary>
