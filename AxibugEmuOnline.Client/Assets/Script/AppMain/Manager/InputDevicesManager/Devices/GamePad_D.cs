@@ -9,7 +9,7 @@
         public Button_C Down;
         public Button_C Left;
         public Button_C Right;
-        public Button_C Option;
+        public Button_C Select;
         public Button_C Start;
         public Button_C North;
         public Button_C South;

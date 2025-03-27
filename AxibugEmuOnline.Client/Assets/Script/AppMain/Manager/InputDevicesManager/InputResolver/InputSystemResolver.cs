@@ -1,5 +1,8 @@
 ﻿#if ENABLE_INPUT_SYSTEM
+using Google.Protobuf.WellKnownTypes;
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -222,6 +225,23 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             {
                 var ipGamepad = ipdevice as Gamepad;
                 mapper[gamepad_d.Up] = ipGamepad.dpad.up;
+                mapper[gamepad_d.Down] = ipGamepad.dpad.down;
+                mapper[gamepad_d.Left] = ipGamepad.dpad.left;
+                mapper[gamepad_d.Right] = ipGamepad.dpad.right;
+                mapper[gamepad_d.Select] = ipGamepad.selectButton;
+                mapper[gamepad_d.Start] = ipGamepad.startButton;
+                mapper[gamepad_d.North] = ipGamepad.buttonNorth;
+                mapper[gamepad_d.South] = ipGamepad.buttonSouth;
+                mapper[gamepad_d.West] = ipGamepad.buttonWest;
+                mapper[gamepad_d.East] = ipGamepad.buttonEast;
+                mapper[gamepad_d.LeftShoulder] = ipGamepad.leftShoulder;
+                mapper[gamepad_d.RightShoulder] = ipGamepad.rightShoulder;
+                mapper[gamepad_d.LeftTrigger] = ipGamepad.leftTrigger;
+                mapper[gamepad_d.RightTrigger] = ipGamepad.rightTrigger;
+                mapper[gamepad_d.LeftStickPress] = ipGamepad.leftStickButton;
+                mapper[gamepad_d.RightStickPress] = ipGamepad.rightStickButton;
+                mapper[gamepad_d.LeftStick] = ipGamepad.leftStick;
+                mapper[gamepad_d.RightStick] = ipGamepad.rightStick;
             }
             else throw new System.NotImplementedException($"初始化设备失败,未实现的物理按键映射 for {device_d.GetType()}");
         }
