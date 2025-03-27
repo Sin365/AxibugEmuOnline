@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
 {
@@ -21,16 +20,13 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
         private void AddDevice(InputDevice ipdev)
         {
             InputDevice_D newDevice = null;
-            if (ipdev is Keyboard)
-            {
-                newDevice = new Keyboard_D(this);
-                AddKeyboardMapper((Keyboard_D)newDevice, (Keyboard)ipdev);
-            }
+            if (ipdev is Keyboard) newDevice = new Keyboard_D(this);
             else if (ipdev is Gamepad) newDevice = new GamePad_D(this);
 
             if (newDevice != null)
             {
                 m_devices.Add(ipdev, newDevice);
+                AddDeviceMapper(newDevice, ipdev);
                 RaiseDeviceConnected(newDevice);
             }
         }
@@ -40,12 +36,8 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             if (m_devices.TryGetValue(ipdev, out var device))
             {
                 m_devices.Remove(ipdev);
+                RemoveDeviceMapper(device);
                 RaiseDeviceLost(device);
-
-                if (device is Keyboard_D)
-                {
-                    RemoveKeyboardMapper((Keyboard_D)device);
-                }
             }
         }
 
@@ -84,150 +76,158 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
 
         public override bool CheckPerforming<CONTROLLER>(CONTROLLER control)
         {
-            if (control.Device is Keyboard_D keyboard)
-            {
-                var ipKeyboard = GetInputSystemDevice<Keyboard>(keyboard);
-                var k = GetIPKeyboardKey(ipKeyboard, keyboard, control);
-                return k.isPressed;
-            }
-
-            throw new System.NotImplementedException();
+            var ipControl = GetInputSystemControl(control);
+            return ipControl.IsPressed();
         }
 
         public override Vector2 GetVector2<CONTROLLER>(CONTROLLER control)
         {
-            throw new System.NotImplementedException();
+            var ipControl = GetInputSystemControl(control);
+            return (ipControl as InputControl<Vector2>).value;
         }
 
         public override float GetFloat<CONTROLLER>(CONTROLLER control)
         {
-            throw new System.NotImplementedException();
+            var ipControl = GetInputSystemControl(control);
+            return (ipControl as InputControl<float>).value;
         }
 
-        ButtonControl GetIPKeyboardKey(Keyboard ipKeyboard, Keyboard_D keyboard, InputControl_C key)
+        InputControl GetInputSystemControl(InputControl_C key)
         {
-            var mapper = m_keyboardMapper[keyboard];
-            mapper.TryGetValue(key, out ButtonControl inputBtn);
+            var device_d = key.Device;
+            var mapper = m_deviceMapper[device_d];
+            mapper.TryGetValue(key, out InputControl inputBtn);
             if (inputBtn != null)
                 return inputBtn;
             else
             {
-                throw new System.Exception($"not found keyboard mapper setting : {key}");
+                throw new System.Exception($"not found mapper setting : {key}");
             }
         }
-        Dictionary<Keyboard_D, Dictionary<InputControl_C, ButtonControl>> m_keyboardMapper = new Dictionary<Keyboard_D, Dictionary<InputControl_C, ButtonControl>>();
-        void AddKeyboardMapper(Keyboard_D keyboard_d, Keyboard ipkeyboard)
+        Dictionary<InputDevice_D, Dictionary<InputControl_C, InputControl>> m_deviceMapper = new Dictionary<InputDevice_D, Dictionary<InputControl_C, InputControl>>();
+        void AddDeviceMapper(InputDevice_D device_d, InputDevice ipdevice)
         {
-            m_keyboardMapper.Add(keyboard_d, new Dictionary<InputControl_C, ButtonControl>());
-            var mapper = m_keyboardMapper[keyboard_d];
+            m_deviceMapper.Add(device_d, new Dictionary<InputControl_C, InputControl>());
+            var mapper = m_deviceMapper[device_d];
 
-            mapper.Add(keyboard_d.A, ipkeyboard.aKey);
-            mapper.Add(keyboard_d.B, ipkeyboard.bKey);
-            mapper.Add(keyboard_d.C, ipkeyboard.cKey);
-            mapper.Add(keyboard_d.D, ipkeyboard.dKey);
-            mapper.Add(keyboard_d.E, ipkeyboard.eKey);
-            mapper.Add(keyboard_d.F, ipkeyboard.fKey);
-            mapper.Add(keyboard_d.G, ipkeyboard.gKey);
-            mapper.Add(keyboard_d.H, ipkeyboard.hKey);
-            mapper.Add(keyboard_d.I, ipkeyboard.iKey);
-            mapper.Add(keyboard_d.J, ipkeyboard.jKey);
-            mapper.Add(keyboard_d.K, ipkeyboard.kKey);
-            mapper.Add(keyboard_d.L, ipkeyboard.lKey);
-            mapper.Add(keyboard_d.M, ipkeyboard.mKey);
-            mapper.Add(keyboard_d.N, ipkeyboard.nKey);
-            mapper.Add(keyboard_d.O, ipkeyboard.oKey);
-            mapper.Add(keyboard_d.P, ipkeyboard.pKey);
-            mapper.Add(keyboard_d.Q, ipkeyboard.qKey);
-            mapper.Add(keyboard_d.R, ipkeyboard.rKey);
-            mapper.Add(keyboard_d.S, ipkeyboard.sKey);
-            mapper.Add(keyboard_d.T, ipkeyboard.tKey);
-            mapper.Add(keyboard_d.U, ipkeyboard.uKey);
-            mapper.Add(keyboard_d.V, ipkeyboard.vKey);
-            mapper.Add(keyboard_d.W, ipkeyboard.wKey);
-            mapper.Add(keyboard_d.X, ipkeyboard.xKey);
-            mapper.Add(keyboard_d.Y, ipkeyboard.yKey);
-            mapper.Add(keyboard_d.Z, ipkeyboard.zKey);
-            mapper.Add(keyboard_d.Alpha0, ipkeyboard.digit0Key);
-            mapper.Add(keyboard_d.Alpha1, ipkeyboard.digit1Key);
-            mapper.Add(keyboard_d.Alpha2, ipkeyboard.digit2Key);
-            mapper.Add(keyboard_d.Alpha3, ipkeyboard.digit3Key);
-            mapper.Add(keyboard_d.Alpha4, ipkeyboard.digit4Key);
-            mapper.Add(keyboard_d.Alpha5, ipkeyboard.digit5Key);
-            mapper.Add(keyboard_d.Alpha6, ipkeyboard.digit6Key);
-            mapper.Add(keyboard_d.Alpha7, ipkeyboard.digit7Key);
-            mapper.Add(keyboard_d.Alpha8, ipkeyboard.digit8Key);
-            mapper.Add(keyboard_d.Alpha9, ipkeyboard.digit9Key);
-            mapper.Add(keyboard_d.Keypad0, ipkeyboard.numpad0Key);
-            mapper.Add(keyboard_d.Keypad1, ipkeyboard.numpad1Key);
-            mapper.Add(keyboard_d.Keypad2, ipkeyboard.numpad2Key);
-            mapper.Add(keyboard_d.Keypad3, ipkeyboard.numpad3Key);
-            mapper.Add(keyboard_d.Keypad4, ipkeyboard.numpad4Key);
-            mapper.Add(keyboard_d.Keypad5, ipkeyboard.numpad5Key);
-            mapper.Add(keyboard_d.Keypad6, ipkeyboard.numpad6Key);
-            mapper.Add(keyboard_d.Keypad7, ipkeyboard.numpad7Key);
-            mapper.Add(keyboard_d.Keypad8, ipkeyboard.numpad8Key);
-            mapper.Add(keyboard_d.Keypad9, ipkeyboard.numpad9Key);
-            mapper.Add(keyboard_d.KeypadPeriod, ipkeyboard.numpadPeriodKey);
-            mapper.Add(keyboard_d.KeypadDivide, ipkeyboard.numpadDivideKey);
-            mapper.Add(keyboard_d.KeypadMultiply, ipkeyboard.numpadMultiplyKey);
-            mapper.Add(keyboard_d.KeypadMinus, ipkeyboard.numpadMinusKey);
-            mapper.Add(keyboard_d.KeypadPlus, ipkeyboard.numpadPlusKey);
-            mapper.Add(keyboard_d.KeypadEnter, ipkeyboard.numpadEnterKey);
-            mapper.Add(keyboard_d.F1, ipkeyboard.f1Key);
-            mapper.Add(keyboard_d.F2, ipkeyboard.f2Key);
-            mapper.Add(keyboard_d.F3, ipkeyboard.f3Key);
-            mapper.Add(keyboard_d.F4, ipkeyboard.f4Key);
-            mapper.Add(keyboard_d.F5, ipkeyboard.f5Key);
-            mapper.Add(keyboard_d.F6, ipkeyboard.f6Key);
-            mapper.Add(keyboard_d.F7, ipkeyboard.f7Key);
-            mapper.Add(keyboard_d.F8, ipkeyboard.f8Key);
-            mapper.Add(keyboard_d.F9, ipkeyboard.f9Key);
-            mapper.Add(keyboard_d.F10, ipkeyboard.f10Key);
-            mapper.Add(keyboard_d.F11, ipkeyboard.f11Key);
-            mapper.Add(keyboard_d.F12, ipkeyboard.f12Key);
-            mapper.Add(keyboard_d.UpArrow, ipkeyboard.upArrowKey);
-            mapper.Add(keyboard_d.DownArrow, ipkeyboard.downArrowKey);
-            mapper.Add(keyboard_d.LeftArrow, ipkeyboard.leftArrowKey);
-            mapper.Add(keyboard_d.RightArrow, ipkeyboard.rightArrowKey);
-            mapper.Add(keyboard_d.Space, ipkeyboard.spaceKey);
-            mapper.Add(keyboard_d.Backspace, ipkeyboard.backspaceKey);
-            mapper.Add(keyboard_d.Tab, ipkeyboard.tabKey);
-            mapper.Add(keyboard_d.Return, ipkeyboard.enterKey);
-            mapper.Add(keyboard_d.Escape, ipkeyboard.escapeKey);
-            mapper.Add(keyboard_d.LeftShift, ipkeyboard.leftShiftKey);
-            mapper.Add(keyboard_d.RightShift, ipkeyboard.rightShiftKey);
-            mapper.Add(keyboard_d.LeftControl, ipkeyboard.leftCtrlKey);
-            mapper.Add(keyboard_d.RightControl, ipkeyboard.rightCtrlKey);
-            mapper.Add(keyboard_d.LeftAlt, ipkeyboard.leftAltKey);
-            mapper.Add(keyboard_d.RightAlt, ipkeyboard.rightAltKey);
-            mapper.Add(keyboard_d.LeftCommand, ipkeyboard.leftCommandKey);
-            mapper.Add(keyboard_d.RightCommand, ipkeyboard.rightCommandKey);
-            mapper.Add(keyboard_d.CapsLock, ipkeyboard.capsLockKey);
-            mapper.Add(keyboard_d.Numlock, ipkeyboard.numLockKey);
-            mapper.Add(keyboard_d.ScrollLock, ipkeyboard.scrollLockKey);
-            mapper.Add(keyboard_d.Print, ipkeyboard.printScreenKey);
-            mapper.Add(keyboard_d.Pause, ipkeyboard.pauseKey);
-            mapper.Add(keyboard_d.Insert, ipkeyboard.insertKey);
-            mapper.Add(keyboard_d.Home, ipkeyboard.homeKey);
-            mapper.Add(keyboard_d.End, ipkeyboard.endKey);
-            mapper.Add(keyboard_d.PageUp, ipkeyboard.pageUpKey);
-            mapper.Add(keyboard_d.PageDown, ipkeyboard.pageDownKey);
-            mapper.Add(keyboard_d.Delete, ipkeyboard.deleteKey);
-            mapper.Add(keyboard_d.Comma, ipkeyboard.commaKey);
-            mapper.Add(keyboard_d.Period, ipkeyboard.periodKey);
-            mapper.Add(keyboard_d.Slash, ipkeyboard.slashKey);
-            mapper.Add(keyboard_d.BackQuote, ipkeyboard.backquoteKey);
-            mapper.Add(keyboard_d.Minus, ipkeyboard.minusKey);
-            mapper.Add(keyboard_d.Equals_k, ipkeyboard.equalsKey);
-            mapper.Add(keyboard_d.LeftBracket, ipkeyboard.leftBracketKey);
-            mapper.Add(keyboard_d.RightBracket, ipkeyboard.rightBracketKey);
-            mapper.Add(keyboard_d.Backslash, ipkeyboard.backslashKey);
-            mapper.Add(keyboard_d.Semicolon, ipkeyboard.semicolonKey);
-            mapper.Add(keyboard_d.Quote, ipkeyboard.quoteKey);
+            if (device_d is Keyboard_D keyboard_d)
+            {
+                var ipKeyboard = ipdevice as Keyboard;
+
+                mapper[keyboard_d.A] = ipKeyboard.aKey;
+                mapper[keyboard_d.B] = ipKeyboard.bKey;
+                mapper[keyboard_d.C] = ipKeyboard.cKey;
+                mapper[keyboard_d.D] = ipKeyboard.dKey;
+                mapper[keyboard_d.E] = ipKeyboard.eKey;
+                mapper[keyboard_d.F] = ipKeyboard.fKey;
+                mapper[keyboard_d.G] = ipKeyboard.gKey;
+                mapper[keyboard_d.H] = ipKeyboard.hKey;
+                mapper[keyboard_d.I] = ipKeyboard.iKey;
+                mapper[keyboard_d.J] = ipKeyboard.jKey;
+                mapper[keyboard_d.K] = ipKeyboard.kKey;
+                mapper[keyboard_d.L] = ipKeyboard.lKey;
+                mapper[keyboard_d.M] = ipKeyboard.mKey;
+                mapper[keyboard_d.N] = ipKeyboard.nKey;
+                mapper[keyboard_d.O] = ipKeyboard.oKey;
+                mapper[keyboard_d.P] = ipKeyboard.pKey;
+                mapper[keyboard_d.Q] = ipKeyboard.qKey;
+                mapper[keyboard_d.R] = ipKeyboard.rKey;
+                mapper[keyboard_d.S] = ipKeyboard.sKey;
+                mapper[keyboard_d.T] = ipKeyboard.tKey;
+                mapper[keyboard_d.U] = ipKeyboard.uKey;
+                mapper[keyboard_d.V] = ipKeyboard.vKey;
+                mapper[keyboard_d.W] = ipKeyboard.wKey;
+                mapper[keyboard_d.X] = ipKeyboard.xKey;
+                mapper[keyboard_d.Y] = ipKeyboard.yKey;
+                mapper[keyboard_d.Z] = ipKeyboard.zKey;
+                mapper[keyboard_d.Alpha0] = ipKeyboard.digit0Key;
+                mapper[keyboard_d.Alpha1] = ipKeyboard.digit1Key;
+                mapper[keyboard_d.Alpha2] = ipKeyboard.digit2Key;
+                mapper[keyboard_d.Alpha3] = ipKeyboard.digit3Key;
+                mapper[keyboard_d.Alpha4] = ipKeyboard.digit4Key;
+                mapper[keyboard_d.Alpha5] = ipKeyboard.digit5Key;
+                mapper[keyboard_d.Alpha6] = ipKeyboard.digit6Key;
+                mapper[keyboard_d.Alpha7] = ipKeyboard.digit7Key;
+                mapper[keyboard_d.Alpha8] = ipKeyboard.digit8Key;
+                mapper[keyboard_d.Alpha9] = ipKeyboard.digit9Key;
+                mapper[keyboard_d.Keypad0] = ipKeyboard.numpad0Key;
+                mapper[keyboard_d.Keypad1] = ipKeyboard.numpad1Key;
+                mapper[keyboard_d.Keypad2] = ipKeyboard.numpad2Key;
+                mapper[keyboard_d.Keypad3] = ipKeyboard.numpad3Key;
+                mapper[keyboard_d.Keypad4] = ipKeyboard.numpad4Key;
+                mapper[keyboard_d.Keypad5] = ipKeyboard.numpad5Key;
+                mapper[keyboard_d.Keypad6] = ipKeyboard.numpad6Key;
+                mapper[keyboard_d.Keypad7] = ipKeyboard.numpad7Key;
+                mapper[keyboard_d.Keypad8] = ipKeyboard.numpad8Key;
+                mapper[keyboard_d.Keypad9] = ipKeyboard.numpad9Key;
+                mapper[keyboard_d.KeypadPeriod] = ipKeyboard.numpadPeriodKey;
+                mapper[keyboard_d.KeypadDivide] = ipKeyboard.numpadDivideKey;
+                mapper[keyboard_d.KeypadMultiply] = ipKeyboard.numpadMultiplyKey;
+                mapper[keyboard_d.KeypadMinus] = ipKeyboard.numpadMinusKey;
+                mapper[keyboard_d.KeypadPlus] = ipKeyboard.numpadPlusKey;
+                mapper[keyboard_d.KeypadEnter] = ipKeyboard.numpadEnterKey;
+                mapper[keyboard_d.F1] = ipKeyboard.f1Key;
+                mapper[keyboard_d.F2] = ipKeyboard.f2Key;
+                mapper[keyboard_d.F3] = ipKeyboard.f3Key;
+                mapper[keyboard_d.F4] = ipKeyboard.f4Key;
+                mapper[keyboard_d.F5] = ipKeyboard.f5Key;
+                mapper[keyboard_d.F6] = ipKeyboard.f6Key;
+                mapper[keyboard_d.F7] = ipKeyboard.f7Key;
+                mapper[keyboard_d.F8] = ipKeyboard.f8Key;
+                mapper[keyboard_d.F9] = ipKeyboard.f9Key;
+                mapper[keyboard_d.F10] = ipKeyboard.f10Key;
+                mapper[keyboard_d.F11] = ipKeyboard.f11Key;
+                mapper[keyboard_d.F12] = ipKeyboard.f12Key;
+                mapper[keyboard_d.UpArrow] = ipKeyboard.upArrowKey;
+                mapper[keyboard_d.DownArrow] = ipKeyboard.downArrowKey;
+                mapper[keyboard_d.LeftArrow] = ipKeyboard.leftArrowKey;
+                mapper[keyboard_d.RightArrow] = ipKeyboard.rightArrowKey;
+                mapper[keyboard_d.Space] = ipKeyboard.spaceKey;
+                mapper[keyboard_d.Backspace] = ipKeyboard.backspaceKey;
+                mapper[keyboard_d.Tab] = ipKeyboard.tabKey;
+                mapper[keyboard_d.Return] = ipKeyboard.enterKey;
+                mapper[keyboard_d.Escape] = ipKeyboard.escapeKey;
+                mapper[keyboard_d.LeftShift] = ipKeyboard.leftShiftKey;
+                mapper[keyboard_d.RightShift] = ipKeyboard.rightShiftKey;
+                mapper[keyboard_d.LeftControl] = ipKeyboard.leftCtrlKey;
+                mapper[keyboard_d.RightControl] = ipKeyboard.rightCtrlKey;
+                mapper[keyboard_d.LeftAlt] = ipKeyboard.leftAltKey;
+                mapper[keyboard_d.RightAlt] = ipKeyboard.rightAltKey;
+                mapper[keyboard_d.LeftCommand] = ipKeyboard.leftCommandKey;
+                mapper[keyboard_d.RightCommand] = ipKeyboard.rightCommandKey;
+                mapper[keyboard_d.CapsLock] = ipKeyboard.capsLockKey;
+                mapper[keyboard_d.Numlock] = ipKeyboard.numLockKey;
+                mapper[keyboard_d.ScrollLock] = ipKeyboard.scrollLockKey;
+                mapper[keyboard_d.Print] = ipKeyboard.printScreenKey;
+                mapper[keyboard_d.Pause] = ipKeyboard.pauseKey;
+                mapper[keyboard_d.Insert] = ipKeyboard.insertKey;
+                mapper[keyboard_d.Home] = ipKeyboard.homeKey;
+                mapper[keyboard_d.End] = ipKeyboard.endKey;
+                mapper[keyboard_d.PageUp] = ipKeyboard.pageUpKey;
+                mapper[keyboard_d.PageDown] = ipKeyboard.pageDownKey;
+                mapper[keyboard_d.Delete] = ipKeyboard.deleteKey;
+                mapper[keyboard_d.Comma] = ipKeyboard.commaKey;
+                mapper[keyboard_d.Period] = ipKeyboard.periodKey;
+                mapper[keyboard_d.Slash] = ipKeyboard.slashKey;
+                mapper[keyboard_d.BackQuote] = ipKeyboard.backquoteKey;
+                mapper[keyboard_d.Minus] = ipKeyboard.minusKey;
+                mapper[keyboard_d.Equals_k] = ipKeyboard.equalsKey;
+                mapper[keyboard_d.LeftBracket] = ipKeyboard.leftBracketKey;
+                mapper[keyboard_d.RightBracket] = ipKeyboard.rightBracketKey;
+                mapper[keyboard_d.Backslash] = ipKeyboard.backslashKey;
+                mapper[keyboard_d.Semicolon] = ipKeyboard.semicolonKey;
+                mapper[keyboard_d.Quote] = ipKeyboard.quoteKey;
+            }
+            else if (device_d is GamePad_D gamepad_d)
+            {
+                var ipGamepad = ipdevice as Gamepad;
+                mapper[gamepad_d.Up] = ipGamepad.dpad.up;
+            }
+            else throw new System.NotImplementedException($"初始化设备失败,未实现的物理按键映射 for {device_d.GetType()}");
         }
-        void RemoveKeyboardMapper(Keyboard_D keyboard_d)
+        void RemoveDeviceMapper(InputDevice_D keyboard_d)
         {
-            m_keyboardMapper.Remove(keyboard_d);
+            m_deviceMapper.Remove(keyboard_d);
         }
     }
 
