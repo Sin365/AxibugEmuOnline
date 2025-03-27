@@ -56,9 +56,9 @@ namespace AxibugEmuOnline.Client.InputDevices
             OnDeviceConnected?.Invoke(connectDevice);
         }
 
-        public abstract bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputDevice.InputControl;
-        public abstract Vector2 GetVector2<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputDevice.InputControl;
-        public abstract float GetFloat<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputDevice.InputControl;
+        public abstract bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl;
+        public abstract Vector2 GetVector2<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl;
+        public abstract float GetFloat<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl;
         /// <summary>
         /// 获得输入设备的唯一名称
         /// </summary>

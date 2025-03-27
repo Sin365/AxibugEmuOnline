@@ -1,7 +1,6 @@
 ﻿#if ENABLE_INPUT_SYSTEM
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using IP = UnityEngine.InputSystem.InputSystem;
 using IPDevice = UnityEngine.InputSystem.InputDevice;
@@ -9,8 +8,8 @@ using IPKeyboard = UnityEngine.InputSystem.Keyboard;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
 {
-    /// <summary> InputSystem对接类 </summary>
-    public partial class InputSystemResolver : InputResolver
+    /// <summary> 基于UnityInputSystem实现的输入解决器 </summary>
+    public class InputSystemResolver : InputResolver
     {
         DualWayDictionary<IPDevice, InputDevice> m_devices = new DualWayDictionary<IPDevice, InputDevice>();
 
@@ -101,10 +100,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
         {
             throw new System.NotImplementedException();
         }
-    }
 
-    public partial class InputSystemResolver : InputResolver
-    {
         static ButtonControl GetIPKeyboardKey(IPKeyboard keyboard, KeyCode key)
         {
             switch (key)
@@ -228,6 +224,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                     throw new System.NotImplementedException($"Not Find KeyCode Mapper Code from {key}");
             }
         }
+
     }
 }
 #endif

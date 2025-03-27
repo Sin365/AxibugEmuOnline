@@ -1,11 +1,9 @@
-﻿using NUnit.Framework.Internal;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using static Essgee.Emulation.Audio.DMGAudio;
-using static VirtualNes.Core.APU_INTERNAL;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForPSV
 {
+    /// <summary> PSV特化输入解决器,只能用于PSV平台,并且只支持PSV控制器 </summary>
     public class PSVResolver : InputResolver
     {
         List<InputDevice> m_devices = new List<InputDevice>();
@@ -38,24 +36,21 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
         {
             if (control.Device is PSVController psvCon)
             {
-                if (control is PSVController.Button button)
+                if (control == psvCon.Cross) return Input.GetKey(KeyCode.Joystick1Button0);
+                else if (control == psvCon.Circle) return Input.GetKey(KeyCode.Joystick1Button1);
+                else if (control == psvCon.Square) return Input.GetKey(KeyCode.Joystick1Button2);
+                else if (control == psvCon.Triangle) return Input.GetKey(KeyCode.Joystick1Button3);
+                else if (control == psvCon.L) return Input.GetKey(KeyCode.Joystick1Button4);
+                else if (control == psvCon.R) return Input.GetKey(KeyCode.Joystick1Button5);
+                else if (control == psvCon.Select) return Input.GetKey(KeyCode.Joystick1Button6);
+                else if (control == psvCon.Start) return Input.GetKey(KeyCode.Joystick1Button7);
+                else if (control == psvCon.Up) return Input.GetKey(KeyCode.Joystick1Button8);
+                else if (control == psvCon.Right) return Input.GetKey(KeyCode.Joystick1Button9);
+                else if (control == psvCon.Down) return Input.GetKey(KeyCode.Joystick1Button10);
+                else if (control == psvCon.Left) return Input.GetKey(KeyCode.Joystick1Button11);
+                else if (control == psvCon.LeftStick || control == psvCon.RightStick)
                 {
-                    if (button == psvCon.Cross) return Input.GetKey(KeyCode.Joystick1Button0);
-                    else if (button == psvCon.Circle) return Input.GetKey(KeyCode.Joystick1Button1);
-                    else if (button == psvCon.Square) return Input.GetKey(KeyCode.Joystick1Button2);
-                    else if (button == psvCon.Triangle) return Input.GetKey(KeyCode.Joystick1Button3);
-                    else if (button == psvCon.L) return Input.GetKey(KeyCode.Joystick1Button4);
-                    else if (button == psvCon.R) return Input.GetKey(KeyCode.Joystick1Button5);
-                    else if (button == psvCon.Select) return Input.GetKey(KeyCode.Joystick1Button6);
-                    else if (button == psvCon.Start) return Input.GetKey(KeyCode.Joystick1Button7);
-                    else if (button == psvCon.Up) return Input.GetKey(KeyCode.Joystick1Button8);
-                    else if (button == psvCon.Right) return Input.GetKey(KeyCode.Joystick1Button9);
-                    else if (button == psvCon.Down) return Input.GetKey(KeyCode.Joystick1Button10);
-                    else if (button == psvCon.Left) return Input.GetKey(KeyCode.Joystick1Button11);
-                }
-                else if (control is PSVController.Stick stick)
-                {
-                    var vec2 = stick.GetVector2();
+                    var vec2 = control.GetVector2();
                     return vec2.x != 0 || vec2.y != 0;
                 }
             }
@@ -65,24 +60,15 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
 
         public override Vector2 GetVector2<CONTROLLER>(CONTROLLER control)
         {
-            if (control.Device is PSVController)
+            if (control.Device is PSVController psvCon)
             {
-                if (control is PSVController.Stick stick)
+                if (control == psvCon.LeftStick)
                 {
-                    Vector2 result = Vector2.zero;
-
-                    if (stick.m_left)
-                    {
-                        result.x = Input.GetAxis("Joy1 Axis X");
-                        result.y = Input.GetAxis("Joy1 Axis Y");
-                    }
-                    else
-                    {
-                        result.x = Input.GetAxis("Joy1 Axis 4");
-                        result.y = Input.GetAxis("Joy1 Axis 5");
-                    }
-
-                    return result;
+                    return new Vector2(Input.GetAxis("Joy1 Axis X"), Input.GetAxis("Joy1 Axis Y"));
+                }
+                else if (control == psvCon.RightStick)
+                {
+                    return new Vector2(Input.GetAxis("Joy1 Axis 4"), Input.GetAxis("Joy1 Axis 5"));
                 }
             }
 

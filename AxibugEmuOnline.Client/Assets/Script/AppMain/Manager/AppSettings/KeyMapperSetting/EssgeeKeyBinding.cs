@@ -1,6 +1,5 @@
 ﻿using AxibugEmuOnline.Client.InputDevices;
 using AxibugProtobuf;
-using AxiInputSP;
 using System;
 
 namespace AxibugEmuOnline.Client.Settings

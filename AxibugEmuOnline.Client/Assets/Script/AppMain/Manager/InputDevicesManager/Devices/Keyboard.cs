@@ -23,17 +23,15 @@ namespace AxibugEmuOnline.Client.InputDevices
             return keys;
         }
 
-        public class KeyboardKey : InputControl
+        public class KeyboardKey : Button
         {
             internal KeyCode m_keycode;
 
             internal KeyboardKey(KeyCode listenKey, KeyBoard keyboard)
-                : base(keyboard)
+                : base(keyboard, listenKey.ToString())
             {
                 m_keycode = listenKey;
             }
-
-            public override string ControlName => m_keycode.ToString();
         }
     }
 

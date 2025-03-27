@@ -232,7 +232,7 @@ namespace AxibugEmuOnline.Client.Settings
             else return totalFloat / totalControl;
         }
 
-        public class MapSetting : Dictionary<T, List<InputDevice.InputControl>> { }
+        public class MapSetting : Dictionary<T, List<InputControl>> { }
 
         public class BindingPage
         {
@@ -277,7 +277,7 @@ namespace AxibugEmuOnline.Client.Settings
                 m_mapSetting.Remove(device);
             }
 
-            public void SetBinding(T emuBtn, InputDevice.InputControl key, int settingSlot)
+            public void SetBinding(T emuBtn, InputControl key, int settingSlot)
             {
                 var device = key.Device;
                 m_registedDevices.TryGetValue(device.GetType(), out var inputDevice);
@@ -287,7 +287,7 @@ namespace AxibugEmuOnline.Client.Settings
                 var setting = m_mapSetting[inputDevice];
                 if (!setting.TryGetValue(emuBtn, out var settingList))
                 {
-                    settingList = new List<InputDevice.InputControl>();
+                    settingList = new List<InputControl>();
                     setting[emuBtn] = settingList;
                 }
 
@@ -297,7 +297,7 @@ namespace AxibugEmuOnline.Client.Settings
                 settingList[settingSlot] = key;
             }
 
-            public InputDevice.InputControl GetBinding(T emuBtn, InputDevice device, int settingSlot)
+            public InputControl GetBinding(T emuBtn, InputDevice device, int settingSlot)
             {
                 m_mapSetting.TryGetValue(device, out var mapSetting);
                 if (mapSetting == null) return null;
@@ -308,8 +308,8 @@ namespace AxibugEmuOnline.Client.Settings
                 return settingList[settingSlot];
             }
 
-            private List<InputDevice.InputControl> m_caches = new List<InputDevice.InputControl>();
-            public IEnumerable<InputDevice.InputControl> GetBinding(T emuBtn)
+            private List<InputControl> m_caches = new List<InputControl>();
+            public IEnumerable<InputControl> GetBinding(T emuBtn)
             {
                 m_caches.Clear();
 
