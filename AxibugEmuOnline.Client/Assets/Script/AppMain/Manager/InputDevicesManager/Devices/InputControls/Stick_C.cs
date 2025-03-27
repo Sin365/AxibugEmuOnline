@@ -5,24 +5,15 @@ namespace AxibugEmuOnline.Client.InputDevices
     /// <summary>
     /// 摇杆类型的输入控件,支持的返回值为Vector2
     /// </summary>
-    public class Stick_C : InputControl_D
+    public class Stick_C : InputControl_C
     {
-        string m_controlName;
-        public override string ControlName => m_controlName;
+        public VirtualButton UP;
+        public VirtualButton Down;
+        public VirtualButton Left;
+        public VirtualButton Right;
 
-        public VirtualButton UP { get; private set; }
-        public VirtualButton Down { get; private set; }
-        public VirtualButton Left { get; private set; }
-        public VirtualButton Right { get; private set; }
-
-        public Stick_C(InputDevice_D device, string controlName) : base(device)
+        public Stick_C(InputDevice_D device, string controlName) : base(device, controlName)
         {
-            m_controlName = controlName;
-
-            UP = new VirtualButton(device);
-            Down = new VirtualButton(device);
-            Left = new VirtualButton(device);
-            Right = new VirtualButton(device);
         }
 
         protected override void OnUpdate()
@@ -43,11 +34,11 @@ namespace AxibugEmuOnline.Client.InputDevices
         }
 
 
-        public class VirtualButton : InputControl_D
+        public class VirtualButton : InputControl_C
         {
             internal bool m_performing;
 
-            public VirtualButton(InputDevice_D device) : base(device) { }
+            public VirtualButton(InputDevice_D device, string controlName) : base(device, controlName) { }
 
             public override bool Performing
             {
@@ -63,8 +54,6 @@ namespace AxibugEmuOnline.Client.InputDevices
             {
                 return Performing ? 1 : 0;
             }
-
-            public override string ControlName => "VirtualStickButton";
         }
     }
 }

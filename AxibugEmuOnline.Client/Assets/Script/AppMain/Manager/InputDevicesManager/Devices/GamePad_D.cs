@@ -1,34 +1,29 @@
-﻿using System.Collections.Generic;
-
-namespace AxibugEmuOnline.Client.InputDevices
+﻿namespace AxibugEmuOnline.Client.InputDevices
 {
     /// <summary>
     /// 通用游戏控制器
     /// </summary>
     public class GamePad_D : InputDevice_D
     {
-        public Button_C Up { get; private set; }
-        public Button_C Down { get; private set; }
-        public Button_C Left { get; private set; }
-        public Button_C Right { get; private set; }
-        public Button_C Option { get; private set; }
-        public Button_C Start { get; private set; }
-        public Button_C North { get; private set; }
-        public Button_C South { get; private set; }
-        public Button_C West { get; private set; }
-        public Button_C East { get; private set; }
-        public Button_C LeftShoulder { get; private set; }
-        public Button_C RightShoulder { get; private set; }
-        public Button_C LeftTrigger { get; private set; }
-        public Button_C RightTrigger { get; private set; }
+        public Button_C Up;
+        public Button_C Down;
+        public Button_C Left;
+        public Button_C Right;
+        public Button_C Option;
+        public Button_C Start;
+        public Button_C North;
+        public Button_C South;
+        public Button_C West;
+        public Button_C East;
+        public Button_C LeftShoulder;
+        public Button_C RightShoulder;
+        public Button_C LeftTrigger;
+        public Button_C RightTrigger;
+        public Button_C LeftStickPress;
+        public Button_C RightStickPress;
+        public Stick_C LeftStick;
+        public Stick_C RightStick;
 
         public GamePad_D(InputResolver resolver) : base(resolver) { }
-
-        protected override List<InputControl_D> DefineControls()
-        {
-            throw new System.NotImplementedException();
-        }
-
-
     }
 }

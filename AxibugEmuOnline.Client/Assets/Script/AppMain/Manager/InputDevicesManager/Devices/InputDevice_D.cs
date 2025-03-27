@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
@@ -13,15 +15,24 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// <summary> 获得输入解决器 </summary>
         internal InputResolver Resolver => m_resolver;
 
-        protected Dictionary<string, InputControl_D> m_controlMapper = new Dictionary<string, InputControl_D>();
+        protected Dictionary<string, InputControl_C> m_controlMapper = new Dictionary<string, InputControl_C>();
         protected InputResolver m_resolver;
         public InputDevice_D(InputResolver resolver)
         {
             m_resolver = resolver;
+            DefineControls();
+        }
 
-            foreach (var control in DefineControls())
+        private void DefineControls()
+        {
+            foreach (var field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
-                m_controlMapper.Add(control.ControlName, control);
+                if (!typeof(InputControl_C).IsAssignableFrom(field.FieldType)) continue;
+
+                var controlIns = Activator.CreateInstance(field.FieldType, this, field.Name) as InputControl_C;
+                field.SetValue(this, controlIns);
+
+                m_controlMapper[field.Name] = controlIns;
             }
         }
 
@@ -39,18 +50,9 @@ namespace AxibugEmuOnline.Client.InputDevices
             }
         }
 
-        /// <summary> 用于列出这个输入设备的所有输入控件实例 </summary>
-        /// <returns></returns>
-        protected abstract List<InputControl_D> DefineControls();
-
-        /// <summary> 通过控件名称,找到对应的控件 </summary>
-        /// <param name="keyName"></param>
-        /// <returns></returns>
-        public InputControl_D FindControlByName(string controlName)
+        public override string ToString()
         {
-            m_controlMapper.TryGetValue(controlName, out var key);
-            return key;
+            return Resolver.GetDeviceName(this);
         }
-
     }
 }

@@ -232,7 +232,7 @@ namespace AxibugEmuOnline.Client.Settings
             else return totalFloat / totalControl;
         }
 
-        public class MapSetting : Dictionary<T, List<InputControl_D>> { }
+        public class MapSetting : Dictionary<T, List<InputControl_C>> { }
 
         public class BindingPage
         {
@@ -277,7 +277,7 @@ namespace AxibugEmuOnline.Client.Settings
                 m_mapSetting.Remove(device);
             }
 
-            public void SetBinding(T emuBtn, InputControl_D key, int settingSlot)
+            public void SetBinding(T emuBtn, InputControl_C key, int settingSlot)
             {
                 var device = key.Device;
                 m_registedDevices.TryGetValue(device.GetType(), out var inputDevice);
@@ -287,7 +287,7 @@ namespace AxibugEmuOnline.Client.Settings
                 var setting = m_mapSetting[inputDevice];
                 if (!setting.TryGetValue(emuBtn, out var settingList))
                 {
-                    settingList = new List<InputControl_D>();
+                    settingList = new List<InputControl_C>();
                     setting[emuBtn] = settingList;
                 }
 
@@ -297,7 +297,7 @@ namespace AxibugEmuOnline.Client.Settings
                 settingList[settingSlot] = key;
             }
 
-            public InputControl_D GetBinding(T emuBtn, InputDevice_D device, int settingSlot)
+            public InputControl_C GetBinding(T emuBtn, InputDevice_D device, int settingSlot)
             {
                 m_mapSetting.TryGetValue(device, out var mapSetting);
                 if (mapSetting == null) return null;
@@ -308,8 +308,8 @@ namespace AxibugEmuOnline.Client.Settings
                 return settingList[settingSlot];
             }
 
-            private List<InputControl_D> m_caches = new List<InputControl_D>();
-            public IEnumerable<InputControl_D> GetBinding(T emuBtn)
+            private List<InputControl_C> m_caches = new List<InputControl_C>();
+            public IEnumerable<InputControl_C> GetBinding(T emuBtn)
             {
                 m_caches.Clear();
 

@@ -3,15 +3,10 @@
     /// <summary>
     /// 按键类型的输入控件
     /// </summary>
-    public class Button_C : InputControl_D
+    public class Button_C : InputControl_C
     {
-        string m_controlName;
-
-        public Button_C(InputDevice_D device, string controlName) : base(device)
+        public Button_C(InputDevice_D device, string controlName) : base(device, controlName)
         {
-            m_controlName = controlName;
         }
-
-        public override string ControlName => m_controlName;
     }
 }
