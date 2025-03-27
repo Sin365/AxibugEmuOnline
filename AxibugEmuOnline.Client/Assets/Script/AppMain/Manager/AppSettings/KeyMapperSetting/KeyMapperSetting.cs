@@ -70,7 +70,7 @@ namespace AxibugEmuOnline.Client.Settings
                 m_bindingPages.Add(new BindingPage(i, this));
             }
 
-            var keyboard = App.input.GetDevice<KeyBoard>();
+            var keyboard = App.input.GetDevice<Keyboard_D>();
             if (keyboard != null)
             {
                 foreach (var binding in m_bindingPages)
@@ -79,7 +79,7 @@ namespace AxibugEmuOnline.Client.Settings
                 }
             }
 
-            var psvController = App.input.GetDevice<PSVController>();
+            var psvController = App.input.GetDevice<PSVController_D>();
             if (psvController != null)
             {
                 foreach (var binding in m_bindingPages)
@@ -92,9 +92,9 @@ namespace AxibugEmuOnline.Client.Settings
             App.input.OnDeviceConnected += InputDevicesMgr_OnDeviceConnected;
         }
 
-        private void InputDevicesMgr_OnDeviceConnected(InputDevice connectDevice)
+        private void InputDevicesMgr_OnDeviceConnected(InputDevice_D connectDevice)
         {
-            if (connectDevice is KeyBoard)
+            if (connectDevice is Keyboard_D)
             {
                 foreach (var binding in m_bindingPages)
                 {
@@ -103,15 +103,15 @@ namespace AxibugEmuOnline.Client.Settings
             }
         }
 
-        private void InputDevicesMgr_OnDeviceLost(InputDevice lostDevice)
+        private void InputDevicesMgr_OnDeviceLost(InputDevice_D lostDevice)
         {
             foreach (var binding in m_bindingPages)
             {
                 binding.UnregistInputDevice(lostDevice);
             }
-            if (lostDevice is KeyBoard) //键盘丢失,立即查找还存在的键盘并建立连接
+            if (lostDevice is Keyboard_D) //键盘丢失,立即查找还存在的键盘并建立连接
             {
-                var anotherKeyboard = App.input.GetDevice<KeyBoard>();
+                var anotherKeyboard = App.input.GetDevice<Keyboard_D>();
                 if (anotherKeyboard != null)
                 {
                     foreach (var binding in m_bindingPages)
@@ -127,11 +127,11 @@ namespace AxibugEmuOnline.Client.Settings
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
 
-        internal void RaiseDeviceRegist(InputDevice device, BindingPage binding)
+        internal void RaiseDeviceRegist(InputDevice_D device, BindingPage binding)
         {
             OnRegistDevices(device, binding);
         }
-        protected abstract void OnRegistDevices(InputDevice device, BindingPage binding);
+        protected abstract void OnRegistDevices(InputDevice_D device, BindingPage binding);
 
         public bool Start(T emuControl, int controllerIndex)
         {
@@ -232,12 +232,12 @@ namespace AxibugEmuOnline.Client.Settings
             else return totalFloat / totalControl;
         }
 
-        public class MapSetting : Dictionary<T, List<InputControl>> { }
+        public class MapSetting : Dictionary<T, List<InputControl_D>> { }
 
         public class BindingPage
         {
-            Dictionary<Type, InputDevice> m_registedDevices = new Dictionary<Type, InputDevice>();
-            Dictionary<InputDevice, MapSetting> m_mapSetting = new Dictionary<InputDevice, MapSetting>();
+            Dictionary<Type, InputDevice_D> m_registedDevices = new Dictionary<Type, InputDevice_D>();
+            Dictionary<InputDevice_D, MapSetting> m_mapSetting = new Dictionary<InputDevice_D, MapSetting>();
 
             public int ControllerIndex { get; }
             public EmuCoreControllerKeyBinding<T> Host { get; }
@@ -248,7 +248,7 @@ namespace AxibugEmuOnline.Client.Settings
                 Host = host;
             }
 
-            internal bool IsRegisted<DEVICE>() where DEVICE : InputDevice
+            internal bool IsRegisted<DEVICE>() where DEVICE : InputDevice_D
             {
                 var type = typeof(T);
                 return IsRegisted(type);
@@ -258,7 +258,7 @@ namespace AxibugEmuOnline.Client.Settings
                 return m_registedDevices.ContainsKey(deviceType);
             }
 
-            internal void RegistInputDevice(InputDevice device)
+            internal void RegistInputDevice(InputDevice_D device)
             {
                 var type = device.GetType();
                 if (IsRegisted(type)) return;
@@ -268,7 +268,7 @@ namespace AxibugEmuOnline.Client.Settings
                 Host.RaiseDeviceRegist(device, this);
             }
 
-            internal void UnregistInputDevice(InputDevice device)
+            internal void UnregistInputDevice(InputDevice_D device)
             {
                 var type = device.GetType();
                 if (!IsRegisted(type)) return;
@@ -277,7 +277,7 @@ namespace AxibugEmuOnline.Client.Settings
                 m_mapSetting.Remove(device);
             }
 
-            public void SetBinding(T emuBtn, InputControl key, int settingSlot)
+            public void SetBinding(T emuBtn, InputControl_D key, int settingSlot)
             {
                 var device = key.Device;
                 m_registedDevices.TryGetValue(device.GetType(), out var inputDevice);
@@ -287,7 +287,7 @@ namespace AxibugEmuOnline.Client.Settings
                 var setting = m_mapSetting[inputDevice];
                 if (!setting.TryGetValue(emuBtn, out var settingList))
                 {
-                    settingList = new List<InputControl>();
+                    settingList = new List<InputControl_D>();
                     setting[emuBtn] = settingList;
                 }
 
@@ -297,7 +297,7 @@ namespace AxibugEmuOnline.Client.Settings
                 settingList[settingSlot] = key;
             }
 
-            public InputControl GetBinding(T emuBtn, InputDevice device, int settingSlot)
+            public InputControl_D GetBinding(T emuBtn, InputDevice_D device, int settingSlot)
             {
                 m_mapSetting.TryGetValue(device, out var mapSetting);
                 if (mapSetting == null) return null;
@@ -308,8 +308,8 @@ namespace AxibugEmuOnline.Client.Settings
                 return settingList[settingSlot];
             }
 
-            private List<InputControl> m_caches = new List<InputControl>();
-            public IEnumerable<InputControl> GetBinding(T emuBtn)
+            private List<InputControl_D> m_caches = new List<InputControl_D>();
+            public IEnumerable<InputControl_D> GetBinding(T emuBtn)
             {
                 m_caches.Clear();
 

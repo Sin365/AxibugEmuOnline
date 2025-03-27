@@ -2,7 +2,7 @@
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
-    public abstract class InputDevice
+    public abstract class InputDevice_D
     {
         public string UniqueName => m_resolver.GetDeviceName(this);
 
@@ -13,9 +13,9 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// <summary> 获得输入解决器 </summary>
         internal InputResolver Resolver => m_resolver;
 
-        protected Dictionary<string, InputControl> m_controlMapper = new Dictionary<string, InputControl>();
+        protected Dictionary<string, InputControl_D> m_controlMapper = new Dictionary<string, InputControl_D>();
         protected InputResolver m_resolver;
-        public InputDevice(InputResolver resolver)
+        public InputDevice_D(InputResolver resolver)
         {
             m_resolver = resolver;
 
@@ -41,12 +41,12 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         /// <summary> 用于列出这个输入设备的所有输入控件实例 </summary>
         /// <returns></returns>
-        protected abstract List<InputControl> DefineControls();
+        protected abstract List<InputControl_D> DefineControls();
 
         /// <summary> 通过控件名称,找到对应的控件 </summary>
         /// <param name="keyName"></param>
         /// <returns></returns>
-        public InputControl FindControlByName(string controlName)
+        public InputControl_D FindControlByName(string controlName)
         {
             m_controlMapper.TryGetValue(controlName, out var key);
             return key;

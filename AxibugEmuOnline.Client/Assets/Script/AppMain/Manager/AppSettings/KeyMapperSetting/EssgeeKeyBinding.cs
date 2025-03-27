@@ -22,9 +22,9 @@ namespace AxibugEmuOnline.Client.Settings
 
     public abstract class EssgeeKeyBinding : EmuCoreControllerKeyBinding<EssgeeSingleKey>
     {
-        protected override void OnRegistDevices(InputDevice device, BindingPage binding)
+        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
         {
-            if (device is KeyBoard keyboard)
+            if (device is Keyboard_D keyboard)
             {
                 switch (binding.ControllerIndex)
                 {
@@ -54,7 +54,7 @@ namespace AxibugEmuOnline.Client.Settings
                         break;
                 }
             }
-            else if (device is PSVController psvCon && binding.ControllerIndex == 0)
+            else if (device is PSVController_D psvCon && binding.ControllerIndex == 0)
             {
                 binding.SetBinding(EssgeeSingleKey.OPTION_1, psvCon.Start, 0);
                 binding.SetBinding(EssgeeSingleKey.OPTION_2, psvCon.Select, 0);
@@ -98,9 +98,9 @@ namespace AxibugEmuOnline.Client.Settings
         public override RomPlatformType Platform => RomPlatformType.GameBoyColor;
         public override int ControllerCount => 1;
 
-        protected override void OnRegistDevices(InputDevice device, BindingPage binding)
+        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
         {
-            if (device is KeyBoard keyboard)
+            if (device is Keyboard_D keyboard)
             {
                 switch (binding.ControllerIndex)
                 {
@@ -125,9 +125,9 @@ namespace AxibugEmuOnline.Client.Settings
         public override RomPlatformType Platform => RomPlatformType.GameBoy;
         public override int ControllerCount => 1;
 
-        protected override void OnRegistDevices(InputDevice device, BindingPage binding)
+        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
         {
-            if (device is KeyBoard keyboard)
+            if (device is Keyboard_D keyboard)
             {
                 switch (binding.ControllerIndex)
                 {

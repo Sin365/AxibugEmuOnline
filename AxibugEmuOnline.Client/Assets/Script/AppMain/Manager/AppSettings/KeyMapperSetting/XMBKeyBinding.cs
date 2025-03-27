@@ -9,9 +9,9 @@ namespace AxibugEmuOnline.Client
         public override RomPlatformType Platform => RomPlatformType.Invalid;
         public override int ControllerCount => 2;
 
-        protected override void OnRegistDevices(InputDevice device, BindingPage binding)
+        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
         {
-            if (device is KeyBoard keyboard)
+            if (device is Keyboard_D keyboard)
             {
                 switch (binding.ControllerIndex)
                 {

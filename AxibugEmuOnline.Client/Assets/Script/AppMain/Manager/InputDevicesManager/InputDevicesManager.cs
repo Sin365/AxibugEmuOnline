@@ -6,11 +6,11 @@ namespace AxibugEmuOnline.Client.InputDevices
     public class InputDevicesManager
     {
         InputResolver m_inputResolver = InputResolver.Create();
-        Dictionary<string, InputDevice> m_devices = new Dictionary<string, InputDevice>();
+        Dictionary<string, InputDevice_D> m_devices = new Dictionary<string, InputDevice_D>();
 
-        public delegate void OnDeviceConnectedHandle(InputDevice connectDevice);
+        public delegate void OnDeviceConnectedHandle(InputDevice_D connectDevice);
         public event OnDeviceConnectedHandle OnDeviceConnected;
-        public delegate void OnDeviceLostHandle(InputDevice lostDevice);
+        public delegate void OnDeviceLostHandle(InputDevice_D lostDevice);
         public event OnDeviceLostHandle OnDeviceLost;
 
         public InputDevicesManager()
@@ -21,23 +21,23 @@ namespace AxibugEmuOnline.Client.InputDevices
                 AddDevice(device);
         }
 
-        private void Resolver_OnDeviceLost(InputDevice lostDevice)
+        private void Resolver_OnDeviceLost(InputDevice_D lostDevice)
         {
             RemoveDevice(lostDevice);
         }
 
-        private void Resolver_OnDeviceConnected(InputDevice connectDevice)
+        private void Resolver_OnDeviceConnected(InputDevice_D connectDevice)
         {
             AddDevice(connectDevice);
         }
 
-        void AddDevice(InputDevice device)
+        void AddDevice(InputDevice_D device)
         {
             m_devices[device.UniqueName] = device;
             OnDeviceConnected?.Invoke(device);
         }
 
-        void RemoveDevice(InputDevice device)
+        void RemoveDevice(InputDevice_D device)
         {
             m_devices.Remove(device.UniqueName);
             OnDeviceLost?.Invoke(device);
@@ -46,7 +46,7 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// <summary>
         /// 获得一个指定类型的设备
         /// </summary>
-        public T GetDevice<T>() where T : InputDevice
+        public T GetDevice<T>() where T : InputDevice_D
         {
             foreach (var d in m_devices.Values)
             {

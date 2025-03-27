@@ -5,10 +5,10 @@ namespace AxibugEmuOnline.Client.InputDevices
     /// <summary>
     /// 输入设备的抽象控件接口
     /// </summary>
-    public abstract class InputControl
+    public abstract class InputControl_D
     {
         /// <summary> 控件所属设备 </summary>
-        public InputDevice Device { get; internal set; }
+        public InputDevice_D Device { get; internal set; }
 
         /// <summary> 获取该控件是否在当前调用帧被激发 </summary>
         public bool Start { get; private set; }
@@ -51,7 +51,7 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// <summary> 控件名,这个控件名称必须是唯一的 </summary>
         public abstract string ControlName { get; }
 
-        internal InputControl(InputDevice device)
+        internal InputControl_D(InputDevice_D device)
         {
             Device = device;
         }

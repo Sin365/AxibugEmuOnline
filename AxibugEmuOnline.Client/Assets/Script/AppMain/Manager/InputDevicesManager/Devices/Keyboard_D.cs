@@ -7,15 +7,15 @@ namespace AxibugEmuOnline.Client.InputDevices
     /// <summary>
     /// 通用键盘设备
     /// </summary>
-    public partial class KeyBoard : InputDevice
+    public partial class Keyboard_D : InputDevice_D
     {
         Dictionary<KeyCode, KeyboardKey> m_keyControllerMap = new Dictionary<KeyCode, KeyboardKey>();
 
-        public KeyBoard(InputResolver resolver) : base(resolver) { }
+        public Keyboard_D(InputResolver resolver) : base(resolver) { }
 
-        protected override List<InputControl> DefineControls()
+        protected override List<InputControl_D> DefineControls()
         {
-            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc, this) as InputControl).ToList();
+            var keys = s_keyboardKeys.Select(kc => new KeyboardKey(kc, this) as InputControl_D).ToList();
             foreach (KeyboardKey key in keys)
             {
                 m_keyControllerMap.Add(key.m_keycode, key);
@@ -23,11 +23,11 @@ namespace AxibugEmuOnline.Client.InputDevices
             return keys;
         }
 
-        public class KeyboardKey : Button
+        public class KeyboardKey : Button_C
         {
             internal KeyCode m_keycode;
 
-            internal KeyboardKey(KeyCode listenKey, KeyBoard keyboard)
+            internal KeyboardKey(KeyCode listenKey, Keyboard_D keyboard)
                 : base(keyboard, listenKey.ToString())
             {
                 m_keycode = listenKey;
@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client.InputDevices
     }
 
     #region HardCodeForKeyboard
-    public partial class KeyBoard : InputDevice
+    public partial class Keyboard_D : InputDevice_D
     {
         static readonly List<KeyCode> s_keyboardKeys = new List<KeyCode>
         {

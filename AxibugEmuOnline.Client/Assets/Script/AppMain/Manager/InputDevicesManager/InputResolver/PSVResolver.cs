@@ -6,35 +6,35 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
     /// <summary> PSV特化输入解决器,只能用于PSV平台,并且只支持PSV控制器 </summary>
     public class PSVResolver : InputResolver
     {
-        List<InputDevice> m_devices = new List<InputDevice>();
-        PSVController m_psvController;
+        List<InputDevice_D> m_devices = new List<InputDevice_D>();
+        PSVController_D m_psvController;
 
         protected override void OnInit()
         {
-            m_psvController = new PSVController(this);
+            m_psvController = new PSVController_D(this);
             m_devices.Add(m_psvController);
         }
 
-        public override IEnumerable<InputDevice> GetDevices()
+        public override IEnumerable<InputDevice_D> GetDevices()
         {
             return m_devices;
         }
 
-        public override bool CheckOnline(InputDevice device)
+        public override bool CheckOnline(InputDevice_D device)
         {
             return device == m_psvController;
         }
 
-        public override string GetDeviceName(InputDevice inputDevice)
+        public override string GetDeviceName(InputDevice_D inputDevice)
         {
             Debug.Assert(inputDevice == m_psvController, "只支持psv控制器");
 
-            return nameof(PSVController);
+            return nameof(PSVController_D);
         }
 
         public override bool CheckPerforming<CONTROLLER>(CONTROLLER control)
         {
-            if (control.Device is PSVController psvCon)
+            if (control.Device is PSVController_D psvCon)
             {
                 if (control == psvCon.Cross) return Input.GetKey(KeyCode.Joystick1Button0);
                 else if (control == psvCon.Circle) return Input.GetKey(KeyCode.Joystick1Button1);
@@ -60,7 +60,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
 
         public override Vector2 GetVector2<CONTROLLER>(CONTROLLER control)
         {
-            if (control.Device is PSVController psvCon)
+            if (control.Device is PSVController_D psvCon)
             {
                 if (control == psvCon.LeftStick)
                 {

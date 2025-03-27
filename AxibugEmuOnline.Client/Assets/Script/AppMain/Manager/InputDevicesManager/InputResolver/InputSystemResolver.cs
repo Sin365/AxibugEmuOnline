@@ -1,30 +1,27 @@
 ﻿#if ENABLE_INPUT_SYSTEM
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using IP = UnityEngine.InputSystem.InputSystem;
-using IPDevice = UnityEngine.InputSystem.InputDevice;
-using IPKeyboard = UnityEngine.InputSystem.Keyboard;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
 {
     /// <summary> 基于UnityInputSystem实现的输入解决器 </summary>
     public class InputSystemResolver : InputResolver
     {
-        DualWayDictionary<IPDevice, InputDevice> m_devices = new DualWayDictionary<IPDevice, InputDevice>();
+        DualWayDictionary<InputDevice, InputDevice_D> m_devices = new DualWayDictionary<InputDevice, InputDevice_D>();
 
         protected override void OnInit()
         {
-            foreach (var device in IP.devices) AddDevice(device);
+            foreach (var device in InputSystem.devices) AddDevice(device);
 
-            IP.onDeviceChange += IP_onDeviceChange;
+            InputSystem.onDeviceChange += IP_onDeviceChange;
         }
 
-        private void AddDevice(IPDevice ipdev)
+        private void AddDevice(InputDevice ipdev)
         {
-            InputDevice newDevice = null;
-            if (ipdev is IPKeyboard) newDevice = new KeyBoard(this);
-
+            InputDevice_D newDevice = null;
+            if (ipdev is Keyboard) newDevice = new Keyboard_D(this);
             if (newDevice != null)
             {
                 m_devices.Add(ipdev, newDevice);
@@ -32,7 +29,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             }
         }
 
-        private void RemoveDevice(IPDevice ipdev)
+        private void RemoveDevice(InputDevice ipdev)
         {
             if (m_devices.TryGetValue(ipdev, out var device))
             {
@@ -41,7 +38,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             }
         }
 
-        public override string GetDeviceName(InputDevice inputDevice)
+        public override string GetDeviceName(InputDevice_D inputDevice)
         {
             m_devices.TryGetKey(inputDevice, out var ipdev);
             Debug.Assert(ipdev != null, "不能对已离线的设备获取名称");
@@ -49,12 +46,12 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             return $"{ipdev.description.deviceClass}_{ipdev.description.interfaceName}_{ipdev.deviceId}";
         }
 
-        public override bool CheckOnline(InputDevice device)
+        public override bool CheckOnline(InputDevice_D device)
         {
             return m_devices.TryGetKey(device, out var _);
         }
 
-        private void IP_onDeviceChange(IPDevice device, UnityEngine.InputSystem.InputDeviceChange changeType)
+        private void IP_onDeviceChange(InputDevice device, UnityEngine.InputSystem.InputDeviceChange changeType)
         {
             switch (changeType)
             {
@@ -63,20 +60,20 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             }
         }
 
-        public override IEnumerable<InputDevice> GetDevices()
+        public override IEnumerable<InputDevice_D> GetDevices()
         {
             return m_devices.Values;
         }
 
         public override bool CheckPerforming<CONTROLLER>(CONTROLLER control)
         {
-            if (control.Device is KeyBoard keyboard)
+            if (control.Device is Keyboard_D keyboard)
             {
-                if (control is KeyBoard.KeyboardKey key)
+                if (control is Keyboard_D.KeyboardKey key)
                 {
                     if (m_devices.TryGetKey(keyboard, out var ipdev))
                     {
-                        var ipKeyboard = ipdev as IPKeyboard;
+                        var ipKeyboard = ipdev as Keyboard;
                         if (ipKeyboard == null) return false;
 
                         var k = GetIPKeyboardKey(ipKeyboard, key.m_keycode);
@@ -101,7 +98,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             throw new System.NotImplementedException();
         }
 
-        static ButtonControl GetIPKeyboardKey(IPKeyboard keyboard, KeyCode key)
+        static ButtonControl GetIPKeyboardKey(Keyboard keyboard, KeyCode key)
         {
             switch (key)
             {
