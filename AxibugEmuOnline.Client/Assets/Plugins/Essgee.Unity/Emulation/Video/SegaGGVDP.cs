@@ -51,19 +51,11 @@ namespace Essgee.Emulation.Video
         //GCHandle? lasyRenderHandle;
         protected override void PrepareRenderScreen()
         {
-            //// 固定数组，防止垃圾回收器移动它  
-            //var bitmapcolorRect_handle = GCHandle.Alloc(outputFramebuffer.Clone() as byte[], GCHandleType.Pinned);
-            //// 获取数组的指针  
-            //IntPtr mFrameDataPtr = bitmapcolorRect_handle.AddrOfPinnedObject();
-
-            var eventArgs = RenderScreenEventArgs.Create(numVisiblePixels, numVisibleScanlines, outputFramebuffer_Ptr);
+            //var eventArgs = RenderScreenEventArgs.Create(numVisiblePixels, numVisibleScanlines, outputFramebuffer_Ptr);
+            //这里要改成viewport的中间区域的分辨率
+            var eventArgs = RenderScreenEventArgs.Create(Viewport.Width, Viewport.Height, outputFramebuffer_Ptr);
             OnRenderScreen(eventArgs);
             eventArgs.Release();
-            //if (lasyRenderHandle != null)
-            //    lasyRenderHandle.Value.Free();
-            //lasyRenderHandle = bitmapcolorRect_handle;
-
-            //OnRenderScreen(new RenderScreenEventArgs(Viewport.Width, Viewport.Height, outputFramebuffer.Clone() as byte[]));
         }
 
         private bool ModifyAndVerifyCoordinates(ref int x, ref int y)
