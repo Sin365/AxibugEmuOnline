@@ -105,11 +105,13 @@ namespace AxibugEmuOnline.Client
         {
             switch (platform)
             {
-                case RomPlatformType.Nes: return new Vector2Int(256, 240);
+                case RomPlatformType.Nes: 
+                    return new Vector2Int(256, 240);
                 case RomPlatformType.Cps1:
                 case RomPlatformType.Cps2:
                 case RomPlatformType.Neogeo:
                 case RomPlatformType.Igs:
+                case RomPlatformType.ArcadeOld:
                     return UMAME.instance.mUniVideoPlayer.mScreenSize;
                 case RomPlatformType.MasterSystem:
                 case RomPlatformType.GameGear:
