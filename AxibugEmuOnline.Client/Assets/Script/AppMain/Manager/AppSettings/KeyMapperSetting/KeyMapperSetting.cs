@@ -107,11 +107,11 @@ namespace AxibugEmuOnline.Client.Settings
 
         internal void RaiseDeviceRegist(InputDevice_D device, ControllerBinder binding)
         {
-            if (device is Keyboard_D keyboard && this is IDeviceBinder<T, Keyboard_D> keyboardIn) keyboardIn.Bind(keyboard, binding);
-            if (device is GamePad_D gamePad && this is IDeviceBinder<T, GamePad_D> gamepadIn) gamepadIn.Bind(gamePad, binding);
-            if (device is DualShockController_D dsC && this is IDeviceBinder<T, DualShockController_D> dsIn) dsIn.Bind(dsC, binding);
-            if (device is XboxController_D xbC && this is IDeviceBinder<T, XboxController_D> xbIn) xbIn.Bind(xbC, binding);
-            if (device is PSVController_D psvC && this is IDeviceBinder<T, PSVController_D> psvIn) psvIn.Bind(psvC, binding);
+            if (device is Keyboard_D keyboard) Bind(keyboard, binding);
+            else if (device is GamePad_D gamePad) Bind(gamePad, binding);
+            else if (device is DualShockController_D dsC) Bind(dsC, binding);
+            else if (device is XboxController_D xbC) Bind(xbC, binding);
+            else if (device is PSVController_D psvC) Bind(psvC, binding);
             else throw new NotImplementedException($"{device.GetType()}");
         }
 
