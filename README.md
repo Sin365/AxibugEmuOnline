@@ -107,7 +107,7 @@
 
 ## 代码贡献/协作者
 
-[AlienJack](https://github.com/AlienJack "AlienJack") 
+[AlienJack](https://github.com/AlienJack "AlienJack")  [alienjack1989](https://space.bilibili.com/6819295 "alienjack1989") 
 
 
 ## NES 模拟器内核
