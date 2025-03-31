@@ -1,14 +1,7 @@
 {
-    "name": "AxibugEmuOnline.Client",
+    "name": "StoicGooseUnity",
     "rootNamespace": "",
-    "references": [
-        "AxiReplay",
-        "VirtualNes.Core",
-        "UIEffect2018",
-        "Mame.Core",
-        "Essgee.Unity",
-        "StoicGooseUnity"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,

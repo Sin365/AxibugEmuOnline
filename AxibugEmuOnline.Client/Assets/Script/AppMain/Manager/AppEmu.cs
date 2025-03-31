@@ -71,6 +71,10 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.Sg1000:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("EssgeeUnity/EssgeeUnity")).GetComponent<IEmuCore>();
                     break;
+                case RomPlatformType.WonderSwan:
+                case RomPlatformType.WonderSwanColor:
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("StoicGooseUnity/StoicGooseUnity")).GetComponent<IEmuCore>();
+                    break;
             }
 
             var result = m_emuCore.StartGame(romFile);
