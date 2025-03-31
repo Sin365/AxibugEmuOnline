@@ -43,10 +43,6 @@ public class UMAME : MonoBehaviour, IEmuCore
     public uint Frame => (uint)emu.currEmuFrame;
     void Awake()
     {
-        //设为60帧
-        App.tick.SetFrameRate(60);
-        // 强制横屏
-        Screen.orientation = ScreenOrientation.LandscapeLeft;
         instance = this;
         mFPS = GameObject.Find("FPS").GetComponent<Text>();
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();

@@ -1398,7 +1398,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1924338507, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -184
+      value: -184.00003
       objectReference: {fileID: 0}
     - target: {fileID: 155136085858422342, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3944,6 +3944,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4533431376032812611, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
+      propertyPath: MenuSetting.Array.data[1].SubMenus.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4533431376032812611, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
+      propertyPath: MenuSetting.Array.data[1].SubMenus.Array.data[5].Icon
+      value: 
+      objectReference: {fileID: 21300000, guid: b12ca21105df97a469be3cf97a4f5fc1, type: 3}
+    - target: {fileID: 4533431376032812611, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
+      propertyPath: MenuSetting.Array.data[1].SubMenus.Array.data[5].Name
+      value: NeoGeo
+      objectReference: {fileID: 0}
+    - target: {fileID: 4533431376032812611, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
+      propertyPath: MenuSetting.Array.data[1].SubMenus.Array.data[5].Description
+      value: SNK NeoGeo
+      objectReference: {fileID: 0}
+    - target: {fileID: 4533431376032812611, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
+      propertyPath: MenuSetting.Array.data[1].SubMenus.Array.data[5].OverrideTemplate
+      value: 
+      objectReference: {fileID: -3959751710151339114, guid: 7478117b6f7d6cb4cb8c0f5d56205ea1, type: 3}
     - target: {fileID: 4578492792357404689, guid: 450328d5a907c8249a60bc3980ba66f6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

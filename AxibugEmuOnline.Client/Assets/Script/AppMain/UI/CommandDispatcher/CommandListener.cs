@@ -91,7 +91,7 @@ namespace AxibugEmuOnline.Client
             {
                 foreach (var executer in executers)
                 {
-                    App.log.Debug($"CommandListener GetCommand | {Time.frameCount}|{executer.name}| {cmd.Cmd}|{cmd.Cancel}");
+                    //App.log.Debug($"CommandListener GetCommand | {Time.frameCount}|{executer.name}| {cmd.Cmd}|{cmd.Cancel}");
                     executer.ExecuteCommand(cmd.Cmd, cmd.Cancel);
                 }
             }

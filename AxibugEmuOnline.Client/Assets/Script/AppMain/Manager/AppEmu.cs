@@ -59,6 +59,7 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.Cps2:
                 case RomPlatformType.Igs:
                 case RomPlatformType.Neogeo:
+                case RomPlatformType.ArcadeOld:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<IEmuCore>();
                     break;
                 case RomPlatformType.MasterSystem:

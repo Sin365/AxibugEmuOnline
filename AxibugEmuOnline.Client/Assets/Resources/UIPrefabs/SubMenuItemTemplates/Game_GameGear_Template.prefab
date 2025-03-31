@@ -1054,7 +1054,7 @@ GameObject:
   - component: {fileID: 1952221633680236903}
   - component: {fileID: 2091811895805808559}
   m_Layer: 5
-  m_Name: Game_GameBoy_Template
+  m_Name: Game_GameGear_Template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1105,7 +1105,7 @@ MonoBehaviour:
   UnSelectScale: 1
   RomGroupRoot: {fileID: 8704788976101297821}
   StarRom: 0
-  Platform: 4
+  Platform: 3
   SearchKey: 
 --- !u!114 &2091811895805808559
 MonoBehaviour:

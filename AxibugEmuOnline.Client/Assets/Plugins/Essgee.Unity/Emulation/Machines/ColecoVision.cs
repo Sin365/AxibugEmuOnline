@@ -5,6 +5,7 @@ using Essgee.Emulation.Configuration;
 using Essgee.Emulation.CPU;
 using Essgee.Emulation.Video;
 using Essgee.EventArguments;
+using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
@@ -182,7 +183,10 @@ namespace Essgee.Emulation.Machines
 
         private void LoadBios()
         {
-            var (type, bootstrapRomData) = CartridgeLoader.Load(configuration.BiosRom, "ColecoVision BIOS");
+
+            //var (type, bootstrapRomData) = CartridgeLoader.Load(configuration.BiosRom, "ColecoVision BIOS");
+            //直接加载BootStrap
+            GameMetadataHandler.instance.gameMetaReources.GetDatBytes("Bootstrap/[BIOS] ColecoVision (USA, Europe).col", out byte[] bootstrapRomData);
             bios = new ColecoCartridge(bootstrapRomData.Length, 0);
             bios.LoadRom(bootstrapRomData);
         }
