@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.Haptics;
+using UnityEngine.InputSystem.XInput;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
 {
@@ -24,7 +27,9 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
         {
             InputDevice_D newDevice = null;
             if (ipdev is Keyboard) newDevice = new Keyboard_D(this);
-            else if (ipdev is Gamepad) newDevice = new GamePad_D(this);
+            else if (ipdev is DualShockGamepad) newDevice = new DualShockController_D(this);
+            else if (ipdev is XInputController) newDevice = new XboxController_D(this);
+            else if (ipdev is Gamepad) newDevice = new GamePad_D(this); //注意Gamepad的优先级,因为任何手柄,Inputsystem中的基类都是GamePad
 
             if (newDevice != null)
             {
@@ -220,6 +225,52 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                 mapper[keyboard_d.Backslash] = ipKeyboard.backslashKey;
                 mapper[keyboard_d.Semicolon] = ipKeyboard.semicolonKey;
                 mapper[keyboard_d.Quote] = ipKeyboard.quoteKey;
+            }
+            else if (device_d is DualShockController_D ds_d)
+            {
+                var ipDsGamePad = ipdevice as DualShockGamepad;
+                mapper[ds_d.Circle] = ipDsGamePad.circleButton;
+                mapper[ds_d.Triangle] = ipDsGamePad.triangleButton;
+                mapper[ds_d.Cross] = ipDsGamePad.crossButton;
+                mapper[ds_d.Square] = ipDsGamePad.squareButton;
+                mapper[ds_d.Up] = ipDsGamePad.dpad.up;
+                mapper[ds_d.Down] = ipDsGamePad.dpad.down;
+                mapper[ds_d.Left] = ipDsGamePad.dpad.left;
+                mapper[ds_d.Right] = ipDsGamePad.dpad.right;
+                mapper[ds_d.L1] = ipDsGamePad.L1;
+                mapper[ds_d.L2] = ipDsGamePad.L2;
+                mapper[ds_d.L3] = ipDsGamePad.L3;
+                mapper[ds_d.R1] = ipDsGamePad.R1;
+                mapper[ds_d.R2] = ipDsGamePad.R2;
+                mapper[ds_d.R3] = ipDsGamePad.R3;
+                mapper[ds_d.Share] = ipDsGamePad.shareButton;
+                mapper[ds_d.Options] = ipDsGamePad.optionsButton;
+                mapper[ds_d.TouchpadBtn] = ipDsGamePad.touchpadButton;
+                mapper[ds_d.LeftStick] = ipDsGamePad.leftStick;
+                mapper[ds_d.RightStick] = ipDsGamePad.rightStick;
+            }
+            else if(device_d is XboxController_D xbox_d)
+            {
+                var ipXInputGamePad = ipdevice as XInputController;
+                mapper[xbox_d.X] = ipXInputGamePad.xButton;
+                mapper[xbox_d.Y] = ipXInputGamePad.yButton;
+                mapper[xbox_d.A] = ipXInputGamePad.aButton;
+                mapper[xbox_d.B] = ipXInputGamePad.bButton;
+                mapper[xbox_d.Up] = ipXInputGamePad.dpad.up;
+                mapper[xbox_d.Down] = ipXInputGamePad.dpad.down;
+                mapper[xbox_d.Left] = ipXInputGamePad.dpad.left;
+                mapper[xbox_d.Right] = ipXInputGamePad.dpad.right;
+                mapper[xbox_d.View] = ipXInputGamePad.view;
+                mapper[xbox_d.Menu] = ipXInputGamePad.menu;
+                mapper[xbox_d.LeftBumper] = ipXInputGamePad.leftShoulder;
+                mapper[xbox_d.LeftTrigger] = ipXInputGamePad.leftTrigger;
+                mapper[xbox_d.LeftStickPress] = ipXInputGamePad.leftStickButton;
+                mapper[xbox_d.RightBumper] = ipXInputGamePad.rightShoulder;
+                mapper[xbox_d.RightTrigger] = ipXInputGamePad.rightTrigger;
+                mapper[xbox_d.RightStickPress] = ipXInputGamePad.rightStickButton;
+                mapper[xbox_d.LeftStick] = ipXInputGamePad.leftStick;
+                mapper[xbox_d.RightStick] = ipXInputGamePad.rightStick;
+
             }
             else if (device_d is GamePad_D gamepad_d)
             {
