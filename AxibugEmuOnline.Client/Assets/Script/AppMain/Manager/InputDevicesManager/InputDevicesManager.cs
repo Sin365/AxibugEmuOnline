@@ -55,6 +55,14 @@ namespace AxibugEmuOnline.Client.InputDevices
 
             return null;
         }
+        /// <summary>
+        /// 获得所有存在的输入设备
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<InputDevice_D> GetDevices()
+        {
+            return m_devices.Values;
+        }
 
         /// <summary> 由外部驱动的逻辑更新入口 </summary>
         public void Update()

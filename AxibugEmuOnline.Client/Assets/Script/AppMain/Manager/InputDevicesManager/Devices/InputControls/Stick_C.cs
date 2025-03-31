@@ -7,7 +7,7 @@ namespace AxibugEmuOnline.Client.InputDevices
     /// </summary>
     public class Stick_C : InputControl_C
     {
-        public VirtualButton UP;
+        public VirtualButton Up;
         public VirtualButton Down;
         public VirtualButton Left;
         public VirtualButton Right;
@@ -20,8 +20,8 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             var axis = GetVector2();
 
-            UP.m_performing = axis.y > 0f;
-            UP.Update();
+            Up.m_performing = axis.y > 0f;
+            Up.Update();
 
             Down.m_performing = axis.y < 0f;
             Down.Update();

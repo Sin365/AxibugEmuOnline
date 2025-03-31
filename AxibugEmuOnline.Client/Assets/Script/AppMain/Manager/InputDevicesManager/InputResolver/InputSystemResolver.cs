@@ -1,12 +1,8 @@
 ﻿#if ENABLE_INPUT_SYSTEM
-using Google.Protobuf.WellKnownTypes;
-using NUnit.Framework.Internal;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
-using UnityEngine.InputSystem.Haptics;
 using UnityEngine.InputSystem.XInput;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
@@ -249,7 +245,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                 mapper[ds_d.LeftStick] = ipDsGamePad.leftStick;
                 mapper[ds_d.RightStick] = ipDsGamePad.rightStick;
             }
-            else if(device_d is XboxController_D xbox_d)
+            else if (device_d is XboxController_D xbox_d)
             {
                 var ipXInputGamePad = ipdevice as XInputController;
                 mapper[xbox_d.X] = ipXInputGamePad.xButton;

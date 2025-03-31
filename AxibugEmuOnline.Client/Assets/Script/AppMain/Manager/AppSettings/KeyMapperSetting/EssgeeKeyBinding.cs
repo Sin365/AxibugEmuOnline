@@ -22,56 +22,112 @@ namespace AxibugEmuOnline.Client.Settings
 
     public abstract class EssgeeKeyBinding : EmuCoreControllerKeyBinding<EssgeeSingleKey>
     {
-        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
+        public override void Bind(Keyboard_D device, ControllerBinder controller)
         {
-            if (device is Keyboard_D keyboard)
+            switch (controller.ControllerIndex)
             {
-                switch (binding.ControllerIndex)
-                {
-                    case 0:
-                        binding.SetBinding(EssgeeSingleKey.OPTION_1, keyboard.Return, 0);
-                        binding.SetBinding(EssgeeSingleKey.OPTION_2, keyboard.RightShift, 0);
-                        binding.SetBinding(EssgeeSingleKey.UP, keyboard.W, 0);
-                        binding.SetBinding(EssgeeSingleKey.DOWN, keyboard.S, 0);
-                        binding.SetBinding(EssgeeSingleKey.LEFT, keyboard.A, 0);
-                        binding.SetBinding(EssgeeSingleKey.RIGHT, keyboard.D, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_1, keyboard.J, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_2, keyboard.K, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_3, keyboard.U, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_4, keyboard.I, 0);
-                        break;
-                    case 1:
-                        binding.SetBinding(EssgeeSingleKey.OPTION_1, keyboard.Keypad0, 0);
-                        binding.SetBinding(EssgeeSingleKey.OPTION_2, keyboard.Delete, 0);
-                        binding.SetBinding(EssgeeSingleKey.UP, keyboard.UpArrow, 0);
-                        binding.SetBinding(EssgeeSingleKey.DOWN, keyboard.DownArrow, 0);
-                        binding.SetBinding(EssgeeSingleKey.LEFT, keyboard.LeftArrow, 0);
-                        binding.SetBinding(EssgeeSingleKey.RIGHT, keyboard.RightArrow, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_1, keyboard.Keypad1, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_2, keyboard.Keypad2, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_3, keyboard.Keypad3, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_4, keyboard.Keypad4, 0);
-                        break;
-                }
+                case 0:
+                    controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Return, 0);
+                    controller.SetBinding(EssgeeSingleKey.OPTION_2, device.RightShift, 0);
+                    controller.SetBinding(EssgeeSingleKey.UP, device.W, 0);
+                    controller.SetBinding(EssgeeSingleKey.DOWN, device.S, 0);
+                    controller.SetBinding(EssgeeSingleKey.LEFT, device.A, 0);
+                    controller.SetBinding(EssgeeSingleKey.RIGHT, device.D, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_1, device.J, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_2, device.K, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_3, device.U, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_4, device.I, 0);
+                    break;
+                case 1:
+                    controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Keypad0, 0);
+                    controller.SetBinding(EssgeeSingleKey.OPTION_2, device.Delete, 0);
+                    controller.SetBinding(EssgeeSingleKey.UP, device.UpArrow, 0);
+                    controller.SetBinding(EssgeeSingleKey.DOWN, device.DownArrow, 0);
+                    controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftArrow, 0);
+                    controller.SetBinding(EssgeeSingleKey.RIGHT, device.RightArrow, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_1, device.Keypad1, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_2, device.Keypad2, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_3, device.Keypad3, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_4, device.Keypad4, 0);
+                    break;
             }
-            else if (device is PSVController_D psvCon && binding.ControllerIndex == 0)
+        }
+        public override void Bind(PSVController_D device, ControllerBinder controller)
+        {
+            switch (controller.ControllerIndex)
             {
-                binding.SetBinding(EssgeeSingleKey.OPTION_1, psvCon.Start, 0);
-                binding.SetBinding(EssgeeSingleKey.OPTION_2, psvCon.Select, 0);
-                binding.SetBinding(EssgeeSingleKey.UP, psvCon.Up, 0);
-                binding.SetBinding(EssgeeSingleKey.DOWN, psvCon.Down, 0);
-                binding.SetBinding(EssgeeSingleKey.LEFT, psvCon.Left, 0);
-                binding.SetBinding(EssgeeSingleKey.RIGHT, psvCon.Right, 0);
-                binding.SetBinding(EssgeeSingleKey.BTN_1, psvCon.Cross, 0);
-                binding.SetBinding(EssgeeSingleKey.BTN_2, psvCon.Circle, 0);
-                binding.SetBinding(EssgeeSingleKey.BTN_3, psvCon.Square, 0);
-                binding.SetBinding(EssgeeSingleKey.BTN_4, psvCon.Triangle, 0);
-                //PSV 摇杆
-                binding.SetBinding(EssgeeSingleKey.UP, psvCon.LeftStick.UP, 1);
-                binding.SetBinding(EssgeeSingleKey.DOWN, psvCon.LeftStick.Down, 1);
-                binding.SetBinding(EssgeeSingleKey.LEFT, psvCon.LeftStick.Left, 1);
-                binding.SetBinding(EssgeeSingleKey.RIGHT, psvCon.LeftStick.Right, 1);
+                case 0:
+                    controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Start, 0);
+                    controller.SetBinding(EssgeeSingleKey.OPTION_2, device.Select, 0);
+                    controller.SetBinding(EssgeeSingleKey.UP, device.Up, 0);
+                    controller.SetBinding(EssgeeSingleKey.DOWN, device.Down, 0);
+                    controller.SetBinding(EssgeeSingleKey.LEFT, device.Left, 0);
+                    controller.SetBinding(EssgeeSingleKey.RIGHT, device.Right, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_1, device.Cross, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_2, device.Circle, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_3, device.Square, 0);
+                    controller.SetBinding(EssgeeSingleKey.BTN_4, device.Triangle, 0);
+
+                    controller.SetBinding(EssgeeSingleKey.UP, device.LeftStick.Up, 1);
+                    controller.SetBinding(EssgeeSingleKey.DOWN, device.LeftStick.Down, 1);
+                    controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftStick.Left, 1);
+                    controller.SetBinding(EssgeeSingleKey.RIGHT, device.LeftStick.Right, 1);
+                    break;
             }
+        }
+        public override void Bind(DualShockController_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Options, 0);
+            controller.SetBinding(EssgeeSingleKey.OPTION_2, device.Share, 0);
+            controller.SetBinding(EssgeeSingleKey.UP, device.Up, 0);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.Down, 0);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.Left, 0);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.Right, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_1, device.Cross, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_2, device.Circle, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_3, device.Square, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_4, device.Triangle, 0);
+
+            controller.SetBinding(EssgeeSingleKey.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.LeftStick.Down, 1);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.LeftStick.Right, 1);
+        }
+        public override void Bind(GamePad_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Start, 0);
+            controller.SetBinding(EssgeeSingleKey.OPTION_2, device.Select, 0);
+            controller.SetBinding(EssgeeSingleKey.UP, device.Up, 0);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.Down, 0);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.Left, 0);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.Right, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_1, device.South, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_2, device.East, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_3, device.West, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_4, device.North, 0);
+
+            controller.SetBinding(EssgeeSingleKey.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.LeftStick.Down, 1);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.LeftStick.Right, 1);
+        }
+        public override void Bind(XboxController_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Menu, 0);
+            controller.SetBinding(EssgeeSingleKey.OPTION_2, device.View, 0);
+            controller.SetBinding(EssgeeSingleKey.UP, device.Up, 0);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.Down, 0);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.Left, 0);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.Right, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_1, device.A, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_2, device.B, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_3, device.X, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_4, device.Y, 0);
+
+            controller.SetBinding(EssgeeSingleKey.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.LeftStick.Down, 1);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.LeftStick.Right, 1);
         }
     }
 
@@ -97,55 +153,11 @@ namespace AxibugEmuOnline.Client.Settings
     {
         public override RomPlatformType Platform => RomPlatformType.GameBoyColor;
         public override int ControllerCount => 1;
-
-        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
-        {
-            if (device is Keyboard_D keyboard)
-            {
-                switch (binding.ControllerIndex)
-                {
-                    case 0:
-                        binding.SetBinding(EssgeeSingleKey.OPTION_1, keyboard.Return, 0);
-                        binding.SetBinding(EssgeeSingleKey.OPTION_2, keyboard.RightShift, 0);
-                        binding.SetBinding(EssgeeSingleKey.UP, keyboard.W, 0);
-                        binding.SetBinding(EssgeeSingleKey.DOWN, keyboard.S, 0);
-                        binding.SetBinding(EssgeeSingleKey.LEFT, keyboard.A, 0);
-                        binding.SetBinding(EssgeeSingleKey.RIGHT, keyboard.D, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_1, keyboard.J, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_2, keyboard.K, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_3, keyboard.U, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_4, keyboard.I, 0);
-                        break;
-                }
-            }
-        }
     }
     public class GameBoyKeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.GameBoy;
         public override int ControllerCount => 1;
-
-        protected override void OnRegistDevices(InputDevice_D device, BindingPage binding)
-        {
-            if (device is Keyboard_D keyboard)
-            {
-                switch (binding.ControllerIndex)
-                {
-                    case 0:
-                        binding.SetBinding(EssgeeSingleKey.OPTION_1, keyboard.Return, 0);
-                        binding.SetBinding(EssgeeSingleKey.OPTION_2, keyboard.RightShift, 0);
-                        binding.SetBinding(EssgeeSingleKey.UP, keyboard.W, 0);
-                        binding.SetBinding(EssgeeSingleKey.DOWN, keyboard.S, 0);
-                        binding.SetBinding(EssgeeSingleKey.LEFT, keyboard.A, 0);
-                        binding.SetBinding(EssgeeSingleKey.RIGHT, keyboard.D, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_1, keyboard.J, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_2, keyboard.K, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_3, keyboard.U, 0);
-                        binding.SetBinding(EssgeeSingleKey.BTN_4, keyboard.I, 0);
-                        break;
-                }
-            }
-        }
     }
 
     public class GameGearKeyBinding : EssgeeKeyBinding

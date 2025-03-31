@@ -2,7 +2,6 @@
 using AxibugEmuOnline.Client.InputDevices;
 using AxibugProtobuf;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -58,33 +57,31 @@ namespace AxibugEmuOnline.Client.Settings
     /// 模拟器核心控制器键位绑定器
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class EmuCoreControllerKeyBinding<T> : EmuCoreControllerKeyBinding
+    public abstract class EmuCoreControllerKeyBinding<T> : EmuCoreControllerKeyBinding,
+        IDeviceBinder<T, Keyboard_D>,
+        IDeviceBinder<T, GamePad_D>,
+        IDeviceBinder<T, DualShockController_D>,
+        IDeviceBinder<T, XboxController_D>,
+        IDeviceBinder<T, PSVController_D>
         where T : Enum
     {
-        List<BindingPage> m_bindingPages = new List<BindingPage>();
+        //每一个实例代表一个对应模拟器平台的控制器索引
+        List<ControllerBinder> m_bindingPages = new List<ControllerBinder>();
 
         public EmuCoreControllerKeyBinding()
         {
+            var types = GetType().GetInterfaces();
+
             for (int i = 0; i < ControllerCount; i++)
             {
-                m_bindingPages.Add(new BindingPage(i, this));
+                m_bindingPages.Add(new ControllerBinder(i, this));
             }
 
-            var keyboard = App.input.GetDevice<Keyboard_D>();
-            if (keyboard != null)
+            foreach (var device in App.input.GetDevices())
             {
                 foreach (var binding in m_bindingPages)
                 {
-                    binding.RegistInputDevice(keyboard);
-                }
-            }
-
-            var psvController = App.input.GetDevice<PSVController_D>();
-            if (psvController != null)
-            {
-                foreach (var binding in m_bindingPages)
-                {
-                    binding.RegistInputDevice(psvController);
+                    binding.RegistInputDevice(device);
                 }
             }
 
@@ -94,12 +91,9 @@ namespace AxibugEmuOnline.Client.Settings
 
         private void InputDevicesMgr_OnDeviceConnected(InputDevice_D connectDevice)
         {
-            if (connectDevice is Keyboard_D)
+            foreach (var binding in m_bindingPages)
             {
-                foreach (var binding in m_bindingPages)
-                {
-                    binding.RegistInputDevice(connectDevice);
-                }
+                binding.RegistInputDevice(connectDevice);
             }
         }
 
@@ -109,29 +103,17 @@ namespace AxibugEmuOnline.Client.Settings
             {
                 binding.UnregistInputDevice(lostDevice);
             }
-            if (lostDevice is Keyboard_D) //键盘丢失,立即查找还存在的键盘并建立连接
-            {
-                var anotherKeyboard = App.input.GetDevice<Keyboard_D>();
-                if (anotherKeyboard != null)
-                {
-                    foreach (var binding in m_bindingPages)
-                    {
-                        binding.UnregistInputDevice(lostDevice);
-                    }
-                }
-            }
         }
 
-        IEnumerable<T> DefineKeys()
+        internal void RaiseDeviceRegist(InputDevice_D device, ControllerBinder binding)
         {
-            return Enum.GetValues(typeof(T)).Cast<T>();
+            if (device is Keyboard_D keyboard && this is IDeviceBinder<T, Keyboard_D> keyboardIn) keyboardIn.Bind(keyboard, binding);
+            if (device is GamePad_D gamePad && this is IDeviceBinder<T, GamePad_D> gamepadIn) gamepadIn.Bind(gamePad, binding);
+            if (device is DualShockController_D dsC && this is IDeviceBinder<T, DualShockController_D> dsIn) dsIn.Bind(dsC, binding);
+            if (device is XboxController_D xbC && this is IDeviceBinder<T, XboxController_D> xbIn) xbIn.Bind(xbC, binding);
+            if (device is PSVController_D psvC && this is IDeviceBinder<T, PSVController_D> psvIn) psvIn.Bind(psvC, binding);
+            else throw new NotImplementedException($"{device.GetType()}");
         }
-
-        internal void RaiseDeviceRegist(InputDevice_D device, BindingPage binding)
-        {
-            OnRegistDevices(device, binding);
-        }
-        protected abstract void OnRegistDevices(InputDevice_D device, BindingPage binding);
 
         public bool Start(T emuControl, int controllerIndex)
         {
@@ -234,7 +216,7 @@ namespace AxibugEmuOnline.Client.Settings
 
         public class MapSetting : Dictionary<T, List<InputControl_C>> { }
 
-        public class BindingPage
+        public class ControllerBinder
         {
             Dictionary<Type, InputDevice_D> m_registedDevices = new Dictionary<Type, InputDevice_D>();
             Dictionary<InputDevice_D, MapSetting> m_mapSetting = new Dictionary<InputDevice_D, MapSetting>();
@@ -242,7 +224,7 @@ namespace AxibugEmuOnline.Client.Settings
             public int ControllerIndex { get; }
             public EmuCoreControllerKeyBinding<T> Host { get; }
 
-            internal BindingPage(int controllerIndex, EmuCoreControllerKeyBinding<T> host)
+            internal ControllerBinder(int controllerIndex, EmuCoreControllerKeyBinding<T> host)
             {
                 ControllerIndex = controllerIndex;
                 Host = host;
@@ -342,5 +324,10 @@ namespace AxibugEmuOnline.Client.Settings
             }
         }
 
+        public abstract void Bind(Keyboard_D device, ControllerBinder controller);
+        public abstract void Bind(GamePad_D device, ControllerBinder controller);
+        public abstract void Bind(DualShockController_D device, ControllerBinder controller);
+        public abstract void Bind(XboxController_D device, ControllerBinder controller);
+        public abstract void Bind(PSVController_D device, ControllerBinder controller);
     }
 }
