@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Editors
             }
             EditorGUILayout.EndVertical();
 
-            EditorGUILayout.LabelField(dispacather.Current.Name);
+            EditorGUILayout.LabelField(dispacather.Mode.ToString());
 
             Repaint();
         }

@@ -46,10 +46,10 @@ namespace AxiInputSP
         BTN_D,
         BTN_E,
         BTN_F,
-        POTION_1,
-        POTION_2,
-        POTION_3,
-        POTION_4,
+        OPTION_1,
+        OPTION_2,
+        OPTION_3,
+        OPTION_4,
         HOME,
     }
 }

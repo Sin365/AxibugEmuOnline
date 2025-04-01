@@ -1,8 +1,7 @@
-using AxibugEmuOnline.Client;
+ï»¿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
-using AxibugEmuOnline.Client.Manager;
-using AxiInputSP.Setting;
+using AxibugEmuOnline.Client.Settings;
 using AxiReplay;
 using System;
 using System.Collections.Generic;
@@ -318,7 +317,7 @@ public class UEGKeyboard : MonoBehaviour
 
     public bool SampleInput()
     {
-        //NetÄ£Ê½
+        //Netæ¨¡å¼
         if (InGameUI.Instance.IsNetPlay)
         {
             bool bHadNetData = false;
@@ -334,18 +333,18 @@ public class UEGKeyboard : MonoBehaviour
                 SetCurrKeyArr(CurrRemoteInpuAllData);
                 bHadNetData = true;
             }
-            else//ÎŞÊäÈë
+            else//æ— è¾“å…¥
             {
                 CurrRemoteInpuAllData = 0;
             }
 
-            //·¢ËÍ±¾µØ²Ù×÷
+            //å‘é€æœ¬åœ°æ“ä½œ
             App.roomMgr.SendRoomSingelPlayerInput(UEssgee.instance.Frame,
              DoLocalPressedKeys());
 
             return bHadNetData;
         }
-        //µ¥»úÄ£Ê½
+        //å•æœºæ¨¡å¼
         else
         {
             ulong inputData = DoLocalPressedKeys();
@@ -550,9 +549,9 @@ public class EssgssSingleController : IController
     uint? mConnectSlot;
 
     /// <summary>
-    /// Ö¸Ê¾¸ÃÊÖ±úÁ¬½ÓµÄÊÖ±ú²å²Û
-    /// <para><c>Õâ¸öÖµ´ú±íÁË¸ÃÊÖ±úÔÚÊµ¼ÊÓÎÏ·ÖĞ¿ØÖÆµÄPlayer</c></para>
-    /// <value>[0,3] ÀıÍâ:Îª¿Õ´ú±íÎ´Á¬½Ó</value>
+    /// æŒ‡ç¤ºè¯¥æ‰‹æŸ„è¿æ¥çš„æ‰‹æŸ„æ’æ§½
+    /// <para><c>è¿™ä¸ªå€¼ä»£è¡¨äº†è¯¥æ‰‹æŸ„åœ¨å®é™…æ¸¸æˆä¸­æ§åˆ¶çš„Player</c></para>
+    /// <value>[0,3] ä¾‹å¤–:ä¸ºç©ºä»£è¡¨æœªè¿æ¥</value>
     /// </summary>
     public uint? ConnectSlot
     {
@@ -561,8 +560,8 @@ public class EssgssSingleController : IController
     }
 
     /// <summary>
-    /// ¿ØÖÆÆ÷±àºÅ
-    /// <para><c>´Ë±àºÅ²¢·Ç¶ÔÓ¦ÓÎÏ·ÖĞµÄplayer1,player2,player3,player4,½ö½ö×÷Îª±¾µØ4¸öÊÖ±úµÄÊµÀı</c></para>
+    /// æ§åˆ¶å™¨ç¼–å·
+    /// <para><c>æ­¤ç¼–å·å¹¶éå¯¹åº”æ¸¸æˆä¸­çš„player1,player2,player3,player4,ä»…ä»…ä½œä¸ºæœ¬åœ°4ä¸ªæ‰‹æŸ„çš„å®ä¾‹</c></para>
     /// <value>[0,3]</value>
     /// </summary>
     public int ControllerIndex
@@ -578,34 +577,12 @@ public class EssgssSingleController : IController
 
     public bool AnyButtonDown()
     {
-        //if (Input.GetKeyDown(UP)) return true;
-        //if (Input.GetKeyDown(DOWN)) return true;
-        //if (Input.GetKeyDown(LEFT)) return true;
-        //if (Input.GetKeyDown(RIGHT)) return true;
-        //if (Input.GetKeyDown(BTN_1)) return true;
-        //if (Input.GetKeyDown(BTN_2)) return true;
-        //if (Input.GetKeyDown(BTN_3)) return true;
-        //if (Input.GetKeyDown(BTN_4)) return true;
-        //if (Input.GetKeyDown(OPTION_1)) return true;
-        //if (Input.GetKeyDown(OPTION_2)) return true;
-        //return false;
-
-        return GetSingleKeys().HadAnyKeyDown();
+        return GetKeyMapper().AnyKeyDown(mControllerIndex);
     }
 
-    public SingleKeySettingBase GetSingleKeys()
+    public EssgeeKeyBinding GetKeyMapper()
     {
-        switch (UEssgee.instance.Platform)
-        {
-            case AxibugProtobuf.RomPlatformType.MasterSystem: return App.input.sms.controllers[mControllerIndex];
-            case AxibugProtobuf.RomPlatformType.GameBoy: return App.input.gb.controllers[mControllerIndex];
-            case AxibugProtobuf.RomPlatformType.GameBoyColor: return App.input.gbc.controllers[mControllerIndex];
-            case AxibugProtobuf.RomPlatformType.ColecoVision: return App.input.cv.controllers[mControllerIndex];
-            case AxibugProtobuf.RomPlatformType.GameGear: return App.input.gg.controllers[mControllerIndex];
-            case AxibugProtobuf.RomPlatformType.Sc3000: return App.input.sc3000.controllers[mControllerIndex];
-            case AxibugProtobuf.RomPlatformType.Sg1000: return App.input.sg1000.controllers[mControllerIndex];
-            default: throw new NotImplementedException("err essgee platform");
-        }
+        return App.settings.KeyMapper.GetBinder<EssgeeKeyBinding>(UEssgee.instance.Platform);
     }
 
     public ulong GetSingleAllInput()
@@ -614,29 +591,19 @@ public class EssgssSingleController : IController
             return 0;
         CurrLocalSingleAllInput = 0;
 
-        SingleKeySettingBase essgeeKeys = GetSingleKeys();
+        EssgeeKeyBinding essgeeKeys = GetKeyMapper();
 
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_1)) CurrLocalSingleAllInput |= (ulong)tg_BTN_1;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_2)) CurrLocalSingleAllInput |= (ulong)tg_BTN_2;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_3)) CurrLocalSingleAllInput |= (ulong)tg_BTN_3;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.BTN_4)) CurrLocalSingleAllInput |= (ulong)tg_BTN_4;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.OPTION_1)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
-        if (essgeeKeys.GetKey((ulong)EssgeeSingleKey.OPTION_2)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_2;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.UP, mControllerIndex)) CurrLocalSingleAllInput |= tg_UP;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.DOWN, mControllerIndex)) CurrLocalSingleAllInput |= tg_DOWN;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.LEFT, mControllerIndex)) CurrLocalSingleAllInput |= tg_LEFT;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.RIGHT, mControllerIndex)) CurrLocalSingleAllInput |= tg_RIGHT;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.BTN_1, mControllerIndex)) CurrLocalSingleAllInput |= tg_BTN_1;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.BTN_2, mControllerIndex)) CurrLocalSingleAllInput |= tg_BTN_2;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.BTN_3, mControllerIndex)) CurrLocalSingleAllInput |= tg_BTN_3;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.BTN_4, mControllerIndex)) CurrLocalSingleAllInput |= tg_BTN_4;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.OPTION_1, mControllerIndex)) CurrLocalSingleAllInput |= tg_OPTION_1;
+        if (essgeeKeys.GetKey(EssgeeSingleKey.OPTION_2, mControllerIndex)) CurrLocalSingleAllInput |= tg_OPTION_2;
 
-        //if (Input.GetKey(UP)) CurrLocalSingleAllInput |= (ulong)tg_UP;
-        //if (Input.GetKey(DOWN)) CurrLocalSingleAllInput |= (ulong)tg_DOWN;
-        //if (Input.GetKey(LEFT)) CurrLocalSingleAllInput |= (ulong)tg_LEFT;
-        //if (Input.GetKey(RIGHT)) CurrLocalSingleAllInput |= (ulong)tg_RIGHT;
-        //if (Input.GetKey(BTN_1)) CurrLocalSingleAllInput |= (ulong)tg_BTN_1;
-        //if (Input.GetKey(BTN_2)) CurrLocalSingleAllInput |= (ulong)tg_BTN_2;
-        //if (Input.GetKey(BTN_3)) CurrLocalSingleAllInput |= (ulong)tg_BTN_3;
-        //if (Input.GetKey(BTN_4)) CurrLocalSingleAllInput |= (ulong)tg_BTN_4;
-        //if (Input.GetKey(OPTION_1)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
-        //if (Input.GetKey(OPTION_2)) CurrLocalSingleAllInput |= (ulong)tg_OPTION_1;
         return CurrLocalSingleAllInput;
     }
 }
@@ -646,7 +613,7 @@ public static class EssgssSingleControllerSetter
 {
     //public static void LoadControlKeyForConfig(this EssgssSingleController singlecontrol)
     //{
-    //    //TODO µÈ´ıÖ§³ÖÅäÖÃ£¬»òÍ³Ò»
+    //    //TODO ç­‰å¾…æ”¯æŒé…ç½®ï¼Œæˆ–ç»Ÿä¸€
     //    switch (singlecontrol.ControllerIndex)
     //    {
     //        case 0:

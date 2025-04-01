@@ -83,7 +83,7 @@ namespace AxibugEmuOnline.Client.Manager
                 LaunchUI.Instance.HideMainMenu();
                 InGameUI.Instance.Show(romFile, m_emuCore);
 
-                CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Gaming;
+                CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Gaming;
 
                 m_controllerSetuper = m_emuCore.GetControllerSetuper();
 

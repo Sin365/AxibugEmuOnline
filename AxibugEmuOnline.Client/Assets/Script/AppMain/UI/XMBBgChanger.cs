@@ -1,4 +1,5 @@
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 

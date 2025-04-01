@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static AxibugEmuOnline.Client.FilterManager;
+using static AxibugEmuOnline.Client.Settings.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {

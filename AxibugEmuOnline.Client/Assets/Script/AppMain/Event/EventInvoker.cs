@@ -1,3 +1,5 @@
+﻿using AxibugEmuOnline.Client.Settings;
+
 namespace AxibugEmuOnline.Client
 {
     public static class EventInvoker

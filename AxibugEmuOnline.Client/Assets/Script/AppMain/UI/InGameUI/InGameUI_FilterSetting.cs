@@ -1,7 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System.Collections.Generic;
 using System.Linq;
-using static AxibugEmuOnline.Client.FilterManager;
+using static AxibugEmuOnline.Client.Settings.FilterManager;
 
 namespace AxibugEmuOnline.Client
 {

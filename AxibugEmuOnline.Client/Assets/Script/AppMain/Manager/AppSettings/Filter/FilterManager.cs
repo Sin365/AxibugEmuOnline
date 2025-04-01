@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static AxibugEmuOnline.Client.FilterEffect;
 
-namespace AxibugEmuOnline.Client
+namespace AxibugEmuOnline.Client.Settings
 {
     public class FilterManager
     {

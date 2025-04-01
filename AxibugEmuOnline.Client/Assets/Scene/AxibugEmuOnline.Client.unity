@@ -225,7 +225,7 @@ MonoBehaviour:
   bUseLocalWebApi: 0
   mLocalWebApi: http://localhost:5051
   bEditorUUID: 0
-  bEditorOpenGUIJoyStick: 0
+  bEditorOpenGUIJoyStick: 1
 --- !u!1 &1498586261
 GameObject:
   m_ObjectHideFlags: 3

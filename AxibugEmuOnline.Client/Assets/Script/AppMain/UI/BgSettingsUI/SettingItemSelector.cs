@@ -1,3 +1,4 @@
+﻿using AxibugEmuOnline.Client.Settings;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client

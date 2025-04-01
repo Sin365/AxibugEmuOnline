@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -7,39 +7,26 @@ namespace AxibugEmuOnline.Client
     {
         public static CommandDispatcher Instance { get; private set; }
 
-        /// <summary> Æ½¼¶×¢²á¶ÔÏó,¶¼»áÏìÓ¦Ö¸Áî </summary>
+        /// <summary> å¹³çº§æ³¨å†Œå¯¹è±¡,éƒ½ä¼šå“åº”æŒ‡ä»¤ </summary>
         List<CommandExecuter> m_register = new List<CommandExecuter>();
-        /// <summary> ¶ÀÕ¼×¢²á¶ÔÏó,Ö¸Áî»á±»ÁĞ±íÖĞ×îºóÒ»¸ö¶ÔÏó¶ÀÕ¼ </summary>
+        /// <summary> ç‹¬å æ³¨å†Œå¯¹è±¡,æŒ‡ä»¤ä¼šè¢«åˆ—è¡¨ä¸­æœ€åä¸€ä¸ªå¯¹è±¡ç‹¬å  </summary>
         List<CommandExecuter> m_registerHigh = new List<CommandExecuter>();
 
-        ICommandListener m_listener;
-        /// <summary> ±ê×¼UI²Ù×÷ </summary>
-        public IKeyMapperChanger Normal { get; private set; }
-        /// <summary> ÓÎÏ·ÖĞUI²Ù×÷ </summary>
-        public IKeyMapperChanger Gaming { get; private set; }
+        CommandListener m_listener;
 
-        private IKeyMapperChanger m_current;
-        public IKeyMapperChanger Current
+        CommandListener.ScheduleType? m_waitMapperSetting = null;
+        public CommandListener.ScheduleType Mode
         {
-            get => m_current;
-            set
-            {
-                m_current = value;
-
-                SetKeyMapper(m_current);
-            }
+            get => m_listener.Schedule;
+            set => m_waitMapperSetting = value;
         }
 
         private void Awake()
         {
             Instance = this;
 
-            //³õÊ¼»¯command¼àÊÓÆ÷
+            //åˆå§‹åŒ–commandç›‘è§†å™¨
             m_listener = new CommandListener();
-
-            //³õÊ¼»¯¼üÎ»ĞŞ¸ÄÆ÷
-            Normal = new NormalChanger();
-            Gaming = new GamingChanger();
         }
 
         private void OnDestroy()
@@ -85,18 +72,12 @@ namespace AxibugEmuOnline.Client
                 m_listener.Update(oneFrameRegister);
             }
 
-            //¼üÎ»Ó³ÉäÔÚ°´¼üÏìÓ¦µÄ¶ÑÕ»½áÊøºó´¦Àí,·ÀÖ¹µü´úÆ÷ĞŞ¸ÄÎÊÌâ
+            //é”®ä½æ˜ å°„åœ¨æŒ‰é”®å“åº”çš„å †æ ˆç»“æŸåå¤„ç†,é˜²æ­¢è¿­ä»£å™¨ä¿®æ”¹é—®é¢˜
             if (m_waitMapperSetting != null)
             {
-                m_listener.ApplyKeyMapper(m_waitMapperSetting);
+                m_listener.Schedule = m_waitMapperSetting.Value;
                 m_waitMapperSetting = null;
             }
-        }
-
-        IKeyMapperChanger m_waitMapperSetting = null;
-        void SetKeyMapper(IKeyMapperChanger keyMapChanger)
-        {
-            m_waitMapperSetting = keyMapChanger;
         }
 
         private List<CommandExecuter> peekRegister(List<CommandExecuter> results)

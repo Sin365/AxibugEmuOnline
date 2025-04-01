@@ -54,7 +54,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InputUI: {fileID: 3531919739979819165}
   m_OptionUI: {fileID: 3531919738411886374}
-  m_Joystick: {fileID: 1479421568449666778}
+  m_screenGamepad: {fileID: 8310310311897327133}
   m_popTipsUI: {fileID: 5244143219655022973}
 --- !u!1001 &286598211728911619
 PrefabInstance:
@@ -924,6 +924,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3557960760441770044, guid: bb828a9e324f62649b40038f8cd3620a, type: 3}
   m_PrefabInstance: {fileID: 2731323643586367206}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8310310311897327133 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6247543073642948859, guid: bb828a9e324f62649b40038f8cd3620a, type: 3}
+  m_PrefabInstance: {fileID: 2731323643586367206}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6e60f499349d7479c565da795cde9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6972157500961473863
 PrefabInstance:
   m_ObjectHideFlags: 0

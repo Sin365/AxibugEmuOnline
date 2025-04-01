@@ -147,7 +147,7 @@ namespace AxibugEmuOnline.Client
             return dirty;
         }
 
-        IKeyMapperChanger m_lastCS;
+        CommandListener.ScheduleType? m_lastCS;
         private Action m_onClose;
 
         /// <summary>
@@ -214,8 +214,8 @@ namespace AxibugEmuOnline.Client
                     0.3f
                     ).SetEase(Ease.OutCubic);
 
-                m_lastCS = CommandDispatcher.Instance.Current;
-                CommandDispatcher.Instance.Current = CommandDispatcher.Instance.Normal;
+                m_lastCS = CommandDispatcher.Instance.Mode;
+                CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
             }
 
         }
@@ -263,7 +263,7 @@ namespace AxibugEmuOnline.Client
 
                 m_bPoped = false;
 
-                CommandDispatcher.Instance.Current = m_lastCS;
+                CommandDispatcher.Instance.Mode = m_lastCS.Value;
 
                 m_onClose?.Invoke();
                 m_onClose = null;

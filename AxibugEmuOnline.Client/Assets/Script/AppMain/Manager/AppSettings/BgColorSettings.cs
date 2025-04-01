@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace AxibugEmuOnline.Client
+namespace AxibugEmuOnline.Client.Settings
 {
     /// <summary> 颜色设置 </summary>
     public class BgColorSettings

@@ -13,59 +13,22 @@ namespace AxiInputSP.UGUI
             KeyHold
         }
 
-        AxiInputUGUIHandle[] handles;
         AxiButtonState m_state = AxiButtonState.None;
         /// <summary>
         /// 键值（支持组合键）
         /// </summary>
         [SerializeField]
         public AxiInputUGuiBtnType[] axiBtnTypeList;
-        protected override void Awake()
-        {
-            base.Awake();
-            if (axiBtnTypeList != null)
-            {
-                handles = new AxiInputUGUIHandle[axiBtnTypeList.Length];
-                for (int i = 0; i < axiBtnTypeList.Length; i++)
-                {
-                    handles[i] = new AxiInputUGUIHandle(axiBtnTypeList[i]);
-                    handles[i].GetKeyHandle = GetKey;
-                    handles[i].GetKeyUpHandle = GetKeyUp;
-                    handles[i].GetKeyDownHandle = GetKeyDown;
-                }
-            }
-        }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            if (axiBtnTypeList != null)
-            {
-                handles = new AxiInputUGUIHandle[axiBtnTypeList.Length];
-                for (int i = 0; i < axiBtnTypeList.Length; i++)
-                {
-                    handles[i].Dispose();
-                    handles[i] = null;
-                }
-                axiBtnTypeList = null;
-                handles = null;
-            }
-
-        }
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
-
-        bool GetKey()
+        public bool GetKey()
         {
             return m_state >= AxiButtonState.KeyDown;
         }
-        bool GetKeyUp()
+        public bool GetKeyUp()
         {
             return m_state == AxiButtonState.KeyUp;
         }
-        bool GetKeyDown()
+        public bool GetKeyDown()
         {
             return m_state == AxiButtonState.KeyDown;
         }

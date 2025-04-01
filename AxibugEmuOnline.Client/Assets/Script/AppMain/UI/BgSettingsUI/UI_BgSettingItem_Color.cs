@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Settings;
 using AxibugEmuOnline.Client.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
