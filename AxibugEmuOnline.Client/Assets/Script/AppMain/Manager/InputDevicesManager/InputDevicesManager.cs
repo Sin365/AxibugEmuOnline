@@ -13,12 +13,19 @@ namespace AxibugEmuOnline.Client.InputDevices
         public delegate void OnDeviceLostHandle(InputDevice_D lostDevice);
         public event OnDeviceLostHandle OnDeviceLost;
 
+        bool m_quiting;
         public InputDevicesManager()
         {
+            Application.quitting += Application_quitting;
             m_inputResolver.OnDeviceConnected += Resolver_OnDeviceConnected;
             m_inputResolver.OnDeviceLost += Resolver_OnDeviceLost;
             foreach (var device in m_inputResolver.GetDevices())
                 AddDevice(device);
+        }
+
+        private void Application_quitting()
+        {
+            m_quiting = true;
         }
 
         private void Resolver_OnDeviceLost(InputDevice_D lostDevice)
@@ -39,6 +46,8 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         void RemoveDevice(InputDevice_D device)
         {
+            if (m_quiting) return;
+
             m_devices.Remove(device.UniqueName);
             OnDeviceLost?.Invoke(device);
         }

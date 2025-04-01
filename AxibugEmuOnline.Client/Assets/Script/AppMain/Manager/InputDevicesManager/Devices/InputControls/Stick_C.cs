@@ -12,9 +12,7 @@ namespace AxibugEmuOnline.Client.InputDevices
         public VirtualButton Left;
         public VirtualButton Right;
 
-        public Stick_C(InputDevice_D device, string controlName) : base(device, controlName)
-        {
-        }
+        public Stick_C(InputDevice_D device, string controlName) : base(device, controlName) { }
 
         protected override void OnUpdate()
         {

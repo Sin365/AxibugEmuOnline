@@ -1,10 +1,9 @@
 ﻿using AxibugEmuOnline.Client.InputDevices;
-using AxibugEmuOnline.Client.Settings;
 using AxibugProtobuf;
 
 namespace AxibugEmuOnline.Client
 {
-    public class XMBKeyBinding : EmuCoreControllerKeyBinding<EnumCommand>
+    public class XMBKeyBinding : EmuCoreBinder<EnumCommand>
     {
         public override RomPlatformType Platform => RomPlatformType.Invalid;
         public override int ControllerCount => 2;
@@ -97,6 +96,21 @@ namespace AxibugEmuOnline.Client
             controller.SetBinding(EnumCommand.SelectItemLeft, device.LeftStick.Left, 1);
             controller.SetBinding(EnumCommand.SelectItemRight, device.LeftStick.Right, 1);
             controller.SetBinding(EnumCommand.SelectItemUp, device.LeftStick.Up, 1);
+        }
+        public override void Bind(ScreenGamepad_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EnumCommand.Back, device.BTN_A, 0);
+            controller.SetBinding(EnumCommand.Enter, device.BTN_B, 0);
+            controller.SetBinding(EnumCommand.OptionMenu, device.OPTION_1, 0);
+            controller.SetBinding(EnumCommand.SelectItemDown, device.DOWN, 0);
+            controller.SetBinding(EnumCommand.SelectItemLeft, device.LEFT, 0);
+            controller.SetBinding(EnumCommand.SelectItemRight, device.RIGHT, 0);
+            controller.SetBinding(EnumCommand.SelectItemUp, device.UP, 0);
+
+            controller.SetBinding(EnumCommand.SelectItemDown, device.JOYSTICK.Down, 1);
+            controller.SetBinding(EnumCommand.SelectItemLeft, device.JOYSTICK.Left, 1);
+            controller.SetBinding(EnumCommand.SelectItemRight, device.JOYSTICK.Right, 1);
+            controller.SetBinding(EnumCommand.SelectItemUp, device.JOYSTICK.Up, 1);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace AxibugEmuOnline.Client.Settings
         BTN_F
     }
 
-    public abstract class MAMEKeyBinding : EmuCoreControllerKeyBinding<UMAMEKSingleKey>
+    public abstract class MAMEKeyBinding : EmuCoreBinder<UMAMEKSingleKey>
     {
         public override int ControllerCount => 4;
 
@@ -137,6 +137,26 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(UMAMEKSingleKey.DOWN, device.LeftStick.Down, 1);
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.LeftStick.Left, 1);
             controller.SetBinding(UMAMEKSingleKey.RIGHT, device.LeftStick.Right, 1);
+        }
+        public override void Bind(ScreenGamepad_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.OPTION_1, 0);
+            controller.SetBinding(UMAMEKSingleKey.GAMESTART, device.OPTION_2, 0);
+            controller.SetBinding(UMAMEKSingleKey.UP, device.UP, 0);
+            controller.SetBinding(UMAMEKSingleKey.DOWN, device.DOWN, 0);
+            controller.SetBinding(UMAMEKSingleKey.LEFT, device.LEFT, 0);
+            controller.SetBinding(UMAMEKSingleKey.RIGHT, device.RIGHT, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.BTN_A, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.BTN_B, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_C, device.BTN_C, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_D, device.BTN_D, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_E, device.BTN_E, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_F, device.BTN_F, 0);
+
+            controller.SetBinding(UMAMEKSingleKey.UP, device.JOYSTICK.Up, 1);
+            controller.SetBinding(UMAMEKSingleKey.DOWN, device.JOYSTICK.Down, 1);
+            controller.SetBinding(UMAMEKSingleKey.LEFT, device.JOYSTICK.Left, 1);
+            controller.SetBinding(UMAMEKSingleKey.RIGHT, device.JOYSTICK.Right, 1);
         }
     }
 

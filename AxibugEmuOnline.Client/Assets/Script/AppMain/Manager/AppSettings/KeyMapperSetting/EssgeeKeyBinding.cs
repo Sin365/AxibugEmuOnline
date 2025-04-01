@@ -20,7 +20,7 @@ namespace AxibugEmuOnline.Client.Settings
         OPTION_2 = 1 << 9,
     }
 
-    public abstract class EssgeeKeyBinding : EmuCoreControllerKeyBinding<EssgeeSingleKey>
+    public abstract class EssgeeKeyBinding : EmuCoreBinder<EssgeeSingleKey>
     {
         public override void Bind(Keyboard_D device, ControllerBinder controller)
         {
@@ -128,6 +128,24 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EssgeeSingleKey.DOWN, device.LeftStick.Down, 1);
             controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftStick.Left, 1);
             controller.SetBinding(EssgeeSingleKey.RIGHT, device.LeftStick.Right, 1);
+        }
+        public override void Bind(ScreenGamepad_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EssgeeSingleKey.OPTION_1, device.OPTION_1, 0);
+            controller.SetBinding(EssgeeSingleKey.OPTION_2, device.OPTION_2, 0);
+            controller.SetBinding(EssgeeSingleKey.UP, device.UP, 0);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.DOWN, 0);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.LEFT, 0);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.RIGHT, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_1, device.BTN_A, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_2, device.BTN_B, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_3, device.BTN_C, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_4, device.BTN_D, 0);
+
+            controller.SetBinding(EssgeeSingleKey.UP, device.JOYSTICK.Up, 1);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.JOYSTICK.Down, 1);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.JOYSTICK.Left, 1);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.JOYSTICK.Right, 1);
         }
     }
 

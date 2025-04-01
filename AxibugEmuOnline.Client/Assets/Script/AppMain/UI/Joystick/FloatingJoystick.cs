@@ -1,5 +1,4 @@
-﻿using AxiInputSP.UGUI;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -13,7 +12,6 @@ public class FloatingJoystick : Joystick
 
     readonly static Color ShowColor = new Color(1F, 1f, 1F, 0.7f);
     readonly static Color HideColor = new Color(1F, 1f, 1F, 0.3f);
-    AxiIptJoystick mAxiIptJoystick;
     //一次新的摇杆移动
     public static bool bNewTouchWithSkill = false;
 
@@ -34,24 +32,7 @@ public class FloatingJoystick : Joystick
         mIsMounseDown = false;
     }
 
-    void OnEnable()
-    {
-        if (mAxiIptJoystick == null)
-        {
-            mAxiIptJoystick = new AxiIptJoystick(GetJoyRaw);
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (mAxiIptJoystick != null)
-        {
-            mAxiIptJoystick.Dispose();
-            mAxiIptJoystick = null;
-        }
-    }
-
-    private Vector2Int GetJoyRaw()
+    public Vector2Int GetJoyRaw()
     {
         return this.RawInputV2;
     }

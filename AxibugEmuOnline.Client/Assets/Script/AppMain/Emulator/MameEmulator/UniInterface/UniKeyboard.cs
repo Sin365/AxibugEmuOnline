@@ -2,7 +2,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Settings;
-using AxiInputSP.Setting;
 using AxiReplay;
 using MAME.Core;
 using System;

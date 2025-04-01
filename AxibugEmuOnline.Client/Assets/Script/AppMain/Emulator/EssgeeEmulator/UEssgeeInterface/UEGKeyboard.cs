@@ -1,9 +1,7 @@
 ﻿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
-using AxibugEmuOnline.Client.Manager;
 using AxibugEmuOnline.Client.Settings;
-using AxiInputSP.Setting;
 using AxiReplay;
 using System;
 using System.Collections.Generic;

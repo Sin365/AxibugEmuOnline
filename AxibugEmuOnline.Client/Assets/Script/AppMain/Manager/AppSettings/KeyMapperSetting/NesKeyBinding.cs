@@ -4,7 +4,7 @@ using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client.Settings
 {
-    public class NesKeyBinding : EmuCoreControllerKeyBinding<EnumButtonType>
+    public class NesKeyBinding : EmuCoreBinder<EnumButtonType>
     {
         public override RomPlatformType Platform => RomPlatformType.Nes;
         public override int ControllerCount => 4;
@@ -82,10 +82,10 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EnumButtonType.START, device.Start, 0);
             controller.SetBinding(EnumButtonType.MIC, device.L, 0);
 
-            controller.SetBinding(EnumButtonType.LEFT, device.LeftStick.Left, 0);
-            controller.SetBinding(EnumButtonType.RIGHT, device.LeftStick.Right, 0);
-            controller.SetBinding(EnumButtonType.UP, device.LeftStick.Up, 0);
-            controller.SetBinding(EnumButtonType.DOWN, device.LeftStick.Down, 0);
+            controller.SetBinding(EnumButtonType.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(EnumButtonType.RIGHT, device.LeftStick.Right, 1);
+            controller.SetBinding(EnumButtonType.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(EnumButtonType.DOWN, device.LeftStick.Down, 1);
         }
         public override void Bind(XboxController_D device, ControllerBinder controller)
         {
@@ -99,10 +99,27 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EnumButtonType.START, device.Menu, 0);
             controller.SetBinding(EnumButtonType.MIC, device.LeftBumper, 0);
 
-            controller.SetBinding(EnumButtonType.LEFT, device.LeftStick.Left, 0);
-            controller.SetBinding(EnumButtonType.RIGHT, device.LeftStick.Right, 0);
-            controller.SetBinding(EnumButtonType.UP, device.LeftStick.Up, 0);
-            controller.SetBinding(EnumButtonType.DOWN, device.LeftStick.Down, 0);
+            controller.SetBinding(EnumButtonType.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(EnumButtonType.RIGHT, device.LeftStick.Right, 1);
+            controller.SetBinding(EnumButtonType.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(EnumButtonType.DOWN, device.LeftStick.Down, 1);
+        }
+        public override void Bind(ScreenGamepad_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EnumButtonType.LEFT, device.LEFT, 0);
+            controller.SetBinding(EnumButtonType.RIGHT, device.RIGHT, 0);
+            controller.SetBinding(EnumButtonType.UP, device.UP, 0);
+            controller.SetBinding(EnumButtonType.DOWN, device.DOWN, 0);
+            controller.SetBinding(EnumButtonType.A, device.BTN_B, 0);
+            controller.SetBinding(EnumButtonType.B, device.BTN_A, 0);
+            controller.SetBinding(EnumButtonType.SELECT, device.OPTION_1, 0);
+            controller.SetBinding(EnumButtonType.START, device.OPTION_2, 0);
+            controller.SetBinding(EnumButtonType.MIC, device.OPTION_3, 0);
+
+            controller.SetBinding(EnumButtonType.LEFT, device.JOYSTICK.Left, 1);
+            controller.SetBinding(EnumButtonType.RIGHT, device.JOYSTICK.Right, 1);
+            controller.SetBinding(EnumButtonType.UP, device.JOYSTICK.Up, 1);
+            controller.SetBinding(EnumButtonType.DOWN, device.JOYSTICK.Down, 1);
         }
     }
 }

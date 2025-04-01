@@ -51,7 +51,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             return ipDev as T;
         }
 
-        public override string GetDeviceName(InputDevice_D inputDevice)
+        protected override string OnGetDeviceName(InputDevice_D inputDevice)
         {
             var ipdev = GetInputSystemDevice<InputDevice>(inputDevice);
             Debug.Assert(ipdev != null, "不能对已离线的设备获取名称");
@@ -59,7 +59,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             return $"{ipdev.description.deviceClass}_{ipdev.description.interfaceName}_{ipdev.deviceId}";
         }
 
-        public override bool CheckOnline(InputDevice_D device)
+        protected override bool OnCheckOnline(InputDevice_D device)
         {
             return m_devices.TryGetKey(device, out var _);
         }
@@ -73,24 +73,24 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             }
         }
 
-        public override IEnumerable<InputDevice_D> GetDevices()
+        protected override IEnumerable<InputDevice_D> OnGetDevices()
         {
             return m_devices.Values;
         }
 
-        public override bool CheckPerforming<CONTROLLER>(CONTROLLER control)
+        protected override bool OnCheckPerforming<CONTROLLER>(CONTROLLER control)
         {
             var ipControl = GetInputSystemControl(control);
             return ipControl.IsPressed();
         }
 
-        public override Vector2 GetVector2<CONTROLLER>(CONTROLLER control)
+        protected override Vector2 OnGetVector2<CONTROLLER>(CONTROLLER control)
         {
             var ipControl = GetInputSystemControl(control);
             return (ipControl as InputControl<Vector2>).value;
         }
 
-        public override float GetFloat<CONTROLLER>(CONTROLLER control)
+        protected override float OnGetFloat<CONTROLLER>(CONTROLLER control)
         {
             var ipControl = GetInputSystemControl(control);
             return (ipControl as InputControl<float>).value;

@@ -15,24 +15,24 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
             m_devices.Add(m_psvController);
         }
 
-        public override IEnumerable<InputDevice_D> GetDevices()
+        protected override IEnumerable<InputDevice_D> OnGetDevices()
         {
             return m_devices;
         }
 
-        public override bool CheckOnline(InputDevice_D device)
+        protected override bool OnCheckOnline(InputDevice_D device)
         {
             return device == m_psvController;
         }
 
-        public override string GetDeviceName(InputDevice_D inputDevice)
+        protected override string OnGetDeviceName(InputDevice_D inputDevice)
         {
             Debug.Assert(inputDevice == m_psvController, "只支持psv控制器");
 
             return nameof(PSVController_D);
         }
 
-        public override bool CheckPerforming<CONTROLLER>(CONTROLLER control)
+        protected override bool OnCheckPerforming<CONTROLLER>(CONTROLLER control)
         {
             if (control.Device is PSVController_D psvCon)
             {
@@ -58,7 +58,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
             throw new System.NotImplementedException();
         }
 
-        public override Vector2 GetVector2<CONTROLLER>(CONTROLLER control)
+        protected override Vector2 OnGetVector2<CONTROLLER>(CONTROLLER control)
         {
             if (control.Device is PSVController_D psvCon)
             {
@@ -75,7 +75,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
             throw new System.NotImplementedException();
         }
 
-        public override float GetFloat<CONTROLLER>(CONTROLLER control)
+        protected override float OnGetFloat<CONTROLLER>(CONTROLLER control)
         {
             throw new System.NotImplementedException();
         }

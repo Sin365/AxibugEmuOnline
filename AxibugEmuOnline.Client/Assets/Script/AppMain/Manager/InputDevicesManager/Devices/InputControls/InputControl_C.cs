@@ -68,7 +68,7 @@ namespace AxibugEmuOnline.Client.InputDevices
             {
                 if (!typeof(InputControl_C).IsAssignableFrom(field.FieldType)) continue;
 
-                var controlIns = Activator.CreateInstance(field.FieldType, this, field.Name) as InputControl_C;
+                var controlIns = Activator.CreateInstance(field.FieldType, Device, field.Name) as InputControl_C;
                 controlIns.Parent = this;
                 field.SetValue(this, controlIns);
 
