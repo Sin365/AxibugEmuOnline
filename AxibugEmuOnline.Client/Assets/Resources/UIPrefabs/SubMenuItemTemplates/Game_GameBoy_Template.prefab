@@ -1105,7 +1105,7 @@ MonoBehaviour:
   UnSelectScale: 1
   RomGroupRoot: {fileID: 8704788976101297821}
   StarRom: 0
-  Platform: 2
+  Platform: 4
   SearchKey: 
 --- !u!114 &2091811895805808559
 MonoBehaviour:

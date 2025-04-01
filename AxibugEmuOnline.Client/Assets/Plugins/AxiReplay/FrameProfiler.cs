@@ -34,6 +34,22 @@ namespace AxiReplay
             m_targetFrameRate = targetFrameRate;
         }
 
+        /// <summary>
+        /// 临时方法(暂行）
+        /// </summary>
+        /// <param name="mRemoteForwardCount"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public int TempFrameCount(int mRemoteForwardCount)
+        {
+            if (mRemoteForwardCount == 0)
+                return 0;
+            if (mRemoteForwardCount < 5)
+                return 1;
+            else
+                return (int)Math.Ceiling(mRemoteForwardCount / 5f);
+        }
+
         void CalcCacheCount()
         {
             double deltaMax = 0;

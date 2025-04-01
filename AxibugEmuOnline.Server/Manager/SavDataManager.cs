@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Server.Common;
+using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
@@ -246,11 +247,12 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 string dir = Path.GetDirectoryName(path);
                 if (!Directory.Exists(dir))
-                {
                     Directory.CreateDirectory(dir);
-                }
 
-                File.WriteAllBytes(path, data);
+                using (var fs = new FileStream(path, FileMode.Create))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
                 return true;
             }
             catch (Exception ex)

@@ -38,7 +38,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     UEGSoundPlayer soundHandler;
     GameMetadataHandler gameMetadataHandler;
     GameMetadata lastGameMetadata;
-    EmulatorHandler emulatorHandler;
+    Essgee.Emulation.EmulatorHandler emulatorHandler;
     UEGResources uegResources;
     UEGLog uegLog;
     UEGSaveByteConvert uegSaveByteConvert;
@@ -297,7 +297,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         //    EmuStandInfo.Configuration.SerializeToFile(EmuStandInfo.programConfigPath);
         //}
 
-        EmuStandInfo.Configuration = new Configuration();
+        EmuStandInfo.Configuration = new Essgee.Configuration();
 
         List<Type> machineType = new List<Type>();
         machineType.Add(typeof(GameBoy));
@@ -505,7 +505,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         if (emulatorHandler != null)
             ShutdownEmulation();
 
-        emulatorHandler = new EmulatorHandler(machineType, ExceptionHandler, uegSaveByteConvert);
+        emulatorHandler = new Essgee.Emulation.EmulatorHandler(machineType, ExceptionHandler, uegSaveByteConvert);
         emulatorHandler.Initialize();
 
         emulatorHandler.SendLogMessage += EmulatorHandler_SendLogMessage;

@@ -114,7 +114,7 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 if (UID > 0)
                 {
-                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids`,IF(s.uid IS NOT NULL, TRUE, FALSE) AS is_collected FROM romlist r left join rom_stars s on r.id = s.romid {GetWhereCmd(condition)} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids`,IF(s.uid = {UID}, TRUE, FALSE) AS is_collected FROM romlist r left join rom_stars s on r.id = s.romid {GetWhereCmd(condition)} {HotOrderBy} LIMIT ?offset, ?pageSize;";
                 }
                 else
                 {

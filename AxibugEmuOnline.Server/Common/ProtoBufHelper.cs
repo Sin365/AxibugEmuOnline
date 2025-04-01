@@ -4,7 +4,6 @@ namespace AxibugEmuOnline.Server.Common
 {
     public static class ProtoBufHelper
     {
-
         public static byte[] Serizlize(IMessage msg)
         {
             return msg.ToByteArray();

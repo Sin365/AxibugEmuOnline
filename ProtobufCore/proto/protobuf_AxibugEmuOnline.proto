@@ -148,6 +148,8 @@ enum RomPlatformType
 	CPS1 = 22;
 	CPS2 = 23;
 	Arcade_OLD = 30;
+	Wonder_Swan = 40;
+	Wonder_Swan_Color = 41;
 	All = 999;
 }
 

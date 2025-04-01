@@ -1,59 +1,18 @@
 ﻿using AxibugEmuOnline.Server.Common;
 using AxibugEmuOnline.Server.Event;
+using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
-using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Timers;
 
 namespace AxibugEmuOnline.Server.Manager
 {
-    public class ClientInfo
-    {
-        public long UID { get; set; }
-        public string NickName { get; set; } = string.Empty;
-        public string Account { get; set; } = string.Empty;
-        internal DeviceType deviceType { get; set; } = DeviceType.Default;
-        public Socket _socket { get; set; }
-        public bool IsOffline { get; set; } = false;
-        public DateTime RegisterDT { get; set; }
-        public DateTime LogOutDT { get; set; }
-        public DateTime LogInDT { get; set; }
-        public DateTime LastLogInDT { get; set; }
-        public UserRoomState RoomState { get; set; } = new UserRoomState();
-        public TimeSpan LastStartPingTime { get; set; }
-        public int LastPingSeed { get; set; }
-        public double AveNetDelay { get; set; }
-        public double MinNetDelay { get; set; }
-        public double MaxNetDelay { get; set; }
-        public List<double> NetDelays { get; set; } = new List<double>();
-        public const int NetAveDelayCount = 3;
-    }
-
-    public class UserRoomState
-    {
-        public int RoomID { get; private set; }
-        public UserRoomState()
-        {
-            ClearRoomData();
-        }
-        public void SetRoomData(int roomID)
-        {
-            RoomID = roomID;
-        }
-        public void ClearRoomData()
-        {
-            RoomID = -1;
-        }
-    }
-
     public class ClientManager
     {
-        private List<ClientInfo> ClientList = new List<ClientInfo>();
-        private Dictionary<Socket, ClientInfo> _DictSocketClient = new Dictionary<Socket, ClientInfo>();
-        private Dictionary<long?, ClientInfo> _DictUIDClient = new Dictionary<long?, ClientInfo>();
+        private HashSet<ClientInfo> mClientList = new HashSet<ClientInfo>();
+        private Dictionary<Socket, ClientInfo> mDictSocketClient = new Dictionary<Socket, ClientInfo>();
+        private Dictionary<long?, ClientInfo> mDictUIDClient = new Dictionary<long?, ClientInfo>();
         private long TestUIDSeed = 0;
 
         private System.Timers.Timer clientCheckTimer;
@@ -94,7 +53,7 @@ namespace AxibugEmuOnline.Server.Manager
         private void ClientCheckClearOffline_Elapsed(object sender, ElapsedEventArgs e)
         {
             DateTime CheckDT = DateTime.Now.AddMinutes(-1 * _RemoveOfflineCacheMin);
-            ClientInfo[] OfflineClientlist = ClientList.Where(w => w.IsOffline == true && w.LogOutDT < CheckDT).ToArray();
+            ClientInfo[] OfflineClientlist = mClientList.Where(w => w.IsOffline == true && w.LogOutDT < CheckDT).ToArray();
 
             for (int i = 0; i < OfflineClientlist.Length; i++)
             {
@@ -121,10 +80,10 @@ namespace AxibugEmuOnline.Server.Manager
                 Socket oldsocket = cinfo._socket;
                 cinfo._socket = _socket;
 
-                if (_DictSocketClient.ContainsKey(oldsocket))
-                    _DictSocketClient.Remove(oldsocket);
+                if (mDictSocketClient.ContainsKey(oldsocket))
+                    mDictSocketClient.Remove(oldsocket);
 
-                _DictSocketClient[_socket] = cinfo;
+                mDictSocketClient[_socket] = cinfo;
             }
             else
             {
@@ -149,11 +108,11 @@ namespace AxibugEmuOnline.Server.Manager
             try
             {
                 Console.WriteLine("追加连接玩家 UID=>" + clientInfo.UID + " | " + clientInfo.Account);
-                lock (ClientList)
+                lock (mClientList)
                 {
-                    _DictUIDClient.Add(clientInfo.UID, clientInfo);
-                    _DictSocketClient.Add(clientInfo._socket, clientInfo);
-                    ClientList.Add(clientInfo);
+                    mDictUIDClient.Add(clientInfo.UID, clientInfo);
+                    mDictSocketClient.Add(clientInfo._socket, clientInfo);
+                    mClientList.Add(clientInfo);
                 }
             }
             catch (Exception ex)
@@ -168,15 +127,15 @@ namespace AxibugEmuOnline.Server.Manager
         /// <param name="client"></param>
         public void RemoveClient(ClientInfo client)
         {
-            lock (ClientList)
+            lock (mClientList)
             {
-                if (_DictUIDClient.ContainsKey(client.UID))
-                    _DictUIDClient.Remove(client.UID);
+                if (mDictUIDClient.ContainsKey(client.UID))
+                    mDictUIDClient.Remove(client.UID);
 
-                if (_DictSocketClient.ContainsKey(client._socket))
-                    _DictSocketClient.Remove(client._socket);
+                if (mDictSocketClient.ContainsKey(client._socket))
+                    mDictSocketClient.Remove(client._socket);
 
-                ClientList.Remove(client);
+                mClientList.Remove(client);
             }
         }
 
@@ -186,15 +145,15 @@ namespace AxibugEmuOnline.Server.Manager
         /// <param name="client"></param>
         public bool GetClientByUID(long uid, out ClientInfo client, bool bNeedOnline = false)
         {
-            lock (ClientList)
+            lock (mClientList)
             {
-                if (!_DictUIDClient.ContainsKey(uid))
+                if (!mDictUIDClient.ContainsKey(uid))
                 {
                     client = null;
                     return false;
                 }
 
-                client = _DictUIDClient[uid];
+                client = mDictUIDClient[uid];
 
 
                 if (bNeedOnline && client.IsOffline)
@@ -205,12 +164,12 @@ namespace AxibugEmuOnline.Server.Manager
 
         public ClientInfo GetClientForUID(long UID)
         {
-            return _DictUIDClient.ContainsKey(UID) ? _DictUIDClient[UID] : null;
+            return mDictUIDClient.ContainsKey(UID) ? mDictUIDClient[UID] : null;
         }
 
         public ClientInfo GetClientForSocket(Socket sk)
         {
-            return _DictSocketClient.ContainsKey(sk) ? _DictSocketClient[sk] : null;
+            return mDictSocketClient.ContainsKey(sk) ? mDictSocketClient[sk] : null;
         }
 
         /// <summary>
@@ -219,7 +178,7 @@ namespace AxibugEmuOnline.Server.Manager
         /// <returns></returns>
         public List<ClientInfo> GetOnlineClientList()
         {
-            return ClientList.Where(w => w.IsOffline == false).ToList();
+            return mClientList.Where(w => w.IsOffline == false).ToList();
         }
 
 
@@ -229,10 +188,10 @@ namespace AxibugEmuOnline.Server.Manager
         /// <param name="sk"></param>
         public void SetClientOfflineForSocket(Socket sk)
         {
-            if (!_DictSocketClient.ContainsKey(sk))
+            if (!mDictSocketClient.ContainsKey(sk))
                 return;
 
-            ClientInfo cinfo = _DictSocketClient[sk];
+            ClientInfo cinfo = mDictSocketClient[sk];
             Console.WriteLine("标记玩家UID" + cinfo.UID + "为离线");
             cinfo.IsOffline = true;
             cinfo.LogOutDT = DateTime.Now;
@@ -242,10 +201,10 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void RemoveClientForSocket(Socket sk)
         {
-            if (!_DictSocketClient.ContainsKey(sk))
+            if (!mDictSocketClient.ContainsKey(sk))
                 return;
 
-            RemoveClient(_DictSocketClient[sk]);
+            RemoveClient(mDictSocketClient[sk]);
         }
 
         #endregion
@@ -320,7 +279,7 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void ClientSendALL(int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
         {
-            ClientSend(ClientList, CMDID, ERRCODE, data, SkipUID);
+            ClientSend(mClientList, CMDID, ERRCODE, data, SkipUID);
         }
 
         public void ClientSend(List<long> UIDs, int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
@@ -340,17 +299,18 @@ namespace AxibugEmuOnline.Server.Manager
         /// <param name="CMDID"></param>
         /// <param name="ERRCODE"></param>
         /// <param name="data"></param>
-        public void ClientSend(List<ClientInfo> _toclientlist, int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
+        public void ClientSend(IEnumerable<ClientInfo> _toclientlist, int CMDID, int ERRCODE, byte[] data, long SkipUID = -1)
         {
-            for (int i = 0; i < _toclientlist.Count(); i++)
+            //for (int i = 0; i < _toclientlist.Count(); i++)
+            foreach(var _c in _toclientlist)
             {
-                if (_toclientlist[i] == null || _toclientlist[i].IsOffline)
+                if (_c == null || _c.IsOffline)
                     continue;
 
-                if (SkipUID > -1 && _toclientlist[i].UID == SkipUID)
+                if (SkipUID > -1 && _c.UID == SkipUID)
                     continue;
 
-                AppSrv.g_SocketMgr.SendToSocket(_toclientlist[i]._socket, CMDID, ERRCODE, data);
+                AppSrv.g_SocketMgr.SendToSocket(_c._socket, CMDID, ERRCODE, data);
             }
         }
 
@@ -376,7 +336,7 @@ namespace AxibugEmuOnline.Server.Manager
 
         public int GetOnlineClient()
         {
-            return ClientList.Where(w => !w.IsOffline).Count();
+            return mClientList.Where(w => !w.IsOffline).Count();
         }
     }
 }

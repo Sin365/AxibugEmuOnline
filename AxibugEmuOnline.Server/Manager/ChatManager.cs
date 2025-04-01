@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Server.Common;
 using AxibugEmuOnline.Server.NetWork;
 using System.Net.Sockets;
+using AxibugEmuOnline.Server.Manager.Client;
 
 namespace AxibugEmuOnline.Server.Manager
 {

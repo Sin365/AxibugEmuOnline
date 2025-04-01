@@ -59,6 +59,7 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.Cps2:
                 case RomPlatformType.Igs:
                 case RomPlatformType.Neogeo:
+                case RomPlatformType.ArcadeOld:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<IEmuCore>();
                     break;
                 case RomPlatformType.MasterSystem:
@@ -69,6 +70,10 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.Sc3000:
                 case RomPlatformType.Sg1000:
                     m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("EssgeeUnity/EssgeeUnity")).GetComponent<IEmuCore>();
+                    break;
+                case RomPlatformType.WonderSwan:
+                case RomPlatformType.WonderSwanColor:
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("StoicGooseUnity/StoicGooseUnity")).GetComponent<IEmuCore>();
                     break;
             }
 

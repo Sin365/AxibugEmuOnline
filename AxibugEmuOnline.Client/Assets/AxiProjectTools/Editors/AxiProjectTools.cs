@@ -29,7 +29,7 @@ public class AxiProjectTools : EditorWindow
 		}
 	}
 
-	[MenuItem("Axibug移植工具/[1]采集所有预制体和场景下的UGUI组件")]
+	[MenuItem("Axibug移植工具/ToLowVersionUnity/[1]采集所有预制体和场景下的UGUI组件")]
 	public static void Part1()
 	{
 		GoTAxiProjectToolsSence();
@@ -132,7 +132,7 @@ public class AxiProjectTools : EditorWindow
 #endif
 	}
 
-	[MenuItem("Axibug移植工具/[2]生成中间脚本代码")]
+	[MenuItem("Axibug移植工具/ToLowVersionUnity/[2]生成中间脚本代码")]
 	public static void Part2()
 	{
 		if (UnityEngine.Windows.Directory.Exists(outCsDir))
@@ -161,7 +161,7 @@ public class AxiProjectTools : EditorWindow
 		Debug.Log("<Color=#FFF333>处理完毕  [2]生成中间脚本代码</color>");
 	}
 
-	[MenuItem("Axibug移植工具/[3]收集生成的脚本")]
+	[MenuItem("Axibug移植工具/ToLowVersionUnity/[3]收集生成的脚本")]
 	public static void Part3()
 	{
 		AxiPrefabCache cache = AssetDatabase.LoadAssetAtPath<AxiPrefabCache>(cachecfgPath);
@@ -205,7 +205,7 @@ public class AxiProjectTools : EditorWindow
 	}
 
 
-	[MenuItem("Axibug移植工具/[4]替换所有预制体和场景中的组件")]
+	[MenuItem("Axibug移植工具/ToLowVersionUnity/[4]替换所有预制体和场景中的组件")]
 	public static void Part4()
 	{
 		AxiPrefabCache cache = AssetDatabase.LoadAssetAtPath<AxiPrefabCache>(cachecfgPath);
@@ -259,7 +259,7 @@ public class AxiProjectTools : EditorWindow
 	}
 
 
-	[MenuItem("Axibug移植工具/[5]UnPack所有嵌套预制体和场景中的预制体")]
+	[MenuItem("Axibug移植工具/ToLowVersionUnity/[5]UnPack所有嵌套预制体和场景中的预制体")]
 	public static void UnpackPrefabs()
 	{
 
@@ -350,7 +350,7 @@ public class AxiProjectTools : EditorWindow
 	}
 
 
-	[MenuItem("Axibug移植工具/[6]修复Sprite")]
+	[MenuItem("Axibug移植工具/ToLowVersionUnity/[6]修复Sprite")]
 	public static void FixMultipleMaterialSprites()
 	{
 		string[] guids = AssetDatabase.FindAssets("t:sprite");

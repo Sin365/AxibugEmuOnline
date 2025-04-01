@@ -6,9 +6,9 @@
         "VirtualNes.Core",
         "UIEffect2018",
         "Mame.Core",
-        "Essgee.Unity",
-        "Unity.InputSystem"
-    ],
+        "Essgee.Unity"
+		"StoicGooseUnity"
+        "Unity.InputSystem"    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
