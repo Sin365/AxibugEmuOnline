@@ -14,8 +14,8 @@
 /AxibugEmuOnline.Client/ProjectSettings/AutoStreamingSettings.asset
 /AxibugEmuOnline.Client/Logs
 
-/AxibugEmuOnline.Client/Assets/AxiProjectTools/AxiNSPack/switch_keys/*.keys
-/AxibugEmuOnline.Client/Assets/AxiProjectTools/AxiNSPack/switch_keys/*.keys.meta
+**/switch_keys/*.keys
+**/switch_keys/*.keys.meta
 
 /virtuanessrc097-master
 /AxibugEmuOnline.Server/config.cfg
