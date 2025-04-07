@@ -483,6 +483,7 @@ message Protobuf_Mine_GameSavInfo
 	string Note = 9;//备注
 	string SavImgUrl = 10;//即时存档截图Url
 	string SavUrl = 11;//即时存档下载Url
+	int32 Sequence = 12;//存档序号
 }
 
 message Protobuf_Mine_DelGameSav
@@ -505,6 +506,7 @@ message Protobuf_Mine_UpLoadGameSav
 	string Note = 4;//备注（留空时，服务器自动）
 	bytes SavImg = 5;//即时存档截图模拟器原生数据
     bytes StateRaw = 6;//即时存档byte数据
+	int32 Sequence = 7;//存档序号
 }
 
 message Protobuf_Mine_UpLoadGameSav_RESP

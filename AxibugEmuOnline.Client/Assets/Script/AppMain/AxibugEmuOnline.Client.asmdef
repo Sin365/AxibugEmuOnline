@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "AxibugEmuOnline.Client",
     "rootNamespace": "",
     "references": [
@@ -6,9 +6,10 @@
         "VirtualNes.Core",
         "UIEffect2018",
         "Mame.Core",
-        "Essgee.Unity"
-		"StoicGooseUnity"
-        "Unity.InputSystem"    ],
+        "Essgee.Unity",
+		"StoicGooseUnity",
+        "Unity.InputSystem"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,

@@ -9,10 +9,20 @@ namespace AxibugEmuOnline.Client
     public class SaveSlotManager
     {
         const int MAX_SLOT_COUNT = 4;
+        public SavCloudApi CloudApi { get; private set; } = new SavCloudApi();
 
-        SavCloudApi m_cloudApi = new SavCloudApi();
         Dictionary<int, SaveFile[]> m_saveFileDict = new Dictionary<int, SaveFile[]>();
 
+        public void Update()
+        {
+            foreach (var saveFiles in m_saveFileDict.Values)
+            {
+                foreach (var file in saveFiles)
+                {
+                    file.Update();
+                }
+            }
+        }
 
         public List<SaveFile> GetSlotSaves(int romID, RomPlatformType platform)
         {
