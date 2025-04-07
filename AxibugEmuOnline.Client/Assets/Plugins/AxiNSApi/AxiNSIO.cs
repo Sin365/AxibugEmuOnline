@@ -187,11 +187,13 @@ public class AxiNSIO
     {
         if (LoadSwitchDataFile(filename, out byte[] outputData))
         {
-            System.IO.BinaryWriter writer = new System.IO.BinaryWriter(ms);
-            writer.Write(outputData);
-			return true;
+            using (System.IO.BinaryWriter writer = new System.IO.BinaryWriter(ms))
+            {
+                writer.Write(outputData);
+            }
+            return true;
         }
-		return false;
+        return false;
     }
     public bool LoadSwitchDataFile(string filename, out byte[] outputData)
     {
