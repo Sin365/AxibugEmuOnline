@@ -183,12 +183,6 @@ public class AxiNSIO
 		return true;
 #endif
     }
-    /// <summary>
-    /// 保存并创建文件（如果目录不存在回先自动创建目录）
-    /// </summary>
-    /// <param name="filePath"></param>
-    /// <param name="bw"></param>
-    /// <returns></returns>
     public bool LoadSwitchDataFile(string filename, ref System.IO.MemoryStream ms)
     {
         if (LoadSwitchDataFile(filename, out byte[] outputData))
