@@ -231,6 +231,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             starRomLib.ExecuteFetchRomInfo();
             FileDownloader.Update();
             input.Update();
+            SavMgr.Update();
         }
 
         public static Coroutine StartCoroutine(IEnumerator itor)

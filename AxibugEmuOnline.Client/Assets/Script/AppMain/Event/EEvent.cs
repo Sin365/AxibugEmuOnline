@@ -89,16 +89,8 @@
         /// </summary>
         OnRomStarStateChanged,
         /// <summary>
-        /// 网络即时存档拉取成功
-        /// </summary>
-        OnNetGameSavListGot,
-        /// <summary>
         /// 网络即时存档删除
         /// </summary>
         OnNetGameSavDeleted,
-        /// <summary>
-        /// 网络即时存档上传成功
-        /// </summary>
-        OnNetUploaded,
     }
 }

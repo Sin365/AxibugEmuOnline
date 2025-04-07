@@ -3,6 +3,7 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AxibugEmuOnline.Client
@@ -12,6 +13,11 @@ namespace AxibugEmuOnline.Client
     /// </summary>
     public class SavCloudApi
     {
+        public delegate void OnFetchGameSavListHandle(int romID, Protobuf_Mine_GameSavInfo[] savSlotData);
+        public event OnFetchGameSavListHandle OnFetchGameSavList;
+        public delegate void OnUploadedSavDataHandle(int romID, int slotIndex, Protobuf_Mine_GameSavInfo savInfo);
+        public event OnUploadedSavDataHandle OnUploadedSavData;
+
         public SavCloudApi()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavGetGameSavList, RecvGetGameSavList);
@@ -19,12 +25,15 @@ namespace AxibugEmuOnline.Client
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavUploadGameSav, RecvUpLoadGameSav);
         }
 
+        private HashSet<int> m_fetchingRomIDs = new HashSet<int>();
         /// <summary>
         /// 发送请求即时存档列表
         /// </summary>
         /// <param name="RomID"></param>
         public void SendGetGameSavList(int RomID)
         {
+            if (m_fetchingRomIDs.Contains(RomID)) return;
+
             Protobuf_Mine_GetGameSavList req = new Protobuf_Mine_GetGameSavList()
             {
                 RomID = RomID,
@@ -36,13 +45,16 @@ namespace AxibugEmuOnline.Client
         void RecvGetGameSavList(byte[] reqData)
         {
             Protobuf_Mine_GetGameSavList_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_GetGameSavList_RESP>(reqData);
+
+            if (m_fetchingRomIDs.Remove(msg.RomID)) return;
+
             Protobuf_Mine_GameSavInfo[] savArr = new Protobuf_Mine_GameSavInfo[4];
             for (int i = 0; i < savArr.Length; i++)
             {
                 Protobuf_Mine_GameSavInfo info = msg.SavDataList.FirstOrDefault(w => w.SavDataIdx == i);
                 savArr[i] = info;
             }
-            Eventer.Instance.PostEvent(EEvent.OnNetGameSavListGot, msg.RomID, savArr);
+            OnFetchGameSavList?.Invoke(msg.RomID, savArr);
         }
 
         /// <summary>
@@ -72,7 +84,7 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         /// <param name="RomID"></param>
         /// <param name="SavDataIdx"></param>
-        public void SendUpLoadGameSav(int RomID, int SavDataIdx, byte[] RawData, byte[] SavImgData)
+        public void SendUpLoadGameSav(int RomID, int SavDataIdx, uint sequence, byte[] RawData, byte[] SavImgData)
         {
             //压缩
             byte[] compressRawData = Helper.CompressByteArray(RawData);
@@ -86,6 +98,7 @@ namespace AxibugEmuOnline.Client
                 SavDataIdx = SavDataIdx,
                 StateRaw = Google.Protobuf.ByteString.CopyFrom(compressRawData),
                 SavImg = Google.Protobuf.ByteString.CopyFrom(compressImgData),
+                Sequence = (int)sequence
             };
 
             App.log.Info($"SendDelGameSavList");
@@ -98,7 +111,7 @@ namespace AxibugEmuOnline.Client
         void RecvUpLoadGameSav(byte[] reqData)
         {
             Protobuf_Mine_UpLoadGameSav_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_UpLoadGameSav_RESP>(reqData);
-            Eventer.Instance.PostEvent(EEvent.OnNetUploaded, msg.RomID, msg.SavDataIdx, msg.UploadSevInfo);
+            OnUploadedSavData?.Invoke(msg.RomID, msg.SavDataIdx, msg.UploadSevInfo);
         }
 
         /// <summary>
