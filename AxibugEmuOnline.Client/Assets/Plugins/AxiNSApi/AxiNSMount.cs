@@ -1,5 +1,6 @@
 #if UNITY_SWITCH
 using nn.account;
+using static AxiHttp;
 #endif
 public class AxiNSMount
 {

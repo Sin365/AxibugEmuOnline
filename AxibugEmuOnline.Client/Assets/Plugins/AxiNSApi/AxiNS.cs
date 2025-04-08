@@ -18,11 +18,13 @@ public class AxiNS
 	public AxiNSUser user;
 	public AxiNSMount mount;
 	public AxiNSIO io;
+	public AxiNSWaitHandle wait;
 	AxiNS()
 	{
 		user = new AxiNSUser();
 		mount = new AxiNSMount();
 		io = new AxiNSIO();
+		wait = new AxiNSWaitHandle();
 	}
 
 	/// <summary>
