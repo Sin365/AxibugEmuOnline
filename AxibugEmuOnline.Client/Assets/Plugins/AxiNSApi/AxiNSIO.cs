@@ -1,5 +1,7 @@
 #if UNITY_SWITCH
 using nn.fs;
+using System.Security.Cryptography;
+
 #endif
 
 public class AxiNSIO
@@ -253,18 +255,194 @@ public class AxiNSIO
 #if !UNITY_SWITCH
         return false;
 #else
-		//TODO
+
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // This next line prevents the user from quitting the game while saving. 
+        // This is required for Nintendo Switch Guideline 0080
+        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
 #endif
-    }
-    public bool DeletePathDir(string filename)
+
+		if (CheckPathNotFound(filename))
+			return false;
+		nn.Result result;
+		result = nn.fs.File.Delete(filename);
+		if (result.IsSuccess() == false)
+		{
+			UnityEngine.Debug.LogError($"nn.fs.File.Delete Ê§°Ü {filename} : result=>{result.GetErrorInfo()}");
+			return false;   
+		}
+		result = nn.fs.FileSystem.Commit(save_name);
+		if (!result.IsSuccess())
+		{
+			UnityEngine.Debug.LogError($"FileSystem.Commit({save_name}) Ê§°Ü: " + result.GetErrorInfo());
+			return false;
+		}
+		return true;
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // End preventing the user from quitting the game while saving.
+        UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
+#endif
+
+#endif
+	}
+	public bool DeletePathDir(string filename)
     {
 #if !UNITY_SWITCH
         return false;
 #else
-		//TODO
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // This next line prevents the user from quitting the game while saving. 
+        // This is required for Nintendo Switch Guideline 0080
+        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
 #endif
-    }
-    bool EnsureParentDirectory(string filePath, bool bAutoCreateDir = true)
+
+		if (CheckPathNotFound(filename))
+			return false;
+		nn.Result result;
+		result = nn.fs.Directory.Delete(filename);
+		if (result.IsSuccess() == false)
+		{
+			UnityEngine.Debug.LogError($"nn.fs.File.Delete Ê§°Ü {filename} : result=>{result.GetErrorInfo()}");
+			return false;
+		}
+		result = nn.fs.FileSystem.Commit(save_name);
+		if (!result.IsSuccess())
+		{
+			UnityEngine.Debug.LogError($"FileSystem.Commit({save_name}) Ê§°Ü: " + result.GetErrorInfo());
+			return false;
+		}
+		return true;
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // End preventing the user from quitting the game while saving.
+        UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
+#endif
+#endif
+	}
+
+	/// <summary>
+	/// µÝ¹éÉ¾³ýÄ¿Â¼
+	/// </summary>
+	/// <param name="filename"></param>
+	/// <returns></returns>
+	public bool DeleteRecursivelyPathDir(string filename)
+	{
+#if !UNITY_SWITCH
+        return false;
+#else
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // This next line prevents the user from quitting the game while saving. 
+        // This is required for Nintendo Switch Guideline 0080
+        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
+#endif
+
+		if (CheckPathNotFound(filename))
+			return false;
+		nn.Result result;
+		result = nn.fs.Directory.DeleteRecursively(filename);
+		if (result.IsSuccess() == false)
+		{
+			UnityEngine.Debug.LogError($"nn.fs.File.DeleteRecursively Ê§°Ü {filename} : result=>{result.GetErrorInfo()}");
+			return false;
+		}
+		result = nn.fs.FileSystem.Commit(save_name);
+		if (!result.IsSuccess())
+		{
+			UnityEngine.Debug.LogError($"FileSystem.Commit({save_name}) Ê§°Ü: " + result.GetErrorInfo());
+			return false;
+		}
+		return true;
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // End preventing the user from quitting the game while saving.
+        UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
+#endif
+#endif
+	}
+
+	/// <summary>
+	/// µÝ¹éÉ¾³ýÇé¿ö
+	/// </summary>
+	/// <param name="filename"></param>
+	/// <returns></returns>
+	public bool CleanRecursivelyPathDir(string filename)
+	{
+#if !UNITY_SWITCH
+        return false;
+#else
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // This next line prevents the user from quitting the game while saving. 
+        // This is required for Nintendo Switch Guideline 0080
+        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
+#endif
+
+		if (CheckPathNotFound(filename))
+			return false;
+		nn.Result result;
+		result = nn.fs.Directory.CleanRecursively(filename);
+		if (result.IsSuccess() == false)
+		{
+			UnityEngine.Debug.LogError($"nn.fs.File.DeleteRecursively Ê§°Ü {filename} : result=>{result.GetErrorInfo()}");
+			return false;
+		}
+		result = nn.fs.FileSystem.Commit(save_name);
+		if (!result.IsSuccess())
+		{
+			UnityEngine.Debug.LogError($"FileSystem.Commit({save_name}) Ê§°Ü: " + result.GetErrorInfo());
+			return false;
+		}
+		return true;
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // End preventing the user from quitting the game while saving.
+        UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
+#endif
+#endif
+	}
+
+
+	public bool RenameDir(string oldpath,string newpath)
+	{
+#if !UNITY_SWITCH
+        return false;
+#else
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // This next line prevents the user from quitting the game while saving. 
+        // This is required for Nintendo Switch Guideline 0080
+        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
+#endif
+
+		if (CheckPathNotFound(oldpath))
+			return false;
+
+		nn.Result result;
+		result = nn.fs.Directory.Rename(oldpath, newpath);
+		if (result.IsSuccess() == false)
+		{
+			UnityEngine.Debug.LogError($"nn.fs.File.Rename Ê§°Ü {oldpath} to {newpath} : result=>{result.GetErrorInfo()}");
+			return false;
+		}
+		result = nn.fs.FileSystem.Commit(save_name);
+		if (!result.IsSuccess())
+		{
+			UnityEngine.Debug.LogError($"FileSystem.Commit({save_name}) Ê§°Ü: " + result.GetErrorInfo());
+			return false;
+		}
+		return true;
+
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // End preventing the user from quitting the game while saving.
+        UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
+#endif
+#endif
+	}
+	bool EnsureParentDirectory(string filePath, bool bAutoCreateDir = true)
     {
 #if !UNITY_SWITCH
         return false;

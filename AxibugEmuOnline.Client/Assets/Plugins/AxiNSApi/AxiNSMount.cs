@@ -5,10 +5,12 @@ public class AxiNSMount
 {
     static bool bInMount = false;
     internal static string m_SaveMountName;
-    static bool bInMountForDebug = false;
-    internal static string m_SaveMountForDebugName;
+    static bool bInSdCardMount = false;
+    internal static string m_SdCardMountName;
+	static bool bInSdCardDebugMount = false;
+	internal static string m_SdCardDebugMountName;
 
-    public bool SaveIsMount => bInMount;
+	public bool SaveIsMount => bInMount;
     public string SaveMountName
     {
         get
@@ -47,14 +49,14 @@ public class AxiNSMount
 		bInMount = true;
 		return true;
 	}
-    #endif
+#endif
 
-    public bool MountSDForDebug(string mountName = "sd")
+	public bool MountSDForDebug(string mountName = "dbgsd")
     {
 #if !UNITY_SWITCH
         return false;
 #else
-        if (bInMountForDebug)
+        if (bInSdCardDebugMount)
             return true;
         nn.Result result;
         result = nn.fs.SdCard.MountForDebug(mountName);
@@ -65,35 +67,31 @@ public class AxiNSMount
             return false;
         }
         UnityEngine.Debug.Log($"nn_fs_MountSdCardForDebug->挂载{mountName}:/ 成功 ");
-        m_SaveMountForDebugName = mountName;
-        bInMountForDebug = true;
+		m_SdCardDebugMountName = mountName;
+		bInSdCardDebugMount = true;
         return true;
 #endif
     }
-
     public bool MountSD(string mountName = "sd")
     {
 #if !UNITY_SWITCH
         return false;
 #else
-        if (bInMountForDebug)
+        if (bInSdCardMount)
             return true;
         nn.Result result;
-        result = nn.fs.SdCard.Mount(mountName);
-        //result.abortUnlessSuccess();
+        result = AxiNSSDCard.Mount(mountName);
         if (!result.IsSuccess())
         {
             UnityEngine.Debug.LogError($"nn_fs_MountSdCard->挂载{mountName}:/ 失败: " + result.ToString());
             return false;
         }
         UnityEngine.Debug.Log($"nn_fs_MountSdCard->挂载{mountName}:/ 成功 ");
-        m_SaveMountForDebugName = mountName;
-        bInMountForDebug = true;
+        m_SdCardMountName = mountName;
+        bInSdCardMount = true;
         return true;
 #endif
     }
-
-
     public void UnmountSave()
     {
 #if UNITY_SWITCH
@@ -107,18 +105,30 @@ public class AxiNSMount
         bInMount = false;
 #endif
     }
-
-    public void UnmountSaveForDebug()
+    public void UnmountSDCardForDebug()
     {
 #if UNITY_SWITCH
-        if (!bInMountForDebug)
+        if (!bInSdCardDebugMount)
         {
-            UnityEngine.Debug.LogError($"{m_SaveMountForDebugName}:/ 没有被挂载，无需卸载");
+            UnityEngine.Debug.LogError($"{m_SdCardDebugMountName}:/ 没有被挂载，无需卸载");
             return;
         }
-        nn.fs.FileSystem.Unmount(m_SaveMountForDebugName);
-        UnityEngine.Debug.LogError($"UnmountSaveForDebufa->已卸载{m_SaveMountForDebugName}:/ ");
-        bInMountForDebug = false;
+        nn.fs.FileSystem.Unmount(m_SdCardDebugMountName);
+        UnityEngine.Debug.LogError($"UnmountSDCardForDebug->已卸载{m_SdCardDebugMountName}:/ ");
+		bInSdCardDebugMount = false;
 #endif
-    }
+	}
+	public void UnmountSDCard()
+	{
+#if UNITY_SWITCH
+		if (!bInSdCardMount)
+		{
+			UnityEngine.Debug.LogError($"{m_SdCardMountName}:/ 没有被挂载，无需卸载");
+			return;
+		}
+		nn.fs.FileSystem.Unmount(m_SdCardMountName);
+		UnityEngine.Debug.LogError($"UnmountSDCard->已卸载{m_SdCardMountName}:/ ");
+		bInSdCardMount = false;
+#endif
+	}
 }
