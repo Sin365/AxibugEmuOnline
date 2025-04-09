@@ -3,6 +3,7 @@ using AxibugEmuOnline.Client.InputDevices;
 using AxibugEmuOnline.Client.Settings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -19,7 +20,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     where T : Enum
 {
     //每一个实例代表一个对应模拟器平台的控制器索引
-    List<ControllerBinder> m_bindingPages = new List<ControllerBinder>();
+    List<ControllerBinder> m_controllerBinders = new List<ControllerBinder>();
 
     public EmuCoreBinder()
     {
@@ -27,13 +28,15 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
 
         for (int i = 0; i < ControllerCount; i++)
         {
-            m_bindingPages.Add(new ControllerBinder(i, this));
+            m_controllerBinders.Add(new ControllerBinder(i, this));
         }
 
         foreach (var device in App.input.GetDevices())
         {
-            foreach (var binding in m_bindingPages)
+            foreach (var binding in m_controllerBinders)
             {
+                if (device.Exclusive && GetRegistedBinder(device) != null) continue;
+
                 binding.RegistInputDevice(device);
             }
         }
@@ -42,9 +45,23 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         App.input.OnDeviceConnected += InputDevicesMgr_OnDeviceConnected;
     }
 
+    /// <summary> 获取指定设备的注册Binder对象 </summary>
+    /// <param name="device"></param>
+    /// <returns>返回首个匹配对象</returns>
+    public ControllerBinder GetRegistedBinder(InputDevice_D device)
+    {
+        foreach (var binding in m_controllerBinders)
+        {
+            if (device.Exclusive && GetRegistedBinder(device) != null) continue;
+            if (binding.IsRegisted(device)) return binding;
+        }
+
+        return null;
+    }
+
     private void InputDevicesMgr_OnDeviceConnected(InputDevice_D connectDevice)
     {
-        foreach (var binding in m_bindingPages)
+        foreach (var binding in m_controllerBinders)
         {
             binding.RegistInputDevice(connectDevice);
         }
@@ -52,7 +69,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
 
     private void InputDevicesMgr_OnDeviceLost(InputDevice_D lostDevice)
     {
-        foreach (var binding in m_bindingPages)
+        foreach (var binding in m_controllerBinders)
         {
             binding.UnregistInputDevice(lostDevice);
         }
@@ -71,7 +88,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
 
     public bool Start(T emuControl, int controllerIndex)
     {
-        var binding = m_bindingPages[controllerIndex];
+        var binding = m_controllerBinders[controllerIndex];
         foreach (var key in binding.GetBinding(emuControl))
         {
             if (key.Start) return true;
@@ -82,7 +99,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
 
     public bool Release(T emuControl, int controllerIndex)
     {
-        var binding = m_bindingPages[controllerIndex];
+        var binding = m_controllerBinders[controllerIndex];
         foreach (var key in binding.GetBinding(emuControl))
         {
             if (key.Release) return true;
@@ -100,7 +117,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     /// <returns></returns>
     public bool GetKey(T emuControl, int controllerIndex)
     {
-        var binding = m_bindingPages[controllerIndex];
+        var binding = m_controllerBinders[controllerIndex];
         foreach (var key in binding.GetBinding(emuControl))
         {
             if (key.Performing) return true;
@@ -116,7 +133,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     /// <returns></returns>
     public bool AnyKeyDown(int controllerIndex)
     {
-        var binding = m_bindingPages[controllerIndex];
+        var binding = m_controllerBinders[controllerIndex];
         return binding.AnyKeyDown();
     }
 
@@ -130,7 +147,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     /// <returns></returns>
     public Vector2 GetVector2(T emuControl, int controllerIndex)
     {
-        var binding = m_bindingPages[controllerIndex];
+        var binding = m_controllerBinders[controllerIndex];
         foreach (var control in binding.GetBinding(emuControl))
         {
             if (!control.Performing) continue;
@@ -155,7 +172,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         var totalFloat = 0f;
         var totalControl = 0;
 
-        var binding = m_bindingPages[controllerIndex];
+        var binding = m_controllerBinders[controllerIndex];
         foreach (var key in binding.GetBinding(emuControl))
         {
             if (!key.Performing) continue;
@@ -192,6 +209,10 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         internal bool IsRegisted(Type deviceType)
         {
             return m_registedDevices.ContainsKey(deviceType);
+        }
+        internal bool IsRegisted(InputDevice_D device)
+        {
+            return m_registedDevices.Values.Contains(device);
         }
 
         internal void RegistInputDevice(InputDevice_D device)
