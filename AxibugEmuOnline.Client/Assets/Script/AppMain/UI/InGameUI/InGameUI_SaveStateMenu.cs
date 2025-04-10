@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
@@ -22,7 +23,7 @@ namespace AxibugEmuOnline.Client
             foreach (var savFile in saveFiles)
             {
                 if (savFile.AutoSave) continue;
-                result.Add(new SaveSlotMenu(savFile));
+                result.Add(new SaveSlotMenu(m_gameUI, savFile));
             }
             return result;
         }
@@ -33,16 +34,24 @@ namespace AxibugEmuOnline.Client
             public override Type MenuUITemplateType => typeof(OptionUI_SavSlotItem);
             public SaveFile SavFile { get; private set; }
 
+            private InGameUI m_ingameUI;
+
             public override bool Visible => !SavFile.AutoSave;
 
-            public SaveSlotMenu(SaveFile savFile)
+            public SaveSlotMenu(InGameUI inGameui, SaveFile savFile)
             {
                 SavFile = savFile;
+                m_ingameUI = inGameui;
             }
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
-                cancelHide = true;//保存后不关闭
+                cancelHide = true;
+                var stateData = m_ingameUI.Core.GetStateBytes();
+                var tex = m_ingameUI.Core.OutputPixel;
+                var screenData = tex.ToJPG();
+
+                SavFile.Save(SavFile.Sequecen, stateData, screenData);
             }
 
             public override string Name => SavFile.AutoSave ? "自动存档" : $"存档{SavFile.SlotIndex}";

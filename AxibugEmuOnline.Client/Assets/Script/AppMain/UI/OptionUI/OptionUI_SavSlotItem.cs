@@ -62,6 +62,7 @@ namespace AxibugEmuOnline.Client
         public override void OnExecute(OptionUI optionUI, ref bool cancelHide)
         {
             MenuData.OnExcute(optionUI, ref cancelHide);
+            RefreshUI();
         }
     }
 }

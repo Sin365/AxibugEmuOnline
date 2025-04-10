@@ -124,15 +124,19 @@ namespace AxibugEmuOnline.Client
             }
 
             m_headerCache = new Header();
-            IntPtr ptr = Marshal.AllocHGlobal(headerSize);
-            Marshal.StructureToPtr(m_headerCache, ptr, false);
-            Marshal.Copy(raw, 0, ptr, headerSize);
-            Marshal.FreeHGlobal(ptr);
+            fixed (Header* headPtr = &m_headerCache)
+            {
+                var headP=(byte*)headPtr;
+                Marshal.Copy(raw, 0, (IntPtr)headP, sizeof(Header));
+            }
 
             savData = new byte[m_headerCache.DataLength];
             Array.Copy(raw, headerSize, savData, 0, savData.Length);
             screenShotData = new byte[m_headerCache.ScreenShotLength];
             Array.Copy(raw, headerSize + savData.Length, screenShotData, 0, screenShotData.Length);
+
+            m_savDataCaches = savData;
+            m_screenShotCaches = screenShotData;
 
             return;
         }
@@ -171,9 +175,10 @@ namespace AxibugEmuOnline.Client
             Sequecen = sequence;
 
             m_headerCache = header;
-            IsEmpty = false;
+            m_savDataCaches = savData;
+            m_screenShotCaches = screenShotData;
 
-            m_cacheOutdate = true;
+            IsEmpty = false;
         }
 
         /// <summary>
