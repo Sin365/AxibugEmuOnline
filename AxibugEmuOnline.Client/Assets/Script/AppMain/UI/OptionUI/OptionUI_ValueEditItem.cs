@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client
 
         IValueEditControl m_currentCom;
 
-        protected override void OnSetData(OptionMenu menuData)
+        protected override void OnSetData(InternalOptionMenu menuData)
         {
             com_floatEdit.gameObject.SetActive(false);
             com_intEdit.gameObject.SetActive(false);

@@ -51,7 +51,7 @@ namespace AxibugEmuOnline.Client
         {
             if (Datacontext != null && Datacontext.Paramerters.Count > 0)
             {
-                var opts = new List<OptionMenu>();
+                var opts = new List<InternalOptionMenu>();
                 opts.Add(new Opt_CreatePreset(Datacontext));
                 opts.AddRange(Datacontext.Presets.Select(p => new Opt_Presets(Datacontext, p)));
 
@@ -101,7 +101,7 @@ namespace AxibugEmuOnline.Client
             private Filter m_filter;
             private FilterPreset m_preset;
             private OptionUI_MenuItem m_ui;
-            private List<OptionMenu> m_menu;
+            private List<InternalOptionMenu> m_menu;
 
             public override string Name => m_preset.Name;
 
@@ -110,7 +110,7 @@ namespace AxibugEmuOnline.Client
                 m_filter = filter;
                 m_preset = preset;
 
-                m_menu = new List<OptionMenu>();
+                m_menu = new List<InternalOptionMenu>();
                 m_menu.Add(new Opt_Delete(m_filter, m_preset));
                 foreach (var p in m_filter.Paramerters)
                 {
@@ -142,7 +142,7 @@ namespace AxibugEmuOnline.Client
                 App.settings.Filter.EnableFilter(m_filter);
             }
 
-            protected override List<OptionMenu> GetOptionMenus()
+            protected override List<InternalOptionMenu> GetOptionMenus()
             {
                 return m_menu;
             }

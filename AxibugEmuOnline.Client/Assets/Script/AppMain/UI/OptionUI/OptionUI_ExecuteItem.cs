@@ -7,7 +7,7 @@ namespace AxibugEmuOnline.Client
         public GameObject ExpandFlag;
         public GameObject ApplyFlag;
 
-        protected override void OnSetData(OptionMenu menuData)
+        protected override void OnSetData(InternalOptionMenu menuData)
         {
             base.OnSetData(menuData);
 

@@ -3,14 +3,14 @@ using System.Diagnostics;
 
 namespace AxibugEmuOnline.Client
 {
-    public class InGameUI_SaveState : ExecuteMenu
+    public class InGameUI_SaveStateQuick : ExecuteMenu
     {
         private InGameUI m_gameUI;
 
         public override bool Visible => !m_gameUI.IsNetPlay;
-        public override string Name => "保存快照";
+        public override string Name => "快速保存";
 
-        public InGameUI_SaveState(InGameUI gameUI)
+        public InGameUI_SaveStateQuick(InGameUI gameUI)
         {
             m_gameUI = gameUI;
         }
