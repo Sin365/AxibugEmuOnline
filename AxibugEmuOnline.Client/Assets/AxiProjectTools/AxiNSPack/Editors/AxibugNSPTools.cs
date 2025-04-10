@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -82,7 +83,7 @@ namespace AxibugEmuOnline.Editors
             {
                 BuildReport report = BuildPipeline.BuildPlayer(options);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError($"[AxibugNSPTools] Unity Build NSP 错误:{ex.ToString()}");
                 return;
@@ -147,13 +148,13 @@ namespace AxibugEmuOnline.Editors
             #region 清理临时目录
             CleanDirectory(Path.Combine(nspParentDir, "repacker_extract"));
             CleanDirectory(Path.Combine(Path.GetTempPath(), "NCA"));
-            CleanDirectory(Path.Combine(WorkRoot, "hacpack_backup"));
+            CleanDirectory(Path.Combine(nspParentDir, "hacpack_backup"));
             #endregion
 
             EditorUtility.DisplayProgressBar("AxibugNSPTools", $"解包NSP文件", 0.2f);
             #region 解包NSP文件
             string extractPath = Path.Combine(nspParentDir, "repacker_extract");
-            ExecuteCommand($"{tools["authoringTool"]} extract -o \"{extractPath}\" \"{nspFilePath}\"");
+            ExecuteCommand($"{tools["authoringTool"]} extract -o \"{extractPath}\" \"{nspFilePath}\"", nspParentDir);
 
             string controlPath = null;
             string programPath = null;
@@ -167,19 +168,30 @@ namespace AxibugEmuOnline.Editors
 
             #region 重建NCA/NSP
             string tmpPath = Path.Combine(Path.GetTempPath(), "NCA");
-            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NCA", 0.6f);
-            string programNCA = BuildProgramNCA(tmpPath, titleID, programPath);
-            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NCA", 0.7f);
-            string controlNCA = BuildControlNCA(tmpPath, titleID, controlPath);
-            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NCA", 0.8f);
-            BuildMetaNCA(tmpPath, titleID, programNCA, controlNCA);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建 Program NCA", 0.3f);
+            string programNCA = BuildProgramNCA(tmpPath, titleID, programPath, nspParentDir);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建 Control NCA", 0.4f);
+            string controlNCA = BuildControlNCA(tmpPath, titleID, controlPath, nspParentDir);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建 Meta NCA", 0.5f);
+            BuildMetaNCA(tmpPath, titleID, programNCA, controlNCA, nspParentDir);
+            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NSP", 0.6f);
+            string outputNSP = BuildFinalNSP(nspFilePath, nspParentDir, tmpPath, titleID, nspParentDir);
             EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NSP", 0.9f);
-            string outputNSP = BuildFinalNSP(nspFilePath, nspParentDir, tmpPath, titleID);
-            EditorUtility.DisplayProgressBar("AxibugNSPTools", $"重建NSP", 1f);
             Debug.Log($"[AxibugNSPTools]Repacking completed: {outputNSP}");
-            EditorUtility.ClearProgressBar();
-            #endregion
+
+			#endregion
+
+			EditorUtility.DisplayProgressBar("AxibugNSPTools", $"清理临时目录", 1);
+			#region 清理临时目录
+			CleanDirectory(Path.Combine(nspParentDir, "repacker_extract"));
+			CleanDirectory(Path.Combine(Path.GetTempPath(), "NCA"));
+			CleanDirectory(Path.Combine(nspParentDir, "hacpack_backup"));
+			#endregion
+			System.Diagnostics.Process.Start("explorer", "/select,\"" + outputNSP.Trim() + "\"");
+			EditorUtility.ClearProgressBar();
         }
+
+
 
         #region 辅助方法
         static string GetUserInput()
@@ -187,13 +199,11 @@ namespace AxibugEmuOnline.Editors
             Console.Write("Enter the NSP filepath: ");
             return Console.ReadLine();
         }
-
         static string ExtractTitleID(string path)
         {
             var match = Regex.Match(path, @"0100[\dA-Fa-f]{12}");
             return match.Success ? match.Value : null;
         }
-
 
         static void CleanDirectory(string path)
         {
@@ -215,8 +225,9 @@ namespace AxibugEmuOnline.Editors
             }
         }
 
-        static string ExecuteCommand(string command)
+        static string ExecuteCommand(string command, string workdir)
         {
+            Debug.Log($"调用cmd=>{command}");
             var process = new System.Diagnostics.Process()
             {
                 StartInfo = new System.Diagnostics.ProcessStartInfo
@@ -228,7 +239,8 @@ namespace AxibugEmuOnline.Editors
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     StandardOutputEncoding = Encoding.UTF8,  // 明确指定编码
-                    StandardErrorEncoding = Encoding.UTF8
+                    StandardErrorEncoding = Encoding.UTF8,
+                    WorkingDirectory = workdir
                 }
             };
 
@@ -275,36 +287,36 @@ namespace AxibugEmuOnline.Editors
         #endregion
 
         #region NCA构建逻辑
-        static string BuildProgramNCA(string tmpPath, string titleID, string programDir)
+        static string BuildProgramNCA(string tmpPath, string titleID, string programDir, string workdir)
         {
             string args = $"-k \"{prodKeysPath}\" -o \"{tmpPath}\" --titleid {titleID} " +
                           $"--type nca --ncatype program --exefsdir \"{programDir}/fs0\" " +
                           $"--romfsdir \"{programDir}/fs1\" --logodir \"{programDir}/fs2\"";
 
-            string output = ExecuteCommand($"{tools["hacPack"]} {args}");
+            string output = ExecuteCommand($"{tools["hacPack"]} {args}", workdir);
             return ParseNCAOutput(output, "Program");
         }
 
-        static string BuildControlNCA(string tmpPath, string titleID, string controlDir)
+        static string BuildControlNCA(string tmpPath, string titleID, string controlDir, string workdir)
         {
             string args = $"-k \"{prodKeysPath}\" -o \"{tmpPath}\" --titleid {titleID} " +
                           $"--type nca --ncatype control --romfsdir \"{controlDir}/fs0\"";
 
-            string output = ExecuteCommand($"{tools["hacPack"]} {args}");
+            string output = ExecuteCommand($"{tools["hacPack"]} {args}", workdir);
 
             return ParseNCAOutput(output, "Control");
         }
 
-        static void BuildMetaNCA(string tmpPath, string titleID, string programNCA, string controlNCA)
+        static void BuildMetaNCA(string tmpPath, string titleID, string programNCA, string controlNCA, string workdir)
         {
             string args = $"-k \"{prodKeysPath}\" -o \"{tmpPath}\" --titleid {titleID} " +
                           $"--type nca --ncatype meta --titletype application " +
                           $"--programnca \"{programNCA}\" --controlnca \"{controlNCA}\"";
 
-            ExecuteCommand($"{tools["hacPack"]} {args}");
+            ExecuteCommand($"{tools["hacPack"]} {args}", workdir);
         }
 
-        static string BuildFinalNSP(string origPath, string parentDir, string tmpPath, string titleID)
+        static string BuildFinalNSP(string origPath, string parentDir, string tmpPath, string titleID, string workdir)
         {
             string outputPath = origPath.Replace(".nsp", "_repacked.nsp");
             if (File.Exists(outputPath)) File.Delete(outputPath);
@@ -312,7 +324,7 @@ namespace AxibugEmuOnline.Editors
             string args = $"-k \"{prodKeysPath}\" -o \"{parentDir}\" --titleid {titleID} " +
                           $"--type nsp --ncadir \"{tmpPath}\"";
 
-            ExecuteCommand($"{tools["hacPack"]} {args}");
+            ExecuteCommand($"{tools["hacPack"]} {args}", workdir);
             File.Move(Path.Combine(parentDir, $"{titleID}.nsp"), outputPath);
             return outputPath;
         }
@@ -321,7 +333,9 @@ namespace AxibugEmuOnline.Editors
         {
             var line = output.Split('\n')
                 .FirstOrDefault(l => l.Contains($"Created {type} NCA:"));
-            return line?.Split(':').Last().Trim();
+            //return line?.Split(':').Last().Trim();
+            return line?.Substring(line.IndexOf("NCA:") + "NCA:".Length).Trim();
+
         }
         #endregion
     }
