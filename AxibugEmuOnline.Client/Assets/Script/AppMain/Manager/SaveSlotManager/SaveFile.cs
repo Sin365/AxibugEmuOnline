@@ -38,6 +38,8 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public event Action OnSavSuccessed;
+
         /// <summary> 存档顺序号,用于判断云存档和本地存档的同步状态,是否存在冲突 </summary>
         public uint Sequecen { get; private set; }
 
@@ -126,7 +128,7 @@ namespace AxibugEmuOnline.Client
             m_headerCache = new Header();
             fixed (Header* headPtr = &m_headerCache)
             {
-                var headP=(byte*)headPtr;
+                var headP = (byte*)headPtr;
                 Marshal.Copy(raw, 0, (IntPtr)headP, sizeof(Header));
             }
 
@@ -179,6 +181,8 @@ namespace AxibugEmuOnline.Client
             m_screenShotCaches = screenShotData;
 
             IsEmpty = false;
+
+            OnSavSuccessed?.Invoke();
         }
 
         /// <summary>

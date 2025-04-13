@@ -221,13 +221,20 @@ namespace AxibugEmuOnline.Client
 
         }
 
+        /// <summary>
+        /// 关闭这个侧边栏选项UI
+        /// </summary>
         public void Hide()
         {
             if (m_bPoped)
             {
+                if (m_child != null)
+                {
+                    m_child.Hide();
+                }
+
                 Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
-
 
                 ReleaseRuntimeMenus();
                 m_runtimeMenuItems.Clear();

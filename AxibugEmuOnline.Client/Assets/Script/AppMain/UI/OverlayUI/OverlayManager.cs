@@ -39,9 +39,15 @@ namespace AxibugEmuOnline.Client
             s_ins.m_OptionUI.Pop(menus, defaultIndex, onClose);
         }
 
+        public static void HideSideBar()
+        {
+            s_ins.m_OptionUI.Hide();
+        }
+
         public static void PopTip(string msg)
         {
             s_ins.m_popTipsUI.Pop(msg);
         }
+
     }
 }

@@ -9,7 +9,7 @@ namespace AxibugEmuOnline.Client
     {
         private InGameUI m_gameUI;
 
-        public override string Name => "保存";
+        public override string Name => "存档";
 
         public InGameUI_SaveStateMenu(InGameUI inGameUI)
         {
@@ -22,39 +22,81 @@ namespace AxibugEmuOnline.Client
             List<InternalOptionMenu> result = new List<InternalOptionMenu>();
             foreach (var savFile in saveFiles)
             {
-                if (savFile.AutoSave) continue;
                 result.Add(new SaveSlotMenu(m_gameUI, savFile));
             }
             return result;
         }
 
         /// <summary> 存档侧边选项UI </summary>
-        public class SaveSlotMenu : ExecuteMenu
+        public class SaveSlotMenu : ExpandMenu
         {
             public override Type MenuUITemplateType => typeof(OptionUI_SavSlotItem);
             public SaveFile SavFile { get; private set; }
 
-            private InGameUI m_ingameUI;
-
-            public override bool Visible => !SavFile.AutoSave;
+            List<InternalOptionMenu> m_subOptions = new List<InternalOptionMenu>();
+            public override string Name => SavFile.AutoSave ? "自动存档" : $"存档{SavFile.SlotIndex}";
 
             public SaveSlotMenu(InGameUI inGameui, SaveFile savFile)
             {
                 SavFile = savFile;
-                m_ingameUI = inGameui;
+
+                //非自动存档,增加保存选项
+                if (!savFile.AutoSave) m_subOptions.Add(new SaveMenuItem(inGameui, savFile));
+                //添加读取选项
+                m_subOptions.Add(new LoadMenuItem(inGameui, savFile));
             }
 
-            public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+            protected override List<InternalOptionMenu> GetOptionMenus()
             {
-                cancelHide = true;
-                var stateData = m_ingameUI.Core.GetStateBytes();
-                var tex = m_ingameUI.Core.OutputPixel;
-                var screenData = tex.ToJPG();
-
-                SavFile.Save(SavFile.Sequecen, stateData, screenData);
+                return m_subOptions;
             }
 
-            public override string Name => SavFile.AutoSave ? "自动存档" : $"存档{SavFile.SlotIndex}";
+            public class SaveMenuItem : ExecuteMenu
+            {
+                SaveFile m_savFile;
+                InGameUI m_ingameUI;
+                public override string Name => "保存";
+
+                public SaveMenuItem(InGameUI inGameui, SaveFile savFile)
+                {
+                    m_ingameUI = inGameui;
+                    m_savFile = savFile;
+                }
+
+                public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+                {
+                    var stateData = m_ingameUI.Core.GetStateBytes();
+                    var tex = m_ingameUI.Core.OutputPixel;
+                    var screenData = tex.ToJPG();
+
+                    m_savFile.Save(m_savFile.Sequecen, stateData, screenData);
+                }
+            }
+
+            public class LoadMenuItem : ExecuteMenu
+            {
+                SaveFile m_savFile;
+                InGameUI m_ingameUI;
+                public override string Name => "读取";
+
+                public LoadMenuItem(InGameUI inGameui, SaveFile savFile)
+                {
+                    m_ingameUI = inGameui;
+                    m_savFile = savFile;
+                }
+
+                public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+                {
+                    cancelHide = true;
+                    m_savFile.GetSavData(out byte[] savData, out var _);
+                    if (savData != null)
+                    {
+                        m_ingameUI.Core.LoadStateFromBytes(savData);
+                    }
+
+                    OverlayManager.HideSideBar();
+                }
+            }
         }
     }
 }

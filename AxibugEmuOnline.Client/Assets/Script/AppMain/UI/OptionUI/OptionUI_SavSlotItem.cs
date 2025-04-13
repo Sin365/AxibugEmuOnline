@@ -17,6 +17,8 @@ namespace AxibugEmuOnline.Client
             base.OnSetData(menuData);
 
             RefreshUI();
+
+            MenuData.SavFile.OnSavSuccessed += RefreshUI;
         }
 
         private void RefreshUI()
@@ -57,12 +59,13 @@ namespace AxibugEmuOnline.Client
                 Destroy(m_screenTex);
                 m_screenTex = null;
             }
+
+            MenuData.SavFile.OnSavSuccessed -= RefreshUI;
         }
 
         public override void OnExecute(OptionUI optionUI, ref bool cancelHide)
         {
             MenuData.OnExcute(optionUI, ref cancelHide);
-            RefreshUI();
         }
     }
 }
