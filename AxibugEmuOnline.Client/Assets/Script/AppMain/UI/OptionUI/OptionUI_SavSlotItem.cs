@@ -38,8 +38,8 @@ namespace AxibugEmuOnline.Client
             else
             {
                 var savTime = MenuData.SavFile.GetSavTimeUTC().ToLocalTime();
-                UI_SavTime.text = $"{savTime.Year}/{savTime.Month}/{savTime.Day}\n{savTime.Hour}:{savTime.Minute}:{savTime.Second}";
-                MenuData.SavFile.GetSavData(out byte[] savData, out byte[] screenShotData);
+                UI_SavTime.text = $"{savTime.Year}/{savTime.Month:00}/{savTime.Day:00}\n{savTime.Hour}:{savTime.Minute}:{savTime.Second}";
+                MenuData.SavFile.GetSavData(out byte[] _, out byte[] screenShotData);
 
                 if (!m_screenTex) m_screenTex = new Texture2D(1, 1);
 
