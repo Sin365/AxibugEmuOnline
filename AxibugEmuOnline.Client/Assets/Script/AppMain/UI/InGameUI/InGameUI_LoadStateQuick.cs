@@ -1,12 +1,12 @@
 ﻿namespace AxibugEmuOnline.Client
 {
-    public class InGameUI_LoadState : ExecuteMenu
+    public class InGameUI_LoadStateQuick : ExecuteMenu
     {
         private InGameUI m_gameUI;
-        public override bool Visible => !m_gameUI.IsNetPlay;
-        public override string Name => "读取快照";
+        public override bool Visible => !m_gameUI.IsNetPlay && m_gameUI.GetQuickState() != null;
+        public override string Name => "快速读取";
 
-        public InGameUI_LoadState(InGameUI gameUI)
+        public InGameUI_LoadStateQuick(InGameUI gameUI)
         {
             m_gameUI = gameUI;
         }

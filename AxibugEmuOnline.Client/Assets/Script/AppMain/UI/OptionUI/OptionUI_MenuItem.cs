@@ -12,9 +12,9 @@ namespace AxibugEmuOnline.Client
 
         public bool Visible => m_Menu.Visible;
         public OptionUI OptionUI { get; private set; }
-        protected OptionMenu m_Menu;
+        protected InternalOptionMenu m_Menu;
 
-        public void SetData(OptionUI optionUI, OptionMenu menuData)
+        public void SetData(OptionUI optionUI, InternalOptionMenu menuData)
         {
             OptionUI = optionUI;
             m_Menu = menuData;
@@ -33,7 +33,7 @@ namespace AxibugEmuOnline.Client
         public bool IsExpandMenu => m_Menu is ExpandMenu;
         public bool IsApplied => m_Menu is ExecuteMenu om && om.IsApplied;
 
-        protected abstract void OnSetData(OptionMenu menuData);
+        protected abstract void OnSetData(InternalOptionMenu menuData);
 
         public abstract void OnExecute(OptionUI optionUI, ref bool cancelHide);
         public virtual void OnLeft() { }
@@ -44,11 +44,11 @@ namespace AxibugEmuOnline.Client
     }
 
     public abstract class OptionUI_MenuItem<T> : OptionUI_MenuItem
-        where T : OptionMenu
+        where T : InternalOptionMenu
     {
         protected T MenuData => m_Menu as T;
 
-        protected override void OnSetData(OptionMenu menuData)
+        protected override void OnSetData(InternalOptionMenu menuData)
         {
             MenuData.OnShow(this);
         }

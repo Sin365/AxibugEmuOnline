@@ -1,7 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Tools;
 using AxibugProtobuf;
-using MAME.Core;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -23,7 +22,7 @@ namespace AxibugEmuOnline.Client
         public RomPlatformType EmuPlatform { get; private set; }
 
         /// <summary> 指示该存档是否为空 </summary>
-        public bool IsEmpty { get; }
+        public bool IsEmpty { get; private set; }
         /// <summary> 存档文件路径 </summary>
         public string FilePath
         {
@@ -39,9 +38,16 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public event Action OnSavSuccessed;
+
         /// <summary> 存档顺序号,用于判断云存档和本地存档的同步状态,是否存在冲突 </summary>
         public uint Sequecen { get; private set; }
+
         SimpleFSM<SaveFile> FSM;
+        byte[] m_savDataCaches;
+        byte[] m_screenShotCaches;
+        Header m_headerCache;
+        bool m_cacheOutdate = true;
 
         public SaveFile(int romID, RomPlatformType platform, int slotIndex)
         {
@@ -55,7 +61,7 @@ namespace AxibugEmuOnline.Client
             FSM.AddState<UploadingState>();
             FSM.AddState<SyncedState>();
 
-            IsEmpty = File.Exists(FilePath);
+            IsEmpty = !File.Exists(FilePath);
 
             if (IsEmpty) Sequecen = 0;
             else //从文件头读取存储序号
@@ -83,8 +89,28 @@ namespace AxibugEmuOnline.Client
         {
             FSM.Update();
         }
+
+        /// <summary>
+        /// 获得存档的保存时间(UTC)
+        /// </summary>
+        /// <returns></returns>
+        public DateTime GetSavTimeUTC()
+        {
+            GetSavData(out _, out _);
+            return new DateTime((long)m_headerCache.SavTicks, DateTimeKind.Utc);
+        }
+
         public unsafe void GetSavData(out byte[] savData, out byte[] screenShotData)
         {
+            if (!m_cacheOutdate)
+            {
+                savData = m_savDataCaches;
+                screenShotData = m_screenShotCaches;
+                return;
+            }
+
+            m_cacheOutdate = false;
+
             savData = null;
             screenShotData = null;
 
@@ -99,16 +125,20 @@ namespace AxibugEmuOnline.Client
                 return;
             }
 
-            var header = new Header();
-            IntPtr ptr = Marshal.AllocHGlobal(headerSize);
-            Marshal.StructureToPtr(header, ptr, false);
-            Marshal.Copy(raw, 0, ptr, headerSize);
-            Marshal.FreeHGlobal(ptr);
+            m_headerCache = new Header();
+            fixed (Header* headPtr = &m_headerCache)
+            {
+                var headP = (byte*)headPtr;
+                Marshal.Copy(raw, 0, (IntPtr)headP, sizeof(Header));
+            }
 
-            savData = new byte[header.DataLength];
+            savData = new byte[m_headerCache.DataLength];
             Array.Copy(raw, headerSize, savData, 0, savData.Length);
-            screenShotData = new byte[header.ScreenShotLength];
+            screenShotData = new byte[m_headerCache.ScreenShotLength];
             Array.Copy(raw, headerSize + savData.Length, screenShotData, 0, screenShotData.Length);
+
+            m_savDataCaches = savData;
+            m_screenShotCaches = screenShotData;
 
             return;
         }
@@ -121,8 +151,9 @@ namespace AxibugEmuOnline.Client
             {
                 Sequence = sequence,
                 RomID = RomID,
-                DataLength = savData.Length,
-                ScreenShotLength = screenShotData.Length
+                SavTicks = (ulong)DateTime.UtcNow.Ticks,
+                DataLength = (uint)savData.Length,
+                ScreenShotLength = (uint)screenShotData.Length,
             };
             int headerSize = Marshal.SizeOf(typeof(Header));
             IntPtr ptr = Marshal.AllocHGlobal(headerSize);
@@ -144,6 +175,14 @@ namespace AxibugEmuOnline.Client
 
             File.WriteAllBytes(filePath, raw);
             Sequecen = sequence;
+
+            m_headerCache = header;
+            m_savDataCaches = savData;
+            m_screenShotCaches = screenShotData;
+
+            IsEmpty = false;
+
+            OnSavSuccessed?.Invoke();
         }
 
         /// <summary>
@@ -157,7 +196,7 @@ namespace AxibugEmuOnline.Client
         }
 
 
-        [StructLayout(LayoutKind.Explicit, Size = 16)]
+        [StructLayout(LayoutKind.Explicit, Size = 24)]
         struct Header
         {
             [FieldOffset(0)]
@@ -165,9 +204,11 @@ namespace AxibugEmuOnline.Client
             [FieldOffset(4)]
             public int RomID;
             [FieldOffset(8)]
-            public int DataLength;
-            [FieldOffset(12)]
-            public int ScreenShotLength;
+            public ulong SavTicks;
+            [FieldOffset(16)]
+            public uint DataLength;
+            [FieldOffset(20)]
+            public uint ScreenShotLength;
         }
 
         public enum EnumState

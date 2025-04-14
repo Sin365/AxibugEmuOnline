@@ -13,7 +13,7 @@ namespace AxibugEmuOnline.Client
         private object m_state;
         private StepPerformer m_stepPerformer;
 
-        private readonly List<OptionMenu> menus = new List<OptionMenu>();
+        private readonly List<InternalOptionMenu> menus = new List<InternalOptionMenu>();
         public static InGameUI Instance { get; private set; }
 
         public RomFile RomFile { get; private set; }
@@ -45,8 +45,9 @@ namespace AxibugEmuOnline.Client
             menus.Add(new InGameUI_FilterSetting(this));
             menus.Add(new InGameUI_Scaler(this));
             menus.Add(new InGameUI_Reset(this));
-            menus.Add(new InGameUI_SaveState(this));
-            menus.Add(new InGameUI_LoadState(this));
+            menus.Add(new InGameUI_SaveStateQuick(this));
+            menus.Add(new InGameUI_LoadStateQuick(this));
+            menus.Add(new InGameUI_SaveStateMenu(this));
             menus.Add(new InGameUI_QuitGame(this));
 
             base.Awake();

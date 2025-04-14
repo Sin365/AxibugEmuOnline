@@ -112,5 +112,6 @@ namespace AxibugEmuOnline.Client.InputDevices
         public Button_C ScrollLock;
 
         public Keyboard_D(InputResolver resolver) : base(resolver) { }
+        public override bool Exclusive => false;
     }
 }

@@ -7,7 +7,7 @@ namespace AxibugEmuOnline.Client
 {
     public class InGameUI_Scaler : ExpandMenu
     {
-        private List<OptionMenu> m_subMenus = new List<OptionMenu>();
+        private List<InternalOptionMenu> m_subMenus = new List<InternalOptionMenu>();
         public override string Name => "屏幕比例";
         public InGameUI_Scaler(InGameUI inGameUI)
         {
@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        protected override List<OptionMenu> GetOptionMenus()
+        protected override List<InternalOptionMenu> GetOptionMenus()
         {
             return m_subMenus;
         }

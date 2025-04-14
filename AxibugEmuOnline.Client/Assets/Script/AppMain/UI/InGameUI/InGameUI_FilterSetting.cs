@@ -15,11 +15,11 @@ namespace AxibugEmuOnline.Client
             m_gameUI = gameUI;
         }
 
-        protected override List<OptionMenu> GetOptionMenus()
+        protected override List<InternalOptionMenu> GetOptionMenus()
         {
-            List<OptionMenu> menus = new List<OptionMenu>();
+            List<InternalOptionMenu> menus = new List<InternalOptionMenu>();
             menus.Add(new FilterNone(m_gameUI.RomFile));
-            menus.AddRange(App.settings.Filter.Filters.Select(f => new FilterMenu(m_gameUI.RomFile, f) as OptionMenu));
+            menus.AddRange(App.settings.Filter.Filters.Select(f => new FilterMenu(m_gameUI.RomFile, f) as InternalOptionMenu));
             return menus;
         }
 
@@ -44,7 +44,7 @@ namespace AxibugEmuOnline.Client
         public class FilterMenu : ExpandMenu
         {
             private Filter m_filter;
-            private List<OptionMenu> m_presetsMenuItems;
+            private List<InternalOptionMenu> m_presetsMenuItems;
 
             public override bool IsApplied
             {
@@ -62,11 +62,11 @@ namespace AxibugEmuOnline.Client
             public FilterMenu(RomFile rom, Filter filter)
             {
                 m_filter = filter;
-                m_presetsMenuItems = new List<OptionMenu> { new FilterPresetMenu(rom, m_filter, m_filter.DefaultPreset) };
+                m_presetsMenuItems = new List<InternalOptionMenu> { new FilterPresetMenu(rom, m_filter, m_filter.DefaultPreset) };
                 m_presetsMenuItems.AddRange(m_filter.Presets.Select(preset => new FilterPresetMenu(rom, m_filter, preset)));
             }
 
-            protected override List<OptionMenu> GetOptionMenus()
+            protected override List<InternalOptionMenu> GetOptionMenus()
             {
                 return m_presetsMenuItems;
             }

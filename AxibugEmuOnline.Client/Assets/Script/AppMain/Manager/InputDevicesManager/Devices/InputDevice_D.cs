@@ -6,6 +6,8 @@ namespace AxibugEmuOnline.Client.InputDevices
 {
     public abstract class InputDevice_D
     {
+        /// <summary> 指示该设备是否只能由一个Binder独占 </summary>
+        public virtual bool Exclusive => true;
         public string UniqueName => m_resolver.GetDeviceName(this);
 
         /// <summary> 指示该设备是否在线 </summary>

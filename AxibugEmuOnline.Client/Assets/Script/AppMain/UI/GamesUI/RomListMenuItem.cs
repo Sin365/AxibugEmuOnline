@@ -21,13 +21,13 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private List<OptionMenu> m_options;
+        private List<InternalOptionMenu> m_options;
 
         protected override void Awake()
         {
             base.Awake();
 
-            m_options = new List<OptionMenu>()
+            m_options = new List<InternalOptionMenu>()
             {
                 new OptMenu_Search(this),
                 new OptMenu_ShowAll(this),

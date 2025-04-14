@@ -13,10 +13,7 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         Selector SelectBorder;
 
-        [Space]
-        [Header("模板")]
-        [SerializeField] OptionUI_ExecuteItem TEMPLATE_EXECUTEITEM;
-        [SerializeField] OptionUI_ValueEditItem TEMPLATE_VALUEEDITITEM;
+        Dictionary<Type, OptionUI_MenuItem> m_menuUI_templates = new Dictionary<Type, OptionUI_MenuItem>();
 
         private OptionUI m_child;
         private OptionUI m_parent;
@@ -67,8 +64,11 @@ namespace AxibugEmuOnline.Client
 
         protected override void Awake()
         {
-            TEMPLATE_EXECUTEITEM.gameObject.SetActiveEx(false);
-            TEMPLATE_VALUEEDITITEM.gameObject.SetActiveEx(false);
+            foreach (var templateIns in GetComponentsInChildren<OptionUI_MenuItem>(true))
+            {
+                m_menuUI_templates[templateIns.GetType()] = templateIns;
+                templateIns.gameObject.SetActiveEx(false);
+            }
 
             SelectBorder.gameObject.SetActiveEx(false);
             base.Awake();
@@ -117,6 +117,7 @@ namespace AxibugEmuOnline.Client
                         if (m_runtimeMenuItems[currentSelect].Visible)
                         {
                             find = true;
+                            break;
                         }
                         currentSelect++;
                     }
@@ -154,7 +155,7 @@ namespace AxibugEmuOnline.Client
         /// 当菜单弹出时,动态添加一个菜单选项
         /// </summary>
         /// <param name="menu"></param>
-        public void AddOptionMenuWhenPoping(OptionMenu menu)
+        public void AddOptionMenuWhenPoping(InternalOptionMenu menu)
         {
             if (!m_bPoped) return;
 
@@ -166,7 +167,7 @@ namespace AxibugEmuOnline.Client
             SelectBorder.Target = optionUI_MenuItem.transform as RectTransform;
         }
 
-        public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+        public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : InternalOptionMenu
         {
             m_onClose = onClose;
             ReleaseRuntimeMenus();
@@ -220,13 +221,20 @@ namespace AxibugEmuOnline.Client
 
         }
 
+        /// <summary>
+        /// 关闭这个侧边栏选项UI
+        /// </summary>
         public void Hide()
         {
             if (m_bPoped)
             {
+                if (m_child != null)
+                {
+                    m_child.Hide();
+                }
+
                 Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
-
 
                 ReleaseRuntimeMenus();
                 m_runtimeMenuItems.Clear();
@@ -270,25 +278,18 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private void CreateRuntimeMenuItem(OptionMenu menuData)
+        private void CreateRuntimeMenuItem(InternalOptionMenu menuData)
         {
-            if (menuData is ExecuteMenu)
+            m_menuUI_templates.TryGetValue(menuData.MenuUITemplateType, out var template);
+            if (template == null)
             {
-                ExecuteMenu executeMenu = (ExecuteMenu)menuData;
-                var menuUI = Instantiate(TEMPLATE_EXECUTEITEM.gameObject, TEMPLATE_EXECUTEITEM.transform.parent).GetComponent<OptionUI_ExecuteItem>();
-                menuUI.gameObject.SetActive(true);
-                menuUI.SetData(this, executeMenu);
-                m_runtimeMenuItems.Add(menuUI);
+                throw new NotImplementedException($"{menuData.GetType().Name}指定的MenuUI类型实例未在OptionUI中找到");
             }
-            else if (menuData is ValueSetMenu)
-            {
-                var valueSetMenu = (ValueSetMenu)menuData;
-                var menuUI = Instantiate(TEMPLATE_VALUEEDITITEM.gameObject, TEMPLATE_VALUEEDITITEM.transform.parent).GetComponent<OptionUI_ValueEditItem>();
-                menuUI.gameObject.SetActive(true);
-                menuUI.SetData(this, valueSetMenu);
-                m_runtimeMenuItems.Add(menuUI);
-            }
-            else throw new NotImplementedException($"暂不支持的菜单类型{menuData.GetType().Name}");
+
+            var menuUI = Instantiate(template.gameObject, template.transform.parent).GetComponent<OptionUI_MenuItem>();
+            menuUI.gameObject.SetActive(true);
+            menuUI.SetData(this, menuData);
+            m_runtimeMenuItems.Add(menuUI);
         }
 
         private void ReleaseRuntimeMenus()
@@ -361,7 +362,7 @@ namespace AxibugEmuOnline.Client
         /// <param name="menus"></param>
         /// <param name="defaultIndex"></param>
         /// <param name="onClose"></param>
-        public void ExpandSubMenu<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+        public void ExpandSubMenu<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : InternalOptionMenu
         {
             if (m_child == null)
             {
@@ -392,8 +393,9 @@ namespace AxibugEmuOnline.Client
     /// <summary>
     /// 带有执行行为的菜单
     /// </summary>
-    public abstract class ExecuteMenu : OptionMenu
+    public abstract class ExecuteMenu : InternalOptionMenu
     {
+        public override Type MenuUITemplateType => typeof(OptionUI_ExecuteItem);
         /// <summary> 设置这个值以控制菜单中显示"已应用"标记 </summary>
         public virtual bool IsApplied { get; }
 
@@ -413,13 +415,14 @@ namespace AxibugEmuOnline.Client
             optionUI.ExpandSubMenu(GetOptionMenus());
         }
 
-        protected abstract List<OptionMenu> GetOptionMenus();
+        protected abstract List<InternalOptionMenu> GetOptionMenus();
     }
     /// <summary>
     /// 带有值类型显示和编辑的菜单
     /// </summary>
-    public abstract class ValueSetMenu : OptionMenu
+    public abstract class ValueSetMenu : InternalOptionMenu
     {
+        public override Type MenuUITemplateType => typeof(OptionUI_ValueEditItem);
         protected ValueSetMenu() : base() { }
 
         public abstract Type ValueType { get; }
@@ -430,8 +433,9 @@ namespace AxibugEmuOnline.Client
     }
 
     /// <summary> 不要直接继承这个类 </summary>
-    public abstract class OptionMenu
+    public abstract class InternalOptionMenu
     {
+        public abstract Type MenuUITemplateType { get; }
         public abstract string Name { get; }
         public virtual Sprite Icon { get; }
         public virtual bool Visible => true;
@@ -441,5 +445,4 @@ namespace AxibugEmuOnline.Client
         public virtual void OnShow(OptionUI_MenuItem ui) { }
         public virtual void OnHide() { }
     }
-
 }

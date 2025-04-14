@@ -34,14 +34,20 @@ namespace AxibugEmuOnline.Client
 #endif
         }
 
-        public static void PopSideBar<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : OptionMenu
+        public static void PopSideBar<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : InternalOptionMenu
         {
             s_ins.m_OptionUI.Pop(menus, defaultIndex, onClose);
+        }
+
+        public static void HideSideBar()
+        {
+            s_ins.m_OptionUI.Hide();
         }
 
         public static void PopTip(string msg)
         {
             s_ins.m_popTipsUI.Pop(msg);
         }
+
     }
 }
