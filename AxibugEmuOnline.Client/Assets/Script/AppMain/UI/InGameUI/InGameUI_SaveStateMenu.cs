@@ -67,7 +67,7 @@ namespace AxibugEmuOnline.Client
                 {
                     var stateData = m_ingameUI.Core.GetStateBytes();
                     var tex = m_ingameUI.Core.OutputPixel;
-                    var screenData = tex.ToJPG();
+                    var screenData = tex.ToJPG(m_ingameUI.Core.DrawCanvas.transform.localScale);
 
                     m_savFile.Save(m_savFile.Sequecen, stateData, screenData);
                 }
