@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace AxibugEmuOnline.Client
 {
-    /// <summary> 存档文件管理类 </summary>
+    /// <summary> 存档文件抽象类 </summary>
     public class SaveFile
     {
         public SavCloudApi CloudAPI => App.SavMgr.CloudApi;
@@ -28,8 +28,8 @@ namespace AxibugEmuOnline.Client
         {
             get
             {
-                var path = App.PersistentDataPath(EmuPlatform);
-                path = $"{path}/Slot/{EmuPlatform}/{RomID}";
+                var path = App.UserPersistenDataPath(EmuPlatform);
+                path = $"{path}/Slot/{RomID}";
 
                 Directory.CreateDirectory(path);
 
