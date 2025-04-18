@@ -46,6 +46,13 @@ namespace AxibugEmuOnline.Client
                 m_subOptions.Add(new LoadMenuItem(inGameui, savFile));
             }
 
+            public override void OnShow(OptionUI_MenuItem ui)
+            {
+                base.OnShow(ui);
+
+                SavFile.TrySync();
+            }
+
             protected override List<InternalOptionMenu> GetOptionMenus()
             {
                 return m_subOptions;
@@ -65,6 +72,13 @@ namespace AxibugEmuOnline.Client
 
                 public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
                 {
+                    if (m_savFile.IsBusy)
+                    {
+                        OverlayManager.PopTip("存档正在同步中");
+                        cancelHide = true;
+                        return;
+                    }
+
                     var stateData = m_ingameUI.Core.GetStateBytes();
                     var tex = m_ingameUI.Core.OutputPixel;
                     var screenData = tex.ToJPG(m_ingameUI.Core.DrawCanvas.transform.localScale);

@@ -2,8 +2,11 @@
 
 namespace AxibugEmuOnline.Client
 {
-    public class ConflictState : SimpleFSM<SaveFile>.State
+    public partial class SaveFile
     {
+        public class ConflictState : SimpleFSM<SaveFile>.State
+        {
 
+        }
     }
 }

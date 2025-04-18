@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace AxibugEmuOnline.Client.Tools
 {
-    public class SimpleFSM<HOST>
+    public partial class SimpleFSM<HOST>
     {
+        public event Action OnStateChanged;
         private Dictionary<Type, State> m_states = new Dictionary<Type, State>();
-        private State m_current;
 
         public HOST Host { get; private set; }
 
@@ -16,7 +16,18 @@ namespace AxibugEmuOnline.Client.Tools
             Host = host;
         }
 
-        public State CurrentState => m_current;
+        private State m_current;
+        public State CurrentState
+        {
+            get => m_current;
+            set
+            {
+                if (m_current == value) return;
+
+                m_current = value;
+                OnStateChanged?.Invoke();
+            }
+        }
         public T AddState<T>() where T : State, new()
         {
             var stateType = typeof(T);

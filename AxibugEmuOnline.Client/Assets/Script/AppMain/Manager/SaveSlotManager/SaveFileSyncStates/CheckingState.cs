@@ -4,45 +4,48 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
-    public class CheckingState : SimpleFSM<SaveFile>.State
+    public partial class SaveFile
     {
-        private float m_timeOut;
-
-        public Protobuf_Mine_GameSavInfo NetData { get; private set; }
-
-        public override void OnEnter(SimpleFSM<SaveFile>.State preState)
+        public class CheckingState : SimpleFSM<SaveFile>.State
         {
-            m_timeOut = 5f;
-            Host.CloudAPI.OnFetchGameSavList += CloudAPI_OnFetchGameSavList;
-            Host.CloudAPI.SendGetGameSavList(Host.RomID);
-        }
+            private float m_timeOut;
 
-        public override void OnExit(SimpleFSM<SaveFile>.State nextState)
-        {
-            Host.CloudAPI.OnFetchGameSavList -= CloudAPI_OnFetchGameSavList;
-        }
+            public Protobuf_Mine_GameSavInfo NetData { get; private set; }
 
-        public override void OnUpdate()
-        {
-            m_timeOut -= Time.deltaTime;
-            if (m_timeOut < 0) //已超时
+            public override void OnEnter(SimpleFSM<SaveFile>.State preState)
             {
-                FSM.ChangeState<UnkownState>();
+                m_timeOut = 5f;
+                Host.CloudAPI.OnFetchGameSavList += CloudAPI_OnFetchGameSavList;
+                Host.CloudAPI.SendGetGameSavList(Host.RomID);
             }
-        }
 
-        private void CloudAPI_OnFetchGameSavList(int romID, Protobuf_Mine_GameSavInfo[] savSlotData)
-        {
-            if (romID != Host.RomID) return;
-            NetData = savSlotData[Host.SlotIndex];
-
-            if (NetData == null) //云存档不存在,上传本地存档
+            public override void OnExit(SimpleFSM<SaveFile>.State nextState)
             {
-                FSM.ChangeState<UploadingState>();
+                Host.CloudAPI.OnFetchGameSavList -= CloudAPI_OnFetchGameSavList;
             }
-            else
+
+            public override void OnUpdate()
             {
-                FSM.ChangeState<DownloadingState>();
+                m_timeOut -= Time.deltaTime;
+                if (m_timeOut < 0) //已超时
+                {
+                    FSM.ChangeState<IdleState>();
+                }
+            }
+
+            private void CloudAPI_OnFetchGameSavList(int romID, Protobuf_Mine_GameSavInfo[] savSlotData)
+            {
+                if (romID != Host.RomID) return;
+                NetData = savSlotData[Host.SlotIndex];
+
+                if (NetData == null) //云存档不存在,上传本地存档
+                {
+                    FSM.ChangeState<UploadingState>();
+                }
+                else
+                {
+                    FSM.ChangeState<DownloadingState>();
+                }
             }
         }
     }

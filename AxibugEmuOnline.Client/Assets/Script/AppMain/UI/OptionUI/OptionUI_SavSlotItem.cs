@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using AxibugEmuOnline.Client.Tools;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using static AxibugEmuOnline.Client.InGameUI_SaveStateMenu;
 
@@ -10,15 +13,38 @@ namespace AxibugEmuOnline.Client
         public Image UI_Empty;
         public Text UI_SavTime;
 
+        public GameObject UI_Disconnect;
+        public GameObject UI_Syncing;
+        public GameObject UI_Conflict;
+        public GameObject UI_Synced;
+
         Texture2D m_screenTex;
+
+        Dictionary<Type, GameObject> m_stateNodes = new Dictionary<Type, GameObject>();
+
+        private void Awake()
+        {
+            m_stateNodes[typeof(SaveFile.CheckingState)] = UI_Syncing;
+            m_stateNodes[typeof(SaveFile.ConflictState)] = UI_Conflict;
+            m_stateNodes[typeof(SaveFile.DownloadingState)] = UI_Syncing;
+            m_stateNodes[typeof(SaveFile.SyncedState)] = UI_Synced;
+            m_stateNodes[typeof(SaveFile.UploadingState)] = UI_Syncing;
+            m_stateNodes[typeof(SaveFile.CheckingNetworkState)] = UI_Disconnect;
+        }
 
         protected override void OnSetData(InternalOptionMenu menuData)
         {
             base.OnSetData(menuData);
 
             RefreshUI();
+            MenuData.SavFile.OnSavSuccessed += SavFile_OnSavSuccessed;
+            MenuData.SavFile.OnStateChanged += UpdateStateNode;
+        }
 
-            MenuData.SavFile.OnSavSuccessed += RefreshUI;
+        private void SavFile_OnSavSuccessed()
+        {
+            MenuData.SavFile.TrySync();
+            RefreshUI();
         }
 
         private void RefreshUI()
@@ -48,6 +74,21 @@ namespace AxibugEmuOnline.Client
                 m_screenTex.LoadImage(screenShotData);
                 UI_ScreenShot.texture = m_screenTex;
             }
+
+            UpdateStateNode();
+        }
+
+        private void UpdateStateNode()
+        {
+            var stateType = MenuData.SavFile.GetState().GetType();
+
+            foreach (var item in m_stateNodes)
+            {
+                var type = item.Key;
+                var nodeGo = item.Value;
+
+                nodeGo.SetActiveEx(type == stateType);
+            }
         }
 
         public override void OnHide()
@@ -60,7 +101,8 @@ namespace AxibugEmuOnline.Client
                 m_screenTex = null;
             }
 
-            MenuData.SavFile.OnSavSuccessed -= RefreshUI;
+            MenuData.SavFile.OnSavSuccessed -= SavFile_OnSavSuccessed;
+            MenuData.SavFile.OnStateChanged -= UpdateStateNode;
         }
 
         public override void OnExecute(OptionUI optionUI, ref bool cancelHide)
