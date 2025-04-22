@@ -439,7 +439,6 @@ namespace AxibugEmuOnline.Client
         public abstract string Name { get; }
         public virtual Sprite Icon { get; }
         public virtual bool Visible => true;
-        public virtual bool Enable => true;
 
         public virtual void OnFocus() { }
         public virtual void OnShow(OptionUI_MenuItem ui) { }

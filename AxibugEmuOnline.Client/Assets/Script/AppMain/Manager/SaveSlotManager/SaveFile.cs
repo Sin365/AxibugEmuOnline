@@ -1,14 +1,15 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Tools;
 using AxibugProtobuf;
+using MAME.Core;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
 namespace AxibugEmuOnline.Client
 {
-    /// <summary> 存档文件管理类 </summary>
-    public class SaveFile
+    /// <summary> 存档文件抽象类 </summary>
+    public partial class SaveFile
     {
         public SavCloudApi CloudAPI => App.SavMgr.CloudApi;
 
@@ -28,8 +29,8 @@ namespace AxibugEmuOnline.Client
         {
             get
             {
-                var path = App.PersistentDataPath(EmuPlatform);
-                path = $"{path}/Slot/{EmuPlatform}/{RomID}";
+                var path = App.UserPersistenDataPath(EmuPlatform);
+                path = $"{path}/Slot/{RomID}";
 
                 Directory.CreateDirectory(path);
 
@@ -38,7 +39,24 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        public bool IsBusy
+        {
+            get
+            {
+                if (FSM.CurrentState is DownloadingState) return true;
+                else if (FSM.CurrentState is UploadingState) return true;
+
+                return false;
+            }
+        }
+
+        public SimpleFSM<SaveFile>.State GetState()
+        {
+            return FSM.CurrentState;
+        }
+
         public event Action OnSavSuccessed;
+        public event Action OnStateChanged;
 
         /// <summary> 存档顺序号,用于判断云存档和本地存档的同步状态,是否存在冲突 </summary>
         public uint Sequecen { get; private set; }
@@ -55,11 +73,12 @@ namespace AxibugEmuOnline.Client
             EmuPlatform = platform;
             SlotIndex = slotIndex;
             FSM = new SimpleFSM<SaveFile>(this);
-            FSM.AddState<UnkownState>();
+            FSM.AddState<IdleState>();
             FSM.AddState<CheckingState>();
             FSM.AddState<DownloadingState>();
             FSM.AddState<UploadingState>();
             FSM.AddState<SyncedState>();
+            FSM.OnStateChanged += FSM_OnStateChanged;
 
             IsEmpty = !File.Exists(FilePath);
 
@@ -82,7 +101,12 @@ namespace AxibugEmuOnline.Client
                 streaming.Dispose();
             }
 
-            FSM.ChangeState<UnkownState>();
+            FSM.ChangeState<IdleState>();
+        }
+
+        private void FSM_OnStateChanged()
+        {
+            OnStateChanged?.Invoke();
         }
 
         public void Update()
@@ -145,6 +169,8 @@ namespace AxibugEmuOnline.Client
 
         public unsafe void Save(uint sequence, byte[] savData, byte[] screenShotData)
         {
+            if (IsBusy) return;
+
             var filePath = FilePath;
 
             var header = new Header
@@ -190,9 +216,9 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         public void TrySync()
         {
-            if (FSM.CurrentState is not UnkownState && FSM.CurrentState is not SyncedState) return;
+            if (FSM.CurrentState is not IdleState && FSM.CurrentState is not SyncedState) return;
 
-            FSM.ChangeState<CheckingState>();
+            FSM.ChangeState<CheckingNetworkState>();
         }
 
 
@@ -209,15 +235,6 @@ namespace AxibugEmuOnline.Client
             public uint DataLength;
             [FieldOffset(20)]
             public uint ScreenShotLength;
-        }
-
-        public enum EnumState
-        {
-            Unkown,
-            Checking,
-            Downloading,
-            Uploading,
-            Synced
         }
     }
 }

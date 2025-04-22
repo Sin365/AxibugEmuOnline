@@ -55,29 +55,26 @@ namespace AxibugEmuOnline.Client
 
         }
 
-        public static byte[] ToJPG(this Texture texture)
+        public static byte[] ToJPG(this Texture texture, Vector2 scale)
         {
-            Texture2D outputTex = null;
-            if (texture is RenderTexture rt)
-            {
-                outputTex = ConvertFromRenderTexture(rt);
-            }
-            else if (texture is Texture2D)
-            {
-                outputTex = texture as Texture2D;
-            }
+            Texture2D outputTex = ConvertFromRenderTexture(texture, scale);
 
             return outputTex.EncodeToJPG();
         }
 
-        private static Texture2D ConvertFromRenderTexture(RenderTexture rt)
+        private static Texture2D ConvertFromRenderTexture(Texture src, Vector2 scale)
         {
+            float offsetX = (scale.x < 0) ? 1 : 0;
+            float offsetY = (scale.y < 0) ? 1 : 0;
+
+            var offset = new Vector2(offsetX, offsetY);
+
             // 创建临时RenderTexture并拷贝内容
-            RenderTexture tempRT = RenderTexture.GetTemporary(rt.width, rt.height, 0, RenderTextureFormat.ARGB32);
-            Graphics.Blit(rt, tempRT);
+            RenderTexture tempRT = RenderTexture.GetTemporary(src.width, src.height, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(src, tempRT, scale, offset);
 
             // 读取到Texture2D
-            Texture2D tex = new Texture2D(rt.width, rt.height, TextureFormat.RGBA32, false);
+            Texture2D tex = new Texture2D(src.width, src.height, TextureFormat.RGBA32, false);
             RenderTexture.active = tempRT;
             tex.ReadPixels(new Rect(0, 0, tempRT.width, tempRT.height), 0, 0);
             tex.Apply();

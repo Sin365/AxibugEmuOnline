@@ -63,6 +63,12 @@ namespace AxibugEmuOnline.Client.ClientCore
         {
             return s_persistentRoot + "/" + emuPlatform.ToString();
         }
+
+        public static string UserPersistenDataPath(RomPlatformType emuPlatform)
+        {
+            return string.Format("{0}/{1}", PersistentDataPath(emuPlatform), user.userdata.UID);
+        }
+
         public static string PersistentDataRoot() => s_persistentRoot;
 
         public static RomLib GetRomLib(RomPlatformType platform)

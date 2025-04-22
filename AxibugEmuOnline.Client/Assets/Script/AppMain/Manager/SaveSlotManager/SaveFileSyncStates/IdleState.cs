@@ -4,7 +4,7 @@ namespace AxibugEmuOnline.Client
 {
     public partial class SaveFile
     {
-        public class SyncedState : SimpleFSM<SaveFile>.State
+        public class IdleState : SimpleFSM<SaveFile>.State
         {
         }
     }
