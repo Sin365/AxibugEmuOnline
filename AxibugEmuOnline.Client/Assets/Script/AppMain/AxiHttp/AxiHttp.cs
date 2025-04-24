@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Security;
@@ -162,7 +161,7 @@ public static class AxiHttp
         public string fileName;
         public float DownLoadPr =>
             NeedloadedLenght <= 0 ? -1 : (float)loadedLenght / NeedloadedLenght;
-        public BinaryWriter binaryWriter;
+        public System.IO.BinaryWriter binaryWriter;
     }
 
     public static IPAddress GetDnsIP(string str)
@@ -268,7 +267,7 @@ public static class AxiHttp
             var ipEndPoint = new IPEndPoint(ip, port);
 
             using (Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
             {
                 client.Connect(ipEndPoint);
                 if (!client.Connected)
@@ -497,7 +496,7 @@ public static class AxiHttp
 
                     // 使用Uri类解析URL  
                     Uri uri = new Uri(url);
-                    respinfo.fileName = Path.GetFileName(uri.LocalPath);
+                    respinfo.fileName = System.IO.Path.GetFileName(uri.LocalPath);
                 }
                 else
                 {
@@ -567,7 +566,7 @@ public static class AxiHttp
 
             //using (Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             //using (TcpClient tcpclient = new TcpClient())
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
             {
                 //client.Connect(ipEndPoint);
 
@@ -780,7 +779,7 @@ public static class AxiHttp
 
                     // 使用Uri类解析URL  
                     Uri uri = new Uri(url);
-                    respinfo.fileName = Path.GetFileName(uri.LocalPath);
+                    respinfo.fileName = System.IO.Path.GetFileName(uri.LocalPath);
                 }
                 else
                 {
@@ -865,9 +864,9 @@ public static class AxiHttp
     {
 
         string str = "";
-        MemoryStream ms = new MemoryStream(data, 0, len);
+        System.IO.MemoryStream ms = new System.IO.MemoryStream(data, 0, len);
         GZipStream gs = new GZipStream(ms, CompressionMode.Decompress);
-        MemoryStream outbuf = new MemoryStream();
+        System.IO.MemoryStream outbuf = new System.IO.MemoryStream();
         byte[] block = new byte[1024];
 
         try
@@ -904,9 +903,9 @@ public static class AxiHttp
 
     public static byte[] unGzipBytes(byte[] data, int len)
     {
-        MemoryStream ms = new MemoryStream(data, 0, len);
+        System.IO.MemoryStream ms = new System.IO.MemoryStream(data, 0, len);
         GZipStream gs = new GZipStream(ms, CompressionMode.Decompress);
-        MemoryStream outbuf = new MemoryStream();
+        System.IO.MemoryStream outbuf = new System.IO.MemoryStream();
         byte[] block = new byte[1024];
         byte[] result;
         try

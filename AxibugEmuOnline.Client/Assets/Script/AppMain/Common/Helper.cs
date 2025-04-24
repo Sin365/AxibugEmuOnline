@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
@@ -26,7 +26,7 @@ namespace AxibugEmuOnline.Client.Common
 
         public static byte[] CompressByteArray(byte[] bytesToCompress)
         {
-            using (var compressedMemoryStream = new MemoryStream())
+            using (var compressedMemoryStream = new System.IO.MemoryStream())
             using (var gzipStream = new GZipStream(compressedMemoryStream, CompressionMode.Compress))
             {
                 gzipStream.Write(bytesToCompress, 0, bytesToCompress.Length);
@@ -37,35 +37,35 @@ namespace AxibugEmuOnline.Client.Common
 
         public static byte[] DecompressByteArray(byte[] compressedBytes)
         {
-            using (var compressedMemoryStream = new MemoryStream(compressedBytes))
+            using (var compressedMemoryStream = new System.IO.MemoryStream(compressedBytes))
             using (var gzipStream = new GZipStream(compressedMemoryStream, CompressionMode.Decompress))
-            using (var resultMemoryStream = new MemoryStream())
+            using (var resultMemoryStream = new System.IO.MemoryStream())
             {
                 gzipStream.CopyTo(resultMemoryStream);
                 return resultMemoryStream.ToArray();
             }
         }
 
-        public static string FileMD5Hash(string filePath)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(filePath))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    var sb = new StringBuilder(hash.Length * 2);
-                    foreach (var b in hash)
-                        sb.AppendFormat("{0:x2}", b);
-                    return sb.ToString();
-                }
-            }
-        }
+        //public static string FileMD5Hash(string filePath)
+        //{
+        //    using (var md5 = MD5.Create())
+        //    {
+        //        using (var stream = File.OpenRead(filePath))
+        //        {
+        //            var hash = md5.ComputeHash(stream);
+        //            var sb = new StringBuilder(hash.Length * 2);
+        //            foreach (var b in hash)
+        //                sb.AppendFormat("{0:x2}", b);
+        //            return sb.ToString();
+        //        }
+        //    }
+        //}
 
         static byte[] FileMD5HashByte(byte[] data)
         {
             using (var md5 = MD5.Create())
             {
-                using (var stream = new MemoryStream(data))
+                using (var stream = new System.IO.MemoryStream(data))
                 {
                     return md5.ComputeHash(stream);
                 }

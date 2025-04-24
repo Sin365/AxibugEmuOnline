@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -20,7 +19,17 @@ namespace AxibugEmuOnline.Editors
         static Dictionary<string, string> tools = new Dictionary<string, string>();
         static string prodKeysPath;
 
-        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/RepackNSP(仅重新构建NPS）")]
+        static void InitToolPath()
+        {
+            #region 初始化工具路径
+            // 获取环境变量（需要添加环境变量检查）
+            string sdkRoot = Environment.GetEnvironmentVariable("NINTENDO_SDK_ROOT");
+            tools["authoringTool"] = Path.Combine(sdkRoot, "Tools/CommandLineTools/AuthoringTool/AuthoringTool.exe");
+            tools["hacPack"] = Path.Combine(hacpack_root, "hacpack");
+            #endregion
+        }
+
+        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/RepackNSP(仅重新构建NSP）")]
         static void RepackNSP()
         {
             if (!CheckEnvironmentVariable())
@@ -38,7 +47,29 @@ namespace AxibugEmuOnline.Editors
             RepackNSP(path);
         }
 
-        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/Build With RepackNSP(打包NSP并重新构建NPS）")]
+
+        //[MenuItem("Axibug移植工具/Switch/AxibugNSPTools/UnpackNSP(解包工具）")]
+        //static void UnpackNSP()
+        //{
+        //    InitToolPath();
+        //    if (!CheckEnvironmentVariable())
+        //        return;
+
+        //    string nspFilePath = EditorUtility.OpenFilePanel(
+        //        title: "选择 .nsp 文件",
+        //        directory: Path.Combine(Application.dataPath, ".."), // 默认路径为项目 Assets 目录
+        //        extension: "nsp" // 限制文件类型为 .nsp
+        //    );
+
+        //    if (string.IsNullOrEmpty(nspFilePath))
+        //        return;
+
+        //    string nspParentDir = Path.GetDirectoryName(nspFilePath);
+        //    string extractPath = Path.Combine(nspParentDir, "repacker_extract");
+        //    ExecuteCommand($"{tools["authoringTool"]} extract -o \"{extractPath}\" \"{nspFilePath}\"", nspParentDir);
+        //}
+
+        [MenuItem("Axibug移植工具/Switch/AxibugNSPTools/Build With RepackNSP(打包NSP并重新构建NSP）")]
         public static void BuildWithRepackNSP()
         {
             if (!CheckEnvironmentVariable())
@@ -121,12 +152,7 @@ namespace AxibugEmuOnline.Editors
 
         static void RepackNSP(string nspFile)
         {
-            #region 初始化工具路径
-            // 获取环境变量（需要添加环境变量检查）
-            string sdkRoot = Environment.GetEnvironmentVariable("NINTENDO_SDK_ROOT");
-            tools["authoringTool"] = Path.Combine(sdkRoot, "Tools/CommandLineTools/AuthoringTool/AuthoringTool.exe");
-            tools["hacPack"] = Path.Combine(hacpack_root, "hacpack");
-            #endregion
+            InitToolPath();
 
             #region 处理NSP文件路径
             string nspFilePath = nspFile;

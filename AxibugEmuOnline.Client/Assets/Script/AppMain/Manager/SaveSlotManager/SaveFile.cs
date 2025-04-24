@@ -1,9 +1,9 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Tools;
 using AxibugProtobuf;
-using MAME.Core;
 using System;
-using System.IO;
+
+//using System.IO;
 using System.Runtime.InteropServices;
 
 namespace AxibugEmuOnline.Client
@@ -32,7 +32,7 @@ namespace AxibugEmuOnline.Client
                 var path = App.UserPersistenDataPath(EmuPlatform);
                 path = $"{path}/Slot/{RomID}";
 
-                Directory.CreateDirectory(path);
+                AxiIO.Directory.CreateDirectory(path);
 
                 var filePath = $"{path}/slot{SlotIndex}.SlotSav";
                 return filePath;
@@ -80,25 +80,37 @@ namespace AxibugEmuOnline.Client
             FSM.AddState<SyncedState>();
             FSM.OnStateChanged += FSM_OnStateChanged;
 
-            IsEmpty = !File.Exists(FilePath);
+            IsEmpty = !AxiIO.File.Exists(FilePath);
 
             if (IsEmpty) Sequecen = 0;
             else //从文件头读取存储序号
             {
                 byte[] saveOrderData = new byte[4];
-                var streaming = File.OpenRead(FilePath);
-                int res = streaming.Read(saveOrderData, 0, 4);
-                if (res != 4) //无效的存档文件
+
+                //FileStream streaming = System.IO.File.OpenRead(FilePath);
+                //int res = streaming.Read(saveOrderData, 0, 4);
+                //if (res != 4) //无效的存档文件
+                //{
+                //    IsEmpty = true;
+                //    File.Delete(FilePath);
+                //}
+                //else
+                //{
+                //    Sequecen = BitConverter.ToUInt32(saveOrderData, 0);
+                //}
+                //streaming.Dispose();
+
+                byte[] bytes = AxiIO.File.ReadAllBytes(FilePath);
+                if (bytes.Length < 4) //无效的存档文件
                 {
                     IsEmpty = true;
-                    File.Delete(FilePath);
+                    AxiIO.File.Delete(FilePath);
                 }
                 else
                 {
+                    Array.Copy(bytes, 0, saveOrderData, 0, 4);
                     Sequecen = BitConverter.ToUInt32(saveOrderData, 0);
                 }
-
-                streaming.Dispose();
             }
 
             FSM.ChangeState<IdleState>();
@@ -138,9 +150,9 @@ namespace AxibugEmuOnline.Client
             savData = null;
             screenShotData = null;
 
-            if (!File.Exists(FilePath)) return;
+            if (!AxiIO.File.Exists(FilePath)) return;
 
-            var raw = File.ReadAllBytes(FilePath);
+            var raw = AxiIO.File.ReadAllBytes(FilePath);
             int headerSize = Marshal.SizeOf(typeof(Header));
 
             if (raw.Length < headerSize)
@@ -199,7 +211,7 @@ namespace AxibugEmuOnline.Client
             Array.Copy(savData, 0, raw, headerSize, savData.Length);
             Array.Copy(screenShotData, 0, raw, headerSize + savData.Length, screenShotData.Length);
 
-            File.WriteAllBytes(filePath, raw);
+            AxiIO.File.WriteAllBytes(filePath, raw);
             Sequecen = sequence;
 
             m_headerCache = header;

@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -20,8 +20,8 @@ namespace AxibugEmuOnline.Client
         /// <summary> 移除文件缓存 </summary>
         public void ClearCaches()
         {
-            if (Directory.Exists(CacheDirPath))
-                Directory.Delete(CacheDirPath, true);
+            if (AxiIO.Directory.Exists(CacheDirPath))
+                AxiIO.Directory.Delete(CacheDirPath, true);
         }
 
         IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
@@ -38,8 +38,8 @@ namespace AxibugEmuOnline.Client
 
             if (!request.downloadHandler.bHadErr)
             {
-                Directory.CreateDirectory(path);
-                File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data);
+                AxiIO.Directory.CreateDirectory(path);
+                AxiIO.File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data);
                 callback.Invoke(request.downloadHandler.data);
             }
             else
@@ -78,9 +78,9 @@ namespace AxibugEmuOnline.Client
             byte[] rawData = null;
 
             var filePath = $"{path}/{fileName}";
-            if (File.Exists(filePath))
+            if (AxiIO.File.Exists(filePath))
             {
-                rawData = File.ReadAllBytes(filePath);
+                rawData = AxiIO.File.ReadAllBytes(filePath);
                 var @out = RawDataConvert<T>(rawData);
                 cachesInMemory[url] = @out;
                 callback.Invoke(@out, url);

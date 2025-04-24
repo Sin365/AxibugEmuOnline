@@ -4,7 +4,7 @@ using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.Linq;
 using static AxibugEmuOnline.Client.HttpAPI;
 
@@ -62,14 +62,14 @@ namespace AxibugEmuOnline.Client
         public void ClearRomFile()
         {
             var path = $"{App.PersistentDataPath(m_platform)}/RemoteRoms";
-            if (Directory.Exists(path)) Directory.Delete(path, true);
+            if (AxiIO.Directory.Exists(path)) AxiIO.Directory.Delete(path, true);
         }
 
         /// <summary> 移除一个已下载的Rom </summary>
         public void RemoveOneRomFile(RomFile romFile)
         {
             if (romFile.RomReady)
-                File.Delete(romFile.LocalFilePath);
+                AxiIO.File.Delete(romFile.LocalFilePath);
         }
 
         /// <summary>

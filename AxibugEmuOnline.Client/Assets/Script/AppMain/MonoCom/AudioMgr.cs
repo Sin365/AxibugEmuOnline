@@ -1,7 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -103,9 +103,9 @@ namespace AxibugEmuOnline.Client
         string GetSavePath()
         {
             string dir = $"{App.PersistentDataPath(App.emu.Core.Platform)}/AxiSoundRecord";
-            if (!Directory.Exists(dir))
+            if (!AxiIO.Directory.Exists(dir))
             {
-                Directory.CreateDirectory(dir);
+                AxiIO.Directory.CreateDirectory(dir);
             }
             return $"{dir}/{App.tick.GetDateTimeStr()}";
         }
@@ -132,13 +132,21 @@ namespace AxibugEmuOnline.Client
                 OverlayManager.PopTip("没有录音数据");
                 return;
             }
-
-            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
             {
-                file.Write(waveHeader.GetBytes(), 0, (int)waveHeader.Length());
-                file.Write(formatChunk.GetBytes(), 0, (int)formatChunk.Length());
-                file.Write(dataChunk.GetBytes(), 0, (int)dataChunk.Length());
+                ms.Write(waveHeader.GetBytes(), 0, (int)waveHeader.Length());
+                ms.Write(formatChunk.GetBytes(), 0, (int)formatChunk.Length());
+                ms.Write(dataChunk.GetBytes(), 0, (int)dataChunk.Length());
+                AxiIO.File.WriteAllBytesFromStream(filename, ms);
             }
+
+            //using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            //{
+            //    file.Write(waveHeader.GetBytes(), 0, (int)waveHeader.Length());
+            //    file.Write(formatChunk.GetBytes(), 0, (int)formatChunk.Length());
+            //    file.Write(dataChunk.GetBytes(), 0, (int)dataChunk.Length());
+            //}
+
             IsRecording = false;
             OverlayManager.PopTip("录音结束");
         }

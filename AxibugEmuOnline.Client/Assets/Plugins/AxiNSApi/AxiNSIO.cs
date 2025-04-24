@@ -62,6 +62,8 @@ public class AxiNSIO
 #endif
 	}
 
+
+
 	/// <summary>
 	/// 保存并创建文件（如果目录不存在回先自动创建目录）
 	/// </summary>
@@ -208,7 +210,13 @@ public class AxiNSIO
 		AxiNS.instance.wait.AddWait(wait);
 		return wait;
 	}
-	public bool LoadSwitchDataFile(string filename, ref System.IO.MemoryStream ms)
+	public byte[] LoadSwitchDataFile(string filename)
+	{
+		LoadSwitchDataFile(filename, out byte[] outputData);
+		return outputData;
+    }
+
+    public bool LoadSwitchDataFile(string filename, ref System.IO.MemoryStream ms)
 	{
 		if (LoadSwitchDataFile(filename, out byte[] outputData))
 		{

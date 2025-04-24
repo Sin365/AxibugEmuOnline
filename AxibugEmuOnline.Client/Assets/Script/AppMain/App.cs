@@ -5,7 +5,7 @@ using AxibugProtobuf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using static AxibugEmuOnline.Client.HttpAPI;
@@ -130,8 +130,10 @@ namespace AxibugEmuOnline.Client.ClientCore
         private static void PSP2Init()
         {
             //PSVita最好手动创建目录
-            if (!Directory.Exists("ux0:data/AxibugEmu"))
-                Directory.CreateDirectory("ux0:data/AxibugEmu");
+            if (!AxiIO.Directory.Exists("ux0:data/AxibugEmu"))
+                AxiIO.Directory.CreateDirectory("ux0:data/AxibugEmu");
+            //if (!Directory.Exists("ux0:data/AxibugEmu"))
+            //    Directory.CreateDirectory("ux0:data/AxibugEmu");
 
 #if UNITY_PSP2
             //创建PSV弹窗UI
