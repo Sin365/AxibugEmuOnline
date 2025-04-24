@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -195,7 +194,7 @@ namespace MAME.Core
                 }
             }
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < 16; i++)
@@ -215,7 +214,7 @@ namespace MAME.Core
             }
             writer.Write(QChip.data);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < 16; i++)

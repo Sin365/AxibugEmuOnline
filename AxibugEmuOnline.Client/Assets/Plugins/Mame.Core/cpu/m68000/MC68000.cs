@@ -1,7 +1,6 @@
 ﻿using MAME.Core;
 using System;
 using System.Globalization;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace cpu.m68000
@@ -275,7 +274,7 @@ namespace cpu.m68000
         //    return a + b + c + d;
         //}
 
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < 0x08; i++)
@@ -304,7 +303,7 @@ namespace cpu.m68000
             writer.Write(MC68000.m1.TotalExecutedCycles);
             writer.Write(MC68000.m1.PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < 0x08; i++)
@@ -333,7 +332,7 @@ namespace cpu.m68000
             MC68000.m1.TotalExecutedCycles = reader.ReadUInt64();
             MC68000.m1.PendingCycles = reader.ReadInt32();
         }
-        public void SaveStateText(TextWriter writer, string id)
+        public void SaveStateText(System.IO.TextWriter writer, string id)
         {
             writer.WriteLine("[{0}]", id);
             writer.WriteLine("D0 {0:X8}", D[0].s32);
@@ -370,7 +369,7 @@ namespace cpu.m68000
             writer.WriteLine("[/{0}]", id);
         }
 
-        public void LoadStateText(TextReader reader, string id)
+        public void LoadStateText(System.IO.TextReader reader, string id)
         {
             while (true)
             {

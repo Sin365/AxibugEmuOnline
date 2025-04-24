@@ -10,7 +10,6 @@ using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 
 namespace Essgee.Emulation.Machines
@@ -365,9 +364,22 @@ namespace Essgee.Emulation.Machines
             irDatabaseCurrentIndex = irCycles = 0;
             irExternalTransferActive = false;
 
-            if (configuration.InfraredSource == InfraredSources.PocketPikachuColor && File.Exists(configuration.InfraredDatabasePikachu))
+            //if (configuration.InfraredSource == InfraredSources.PocketPikachuColor && EmulatorHandler.io.File_Exists(configuration.InfraredDatabasePikachu))
+            //{
+            //    using (var reader = new System.IO.BinaryReader(new FileStream(configuration.InfraredDatabasePikachu, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+            //    {
+            //        irDatabase = new ushort[reader.BaseStream.Length / 2];
+            //        for (var i = 0; i < irDatabase.Length; i++)
+            //            irDatabase[i] = reader.ReadUInt16();
+
+            //        irDatabaseStep = 2007;
+            //        if ((irDatabaseBaseIndex < 0) || (irDatabaseBaseIndex * irDatabaseStep >= irDatabase.Length))
+            //            irDatabaseBaseIndex = 0;
+            //    }
+            //}
+            if (configuration.InfraredSource == InfraredSources.PocketPikachuColor && EmulatorHandler.io.File_Exists(configuration.InfraredDatabasePikachu))
             {
-                using (var reader = new BinaryReader(new FileStream(configuration.InfraredDatabasePikachu, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)))
+                using (var reader = new System.IO.BinaryReader(new System.IO.MemoryStream(EmulatorHandler.io.File_ReadAllBytes(configuration.InfraredDatabasePikachu))))
                 {
                     irDatabase = new ushort[reader.BaseStream.Length / 2];
                     for (var i = 0; i < irDatabase.Length; i++)

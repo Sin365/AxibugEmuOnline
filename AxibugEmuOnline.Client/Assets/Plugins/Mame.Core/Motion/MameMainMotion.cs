@@ -21,6 +21,7 @@ namespace MAME.Core
         public AutoResetEvent emuAutoLoopEvent;
 
         public static IResources resource;
+        public static IMAMEIOSupport IoSupport;
         public bool bRom => Machine.bRom;
 
         public MameMainMotion()
@@ -42,7 +43,8 @@ namespace MAME.Core
             ISoundPlayer isp,
             IKeyboard ikb,
             IMouse imou,
-            ITimeSpan itime
+            ITimeSpan itime,
+            IMAMEIOSupport io
             )
         {
             AxiMemoryEx.Init();
@@ -54,6 +56,7 @@ namespace MAME.Core
             Video.BindFunc(ivp);
             Sound.BindFunc(isp);
             resource = iRes;
+            IoSupport = io;
 
             sSelect = string.Empty;
 

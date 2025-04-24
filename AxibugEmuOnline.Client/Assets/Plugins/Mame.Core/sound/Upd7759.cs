@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class Upd7759
@@ -362,7 +361,7 @@ namespace MAME.Core
         {
             return (byte)upd7759_busy_r(0);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(chip.pos);
             writer.Write(chip.step);
@@ -389,7 +388,7 @@ namespace MAME.Core
             writer.Write(chip.romoffset);
             writer.Write(chip.rombase);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             chip.pos = reader.ReadUInt32();
             chip.step = reader.ReadUInt32();

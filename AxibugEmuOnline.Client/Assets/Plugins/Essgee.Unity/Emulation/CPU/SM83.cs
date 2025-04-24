@@ -131,7 +131,8 @@ namespace Essgee.Emulation.CPU
         {
             if (AppEnvironment.EnableSuperSlowCPULogger && logEntries != null)
             {
-                System.IO.File.AppendAllText(logFile, string.Join("", logEntries.Take(numLogEntries)));
+                //TODO 暂时不要日志看后续是否需要加
+                //System.IO.File.AppendAllText(logFile, string.Join("", logEntries.Take(numLogEntries)));
             }
 
             //
@@ -175,7 +176,8 @@ namespace Essgee.Emulation.CPU
                     logEntries[numLogEntries++] = disasm;
                     if (numLogEntries >= logEntries.Length)
                     {
-                        System.IO.File.AppendAllText(logFile, string.Join("", logEntries));
+                        //TODO 暂时不要日志看后续是否需要加
+                        //System.IO.File.AppendAllText(logFile, string.Join("", logEntries));
                         numLogEntries = 0;
                     }
                 }

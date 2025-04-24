@@ -1,4 +1,5 @@
-﻿using StoicGoose.Core.Interfaces;
+﻿using Essgee.Metadata;
+using StoicGoose.Core.Interfaces;
 using StoicGooseUnity;
 using System;
 using System.Diagnostics;
@@ -8,6 +9,7 @@ public class EmulatorHandler
 {
     readonly static string threadName = $"Unity_Emulation";
 
+    public static IEssgeeIOSupport io;
     //Thread thread = default;
     volatile bool threadRunning = false, threadPaused = false;
 

@@ -20,6 +20,7 @@ public class UMAME : MonoBehaviour, IEmuCore
     UniSoundPlayer mUniSoundPlayer;
     UniKeyboard mUniKeyboard;
     UniResources mUniResources;
+    UniIO mUniIO;
 
     public Text mFPS;
     private Canvas mCanvas;
@@ -53,9 +54,10 @@ public class UMAME : MonoBehaviour, IEmuCore
         mUniSoundPlayer = GameObject.Find("Audio").transform.GetComponent<UniSoundPlayer>();
         mUniKeyboard = this.gameObject.AddComponent<UniKeyboard>();
         mUniResources = new UniResources();
+        mUniIO = new UniIO();
         mChangeRomName = string.Empty;
         mTimeSpan = new UniTimeSpan();
-        emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan);
+        emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan, mUniIO);
     }
     void OnEnable()
     {

@@ -2,7 +2,6 @@
 using Essgee.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -17,6 +16,15 @@ namespace Essgee.Metadata
         public bool GetDatBytes(string DatName, out byte[] loadedData);
     }
 
+
+    public interface IEssgeeIOSupport
+    {
+        bool File_Exists(string path);
+        byte[] File_ReadAllBytes(string path);
+        void File_WriteAllBytes(string savePath, byte[] data);
+        void File_WriteAllBytesFromStre(string path, System.IO.MemoryStream ms);
+    }
+
     public class GameMetadataHandler
     {
         public static GameMetadataHandler instance;
@@ -24,6 +32,8 @@ namespace Essgee.Metadata
         //static string metadataDatabaseFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "MetadataDatabase.json");
 
         public IGameMetaReources gameMetaReources;
+        public IEssgeeIOSupport uegIO;
+
         //readonly Dictionary<string, DatFile> datFiles;
         readonly List<CartridgeJSON> cartMetadataDatabase;
 
@@ -379,7 +389,7 @@ namespace Essgee.Metadata
             XmlSerializer serializer;
             root = new XmlRootAttribute("datafile") { IsNullable = true };
             serializer = new XmlSerializer(typeof(DatFile), root);
-            using (MemoryStream stream = new MemoryStream(loadedData))
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream(loadedData))
             {
                 datFile = (DatFile)serializer.Deserialize(stream);
             }
@@ -396,7 +406,7 @@ namespace Essgee.Metadata
             /* Create game metadata */
             var gameMetadata = new GameMetadata()
             {
-                FileName = Path.GetFileName(romFilename),
+                FileName = System.IO.Path.GetFileName(romFilename),
                 KnownName = gameInfo?.Name,
                 RomCrc32 = romCrc32,
                 RomSize = romSize

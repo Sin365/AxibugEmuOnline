@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public class DAC
@@ -57,11 +56,11 @@ namespace MAME.Core
             DAC_build_voltable();
             dac1.output = 0;
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(DAC.dac1.output);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             dac1.output = reader.ReadInt16();
         }

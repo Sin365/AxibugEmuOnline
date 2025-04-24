@@ -1,6 +1,5 @@
 ﻿using MAME.Core;
 using System;
-using System.IO;
 
 namespace cpu.nec
 {
@@ -1190,7 +1189,7 @@ namespace cpu.nec
                 nec_interrupt(-1, false);
             }
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(I.regs.b, 0, 16);
@@ -1220,7 +1219,7 @@ namespace cpu.nec
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             I.regs.b = reader.ReadBytes(16);

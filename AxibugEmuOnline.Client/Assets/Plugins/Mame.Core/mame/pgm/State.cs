@@ -1,12 +1,11 @@
 ﻿using cpu.m68000;
 using cpu.z80;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class PGM
     {
-        public unsafe static void SaveStateBinary(BinaryWriter writer)
+        public unsafe static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             writer.Write(pgm_tx_videoram, 0, 0x2000);
@@ -58,7 +57,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             pgm_tx_videoram = reader.ReadBytes(0x2000);

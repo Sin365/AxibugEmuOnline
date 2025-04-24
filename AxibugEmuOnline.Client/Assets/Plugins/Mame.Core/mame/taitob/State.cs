@@ -1,13 +1,11 @@
 ﻿using cpu.m68000;
 using cpu.z80;
-using System;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class Taitob
     {
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             //pixel_scroll
             int i;
@@ -97,7 +95,7 @@ namespace MAME.Core
             Eeprom.SaveStateBinary(writer);
             Taitosnd.SaveStateBinary(writer);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             dswa = reader.ReadByte();

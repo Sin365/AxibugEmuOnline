@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public class YM3812
@@ -85,7 +84,7 @@ namespace MAME.Core
         {
             FMOpl.ym3812_write(1, data);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             for (i = 0; i < 9; i++)
@@ -140,7 +139,7 @@ namespace MAME.Core
             writer.Write(FMOpl.YM3812.statusmask);
             writer.Write(FMOpl.YM3812.mode);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             for (i = 0; i < 9; i++)
@@ -268,7 +267,7 @@ namespace MAME.Core
         {
             return FMOpl.ym3526_read(1);
         }
-        public static void SaveStateBinary_YM3526(BinaryWriter writer)
+        public static void SaveStateBinary_YM3526(System.IO.BinaryWriter writer)
         {
             int i, j;
             for (i = 0; i < 9; i++)
@@ -323,7 +322,7 @@ namespace MAME.Core
             writer.Write(FMOpl.YM3526.statusmask);
             writer.Write(FMOpl.YM3526.mode);
         }
-        public static void LoadStateBinary_YM3526(BinaryReader reader)
+        public static void LoadStateBinary_YM3526(System.IO.BinaryReader reader)
         {
             int i, j;
             for (i = 0; i < 9; i++)

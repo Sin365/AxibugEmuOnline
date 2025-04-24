@@ -6,7 +6,6 @@ using cpu.m6809;
 using cpu.nec;
 using cpu.z80;
 using System;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -2808,7 +2807,7 @@ namespace MAME.Core
             if (perfect_interleave.attoseconds == Attotime.ATTOSECONDS_PER_SECOND - 1)
                 perfect_interleave.attoseconds = cpu[0].attoseconds_per_cycle;
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < ncpu; i++)
@@ -2822,7 +2821,7 @@ namespace MAME.Core
                 writer.Write(Cpuexec.cpu[i].localtime.attoseconds);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < ncpu; i++)

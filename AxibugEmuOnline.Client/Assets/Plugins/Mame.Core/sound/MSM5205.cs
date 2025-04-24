@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -254,7 +253,7 @@ namespace MAME.Core
                 mm1[num].voice.bitwidth = bitwidth;
             }
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(voice.select);
             writer.Write(voice.index);
@@ -267,7 +266,7 @@ namespace MAME.Core
             writer.Write(voice.signal);
             writer.Write(voice.step);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             voice.select = reader.ReadInt32();
             voice.index = reader.ReadInt32();

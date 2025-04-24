@@ -2,13 +2,12 @@
 using cpu.m68000;
 using cpu.m6805;
 using cpu.z80;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class Taito
     {
-        public static void SaveStateBinary_tokio(BinaryWriter writer)
+        public static void SaveStateBinary_tokio(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw0);
@@ -57,7 +56,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_tokio(BinaryReader reader)
+        public static void LoadStateBinary_tokio(System.IO.BinaryReader reader)
         {
             int i;
             dsw0 = reader.ReadByte();
@@ -106,7 +105,7 @@ namespace MAME.Core
             Sound.mixerstream.output_sampindex = reader.ReadInt32();
             Sound.mixerstream.output_base_sampindex = reader.ReadInt32();
         }
-        public static void SaveStateBinary_bublbobl(BinaryWriter writer)
+        public static void SaveStateBinary_bublbobl(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw0);
@@ -170,7 +169,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_bublbobl(BinaryReader reader)
+        public static void LoadStateBinary_bublbobl(System.IO.BinaryReader reader)
         {
             int i;
             dsw0 = reader.ReadByte();
@@ -234,7 +233,7 @@ namespace MAME.Core
             Sound.mixerstream.output_sampindex = reader.ReadInt32();
             Sound.mixerstream.output_base_sampindex = reader.ReadInt32();
         }
-        public static void SaveStateBinary_boblbobl(BinaryWriter writer)
+        public static void SaveStateBinary_boblbobl(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw0);
@@ -288,7 +287,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_boblbobl(BinaryReader reader)
+        public static void LoadStateBinary_boblbobl(System.IO.BinaryReader reader)
         {
             int i;
             dsw0 = reader.ReadByte();
@@ -341,7 +340,7 @@ namespace MAME.Core
             Sound.mixerstream.output_sampindex = reader.ReadInt32();
             Sound.mixerstream.output_base_sampindex = reader.ReadInt32();
         }
-        public static void SaveStateBinary_bub68705(BinaryWriter writer)
+        public static void SaveStateBinary_bub68705(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw0);
@@ -399,7 +398,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_bub68705(BinaryReader reader)
+        public static void LoadStateBinary_bub68705(System.IO.BinaryReader reader)
         {
             int i;
             dsw0 = reader.ReadByte();
@@ -457,7 +456,7 @@ namespace MAME.Core
             Sound.mixerstream.output_sampindex = reader.ReadInt32();
             Sound.mixerstream.output_base_sampindex = reader.ReadInt32();
         }
-        public static void SaveStateBinary_opwolf(BinaryWriter writer)
+        public static void SaveStateBinary_opwolf(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dswa);
@@ -594,7 +593,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_opwolf(BinaryReader reader)
+        public static void LoadStateBinary_opwolf(System.IO.BinaryReader reader)
         {
             int i;
             dswa = reader.ReadByte();

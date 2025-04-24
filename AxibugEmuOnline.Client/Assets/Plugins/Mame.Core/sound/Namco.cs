@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class Namco
@@ -255,7 +254,7 @@ namespace MAME.Core
         {
             return namco_wavedata[offset];
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             writer.Write(nam1.num_voices);
@@ -282,7 +281,7 @@ namespace MAME.Core
             }
             writer.Write(namco_wavedata, 0, 0x400);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             nam1.num_voices = reader.ReadInt32();

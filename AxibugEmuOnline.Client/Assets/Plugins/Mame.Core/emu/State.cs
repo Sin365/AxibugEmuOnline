@@ -1,11 +1,9 @@
-﻿using System.IO;
-
-namespace MAME.Core
+﻿namespace MAME.Core
 {
     public class State
     {
-        public delegate void savestate_delegate(BinaryWriter sw);
-        public delegate void loadstate_delegate(BinaryReader sr);
+        public delegate void savestate_delegate(System.IO.BinaryWriter sw);
+        public delegate void loadstate_delegate(System.IO.BinaryReader sr);
         public static savestate_delegate savestate_callback;
         public static loadstate_delegate loadstate_callback;
         public static void state_init()

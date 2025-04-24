@@ -1,12 +1,11 @@
 ﻿using cpu.m68000;
 using cpu.z80;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class Neogeo
     {
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             writer.Write(dsw);
@@ -77,7 +76,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_base_sampindex);
             Pd4900a.SaveStateBinary(writer);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             dsw = reader.ReadByte();

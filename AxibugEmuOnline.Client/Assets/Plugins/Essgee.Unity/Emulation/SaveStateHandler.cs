@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Essgee.Emulation
+﻿namespace Essgee.Emulation
 {
     public static class SaveStateHandler
     {
@@ -42,12 +40,12 @@ namespace Essgee.Emulation
         //    }
         //}
 
-        public static AxiEssgssStatusData LoadAxiStatus(Stream stream, string machineName)
+        public static AxiEssgssStatusData LoadAxiStatus(System.IO.Stream stream, string machineName)
         {
-            using (var reader = new BinaryReader(stream))
+            using (var reader = new System.IO.BinaryReader(stream))
             {
                 /* Check CRC32 */
-                using (var stateStream = new MemoryStream())
+                using (var stateStream = new System.IO.MemoryStream())
                 {
                     reader.BaseStream.CopyTo(stateStream);
                     return stateStream.ToArray().ToAxiEssgssStatusData();
@@ -102,11 +100,11 @@ namespace Essgee.Emulation
         //    }
         //}
 
-        public static void Save(Stream stream, string machineName, AxiEssgssStatusData state)
-        {
-            byte[] data = state.ToByteArray();
-            stream.Write(data, 0, data.Length);
-        }
+        //public static void Save(Stream stream, string machineName, AxiEssgssStatusData state)
+        //{
+        //    byte[] data = state.ToByteArray();
+        //    stream.Write(data, 0, data.Length);
+        //}
         //private static string GenerateMachineIdString(string machineId)
         //{
         //    return machineId.Substring(0, Math.Min(machineId.Length, 16)).PadRight(16);

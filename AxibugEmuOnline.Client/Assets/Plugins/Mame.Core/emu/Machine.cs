@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -264,10 +263,12 @@ namespace MAME.Core
         {
             byte[] bb1;
             string path = System.IO.Path.Combine(Mame.RomRoot + "/neogeo/", sFile);
-            if (File.Exists(path))
+            //if (File.Exists(path))
+            if (MameMainMotion.IoSupport.File_Exists(path))
             {
                 EmuLogger.Log($"Had File => {path}");
-                return File.ReadAllBytes(path);
+                //return File.ReadAllBytes(path);
+                return MameMainMotion.IoSupport.File_ReadAllBytes(path);
                 //FileStream fs1 = new FileStream(path, FileMode.Open);
                 //int n1 = (int)fs1.Length;
                 //bb1 = new byte[n1];
@@ -286,10 +287,10 @@ namespace MAME.Core
             foreach (string s1 in lsParents)
             {
                 string path = System.IO.Path.Combine(Mame.RomRoot + "/" + s1 + "/", sFile);
-                if (File.Exists(path))
+                if (MameMainMotion.IoSupport.File_Exists(path))
                 {
                     EmuLogger.Log($"Had File => {path}");
-                    return File.ReadAllBytes(path);
+                    return MameMainMotion.IoSupport.File_ReadAllBytes(path);
                 }
                 else
                 {

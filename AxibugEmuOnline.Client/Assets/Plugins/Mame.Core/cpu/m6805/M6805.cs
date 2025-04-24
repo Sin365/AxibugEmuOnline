@@ -1,6 +1,5 @@
 ﻿using MAME.Core;
 using System;
-using System.IO;
 
 namespace cpu.m6805
 {
@@ -831,7 +830,7 @@ namespace cpu.m6805
             while (pendingCycles > 0);
             return cycles - pendingCycles;
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(ea.LowWord);
@@ -850,7 +849,7 @@ namespace cpu.m6805
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             ea.LowWord = reader.ReadUInt16();

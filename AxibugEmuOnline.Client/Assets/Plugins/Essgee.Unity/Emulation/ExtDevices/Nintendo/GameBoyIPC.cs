@@ -1,7 +1,6 @@
 ﻿using Essgee.EventArguments;
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.IO.MemoryMappedFiles;
 
 namespace Essgee.Emulation.ExtDevices.Nintendo
@@ -64,7 +63,7 @@ namespace Essgee.Emulation.ExtDevices.Nintendo
                 ipcOffsetSelf = ipcBaseOffsetSerialData + 1;
                 ipcOffsetRemote = ipcBaseOffsetSerialData + 0;
             }
-            catch (FileNotFoundException)
+            catch (Exception ex)
             {
                 // Mapped file does not yet exist, create file and assume this instance is first machine
                 mmf = MemoryMappedFile.CreateOrOpen(ipcName, ipcLength);

@@ -1,7 +1,6 @@
 ﻿using cpu.m6800;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -642,7 +641,7 @@ namespace MAME.Core
         {
             return Attotime.attotime_sub(which.expire, get_current_time());
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, i1, n;
             n = lt.Count;
@@ -673,7 +672,7 @@ namespace MAME.Core
                 writer.Write((long)0);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, i1, n;
             n = reader.ReadInt32();

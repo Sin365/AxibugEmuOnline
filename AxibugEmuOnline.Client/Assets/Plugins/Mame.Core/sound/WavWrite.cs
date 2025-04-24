@@ -1,16 +1,17 @@
-﻿using System.IO;
+﻿
+using System.IO;
 
 namespace MAME.Core
 {
     public class WavWrite
     {
-        public static FileStream mWaveFile = null;
-        private static BinaryWriter mWriter = null;
+        public static System.IO.FileStream mWaveFile = null;
+        private static System.IO.BinaryWriter mWriter = null;
         private static int mSampleCount = 0;
         public static void CreateSoundFile(string filename)
         {
             mWaveFile = new FileStream(filename, FileMode.Create);
-            mWriter = new BinaryWriter(mWaveFile);
+            mWriter = new System.IO.BinaryWriter(mWaveFile);
             /**************************************************************************
              Hereiswherethefilewillbecreated.A
              wavefileisaRIFFfile,whichhaschunks

@@ -11,7 +11,7 @@ using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-//using System.IO;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -40,6 +40,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     GameMetadata lastGameMetadata;
     Essgee.Emulation.EmulatorHandler emulatorHandler;
     UEGResources uegResources;
+    UEGIO uegIO;
     UEGLog uegLog;
     UEGSaveByteConvert uegSaveByteConvert;
     private Canvas mCanvas;
@@ -55,6 +56,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         App.tick.SetFrameRate(60);
         instance = this;
         uegResources = new UEGResources();
+        uegIO = new UEGIO();
         uegLog = new UEGLog();
         uegSaveByteConvert = new UEGSaveByteConvert();
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
@@ -104,7 +106,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     {
         mPlatform = romFile.Platform;
 
-        InitAll(uegResources, App.PersistentDataPath(mPlatform));
+        InitAll(uegResources, uegIO, App.PersistentDataPath(mPlatform));
 
         bLogicUpdatePause = true;
 
@@ -165,17 +167,18 @@ public class UEssgee : MonoBehaviour, IEmuCore
     }
     #endregion
 
-    void InitAll(IGameMetaReources metaresources, string CustonDataDir)
+    void InitAll(IGameMetaReources metaresources, IEssgeeIOSupport uegIO, string CustonDataDir)
     {
         //初始化配置
-        InitAppEnvironment(CustonDataDir);
+        InitAppEnvironment(CustonDataDir, uegIO);
         InitEmu();
         //细节初始化
         InitializeHandlers(metaresources);
     }
 
-    private void InitAppEnvironment(string CustonDataDir)
+    private void InitAppEnvironment(string CustonDataDir, IEssgeeIOSupport uegIO)
     {
+        EmulatorHandler.io = uegIO;
         EssgeeLogger.Init(uegLog);
 
         //EmuStandInfo.datDirectoryPath = Path.Combine(BaseDataDir, "EssgeeAssets", "No-Intro");

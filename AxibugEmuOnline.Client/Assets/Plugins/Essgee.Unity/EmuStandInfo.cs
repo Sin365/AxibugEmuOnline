@@ -1,5 +1,6 @@
 
 using Essgee;
+using Essgee.Metadata;
 using System;
 
 public static class EmuStandInfo

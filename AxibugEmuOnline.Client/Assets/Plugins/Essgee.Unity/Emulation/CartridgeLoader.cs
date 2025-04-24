@@ -3,7 +3,6 @@ using Essgee.Exceptions;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
@@ -32,19 +31,19 @@ namespace Essgee.Emulation
             Type machineType = null;
             byte[] romData = null;
 
-            if (!File.Exists(fileName))
+            if (!EmulatorHandler.io.File_Exists(fileName))
                 throw new CartridgeLoaderException($"{fileType} file not found.");
 
             try
             {
-                var fileExtension = Path.GetExtension(fileName);
+                var fileExtension = System.IO.Path.GetExtension(fileName);
                 if (fileExtension == ".zip")
                 {
                     using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Read))
                     {
                         foreach (var entry in zip.Entries)
                         {
-                            var entryExtension = Path.GetExtension(entry.Name);
+                            var entryExtension = System.IO.Path.GetExtension(entry.Name);
                             if (fileExtensionSystemDictionary.ContainsKey(entryExtension))
                             {
                                 machineType = fileExtensionSystemDictionary[entryExtension];
@@ -61,7 +60,7 @@ namespace Essgee.Emulation
                 else if (fileExtensionSystemDictionary.ContainsKey(fileExtension))
                 {
                     machineType = fileExtensionSystemDictionary[fileExtension];
-                    romData = File.ReadAllBytes(fileName);
+                    romData = System.IO.File.ReadAllBytes(fileName);
                 }
             }
             catch (Exception ex) when (!AppEnvironment.DebugMode)

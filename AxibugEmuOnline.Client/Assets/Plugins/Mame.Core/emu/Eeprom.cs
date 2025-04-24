@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace MAME.Core
+﻿namespace MAME.Core
 {
     /*public enum eeprom_command
     {
@@ -378,7 +376,7 @@ namespace MAME.Core
             }
             clock_line = state;
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(eeprom_data);
             writer.Write(serial_buffer);
@@ -393,7 +391,7 @@ namespace MAME.Core
             writer.Write(eeprom_data_bits);
             writer.Write(eeprom_read_address);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             eeprom_data = reader.ReadBytes(0x80);
             serial_buffer = reader.ReadBytes(40);
