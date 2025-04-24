@@ -13,6 +13,11 @@ public class UEGIO : IEssgeeIOSupport
         return AxiIO.File.ReadAllBytes(path);
     }
 
+    public void File_WriteAllBytes(string savePath, byte[] data)
+    {
+        AxiIO.File.WriteAllBytes(savePath, data);
+    }
+
     public void File_WriteAllBytesFromStre(string path, MemoryStream ms)
     {
         AxiIO.File.WriteAllBytesFromStream(path, ms);
