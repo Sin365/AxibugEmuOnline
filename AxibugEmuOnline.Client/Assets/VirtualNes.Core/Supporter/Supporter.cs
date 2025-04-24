@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace VirtualNes.Core
+﻿namespace VirtualNes.Core
 {
     public static class Supporter
     {
@@ -15,15 +13,15 @@ namespace VirtualNes.Core
 
     public interface ISupporterImpl
     {
-        Stream OpenRom(string fname);
+        System.IO.Stream OpenRom(string fname);
         void GetRomPathInfo(string fname, out string fullPath, out string directPath);
-        Stream OpenFile_DISKSYS();
+        System.IO.Stream OpenFile_DISKSYS();
         void SaveSRAMToFile(byte[] sramContent, string romName);
         void SaveDISKToFile(byte[] diskFileContent, string romName);
         EmulatorConfig Config { get; }
         void PrepareDirectory(string directPath);
         void SaveFile(byte[] fileData, string directPath, string fileName);
-        Stream OpenFile(string directPath, string fileName);
+        System.IO.Stream OpenFile(string directPath, string fileName);
         bool TryGetMapperNo(ROM rom, out int mapperNo);
         ControllerState GetControllerState();
         void SampleInput(uint frameCount);

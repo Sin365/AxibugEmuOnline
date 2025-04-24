@@ -11,7 +11,7 @@ using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
+//using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -189,29 +189,29 @@ public class UEssgee : MonoBehaviour, IEmuCore
         EmuStandInfo.ProductName = "AxibugEmu";
         EmuStandInfo.ProductVersion = "";
 
-        EmuStandInfo.programDataDirectory = Path.Combine(CustonDataDir, EmuStandInfo.ProductName);
-        EmuStandInfo.programConfigPath = Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.jsonConfigFileName);
+        EmuStandInfo.programDataDirectory = System.IO.Path.Combine(CustonDataDir, EmuStandInfo.ProductName);
+        EmuStandInfo.programConfigPath = System.IO.Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.jsonConfigFileName);
 
-        EmuStandInfo.ShaderPath = Path.Combine(CustonDataDir, "Assets", "Shaders");
-        EmuStandInfo.SaveDataPath = Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.saveDataDirectoryName);
-        EmuStandInfo.ScreenshotPath = Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.screenshotDirectoryName);
-        EmuStandInfo.SaveStatePath = Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.saveStateDirectoryName);
-        EmuStandInfo.ExtraDataPath = Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.extraDataDirectoryName);
+        EmuStandInfo.ShaderPath = System.IO.Path.Combine(CustonDataDir, "Assets", "Shaders");
+        EmuStandInfo.SaveDataPath = System.IO.Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.saveDataDirectoryName);
+        EmuStandInfo.ScreenshotPath = System.IO.Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.screenshotDirectoryName);
+        EmuStandInfo.SaveStatePath = System.IO.Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.saveStateDirectoryName);
+        EmuStandInfo.ExtraDataPath = System.IO.Path.Combine(EmuStandInfo.programDataDirectory, EmuStandInfo.extraDataDirectoryName);
 
         LoadConfiguration();
 
 
-        if (!Directory.Exists(EmuStandInfo.SaveDataPath))
-            Directory.CreateDirectory(EmuStandInfo.SaveDataPath);
+        if (!AxiIO.Directory.Exists(EmuStandInfo.SaveDataPath))
+            AxiIO.Directory.CreateDirectory(EmuStandInfo.SaveDataPath);
 
-        if (!Directory.Exists(EmuStandInfo.ScreenshotPath))
-            Directory.CreateDirectory(EmuStandInfo.ScreenshotPath);
+        if (!AxiIO.Directory.Exists(EmuStandInfo.ScreenshotPath))
+            AxiIO.Directory.CreateDirectory(EmuStandInfo.ScreenshotPath);
 
-        if (!Directory.Exists(EmuStandInfo.SaveStatePath))
-            Directory.CreateDirectory(EmuStandInfo.SaveStatePath);
+        if (!AxiIO.Directory.Exists(EmuStandInfo.SaveStatePath))
+            AxiIO.Directory.CreateDirectory(EmuStandInfo.SaveStatePath);
 
-        if (!Directory.Exists(EmuStandInfo.ExtraDataPath))
-            Directory.CreateDirectory(EmuStandInfo.ExtraDataPath);
+        if (!AxiIO.Directory.Exists(EmuStandInfo.ExtraDataPath))
+            AxiIO.Directory.CreateDirectory(EmuStandInfo.ExtraDataPath);
 
         if (AppEnvironment.EnableLogger)
         {
@@ -756,13 +756,13 @@ public class UEssgee : MonoBehaviour, IEmuCore
         }
 
         /* Generate filename/path */
-        var filePrefix = $"{Path.GetFileNameWithoutExtension(lastGameMetadata.FileName)} ({e.Description}{(includeDateTime ? $" {DateTime.Now:yyyy-MM-dd HH-mm-ss})" : ")")}";
-        var filePath = Path.Combine(EmuStandInfo.ExtraDataPath, $"{filePrefix}.{extension}");
+        var filePrefix = $"{System.IO.Path.GetFileNameWithoutExtension(lastGameMetadata.FileName)} ({e.Description}{(includeDateTime ? $" {DateTime.Now:yyyy-MM-dd HH-mm-ss})" : ")")}";
+        var filePath = System.IO.Path.Combine(EmuStandInfo.ExtraDataPath, $"{filePrefix}.{extension}");
         if (!allowOverwrite)
         {
-            var existingFiles = Directory.EnumerateFiles(EmuStandInfo.ExtraDataPath, $"{filePrefix}*{extension}");
+            var existingFiles = AxiIO.Directory.EnumerateFiles(EmuStandInfo.ExtraDataPath, $"{filePrefix}*{extension}");
             if (existingFiles.Contains(filePath))
-                for (int i = 2; existingFiles.Contains(filePath = Path.Combine(EmuStandInfo.ExtraDataPath, $"{filePrefix} ({i}).{extension}")); i++) { }
+                for (int i = 2; existingFiles.Contains(filePath = System.IO.Path.Combine(EmuStandInfo.ExtraDataPath, $"{filePrefix} ({i}).{extension}")); i++) { }
         }
 
         /* Handle data */
@@ -777,10 +777,12 @@ public class UEssgee : MonoBehaviour, IEmuCore
         else if (e.Data is byte[] raw)
         {
             /* Raw bytes */
-            using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-            {
-                file.Write(raw, 0, raw.Length);
-            }
+            //using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            //{
+            //    file.Write(raw, 0, raw.Length);
+            //}
+
+            AxiIO.File.WriteAllBytes(filePath, raw);
         }
     }
 

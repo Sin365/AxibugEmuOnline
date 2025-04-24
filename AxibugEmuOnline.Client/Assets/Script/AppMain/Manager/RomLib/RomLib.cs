@@ -4,7 +4,6 @@ using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
-//using System.IO;
 using System.Linq;
 using static AxibugEmuOnline.Client.HttpAPI;
 

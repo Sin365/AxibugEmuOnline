@@ -2,8 +2,6 @@
 using AxibugEmuOnline.Client.Tools;
 using AxibugProtobuf;
 using System;
-
-//using System.IO;
 using System.Runtime.InteropServices;
 
 namespace AxibugEmuOnline.Client

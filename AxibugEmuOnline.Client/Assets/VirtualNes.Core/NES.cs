@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using VirtualNes.Core.Debug;
 
@@ -28,13 +27,13 @@ namespace VirtualNes.Core
         private int m_nNsfSongMode;
         private bool m_bMoviePlay;
         private bool m_bMovieRec;
-        private Stream m_fpMovie;
+        private System.IO.Stream m_fpMovie;
         private uint m_MovieControl;
         private int m_MovieStepTotal;
         private int m_MovieStep;
         private bool m_bTapePlay;
         private bool m_bTapeRec;
-        private Stream m_fpTape;
+        private System.IO.Stream m_fpTape;
         private double m_TapeCycles;
         private byte m_TapeIn;
         private byte m_TapeOut;
@@ -1110,7 +1109,7 @@ namespace VirtualNes.Core
                 return;
 
             int i = 0;
-            Stream fp = null;
+            System.IO.Stream fp = null;
             DISKFILEHDR ifh;
             byte[] lpDisk = rom.GetPROM();
             byte[] lpWrite = rom.GetDISK();

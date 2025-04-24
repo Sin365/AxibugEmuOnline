@@ -5,7 +5,6 @@ using StoicGoose.Common.Utilities;
 using StoicGoose.Core.Machines;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using UnityEngine;
@@ -22,7 +21,7 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
     readonly static int maxRecentFiles = 15;
     readonly static int statusIconSize = 12;
 
-    readonly static List<(string description, string extension, Func<string, Stream> streamReadFunc)> supportedFileInformation = new()
+    readonly static List<(string description, string extension, Func<string, System.IO.Stream> streamReadFunc)> supportedFileInformation = new()
         {
             ("WonderSwan ROMs", ".ws", GetStreamFromFile),
             ("WonderSwan Color ROMs", ".wsc", GetStreamFromFile),
@@ -312,7 +311,7 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
         //    graphicsHandler.DrawFrame();
         //};
 
-        internalEepromPath = Path.Combine(Program.InternalDataPath, $"{machineType.Name}.eep");
+        internalEepromPath = System.IO.Path.Combine(Program.InternalDataPath, $"{machineType.Name}.eep");
     }
 
     //private void InitializeWindows()
@@ -408,11 +407,14 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
 
         if (!emulatorHandler.IsRunning)
         {
-            if (File.Exists(filename))
+            if (AxiIO.File.Exists(filename))
             {
-                using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                var data = new byte[stream.Length];
-                stream.Read(data, 0, data.Length);
+                //using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                //var data = new byte[stream.Length];
+                //stream.Read(data, 0, data.Length);
+
+                var data = AxiIO.File.ReadAllBytes(filename);
+
                 emulatorHandler.Machine.LoadBootstrap(data);
             }
             emulatorHandler.Machine.UseBootstrap = Program.Configuration.General.UseBootstrap;
@@ -421,23 +423,31 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
 
     private void LoadInternalEeprom()
     {
-        if (!emulatorHandler.IsRunning && File.Exists(internalEepromPath))
+        if (!emulatorHandler.IsRunning && AxiIO.File.Exists(internalEepromPath))
         {
-            using var stream = new FileStream(internalEepromPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            var data = new byte[stream.Length];
-            stream.Read(data, 0, data.Length);
+            //using var stream = new FileStream(internalEepromPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            //var data = new byte[stream.Length];
+            //stream.Read(data, 0, data.Length);
+
+            var data = AxiIO.File.ReadAllBytes(internalEepromPath);
+
             emulatorHandler.Machine.LoadInternalEeprom(data);
         }
     }
 
-    private static Stream GetStreamFromFile(string filename)
+    private static System.IO.Stream GetStreamFromFile(string filename)
     {
-        return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        //return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        byte[] data = AxiIO.File.ReadAllBytes(filename);
+        return new System.IO.MemoryStream(data);
     }
 
-    private static Stream GetStreamFromFirstZippedFile(string filename)
+    private static System.IO.Stream GetStreamFromFirstZippedFile(string filename)
     {
-        return new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)).Entries.FirstOrDefault()?.Open();
+        //return new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)).Entries.FirstOrDefault()?.Open();
+
+        byte[] data = AxiIO.File.ReadAllBytes(filename);
+        return new ZipArchive(new System.IO.MemoryStream(data)).Entries.FirstOrDefault()?.Open();
     }
 
     private bool LoadAndRunCartridge(string filename)
@@ -450,8 +460,8 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
                 emulatorHandler.Shutdown();
             }
 
-            using var inputStream = supportedFileInformation.FirstOrDefault(x => x.extension == Path.GetExtension(filename)).streamReadFunc(filename) ?? GetStreamFromFile(filename);
-            using var stream = new MemoryStream();
+            using var inputStream = supportedFileInformation.FirstOrDefault(x => x.extension == System.IO.Path.GetExtension(filename)).streamReadFunc(filename) ?? GetStreamFromFile(filename);
+            using var stream = new System.IO.MemoryStream();
             inputStream.CopyTo(stream);
             stream.Position = 0;
 
@@ -462,7 +472,7 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
             graphicsHandler.IsVerticalOrientation = isVerticalOrientation = emulatorHandler.Machine.Cartridge.Metadata.Orientation == CartridgeMetadata.Orientations.Vertical;
             inputHandler.SetVerticalOrientation(isVerticalOrientation);
 
-            CurrRomName = Path.GetFileName(filename);
+            CurrRomName = System.IO.Path.GetFileName(filename);
 
             LoadRam();
 
@@ -490,12 +500,15 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
     private void LoadRam()
     {
         //var path = Path.Combine(Program.SaveDataPath, $"{Path.GetFileNameWithoutExtension(Program.Configuration.General.RecentFiles.First())}.sav");
-        var path = Path.Combine(Program.SaveDataPath, $"{CurrRomName}.sav");
-        if (!File.Exists(path)) return;
+        var path = System.IO.Path.Combine(Program.SaveDataPath, $"{CurrRomName}.sav");
+        //if (!File.Exists(path)) return;
+        if (!AxiIO.File.Exists(path)) return;
 
-        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        var data = new byte[stream.Length];
-        stream.Read(data, 0, data.Length);
+        //using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        //var data = new byte[stream.Length];
+        //stream.Read(data, 0, data.Length);
+
+        var data = AxiIO.File.ReadAllBytes(path);
         if (data.Length != 0)
             emulatorHandler.Machine.LoadSaveData(data);
     }
@@ -511,8 +524,10 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
         var data = emulatorHandler.Machine.GetInternalEeprom();
         if (data.Length == 0) return;
 
-        using var stream = new FileStream(internalEepromPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-        stream.Write(data, 0, data.Length);
+        //using var stream = new FileStream(internalEepromPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        //stream.Write(data, 0, data.Length);
+
+        AxiIO.File.WriteAllBytes(internalEepromPath, data);
     }
 
     private void SaveRam()
@@ -521,10 +536,12 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
         if (data.Length == 0) return;
 
         //var path = Path.Combine(Program.SaveDataPath, $"{Path.GetFileNameWithoutExtension(Program.Configuration.General.RecentFiles.First())}.sav");
-        var path = Path.Combine(Program.SaveDataPath, $"{CurrRomName}.sav");
+        var path = System.IO.Path.Combine(Program.SaveDataPath, $"{CurrRomName}.sav");
 
-        using var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-        stream.Write(data, 0, data.Length);
+        //using var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        //stream.Write(data, 0, data.Length);
+
+        AxiIO.File.WriteAllBytes(path, data);
     }
 
 
@@ -603,25 +620,25 @@ static class Program
             shaderDirectoryName = "Shaders";
             noIntroDatDirectoryName = "No-Intro";
             mutexName = $"Unity_{GetVersionDetails()}";
-            programDataDirectory = Path.Combine(CustonDataDir, "AxibugEmu");
-            programConfigPath = Path.Combine(programDataDirectory, jsonConfigFileName);
+            programDataDirectory = System.IO.Path.Combine(CustonDataDir, "AxibugEmu");
+            programConfigPath = System.IO.Path.Combine(programDataDirectory, jsonConfigFileName);
             Configuration = LoadConfiguration(programConfigPath);
-            Log.WriteLine(Path.Combine(programDataDirectory, logFileName));
+            Log.WriteLine(System.IO.Path.Combine(programDataDirectory, logFileName));
             programApplicationDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            programAssetsDirectory = Path.Combine(programApplicationDirectory, assetsDirectoryName);
-            Directory.CreateDirectory(DataPath = programDataDirectory);
-            Directory.CreateDirectory(InternalDataPath = Path.Combine(programDataDirectory, internalDataDirectoryName));
-            Directory.CreateDirectory(SaveDataPath = Path.Combine(programDataDirectory, saveDataDirectoryName));
-            Directory.CreateDirectory(CheatsDataPath = Path.Combine(programDataDirectory, cheatDataDirectoryName));
-            Directory.CreateDirectory(DebuggingDataPath = Path.Combine(programDataDirectory, debuggingDataDirectoryName));
+            programAssetsDirectory = System.IO.Path.Combine(programApplicationDirectory, assetsDirectoryName);
+            AxiIO.Directory.CreateDirectory(DataPath = programDataDirectory);
+            AxiIO.Directory.CreateDirectory(InternalDataPath = System.IO.Path.Combine(programDataDirectory, internalDataDirectoryName));
+            AxiIO.Directory.CreateDirectory(SaveDataPath = System.IO.Path.Combine(programDataDirectory, saveDataDirectoryName));
+            AxiIO.Directory.CreateDirectory(CheatsDataPath = System.IO.Path.Combine(programDataDirectory, cheatDataDirectoryName));
+            AxiIO.Directory.CreateDirectory(DebuggingDataPath = System.IO.Path.Combine(programDataDirectory, debuggingDataDirectoryName));
 
             //if (!Directory.Exists(ShaderPath = Path.Combine(programAssetsDirectory, shaderDirectoryName)))
             //    throw new DirectoryNotFoundException("Shader directory missing");
 
-            if (!Directory.Exists(NoIntroDatPath = Path.Combine(programAssetsDirectory, noIntroDatDirectoryName)))
-                throw new DirectoryNotFoundException("No-Intro .dat directory missing");
+            if (!AxiIO.Directory.Exists(NoIntroDatPath = System.IO.Path.Combine(programAssetsDirectory, noIntroDatDirectoryName)))
+                throw new Exception("No-Intro .dat directory missing");
         }
-        catch (DirectoryNotFoundException e)
+        catch (Exception e)
         {
         }
     }
@@ -674,7 +691,7 @@ static class Program
 
     private static Configuration LoadConfiguration(string filename)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(filename));
+        AxiIO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filename));
 
         Configuration configuration;
         //if (!File.Exists(filename) || (configuration = filename.DeserializeFromFile<Configuration>()) == null)

@@ -1,10 +1,7 @@
-﻿using DG.Tweening.Plugins.Core.PathCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
-using static UnityEngine.Analytics.IAnalytic;
 
 namespace AxiIO
 {

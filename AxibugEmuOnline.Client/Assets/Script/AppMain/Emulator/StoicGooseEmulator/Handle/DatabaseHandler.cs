@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
@@ -16,24 +15,24 @@ public sealed class DatabaseHandler
         {
             string wsc = "Bandai - WonderSwan Color.dat";
             GetDatBytes(wsc, out byte[] loadedData);
-            using (MemoryStream stream = new MemoryStream(loadedData))
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream(loadedData))
             {
                 var root = new XmlRootAttribute("datafile") { IsNullable = true };
                 var serializer = new XmlSerializer(typeof(DatFile), root);
                 var reader = XmlReader.Create(stream, new() { DtdProcessing = DtdProcessing.Ignore });
-                datFiles.Add(Path.GetFileName(wsc), (DatFile)serializer.Deserialize(reader));
+                datFiles.Add(System.IO.Path.GetFileName(wsc), (DatFile)serializer.Deserialize(reader));
             }
         }
 
         {
             string ws = "Bandai - WonderSwan.dat";
             GetDatBytes(ws, out byte[] loadedData);
-            using (MemoryStream stream = new MemoryStream(loadedData))
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream(loadedData))
             {
                 var root = new XmlRootAttribute("datafile") { IsNullable = true };
                 var serializer = new XmlSerializer(typeof(DatFile), root);
                 var reader = XmlReader.Create(stream, new() { DtdProcessing = DtdProcessing.Ignore });
-                datFiles.Add(Path.GetFileName(ws), (DatFile)serializer.Deserialize(reader));
+                datFiles.Add(System.IO.Path.GetFileName(ws), (DatFile)serializer.Deserialize(reader));
             }
         }
 
