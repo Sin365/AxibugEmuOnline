@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public class Taitosnd
@@ -201,7 +200,7 @@ namespace MAME.Core
         {
             return (ushort)(taitosound_comm_r(0) << 8);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(tc0140syt.slavedata, 0, 4);
             writer.Write(tc0140syt.masterdata, 0, 4);
@@ -211,7 +210,7 @@ namespace MAME.Core
             writer.Write(tc0140syt.nmi_enabled);
             writer.Write(tc0140syt.nmi_req);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             tc0140syt.slavedata = reader.ReadBytes(4);
             tc0140syt.masterdata = reader.ReadBytes(4);

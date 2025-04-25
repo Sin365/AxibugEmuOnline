@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace VirtualNes.Core
@@ -84,22 +83,22 @@ namespace VirtualNes.Core
     }
     public class StateReader
     {
-        private MemoryStream m_dataStream;
+        private System.IO.MemoryStream m_dataStream;
 
         public long Remain => m_dataStream.Length - 1 - m_dataStream.Position;
 
         public StateReader(byte[] bytes)
         {
-            m_dataStream = new MemoryStream(bytes);
+            m_dataStream = new System.IO.MemoryStream(bytes);
         }
 
         public void Skip(uint count)
         {
-            m_dataStream.Seek(count, SeekOrigin.Current);
+            m_dataStream.Seek(count, System.IO.SeekOrigin.Current);
         }
         public void Skip(long count)
         {
-            m_dataStream.Seek(count, SeekOrigin.Current);
+            m_dataStream.Seek(count, System.IO.SeekOrigin.Current);
         }
 
         public byte[] Read_bytes(int length)

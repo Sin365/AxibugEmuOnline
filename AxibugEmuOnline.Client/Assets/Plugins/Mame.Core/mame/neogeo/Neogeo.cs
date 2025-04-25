@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace MAME.Core
@@ -376,19 +375,27 @@ namespace MAME.Core
 
         public static void nvram_handler_load_neogeo()
         {
-            if (File.Exists("nvram\\" + Machine.sName + ".nv"))
+            if (MameMainMotion.IoSupport.File_Exists("nvram\\" + Machine.sName + ".nv"))
             {
-                FileStream fs1 = new FileStream("nvram\\" + Machine.sName + ".nv", FileMode.Open);
-                int n = (int)fs1.Length;
-                fs1.Read(mainram2, 0, n);
-                fs1.Close();
+                MameMainMotion.IoSupport.File_ReadAllBytes("nvram\\" + Machine.sName + ".nv");
+                //FileStream fs1 = new FileStream("nvram\\" + Machine.sName + ".nv", FileMode.Open);
+                //int n = (int)fs1.Length;
+                //fs1.Read(mainram2, 0, n);
+                //fs1.Close();
             }
         }
         public static void nvram_handler_save_neogeo()
         {
-            FileStream fs1 = new FileStream("nvram\\" + Machine.sName + ".nv", FileMode.Create);
-            fs1.Write(mainram2, 0, 0x2000);
-            fs1.Close();
+            //FileStream fs1 = new FileStream("nvram\\" + Machine.sName + ".nv", FileMode.Create);
+            //fs1.Write(mainram2, 0, 0x2000);
+            //fs1.Close();
+
+            byte[] temp = new byte[0x2000];
+            Buffer.BlockCopy(mainram2_src, 0, temp, 0, temp.Length);
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream(temp))
+            { 
+                MameMainMotion.IoSupport.File_WriteAllBytesFromStre("nvram\\" + Machine.sName + ".nv",ms);
+            }
         }
         public static void machine_reset_neogeo()
         {

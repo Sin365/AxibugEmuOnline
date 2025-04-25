@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 
 namespace MAME.Core
@@ -25,8 +24,9 @@ namespace MAME.Core
             ISoundPlayer isp,
             IKeyboard ikb,
             IMouse imou,
-            ITimeSpan itime
-            ) => mameMainMotion.Init(RomDir, ilog, iRes, ivp, isp, ikb, imou, itime);
+            ITimeSpan itime,
+            IMAMEIOSupport io
+            ) => mameMainMotion.Init(RomDir, ilog, iRes, ivp, isp, ikb, imou, itime,io);
 
         public void ResetRomRoot(string RomDir) => mameMainMotion.ResetRomRoot(RomDir);
 
@@ -40,7 +40,7 @@ namespace MAME.Core
         public void StopGame() => mameMainMotion.StopGame();
         public long currEmuFrame => Video.screenstate.frame_number;
         public bool IsPaused => Mame.paused;
-        public void LoadState(BinaryReader sr)
+        public void LoadState(System.IO.BinaryReader sr)
         {
             Mame.paused = true;
             Thread.Sleep(20);
@@ -51,7 +51,7 @@ namespace MAME.Core
             Mame.paused = false;
         }
 
-        public void SaveState(BinaryWriter sw)
+        public void SaveState(System.IO.BinaryWriter sw)
         {
             Mame.paused = true;
             Thread.Sleep(20);

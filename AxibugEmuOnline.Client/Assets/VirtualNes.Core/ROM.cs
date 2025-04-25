@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using VirtualNes.Core.Debug;
 
 namespace VirtualNes.Core
@@ -29,7 +28,7 @@ namespace VirtualNes.Core
 
         public ROM(string fname)
         {
-            Stream fp = null;
+            System.IO.Stream fp = null;
             byte[] temp = null;
             byte[] bios = null;
             long FileSize = 0;
@@ -218,7 +217,7 @@ namespace VirtualNes.Core
                 }
 
                 Supporter.S.GetRomPathInfo(fname, out fullpath, out path);
-                name = Path.GetFileNameWithoutExtension(fullpath);
+                name = System.IO.Path.GetFileNameWithoutExtension(fullpath);
                 if (!bNSF)
                 {
                     mapper = (header.control1 >> 4) | (header.control2 & 0xF0);

@@ -1,13 +1,12 @@
 ﻿using cpu.m68000;
 using cpu.m6809;
 using cpu.z80;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class Capcom
     {
-        public static void SaveStateBinary_gng(BinaryWriter writer)
+        public static void SaveStateBinary_gng(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(bytedsw1);
@@ -53,7 +52,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_gng(BinaryReader reader)
+        public static void LoadStateBinary_gng(System.IO.BinaryReader reader)
         {
             int i;
             bytedsw1 = reader.ReadByte();
@@ -99,7 +98,7 @@ namespace MAME.Core
             Sound.mixerstream.output_sampindex = reader.ReadInt32();
             Sound.mixerstream.output_base_sampindex = reader.ReadInt32();
         }
-        public static void SaveStateBinary_sf(BinaryWriter writer)
+        public static void SaveStateBinary_sf(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw1);
@@ -148,7 +147,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_sf(BinaryReader reader)
+        public static void LoadStateBinary_sf(System.IO.BinaryReader reader)
         {
             int i;
             dsw1 = reader.ReadUInt16();

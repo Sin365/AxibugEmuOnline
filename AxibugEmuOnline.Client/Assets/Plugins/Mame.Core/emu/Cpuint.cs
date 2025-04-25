@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace MAME.Core
@@ -262,7 +260,7 @@ namespace MAME.Core
         {
             return cpu_irq_callback(3, line);
         }
-        public static void SaveStateBinary_v(BinaryWriter writer)
+        public static void SaveStateBinary_v(System.IO.BinaryWriter writer)
         {
             int i, n;
             n = lvec.Count;
@@ -280,7 +278,7 @@ namespace MAME.Core
                 writer.Write((long)0);
             }
         }
-        public static void LoadStateBinary_v(BinaryReader reader)
+        public static void LoadStateBinary_v(System.IO.BinaryReader reader)
         {
             int i, n;
             n = reader.ReadInt32();
@@ -299,7 +297,7 @@ namespace MAME.Core
                 reader.ReadInt64();
             }
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j, n;
             n = lirq.Count;
@@ -351,7 +349,7 @@ namespace MAME.Core
                 }
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j, n;
             n = reader.ReadInt32();

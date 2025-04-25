@@ -5,7 +5,6 @@ using AxiReplay;
 using MAME.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +20,7 @@ public class UMAME : MonoBehaviour, IEmuCore
     UniSoundPlayer mUniSoundPlayer;
     UniKeyboard mUniKeyboard;
     UniResources mUniResources;
+    UniIO mUniIO;
 
     public Text mFPS;
     private Canvas mCanvas;
@@ -54,9 +54,10 @@ public class UMAME : MonoBehaviour, IEmuCore
         mUniSoundPlayer = GameObject.Find("Audio").transform.GetComponent<UniSoundPlayer>();
         mUniKeyboard = this.gameObject.AddComponent<UniKeyboard>();
         mUniResources = new UniResources();
+        mUniIO = new UniIO();
         mChangeRomName = string.Empty;
         mTimeSpan = new UniTimeSpan();
-        emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan);
+        emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan, mUniIO);
     }
     void OnEnable()
     {
@@ -197,11 +198,11 @@ public class UMAME : MonoBehaviour, IEmuCore
     }
     byte[] SaveState()
     {
-        if (!Directory.Exists(SavePath))
-            Directory.CreateDirectory(SavePath);
+        if (!AxiIO.Directory.Exists(SavePath))
+            AxiIO.Directory.CreateDirectory(SavePath);
 
-        MemoryStream ms = new MemoryStream();
-        BinaryWriter bw = new BinaryWriter(ms);
+        System.IO.MemoryStream ms = new System.IO.MemoryStream();
+        System.IO.BinaryWriter bw = new System.IO.BinaryWriter(ms);
         emu.SaveState(bw);
         byte[] data = ms.ToArray();
         bw.Close();
@@ -218,8 +219,8 @@ public class UMAME : MonoBehaviour, IEmuCore
     }
     void LoadState(byte[] data)
     {
-        MemoryStream fs = new MemoryStream(data);
-        BinaryReader br = new BinaryReader(fs);
+        System.IO.MemoryStream fs = new System.IO.MemoryStream(data);
+        System.IO.BinaryReader br = new System.IO.BinaryReader(fs);
         emu.LoadState(br);
         br.Close();
         fs.Close();

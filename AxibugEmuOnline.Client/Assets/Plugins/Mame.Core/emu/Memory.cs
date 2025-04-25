@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace MAME.Core
@@ -488,26 +487,26 @@ namespace MAME.Core
         }
         #endregion
 
-        public static void Write(this BinaryWriter bw, byte* bufferPtr, int offset, int count)
+        public static void Write(this System.IO.BinaryWriter bw, byte* bufferPtr, int offset, int count)
         {
             int singlesize = sizeof(byte);
             long totalBytesToCopy = count * singlesize;
             Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
             bw.Write(TempBuffer_src, 0, count);
         }
-        public static void Write(this FileStream fs, byte* bufferPtr, int offset, int count)
-        {
-            int singlesize = sizeof(byte);
-            long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
-            fs.Write(TempBuffer_src, 0, count);
-        }
-        public static int Read(this FileStream fs, byte* bufferPtr, int offset, int count)
-        {
-            count = fs.Read(TempBuffer_src, offset, count);
-            Buffer.MemoryCopy(TempBuffer, bufferPtr + offset, 0, count);
-            return count;
-        }
+        //public static void Write(this FileStream fs, byte* bufferPtr, int offset, int count)
+        //{
+        //    int singlesize = sizeof(byte);
+        //    long totalBytesToCopy = count * singlesize;
+        //    Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
+        //    fs.Write(TempBuffer_src, 0, count);
+        //}
+        //public static int Read(this FileStream fs, byte* bufferPtr, int offset, int count)
+        //{
+        //    count = fs.Read(TempBuffer_src, offset, count);
+        //    Buffer.MemoryCopy(TempBuffer, bufferPtr + offset, 0, count);
+        //    return count;
+        //}
     }
 
     public unsafe static class AxiArray

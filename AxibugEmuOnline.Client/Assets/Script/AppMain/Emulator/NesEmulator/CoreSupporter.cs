@@ -2,7 +2,6 @@
 using AxibugProtobuf;
 using AxiReplay;
 using System;
-using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using VirtualNes.Core;
@@ -17,14 +16,14 @@ namespace AxibugEmuOnline.Client
             m_controllerMapper = conMapper;
         }
 
-        public Stream OpenRom(string fname)
+        public System.IO.Stream OpenRom(string fname)
         {
             try
             {
                 var romFile = App.GetRomLib(RomPlatformType.Nes).GetRomFile(fname);
                 var bytes = romFile.GetRomFileData();
                 Debug.Log($"Open {romFile.Alias}");
-                return new MemoryStream(bytes);
+                return new System.IO.MemoryStream(bytes);
             }
             catch (Exception ex)
             {
@@ -39,34 +38,34 @@ namespace AxibugEmuOnline.Client
             UnityEngine.Debug.Assert(romFile != null);
 
             fullPath = romFile.LocalFilePath;
-            directPath = Path.GetDirectoryName(fullPath);
+            directPath = System.IO.Path.GetDirectoryName(fullPath);
         }
 
-        public Stream OpenFile_DISKSYS()
+        public System.IO.Stream OpenFile_DISKSYS()
         {
-            return new MemoryStream(Resources.Load<TextAsset>("NES/Disksys.rom").bytes);
+            return new System.IO.MemoryStream(Resources.Load<TextAsset>("NES/Disksys.rom").bytes);
         }
 
         public void SaveSRAMToFile(byte[] sramContent, string romName)
         {
             string sramDirectoryPath = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{Config.path.szSavePath}";
-            Directory.CreateDirectory(sramDirectoryPath);
-            romName = Path.GetFileNameWithoutExtension(romName);
-            File.WriteAllBytes($"{sramDirectoryPath}/{romName}.sav", sramContent);
+            AxiIO.Directory.CreateDirectory(sramDirectoryPath);
+            romName = System.IO.Path.GetFileNameWithoutExtension(romName);
+            AxiIO.File.WriteAllBytes($"{sramDirectoryPath}/{romName}.sav", sramContent);
         }
 
         public void SaveDISKToFile(byte[] diskFileContent, string romName)
         {
             string diskFileDirectoryPath = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/dsv";
-            Directory.CreateDirectory(diskFileDirectoryPath);
-            romName = Path.GetFileNameWithoutExtension(romName);
-            File.WriteAllBytes($"{diskFileDirectoryPath}/{romName}.dsv", diskFileContent);
+            AxiIO.Directory.CreateDirectory(diskFileDirectoryPath);
+            romName = System.IO.Path.GetFileNameWithoutExtension(romName);
+            AxiIO.File.WriteAllBytes($"{diskFileDirectoryPath}/{romName}.dsv", diskFileContent);
         }
 
         public EmulatorConfig Config { get; private set; } = new EmulatorConfig();
         public void PrepareDirectory(string directPath)
         {
-            Directory.CreateDirectory($"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}");
+            AxiIO.Directory.CreateDirectory($"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}");
         }
 
         public void SaveFile(byte[] fileData, string directPath, string fileName)
@@ -74,17 +73,17 @@ namespace AxibugEmuOnline.Client
             PrepareDirectory(directPath);
 
             var fileFullpath = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}/{fileName}";
-            File.WriteAllBytes(fileFullpath, fileData);
+            AxiIO.File.WriteAllBytes(fileFullpath, fileData);
         }
 
-        public Stream OpenFile(string directPath, string fileName)
+        public System.IO.Stream OpenFile(string directPath, string fileName)
         {
             try
             {
                 var path = $"{App.PersistentDataPath(AxibugProtobuf.RomPlatformType.Nes)}/{directPath}/{fileName}";
-                var data = File.ReadAllBytes(path);
+                var data = AxiIO.File.ReadAllBytes(path);
                 if (data == null) return null;
-                return new MemoryStream(data);
+                return new System.IO.MemoryStream(data);
             }
             catch
             {

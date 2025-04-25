@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace MAME.Core
@@ -186,7 +185,7 @@ namespace MAME.Core
                 info.starthandler();
             }
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < info.numchannels; i++)
@@ -201,7 +200,7 @@ namespace MAME.Core
                 writer.Write(info.channel[i].paused);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < info.numchannels; i++)

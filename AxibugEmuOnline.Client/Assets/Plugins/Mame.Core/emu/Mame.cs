@@ -1,6 +1,4 @@
-﻿using MAME.Core;
-using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public class Mame
@@ -23,8 +21,8 @@ namespace MAME.Core
         public static bool paused;
         public static bool exit_pending;
         public static EmuTimer.emu_timer soft_reset_timer;
-        public static BinaryReader brRecord = null;
-        public static BinaryWriter bwRecord = null;
+        public static System.IO.BinaryReader brRecord = null;
+        public static System.IO.BinaryWriter bwRecord = null;
         public static bool bPP = true;
         public static string RomRoot = string.Empty;
         public class AA
@@ -42,7 +40,6 @@ namespace MAME.Core
             new AA(6547,"2"),
             new AA(13955,"3")
         };
-        private static FileStream fsRecord = null;
 
         public static void mame_execute()
         {

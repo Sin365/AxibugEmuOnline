@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace MAME.Core
+﻿namespace MAME.Core
 {
     public class Pd4900a
     {
@@ -312,7 +310,7 @@ namespace MAME.Core
         {
             pd4990a_serial_control((byte)(data & 0x7));
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(pd4990a.seconds);
             writer.Write(pd4990a.minutes);
@@ -334,7 +332,7 @@ namespace MAME.Core
             writer.Write(clock_line);
             writer.Write(command_line);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             pd4990a.seconds = reader.ReadInt32();
             pd4990a.minutes = reader.ReadInt32();

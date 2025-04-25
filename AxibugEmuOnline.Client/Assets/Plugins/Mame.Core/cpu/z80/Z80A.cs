@@ -1,7 +1,6 @@
 ﻿using MAME.Core;
 using System;
 using System.Globalization;
-using System.IO;
 
 // This Z80 emulator is a modified version of Ben Ryves 'Brazil' emulator.
 // It is MIT licensed.
@@ -133,7 +132,7 @@ namespace cpu.z80
 
         // State Save/Load
 
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(PPC);
             writer.Write(RegisterAF);
@@ -162,7 +161,7 @@ namespace cpu.z80
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             PPC = reader.ReadUInt16();
             RegisterAF = reader.ReadUInt16();
@@ -191,7 +190,7 @@ namespace cpu.z80
             TotalExecutedCycles = reader.ReadUInt64();
             PendingCycles = reader.ReadInt32();
         }
-        public void SaveStateText(TextWriter writer)
+        public void SaveStateText(System.IO.TextWriter writer)
         {
             writer.WriteLine("[Z80]");
             writer.WriteLine("AF {0:X4}", RegAF.Word);
@@ -221,7 +220,7 @@ namespace cpu.z80
             writer.WriteLine();
         }
 
-        public void LoadStateText(TextReader reader)
+        public void LoadStateText(System.IO.TextReader reader)
         {
             while (true)
             {

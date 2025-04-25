@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace MAME.Core
+﻿namespace MAME.Core
 {
     public unsafe partial class Konami68000
     {
@@ -409,7 +407,7 @@ namespace MAME.Core
         {
             return K052109_irq_enabled;
         }
-        public static void SaveStateBinary_K052109(BinaryWriter writer)
+        public static void SaveStateBinary_K052109(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(K052109_ram, 0, 0x6000);
@@ -430,7 +428,7 @@ namespace MAME.Core
             writer.Write(has_extra_video_ram);
             writer.Write(K052109_tileflip_enable);
         }
-        public static void LoadStateBinary_K052109(BinaryReader reader)
+        public static void LoadStateBinary_K052109(System.IO.BinaryReader reader)
         {
             int i;
             K052109_ram = reader.ReadBytes(0x6000);
@@ -451,7 +449,7 @@ namespace MAME.Core
             has_extra_video_ram = reader.ReadByte();
             K052109_tileflip_enable = reader.ReadInt32();
         }
-        public static void LoadStateBinary_K052109_2(BinaryReader reader)
+        public static void LoadStateBinary_K052109_2(System.IO.BinaryReader reader)
         {
             int i;
             reader.ReadBytes(0x6000);
@@ -722,7 +720,7 @@ namespace MAME.Core
                 }
             }
         }
-        public static void SaveStateBinary_K051960(BinaryWriter writer)
+        public static void SaveStateBinary_K051960(System.IO.BinaryWriter writer)
         {
             writer.Write(K051960_romoffset);
             writer.Write(K051960_spriteflip);
@@ -734,7 +732,7 @@ namespace MAME.Core
             writer.Write(K051960_irq_enabled);
             writer.Write(K051960_nmi_enabled);
         }
-        public static void LoadStateBinary_K051960(BinaryReader reader)
+        public static void LoadStateBinary_K051960(System.IO.BinaryReader reader)
         {
             K051960_romoffset = reader.ReadInt32();
             K051960_spriteflip = reader.ReadInt32();
@@ -746,7 +744,7 @@ namespace MAME.Core
             K051960_irq_enabled = reader.ReadInt32();
             K051960_nmi_enabled = reader.ReadInt32();
         }
-        public static void LoadStateBinary_K051960_2(BinaryReader reader)
+        public static void LoadStateBinary_K051960_2(System.IO.BinaryReader reader)
         {
             reader.ReadInt32();
             reader.ReadInt32();
@@ -1080,7 +1078,7 @@ namespace MAME.Core
                 }
             }
         }
-        public static void SaveStateBinary_K053245(BinaryWriter writer)
+        public static void SaveStateBinary_K053245(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(K05324x_z_rejection);
@@ -1104,7 +1102,7 @@ namespace MAME.Core
             writer.Write(K053244_regs[0], 0, 0x10);
             writer.Write(K054000_ram, 0, 0x20);
         }
-        public static void LoadStateBinary_K053245(BinaryReader reader)
+        public static void LoadStateBinary_K053245(System.IO.BinaryReader reader)
         {
             int i;
             K05324x_z_rejection = reader.ReadInt32();
@@ -1228,7 +1226,7 @@ namespace MAME.Core
             K053936_offset[chip][0] = xoffs;
             K053936_offset[chip][1] = yoffs;
         }
-        public static void SaveStateBinary_K053936(BinaryWriter writer)
+        public static void SaveStateBinary_K053936(System.IO.BinaryWriter writer)
         {
             int i, j;
             for (i = 0; i < 0x10; i++)
@@ -1251,7 +1249,7 @@ namespace MAME.Core
                 writer.Write(K053936_wraparound[i]);
             }
         }
-        public static void LoadStateBinary_K053936(BinaryReader reader)
+        public static void LoadStateBinary_K053936(System.IO.BinaryReader reader)
         {
             int i, j;
             for (i = 0; i < 0x10; i++)
@@ -1373,7 +1371,7 @@ namespace MAME.Core
         {
             return K053251_palette_index[ci];
         }
-        public static void SaveStateBinary_K053251(BinaryWriter writer)
+        public static void SaveStateBinary_K053251(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(K053251_ram);
@@ -1383,7 +1381,7 @@ namespace MAME.Core
             }
             writer.Write(K053251_tilemaps_set);
         }
-        public static void LoadStateBinary_K053251(BinaryReader reader)
+        public static void LoadStateBinary_K053251(System.IO.BinaryReader reader)
         {
             int i;
             K053251_ram = reader.ReadBytes(0x10);
@@ -1393,7 +1391,7 @@ namespace MAME.Core
             }
             K053251_tilemaps_set = reader.ReadInt32();
         }
-        public static void LoadStateBinary_K053251_2(BinaryReader reader)
+        public static void LoadStateBinary_K053251_2(System.IO.BinaryReader reader)
         {
             int i;
             reader.ReadBytes(0x10);

@@ -1,6 +1,5 @@
 ﻿using MAME.Core;
 using System;
-using System.IO;
 
 namespace cpu.m6809
 {
@@ -861,7 +860,7 @@ namespace cpu.m6809
                 case 0xff: EA = IMMWORD(); EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
             }
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(PC.LowWord);
             writer.Write(PPC.LowWord);
@@ -879,7 +878,7 @@ namespace cpu.m6809
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             PC.LowWord = reader.ReadUInt16();
             PPC.LowWord = reader.ReadUInt16();

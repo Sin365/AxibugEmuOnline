@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class AY8910
@@ -558,7 +557,7 @@ namespace MAME.Core
             }
             return ay8910info.regs[r];
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(ay8910info.register_latch);
@@ -580,7 +579,7 @@ namespace MAME.Core
             writer.Write(ay8910info.rng);
             writer.Write(ay8910info.vol_enabled, 0, 3);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             ay8910info.register_latch = reader.ReadInt32();

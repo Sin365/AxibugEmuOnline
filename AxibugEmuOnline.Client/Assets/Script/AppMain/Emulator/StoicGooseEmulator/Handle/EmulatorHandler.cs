@@ -1,4 +1,5 @@
-﻿using StoicGoose.Core.Interfaces;
+﻿using Essgee.Metadata;
+using StoicGoose.Core.Interfaces;
 using StoicGooseUnity;
 using System;
 using System.Diagnostics;

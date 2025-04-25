@@ -3,7 +3,6 @@ using AxibugProtobuf;
 using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -178,7 +177,7 @@ namespace AxibugEmuOnline.Client
             var db = Resources.Load<RomDB>("NES/ROMDB");
             db.Clear();
 
-            var xmlStr = File.ReadAllText("nes20db.xml");
+            var xmlStr = System.IO.File.ReadAllText("nes20db.xml");
             var xml = XDocument.Parse(xmlStr);
             var games = xml.Element("nes20db")?.Elements("game");
             System.Diagnostics.Debug.Assert(games != null, nameof(games) + " != null");

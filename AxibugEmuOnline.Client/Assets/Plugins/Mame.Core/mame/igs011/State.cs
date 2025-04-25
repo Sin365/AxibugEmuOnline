@@ -1,11 +1,10 @@
 ﻿using cpu.m68000;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class IGS011
     {
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             for (i = 0; i < 0x800; i++)
@@ -74,7 +73,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             for (i = 0; i < 0x800; i++)

@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class K053260
@@ -379,7 +378,7 @@ namespace MAME.Core
         {
             k053260_0_w(offset, data);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(ic1.mode);
@@ -402,7 +401,7 @@ namespace MAME.Core
                 writer.Write(ic1.channels[i].ppcm_data);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             ic1.mode = reader.ReadInt32();

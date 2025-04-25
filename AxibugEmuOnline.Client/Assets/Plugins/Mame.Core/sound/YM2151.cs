@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -2038,7 +2037,7 @@ namespace MAME.Core
         //        chanout[imem[op1]] = PSG.oper[op1].mem_value;
         //    }
         //}
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < 32; i++)
@@ -2115,7 +2114,7 @@ namespace MAME.Core
             writer.Write(PSG.irqlinestate);
             writer.Write(PSG.connect);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < 32; i++)

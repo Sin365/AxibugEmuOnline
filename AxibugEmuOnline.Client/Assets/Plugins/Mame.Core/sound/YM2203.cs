@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class YM2203
@@ -339,7 +338,7 @@ namespace MAME.Core
                 }
             }
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             writer.Write(REGS, 0, 256);
@@ -435,7 +434,7 @@ namespace MAME.Core
             writer.Write(YMDeltat.DELTAT.adpcmd);
             writer.Write(YMDeltat.DELTAT.adpcml);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             REGS = reader.ReadBytes(256);

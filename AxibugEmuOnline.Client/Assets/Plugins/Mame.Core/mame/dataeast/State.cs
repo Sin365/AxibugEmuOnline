@@ -1,11 +1,10 @@
 ﻿using cpu.m6502;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class Dataeast
     {
-        public static void SaveStateBinary_pcktgal(BinaryWriter writer)
+        public static void SaveStateBinary_pcktgal(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw);
@@ -48,7 +47,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_pcktgal(BinaryReader reader)
+        public static void LoadStateBinary_pcktgal(System.IO.BinaryReader reader)
         {
             int i;
             dsw = reader.ReadByte();

@@ -1,6 +1,4 @@
-﻿using MAME.Core;
-using System;
-using System.IO;
+﻿using System;
 using System.Runtime.InteropServices;
 
 namespace MAME.Core
@@ -1102,7 +1100,7 @@ namespace MAME.Core
         {
             return flip_screen_x;
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(scanline_param);
             writer.Write(screenstate.last_partial_scan);
@@ -1112,7 +1110,7 @@ namespace MAME.Core
             writer.Write(screenstate.vblank_end_time.attoseconds);
             writer.Write(screenstate.frame_number);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             scanline_param = reader.ReadInt32();
             screenstate.last_partial_scan = reader.ReadInt32();

@@ -1,7 +1,5 @@
 ﻿using MAME.Core;
 using System;
-using System.IO;
-//using System.IO;
 
 namespace cpu.m6502
 {
@@ -232,7 +230,7 @@ namespace cpu.m6502
                 }
             }
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(subtype);
             writer.Write(ppc.LowWord);
@@ -250,7 +248,7 @@ namespace cpu.m6502
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             subtype = reader.ReadByte();
             ppc.LowWord = reader.ReadUInt16();

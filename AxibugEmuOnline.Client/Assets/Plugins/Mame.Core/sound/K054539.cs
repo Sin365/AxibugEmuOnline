@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -567,7 +566,7 @@ namespace MAME.Core
         {
             return k054539_r(0, offset);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             for (i = 0; i < 8; i++)
@@ -596,7 +595,7 @@ namespace MAME.Core
             writer.Write(zoneflag);
             writer.Write(zonedata);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             for (i = 0; i < 8; i++)

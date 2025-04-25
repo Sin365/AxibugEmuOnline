@@ -3,6 +3,7 @@ using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
+using System.Data;
 using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Server.Manager
@@ -30,7 +31,7 @@ namespace AxibugEmuOnline.Server.Manager
             respData.SavDataList.Add(nulldata);
             respData.SavDataList.Add(nulldata);
 
-            string query = "SELECT `id`,`uid`,`romid`, `savidx`, `savName`,`savNote`, `savUrl`,`savImgUrl`, `savDate` from user_gamesavedata where uid = ?uid and romid = ?romid";
+            string query = "SELECT `id`,`uid`,`romid`, `savidx`, `savName`,`savNote`, `savUrl`,`savImgUrl`, `savDate`, `savSequence` from user_gamesavedata where uid = ?uid and romid = ?romid";
             bool bHad = false;
             using (MySqlConnection conn = SQLRUN.GetConn("RecvGameMark"))
             {
@@ -55,6 +56,7 @@ namespace AxibugEmuOnline.Server.Manager
                                 SavUrl = reader.GetString(6),
                                 SavImgUrl = reader.GetString(7),
                                 SavDate = reader.GetDateTime(8).ToString(),
+                                Sequence = reader.GetInt32(9),
                                 GamePlatformType = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.RomID)
                             };
                             respData.SavDataList[resp.SavDataIdx] = resp;
@@ -178,8 +180,8 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     //INSERT INTO `haoyue_emu`.`user_gamesavedata` ( `uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate`) VALUES ( 0, 0, 2147483647, '', '', '', '', '0000-00-00 00:00:00');
                     string query = "INSERT INTO `haoyue_emu`.`user_gamesavedata`" +
-                        " ( `uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate`)" +
-                        " VALUES ( ?uid, ?romid, ?savidx, ?savName, ?savNote, ?savUrl, ?savImgUrl, ?savDate);";
+                        " ( `uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate`, `savSequence`)" +
+                        " VALUES ( ?uid, ?romid, ?savidx, ?savName, ?savNote, ?savUrl, ?savImgUrl, ?savDate, ?savSequence);";
 
 
                     using (MySqlConnection conn = SQLRUN.GetConn("RecvUpLoadGameSav"))
@@ -195,6 +197,7 @@ namespace AxibugEmuOnline.Server.Manager
                             command.Parameters.AddWithValue("?savUrl", rompath);
                             command.Parameters.AddWithValue("?savImgUrl", imgpath);
                             command.Parameters.AddWithValue("?savDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                            command.Parameters.AddWithValue("?savSequence", msg.Sequence);
                             if (command.ExecuteNonQuery() < 1)
                             {
                                 AppSrv.g_Log.Error("执行即时存档保存失败");
@@ -271,7 +274,7 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 try
                 {
-                    string query = "SELECT `id`,`uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate` from `user_gamesavedata` where uid = ?uid and romid = ?romid and savidx = ?savidx";
+                    string query = "SELECT `id`,`uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate` , `savSequence` from `user_gamesavedata` where uid = ?uid and romid = ?romid and savidx = ?savidx";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值
@@ -294,7 +297,8 @@ namespace AxibugEmuOnline.Server.Manager
                                     SavUrl = reader.GetString(6),
                                     SavImgUrl = reader.GetString(7),
                                     SavDate = reader.GetDateTime(8).ToString("yyyy-MM-dd HH:mm:ss"),
-                                    GamePlatformType = ptype
+                                    GamePlatformType = ptype,
+                                    Sequence = reader.GetInt32(9),
                                 };
                                 bhad = true;
                                 break;

@@ -1,12 +1,11 @@
 ﻿using cpu.m6800;
 using cpu.m6809;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class Namcos1
     {
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             writer.Write(dipsw);
@@ -73,7 +72,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             dipsw = reader.ReadByte();

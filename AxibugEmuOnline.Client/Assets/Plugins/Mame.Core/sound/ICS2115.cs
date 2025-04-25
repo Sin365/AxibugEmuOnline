@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class ICS2115
@@ -415,7 +414,7 @@ namespace MAME.Core
             }
             recalc_irq();
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < 32; i++)
@@ -449,7 +448,7 @@ namespace MAME.Core
             writer.Write(irq_pending);
             writer.Write(irq_on);
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < 32; i++)

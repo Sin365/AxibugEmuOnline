@@ -1,12 +1,11 @@
 ﻿using cpu.m68000;
 using cpu.z80;
-using System.IO;
 
 namespace MAME.Core
 {
     public unsafe partial class CPS
     {
-        public static void SaveStateBinaryC(BinaryWriter writer)
+        public static void SaveStateBinaryC(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dswa);
@@ -76,7 +75,7 @@ namespace MAME.Core
                     break;
             }
         }
-        public static void SaveStateBinaryQ(BinaryWriter writer)
+        public static void SaveStateBinaryQ(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dswa);
@@ -126,7 +125,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_base_sampindex);
             Eeprom.SaveStateBinary(writer);
         }
-        public static void SaveStateBinaryC2(BinaryWriter writer)
+        public static void SaveStateBinaryC2(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(basebanksnd);
@@ -191,7 +190,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_base_sampindex);
             Eeprom.SaveStateBinary(writer);
         }
-        public static void LoadStateBinaryC(BinaryReader reader)
+        public static void LoadStateBinaryC(System.IO.BinaryReader reader)
         {
             int i;
             dswa = reader.ReadByte();
@@ -261,7 +260,7 @@ namespace MAME.Core
                     break;
             }
         }
-        public static void LoadStateBinaryQ(BinaryReader reader)
+        public static void LoadStateBinaryQ(System.IO.BinaryReader reader)
         {
             int i;
             dswa = reader.ReadByte();
@@ -309,7 +308,7 @@ namespace MAME.Core
             Sound.mixerstream.output_base_sampindex = reader.ReadInt32();
             Eeprom.LoadStateBinary(reader);
         }
-        public static void LoadStateBinaryC2(BinaryReader reader)
+        public static void LoadStateBinaryC2(System.IO.BinaryReader reader)
         {
             int i;
             basebanksnd = reader.ReadInt32();

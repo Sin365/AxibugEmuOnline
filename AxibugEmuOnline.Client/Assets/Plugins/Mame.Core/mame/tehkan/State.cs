@@ -1,11 +1,10 @@
 ﻿using cpu.z80;
-using System.IO;
 
 namespace MAME.Core
 {
     public partial class Tehkan
     {
-        public unsafe static void SaveStateBinary_pbaction(BinaryWriter writer)
+        public unsafe static void SaveStateBinary_pbaction(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(dsw1);
@@ -46,7 +45,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_pbaction(BinaryReader reader)
+        public static void LoadStateBinary_pbaction(System.IO.BinaryReader reader)
         {
             int i;
             dsw1 = reader.ReadByte();

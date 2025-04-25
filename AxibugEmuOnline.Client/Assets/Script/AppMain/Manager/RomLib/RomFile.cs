@@ -5,7 +5,6 @@ using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -208,9 +207,9 @@ namespace AxibugEmuOnline.Client
                 if (App.FileDownloader.GetDownloadProgress(webData.url) == null)
                 {
                     if (MultiFileRom)
-                        m_hasLocalFile = Directory.Exists(LocalFilePath);
+                        m_hasLocalFile = AxiIO.Directory.Exists(LocalFilePath);
                     else
-                        m_hasLocalFile = File.Exists(LocalFilePath);
+                        m_hasLocalFile = AxiIO.File.Exists(LocalFilePath);
                 }
             }
 
@@ -242,7 +241,7 @@ namespace AxibugEmuOnline.Client
             {
                 Dictionary<string, byte[]> unzipFiles = new Dictionary<string, byte[]>();
                 //多rom文件的平台,下载下来的数据直接解压放入文件夹内
-                var zip = new ZipInputStream(new MemoryStream(bytes));
+                var zip = new ZipInputStream(new System.IO.MemoryStream(bytes));
 
                 List<string> depth0Files = new List<string>();
                 while (true)
@@ -253,7 +252,7 @@ namespace AxibugEmuOnline.Client
                     if (currentEntry.IsDirectory) continue;
 
                     var buffer = new byte[1024];
-                    MemoryStream output = new MemoryStream();
+                    System.IO.MemoryStream output = new System.IO.MemoryStream();
                     while (true)
                     {
                         var size = zip.Read(buffer, 0, buffer.Length);
@@ -275,16 +274,16 @@ namespace AxibugEmuOnline.Client
                 {
                     var path = rootDirName != null ? item.Key.Substring(0, rootDirName.Length + 1) : item.Key;
                     var data = item.Value;
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    File.WriteAllBytes(path, data);
+                    AxiIO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
+                    AxiIO.File.WriteAllBytes(path, data);
                 }
             }
             else
             {
-                var directPath = Path.GetDirectoryName(LocalFilePath);
-                Directory.CreateDirectory(directPath);
+                var directPath = System.IO.Path.GetDirectoryName(LocalFilePath);
+                AxiIO.Directory.CreateDirectory(directPath);
 
-                File.WriteAllBytes(LocalFilePath, bytes);
+                AxiIO.File.WriteAllBytes(LocalFilePath, bytes);
             }
             Eventer.Instance.PostEvent(EEvent.OnRomFileDownloaded, ID);
             OnDownloadOver?.Invoke(this);
@@ -297,10 +296,10 @@ namespace AxibugEmuOnline.Client
             if (webData == null) throw new Exception("Not Valid Rom");
             if (!RomReady) throw new Exception("Rom File Not Downloaded");
 
-            var bytes = File.ReadAllBytes(LocalFilePath);
-            if (Path.GetExtension(LocalFilePath).ToLower() == ".zip")
+            var bytes = AxiIO.File.ReadAllBytes(LocalFilePath);
+            if (System.IO.Path.GetExtension(LocalFilePath).ToLower() == ".zip")
             {
-                var zip = new ZipInputStream(new MemoryStream(bytes));
+                var zip = new ZipInputStream(new System.IO.MemoryStream(bytes));
                 while (true)
                 {
                     var currentEntry = zip.GetNextEntry();
@@ -310,7 +309,7 @@ namespace AxibugEmuOnline.Client
                     if (!currentEntry.Name.ToLower().EndsWith(FileExtentionName)) continue;
 
                     var buffer = new byte[1024];
-                    MemoryStream output = new MemoryStream();
+                    System.IO.MemoryStream output = new System.IO.MemoryStream();
                     while (true)
                     {
                         var size = zip.Read(buffer, 0, buffer.Length);
@@ -332,7 +331,7 @@ namespace AxibugEmuOnline.Client
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
             webData = resp_RomInfo;
-            FileName = MultiFileRom ? Path.GetFileNameWithoutExtension(webData.url) : Path.GetFileName(webData.url);
+            FileName = MultiFileRom ? System.IO.Path.GetFileNameWithoutExtension(webData.url) : System.IO.Path.GetFileName(webData.url);
             FileName = System.Net.WebUtility.UrlDecode(FileName);
 
             //收集依赖Rom

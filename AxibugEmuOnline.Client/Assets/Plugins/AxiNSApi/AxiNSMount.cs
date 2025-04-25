@@ -118,7 +118,7 @@ public class AxiNSMount
         UnityEngine.Debug.LogError($"UnmountSDCardForDebug->“—–∂‘ÿ{m_SdCardDebugMountName}:/ ");
 		bInSdCardDebugMount = false;
 #endif
-	}
+    }
 	public void UnmountSDCard()
 	{
 #if UNITY_SWITCH

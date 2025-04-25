@@ -1,6 +1,5 @@
 ﻿using MAME.Core;
 using System;
-using System.IO;
 
 namespace cpu.m6800
 {
@@ -1216,7 +1215,7 @@ namespace cpu.m6800
                     break;
             }
         }
-        public void SaveStateBinary(BinaryWriter writer)
+        public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             writer.Write(PPC.LowWord);
             writer.Write(PC.LowWord);
@@ -1260,7 +1259,7 @@ namespace cpu.m6800
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
         }
-        public void LoadStateBinary(BinaryReader reader)
+        public void LoadStateBinary(System.IO.BinaryReader reader)
         {
             PPC.LowWord = reader.ReadUInt16();
             PC.LowWord = reader.ReadUInt16();

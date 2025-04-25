@@ -207,8 +207,9 @@ namespace Essgee.Emulation.CPU
 
             if (AppEnvironment.EnableSuperSlowCPULogger)
             {
-                string disasm = string.Format("{0} | {1} | {2} | {3}\n", DisassembleOpcode(this, pc).PadRight(48), PrintRegisters(this), PrintFlags(this), PrintInterrupt(this));
-                System.IO.File.AppendAllText(@"D:\Temp\Essgee\log.txt", disasm);
+                //TODO 暂时不要日志看后续是否需要加
+                //string disasm = string.Format("{0} | {1} | {2} | {3}\n", DisassembleOpcode(this, pc).PadRight(48), PrintRegisters(this), PrintFlags(this), PrintInterrupt(this));
+                //System.IO.File.AppendAllText(@"D:\Temp\Essgee\log.txt", disasm);
             }
 
             /* Fetch and execute opcode */

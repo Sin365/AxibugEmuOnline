@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class K007232
@@ -232,7 +231,7 @@ namespace MAME.Core
             info.bank[0] = (uint)(chABank << 17);
             info.bank[1] = (uint)(chBBank << 17);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i, j;
             for (i = 0; i < 2; i++)
@@ -271,7 +270,7 @@ namespace MAME.Core
                 writer.Write(info.pcmbuf_offset[i]);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i, j;
             for (i = 0; i < 2; i++)

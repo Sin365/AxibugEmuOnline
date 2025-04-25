@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace MAME.Core
 {
@@ -272,7 +271,7 @@ namespace MAME.Core
             //if (ACCESSING_BITS_0_7)
             okim6295_data_w(0, data & 0xff);
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             writer.Write(OKI.command);
@@ -288,7 +287,7 @@ namespace MAME.Core
                 writer.Write(adpcm[i].step);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             OKI.command = reader.ReadInt32();

@@ -1,5 +1,4 @@
-﻿using System.IO;
-
+﻿
 namespace MAME.Core
 {
     public unsafe class Iremga20
@@ -162,7 +161,7 @@ namespace MAME.Core
                 chip.regs[i] = 0;
             }
         }
-        public static void SaveStateBinary(BinaryWriter writer)
+        public static void SaveStateBinary(System.IO.BinaryWriter writer)
         {
             int i;
             for (i = 0; i < 4; i++)
@@ -179,7 +178,7 @@ namespace MAME.Core
                 writer.Write(chip.channel[i].play);
             }
         }
-        public static void LoadStateBinary(BinaryReader reader)
+        public static void LoadStateBinary(System.IO.BinaryReader reader)
         {
             int i;
             for (i = 0; i < 4; i++)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Essgee.Utilities
 {
@@ -34,42 +33,42 @@ namespace Essgee.Utilities
             if ((segmentStart + segmentLength) > dataLength) throw new Crc32Exception("Segment end offset is greater than total length");
         }
 
-        public static uint Calculate(FileInfo fileInfo)
-        {
-            return Calculate(fileInfo, 0, (int)fileInfo.Length);
-        }
+        //public static uint Calculate(FileInfo fileInfo)
+        //{
+        //    return Calculate(fileInfo, 0, (int)fileInfo.Length);
+        //}
 
-        public static uint Calculate(FileInfo fileInfo, int start, int length)
-        {
-            VerifyStartAndLength((int)fileInfo.Length, start, length);
+        //public static uint Calculate(FileInfo fileInfo, int start, int length)
+        //{
+        //    VerifyStartAndLength((int)fileInfo.Length, start, length);
 
-            using (FileStream file = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Calculate(file, start, length);
-            }
-        }
+        //    using (FileStream file = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //    {
+        //        return Calculate(file, start, length);
+        //    }
+        //}
 
-        public static uint Calculate(Stream stream)
-        {
-            return Calculate(stream, 0, (int)stream.Length);
-        }
+        //public static uint Calculate(Stream stream)
+        //{
+        //    return Calculate(stream, 0, (int)stream.Length);
+        //}
 
-        public static uint Calculate(Stream stream, int start, int length)
-        {
-            VerifyStartAndLength((int)stream.Length, start, length);
+        //public static uint Calculate(Stream stream, int start, int length)
+        //{
+        //    VerifyStartAndLength((int)stream.Length, start, length);
 
-            uint crc = 0;
+        //    uint crc = 0;
 
-            var lastStreamPosition = stream.Position;
+        //    var lastStreamPosition = stream.Position;
 
-            byte[] data = new byte[length];
-            stream.Position = start;
-            stream.Read(data, 0, length);
-            crc = Calculate(data, 0, data.Length);
-            stream.Position = lastStreamPosition;
+        //    byte[] data = new byte[length];
+        //    stream.Position = start;
+        //    stream.Read(data, 0, length);
+        //    crc = Calculate(data, 0, data.Length);
+        //    stream.Position = lastStreamPosition;
 
-            return crc;
-        }
+        //    return crc;
+        //}
 
         public static uint Calculate(byte[] data)
         {

@@ -5,7 +5,6 @@ using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 
 namespace Essgee.Emulation
@@ -14,6 +13,7 @@ namespace Essgee.Emulation
     {
         readonly Action<Exception> exceptionHandler;
 
+        public static IEssgeeIOSupport io;
         public IMachine emulator { get; private set; }
 
         Thread emulationThread;
@@ -158,7 +158,7 @@ namespace Essgee.Emulation
 
         public string GetSaveStateFilename(int number)
         {
-            return Path.Combine(EmuStandInfo.SaveStatePath, $"{Path.GetFileNameWithoutExtension(currentGameMetadata.FileName)} (State {number:D2}).est");
+            return System.IO.Path.Combine(EmuStandInfo.SaveStatePath, $"{System.IO.Path.GetFileNameWithoutExtension(currentGameMetadata.FileName)} (State {number:D2}).est");
         }
 
         public void LoadState(int number)
@@ -182,9 +182,9 @@ namespace Essgee.Emulation
 
             byte[] ramData = new byte[currentGameMetadata.RamSize];
 
-            var savePath = Path.Combine(EmuStandInfo.SaveDataPath, Path.ChangeExtension(currentGameMetadata.FileName, "sav"));
-            if (File.Exists(savePath))
-                ramData = File.ReadAllBytes(savePath);
+            var savePath = System.IO.Path.Combine(EmuStandInfo.SaveDataPath, System.IO.Path.ChangeExtension(currentGameMetadata.FileName, "sav"));
+            if (EmulatorHandler.io.File_Exists(savePath))
+                ramData = EmulatorHandler.io.File_ReadAllBytes(savePath);
 
             emulator.Load(romData, ramData, currentGameMetadata.MapperType);
 
@@ -202,8 +202,8 @@ namespace Essgee.Emulation
                 cartRamSaveNeeded)
             {
                 var ramData = emulator.GetCartridgeRam();
-                var savePath = Path.Combine(EmuStandInfo.SaveDataPath, Path.ChangeExtension(currentGameMetadata.FileName, "sav"));
-                File.WriteAllBytes(savePath, ramData);
+                var savePath = System.IO.Path.Combine(EmuStandInfo.SaveDataPath, System.IO.Path.ChangeExtension(currentGameMetadata.FileName, "sav"));
+                EmulatorHandler.io.File_WriteAllBytes(savePath, ramData);
             }
         }
 
@@ -370,28 +370,28 @@ namespace Essgee.Emulation
         //    }
         //}
 
-        public void SaveSnapShotToFile(int stateNumber)
-        {
-            var statePath = GetSaveStateFilename(stateNumber);
-            using (var stream = new FileStream(statePath, FileMode.OpenOrCreate))
-            {
-                //SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.GetState());
-                SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.SaveAxiStatus());
-            }
-        }
+        //public void SaveSnapShotToFile(int stateNumber)
+        //{
+        //    var statePath = GetSaveStateFilename(stateNumber);
+        //    using (var stream = new FileStream(statePath, FileMode.OpenOrCreate))
+        //    {
+        //        //SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.GetState());
+        //        SaveStateHandler.Save(stream, emulator.GetType().Name, emulator.SaveAxiStatus());
+        //    }
+        //}
 
-        public void LoadSnapShotFromFile(int stateNumber)
-        {
-            var statePath = GetSaveStateFilename(stateNumber);
-            if (File.Exists(statePath))
-            {
-                using (var stream = new FileStream(statePath, FileMode.Open))
-                {
-                    //emulator.SetState(SaveStateHandler.Load(stream, emulator.GetType().Name));
-                    emulator.LoadAxiStatus(SaveStateHandler.LoadAxiStatus(stream, emulator.GetType().Name));
-                }
-            }
-        }
+        //public void LoadSnapShotFromFile(int stateNumber)
+        //{
+        //    var statePath = GetSaveStateFilename(stateNumber);
+        //    if (File.Exists(statePath))
+        //    {
+        //        using (var stream = new FileStream(statePath, FileMode.Open))
+        //        {
+        //            //emulator.SetState(SaveStateHandler.Load(stream, emulator.GetType().Name));
+        //            emulator.LoadAxiStatus(SaveStateHandler.LoadAxiStatus(stream, emulator.GetType().Name));
+        //        }
+        //    }
+        //}
 
         public byte[] GetStateData()
         { 
