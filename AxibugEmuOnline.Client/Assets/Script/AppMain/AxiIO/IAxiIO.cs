@@ -15,5 +15,7 @@ namespace AxiIO
         void file_WriteAllBytes(string filePath, byte[] data);
         void file_WriteAllBytes(string filePath, System.IO.MemoryStream ms);
         int file_ReadBytesToArr(string filePath, byte[] readToArr, int start, int len);
+        string[] dir_GetDirectories(string path);
+        string[] dir_GetFiles(string path);
     };
 }

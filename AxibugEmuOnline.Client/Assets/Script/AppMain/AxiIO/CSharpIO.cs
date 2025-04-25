@@ -56,5 +56,15 @@ namespace AxiIO
             FileStream streaming = System.IO.File.OpenRead(filePath);
             return streaming.Read(readToArr, 0, 4);
         }
+
+        public string[] dir_GetDirectories(string path)
+        {
+            return System.IO.Directory.GetDirectories(path);
+        }
+
+        public string[] dir_GetFiles(string path)
+        {
+            return System.IO.Directory.GetFiles(path);
+        }
     }
 }

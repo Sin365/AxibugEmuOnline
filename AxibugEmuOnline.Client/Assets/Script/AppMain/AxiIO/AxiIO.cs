@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 
 namespace AxiIO
 {
@@ -15,7 +13,7 @@ namespace AxiIO
                 if (m_io == null)
                 {
 #if UNITY_SWITCH && !UNITY_EDITOR
-                        m_io = new NintendoSwitchIO();
+                        m_io = new NSwitchIO();
 #else
                     m_io = new CSharpIO();
 #endif
@@ -50,7 +48,7 @@ namespace AxiIO
             AxiIO.io.file_WriteAllBytes(path, data);
         }
 
-        internal static void WriteAllBytesFromStream(string path, MemoryStream ms)
+        internal static void WriteAllBytesFromStream(string path, System.IO.MemoryStream ms)
         {
             AxiIO.io.file_WriteAllBytes(path, ms);
         }
@@ -71,6 +69,16 @@ namespace AxiIO
         public static IEnumerable<string> EnumerateFiles(string path, string searchPattern)
         {
             return AxiIO.io.dir_EnumerateFiles(path, searchPattern);
+        }
+
+        public static string[] GetDirectories(string path)
+        {
+            return AxiIO.io.dir_GetDirectories(path);
+        }
+
+        public static string[] GetFiles(string path)
+        {
+            return AxiIO.io.dir_GetFiles(path);
         }
 
         internal static void Delete(string cacheDirPath, bool v)

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace AxiIO
 {
-    public class NintendoSwitchIO : IAxiIO
+    public class NSwitchIO : IAxiIO
     {
-        public NintendoSwitchIO()
+        public NSwitchIO()
         {
             AxiNS.instance.Init();
         }
@@ -22,12 +21,30 @@ namespace AxiIO
 
         public IEnumerable<string> dir_EnumerateFiles(string path, string searchPattern)
         {
-            throw new NotImplementedException();
+            return AxiNS.instance.io.EnumerateFiles(path, searchPattern);
         }
 
         public bool dir_Exists(string dirpath)
         {
             return AxiNS.instance.io.CheckPathExists(dirpath);
+        }
+
+        public string[] dir_GetDirectories(string path)
+        {
+            if (!AxiNS.instance.io.GetDirectoryDirs(path, out string[] result))
+            {
+                return new string[0];
+            }
+            return result;
+        }
+
+        public string[] dir_GetFiles(string path)
+        {
+            if (!AxiNS.instance.io.GetDirectoryFiles(path, out string[] result))
+            {
+                return new string[0];
+            }
+            return result;
         }
 
         public void file_Delete(string filePath)
@@ -58,7 +75,7 @@ namespace AxiIO
             AxiNS.instance.io.FileToSaveWithCreate(filePath, data);
         }
 
-        public void file_WriteAllBytes(string filePath, MemoryStream ms)
+        public void file_WriteAllBytes(string filePath, System.IO.MemoryStream ms)
         {
             AxiNS.instance.io.FileToSaveWithCreate(filePath, ms);
         }
