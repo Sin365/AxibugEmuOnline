@@ -55,9 +55,12 @@ namespace AxibugEmuOnline.Client.ClientCore
         static string s_persistentRoot =
 #if UNITY_PSP2 && !UNITY_EDITOR //PSV真机
             "ux0:data/AxibugEmu";
+#elif UNITY_SWITCH && !UNITY_EDITOR //Switch 真机
+            $"save:/AxibugEmu";
 #else
             Application.persistentDataPath;
 #endif
+
         public static string PersistentDataPath(RomPlatformType emuPlatform)
         {
             return s_persistentRoot + "/" + emuPlatform.ToString();

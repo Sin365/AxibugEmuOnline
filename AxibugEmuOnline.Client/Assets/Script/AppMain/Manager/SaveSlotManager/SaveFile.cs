@@ -98,15 +98,14 @@ namespace AxibugEmuOnline.Client
                 //}
                 //streaming.Dispose();
 
-                byte[] bytes = AxiIO.File.ReadAllBytes(FilePath);
-                if (bytes.Length < 4) //无效的存档文件
+                int res = AxiIO.File.ReadBytesToArr(FilePath, saveOrderData,0,4);
+                if (res < 4) //无效的存档文件
                 {
                     IsEmpty = true;
                     AxiIO.File.Delete(FilePath);
                 }
                 else
                 {
-                    Array.Copy(bytes, 0, saveOrderData, 0, 4);
                     Sequecen = BitConverter.ToUInt32(saveOrderData, 0);
                 }
             }

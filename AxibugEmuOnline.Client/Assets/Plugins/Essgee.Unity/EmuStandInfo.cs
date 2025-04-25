@@ -9,7 +9,6 @@ public static class EmuStandInfo
     //public static string datDirectoryPath;
     //public static string metadataDatabaseFilePath;
 
-
     public static string jsonConfigFileName;//= "Config.json";
     public static string saveDataDirectoryName;//= "Saves";
     public static string screenshotDirectoryName;//= "Screenshots";

@@ -9,7 +9,6 @@ public class EmulatorHandler
 {
     readonly static string threadName = $"Unity_Emulation";
 
-    public static IEssgeeIOSupport io;
     //Thread thread = default;
     volatile bool threadRunning = false, threadPaused = false;
 

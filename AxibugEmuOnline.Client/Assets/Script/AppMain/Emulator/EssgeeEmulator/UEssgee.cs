@@ -178,7 +178,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     private void InitAppEnvironment(string CustonDataDir, IEssgeeIOSupport uegIO)
     {
-        EmulatorHandler.io = uegIO;
+        Essgee.Emulation.EmulatorHandler.io = uegIO;
         EssgeeLogger.Init(uegLog);
 
         //EmuStandInfo.datDirectoryPath = Path.Combine(BaseDataDir, "EssgeeAssets", "No-Intro");

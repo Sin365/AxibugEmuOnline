@@ -1,5 +1,4 @@
 using MAME.Core;
-using System.IO;
 
 public class UniIO : IMAMEIOSupport
 {
@@ -13,7 +12,7 @@ public class UniIO : IMAMEIOSupport
         return AxiIO.File.ReadAllBytes(path);
     }
 
-    public void File_WriteAllBytesFromStre(string path, MemoryStream ms)
+    public void File_WriteAllBytesFromStre(string path, System.IO.MemoryStream ms)
     {
         AxiIO.File.WriteAllBytesFromStream(path, ms);
     }
