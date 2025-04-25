@@ -16,6 +16,8 @@
 
 **/switch_keys/*.keys
 **/switch_keys/*.keys.meta
+**/NintendoSDKPlugin/
+**/NintendoSDKPlugin.meta
 
 /virtuanessrc097-master
 /AxibugEmuOnline.Server/config.cfg
