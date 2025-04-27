@@ -10,25 +10,37 @@ namespace AxibugEmuOnline.Client.Filters
         protected override string ShaderName => null;
 
         #region BleedPass_Param
-        public FilterParameter<EnumBleedMode> BleedMode = new FilterParameter<EnumBleedMode>(EnumBleedMode.NTSCOld3Phase);
+        public FilterParameter<EnumBleedMode> BleedMode = EnumBleedMode.NTSCOld3Phase;
         [Range(0, 15)]
-        public FloatParameter BleedAmount = new FloatParameter(1f);
+        public FloatParameter BleedAmount = 1f;
         #endregion
         #region CRTAperture_Param
         [Range(0, 5)]
-        public FloatParameter GlowHalation = new FloatParameter(0.1f);
+        public FloatParameter GlowHalation = 0.1f;
         [Range(0, 2)]
-        public FloatParameter GlowDifusion = new FloatParameter(0.05f);
+        public FloatParameter GlowDifusion = 0.05f;
         [Range(0, 2)]
-        public FloatParameter MaskColors = new FloatParameter(2.0f);
+        public FloatParameter MaskColors = 2.0f;
         [Range(0, 1)]
-        public FloatParameter MaskStrength = new FloatParameter(0.3f);
+        public FloatParameter MaskStrength = 0.3f;
         [Range(0, 5)]
-        public FloatParameter GammaInput = new FloatParameter(2.4f);
+        public FloatParameter GammaInput = 2.4f;
         [Range(0, 5)]
-        public FloatParameter GammaOutput = new FloatParameter(2.4f);
+        public FloatParameter GammaOutput = 2.4f;
         [Range(0, 2.5f)]
-        public FloatParameter Brightness = new FloatParameter(1.5f);
+        public FloatParameter Brightness = 1.5f;
+        #endregion
+        #region TV_Effect_Param
+        public FilterParameter<EnumWrapMode> WrapMode = EnumWrapMode.SimpleWrap;
+        public FloatParameter maskDark = 0.5f;
+        public FloatParameter maskLight = 1.5f;
+        public FloatParameter hardScan = -8.0f;
+        public FloatParameter hardPix = -3.0f;
+        public Vector2Parameter warp = new Vector2(1.0f / 32.0f, 1.0f / 24.0f);
+        public Vector2Parameter res;
+        public FloatParameter resScale;
+        public FloatParameter scale;
+        public FloatParameter fade;
         #endregion
 
         Material m_bleedMat;
@@ -39,17 +51,20 @@ namespace AxibugEmuOnline.Client.Filters
         {
             m_bleedMat = new Material(Shader.Find("Filter/RLPro_Bleed"));
             m_crtApertureMat = new Material(Shader.Find("Filter/RLPro_CRT_Aperture"));
+            m_tvEffectMat = new Material(Shader.Find("Filter/RLPro_TV_Effect"));
         }
 
         protected override void OnRenderer(Material renderMat, Texture src, RenderTexture result)
         {
             var rt1 = BleedPass(src);
             var rt2 = CRT_AperturePass(rt1);
+            var rt3 = TV_Effect_Pass(rt2);
 
-            Graphics.Blit(rt2, result);
+            Graphics.Blit(rt3, result);
 
             RenderTexture.ReleaseTemporary(rt1);
             RenderTexture.ReleaseTemporary(rt2);
+            RenderTexture.ReleaseTemporary(rt3);
         }
 
         private RenderTexture BleedPass(Texture src)
@@ -95,12 +110,46 @@ namespace AxibugEmuOnline.Client.Filters
 
             return rt;
         }
+        private RenderTexture TV_Effect_Pass(Texture src)
+        {
+            var rt = RenderTexture.GetTemporary(src.width, src.height);
+
+            m_tvEffectMat.DisableKeyword("_SimpleWrap");
+            m_tvEffectMat.DisableKeyword("_CubicDistortion");
+
+            switch (WrapMode.GetValue())
+            {
+                case EnumWrapMode.SimpleWrap:
+                    m_tvEffectMat.EnableKeyword("_SimpleWrap"); break;
+                case EnumWrapMode.CubicDistortion:
+                    m_tvEffectMat.EnableKeyword("_CubicDistortion"); break;
+            }
+
+            m_tvEffectMat.SetFloat("maskDark", maskDark.GetValue());
+            m_tvEffectMat.SetFloat("maskLight", maskLight.GetValue());
+            m_tvEffectMat.SetFloat("hardScan", hardScan.GetValue());
+            m_tvEffectMat.SetVector("warp", warp.GetValue());
+            m_tvEffectMat.SetVector("res", res.GetValue());
+            m_tvEffectMat.SetFloat("resScale", resScale.GetValue());
+            m_tvEffectMat.SetFloat("scale", scale.GetValue());
+            m_tvEffectMat.SetFloat("fade", fade.GetValue());
+
+            Graphics.Blit(src, rt, m_tvEffectMat);
+
+            return rt;
+        }
 
         public enum EnumBleedMode
         {
             NTSCOld3Phase,
             NTSC3Phase,
             NTSC2Phase,
+        }
+
+        public enum EnumWrapMode
+        {
+            SimpleWrap,
+            CubicDistortion
         }
     }
 }
