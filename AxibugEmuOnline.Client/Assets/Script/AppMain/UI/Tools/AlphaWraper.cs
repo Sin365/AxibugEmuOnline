@@ -1,10 +1,13 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
+    /// <summary>
+    /// 用于指定一对CanvasGroup,做透明度切换
+    /// </summary>
     public class AlphaWraper
     {
         private bool m_on;

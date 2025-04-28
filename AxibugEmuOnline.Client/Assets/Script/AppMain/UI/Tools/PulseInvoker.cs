@@ -1,7 +1,10 @@
-﻿namespace AxibugEmuOnline.Client.UI
-{
-    using System;
+﻿using System;
 
+namespace AxibugEmuOnline.Client.UI
+{
+    /// <summary>
+    /// 用于周期性触发回调的工具,带有触发周期和延迟触发的参数可调
+    /// </summary>
     public class PulseInvoker
     {
         private Action _action;
