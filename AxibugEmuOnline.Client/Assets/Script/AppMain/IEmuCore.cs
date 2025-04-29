@@ -100,8 +100,7 @@ namespace AxibugEmuOnline.Client
                 }
                 App.roomMgr.SendRoomSingelPlayerInput(Frame, rawData);
             }
-            //单机模式
-            else
+            else//单机模式
             {
                 inputData = GetLocalInput();
                 result = true;

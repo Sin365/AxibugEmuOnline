@@ -45,7 +45,7 @@ namespace AxibugEmuOnline.Client
         {
             StopGame();
 
-            m_coreSupporter = new CoreSupporter(ControllerMapper);
+            m_coreSupporter = new CoreSupporter();
             Supporter.Setup(m_coreSupporter);
             Debuger.Setup(new CoreDebuger());
 
@@ -145,7 +145,7 @@ namespace AxibugEmuOnline.Client
 
         protected override ControllerState GetLocalInput()
         {
-            return m_coreSupporter.GetControllerState();
+            return ControllerMapper.CreateState();
         }
 
 
