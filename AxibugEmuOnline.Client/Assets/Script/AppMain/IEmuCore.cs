@@ -1,9 +1,18 @@
-﻿using AxibugProtobuf;
+﻿#pragma warning disable CS0618 // 类型或成员已过时
+
+using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
+using AxiReplay;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
+    /// <summary>
+    /// use <see cref="EmuCore{INPUTDATA}"/> instead
+    /// </summary>
+    [Obsolete("不可直接继承,需要继承EmuCore类型")]
     public abstract class IEmuCore : MonoBehaviour
     {
         /// <summary> 获得模拟器核心中的状态快照对象 </summary>
@@ -33,7 +42,7 @@ namespace AxibugEmuOnline.Client
         public abstract RomPlatformType Platform { get; }
         /// <summary> 获取当前模拟器帧序号,在加载快照和Reset后,应当重置为0 </summary>
         public abstract uint Frame { get; }
-        /// <summary> 模拟器核心推帧 </summary>
+
         public abstract bool PushEmulatorFrame();
         /// <summary> 模拟器核心推帧结束 </summary>
         public abstract void AfterPushFrame();
@@ -41,4 +50,71 @@ namespace AxibugEmuOnline.Client
         public abstract Texture OutputPixel { get; }
         public abstract RawImage DrawCanvas { get; }
     }
+
+    public abstract class EmuCore<INPUTDATA> : IEmuCore
+    {
+        public sealed override bool PushEmulatorFrame()
+        {
+            if (SampleInputData(out var inputData))
+            {
+                return OnPushEmulatorFrame(inputData);
+            }
+
+            return false;
+        }
+
+        ulong m_lastTestInput;
+        protected bool SampleInputData(out INPUTDATA inputData)
+        {
+            bool result = false;
+            inputData = default(INPUTDATA);
+
+            if (InGameUI.Instance.IsNetPlay)
+            {
+                ReplayStep replayData;
+                int frameDiff;
+                bool inputDiff;
+
+                if (App.roomMgr.netReplay.TryGetNextFrame((int)Frame, out replayData, out frameDiff, out inputDiff))
+                {
+                    if (inputDiff)
+                    {
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
+                            $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
+                    }
+
+                    inputData = ConvertInputDataFromNet(replayData);
+                    result = true;
+                }
+                else
+                {
+                    result = false;
+                }
+
+                var localState = GetLocalInput();
+                var rawData = InputDataToNet(localState);
+                if (m_lastTestInput != rawData)
+                {
+                    m_lastTestInput = rawData;
+                    App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
+                }
+                App.roomMgr.SendRoomSingelPlayerInput(Frame, rawData);
+            }
+            //单机模式
+            else
+            {
+                inputData = GetLocalInput();
+                result = true;
+            }
+
+            return result;
+        }
+
+        protected abstract INPUTDATA GetLocalInput();
+        protected abstract INPUTDATA ConvertInputDataFromNet(ReplayStep step);
+        protected abstract ulong InputDataToNet(INPUTDATA inputData);
+        /// <summary> 模拟器核心推帧 </summary>
+        protected abstract bool OnPushEmulatorFrame(INPUTDATA InputData);
+    }
 }
+#pragma warning restore CS0618 // 类型或成员已过时

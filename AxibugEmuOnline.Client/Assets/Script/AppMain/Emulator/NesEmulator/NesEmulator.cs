@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
+using AxiReplay;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,7 +12,7 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
-    public class NesEmulator : IEmuCore
+    public class NesEmulator : EmuCore<ControllerState>
     {
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
@@ -122,30 +123,29 @@ namespace AxibugEmuOnline.Client
             NesCore = null;
         }
 
-
-#if UNITY_EDITOR
-        private ControllerState m_lastState;
-#endif
         //推进帧
-        public override bool PushEmulatorFrame()
+        protected override bool OnPushEmulatorFrame(ControllerState inputData)
         {
             if (NesCore == null || IsPause) return false;
 
-            m_coreSupporter.SampleInput(NesCore.FrameCount);
-            var controlState = m_coreSupporter.GetControllerState();
-
-            //如果未收到Input数据,核心帧不推进
-            if (!controlState.valid) return false;
-
-#if UNITY_EDITOR
-            if (controlState != m_lastState) App.log.Info($"[LOCALDEBUG]{NesCore.FrameCount}-->{controlState}");
-            m_lastState = controlState;
-#endif
-
-            NesCore.pad.Sync(controlState);
+            NesCore.pad.Sync(inputData);
             NesCore.EmulateFrame(true);
 
             return true;
+        }
+
+        protected override ControllerState ConvertInputDataFromNet(ReplayStep step)
+        {
+            return m_coreSupporter.FromNet(step);
+        }
+        protected override ulong InputDataToNet(ControllerState inputData)
+        {
+            return m_coreSupporter.ToNet(inputData);
+        }
+
+        protected override ControllerState GetLocalInput()
+        {
+            return m_coreSupporter.GetControllerState();
         }
 
 
@@ -163,6 +163,13 @@ namespace AxibugEmuOnline.Client
         public override void Dispose()
         {
             StopGame();
+        }
+
+        public override Texture OutputPixel => VideoProvider.OutputPixel;
+        public override RawImage DrawCanvas => VideoProvider.Drawer;
+        public override void GetAudioParams(out int frequency, out int channels)
+        {
+            AudioProvider.GetAudioParams(out frequency, out channels);
         }
 
 #if UNITY_EDITOR
@@ -195,13 +202,5 @@ namespace AxibugEmuOnline.Client
             UnityEditor.AssetDatabase.SaveAssets();
         }
 #endif
-
-        public override Texture OutputPixel => VideoProvider.OutputPixel;
-        public override RawImage DrawCanvas => VideoProvider.Drawer;
-        public override void GetAudioParams(out int frequency, out int channels)
-        {
-            AudioProvider.GetAudioParams(out frequency, out channels);
-        }
-
     }
 }
