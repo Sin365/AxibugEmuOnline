@@ -32,15 +32,21 @@ namespace AxibugEmuOnline.Client.Filters
         #endregion
         #region TV_Effect_Param
         public FilterParameter<EnumWrapMode> WrapMode = EnumWrapMode.SimpleWrap;
+        [Range(0f, 2f)]
         public FloatParameter maskDark = 0.5f;
+        [Range(0f, 2f)]
         public FloatParameter maskLight = 1.5f;
+        [Range(-8f, -16f)]
         public FloatParameter hardScan = -8.0f;
+        [Range(-3f, 1f)]
         public FloatParameter hardPix = -3.0f;
-        public Vector2Parameter warp = new Vector2(1.0f / 32.0f, 1.0f / 24.0f);
-        public Vector2Parameter res;
-        public FloatParameter resScale;
-        public FloatParameter scale;
-        public FloatParameter fade;
+        public Vector2Parameter warp = new Vector2(0.03125f, 0.04166f);
+        [Range(1f, 16f)]
+        public FloatParameter resScale = 4f;
+        [Range(0.5f, 5f)]
+        public FloatParameter scale = 1f;
+        [Range(0f, 1f)]
+        public FloatParameter fade = 1f;
         #endregion
 
         Material m_bleedMat;
@@ -128,8 +134,8 @@ namespace AxibugEmuOnline.Client.Filters
             m_tvEffectMat.SetFloat("maskDark", maskDark.GetValue());
             m_tvEffectMat.SetFloat("maskLight", maskLight.GetValue());
             m_tvEffectMat.SetFloat("hardScan", hardScan.GetValue());
+            m_tvEffectMat.SetFloat("hardPix", hardPix.GetValue());
             m_tvEffectMat.SetVector("warp", warp.GetValue());
-            m_tvEffectMat.SetVector("res", res.GetValue());
             m_tvEffectMat.SetFloat("resScale", resScale.GetValue());
             m_tvEffectMat.SetFloat("scale", scale.GetValue());
             m_tvEffectMat.SetFloat("fade", fade.GetValue());
