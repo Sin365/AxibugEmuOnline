@@ -11,7 +11,7 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
-    public class NesEmulator : MonoBehaviour, IEmuCore
+    public class NesEmulator : IEmuCore
     {
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
@@ -35,12 +35,12 @@ namespace AxibugEmuOnline.Client
             AudioProvider.NesEmu = this;
         }
 
-        public RomPlatformType Platform => RomPlatformType.Nes;
+        public override RomPlatformType Platform => RomPlatformType.Nes;
         private CoreSupporter m_coreSupporter;
         /// <summary>
         /// 指定ROM开始游戏
         /// </summary>
-        public MsgBool StartGame(RomFile rom)
+        public override MsgBool StartGame(RomFile rom)
         {
             StopGame();
 
@@ -63,28 +63,28 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void Pause()
+        public override void Pause()
         {
             IsPause = true;
         }
 
-        public void Resume()
+        public override void Resume()
         {
             IsPause = false;
         }
 
 
-        public void DoReset()
+        public override void DoReset()
         {
             NesCore.Reset();
         }
 
-        public void LoadState(object state)
+        public override void LoadState(object state)
         {
             NesCore.LoadState((State)state);
         }
 
-        public object GetState()
+        public override object GetState()
         {
             return NesCore.GetState();
         }
@@ -93,7 +93,7 @@ namespace AxibugEmuOnline.Client
         ///     获取即时存档
         /// </summary>
         /// <returns></returns>
-        public byte[] GetStateBytes()
+        public override byte[] GetStateBytes()
         {
             return NesCore.GetState().ToBytes();
         }
@@ -104,14 +104,14 @@ namespace AxibugEmuOnline.Client
         /// <param
         ///     name="data">
         /// </param>
-        public void LoadStateFromBytes(byte[] data)
+        public override void LoadStateFromBytes(byte[] data)
         {
             var st = new State();
             st.FromByte(data);
             NesCore.LoadState(st);
         }
 
-        public uint Frame => NesCore.FrameCount;
+        public override uint Frame => NesCore.FrameCount;
 
         /// <summary>
         ///     停止游戏
@@ -127,7 +127,7 @@ namespace AxibugEmuOnline.Client
         private ControllerState m_lastState;
 #endif
         //推进帧
-        public bool PushEmulatorFrame()
+        public override bool PushEmulatorFrame()
         {
             if (NesCore == null || IsPause) return false;
 
@@ -145,23 +145,22 @@ namespace AxibugEmuOnline.Client
             NesCore.pad.Sync(controlState);
             NesCore.EmulateFrame(true);
 
-
             return true;
         }
 
 
-        public unsafe void AfterPushFrame()
+        public override unsafe void AfterPushFrame()
         {
             var screenBuffer = NesCore.ppu.GetScreenPtr();
             VideoProvider.SetDrawData(screenBuffer);
         }
 
-        public IControllerSetuper GetControllerSetuper()
+        public override IControllerSetuper GetControllerSetuper()
         {
             return ControllerMapper;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             StopGame();
         }
@@ -197,9 +196,9 @@ namespace AxibugEmuOnline.Client
         }
 #endif
 
-        public Texture OutputPixel => VideoProvider.OutputPixel;
-        public RawImage DrawCanvas => VideoProvider.Drawer;
-        public void GetAudioParams(out int frequency, out int channels)
+        public override Texture OutputPixel => VideoProvider.OutputPixel;
+        public override RawImage DrawCanvas => VideoProvider.Drawer;
+        public override void GetAudioParams(out int frequency, out int channels)
         {
             AudioProvider.GetAudioParams(out frequency, out channels);
         }

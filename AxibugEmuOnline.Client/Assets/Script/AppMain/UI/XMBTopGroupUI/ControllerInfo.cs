@@ -90,7 +90,7 @@ public class ControllerInfo : MonoBehaviour
         }
         else
         {
-            if (App.emu.Core.IsNull())
+            if (App.emu.Core == null)
             {
                 SetDisconnect();
                 return;

@@ -32,7 +32,7 @@ namespace AxibugEmuOnline.Client
             {
                 get
                 {
-                    if (m_gameUI.Core.IsNull()) return false;
+                    if (m_gameUI.Core == null) return false;
 
                     var isSetMode = App.settings.ScreenScaler.IsSetMode(m_gameUI.Core.Platform);
 
