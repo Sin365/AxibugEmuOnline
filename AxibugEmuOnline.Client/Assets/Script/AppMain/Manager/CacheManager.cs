@@ -38,7 +38,7 @@ namespace AxibugEmuOnline.Client
             if (!request.downloadHandler.bHadErr)
             {
                 AxiIO.Directory.CreateDirectory(path);
-                AxiIO.File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data);
+                AxiIO.File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data, false);
                 callback.Invoke(request.downloadHandler.data);
             }
             else

@@ -70,7 +70,13 @@ namespace AxiIO
             return templen;
         }
 
-        public void file_WriteAllBytes(string filePath, byte[] data)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="data"></param>
+        /// <param name="immediatelyCommit">是否立即Commit到物理存储</param>
+        public void file_WriteAllBytes(string filePath, byte[] data, bool immediatelyCommit = true)
         {
             AxiNS.instance.io.FileToSaveWithCreate(filePath, data);
         }
