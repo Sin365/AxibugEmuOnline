@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
+using AxiReplay;
 using StoicGoose.Common.Utilities;
 using StoicGoose.Core.Machines;
 using System;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using CartridgeMetadata = StoicGoose.Core.Cartridges.Metadata;
 
-public class UStoicGoose : IEmuCore
+public class UStoicGoose : EmuCore<ulong>
 {
     public static UStoicGoose instance;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
@@ -124,8 +125,22 @@ public class UStoicGoose : IEmuCore
     {
         throw new NotImplementedException();
     }
+    protected override bool OnPushEmulatorFrame(ulong InputData)
+    {
+        throw new NotImplementedException();
+    }
 
-    public override bool PushEmulatorFrame()
+    protected override ulong ConvertInputDataFromNet(ReplayStep step)
+    {
+        return step.InPut;
+    }
+
+    protected override ulong InputDataToNet(ulong inputData)
+    {
+        return inputData;
+    }
+
+    protected override ulong GetLocalInput()
     {
         throw new NotImplementedException();
     }

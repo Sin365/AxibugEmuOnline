@@ -9,7 +9,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UMAME : IEmuCore
+public class UMAME : EmuCore<ulong>
 {
     public static UMAME instance { get; private set; }
     public MAMEEmu emu { get; private set; }
@@ -95,7 +95,7 @@ public class UMAME : IEmuCore
     {
         mPlatform = romFile.Platform;
         mTimeSpan.InitStandTime();
-        if (LoadGame(romFile.FileName, false))
+        if (LoadGame(romFile.FileName))
             return true;
         else
             return "Rom加载失败";
@@ -107,7 +107,7 @@ public class UMAME : IEmuCore
     public override void DoReset()
     {
         StopGame();
-        LoadGame(mChangeRomName, false);
+        LoadGame(mChangeRomName);
     }
     public override IControllerSetuper GetControllerSetuper()
     {
@@ -121,7 +121,7 @@ public class UMAME : IEmuCore
     }
 
     #endregion
-    bool LoadGame(string loadRom, bool bReplay = false)
+    bool LoadGame(string loadRom)
     {
         emu.ResetRomRoot(RomPath);
         //Application.targetFrameRate = 60;
@@ -133,12 +133,6 @@ public class UMAME : IEmuCore
         //读取成功
         if (emu.bRom)
         {
-            if (bReplay)
-            {
-                string Path = SavePath + Machine.sName + ".rp";
-                mReplayReader = new ReplayReader(Path);
-                mUniKeyboard.SetRePlay(true);
-            }
 
             //读取ROM之后获得宽高初始化画面
             int _width; int _height; IntPtr _framePtr;
@@ -159,22 +153,32 @@ public class UMAME : IEmuCore
             return false;
         }
     }
-
-    public override bool PushEmulatorFrame()
+    protected override bool OnPushEmulatorFrame(ulong InputData)
     {
         if (!bInGame) return false;
         if (!bLogicUpdatePause) return false;
 
-        //采集本帧Input
-        bool bhadNext = mUniKeyboard.SampleInput();
-        //如果未收到Input数据,核心帧不推进
-        if (!bhadNext) return false;
-        //放行下一帧
-        //emu.UnlockNextFreme();
-        //推帧
+        mUniKeyboard.SyncInput(InputData);
         emu.UpdateFrame();
+
         return true;
     }
+
+    protected override ulong ConvertInputDataFromNet(ReplayStep step)
+    {
+        return step.InPut;
+    }
+
+    protected override ulong InputDataToNet(ulong inputData)
+    {
+        return inputData;
+    }
+
+    protected override ulong GetLocalInput()
+    {
+        return mUniKeyboard.DoLocalPressedKeys();
+    }
+
     public override void AfterPushFrame()
     {
         mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");

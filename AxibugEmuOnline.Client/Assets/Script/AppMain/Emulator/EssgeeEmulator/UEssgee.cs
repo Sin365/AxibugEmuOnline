@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
+using AxiReplay;
 using Essgee;
 using Essgee.Emulation;
 using Essgee.Emulation.Configuration;
@@ -11,13 +12,12 @@ using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UEssgee : IEmuCore
+public class UEssgee : EmuCore<ulong>
 {
     public static UEssgee instance;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
@@ -125,7 +125,7 @@ public class UEssgee : IEmuCore
     public override void Dispose()
     {
         if (!emulatorHandler.IsRunning)
-        { 
+        {
             emulatorHandler.SaveCartridge();
         }
         ShutdownEmulation();
@@ -141,19 +141,30 @@ public class UEssgee : IEmuCore
     {
         return mUniKeyboard.ControllerMapper;
     }
-
-    public override bool PushEmulatorFrame()
+    protected override bool OnPushEmulatorFrame(ulong InputData)
     {
         if (!emulatorHandler.IsRunning) return false;
         if (!bLogicUpdatePause) return false;
 
-        //采集本帧Input
-        bool bhadNext = mUniKeyboard.SampleInput();
-        //如果未收到Input数据,核心帧不推进
-        if (!bhadNext) return false;
-
+        mUniKeyboard.SetCurrKeyArr(InputData);
         emulatorHandler.Update_Frame();
+
         return true;
+    }
+
+    protected override ulong ConvertInputDataFromNet(ReplayStep step)
+    {
+        return step.InPut;
+    }
+
+    protected override ulong InputDataToNet(ulong inputData)
+    {
+        return inputData;
+    }
+
+    protected override ulong GetLocalInput()
+    {
+        return mUniKeyboard.DoLocalPressedKeys();
     }
 
     public override void AfterPushFrame()

@@ -12,43 +12,34 @@ using UnityEngine;
 public class UniKeyboard : MonoBehaviour, IKeyboard
 {
     public MameControllerMapper ControllerMapper { get; private set; }
-    bool bReplayMode;
     PlayMode mPlayMode;
-    ReplayMode mReplayMode;
 
     void Awake()
     {
         ControllerMapper = new MameControllerMapper();
-        Init(false);
+        Init();
     }
 
     public ulong GetPressedKeys()
     {
-        ulong InputData;
-        if (!bReplayMode)//游玩模式（单机或联机）
-            return mPlayMode.GetPressedKeys();
-        else//Replay模式
-            return mReplayMode.GetPressedKeys();
+        return mPlayMode.GetPressedKeys();
+    }
+    public void SyncInput(ulong inputData)
+    {
+        mPlayMode.CurrLocalInpuAllData = inputData;
     }
 
-    public bool SampleInput()
+    public ulong DoLocalPressedKeys()
     {
-        if (bReplayMode) return true;
-        return mPlayMode.SampleInput();
+        return mPlayMode.DoLocalPressedKeys();
     }
 
     #region
 
-    public void SetRePlay(bool IsReplay)
-    {
-        bReplayMode = IsReplay;
-    }
 
-    public void Init(bool IsReplay)
+    public void Init()
     {
-        bReplayMode = IsReplay;
         mPlayMode = new PlayMode(this);
-        mReplayMode = new ReplayMode();
     }
 
     public static IEnumerable<string> GetInputpDataToMotionKey(ulong inputdata)
@@ -80,41 +71,7 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
                 return CurrLocalInpuAllData;
         }
 
-        public bool SampleInput()
-        {
-            //Net模式
-            if (InGameUI.Instance.IsNetPlay)
-            {
-                bool bHadNetData = false;
-                int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
-                if (App.roomMgr.netReplay.TryGetNextFrame((int)UMAME.instance.Frame, out replayData, out frameDiff, out inputDiff))
-                {
-                    if (inputDiff)
-                    {
-                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                            $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
-                    }
-                    CurrRemoteInpuAllData = replayData.InPut;
-
-                    bHadNetData = true;
-                }
-                else//无输入
-                {
-                    CurrRemoteInpuAllData = 0;
-                }
-                //发送本地操作
-                App.roomMgr.SendRoomSingelPlayerInput(UMAME.instance.Frame, DoLocalPressedKeys());
-                return bHadNetData;
-            }
-            //单人模式
-            else
-            {
-                DoLocalPressedKeys();
-                return true;
-            }
-        }
-
-        ulong DoLocalPressedKeys()
+        public ulong DoLocalPressedKeys()
         {
             ulong tempLocalInputAllData = 0;
             tempLocalInputAllData |= mUniKeyboard.ControllerMapper.Controller0.GetSingleAllInput();
