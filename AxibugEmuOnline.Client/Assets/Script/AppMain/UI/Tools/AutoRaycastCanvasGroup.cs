@@ -1,7 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
+    /// <summary>
+    /// 自动根据canvasgroup的alpha控制blocksRaycasts的开启状态
+    /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
     public class AutoRaycastCanvasGroup : MonoBehaviour
     {

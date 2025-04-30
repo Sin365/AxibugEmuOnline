@@ -9,7 +9,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UMAME : MonoBehaviour, IEmuCore
+public class UMAME : EmuCore<ulong>
 {
     public static UMAME instance { get; private set; }
     public MAMEEmu emu { get; private set; }
@@ -38,9 +38,9 @@ public class UMAME : MonoBehaviour, IEmuCore
     public string EmuDataPath { get { return App.PersistentDataPath(Platform); } }
     public string RomPath => EmuDataPath + "/RemoteRoms/";
     public string SavePath => EmuDataPath + "/sav/";
-    public RomPlatformType Platform { get { return mPlatform; } }
+    public override RomPlatformType Platform { get { return mPlatform; } }
     RomPlatformType mPlatform = RomPlatformType.Cps1;
-    public uint Frame => (uint)emu.currEmuFrame;
+    public override uint Frame => (uint)emu.currEmuFrame;
     void Awake()
     {
         instance = this;
@@ -67,61 +67,61 @@ public class UMAME : MonoBehaviour, IEmuCore
         StopGame();
     }
     #region 实现接口
-    public object GetState()
+    public override object GetState()
     {
         return SaveState();
     }
-    public byte[] GetStateBytes()
+    public override byte[] GetStateBytes()
     {
         return SaveState();
     }
-    public void LoadState(object state)
+    public override void LoadState(object state)
     {
         LoadState((byte[])state);
     }
-    public void LoadStateFromBytes(byte[] data)
+    public override void LoadStateFromBytes(byte[] data)
     {
         LoadState(data);
     }
-    public void Pause()
+    public override void Pause()
     {
         bLogicUpdatePause = false;
     }
-    public void Resume()
+    public override void Resume()
     {
         bLogicUpdatePause = true;
     }
-    public MsgBool StartGame(RomFile romFile)
+    public override MsgBool StartGame(RomFile romFile)
     {
         mPlatform = romFile.Platform;
         mTimeSpan.InitStandTime();
-        if (LoadGame(romFile.FileName, false))
+        if (LoadGame(romFile.FileName))
             return true;
         else
             return "Rom加载失败";
     }
-    public void Dispose()
+    public override void Dispose()
     {
         StopGame();
     }
-    public void DoReset()
+    public override void DoReset()
     {
         StopGame();
-        LoadGame(mChangeRomName, false);
+        LoadGame(mChangeRomName);
     }
-    public IControllerSetuper GetControllerSetuper()
+    public override IControllerSetuper GetControllerSetuper()
     {
         return mUniKeyboard.ControllerMapper;
     }
 
 
-    public void GetAudioParams(out int frequency, out int channels)
+    public override void GetAudioParams(out int frequency, out int channels)
     {
         mUniSoundPlayer.GetAudioParams(out frequency, out channels);
     }
 
     #endregion
-    bool LoadGame(string loadRom, bool bReplay = false)
+    bool LoadGame(string loadRom)
     {
         emu.ResetRomRoot(RomPath);
         //Application.targetFrameRate = 60;
@@ -133,12 +133,6 @@ public class UMAME : MonoBehaviour, IEmuCore
         //读取成功
         if (emu.bRom)
         {
-            if (bReplay)
-            {
-                string Path = SavePath + Machine.sName + ".rp";
-                mReplayReader = new ReplayReader(Path);
-                mUniKeyboard.SetRePlay(true);
-            }
 
             //读取ROM之后获得宽高初始化画面
             int _width; int _height; IntPtr _framePtr;
@@ -159,23 +153,33 @@ public class UMAME : MonoBehaviour, IEmuCore
             return false;
         }
     }
-
-    public bool PushEmulatorFrame()
+    protected override bool OnPushEmulatorFrame(ulong InputData)
     {
         if (!bInGame) return false;
         if (!bLogicUpdatePause) return false;
 
-        //采集本帧Input
-        bool bhadNext = mUniKeyboard.SampleInput();
-        //如果未收到Input数据,核心帧不推进
-        if (!bhadNext) return false;
-        //放行下一帧
-        //emu.UnlockNextFreme();
-        //推帧
+        mUniKeyboard.SyncInput(InputData);
         emu.UpdateFrame();
+
         return true;
     }
-    public void AfterPushFrame()
+
+    protected override ulong ConvertInputDataFromNet(ReplayStep step)
+    {
+        return step.InPut;
+    }
+
+    protected override ulong InputDataToNet(ulong inputData)
+    {
+        return inputData;
+    }
+
+    protected override ulong GetLocalInput()
+    {
+        return mUniKeyboard.DoLocalPressedKeys();
+    }
+
+    public override void AfterPushFrame()
     {
         mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");
     }
@@ -227,9 +231,9 @@ public class UMAME : MonoBehaviour, IEmuCore
     }
 
 
-    public Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
+    public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
 
-    public RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
+    public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
 
 
 }

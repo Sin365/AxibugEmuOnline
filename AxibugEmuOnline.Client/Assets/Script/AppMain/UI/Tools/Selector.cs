@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client
 {
+    /// <summary>
+    /// 选择指示器,用于控制RectTransform在屏幕坐标上的高宽和位置同步,同时带有过度动画
+    /// </summary>
     public class Selector : MonoBehaviour
     {
         [SerializeField]

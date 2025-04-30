@@ -23,7 +23,5 @@
         void SaveFile(byte[] fileData, string directPath, string fileName);
         System.IO.Stream OpenFile(string directPath, string fileName);
         bool TryGetMapperNo(ROM rom, out int mapperNo);
-        ControllerState GetControllerState();
-        void SampleInput(uint frameCount);
     }
 }

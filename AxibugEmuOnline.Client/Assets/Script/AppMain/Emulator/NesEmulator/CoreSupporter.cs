@@ -10,11 +10,6 @@ namespace AxibugEmuOnline.Client
 {
     public class CoreSupporter : ISupporterImpl
     {
-        private NesControllerMapper m_controllerMapper;
-        public CoreSupporter(NesControllerMapper conMapper)
-        {
-            m_controllerMapper = conMapper;
-        }
 
         public System.IO.Stream OpenRom(string fname)
         {
@@ -97,48 +92,6 @@ namespace AxibugEmuOnline.Client
             return db.GetMapperNo(rom.GetPROM_CRC(), out mapperNo);
         }
 
-        private ControllerState m_sampledState;
-        public ControllerState GetControllerState()
-        {
-            return m_sampledState;
-        }
-
-        uint LastTestInput = 0;
-        public void SampleInput(uint frameIndex)
-        {
-            if (InGameUI.Instance.IsNetPlay)
-            {
-                int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
-                if (App.roomMgr.netReplay.TryGetNextFrame((int)frameIndex, out replayData, out frameDiff, out inputDiff))
-                {
-                    if (inputDiff)
-                    {
-                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                            $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
-                    }
-
-                    m_sampledState = FromNet(replayData);
-                }
-                else
-                {
-                    m_sampledState = default(ControllerState);
-                }
-
-                var localState = m_controllerMapper.CreateState();
-                var rawData = ToNet(localState);
-                if (LastTestInput != rawData)
-                {
-                    LastTestInput = rawData;
-                    App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
-                }
-                App.roomMgr.SendRoomSingelPlayerInput(frameIndex, rawData);
-            }
-            //单机模式
-            else
-            {
-                m_sampledState = m_controllerMapper.CreateState();
-            }
-        }
 
         public ControllerState FromNet(AxiReplay.ReplayStep step)
         {

@@ -49,7 +49,7 @@ namespace AxibugEmuOnline.Client
 
         private void Update()
         {
-            if (CommandDispatcher.Instance.Mode == CommandListener.ScheduleType.Gaming && App.emu.Core.IsNull())
+            if (CommandDispatcher.Instance.Mode == CommandListener.ScheduleType.Gaming && App.emu.Core == null)
                 CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
         }
 

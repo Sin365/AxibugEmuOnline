@@ -35,7 +35,7 @@ public class ControllerInfoPanel : MonoBehaviour
         }
         else //不在房间中,直接设置
         {
-            if (App.emu.Core.IsNull()) return;
+            if (App.emu.Core == null) return;
             var setuper = App.emu.Core.GetControllerSetuper();
             if (setuper == null) return;
 

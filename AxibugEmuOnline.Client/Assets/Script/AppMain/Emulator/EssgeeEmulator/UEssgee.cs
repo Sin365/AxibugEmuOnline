@@ -1,6 +1,7 @@
-using AxibugEmuOnline.Client;
+ï»¿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
+using AxiReplay;
 using Essgee;
 using Essgee.Emulation;
 using Essgee.Emulation.Configuration;
@@ -11,25 +12,24 @@ using Essgee.Metadata;
 using Essgee.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UEssgee : MonoBehaviour, IEmuCore
+public class UEssgee : EmuCore<ulong>
 {
     public static UEssgee instance;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
     public static bool bInGame => instance?.emulatorHandler?.IsRunning == true ? true : false;
 
-    public RomPlatformType Platform => mPlatform;
+    public override RomPlatformType Platform => mPlatform;
 
-    public uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
+    public override uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
 
-    public Texture OutputPixel => graphicsHandler.rawBufferWarper;
+    public override Texture OutputPixel => graphicsHandler.rawBufferWarper;
 
-    public RawImage DrawCanvas => graphicsHandler.DrawCanvas;
+    public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
 
     public static bool bLogicUpdatePause { get; private set; }
     #region
@@ -71,38 +71,38 @@ public class UEssgee : MonoBehaviour, IEmuCore
     }
 
 
-    #region EmuCore½ÓÈëÊµÏÖ
+    #region EmuCoreæ¥å…¥å®ç°
 
-    public object GetState()
+    public override object GetState()
     {
         return emulatorHandler.GetStateData();
     }
 
-    public byte[] GetStateBytes()
+    public override byte[] GetStateBytes()
     {
         return emulatorHandler.GetStateData();
     }
 
-    public void LoadState(object state)
+    public override void LoadState(object state)
     {
         emulatorHandler.SetStateData((byte[])state);
     }
 
-    public void LoadStateFromBytes(byte[] data)
+    public override void LoadStateFromBytes(byte[] data)
     {
         emulatorHandler.SetStateData(data);
     }
 
-    public void Pause()
+    public override void Pause()
     {
         bLogicUpdatePause = false;
     }
-    public void Resume()
+    public override void Resume()
     {
         bLogicUpdatePause = true;
     }
 
-    public MsgBool StartGame(RomFile romFile)
+    public override MsgBool StartGame(RomFile romFile)
     {
         mPlatform = romFile.Platform;
 
@@ -110,7 +110,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
         bLogicUpdatePause = true;
 
-        //±£´æµ±Ç°ÕıÔÚ½øĞĞµÄÓÎÏ·´æµµ
+        //ä¿å­˜å½“å‰æ­£åœ¨è¿›è¡Œçš„æ¸¸æˆå­˜æ¡£
         if (emulatorHandler != null && !emulatorHandler.IsRunning)
         {
             emulatorHandler.SaveCartridge();
@@ -119,48 +119,59 @@ public class UEssgee : MonoBehaviour, IEmuCore
         if (LoadAndRunCartridge(romFile.LocalFilePath))
             return true;
         else
-            return "Rom¼ÓÔØÊ§°Ü";
+            return "RomåŠ è½½å¤±è´¥";
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         if (!emulatorHandler.IsRunning)
-        { 
+        {
             emulatorHandler.SaveCartridge();
         }
         ShutdownEmulation();
     }
 
-    public void DoReset()
+    public override void DoReset()
     {
         emulatorHandler.SaveCartridge();
         emulatorHandler.Reset();
     }
 
-    public IControllerSetuper GetControllerSetuper()
+    public override IControllerSetuper GetControllerSetuper()
     {
         return mUniKeyboard.ControllerMapper;
     }
-
-    public bool PushEmulatorFrame()
+    protected override bool OnPushEmulatorFrame(ulong InputData)
     {
         if (!emulatorHandler.IsRunning) return false;
         if (!bLogicUpdatePause) return false;
 
-        //²É¼¯±¾Ö¡Input
-        bool bhadNext = mUniKeyboard.SampleInput();
-        //Èç¹ûÎ´ÊÕµ½InputÊı¾İ,ºËĞÄÖ¡²»ÍÆ½ø
-        if (!bhadNext) return false;
-
+        mUniKeyboard.SetCurrKeyArr(InputData);
         emulatorHandler.Update_Frame();
+
         return true;
     }
 
-    public void AfterPushFrame()
+    protected override ulong ConvertInputDataFromNet(ReplayStep step)
+    {
+        return step.InPut;
+    }
+
+    protected override ulong InputDataToNet(ulong inputData)
+    {
+        return inputData;
+    }
+
+    protected override ulong GetLocalInput()
+    {
+        return mUniKeyboard.DoLocalPressedKeys();
+    }
+
+    public override void AfterPushFrame()
     {
     }
 
-    public void GetAudioParams(out int frequency, out int channels)
+    public override void GetAudioParams(out int frequency, out int channels)
     {
         frequency = soundHandler.sampleRate;
         channels = soundHandler.channle;
@@ -169,10 +180,10 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     void InitAll(IGameMetaReources metaresources, IEssgeeIOSupport uegIO, string CustonDataDir)
     {
-        //³õÊ¼»¯ÅäÖÃ
+        //åˆå§‹åŒ–é…ç½®
         InitAppEnvironment(CustonDataDir, uegIO);
         InitEmu();
-        //Ï¸½Ú³õÊ¼»¯
+        //ç»†èŠ‚åˆå§‹åŒ–
         InitializeHandlers(metaresources);
     }
 
@@ -218,7 +229,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
         if (AppEnvironment.EnableLogger)
         {
-            //TODO ¹Ø±ÕDebug
+            //TODO å…³é—­Debug
             //Logger.Flush();
             //Logger.Close();
         }
@@ -229,7 +240,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         //keysDown = new List<MotionKey>();
     }
 
-    #region Ï¸½Ú³õÊ¼»¯
+    #region ç»†èŠ‚åˆå§‹åŒ–
 
     private void InitializeHandlers(IGameMetaReources metaresources)
     {
@@ -277,7 +288,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     #endregion
     void Dispose(bool disposing)
     {
-        //TODO ÊÍ·ÅÊ±
+        //TODO é‡Šæ”¾æ—¶
         //if (disposing)
         //{
         //    if (components != null) components.Dispose();
@@ -289,10 +300,10 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
         //base.Dispose(disposing);
     }
-    #region ÅäÖÃ
+    #region é…ç½®
     private static void LoadConfiguration()
     {
-        //TODO ÔİÊ±Ìø¹ıÕâÀïµÄÅäÖÃ¼ÓÔØ
+        //TODO æš‚æ—¶è·³è¿‡è¿™é‡Œçš„é…ç½®åŠ è½½
         //Directory.CreateDirectory(EmuStandInfo.programDataDirectory);
         //if (!File.Exists(EmuStandInfo.programConfigPath) || (EmuStandInfo.Configuration = EmuStandInfo.programConfigPath.DeserializeFromFile<Configuration>()) == null)
         //{
@@ -397,12 +408,12 @@ public class UEssgee : MonoBehaviour, IEmuCore
     }
     public static void SaveConfiguration()
     {
-        //²»ÓÃ±£´æÕâ¸öÅäÖÃ
+        //ä¸ç”¨ä¿å­˜è¿™ä¸ªé…ç½®
         //EmuStandInfo.Configuration.SerializeToFile(EmuStandInfo.programConfigPath);
     }
     #endregion
 
-    #region Ä£ÄâÆ÷»ù±¾ÉèÖÃ
+    #region æ¨¡æ‹Ÿå™¨åŸºæœ¬è®¾ç½®
 
     public void SetEmuFpsLimit(bool bOpen)
     {
@@ -427,12 +438,12 @@ public class UEssgee : MonoBehaviour, IEmuCore
     }
     #endregion
 
-    #region Ä£ÄâÆ÷ÉúÃüÖÜÆÚ
+    #region æ¨¡æ‹Ÿå™¨ç”Ÿå‘½å‘¨æœŸ
 
 
     private void PowerOnWithoutCartridge(Type machineType)
     {
-        //TODO IsRecording?? ¿ÉÄÜĞèÒªÊµÏÖ
+        //TODO IsRecording?? å¯èƒ½éœ€è¦å®ç°
         //if (soundHandler.IsRecording)
         //    soundHandler.CancelRecording();
 
@@ -456,7 +467,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
             var (machineType, romData) = CartridgeLoader.Load(fileName, "ROM image");
 
-            //TODO IsRecording?? ¿ÉÄÜĞèÒªÊµÏÖ
+            //TODO IsRecording?? å¯èƒ½éœ€è¦å®ç°
             //if (soundHandler.IsRecording)
             //    soundHandler.CancelRecording();
 
@@ -481,13 +492,13 @@ public class UEssgee : MonoBehaviour, IEmuCore
             //toggleLayersToolStripMenuItem.Enabled = enableChannelsToolStripMenuItem.Enabled = true;
 
 
-            //³õÊ¼»¯²»Í¬Æ½Ì¨µÄ°´Å¥
+            //åˆå§‹åŒ–ä¸åŒå¹³å°çš„æŒ‰é’®
             mUniKeyboard.Init(emulatorHandler.emulator);
 
             emulatorHandler.Startup();
 
 
-            //³õÊ¼»¯ÒôÆµ
+            //åˆå§‹åŒ–éŸ³é¢‘
             soundHandler.Initialize();
 
             //SizeAndPositionWindow();
@@ -549,7 +560,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         //{
         if (!AppEnvironment.TemporaryDisableCustomExceptionForm)
         {
-            //TODO debug´°¿Ú£¿
+            //TODO debugçª—å£ï¼Ÿ
             //(_, ExceptionResult result, string prefix, string postfix) = ExceptionForm.GetExceptionInfo(ex);
 
             //if (result == ExceptionResult.Continue)
@@ -661,7 +672,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
     }
     #endregion
 
-    #region Ä£ÄâÆ÷ÄÚ²¿ÊÂ¼ş
+    #region æ¨¡æ‹Ÿå™¨å†…éƒ¨äº‹ä»¶
 
     private void EmulatorHandler_SendLogMessage(object sender, SendLogMessageEventArgs e)
     {
@@ -699,7 +710,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     private void EmulatorHandler_SizeScreen(object sender, SizeScreenEventArgs e)
     {
-        //TODO ´ıÊµÏÖ ÆÁÄ»´óĞ¡
+        //TODO å¾…å®ç° å±å¹•å¤§å°
 
         //this.CheckInvokeMethod(delegate ()
         //{
@@ -710,7 +721,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     private void EmulatorHandler_ChangeViewport(object sender, ChangeViewportEventArgs e)
     {
-        //TODO ´ıÊµÏÖ
+        //TODO å¾…å®ç°
 
         //this.CheckInvokeMethod(delegate ()
         //{
@@ -721,7 +732,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
     private void EmulatorHandler_PollInput(object sender, PollInputEventArgs e)
     {
-        //TODO InputÊµÏÖ
+        //TODO Inputå®ç°
 
         //e.Keyboard = mUniKeyboard.mKeyCodeCore.GetPressedKeys();
         e.Keyboard.AddRange(mUniKeyboard.GetPressedKeys());
@@ -775,7 +786,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
             /* Images, ex. GB Printer printouts */
             //image.Save(filePath);
 
-            //TODO Í¼Ïñ´æ´¢
+            //TODO å›¾åƒå­˜å‚¨
         }
         else if (e.Data is byte[] raw)
         {
@@ -801,7 +812,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
 
         if (emulatorHandler.IsPaused)
         {
-            //TODO ÒôÆµÔİÍ££¿
+            //TODO éŸ³é¢‘æš‚åœï¼Ÿ
             //soundHandler?.ClearSampleBuffer();
         }
     }
@@ -825,7 +836,7 @@ public class UEssgee : MonoBehaviour, IEmuCore
         //    waveHeader.FileLength += (uint)e.MixedSamples.Length;
         //}
 
-        //TODO ÒôÆµ´¦Àí
+        //TODO éŸ³é¢‘å¤„ç†
         //soundHandler.SubmitSamples(e.MixedSamples, e.ChannelSamples, e.MixedSamples.Length);
         soundHandler.SubmitSamples(e.MixedSamples, e.ChannelSamples, e.MixedSamplesLength);
     }

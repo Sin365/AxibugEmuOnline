@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
+using AxiReplay;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,7 +12,7 @@ using VirtualNes.Core.Debug;
 
 namespace AxibugEmuOnline.Client
 {
-    public class NesEmulator : MonoBehaviour, IEmuCore
+    public class NesEmulator : EmuCore<ControllerState>
     {
         public VideoProvider VideoProvider;
         public AudioProvider AudioProvider;
@@ -35,16 +36,16 @@ namespace AxibugEmuOnline.Client
             AudioProvider.NesEmu = this;
         }
 
-        public RomPlatformType Platform => RomPlatformType.Nes;
+        public override RomPlatformType Platform => RomPlatformType.Nes;
         private CoreSupporter m_coreSupporter;
         /// <summary>
         /// 指定ROM开始游戏
         /// </summary>
-        public MsgBool StartGame(RomFile rom)
+        public override MsgBool StartGame(RomFile rom)
         {
             StopGame();
 
-            m_coreSupporter = new CoreSupporter(ControllerMapper);
+            m_coreSupporter = new CoreSupporter();
             Supporter.Setup(m_coreSupporter);
             Debuger.Setup(new CoreDebuger());
 
@@ -63,28 +64,28 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public void Pause()
+        public override void Pause()
         {
             IsPause = true;
         }
 
-        public void Resume()
+        public override void Resume()
         {
             IsPause = false;
         }
 
 
-        public void DoReset()
+        public override void DoReset()
         {
             NesCore.Reset();
         }
 
-        public void LoadState(object state)
+        public override void LoadState(object state)
         {
             NesCore.LoadState((State)state);
         }
 
-        public object GetState()
+        public override object GetState()
         {
             return NesCore.GetState();
         }
@@ -93,7 +94,7 @@ namespace AxibugEmuOnline.Client
         ///     获取即时存档
         /// </summary>
         /// <returns></returns>
-        public byte[] GetStateBytes()
+        public override byte[] GetStateBytes()
         {
             return NesCore.GetState().ToBytes();
         }
@@ -104,14 +105,14 @@ namespace AxibugEmuOnline.Client
         /// <param
         ///     name="data">
         /// </param>
-        public void LoadStateFromBytes(byte[] data)
+        public override void LoadStateFromBytes(byte[] data)
         {
             var st = new State();
             st.FromByte(data);
             NesCore.LoadState(st);
         }
 
-        public uint Frame => NesCore.FrameCount;
+        public override uint Frame => NesCore.FrameCount;
 
         /// <summary>
         ///     停止游戏
@@ -122,48 +123,53 @@ namespace AxibugEmuOnline.Client
             NesCore = null;
         }
 
-
-#if UNITY_EDITOR
-        private ControllerState m_lastState;
-#endif
         //推进帧
-        public bool PushEmulatorFrame()
+        protected override bool OnPushEmulatorFrame(ControllerState inputData)
         {
             if (NesCore == null || IsPause) return false;
 
-            m_coreSupporter.SampleInput(NesCore.FrameCount);
-            var controlState = m_coreSupporter.GetControllerState();
-
-            //如果未收到Input数据,核心帧不推进
-            if (!controlState.valid) return false;
-
-#if UNITY_EDITOR
-            if (controlState != m_lastState) App.log.Info($"[LOCALDEBUG]{NesCore.FrameCount}-->{controlState}");
-            m_lastState = controlState;
-#endif
-
-            NesCore.pad.Sync(controlState);
+            NesCore.pad.Sync(inputData);
             NesCore.EmulateFrame(true);
-
 
             return true;
         }
 
+        protected override ControllerState ConvertInputDataFromNet(ReplayStep step)
+        {
+            return m_coreSupporter.FromNet(step);
+        }
+        protected override ulong InputDataToNet(ControllerState inputData)
+        {
+            return m_coreSupporter.ToNet(inputData);
+        }
 
-        public unsafe void AfterPushFrame()
+        protected override ControllerState GetLocalInput()
+        {
+            return ControllerMapper.CreateState();
+        }
+
+
+        public override unsafe void AfterPushFrame()
         {
             var screenBuffer = NesCore.ppu.GetScreenPtr();
             VideoProvider.SetDrawData(screenBuffer);
         }
 
-        public IControllerSetuper GetControllerSetuper()
+        public override IControllerSetuper GetControllerSetuper()
         {
             return ControllerMapper;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             StopGame();
+        }
+
+        public override Texture OutputPixel => VideoProvider.OutputPixel;
+        public override RawImage DrawCanvas => VideoProvider.Drawer;
+        public override void GetAudioParams(out int frequency, out int channels)
+        {
+            AudioProvider.GetAudioParams(out frequency, out channels);
         }
 
 #if UNITY_EDITOR
@@ -196,13 +202,5 @@ namespace AxibugEmuOnline.Client
             UnityEditor.AssetDatabase.SaveAssets();
         }
 #endif
-
-        public Texture OutputPixel => VideoProvider.OutputPixel;
-        public RawImage DrawCanvas => VideoProvider.Drawer;
-        public void GetAudioParams(out int frequency, out int channels)
-        {
-            AudioProvider.GetAudioParams(out frequency, out channels);
-        }
-
     }
 }

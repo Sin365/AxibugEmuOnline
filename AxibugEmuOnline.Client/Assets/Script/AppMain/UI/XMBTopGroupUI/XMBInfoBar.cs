@@ -24,7 +24,7 @@ public class XMBInfoBar : MonoBehaviour
 
     private void Update()
     {
-        ControlSlotInfoNode.SetActiveEx(!App.emu.Core.IsNull());
+        ControlSlotInfoNode.SetActiveEx(App.emu.Core != null);
     }
 
     void OnDisable()
@@ -46,7 +46,7 @@ public class XMBInfoBar : MonoBehaviour
     ValueTuple<uint, float> m_lastFrameInfo;
     private void RefreshFps()
     {
-        if (App.emu.Core.IsNull())
+        if (App.emu.Core == null)
             FPS.gameObject.SetActiveEx(false);
         else
         {

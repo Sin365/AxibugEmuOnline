@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
+using AxiReplay;
 using StoicGoose.Common.Utilities;
 using StoicGoose.Core.Machines;
 using System;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using CartridgeMetadata = StoicGoose.Core.Cartridges.Metadata;
 
-public class UStoicGoose : MonoBehaviour, IEmuCore
+public class UStoicGoose : EmuCore<ulong>
 {
     public static UStoicGoose instance;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
@@ -49,44 +50,44 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
     public string CurrRomName { get; private set; }
 
     #region 实现IEmuCore
-    public RomPlatformType Platform => mPlatform;
+    public override RomPlatformType Platform => mPlatform;
 
-    public uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
+    public override uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
 
-    public Texture OutputPixel => graphicsHandler.rawBufferWarper;
+    public override Texture OutputPixel => graphicsHandler.rawBufferWarper;
 
-    public RawImage DrawCanvas => graphicsHandler.DrawCanvas;
-    public object GetState()
+    public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
+    public override object GetState()
     {
         throw new NotImplementedException();
     }
 
-    public byte[] GetStateBytes()
+    public override byte[] GetStateBytes()
     {
         throw new NotImplementedException();
     }
 
-    public void LoadState(object state)
+    public override void LoadState(object state)
     {
         throw new NotImplementedException();
     }
 
-    public void LoadStateFromBytes(byte[] data)
+    public override void LoadStateFromBytes(byte[] data)
     {
         throw new NotImplementedException();
     }
 
-    public void Pause()
+    public override void Pause()
     {
         PauseEmulation();
     }
 
-    public void Resume()
+    public override void Resume()
     {
         UnpauseEmulation();
     }
 
-    public MsgBool StartGame(RomFile romFile)
+    public override MsgBool StartGame(RomFile romFile)
     {
         mPlatform = romFile.Platform;
 
@@ -105,7 +106,7 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
             return "Rom加载失败";
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         //保存当前正在进行的游戏存档
         if (emulatorHandler != null && !emulatorHandler.IsRunning)
@@ -115,27 +116,41 @@ public class UStoicGoose : MonoBehaviour, IEmuCore
         EmuClose();
     }
 
-    public void DoReset()
+    public override void DoReset()
     {
         ResetEmulation();
     }
 
-    public IControllerSetuper GetControllerSetuper()
+    public override IControllerSetuper GetControllerSetuper()
+    {
+        throw new NotImplementedException();
+    }
+    protected override bool OnPushEmulatorFrame(ulong InputData)
     {
         throw new NotImplementedException();
     }
 
-    public bool PushEmulatorFrame()
+    protected override ulong ConvertInputDataFromNet(ReplayStep step)
+    {
+        return step.InPut;
+    }
+
+    protected override ulong InputDataToNet(ulong inputData)
+    {
+        return inputData;
+    }
+
+    protected override ulong GetLocalInput()
     {
         throw new NotImplementedException();
     }
 
-    public void AfterPushFrame()
+    public override void AfterPushFrame()
     {
         throw new NotImplementedException();
     }
 
-    public void GetAudioParams(out int frequency, out int channels)
+    public override void GetAudioParams(out int frequency, out int channels)
     {
         throw new NotImplementedException();
     }

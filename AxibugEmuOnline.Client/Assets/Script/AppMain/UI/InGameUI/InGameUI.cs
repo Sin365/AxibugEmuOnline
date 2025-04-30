@@ -65,7 +65,7 @@ namespace AxibugEmuOnline.Client
 
         void PushCoreFrame()
         {
-            if (Core.IsNull()) return;
+            if (Core == null) return;
             //fluash netMsg
             NetMsg.Instance.DequeueNesMsg();
 

@@ -315,45 +315,7 @@ public class UEGKeyboard : MonoBehaviour
         //mUniKeyboard.btnABC.Key = new long[] { (long)MotionKey.P1_BTN_1, (long)MotionKey.P1_BTN_2, (long)MotionKey.P1_BTN_3 };
     }
 
-    public bool SampleInput()
-    {
-        //Net模式
-        if (InGameUI.Instance.IsNetPlay)
-        {
-            bool bHadNetData = false;
-            int targetFrame; ReplayStep replayData; int frameDiff; bool inputDiff;
-            if (App.roomMgr.netReplay.TryGetNextFrame((int)UEssgee.instance.Frame, out replayData, out frameDiff, out inputDiff))
-            {
-                if (inputDiff)
-                {
-                    App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                        $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
-                }
-                CurrRemoteInpuAllData = replayData.InPut;
-                SetCurrKeyArr(CurrRemoteInpuAllData);
-                bHadNetData = true;
-            }
-            else//无输入
-            {
-                CurrRemoteInpuAllData = 0;
-            }
-
-            //发送本地操作
-            App.roomMgr.SendRoomSingelPlayerInput(UEssgee.instance.Frame,
-             DoLocalPressedKeys());
-
-            return bHadNetData;
-        }
-        //单机模式
-        else
-        {
-            ulong inputData = DoLocalPressedKeys();
-            SetCurrKeyArr(inputData);
-            return true;
-        }
-    }
-
-    void SetCurrKeyArr(ulong inputData)
+    public void SetCurrKeyArr(ulong inputData)
     {
         temp.Clear();
         for (int i = 0; i < CheckList.Length; i++)
@@ -368,7 +330,7 @@ public class UEGKeyboard : MonoBehaviour
         mCurrKey = temp.ToArray();
     }
 
-    ulong DoLocalPressedKeys()
+    public ulong DoLocalPressedKeys()
     {
         //tempInputAllData = 0;
         //for (int i = 0; i < CheckList.Length; i++)

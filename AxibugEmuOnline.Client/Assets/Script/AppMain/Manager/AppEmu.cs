@@ -29,7 +29,7 @@ namespace AxibugEmuOnline.Client.Manager
         private void OnSelfJoinRoom()
         {
             //如果当前正在游戏中,就先结束游戏
-            if (!m_emuCore.IsNull()) StopGame();
+            if (m_emuCore != null) StopGame();
 
             var roomInfo = App.roomMgr.mineRoomMiniInfo;
             roomInfo.FetchRomFileInRoomInfo((_, romFile) =>
@@ -48,7 +48,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void BeginGame(RomFile romFile)
         {
-            if (!m_emuCore.IsNull()) return;
+            if (m_emuCore != null) return;
 
             switch (romFile.Platform)
             {
@@ -120,7 +120,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void StopGame()
         {
-            if (m_emuCore.IsNull()) return;
+            if (m_emuCore == null) return;
             m_emuCore.Dispose();
             GameObject.Destroy(m_emuCore.gameObject);
             m_emuCore = null;
@@ -133,7 +133,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void ResetGame()
         {
-            if (m_emuCore.IsNull()) return;
+            if (m_emuCore == null) return;
 
             m_emuCore.DoReset();
         }

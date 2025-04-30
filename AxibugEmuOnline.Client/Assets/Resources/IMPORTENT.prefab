@@ -1215,6 +1215,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6671307062690349520, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6671307062690349520, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6838719776118089301, guid: 1de15a80c8c1aa94486563740a15d91c, type: 3}
       propertyPath: m_IsActive
       value: 1
