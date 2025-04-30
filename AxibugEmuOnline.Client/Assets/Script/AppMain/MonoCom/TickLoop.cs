@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Client
         public static Action LoopAction_tick;
         public static Action LoopAction_1s;
         public static Action LoopAction_3s;
+        public static Action LoopAction_15s;
         public Stopwatch sw = Stopwatch.StartNew();
         public TimeSpan LastStartPingTime;
         public int LastPingSeed;
@@ -42,6 +43,7 @@ namespace AxibugEmuOnline.Client
         }
         float LastLoopTime_1s;
         float LastLoopTime_3s;
+        float LastLoopTime_15s;
         private void Update()
         {
             NetMsg.Instance.DequeueNesMsg();
@@ -58,6 +60,12 @@ namespace AxibugEmuOnline.Client
             {
                 LastLoopTime_3s = Time.time;
                 LoopAction_3s?.Invoke();
+            }
+
+            if (Time.time - LastLoopTime_15s > 15)
+            {
+                LastLoopTime_15s = Time.time;
+                LoopAction_15s?.Invoke();
             }
         }
 

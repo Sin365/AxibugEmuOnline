@@ -26,7 +26,13 @@ namespace AxiIO
             return System.IO.Directory.Exists(dirpath);
         }
 
-        public void file_WriteAllBytes(string filePath, byte[] data)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="data"></param>
+        /// <param name="immediatelyCommit">是否立即Commit到物理存储（C#原生这里不需要）</param>
+        public void file_WriteAllBytes(string filePath, byte[] data, bool immediatelyCommit = true)
         {
             System.IO.File.WriteAllBytes(filePath, data);
         }

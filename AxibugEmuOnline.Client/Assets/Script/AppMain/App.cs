@@ -49,6 +49,10 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static SonyVitaCommonDialog sonyVitaCommonDialog;
 #endif
 
+#if UNITY_SWITCH
+        public static SwitchCommon switchCommon;
+#endif
+
         #endregion
 
 
@@ -138,10 +142,15 @@ namespace AxibugEmuOnline.Client.ClientCore
             //    Directory.CreateDirectory("ux0:data/AxibugEmu");
 
 #if UNITY_PSP2
-            //创建PSV弹窗UI
-            sonyVitaCommonDialog = new GameObject().AddComponent<SonyVitaCommonDialog>();
             //释放解码 FMV的26M内存，一般游戏用不上（PSP才用那破玩意儿）
             UnityEngine.PSVita.PSVitaVideoPlayer.TransferMemToMonoHeap();
+            //创建PSV弹窗UI
+            sonyVitaCommonDialog = new GameObject().AddComponent<SonyVitaCommonDialog>();
+#endif
+
+#if UNITY_SWITCH
+            //创建创建Switch
+            switchCommon = new GameObject().AddComponent<SwitchCommon>();
 #endif
 
         }

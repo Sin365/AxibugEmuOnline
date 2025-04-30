@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sony.Vita.Dialog;
+using System.Collections.Generic;
 
 namespace AxiIO
 {
@@ -43,9 +44,15 @@ namespace AxiIO
             return AxiIO.io.file_ReadBytesToArr(filePath, readToArr, start, len);
         }
 
-        internal static void WriteAllBytes(string path, byte[] data)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="data"></param>
+        /// <param name="ImmediatelyCommit">是否立即Commit到物理存储（目前只有NS对本参数有效）</param>
+        internal static void WriteAllBytes(string path, byte[] data, bool ImmediatelyCommit = true)
         {
-            AxiIO.io.file_WriteAllBytes(path, data);
+            AxiIO.io.file_WriteAllBytes(path, data, ImmediatelyCommit);
         }
 
         internal static void WriteAllBytesFromStream(string path, System.IO.MemoryStream ms)
