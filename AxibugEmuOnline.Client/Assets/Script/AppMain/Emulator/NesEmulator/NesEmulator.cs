@@ -149,7 +149,7 @@ namespace AxibugEmuOnline.Client
         }
 
 
-        public override unsafe void AfterPushFrame()
+        protected override unsafe void AfterPushFrame()
         {
             var screenBuffer = NesCore.ppu.GetScreenPtr();
             VideoProvider.SetDrawData(screenBuffer);

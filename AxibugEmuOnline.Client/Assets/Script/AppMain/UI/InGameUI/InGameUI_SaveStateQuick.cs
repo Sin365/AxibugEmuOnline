@@ -7,7 +7,7 @@ namespace AxibugEmuOnline.Client
     {
         private InGameUI m_gameUI;
 
-        public override bool Visible => !m_gameUI.IsNetPlay;
+        public override bool Visible => !m_gameUI.Core.IsNetPlay;
         public override string Name => "快速保存";
 
         public InGameUI_SaveStateQuick(InGameUI gameUI)
@@ -17,7 +17,7 @@ namespace AxibugEmuOnline.Client
 
         public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
         {
-            if (m_gameUI.IsNetPlay) return;
+            if (m_gameUI.Core.IsNetPlay) return;
 
             Stopwatch sw = Stopwatch.StartNew();
             object state = m_gameUI.Core.GetState();

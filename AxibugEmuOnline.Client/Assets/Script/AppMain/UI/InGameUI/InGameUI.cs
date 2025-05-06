@@ -20,20 +20,7 @@ namespace AxibugEmuOnline.Client
 
         public override bool Enable => gameObject.activeInHierarchy;
 
-        /// <summary> 指示该游戏实例是否处于联机模式 </summary>
-        public bool IsNetPlay
-        {
-            get
-            {
-                if (!App.user.IsLoggedIn) return false;
-                if (App.roomMgr.mineRoomMiniInfo == null) return false;
-                if (App.roomMgr.RoomState <= RoomGameState.OnlyHost) return false;
-
-                return true;
-            }
-        }
-
-        public IEmuCore Core { get; private set; }
+        public EmuCore Core { get; private set; }
 
         protected override void Awake()
         {
@@ -69,18 +56,7 @@ namespace AxibugEmuOnline.Client
             //fluash netMsg
             NetMsg.Instance.DequeueNesMsg();
 
-            if (!Core.PushEmulatorFrame()) return;
-
-            if (IsNetPlay) //skip frame handle
-            {
-                var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-                if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
-                for (var i = 0; i < skipFrameCount; i++)
-                    if (!Core.PushEmulatorFrame())
-                        break;
-            }
-
-            Core.AfterPushFrame();
+            Core.PushEmulatorFrame();
         }
 
         protected override void OnDestroy()
@@ -103,7 +79,7 @@ namespace AxibugEmuOnline.Client
             return m_state;
         }
 
-        public void Show(RomFile currentRom, IEmuCore core)
+        public void Show(RomFile currentRom, EmuCore core)
         {
             m_delayCreateRoom = false;
             m_state = null; //清空游戏快照
@@ -186,14 +162,14 @@ namespace AxibugEmuOnline.Client
         {
             OverlayManager.PopSideBar(menus, 0, PopMenu_OnHide);
 
-            if (!IsNetPlay) //单人模式暂停模拟器
+            if (!Core.IsNetPlay) //单人模式暂停模拟器
                 Core.Pause();
         }
 
         //菜单关闭时候
         private void PopMenu_OnHide()
         {
-            if (!IsNetPlay) //单人模式恢复模拟器的暂停
+            if (!Core.IsNetPlay) //单人模式恢复模拟器的暂停
                 Core.Resume();
         }
 

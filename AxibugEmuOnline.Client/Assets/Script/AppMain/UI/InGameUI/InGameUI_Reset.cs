@@ -6,7 +6,7 @@ namespace AxibugEmuOnline.Client
     {
         private InGameUI m_gameUI;
         public override string Name => "复位";
-        public override bool Visible => !m_gameUI.IsNetPlay || App.roomMgr.IsHost;
+        public override bool Visible => !m_gameUI.Core.IsNetPlay || App.roomMgr.IsHost;
 
         public InGameUI_Reset(InGameUI gameUI)
         {
@@ -15,7 +15,7 @@ namespace AxibugEmuOnline.Client
 
         public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
         {
-            if (!m_gameUI.IsNetPlay)
+            if (!m_gameUI.Core.IsNetPlay)
             {
                 App.emu.ResetGame();
             }
