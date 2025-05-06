@@ -1,19 +1,14 @@
-﻿#pragma warning disable CS0618 // 类型或成员已过时
-
-using AxibugEmuOnline.Client.ClientCore;
+﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using AxiReplay;
 using System;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client
 {
-    /// <summary>
-    /// use <see cref="EmuCore{INPUTDATA}"/> instead
-    /// </summary>
-    [Obsolete("不可直接继承,需要继承EmuCore类型")]
-    public abstract class IEmuCore : MonoBehaviour
+    public abstract class EmuCore : MonoBehaviour
     {
         /// <summary> 获得模拟器核心中的状态快照对象 </summary>
         public abstract object GetState();
@@ -43,17 +38,48 @@ namespace AxibugEmuOnline.Client
         /// <summary> 获取当前模拟器帧序号,在加载快照和Reset后,应当重置为0 </summary>
         public abstract uint Frame { get; }
 
-        public abstract bool PushEmulatorFrame();
+        public abstract void PushEmulatorFrame();
         /// <summary> 模拟器核心推帧结束 </summary>
-        public abstract void AfterPushFrame();
+        protected abstract void AfterPushFrame();
         public abstract void GetAudioParams(out int frequency, out int channels);
         public abstract Texture OutputPixel { get; }
         public abstract RawImage DrawCanvas { get; }
+
+
+        /// <summary> 指示该游戏实例是否处于联机模式 </summary>
+        public bool IsNetPlay
+        {
+            get
+            {
+                if (!App.user.IsLoggedIn) return false;
+                if (App.roomMgr.mineRoomMiniInfo == null) return false;
+                if (App.roomMgr.RoomState <= RoomGameState.OnlyHost) return false;
+
+                return true;
+            }
+        }
     }
 
-    public abstract class EmuCore<INPUTDATA> : IEmuCore
+    public abstract class EmuCore<INPUTDATA> : EmuCore
     {
-        public sealed override bool PushEmulatorFrame()
+        public sealed override void PushEmulatorFrame()
+        {
+            if (!TryPushEmulatorFrame()) return;
+
+            if (IsNetPlay) //skip frame handle
+            {
+                var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
+                if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
+                for (var i = 0; i < skipFrameCount; i++)
+                {
+                    if (!TryPushEmulatorFrame()) break;
+                }
+            }
+
+            AfterPushFrame();
+        }
+
+        bool TryPushEmulatorFrame()
         {
             if (SampleInputData(out var inputData))
             {
@@ -69,7 +95,7 @@ namespace AxibugEmuOnline.Client
             bool result = false;
             inputData = default(INPUTDATA);
 
-            if (InGameUI.Instance.IsNetPlay)
+            if (IsNetPlay)
             {
                 ReplayStep replayData;
                 int frameDiff;
@@ -116,4 +142,3 @@ namespace AxibugEmuOnline.Client
         protected abstract bool OnPushEmulatorFrame(INPUTDATA InputData);
     }
 }
-#pragma warning restore CS0618 // 类型或成员已过时
