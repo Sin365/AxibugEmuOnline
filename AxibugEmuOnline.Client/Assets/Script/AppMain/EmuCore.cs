@@ -60,8 +60,11 @@ namespace AxibugEmuOnline.Client
         }
     }
 
+    /// <typeparam name="INPUTDATA">输入数据类型</typeparam>
     public abstract class EmuCore<INPUTDATA> : EmuCore
     {
+        protected virtual bool EnableRollbackNetCode => false;
+
         public sealed override void PushEmulatorFrame()
         {
             if (!TryPushEmulatorFrame()) return;
@@ -83,13 +86,31 @@ namespace AxibugEmuOnline.Client
         {
             if (SampleInputData(out var inputData))
             {
+                if (IsNetPlay) SendLocalInput();
+
                 return OnPushEmulatorFrame(inputData);
             }
 
             return false;
         }
 
+        private void SendLocalInput()
+        {
+            var localState = GetLocalInput();
+            var rawData = InputDataToNet(localState);
+            App.roomMgr.SendRoomSingelPlayerInput(Frame, rawData);
+
+            if (m_lastTestInput != rawData)
+            {
+                m_lastTestInput = rawData;
+                App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
+            }
+        }
+
         ulong m_lastTestInput;
+        ReplayStep m_replayData;
+        int m_frameDiff;
+        bool m_inputDiff;
         protected bool SampleInputData(out INPUTDATA inputData)
         {
             bool result = false;
@@ -97,34 +118,21 @@ namespace AxibugEmuOnline.Client
 
             if (IsNetPlay)
             {
-                ReplayStep replayData;
-                int frameDiff;
-                bool inputDiff;
-
-                if (App.roomMgr.netReplay.TryGetNextFrame((int)Frame, out replayData, out frameDiff, out inputDiff))
+                if (App.roomMgr.netReplay.TryGetNextFrame((int)Frame, EnableRollbackNetCode ? true : false, out m_replayData, out m_frameDiff, out m_inputDiff))
                 {
-                    if (inputDiff)
+                    if (m_inputDiff)
                     {
-                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{frameDiff} " +
-                            $"frame=>{replayData.FrameStartID} InPut=>{replayData.InPut}");
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{m_frameDiff} " +
+                            $"frame=>{m_replayData.FrameStartID} InPut=>{m_replayData.InPut}");
                     }
 
-                    inputData = ConvertInputDataFromNet(replayData);
+                    inputData = ConvertInputDataFromNet(m_replayData);
                     result = true;
                 }
                 else
                 {
                     result = false;
                 }
-
-                var localState = GetLocalInput();
-                var rawData = InputDataToNet(localState);
-                if (m_lastTestInput != rawData)
-                {
-                    m_lastTestInput = rawData;
-                    App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} Input F:{App.roomMgr.netReplay.mCurrClientFrameIdx} | I:{rawData}");
-                }
-                App.roomMgr.SendRoomSingelPlayerInput(Frame, rawData);
             }
             else//单机模式
             {

@@ -65,7 +65,7 @@ namespace AxiReplay
             frameProfiler.InputHead(inputData.FrameStartID);
         }
 
-        public bool TryGetNextFrame(out ReplayStep data, out int frameDiff, out bool inputDiff)
+        public bool TryGetNextFrame(int targetFrame, bool indirectGet, out ReplayStep data, out int frameDiff, out bool inputDiff)
         {
             if (!bNetInit)
             {
@@ -74,37 +74,27 @@ namespace AxiReplay
                 inputDiff = false;
                 return false;
             }
-            TakeFrame(1, out data, out frameDiff, out inputDiff);
-            return frameDiff > 0;
+            return TakeFrameToTargetFrame(targetFrame, indirectGet, out data, out frameDiff, out inputDiff);
         }
 
-        public bool TryGetNextFrame(int targetFrame, out ReplayStep data, out int frameDiff, out bool inputDiff)
+        bool checkCanGetFrame(int targetFrame, bool indirectGet)
         {
-            if (!bNetInit)
+            if (indirectGet)
             {
-                data = default(ReplayStep);
-                frameDiff = default(int);
-                inputDiff = false;
-                return false;
+                return targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx;
             }
-            return TakeFrameToTargetFrame(targetFrame, out data, out frameDiff, out inputDiff);
+            else
+            {
+                return targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= frameProfiler.TempFrameCount(mRemoteForwardCount);
+            }
         }
 
-        void TakeFrame(int addFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
-        {
-            int targetFrame = mCurrClientFrameIdx + addFrame;
-            TakeFrameToTargetFrame(targetFrame, out data, out bFrameDiff, out inputDiff);
-        }
-
-        bool TakeFrameToTargetFrame(int targetFrame, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
+        bool TakeFrameToTargetFrame(int targetFrame, bool indirectGet, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
         {
             bool result;
             inputDiff = false;
 
-
-            //if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count > 0)
-            //if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= mRemoteForwardCount)
-            if (targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= frameProfiler.TempFrameCount(mRemoteForwardCount))
+            if (checkCanGetFrame(targetFrame, indirectGet))
             {
                 //当前帧追加
                 mCurrClientFrameIdx = targetFrame;
