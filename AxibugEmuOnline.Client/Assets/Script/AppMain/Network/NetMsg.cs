@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,15 @@ namespace AxibugEmuOnline.Client.Network
         private Dictionary<int, List<Delegate>> netEventDic = new Dictionary<int, List<Delegate>>(128);
 
         private Queue<ValueTuple<int, int, byte[]>> queueNetMsg = new Queue<ValueTuple<int, int, byte[]>>();
+        public static object lockQueueNetMsg = new object();
+
+        private Queue<Action> queueEventFromNet = new Queue<Action>();
+        public static object lockQueueEventFromNet = new object();
+
 
         private NetMsg() { }
 
 
-        public static object lockQueueObj = new object();
 
         #region RegisterMsgEvent
 
@@ -62,10 +67,53 @@ namespace AxibugEmuOnline.Client.Network
         }
         #endregion
 
-        #region PostEvent
-        public void EnqueueNesMsg(int cmd, int ERRCODE, byte[] arg)
+
+        public void NextNetEvent()
         {
-            lock (lockQueueObj)
+            DequeueNesMsg();
+            DequeueEventFromNet();
+        }
+
+        #region PostEventFromNet
+
+        public void EnqueueEventFromNet(Action act)
+        {
+            lock (lockQueueEventFromNet)
+            {
+                queueEventFromNet.Enqueue(act);
+            }
+        }
+
+        public void DequeueEventFromNet()
+        {
+            lock (lockQueueEventFromNet)
+            {
+                while (queueEventFromNet.Count > 0)
+                {
+                    var msgData = queueEventFromNet.Dequeue();
+                    PostNetEventFromNet(msgData);
+                }
+            }
+        }
+
+        void PostNetEventFromNet(Action act)
+        {
+            try
+            { 
+                act?.Invoke();
+            }
+            catch(Exception ex)
+            {
+                App.log.Error(ex.ToString());
+            }
+        }
+        #endregion
+
+        #region PostNetMsg
+
+        public void EnqueueNetMsg(int cmd, int ERRCODE, byte[] arg)
+        {
+            lock (lockQueueNetMsg)
             {
                 queueNetMsg.Enqueue(new ValueTuple<int, int, byte[]>(cmd, ERRCODE, arg));
             }
@@ -73,7 +121,7 @@ namespace AxibugEmuOnline.Client.Network
 
         public void DequeueNesMsg()
         {
-            lock (lockQueueObj)
+            lock (lockQueueNetMsg)
             {
                 while (queueNetMsg.Count > 0)
                 {

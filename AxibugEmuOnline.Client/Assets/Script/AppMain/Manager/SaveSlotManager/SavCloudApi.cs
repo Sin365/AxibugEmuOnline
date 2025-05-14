@@ -70,7 +70,7 @@ namespace AxibugEmuOnline.Client
                 SavDataIdx = SavDataIdx
             };
             App.log.Info($"SendDelGameSavList");
-            App.network.SendToServer((int)CommandID.CmdGamesavGetGameSavList, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGamesavDelGameSav, ProtoBufHelper.Serizlize(req));
         }
 
         void RecvDelGameSavList(byte[] reqData)
@@ -105,7 +105,7 @@ namespace AxibugEmuOnline.Client
             App.log.Info($"上传即时存档数据 原数据大小:{RawData.Length},压缩后;{compressRawData.Length}");
             App.log.Info($"上传截图 原数据大小:{SavImgData.Length},压缩后;{compressImgData.Length}");
 
-            App.network.SendToServer((int)CommandID.CmdGamesavGetGameSavList, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGamesavUploadGameSav, ProtoBufHelper.Serizlize(req));
         }
 
         void RecvUpLoadGameSav(byte[] reqData)
