@@ -65,7 +65,7 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
 
         public ulong GetPressedKeys()
         {
-            if (InGameUI.Instance.IsNetPlay)
+            if (InGameUI.Instance.Core.IsNetPlay)
                 return CurrRemoteInpuAllData;
             else
                 return CurrLocalInpuAllData;

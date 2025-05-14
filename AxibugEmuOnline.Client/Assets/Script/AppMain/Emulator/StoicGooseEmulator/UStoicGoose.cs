@@ -145,7 +145,7 @@ public class UStoicGoose : EmuCore<ulong>
         throw new NotImplementedException();
     }
 
-    public override void AfterPushFrame()
+    protected override void AfterPushFrame()
     {
         throw new NotImplementedException();
     }

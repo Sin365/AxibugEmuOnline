@@ -167,7 +167,7 @@ public class UEssgee : EmuCore<ulong>
         return mUniKeyboard.DoLocalPressedKeys();
     }
 
-    public override void AfterPushFrame()
+    protected override void AfterPushFrame()
     {
     }
 

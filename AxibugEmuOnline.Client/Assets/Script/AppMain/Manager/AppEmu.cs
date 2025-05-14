@@ -11,7 +11,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// unity的c#实现有bug,以接口类型保存的monobehaviour引用,!=和==运算符没有调用到monobehaviour重写过的运算符
         /// 但是Equals方法可以,所以,这个接口判断为空请使用Equals
         /// </summary>
-        private IEmuCore m_emuCore;
+        private EmuCore m_emuCore;
 
         private IControllerSetuper m_controllerSetuper;
 
@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// unity的c#实现有bug,以接口类型保存的monobehaviour引用,!=和==运算符没有调用到monobehaviour重写过的运算符
         /// 但是Equals方法可以,所以,这个接口判断为空请使用Equals
         /// </summary>
-        public IEmuCore Core => m_emuCore;
+        public EmuCore Core => m_emuCore;
 
         public AppEmu()
         {
@@ -53,14 +53,14 @@ namespace AxibugEmuOnline.Client.Manager
             switch (romFile.Platform)
             {
                 case RomPlatformType.Nes:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("NES/NesEmulator")).GetComponent<IEmuCore>();
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("NES/NesEmulator")).GetComponent<EmuCore>();
                     break;
                 case RomPlatformType.Cps1:
                 case RomPlatformType.Cps2:
                 case RomPlatformType.Igs:
                 case RomPlatformType.Neogeo:
                 case RomPlatformType.ArcadeOld:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<IEmuCore>();
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<EmuCore>();
                     break;
                 case RomPlatformType.MasterSystem:
                 case RomPlatformType.GameGear:
@@ -69,11 +69,11 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.ColecoVision:
                 case RomPlatformType.Sc3000:
                 case RomPlatformType.Sg1000:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("EssgeeUnity/EssgeeUnity")).GetComponent<IEmuCore>();
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("EssgeeUnity/EssgeeUnity")).GetComponent<EmuCore>();
                     break;
                 case RomPlatformType.WonderSwan:
                 case RomPlatformType.WonderSwanColor:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("StoicGooseUnity/StoicGooseUnity")).GetComponent<IEmuCore>();
+                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("StoicGooseUnity/StoicGooseUnity")).GetComponent<EmuCore>();
                     break;
             }
 
