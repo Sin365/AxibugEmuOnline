@@ -165,12 +165,15 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 byte[] StateRawData = msg.StateRaw.ToArray();
                 byte[] ImgData = msg.SavImg.ToArray();
-                GetNewRomPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.axisav", out string rompath);
-                GetNewRomPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.axiimg", out string imgpath);
+                GetNewRomPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.sav", out string rompath);
+                GetNewRomPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.jpg", out string imgpath);
 
-                if (!CreateFile(Path.Combine(Config.cfg.savDataPath, rompath), StateRawData)
-                    ||
-                !CreateFile(Path.Combine(Config.cfg.savDataPath, imgpath), StateRawData)
+                ImgData = Helper.DecompressByteArray(ImgData);
+
+                if (
+                    CreateFile(Path.Combine(Config.cfg.savDataPath, rompath), StateRawData)
+                    &&
+                    CreateFile(Path.Combine(Config.cfg.savDataPath, imgpath), ImgData)
                     )
                 {
                     //INSERT INTO `haoyue_emu`.`user_gamesavedata` ( `uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate`) VALUES ( 0, 0, 2147483647, '', '', '', '', '0000-00-00 00:00:00');
@@ -199,6 +202,10 @@ namespace AxibugEmuOnline.Server.Manager
                             }
                         }
                     }
+                }
+                else
+                {
+                    errCode = ErrorCode.ErrorRomFailSavedata;
                 }
             }
 
@@ -251,6 +258,7 @@ namespace AxibugEmuOnline.Server.Manager
                 {
                     fs.Write(data, 0, data.Length);
                 }
+                AppSrv.g_Log.Error($"CreeateFile {path}");
                 return true;
             }
             catch (Exception ex)
