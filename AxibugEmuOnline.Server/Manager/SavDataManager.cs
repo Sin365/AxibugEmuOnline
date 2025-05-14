@@ -25,11 +25,10 @@ namespace AxibugEmuOnline.Server.Manager
             Protobuf_Mine_GetGameSavList_RESP respData = new Protobuf_Mine_GetGameSavList_RESP();
 
             respData.RomID = msg.RomID;
-            Protobuf_Mine_GameSavInfo nulldata = null;
-            respData.SavDataList.Add(nulldata);
-            respData.SavDataList.Add(nulldata);
-            respData.SavDataList.Add(nulldata);
-            respData.SavDataList.Add(nulldata);
+            respData.SavDataList.Add(new Protobuf_Mine_GameSavInfo() { BHadSaveData = false, SavDataIdx = 0 });
+            respData.SavDataList.Add(new Protobuf_Mine_GameSavInfo() { BHadSaveData = false, SavDataIdx = 1 });
+            respData.SavDataList.Add(new Protobuf_Mine_GameSavInfo() { BHadSaveData = false, SavDataIdx = 2 });
+            respData.SavDataList.Add(new Protobuf_Mine_GameSavInfo() { BHadSaveData = false, SavDataIdx = 3 });
 
             string query = "SELECT `id`,`uid`,`romid`, `savidx`, `savName`,`savNote`, `savUrl`,`savImgUrl`, `savDate`, `savSequence` from user_gamesavedata where uid = ?uid and romid = ?romid";
             bool bHad = false;
@@ -44,28 +43,24 @@ namespace AxibugEmuOnline.Server.Manager
                     {
                         while (reader.Read())
                         {
-                            Protobuf_Mine_GameSavInfo resp = new Protobuf_Mine_GameSavInfo()
-                            {
-                                BHadSaveData = true,
-                                SavID = reader.GetInt64(0),
-                                Uid = reader.GetInt64(1),
-                                RomID = reader.GetInt32(2),
-                                SavDataIdx = reader.GetInt32(3),
-                                SavName = reader.GetString(4),
-                                Note = reader.GetString(5),
-                                SavUrl = reader.GetString(6),
-                                SavImgUrl = reader.GetString(7),
-                                SavDate = reader.GetDateTime(8).ToString(),
-                                Sequence = reader.GetInt32(9),
-                                GamePlatformType = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.RomID)
-                            };
-                            respData.SavDataList[resp.SavDataIdx] = resp;
+                            int savidx = reader.GetInt32(3);
+                            respData.SavDataList[savidx].BHadSaveData = true;
+                            respData.SavDataList[savidx].SavID = reader.GetInt64(0);
+                            respData.SavDataList[savidx].Uid = reader.GetInt64(1);
+                            respData.SavDataList[savidx].RomID = reader.GetInt32(2);
+                            respData.SavDataList[savidx].SavDataIdx = savidx;
+                            respData.SavDataList[savidx].SavName = reader.GetString(4);
+                            respData.SavDataList[savidx].Note = reader.GetString(5);
+                            respData.SavDataList[savidx].SavUrl = reader.GetString(6);
+                            respData.SavDataList[savidx].SavImgUrl = reader.GetString(7);
+                            respData.SavDataList[savidx].SavDate = reader.GetDateTime(8).ToString();
+                            respData.SavDataList[savidx].Sequence = reader.GetInt32(9);
+                            respData.SavDataList[savidx].GamePlatformType = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.RomID);
                         }
                     }
                 }
             }
 
-            respData.RomID = msg.RomID;
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavGetGameSavList, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(respData));
         }
 
