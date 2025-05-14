@@ -38,7 +38,7 @@ namespace AxibugEmuOnline.Client
                 if (romID != Host.RomID) return;
                 NetData = savSlotData[Host.SlotIndex];
 
-                if (NetData == null) //云存档不存在,上传本地存档
+                if (!NetData.BHadSaveData) //云存档不存在,上传本地存档
                 {
                     FSM.ChangeState<UploadingState>();
                 }

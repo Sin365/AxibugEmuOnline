@@ -11,7 +11,7 @@ namespace AxibugEmuOnline.Client
         {
             public override void OnUpdate()
             {
-                if (App.network.isConnected)
+                if (App.user.IsLoggedIn)
                 {
                     FSM.ChangeState<CheckingState>();
                 }

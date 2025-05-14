@@ -72,6 +72,7 @@ namespace AxibugEmuOnline.Client
             SlotIndex = slotIndex;
             FSM = new SimpleFSM<SaveFile>(this);
             FSM.AddState<IdleState>();
+            FSM.AddState<CheckingNetworkState>();//？
             FSM.AddState<CheckingState>();
             FSM.AddState<DownloadingState>();
             FSM.AddState<UploadingState>();
