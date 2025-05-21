@@ -15,7 +15,6 @@ namespace AxibugEmuOnline.Client
         private RectTransform m_rect => transform as RectTransform;
 
         private RectTransform m_target;
-        private TweenerCore<Vector3, Vector3, VectorOptions> m_trackTween;
 
         public RectTransform Target
         {
@@ -37,7 +36,6 @@ namespace AxibugEmuOnline.Client
 
                 var itemUIRect = m_target.transform as RectTransform;
                 m_rect.pivot = itemUIRect.pivot;
-                m_rect.sizeDelta = itemUIRect.rect.size;
                 m_rect.SetAsLastSibling();
 
                 animator.SetTrigger("reactive");
@@ -47,12 +45,30 @@ namespace AxibugEmuOnline.Client
                     m_trackTween.Kill();
                     m_trackTween = null;
                 }
-                m_trackTween = DOTween.To(() => m_rect.position, (_value) => m_rect.position = _value, itemUIRect.position, 0.125f);
-                m_trackTween.onComplete = () => m_trackTween = null;
+
+                var startSize = m_rect.sizeDelta;
+                var startPos = m_rect.position;
+
+                m_trackTween = DOTween.To(
+                    () => 0f,
+                    (_value) =>
+                    {
+                        var progress = _value;
+                        m_rect.position = Vector3.Lerp(startPos, itemUIRect.position, progress);
+                        m_rect.sizeDelta = Vector2.Lerp(startSize, itemUIRect.rect.size, progress);
+                    },
+                    1f,
+                    0.125f);
+                m_trackTween.onComplete = () =>
+                {
+                    m_trackTween = null;
+                };
             }
         }
 
         private bool m_active;
+        private TweenerCore<float, float, FloatOptions> m_trackTween;
+
         public bool Active
         {
             get => m_active;
@@ -73,11 +89,16 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        private void LateUpdate()
+        struct TrackTarget
         {
-            if (m_trackTween != null && m_trackTween.endValue != Target.position)
+            Vector3 pos;
+            Vector2 size;
+        }
+
+        struct TrackTargetOption : IPlugOptions
+        {
+            public void Reset()
             {
-                m_trackTween.ChangeEndValue(Target.position, true);
             }
         }
     }
