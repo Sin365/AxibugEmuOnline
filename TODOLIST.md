@@ -1,6 +1,6 @@
 ## TODOLIST
 
-#### C=>C
+#### C=>Client
 #### S=>Server
 
 #### Alpha初版 TODOLIST
