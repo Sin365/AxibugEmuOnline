@@ -15,11 +15,11 @@ namespace AxibugEmuOnline.Client.Network
     {
         public NetworkHelper()
         {
+            OnConnected += NetworkConnected;
             //指定接收服务器数据事件
             OnReceiveData += GetDataCallBack;
             //断开连接
             OnClose += OnConnectClose;
-            OnConnected += NetworkConnected;
             //网络库调试信息输出事件，用于打印网络内容
             OnLogOut += NetworkDeBugLog;
         }
@@ -39,7 +39,17 @@ namespace AxibugEmuOnline.Client.Network
         /// </summary>
         const int ReConnectTryTime = 1000;
 
-        public void NetworkConnected(bool IsConnect)
+        void NetworkConnected(bool IsConnect)
+        {
+            NetMsg.Instance.EnqueueEventFromNet(() => NetworkConnected_Delegate(IsConnect));
+        }
+
+        void OnConnectClose()
+        {
+            NetMsg.Instance.EnqueueEventFromNet(() => OnConnectClose_Delegate());
+        }
+
+        void NetworkConnected_Delegate(bool IsConnect)
         {
             NetworkDeBugLog($"NetworkConnected:{IsConnect}");
             if (IsConnect)
@@ -63,7 +73,7 @@ namespace AxibugEmuOnline.Client.Network
             }
         }
 
-        public void NetworkDeBugLog(string str)
+        void NetworkDeBugLog(string str)
         {
             //用于Unity内的输出
             //Debug.Log("NetCoreDebug >> "+str);
@@ -76,7 +86,7 @@ namespace AxibugEmuOnline.Client.Network
         /// <param name="CMDID">协议ID</param>
         /// <param name="ERRCODE">错误编号</param>
         /// <param name="data">业务数据</param>
-        public void GetDataCallBack(int CMDID, int ERRCODE, byte[] data)
+        void GetDataCallBack(int CMDID, int ERRCODE, byte[] data)
         {
             //NetworkDeBugLog("收到消息 CMDID =>" + CMDID + " ERRCODE =>" + ERRCODE + " 数据长度=>" + data.Length);
             try
@@ -86,7 +96,7 @@ namespace AxibugEmuOnline.Client.Network
                 if (CMDID <= (int)CommandID.CmdPong)
                     NetMsg.Instance.PostNetMsgEvent(CMDID, ERRCODE, data);
                 else//加入队列，主线程来取
-                    NetMsg.Instance.EnqueueNesMsg(CMDID, ERRCODE, data);
+                    NetMsg.Instance.EnqueueNetMsg(CMDID, ERRCODE, data);
             }
             catch (Exception ex)
             {
@@ -97,7 +107,7 @@ namespace AxibugEmuOnline.Client.Network
         /// <summary>
         /// 关闭连接
         /// </summary>
-        public void OnConnectClose()
+        void OnConnectClose_Delegate()
         {
             NetworkDeBugLog("OnConnectClose");
             Eventer.Instance.PostEvent(EEvent.OnLossLoginState);

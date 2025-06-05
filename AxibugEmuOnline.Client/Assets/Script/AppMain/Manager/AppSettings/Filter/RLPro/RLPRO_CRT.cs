@@ -40,7 +40,8 @@ namespace AxibugEmuOnline.Client.Filters
         public FloatParameter hardScan = -8.0f;
         [Range(-3f, 1f)]
         public FloatParameter hardPix = -3.0f;
-        public Vector2Parameter warp = new Vector2(0.03125f, 0.04166f);
+        public FloatParameter warpX = 0.03125f;
+        public FloatParameter warpY = 0.04166f;
         [Range(1f, 16f)]
         public FloatParameter resScale = 4f;
         [Range(0.5f, 5f)]
@@ -131,14 +132,14 @@ namespace AxibugEmuOnline.Client.Filters
                     m_tvEffectMat.EnableKeyword("_CubicDistortion"); break;
             }
 
-            m_tvEffectMat.SetFloat("maskDark", maskDark.GetValue());
-            m_tvEffectMat.SetFloat("maskLight", maskLight.GetValue());
-            m_tvEffectMat.SetFloat("hardScan", hardScan.GetValue());
-            m_tvEffectMat.SetFloat("hardPix", hardPix.GetValue());
-            m_tvEffectMat.SetVector("warp", warp.GetValue());
-            m_tvEffectMat.SetFloat("resScale", resScale.GetValue());
-            m_tvEffectMat.SetFloat("scale", scale.GetValue());
-            m_tvEffectMat.SetFloat("fade", fade.GetValue());
+            m_tvEffectMat.SetFloat("maskDark", maskDark);
+            m_tvEffectMat.SetFloat("maskLight", maskLight);
+            m_tvEffectMat.SetFloat("hardScan", hardScan);
+            m_tvEffectMat.SetFloat("hardPix", hardPix);
+            m_tvEffectMat.SetVector("warp", new Vector4(warpX, warpY));
+            m_tvEffectMat.SetFloat("resScale", resScale);
+            m_tvEffectMat.SetFloat("scale", scale);
+            m_tvEffectMat.SetFloat("fade", fade);
 
             Graphics.Blit(src, rt, m_tvEffectMat);
 

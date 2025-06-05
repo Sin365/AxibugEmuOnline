@@ -1,5 +1,4 @@
-﻿using Sony.Vita.Dialog;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AxiIO
 {

@@ -10,6 +10,11 @@ namespace AxibugEmuOnline.Client
             {
                 Host.CloudAPI.OnUploadedSavData += Api_OnUploadedSavData;
 
+                if (Host.IsEmpty)
+                {
+                    FSM.ChangeState<SyncedState>();
+                    return;
+                }
                 Host.GetSavData(out byte[] savData, out byte[] screenData);
                 Host.CloudAPI.SendUpLoadGameSav(Host.RomID, Host.SlotIndex, Host.Sequecen, savData, screenData);
             }

@@ -85,6 +85,7 @@ enum ErrorCode
 	ERROR_ROOM_CANT_DO_CURR_STATE =50;//当前房间状态不允许本操作
 	
 	ERROR_ROM_DONT_HAD_SAVEDATA = 80;//即时存档不存在
+	ERROR_ROM_FAIL_SAVEDATA = 81;//即时存档不存在
 	
 	ERROR_ROM_ALREADY_HAD_STAR =403;//已经收藏
 	ERROR_ROM_DONT_HAD_STAR =404;//并没有收藏

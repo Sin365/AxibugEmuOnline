@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AxibugEmuOnline.Server.Common
@@ -20,6 +21,28 @@ namespace AxibugEmuOnline.Server.Common
             return Convert.ToInt64(ts.TotalSeconds);
         }
 
+
+        public static byte[] CompressByteArray(byte[] bytesToCompress)
+        {
+            using (var compressedMemoryStream = new System.IO.MemoryStream())
+            using (var gzipStream = new GZipStream(compressedMemoryStream, CompressionMode.Compress))
+            {
+                gzipStream.Write(bytesToCompress, 0, bytesToCompress.Length);
+                gzipStream.Close();
+                return compressedMemoryStream.ToArray();
+            }
+        }
+
+        public static byte[] DecompressByteArray(byte[] compressedBytes)
+        {
+            using (var compressedMemoryStream = new System.IO.MemoryStream(compressedBytes))
+            using (var gzipStream = new GZipStream(compressedMemoryStream, CompressionMode.Decompress))
+            using (var resultMemoryStream = new System.IO.MemoryStream())
+            {
+                gzipStream.CopyTo(resultMemoryStream);
+                return resultMemoryStream.ToArray();
+            }
+        }
         public static string FileMD5Hash(string filePath)
         {
             using (var md5 = MD5.Create())

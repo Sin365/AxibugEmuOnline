@@ -46,7 +46,7 @@ namespace AxibugEmuOnline.Client
         float LastLoopTime_15s;
         private void Update()
         {
-            NetMsg.Instance.DequeueNesMsg();
+            NetMsg.Instance.NextNetEvent();
 
             LoopAction_tick?.Invoke();
 
