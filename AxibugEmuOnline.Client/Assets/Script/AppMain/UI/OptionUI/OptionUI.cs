@@ -1,5 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -84,8 +86,34 @@ namespace AxibugEmuOnline.Client
 
         private void UpdateMenuState()
         {
+            if (!m_bPoped) return;
+
             if (checkDirty())
             {
+                Canvas.ForceUpdateCanvases();
+
+                if (m_popTween != null)
+                {
+                    Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
+                    m_popTween.ChangeEndValue(end, false);
+                }
+                else
+                {
+                    Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
+                    var topParent = m_parent;
+                    while (topParent != null && topParent.m_parent != null)
+                    {
+                        topParent = topParent.m_parent;
+                    }
+                    if (topParent != null)
+                    {
+                        topParent.MenuRoot.anchoredPosition = end;
+                    }
+                    else
+                    {
+                        MenuRoot.anchoredPosition = end;
+                    }
+                }
                 RebuildSelectIndex();
             }
         }
@@ -148,6 +176,8 @@ namespace AxibugEmuOnline.Client
             return dirty;
         }
 
+        private TweenerCore<Vector2, Vector2, VectorOptions> m_popTween;
+        private TweenerCore<Vector2, Vector2, VectorOptions> m_hideTween;
         CommandListener.ScheduleType? m_lastCS;
         private Action m_onClose;
 
@@ -167,8 +197,14 @@ namespace AxibugEmuOnline.Client
             SelectBorder.Target = optionUI_MenuItem.transform as RectTransform;
         }
 
+
         public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : InternalOptionMenu
         {
+            if (m_hideTween != null)
+            {
+                m_hideTween.Kill(true);
+            }
+
             m_onClose = onClose;
             ReleaseRuntimeMenus();
             foreach (var menu in menus) CreateRuntimeMenuItem(menu);
@@ -187,10 +223,11 @@ namespace AxibugEmuOnline.Client
 
             if (!m_bPoped)
             {
+
                 m_bPoped = true;
                 Vector2 start = new Vector2(0, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
-                DOTween.To(
+                m_popTween = DOTween.To(
                     () => start,
                     (value) =>
                     {
@@ -214,6 +251,7 @@ namespace AxibugEmuOnline.Client
                     end,
                     0.3f
                     ).SetEase(Ease.OutCubic);
+                m_popTween.onComplete = () => m_popTween = null;
 
                 m_lastCS = CommandDispatcher.Instance.Mode;
                 CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
@@ -236,15 +274,17 @@ namespace AxibugEmuOnline.Client
                 Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
 
-                ReleaseRuntimeMenus();
-                m_runtimeMenuItems.Clear();
-
                 SelectBorder.gameObject.SetActiveEx(false);
 
                 CommandDispatcher.Instance.UnRegistController(this);
                 Canvas.ForceUpdateCanvases();
 
-                DOTween.To(
+                if (m_popTween != null)
+                {
+                    m_popTween.Kill(true);
+                }
+
+                m_hideTween = DOTween.To(
                     () => start,
                     (value) =>
                     {
@@ -268,6 +308,12 @@ namespace AxibugEmuOnline.Client
                     end,
                     0.3f
                     ).SetEase(Ease.OutCubic);
+                m_hideTween.onComplete = () =>
+                {
+                    ReleaseRuntimeMenus();
+                    m_runtimeMenuItems.Clear();
+                    m_hideTween = null;
+                };
 
                 m_bPoped = false;
 
