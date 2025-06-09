@@ -152,41 +152,41 @@ namespace AxibugEmuOnline.Client.Settings
     public class MasterSystemKeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.MasterSystem;
-        public override int ControllerCount => 2;
+        public override int ControllerCount => 4;
     }
 
     public class SG1000KeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.Sg1000;
-        public override int ControllerCount => 2;
+        public override int ControllerCount => 4;
     }
 
     public class ColecoVisionKeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.ColecoVision;
-        public override int ControllerCount => 2;
+        public override int ControllerCount => 4;
     }
 
     public class GameBoyColorKeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.GameBoyColor;
-        public override int ControllerCount => 1;
+        public override int ControllerCount => 4;
     }
     public class GameBoyKeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.GameBoy;
-        public override int ControllerCount => 1;
+        public override int ControllerCount => 4;
     }
 
     public class GameGearKeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.GameGear;
-        public override int ControllerCount => 2;
+        public override int ControllerCount => 4;
     }
 
     public class SC3000KeyBinding : EssgeeKeyBinding
     {
         public override RomPlatformType Platform => RomPlatformType.Sc3000;
-        public override int ControllerCount => 2;
+        public override int ControllerCount => 4;
     }
 }
