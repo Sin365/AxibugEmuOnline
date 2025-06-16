@@ -6,6 +6,7 @@
 #define fract frac
 #define mix lerp
 #define mod(x,y) x%y
+#define mat4x4 float4x4
 
 float sinc(float x) { if (x == 0) { return 1.0; } else { return sin(x) / x; } }
 
