@@ -5,7 +5,7 @@ public class AxiPlayerPrefsForFileSystem : AxiPlayerPrefsFileBase
 {
     public AxiPlayerPrefsForFileSystem() : base(LoadData, SaveData)
     {
-        Debug.Log($"AxiPlayerPrefsForPSVita Init");
+        Debug.Log($"AxiPlayerPrefsForFileSystem Init");
     }
 
     protected static Dictionary<string, AxiPlayerPrefsKeyValye> LoadData()
