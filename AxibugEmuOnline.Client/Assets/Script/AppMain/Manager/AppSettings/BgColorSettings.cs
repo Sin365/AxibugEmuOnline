@@ -14,9 +14,9 @@ namespace AxibugEmuOnline.Client.Settings
         {
             get
             {
-                var color1 = PlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color1)}", null);
-                var color2 = PlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color2)}", null);
-                var name = PlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.Name)}", null);
+                var color1 = AxiPlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color1)}", null);
+                var color2 = AxiPlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color2)}", null);
+                var name = AxiPlayerPrefs.GetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.Name)}", null);
                 if (string.IsNullOrWhiteSpace(color1) || string.IsNullOrWhiteSpace(color2) || string.IsNullOrWhiteSpace(name))
                     return DEFAULT;
                 else
@@ -24,9 +24,9 @@ namespace AxibugEmuOnline.Client.Settings
             }
             set
             {
-                PlayerPrefs.SetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color1)}", $"#{ColorUtility.ToHtmlStringRGB(value.color1)}");
-                PlayerPrefs.SetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color2)}", $"#{ColorUtility.ToHtmlStringRGB(value.color2)}");
-                PlayerPrefs.SetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.Name)}", value.Name);
+                AxiPlayerPrefs.SetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color1)}", $"#{ColorUtility.ToHtmlStringRGB(value.color1)}");
+                AxiPlayerPrefs.SetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.color2)}", $"#{ColorUtility.ToHtmlStringRGB(value.color2)}");
+                AxiPlayerPrefs.SetString($"{nameof(BgColorSettings)}.{nameof(CurrentColor)}.{nameof(CurrentColor.Name)}", value.Name);
 
                 OnColorChanged?.Invoke(value);
             }

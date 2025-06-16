@@ -64,6 +64,10 @@ namespace AxibugEmuOnline.Client.ClientCore
 #else
             Application.persistentDataPath;
 #endif
+        public static string PersistentDataRootPath()
+        {
+            return s_persistentRoot;
+        }
 
         public static string PersistentDataPath(RomPlatformType emuPlatform)
         {

@@ -23,5 +23,6 @@ namespace AxiIO
         int file_ReadBytesToArr(string filePath, byte[] readToArr, int start, int len);
         string[] dir_GetDirectories(string path);
         string[] dir_GetFiles(string path);
-    };
+		void Ping();
+	};
 }

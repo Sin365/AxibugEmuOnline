@@ -5,8 +5,12 @@ using System.IO;
 namespace AxiIO
 {
     public class CSharpIO : IAxiIO
-    {
-        public void dir_CreateDirectory(string dirpath)
+	{
+		public void Ping()
+		{
+			throw new NotImplementedException();
+		}
+		public void dir_CreateDirectory(string dirpath)
         {
             System.IO.Directory.CreateDirectory(dirpath);
         }
@@ -72,5 +76,6 @@ namespace AxiIO
         {
             return System.IO.Directory.GetFiles(path);
         }
-    }
+
+	}
 }

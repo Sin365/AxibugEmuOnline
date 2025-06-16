@@ -14,8 +14,8 @@ namespace AxibugEmuOnline.Client.Settings
         /// </summary>
         public EnumScalerMode GlobalMode
         {
-            get => (EnumScalerMode)PlayerPrefs.GetInt($"{nameof(ScreenScaler)}.GlobalMode", 0);
-            set => PlayerPrefs.SetInt($"{nameof(ScreenScaler)}.GlobalMode", (int)value);
+            get => (EnumScalerMode)AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.GlobalMode", 0);
+            set => AxiPlayerPrefs.SetInt($"{nameof(ScreenScaler)}.GlobalMode", (int)value);
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace AxibugEmuOnline.Client.Settings
         /// <returns></returns>
         public EnumScalerMode GetMode(RomPlatformType platform)
         {
-            int setVal = PlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
+            int setVal = AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
             if (setVal == -1)
                 return GlobalMode;
             else
@@ -34,14 +34,14 @@ namespace AxibugEmuOnline.Client.Settings
 
         public bool IsSetMode(RomPlatformType platform)
         {
-            int setVal = PlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
+            int setVal = AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
             return setVal != -1;
         }
 
         public void SetMode(RomPlatformType platform, EnumScalerMode? mode)
         {
             int setVal = mode == null ? -1 : (int)mode;
-            PlayerPrefs.SetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", setVal);
+            AxiPlayerPrefs.SetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", setVal);
         }
 
         /// <summary>

@@ -1,19 +1,20 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace AxiIO
 {
-
     public static class AxiIO
     {
         static IAxiIO m_io;
-        public static IAxiIO io
+		public static IAxiIO io
         {
             get
             {
+                //Debug.Log("[AxiIO]");
                 if (m_io == null)
                 {
 #if UNITY_SWITCH && !UNITY_EDITOR
-                        m_io = new NSwitchIO();
+                    m_io = new NSwitchIO();
 #else
                     m_io = new CSharpIO();
 #endif

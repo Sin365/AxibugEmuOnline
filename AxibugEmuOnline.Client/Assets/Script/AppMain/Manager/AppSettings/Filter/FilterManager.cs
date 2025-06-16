@@ -25,7 +25,7 @@ namespace AxibugEmuOnline.Client.Settings
         public FilterManager()
         {
             loadFilters();
-            var json = PlayerPrefs.GetString(nameof(FilterRomSetting));
+            var json = AxiPlayerPrefs.GetString(nameof(FilterRomSetting));
             m_filterRomSetting = JsonUtility.FromJson<FilterRomSetting>(json) ?? new FilterRomSetting();
         }
 
@@ -152,7 +152,7 @@ namespace AxibugEmuOnline.Client.Settings
             m_filterRomSetting.Setup(rom, filter, preset);
 
             string json = m_filterRomSetting.ToJson();
-            PlayerPrefs.SetString(nameof(FilterRomSetting), json);
+            AxiPlayerPrefs.SetString(nameof(FilterRomSetting), json);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace AxibugEmuOnline.Client.Settings
 
             private void loadPresets()
             {
-                var json = PlayerPrefs.GetString($"Filter_{Name}_PresetList", string.Empty);
+                var json = AxiPlayerPrefs.GetString($"Filter_{Name}_PresetList", string.Empty);
                 var loadedPresets = JsonUtility.FromJson<FilterPresetList>(json);
                 if (loadedPresets == null) return;
                 else Presets = loadedPresets.presets;
@@ -223,7 +223,7 @@ namespace AxibugEmuOnline.Client.Settings
             public void SavePresets()
             {
                 var json = JsonUtility.ToJson(new FilterPresetList(Presets));
-                PlayerPrefs.SetString($"Filter_{Name}_PresetList", json);
+                AxiPlayerPrefs.SetString($"Filter_{Name}_PresetList", json);
             }
 
             public MsgBool CreatePreset(string presetName, out FilterPreset newPreset)
