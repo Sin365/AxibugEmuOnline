@@ -8,7 +8,7 @@ public class AxiPlayerPrefsForFileSystem : AxiPlayerPrefsFileBase
         Debug.Log($"AxiPlayerPrefsForPSVita Init");
     }
 
-    public static Dictionary<string, AxiPlayerPrefsKeyValye> LoadData()
+    protected static Dictionary<string, AxiPlayerPrefsKeyValye> LoadData()
     {
         if (!AxiIO.AxiIO.io.file_Exists(AxiPlayerPrefsFilePath))
             return new Dictionary<string, AxiPlayerPrefsKeyValye>();
@@ -32,7 +32,7 @@ public class AxiPlayerPrefsForFileSystem : AxiPlayerPrefsFileBase
         }
     }
 
-    public static void SaveData(Dictionary<string, AxiPlayerPrefsKeyValye> data)
+    protected static void SaveData(Dictionary<string, AxiPlayerPrefsKeyValye> data)
     {
         string jsonStr = AxiPlayerPrefsFileBase.DataToJsonStr(data);
         byte[] dataByteArray;
@@ -45,5 +45,4 @@ public class AxiPlayerPrefsForFileSystem : AxiPlayerPrefsFileBase
         }
         AxiIO.AxiIO.io.file_WriteAllBytes(AxiPlayerPrefsFilePath, dataByteArray, false);
     }
-
 }

@@ -3,6 +3,7 @@ using nn.fs;
 #endif
 
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class AxiNSIO
 {
@@ -40,31 +41,31 @@ public class AxiNSIO
 #else
             return false;
 #endif
-		}
-
-    }
-
-	void SetCommitDirty()
-    {
-		lock (commitLock)
-		{
-			bDirty = true;
-		}
-    }
-
-	public void ApplyAutoCommit()
-	{
-		bool temp;
-		lock (commitLock)
-		{
-			temp = bDirty;
-		}
-
-		if (temp)
-		{
-			CommitSave();
         }
-	}
+
+    }
+
+    void SetCommitDirty()
+    {
+        lock (commitLock)
+        {
+            bDirty = true;
+        }
+    }
+
+    public void ApplyAutoCommit()
+    {
+        bool temp;
+        lock (commitLock)
+        {
+            temp = bDirty;
+        }
+
+        if (temp)
+        {
+            CommitSave();
+        }
+    }
 
     /// <summary>
     /// 检查Path是否存在
@@ -80,7 +81,10 @@ public class AxiNSIO
 		nn.Result result = nn.fs.FileSystem.GetEntryType(ref entryType, filePath);
 		//result.abortUnlessSuccess();
 		//这个异常捕获。真的别扭
-		return nn.fs.FileSystem.ResultPathAlreadyExists.Includes(result);
+
+		//日，FileSystem.ResultPathAlreadyExists 貌似不太行
+		//return nn.fs.FileSystem.ResultPathAlreadyExists.Includes(result);
+		return !nn.fs.FileSystem.ResultPathNotFound.Includes(result);
 #endif
     }
     /// <summary>
@@ -112,13 +116,13 @@ public class AxiNSIO
 #if !UNITY_SWITCH
             return false;
 #else
-		// 使用封装函数检查和创建父目录
-		if (!EnsureParentDirectory(filePath, true))
-		{
-			UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
-			return false;
-		}
-		return true;
+			// 使用封装函数检查和创建父目录
+			if (!EnsureParentDirectory(filePath, true))
+			{
+				UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
+				return false;
+			}
+			return true;
 #endif
         }
     }
@@ -160,104 +164,134 @@ public class AxiNSIO
 #if !UNITY_SWITCH
             return false;
 #else
-		if (!AxiNS.instance.mount.SaveIsMount)
-		{
-			UnityEngine.Debug.LogError($"Save 尚未挂载，无法存储 {filePath}");
-			return false;
-		}
+			if (!AxiNS.instance.mount.SaveIsMount)
+			{
+				UnityEngine.Debug.LogError($"Save 尚未挂载，无法存储 {filePath}");
+				return false;
+			}
 
-		nn.Result result;
+			nn.Result result;
 #if UNITY_SWITCH && !UNITY_EDITOR
         // 阻止用户在保存时，退出游戏
         // Switch 条例 0080
         UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
 #endif
-		// 使用封装函数检查和创建父目录
-		if (!EnsureParentDirectory(filePath, true))
-		{
-			UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
-			return false;
-		}
-
-		//string directoryPath = System.IO.Path.GetDirectoryName(filePath.Replace(save_path, ""));
-		//string fullDirectoryPath = $"{save_path}{directoryPath}";
-		//UnityEngine.Debug.Log($"检查父目录: {fullDirectoryPath}");
-
-		//nn.fs.EntryType entryType = 0;
-		//result = nn.fs.FileSystem.GetEntryType(ref entryType, fullDirectoryPath);
-		//if (!result.IsSuccess() && nn.fs.FileSystem.ResultPathNotFound.Includes(result))
-		//{
-		//	UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 不存在，尝试创建 (判断依据 result=>{result.ToString()})");
-		//	result = nn.fs.Directory.Create(fullDirectoryPath);
-		//	if (!result.IsSuccess())
-		//	{
-		//		UnityEngine.Debug.LogError($"创建父目录失败: {result.GetErrorInfo()}");
-		//		return false;
-		//	}
-		//	UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 创建成功");
-		//}
-		//else if (result.IsSuccess() && entryType != nn.fs.EntryType.Directory)
-		//{
-		//	UnityEngine.Debug.LogError($"路径 {fullDirectoryPath} 已存在，但不是目录");
-		//	return false;
-		//}
-		//else if (!result.IsSuccess())
-		//{
-		//	UnityEngine.Debug.LogError($"检查父目录失败: {result.GetErrorInfo()}");
-		//	return false;
-		//}
-
-		if (CheckPathNotFound(filePath))
-		{
-			UnityEngine.Debug.Log($"文件({filePath})不存在需要创建");
-			result = nn.fs.File.Create(filePath, data.Length); //this makes a file the size of your save journal. You may want to make a file smaller than this.
-															   //result.abortUnlessSuccess();
-			if (!result.IsSuccess())
+			// 使用封装函数检查和创建父目录
+			if (!EnsureParentDirectory(filePath, true))
 			{
-				UnityEngine.Debug.LogError($"创建文件失败 {filePath} : " + result.GetErrorInfo());
+				UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
 				return false;
 			}
-		}
-		else
-			UnityEngine.Debug.Log($"文件({filePath})存在，不必创建");
 
-		result = File.Open(ref fileHandle, filePath, OpenFileMode.Write);
-		//result.abortUnlessSuccess();
-		if (!result.IsSuccess())
-		{
-			UnityEngine.Debug.LogError($"失败 File.Open(ref filehandle, {filePath}, OpenFileMode.Write): " + result.GetErrorInfo());
-			return false;
-		}
-		UnityEngine.Debug.Log($"成功 File.Open(ref filehandle, {filePath}, OpenFileMode.Write)");
+			//string directoryPath = System.IO.Path.GetDirectoryName(filePath.Replace(save_path, ""));
+			//string fullDirectoryPath = $"{save_path}{directoryPath}";
+			//UnityEngine.Debug.Log($"检查父目录: {fullDirectoryPath}");
 
-		//nn.fs.WriteOption.Flush 应该就是覆盖写入
-		result = nn.fs.File.Write(fileHandle, 0, data, data.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
-																							  //result.abortUnlessSuccess();
-		if (!result.IsSuccess())
-		{
-			UnityEngine.Debug.LogError("写入文件失败: " + result.GetErrorInfo());
-			return false;
-		}
-		UnityEngine.Debug.Log("写入文件成功: " + filePath);
+			//nn.fs.EntryType entryType = 0;
+			//result = nn.fs.FileSystem.GetEntryType(ref entryType, fullDirectoryPath);
+			//if (!result.IsSuccess() && nn.fs.FileSystem.ResultPathNotFound.Includes(result))
+			//{
+			//	UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 不存在，尝试创建 (判断依据 result=>{result.ToString()})");
+			//	result = nn.fs.Directory.Create(fullDirectoryPath);
+			//	if (!result.IsSuccess())
+			//	{
+			//		UnityEngine.Debug.LogError($"创建父目录失败: {result.GetErrorInfo()}");
+			//		return false;
+			//	}
+			//	UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 创建成功");
+			//}
+			//else if (result.IsSuccess() && entryType != nn.fs.EntryType.Directory)
+			//{
+			//	UnityEngine.Debug.LogError($"路径 {fullDirectoryPath} 已存在，但不是目录");
+			//	return false;
+			//}
+			//else if (!result.IsSuccess())
+			//{
+			//	UnityEngine.Debug.LogError($"检查父目录失败: {result.GetErrorInfo()}");
+			//	return false;
+			//}
 
-		nn.fs.File.Close(fileHandle);
+			if (CheckPathNotFound(filePath))
+			{
+				UnityEngine.Debug.Log($"文件({filePath})不存在需要创建");
+				result = nn.fs.File.Create(filePath, data.Length); //this makes a file the size of your save journal. You may want to make a file smaller than this.
+																   //result.abortUnlessSuccess();
+				if (!result.IsSuccess())
+				{
+					UnityEngine.Debug.LogError($"创建文件失败 {filePath} : " + result.GetErrorInfo());
+					return false;
+				}
+				//读取文件Handle
+				result = File.Open(ref fileHandle, filePath, OpenFileMode.Write);
+			}
+			else
+			{
+				//读取文件Handle
+				result = File.Open(ref fileHandle, filePath, OpenFileMode.Write);
+				long currsize = 0;
+				File.GetSize(ref currsize, fileHandle);
+				if (currsize == data.Length)
+				{
+					UnityEngine.Debug.Log($"文件({filePath})存在,长度一致，不用重新创建");
+				}
+				else
+				{
+					UnityEngine.Debug.Log($"文件({filePath})存在,长度不一致，先删除再重建");
+					nn.fs.File.Close(fileHandle);
+					//删除
+					File.Delete(filePath);
+					//重新创建
+					result = nn.fs.File.Create(filePath, data.Length);
+					if (!result.IsSuccess())
+					{
+						UnityEngine.Debug.LogError($"创建文件失败 {filePath} : " + result.GetErrorInfo());
+						return false;
+					}
+					//重新读取文件Handle
+					result = File.Open(ref fileHandle, filePath, OpenFileMode.Write);
+				}
+			}
 
-		
+			//  //OpenFileMode.AllowAppend 好像不可用
+			//  //result = File.Open(ref fileHandle, filePath, OpenFileMode.AllowAppend);
+			//  result = File.Open(ref fileHandle, filePath, OpenFileMode.Write);
+
+			//result.abortUnlessSuccess();
+			if (!result.IsSuccess())
+			{
+				UnityEngine.Debug.LogError($"失败 File.Open(ref filehandle, {filePath}, OpenFileMode.Write): " + result.GetErrorInfo());
+				return false;
+			}
+			UnityEngine.Debug.Log($"成功 File.Open(ref filehandle, {filePath}, OpenFileMode.Write)");
+
+			//nn.fs.WriteOption.Flush 应该就是覆盖写入
+			result = nn.fs.File.Write(fileHandle, 0, data, data.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
+																								  //result.abortUnlessSuccess();
+			if (!result.IsSuccess())
+			{
+				UnityEngine.Debug.LogError("写入文件失败: " + result.GetErrorInfo());
+				return false;
+			}
+			UnityEngine.Debug.Log("写入文件成功: " + filePath);
+
+			nn.fs.File.Close(fileHandle);
+
+
 #if UNITY_SWITCH && !UNITY_EDITOR
         // 停止阻止用户退出游戏
         UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
 #endif
 
-		if(immediatelyCommit)
-		{
-			//必须得提交，否则没有真实写入
-			return CommitSave();
-		}
-		else
-		{
-			SetCommitDirty();
-			return true;
-		}
+			if (immediatelyCommit)
+			{
+				//必须得提交，否则没有真实写入
+				return CommitSave();
+			}
+			else
+			{
+				SetCommitDirty();
+				return true;
+			}
 #endif
         }
     }
@@ -278,7 +312,6 @@ public class AxiNSIO
         LoadSwitchDataFile(filename, out byte[] outputData);
         return outputData;
     }
-
     public bool LoadSwitchDataFile(string filename, ref System.IO.MemoryStream ms)
     {
         if (LoadSwitchDataFile(filename, out byte[] outputData))
@@ -350,7 +383,6 @@ public class AxiNSIO
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
-
     public bool GetDirectoryFiles(string path, out string[] entrys)
     {
 #if !UNITY_SWITCH || UNITY_EDITOR
@@ -361,7 +393,6 @@ public class AxiNSIO
 		return GetDirectoryEntrys(path,nn.fs.OpenDirectoryMode.File,out entrys);
 #endif
     }
-
     public bool GetDirectoryDirs(string path, out string[] entrys)
     {
 #if !UNITY_SWITCH || UNITY_EDITOR
@@ -399,10 +430,10 @@ public class AxiNSIO
 	}
 #endif
 
-
+    public bool GetDirectoryEntrysFullRecursion(string path, out string[] entrys)
+    {
 #if UNITY_SWITCH
-	public bool GetDirectoryEntrysFullRecursion(string path, out string[] entrys)
-	{
+
 		nn.fs.DirectoryHandle eHandle = new nn.fs.DirectoryHandle();
 		nn.Result result = nn.fs.Directory.Open(ref eHandle, path, OpenDirectoryMode.All);
 		if (nn.fs.FileSystem.ResultPathNotFound.Includes(result))
@@ -430,8 +461,11 @@ public class AxiNSIO
 		nn.fs.Directory.Close(eHandle);
 		entrys = temp.ToArray();
 		return true;
-	}
+#else
+        entrys = default;
+        return false;
 #endif
+    }
 
     public IEnumerable<string> EnumerateFiles(string path, string searchPattern)
     {
@@ -534,13 +568,7 @@ public class AxiNSIO
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
-
-    /// <summary>
-    /// 递归删除目录
-    /// </summary>
-    /// <param name="filename"></param>
-    /// <returns></returns>
-    public bool DeleteRecursivelyPathDir(string filename)
+    public bool DeletePathDirRecursively(string filename)
     {
 #if !UNITY_SWITCH
         return false;
@@ -558,7 +586,7 @@ public class AxiNSIO
 		result = nn.fs.Directory.DeleteRecursively(filename);
 		if (result.IsSuccess() == false)
 		{
-			UnityEngine.Debug.LogError($"nn.fs.File.DeleteRecursively 失败 {filename} : result=>{result.GetErrorInfo()}");
+			UnityEngine.Debug.LogError($"nn.fs.File.Recursively 失败 {filename} : result=>{result.GetErrorInfo()}");
 			return false;
 		}
 
@@ -570,40 +598,14 @@ public class AxiNSIO
 #endif
     }
 
-    /// <summary>
-    /// 递归删除情况
-    /// </summary>
-    /// <param name="filename"></param>
-    /// <returns></returns>
-    public bool CleanRecursivelyPathDir(string filename)
+#if UNITY_SWITCH
+    public AxiNSWait_DeletePathDirRecursively DeletePathDirRecursivelyAsync(string filename)
     {
-#if !UNITY_SWITCH
-        return false;
-#else
-
-#if UNITY_SWITCH && !UNITY_EDITOR
-        // This next line prevents the user from quitting the game while saving. 
-        // This is required for Nintendo Switch Guideline 0080
-        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
-#endif
-
-		if (CheckPathNotFound(filename))
-			return false;
-		nn.Result result;
-		result = nn.fs.Directory.CleanRecursively(filename);
-		if (result.IsSuccess() == false)
-		{
-			UnityEngine.Debug.LogError($"nn.fs.File.DeleteRecursively 失败 {filename} : result=>{result.GetErrorInfo()}");
-			return false;
-		}
-
-#if UNITY_SWITCH && !UNITY_EDITOR
-        // End preventing the user from quitting the game while saving.
-        UnityEngine.Switch.Notification.LeaveExitRequestHandlingSection();
-#endif
-		return CommitSave();
-#endif
+        var wait = new AxiNSWait_DeletePathDirRecursively(filename);
+        AxiNS.instance.wait.AddWait(wait);
+        return wait;
     }
+#endif
 
     public bool RenameDir(string oldpath, string newpath)
     {
