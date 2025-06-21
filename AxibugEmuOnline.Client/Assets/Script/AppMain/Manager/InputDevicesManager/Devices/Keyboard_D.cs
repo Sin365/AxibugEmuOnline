@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AxibugProtobuf;
+using System.Collections.Generic;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
@@ -7,6 +8,8 @@ namespace AxibugEmuOnline.Client.InputDevices
     /// </summary>
     public class Keyboard_D : InputDevice_D
     {
+        public override GamePadType PadType =>  GamePadType.Keyboard;
+
         public Button_C A;
         public Button_C B;
         public Button_C C;

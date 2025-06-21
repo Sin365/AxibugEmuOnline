@@ -1,10 +1,14 @@
-﻿namespace AxibugEmuOnline.Client.InputDevices
+﻿using AxibugProtobuf;
+
+namespace AxibugEmuOnline.Client.InputDevices
 {
     /// <summary>
     /// 通用游戏控制器
     /// </summary>
     public class GamePad_D : InputDevice_D
     {
+        public override GamePadType PadType =>  GamePadType.GlobalGamePad;
+
         public Button_C Up;
         public Button_C Down;
         public Button_C Left;

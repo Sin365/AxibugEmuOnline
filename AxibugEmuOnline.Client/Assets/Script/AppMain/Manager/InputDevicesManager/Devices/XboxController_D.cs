@@ -1,7 +1,11 @@
-﻿namespace AxibugEmuOnline.Client.InputDevices
+﻿using AxibugProtobuf;
+
+namespace AxibugEmuOnline.Client.InputDevices
 {
     public class XboxController_D : InputDevice_D
     {
+        public override GamePadType PadType => GamePadType.Xboxonecontrol;
+
         public Button_C X;
         public Button_C Y;
         public Button_C A;

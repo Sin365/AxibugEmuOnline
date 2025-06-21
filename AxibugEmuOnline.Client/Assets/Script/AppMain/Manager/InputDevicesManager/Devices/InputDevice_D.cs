@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxibugProtobuf;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -9,7 +10,8 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// <summary> 指示该设备是否只能由一个Binder独占 </summary>
         public virtual bool Exclusive => true;
         public string UniqueName => m_resolver.GetDeviceName(this);
-
+        /// <summary> 指示该设备类型，这个类型将与服务器类型对齐 </summary>
+        public abstract GamePadType PadType { get; }
         /// <summary> 指示该设备是否在线 </summary>
         public bool Online => m_resolver.CheckOnline(this);
         /// <summary> 指示该设备当前帧是否有任意控件被激发 </summary>

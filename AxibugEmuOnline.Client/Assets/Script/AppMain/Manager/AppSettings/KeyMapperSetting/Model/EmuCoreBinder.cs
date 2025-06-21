@@ -48,11 +48,10 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     /// <summary> 获取指定设备的注册Binder对象 </summary>
     /// <param name="device"></param>
     /// <returns>返回首个匹配对象</returns>
-    public ControllerBinder GetRegistedBinder(InputDevice_D device)
+    ControllerBinder GetRegistedBinder(InputDevice_D device)
     {
         foreach (var binding in m_controllerBinders)
         {
-            if (device.Exclusive && GetRegistedBinder(device) != null) continue;
             if (binding.IsRegisted(device)) return binding;
         }
 
@@ -63,6 +62,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     {
         foreach (var binding in m_controllerBinders)
         {
+            if (connectDevice.Exclusive && GetRegistedBinder(connectDevice) != null) continue;
             binding.RegistInputDevice(connectDevice);
         }
     }

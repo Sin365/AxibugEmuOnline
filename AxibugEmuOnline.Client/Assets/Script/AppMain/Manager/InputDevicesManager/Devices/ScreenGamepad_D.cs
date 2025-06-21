@@ -1,4 +1,5 @@
-﻿using AxiInputSP;
+﻿using AxibugProtobuf;
+using AxiInputSP;
 using AxiInputSP.UGUI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,8 @@ namespace AxibugEmuOnline.Client.InputDevices
 {
     public class ScreenGamepad_D : InputDevice_D
     {
+        public override GamePadType PadType =>  GamePadType.TouchPanel;
+
         public Button_C UP;
         public Button_C DOWN;
         public Button_C LEFT;
