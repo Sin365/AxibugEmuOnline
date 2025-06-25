@@ -1,7 +1,11 @@
-﻿namespace AxibugEmuOnline.Client.InputDevices
+﻿using AxibugProtobuf;
+
+namespace AxibugEmuOnline.Client.InputDevices
 {
     public class PSVController_D : InputDevice_D
     {
+        public override GamePadType PadType =>  GamePadType.PsvitaControl;
+
         public Button_C Cross;
         public Button_C Circle;
         public Button_C Square;
