@@ -3,23 +3,23 @@ Shader "Filter/crt-easymode"
 {
     Properties
     {
-        BRIGHT_BOOST("BRIGHT_BOOST",Float) = 1.2
-        DILATION("DILATION",Float) = 1.0
-        GAMMA_INPUT("GAMMA_INPUT",Float) = 2.0
-        GAMMA_OUTPUT("GAMMA_OUTPUT",Float) = 1.8
-        MASK_SIZE("MASK_SIZE",Float) = 1.0
-        MASK_STAGGER("MASK_STAGGER",Float) = 0.0
-        MASK_STRENGTH("MASK_STRENGTH",Float) = 0.3
-        MASK_DOT_HEIGHT("MASK_DOT_HEIGHT",Float) = 1.0
-        MASK_DOT_WIDTH("MASK_DOT_WIDTH",Float) = 1.0
-        SCANLINE_CUTOFF("SCANLINE_CUTOFF",Float) = 400.0
-        SCANLINE_BEAM_WIDTH_MAX("SCANLINE_BEAM_WIDTH_MAX",Float) = 1.5
-        SCANLINE_BEAM_WIDTH_MIN("SCANLINE_BEAM_WIDTH_MIN",Float) = 1.5
-        SCANLINE_BRIGHT_MAX("SCANLINE_BRIGHT_MAX",Float) = 0.65
-        SCANLINE_BRIGHT_MIN("SCANLINE_BRIGHT_MIN",Float) = 0.35
-        SCANLINE_STRENGTH("SCANLINE_STRENGTH",Float) = 1.0
-        SHARPNESS_H("SHARPNESS_H",Float) = 0.5
-        SHARPNESS_V("SHARPNESS_V",Float) = 1.0
+        BRIGHT_BOOST("BRIGHT_BOOST", Float) = 1.2
+        DILATION("DILATION", Float) = 1.0
+        GAMMA_INPUT("GAMMA_INPUT", Float) = 2.0
+        GAMMA_OUTPUT("GAMMA_OUTPUT", Float) = 1.8
+        MASK_SIZE("MASK_SIZE", Float) = 1.0
+        MASK_STAGGER("MASK_STAGGER", Float) = 0.0
+        MASK_STRENGTH("MASK_STRENGTH", Float) = 0.3
+        MASK_DOT_HEIGHT("MASK_DOT_HEIGHT", Float) = 1.0
+        MASK_DOT_WIDTH("MASK_DOT_WIDTH", Float) = 1.0
+        SCANLINE_CUTOFF("SCANLINE_CUTOFF", Float) = 400.0
+        SCANLINE_BEAM_WIDTH_MAX("SCANLINE_BEAM_WIDTH_MAX", Float) = 1.5
+        SCANLINE_BEAM_WIDTH_MIN("SCANLINE_BEAM_WIDTH_MIN", Float) = 1.5
+        SCANLINE_BRIGHT_MAX("SCANLINE_BRIGHT_MAX", Float) = 0.65
+        SCANLINE_BRIGHT_MIN("SCANLINE_BRIGHT_MIN", Float) = 0.35
+        SCANLINE_STRENGTH("SCANLINE_STRENGTH", Float) = 1.0
+        SHARPNESS_H("SHARPNESS_H", Float) = 0.5
+        SHARPNESS_V("SHARPNESS_V", Float) = 1.0
     }
     SubShader
     {
@@ -29,7 +29,7 @@ Shader "Filter/crt-easymode"
             #pragma vertex vert_img
             #pragma fragment main
             #include "UnityCG.cginc"
-            #include "../FilterChain.cginc"           
+            #include "../FilterChain.cginc"
 
             float BRIGHT_BOOST;
             float DILATION;
@@ -47,7 +47,7 @@ Shader "Filter/crt-easymode"
             float SCANLINE_BRIGHT_MIN;
             float SCANLINE_STRENGTH;
             float SHARPNESS_H;
-            float SHARPNESS_V;  
+            float SHARPNESS_V;
 
             struct v2f
             {
@@ -60,19 +60,18 @@ Shader "Filter/crt-easymode"
 
             vec4 dilate(vec4 col)
             {
-                vec4 x = mix(vec4(1.0,1.0,1.0,1.0), col, DILATION);
-
+                vec4 x = mix(vec4(1.0, 1.0, 1.0, 1.0), col, DILATION);
                 return col * x;
             }
 
             float curve_distance(float x, float sharp)
             {
 
-            /*
-                apply half-circle s-curve to distance for sharper (more pixelated) interpolation
-                single line formula for Graph Toy:
+                /*
+                apply half - circle s - curve to distance for sharper (more pixelated) interpolation
+                single line formula for Graph Toy :
                 0.5 - sqrt(0.25 - (x - step(0.5, x)) * (x - step(0.5, x))) * sign(0.5 - x)
-            */
+                */
 
                 float x_step = step(0.5, x);
                 float curve = 0.5 - sqrt(0.25 - (x - x_step) * (x - x_step)) * sign(0.5 - x);
@@ -82,12 +81,13 @@ Shader "Filter/crt-easymode"
 
             mat4x4 get_color_matrix(vec2 co, vec2 dx)
             {
+
                 return mat4x4(TEX2D(co - dx), TEX2D(co), TEX2D(co + dx), TEX2D(co + 2.0 * dx));
             }
 
             vec3 filter_lanczos(vec4 coeffs, mat4x4 color_matrix)
             {
-                vec4 col        = mul(color_matrix,coeffs);
+                vec4 col = mul(color_matrix, coeffs);
                 vec4 sample_min = min(color_matrix[1], color_matrix[2]);
                 vec4 sample_max = max(color_matrix[1], color_matrix[2]);
 
@@ -107,25 +107,25 @@ Shader "Filter/crt-easymode"
                 vec3 col, col2;
 
                 #if TRUE
-                curve_x = curve_distance(dist.x, SHARPNESS_H * SHARPNESS_H);
+                    curve_x = curve_distance(dist.x, SHARPNESS_H * SHARPNESS_H);
 
-                vec4 coeffs = PI * vec4(1.0 + curve_x, curve_x, 1.0 - curve_x, 2.0 - curve_x);
+                    vec4 coeffs = PI * vec4(1.0 + curve_x, curve_x, 1.0 - curve_x, 2.0 - curve_x);
 
-                coeffs = FIX(coeffs);
-                coeffs = 2.0 * sin(coeffs) * sin(coeffs * 0.5) / (coeffs * coeffs);
-                coeffs /= dot(coeffs, vec4(1.0));
+                    coeffs = FIX(coeffs);
+                    coeffs = 2.0 * sin(coeffs) * sin(coeffs * 0.5) / (coeffs * coeffs);
+                    coeffs /= dot(coeffs, vec4(1.0));
 
-                col = filter_lanczos(coeffs, get_color_matrix(tex_co, dx));
-                col2 = filter_lanczos(coeffs, get_color_matrix(tex_co + dy, dx));
+                    col = filter_lanczos(coeffs, get_color_matrix(tex_co, dx));
+                    col2 = filter_lanczos(coeffs, get_color_matrix(tex_co + dy, dx));
                 #else
-                curve_x = curve_distance(dist.x, SHARPNESS_H);
+                        curve_x = curve_distance(dist.x, SHARPNESS_H);
 
-                col = mix(TEX2D(tex_co).rgb, TEX2D(tex_co + dx).rgb, curve_x);
-                col2 = mix(TEX2D(tex_co + dy).rgb, TEX2D(tex_co + dx + dy).rgb, curve_x);
+                    col = mix(TEX2D(tex_co).rgb, TEX2D(tex_co + dx).rgb, curve_x);
+                    col2 = mix(TEX2D(tex_co + dy).rgb, TEX2D(tex_co + dx + dy).rgb, curve_x);
                 #endif
 
                 col = mix(col, col2, curve_distance(dist.y, SHARPNESS_V));
-                col = pow(col, vec3(GAMMA_INPUT / (DILATION + 1.0),GAMMA_INPUT / (DILATION + 1.0),GAMMA_INPUT / (DILATION + 1.0))); 
+                col = pow(col, vec3(GAMMA_INPUT / (DILATION + 1.0), GAMMA_INPUT / (DILATION + 1.0), GAMMA_INPUT / (DILATION + 1.0)));
 
                 float luma = dot(vec3(0.2126, 0.7152, 0.0722), col);
                 float bright = (max(col.r, max(col.g, col.b)) + luma) * 0.5;
@@ -139,19 +139,19 @@ Shader "Filter/crt-easymode"
                 vec3 mask_weight;
 
                 if (dot_no == 0) mask_weight = vec3(1.0, mask, mask);
-                else if (dot_no == 1) mask_weight = vec3(mask, 1.0, mask);
-                else mask_weight = vec3(mask, mask, 1.0);
+                    else if (dot_no == 1) mask_weight = vec3(mask, 1.0, mask);
+                    else mask_weight = vec3(mask, mask, 1.0);
 
                 if (SourceSize.y >= SCANLINE_CUTOFF)
-                scan_weight = 1.0;
+                    scan_weight = 1.0;
 
                 col2 = col.rgb;
-                col *= vec3(scan_weight,scan_weight,scan_weight);
+                col *= vec3(scan_weight, scan_weight, scan_weight);
                 col = mix(col, col2, scan_bright);
                 col *= mask_weight;
-                col = pow(col, vec3(1.0 / GAMMA_OUTPUT,1.0 / GAMMA_OUTPUT,1.0 / GAMMA_OUTPUT));
+                col = pow(col, vec3(1.0 / GAMMA_OUTPUT, 1.0 / GAMMA_OUTPUT, 1.0 / GAMMA_OUTPUT));
 
-                col = col* BRIGHT_BOOST;
+                col = col * BRIGHT_BOOST;
 
                 vec4 FragColor = vec4(col, 1.0);
 
@@ -161,6 +161,3 @@ Shader "Filter/crt-easymode"
         }
     }
 }
-
-
-
