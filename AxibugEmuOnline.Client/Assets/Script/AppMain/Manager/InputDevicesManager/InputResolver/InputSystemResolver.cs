@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Android;
 using UnityEngine.InputSystem.DualShock;
 using UnityEngine.InputSystem.XInput;
 
@@ -23,8 +24,18 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
         {
             InputDevice_D newDevice = null;
             if (ipdev is Keyboard) newDevice = new Keyboard_D(this);
-            else if (ipdev is DualShockGamepad) newDevice = new DualShockController_D(this);
-            else if (ipdev is XInputController) newDevice = new XboxController_D(this);
+            else if (ipdev is DualShockGamepad)
+            {
+                if (ipdev is DualShock3GamepadHID) newDevice = new DualShockController_D(this, ps3: true);
+                else if (ipdev is DualShock4GamepadHID) newDevice = new DualShockController_D(this, ps4: true);
+                else if (ipdev is DualSenseGamepadHID) newDevice = new DualShockController_D(this, ps5: true);
+                else newDevice = new DualShockController_D(this);
+
+            }
+            else if (ipdev is XInputController)
+            {
+                newDevice = new XboxController_D(this);
+            }
             else if (ipdev is Gamepad) newDevice = new GamePad_D(this); //注意Gamepad的优先级,因为任何手柄,Inputsystem中的基类都是GamePad
 
             if (newDevice != null)
@@ -39,9 +50,9 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
         {
             if (m_devices.TryGetValue(ipdev, out var device))
             {
-                m_devices.Remove(ipdev);
                 RemoveDeviceMapper(device);
                 RaiseDeviceLost(device);
+                m_devices.Remove(ipdev);
             }
         }
 
@@ -56,7 +67,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             var ipdev = GetInputSystemDevice<InputDevice>(inputDevice);
             Debug.Assert(ipdev != null, "不能对已离线的设备获取名称");
 
-            return $"{ipdev.description.deviceClass}_{ipdev.description.interfaceName}_{ipdev.deviceId}";
+            return $"{ipdev.description}_{ipdev.deviceId}";
         }
 
         protected override bool OnCheckOnline(InputDevice_D device)

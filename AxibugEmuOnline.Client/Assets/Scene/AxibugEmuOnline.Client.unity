@@ -145,7 +145,7 @@ Transform:
   m_GameObject: {fileID: 408101310}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5490109, y: -3.056903, z: -0.117817014}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -210,14 +210,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SHADER:
   - {fileID: 4800000, guid: e44382c7b3957134cb4533224ff9eeaa, type: 3}
+  - {fileID: 4800000, guid: d0063c32001ef9945888b38bb4932cf6, type: 3}
+  - {fileID: 4800000, guid: e36189d8343a744ff946d70df1adb684, type: 3}
+  - {fileID: 4800000, guid: 1fed85d45421d45a6ac770579285b756, type: 3}
+  - {fileID: 4800000, guid: 8e9191ac23b05c14fa2a62f037ce8261, type: 3}
+  - {fileID: 4800000, guid: d96e49db3173e49a4a0fcf6125cc7f4e, type: 3}
   - {fileID: 4800000, guid: 57c38351364c92e45aef2dc17245b3ce, type: 3}
   - {fileID: 4800000, guid: bab7d8f2e62367743930d118a37e824a, type: 3}
   - {fileID: 4800000, guid: 5dd9160e7dde4dd4db07347ce4780217, type: 3}
-  - {fileID: 4800000, guid: 8e9191ac23b05c14fa2a62f037ce8261, type: 3}
+  - {fileID: 4800000, guid: d7b367e99136835468184ea471e79e02, type: 3}
+  - {fileID: 4800000, guid: f63497435389f8548ab973da8535e1b5, type: 3}
+  - {fileID: 4800000, guid: bef4d98671a3c524f9bfdba0d25e5991, type: 3}
   - {fileID: 4800000, guid: fdf9f1937116ab84c97a58a4cf82fbf8, type: 3}
-  - {fileID: 4800000, guid: e36189d8343a744ff946d70df1adb684, type: 3}
-  - {fileID: 4800000, guid: 1fed85d45421d45a6ac770579285b756, type: 3}
-  - {fileID: 4800000, guid: d96e49db3173e49a4a0fcf6125cc7f4e, type: 3}
   IMPORTENT: {fileID: 4747871931704546037, guid: e6f56a07c0ec38946a0257a1e0b8926d, type: 3}
   debugger: {fileID: 408101312}
   bTestSkipWebApiToConServer: 0
