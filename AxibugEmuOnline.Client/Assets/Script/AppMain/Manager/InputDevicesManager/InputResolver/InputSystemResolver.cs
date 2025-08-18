@@ -98,13 +98,13 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
         protected override Vector2 OnGetVector2<CONTROLLER>(CONTROLLER control)
         {
             var ipControl = GetInputSystemControl(control);
-            return (ipControl as InputControl<Vector2>).value;
+            return (ipControl as InputControl<Vector2>).ReadValue();
         }
 
         protected override float OnGetFloat<CONTROLLER>(CONTROLLER control)
         {
             var ipControl = GetInputSystemControl(control);
-            return (ipControl as InputControl<float>).value;
+            return (ipControl as InputControl<float>).ReadValue();
         }
 
         InputControl GetInputSystemControl(InputControl_C key)
