@@ -1,7 +1,5 @@
 ﻿using Assets.Script.AppMain.Filter;
-using System.Drawing.Imaging;
 using UnityEngine;
-using static Coffee.UIExtensions.UIEffect;
 
 namespace AxibugEmuOnline.Client.Filters
 {

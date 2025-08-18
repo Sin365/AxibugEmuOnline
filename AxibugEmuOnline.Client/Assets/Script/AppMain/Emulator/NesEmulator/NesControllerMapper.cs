@@ -1,12 +1,9 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Settings;
-using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using VirtualNes.Core;
 
 namespace AxibugEmuOnline.Client
