@@ -13,6 +13,12 @@ namespace AxibugEmuOnline.Client
 
         Dictionary<int, SaveFile[]> m_saveFileDict = new Dictionary<int, SaveFile[]>();
 
+        public void StartSyncSlot()
+        {
+            SaveFile.SyncingFilesUtility.ReadFromPlayprefs();
+            SaveFile.SyncingFilesUtility.ContinueSync();
+        }
+
         public void Update()
         {
             foreach (var saveFiles in m_saveFileDict.Values)
@@ -35,7 +41,7 @@ namespace AxibugEmuOnline.Client
             return result;
         }
 
-        SaveFile GetSaveFile(int romID, RomPlatformType platform, int slotIndex)
+        public SaveFile GetSaveFile(int romID, RomPlatformType platform, int slotIndex)
         {
             if (!m_saveFileDict.TryGetValue(romID, out SaveFile[] files))
             {

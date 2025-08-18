@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using static AxibugEmuOnline.Client.HttpAPI;
 using static AxibugEmuOnline.Client.Manager.LogManager;
+using static AxibugEmuOnline.Client.SaveFile;
 
 namespace AxibugEmuOnline.Client.ClientCore
 {

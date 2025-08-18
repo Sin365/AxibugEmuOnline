@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Tools;
+using System;
 
 namespace AxibugEmuOnline.Client
 {
@@ -26,6 +27,13 @@ namespace AxibugEmuOnline.Client
                 m_sequece = (uint)netData.Sequence;
                 m_downloadTask = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{netData.SavUrl}");
                 m_downloadTaskImg = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{netData.SavImgUrl}");
+
+                Host.SetSavingFlag();
+            }
+
+            public override void OnExit(SimpleFSM<SaveFile>.State nextState)
+            {
+                Host.ClearSavingFlag();
             }
 
             public override void OnUpdate()
@@ -52,5 +60,6 @@ namespace AxibugEmuOnline.Client
                 FSM.ChangeState<SyncedState>();
             }
         }
+
     }
 }
