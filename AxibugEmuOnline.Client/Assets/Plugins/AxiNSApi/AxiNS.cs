@@ -15,6 +15,11 @@ public class AxiNS
 		}
 	}
 
+	/// <summary>
+	/// 延迟提交是否使用多线程
+	/// </summary>
+	public static bool usedmultithreading = false;
+
 	public AxiNSUser user;
 	public AxiNSMount mount;
 	public AxiNSIO io;

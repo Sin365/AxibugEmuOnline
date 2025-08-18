@@ -117,3 +117,18 @@ public class AxiNSWait_DeletePathDir : AxiNSWaitBase
 		result = AxiNS.instance.io.DeletePathDir(req.filePath);
 	}
 }
+
+public class AxiNSWait_DeletePathDirRecursively : AxiNSWaitBase
+{
+	S_NSWAIT_Path req;
+	public bool result;
+	public AxiNSWait_DeletePathDirRecursively(string filePath)
+	{
+		req = new S_NSWAIT_Path() { filePath = filePath };
+	}
+
+	public override void Invoke()
+	{
+		result = AxiNS.instance.io.DeletePathDirRecursively(req.filePath);
+	}
+}

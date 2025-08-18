@@ -4,21 +4,30 @@ using System.Threading;
 
 public class AxiNSWaitHandle
 {
-	static AutoResetEvent autoEvent = new AutoResetEvent(false);
-	static Thread waitThread = new Thread(Loop);
-	static bool bSingleInit = false;
 	static Queue<AxiNSWaitBase> m_QueueReady = new Queue<AxiNSWaitBase>();
 	static Queue<AxiNSWaitBase> m_QueueWork = new Queue<AxiNSWaitBase>();
 	public void AddWait(AxiNSWaitBase wait)
 	{
-		InitInternalThread();
 		lock (m_QueueReady)
 		{
 			m_QueueReady.Enqueue(wait);
 		}
-		autoEvent.Set();
+
+		if (AxiNS.usedmultithreading)
+		{
+			InitInternalThread();
+			autoEvent.Set();
+		}
+		else
+		{
+			InitMonoInit();
+		}
 	}
 
+	#region 多线程实现
+	static AutoResetEvent autoEvent = new AutoResetEvent(false);
+	static Thread waitThread = new Thread(Loop);
+	static bool bSingleInit = false;
 	static void InitInternalThread()
 	{
 		if (bSingleInit) return;
@@ -30,27 +39,43 @@ public class AxiNSWaitHandle
 	{
 		while (autoEvent.WaitOne())
 		{
-			lock (m_QueueReady)
+			Do();
+		}
+	}
+	#endregion
+
+	#region 主线程时间间隔实现
+	static bool bMonoInit = false;
+	static void InitMonoInit()
+	{
+		if (bMonoInit) return;
+		AxiNSMono.SetInvoke(Do,15);
+		bMonoInit = true;
+	}
+	#endregion
+
+	static void Do()
+	{
+		lock (m_QueueReady)
+		{
+			while (m_QueueReady.Count > 0)
 			{
-				while (m_QueueReady.Count > 0)
-				{
-					m_QueueWork.Enqueue(m_QueueReady.Dequeue());
-				}
+				m_QueueWork.Enqueue(m_QueueReady.Dequeue());
 			}
-			while (m_QueueWork.Count > 0)
+		}
+		while (m_QueueWork.Count > 0)
+		{
+			AxiNSWaitBase wait = m_QueueWork.Dequeue();
+			try
 			{
-				AxiNSWaitBase wait = m_QueueWork.Dequeue();
-				try
-				{
-					wait.Invoke();
-				}
-				catch (Exception ex)
-				{
-					wait.errmsg = ex.ToString();
-					UnityEngine.Debug.Log(ex.ToString());
-				}
-				wait.SetDone();
+				wait.Invoke();
 			}
+			catch (Exception ex)
+			{
+				wait.errmsg = ex.ToString();
+				UnityEngine.Debug.Log(ex.ToString());
+			}
+			wait.SetDone();
 		}
 	}
 }
