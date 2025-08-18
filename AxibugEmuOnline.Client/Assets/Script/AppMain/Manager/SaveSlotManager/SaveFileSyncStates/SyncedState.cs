@@ -6,6 +6,10 @@ namespace AxibugEmuOnline.Client
     {
         public class SyncedState : SimpleFSM<SaveFile>.State
         {
+            public override void OnEnter(SimpleFSM<SaveFile>.State preState)
+            {
+                Host.ClearSavingFlag();
+            }
         }
     }
 }

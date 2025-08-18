@@ -2,7 +2,11 @@
 using AxibugEmuOnline.Client.Tools;
 using AxibugProtobuf;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using UnityEngine;
+using SyncingFileRecord = System.Collections.Generic.Dictionary<AxibugProtobuf.RomPlatformType, System.Collections.Generic.Dictionary<int, System.Collections.Generic.HashSet<AxibugEmuOnline.Client.SaveFile.SyncingFiles>>>;
 
 namespace AxibugEmuOnline.Client
 {
@@ -86,20 +90,7 @@ namespace AxibugEmuOnline.Client
             {
                 byte[] saveOrderData = new byte[4];
 
-                //FileStream streaming = System.IO.File.OpenRead(FilePath);
-                //int res = streaming.Read(saveOrderData, 0, 4);
-                //if (res != 4) //无效的存档文件
-                //{
-                //    IsEmpty = true;
-                //    File.Delete(FilePath);
-                //}
-                //else
-                //{
-                //    Sequecen = BitConverter.ToUInt32(saveOrderData, 0);
-                //}
-                //streaming.Dispose();
-
-                int res = AxiIO.File.ReadBytesToArr(FilePath, saveOrderData,0,4);
+                int res = AxiIO.File.ReadBytesToArr(FilePath, saveOrderData, 0, 4);
                 if (res < 4) //无效的存档文件
                 {
                     IsEmpty = true;
@@ -231,6 +222,129 @@ namespace AxibugEmuOnline.Client
             FSM.ChangeState<CheckingNetworkState>();
         }
 
+
+
+        private void SetSavingFlag()
+        {
+            SyncingFilesUtility.Add(this);
+        }
+
+        private void ClearSavingFlag()
+        {
+            SyncingFilesUtility.Remove(this);
+        }
+
+        public static class SyncingFilesUtility
+        {
+            static SyncingFileRecord m_syncFiles = new SyncingFileRecord();
+
+            public static void ReadFromPlayprefs()
+            {
+                var jsonStr = AxiPlayerPrefs.GetString("SYNCING_SAVE");
+                if (string.IsNullOrEmpty(jsonStr)) return;
+
+                var temp = JsonUtility.FromJson<SyncingFilesList>(jsonStr);
+                if (temp.List == null || temp.List.Count == 0) return;
+
+                foreach (var file in temp.List)
+                {
+                    Add(file);
+                }
+            }
+
+            public static void ContinueSync()
+            {
+                var allFiles = m_syncFiles.Values.SelectMany(v => v.Values).SelectMany(v => v);
+                foreach (var file in allFiles)
+                {
+                    var savFile = App.SavMgr.GetSaveFile(file.romID, file.platform, file.slotIndex);
+                    savFile.TrySync();
+                }
+            }
+
+            public static void Add(SaveFile savFile)
+            {
+                SyncingFiles file = new SyncingFiles { romID = savFile.RomID, platform = savFile.EmuPlatform, slotIndex = savFile.SlotIndex };
+                Add(file);
+            }
+
+            private static void Add(SyncingFiles file)
+            {
+                if (!m_syncFiles.TryGetValue(file.platform, out var mapper))
+                {
+                    mapper = new Dictionary<int, HashSet<SyncingFiles>>();
+                    m_syncFiles.Add(file.platform, mapper);
+                }
+
+                if (!mapper.TryGetValue(file.romID, out var syncingTables))
+                {
+                    syncingTables = new HashSet<SyncingFiles>();
+                    mapper[file.romID] = syncingTables;
+                }
+
+                if (syncingTables.Add(file))
+                {
+                    WritePlayerprefs();
+                }
+            }
+
+            public static void Remove(SaveFile savFile)
+            {
+                SyncingFiles file = new SyncingFiles { romID = savFile.RomID, platform = savFile.EmuPlatform, slotIndex = savFile.SlotIndex };
+                if (!m_syncFiles.TryGetValue(file.platform, out var mapper))
+                {
+                    return;
+                }
+
+                if (!mapper.TryGetValue(savFile.RomID, out var syncingTables))
+                {
+                    return;
+                }
+
+                if (syncingTables.Remove(file))
+                {
+                    WritePlayerprefs();
+                }
+            }
+
+            private static void WritePlayerprefs()
+            {
+                var allFiles = m_syncFiles.Values.SelectMany(v => v.Values).SelectMany(v => v);
+                var temp = new SyncingFilesList { List = new List<SyncingFiles>(allFiles) };
+
+                var jsonStr = JsonUtility.ToJson(temp);
+                AxiPlayerPrefs.SetString("SYNCING_SAVE", jsonStr);
+            }
+
+        }
+
+        [Serializable]
+        class SyncingFilesList
+        {
+            [SerializeField]
+            public List<SyncingFiles> List;
+        }
+
+        [Serializable]
+        public struct SyncingFiles
+        {
+            public int romID;
+            public RomPlatformType platform;
+            public int slotIndex;
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(romID, platform, slotIndex);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj == null) return false;
+                if (obj.GetHashCode() != GetHashCode()) return false;
+
+                return true;
+            }
+        }
 
         [StructLayout(LayoutKind.Explicit, Size = 24)]
         struct Header

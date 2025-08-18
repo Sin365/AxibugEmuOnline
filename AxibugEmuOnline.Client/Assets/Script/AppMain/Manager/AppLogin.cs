@@ -81,6 +81,8 @@ namespace AxibugEmuOnline.Client.Manager
                 App.roomMgr.SendGetRoomList();
                 App.log.Info("获取在线玩家列表");
                 App.user.Send_GetUserList();
+                //开始同步存档
+                App.SavMgr.StartSyncSlot();
 
                 Eventer.Instance.PostEvent(EEvent.OnLoginSucceed);
             }

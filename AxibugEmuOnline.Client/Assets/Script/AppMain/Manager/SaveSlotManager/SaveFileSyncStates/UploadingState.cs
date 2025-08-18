@@ -17,10 +17,13 @@ namespace AxibugEmuOnline.Client
                 }
                 Host.GetSavData(out byte[] savData, out byte[] screenData);
                 Host.CloudAPI.SendUpLoadGameSav(Host.RomID, Host.SlotIndex, Host.Sequecen, savData, screenData);
+
+                Host.SetSavingFlag();
             }
 
             public override void OnExit(SimpleFSM<SaveFile>.State nextState)
             {
+                Host.ClearSavingFlag();
                 Host.CloudAPI.OnUploadedSavData -= Api_OnUploadedSavData;
             }
 
