@@ -1,8 +1,18 @@
 ﻿#if ENABLE_INPUT_SYSTEM
+
+#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_WSA || PACKAGE_DOCS_GENERATION
+#define DUALSHOCK_SUPPORT
+#endif
+
+#if UNITY_EDITOR || UNITY_SWITCH || PACKAGE_DOCS_GENERATION
+#define JOYCON_SUPPORT
+#endif
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.Switch;
 using UnityEngine.InputSystem.XInput;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
@@ -24,25 +34,25 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             InputDevice_D newDevice = null;
             if (ipdev is Keyboard) newDevice = new Keyboard_D(this);
 
-
-#if UNITY_STANDALONE || UNITY_PS5 || UNITY_PS4 || UNITY_PS3 //PC/Mac/Linux/PS345 才能用 DualShock
+#if DUALSHOCK_SUPPORT
             else if (ipdev is DualShockGamepad)
             {
                 if (ipdev is DualShock3GamepadHID) newDevice = new DualShockController_D(this, ps3: true);
                 else if (ipdev is DualShock4GamepadHID) newDevice = new DualShockController_D(this, ps4: true);
                 else if (ipdev is DualSenseGamepadHID) newDevice = new DualShockController_D(this, ps5: true);
                 else newDevice = new DualShockController_D(this);
-
             }
 #endif
-
-#if UNITY_STANDALONE_WIN //仅Windows 才能用Xinput
             else if (ipdev is XInputController)
             {
                 newDevice = new XboxController_D(this);
             }
+#if JOYCON_SUPPORT
+            else if (ipdev is NPad)
+            {
+                newDevice = new SwitchJoyCon_D(this);
+            }
 #endif
-
             else if (ipdev is Gamepad) newDevice = new GamePad_D(this); //注意Gamepad的优先级,因为任何手柄,Inputsystem中的基类都是GamePad
 
             if (newDevice != null)
@@ -240,6 +250,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                 mapper[keyboard_d.Semicolon] = ipKeyboard.semicolonKey;
                 mapper[keyboard_d.Quote] = ipKeyboard.quoteKey;
             }
+#if DUALSHOCK_SUPPORT
             else if (device_d is DualShockController_D ds_d)
             {
                 var ipDsGamePad = ipdevice as DualShockGamepad;
@@ -263,6 +274,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                 mapper[ds_d.LeftStick] = ipDsGamePad.leftStick;
                 mapper[ds_d.RightStick] = ipDsGamePad.rightStick;
             }
+#endif
             else if (device_d is XboxController_D xbox_d)
             {
                 var ipXInputGamePad = ipdevice as XInputController;
@@ -284,53 +296,53 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                 mapper[xbox_d.RightStickPress] = ipXInputGamePad.rightStickButton;
                 mapper[xbox_d.LeftStick] = ipXInputGamePad.leftStick;
                 mapper[xbox_d.RightStick] = ipXInputGamePad.rightStick;
-
             }
+#if JOYCON_SUPPORT
+            else if (device_d is SwitchJoyCon_D joycon_d)
+            {
+                var ipdevice_joycon = ipdevice as NPad;
+                mapper[joycon_d.LeftSL] = ipdevice_joycon.leftSL;
+                mapper[joycon_d.LeftSR] = ipdevice_joycon.leftSR;
+                mapper[joycon_d.RightSL] = ipdevice_joycon.rightSL;
+                mapper[joycon_d.RightSR] = ipdevice_joycon.rightSR;
+                mapper[joycon_d.B] = ipdevice_joycon.bButton;
+                mapper[joycon_d.A] = ipdevice_joycon.aButton;
+                mapper[joycon_d.Y] = ipdevice_joycon.yButton;
+                mapper[joycon_d.X] = ipdevice_joycon.xButton;
+                mapper[joycon_d.Up] = ipdevice_joycon.dpad.up;
+                mapper[joycon_d.Down] = ipdevice_joycon.dpad.down;
+                mapper[joycon_d.Left] = ipdevice_joycon.dpad.left;
+                mapper[joycon_d.Right] = ipdevice_joycon.dpad.right;
+                mapper[joycon_d.Minus] = ipdevice_joycon.selectButton;
+                mapper[joycon_d.Plus] = ipdevice_joycon.startButton;
+                mapper[joycon_d.LeftStick] = ipdevice_joycon.leftStick;
+                mapper[joycon_d.RightStick] = ipdevice_joycon.rightStick;
+                mapper[joycon_d.RightStickPress] = ipdevice_joycon.rightStickButton;
+                mapper[joycon_d.LeftStickPress] = ipdevice_joycon.leftStickButton;
+            }
+#endif
             else if (device_d is GamePad_D gamepad_d)
             {
-                if (ipdevice is UnityEngine.InputSystem.Switch.NPad ipdevice_ns)
-                {
-                    mapper[gamepad_d.Up] = ipdevice_ns.dpad.up;
-                    mapper[gamepad_d.Down] = ipdevice_ns.dpad.down;
-                    mapper[gamepad_d.Left] = ipdevice_ns.dpad.left;
-                    mapper[gamepad_d.Right] = ipdevice_ns.dpad.right;
-                    mapper[gamepad_d.Select] = ipdevice_ns.selectButton;
-                    mapper[gamepad_d.Start] = ipdevice_ns.startButton;
-                    mapper[gamepad_d.North] = ipdevice_ns.xButton;
-                    mapper[gamepad_d.South] = ipdevice_ns.bButton;
-                    mapper[gamepad_d.West] = ipdevice_ns.yButton;
-                    mapper[gamepad_d.East] = ipdevice_ns.aButton;
-                    mapper[gamepad_d.LeftShoulder] = ipdevice_ns;
-                    mapper[gamepad_d.RightShoulder] = ipdevice_ns.rightShoulder;
-                    mapper[gamepad_d.LeftTrigger] = ipdevice_ns.leftTrigger;
-                    mapper[gamepad_d.RightTrigger] = ipdevice_ns.rightTrigger;
-                    mapper[gamepad_d.LeftStickPress] = ipdevice_ns.leftStickButton;
-                    mapper[gamepad_d.RightStickPress] = ipdevice_ns.rightStickButton;
-                    mapper[gamepad_d.LeftStick] = ipdevice_ns.leftStick;
-                    mapper[gamepad_d.RightStick] = ipdevice_ns.rightStick;
-                }
-                else
-                {
-                    var ipGamepad = ipdevice as Gamepad;
-                    mapper[gamepad_d.Up] = ipGamepad.dpad.up;
-                    mapper[gamepad_d.Down] = ipGamepad.dpad.down;
-                    mapper[gamepad_d.Left] = ipGamepad.dpad.left;
-                    mapper[gamepad_d.Right] = ipGamepad.dpad.right;
-                    mapper[gamepad_d.Select] = ipGamepad.selectButton;
-                    mapper[gamepad_d.Start] = ipGamepad.startButton;
-                    mapper[gamepad_d.North] = ipGamepad.buttonNorth;
-                    mapper[gamepad_d.South] = ipGamepad.buttonSouth;
-                    mapper[gamepad_d.West] = ipGamepad.buttonWest;
-                    mapper[gamepad_d.East] = ipGamepad.buttonEast;
-                    mapper[gamepad_d.LeftShoulder] = ipGamepad.leftShoulder;
-                    mapper[gamepad_d.RightShoulder] = ipGamepad.rightShoulder;
-                    mapper[gamepad_d.LeftTrigger] = ipGamepad.leftTrigger;
-                    mapper[gamepad_d.RightTrigger] = ipGamepad.rightTrigger;
-                    mapper[gamepad_d.LeftStickPress] = ipGamepad.leftStickButton;
-                    mapper[gamepad_d.RightStickPress] = ipGamepad.rightStickButton;
-                    mapper[gamepad_d.LeftStick] = ipGamepad.leftStick;
-                    mapper[gamepad_d.RightStick] = ipGamepad.rightStick;
-                }
+                var ipGamepad = ipdevice as Gamepad;
+                mapper[gamepad_d.Up] = ipGamepad.dpad.up;
+                mapper[gamepad_d.Down] = ipGamepad.dpad.down;
+                mapper[gamepad_d.Left] = ipGamepad.dpad.left;
+                mapper[gamepad_d.Right] = ipGamepad.dpad.right;
+                mapper[gamepad_d.Select] = ipGamepad.selectButton;
+                mapper[gamepad_d.Start] = ipGamepad.startButton;
+                mapper[gamepad_d.North] = ipGamepad.buttonNorth;
+                mapper[gamepad_d.South] = ipGamepad.buttonSouth;
+                mapper[gamepad_d.West] = ipGamepad.buttonWest;
+                mapper[gamepad_d.East] = ipGamepad.buttonEast;
+                mapper[gamepad_d.LeftShoulder] = ipGamepad.leftShoulder;
+                mapper[gamepad_d.RightShoulder] = ipGamepad.rightShoulder;
+                mapper[gamepad_d.LeftTrigger] = ipGamepad.leftTrigger;
+                mapper[gamepad_d.RightTrigger] = ipGamepad.rightTrigger;
+                mapper[gamepad_d.LeftStickPress] = ipGamepad.leftStickButton;
+                mapper[gamepad_d.RightStickPress] = ipGamepad.rightStickButton;
+                mapper[gamepad_d.LeftStick] = ipGamepad.leftStick;
+                mapper[gamepad_d.RightStick] = ipGamepad.rightStick;
+
             }
             else throw new System.NotImplementedException($"初始化设备失败,未实现的物理按键映射 for {device_d.GetType()}");
         }
@@ -339,6 +351,6 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             m_deviceMapper.Remove(keyboard_d);
         }
     }
-
 }
+
 #endif
