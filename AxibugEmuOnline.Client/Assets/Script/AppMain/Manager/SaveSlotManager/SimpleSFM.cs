@@ -75,9 +75,12 @@ namespace AxibugEmuOnline.Client.Tools
             if (nextState == null) return;
 
             if (m_current != null) m_current.OnExit(nextState);
-            nextState.LastState = m_current;
-            nextState.OnEnter(m_current);
+
+            var preState = m_current;
             m_current = nextState;
+
+            m_current.LastState = preState;
+            m_current.OnEnter(preState);
         }
 
         public T GetState<T>() where T : State, new()
