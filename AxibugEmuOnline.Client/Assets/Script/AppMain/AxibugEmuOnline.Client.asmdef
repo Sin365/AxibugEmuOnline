@@ -9,7 +9,8 @@
         "Essgee.Unity",
         "StoicGooseUnity",
         "Unity.InputSystem",
-        "AxiNSApi"
+        "AxiNSApi",
+        "Unity.InputSystem.Switch"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
