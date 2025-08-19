@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client
         /// <summary> 存档顺序号,用于判断云存档和本地存档的同步状态,是否存在冲突 </summary>
         public uint Sequecen { get; private set; }
 
-        SimpleFSM<SaveFile> FSM;
+        public SimpleFSM<SaveFile> FSM { get; private set; }
         byte[] m_savDataCaches;
         byte[] m_screenShotCaches;
         Header m_headerCache;
@@ -219,7 +219,7 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         public void TrySync()
         {
-            if (FSM.CurrentState is not IdleState && FSM.CurrentState is not SyncedState) return;
+            if (FSM.CurrentState is not IdleState && FSM.CurrentState is not SyncedState && FSM.CurrentState is not SyncFailedState) return;
 
             FSM.ChangeState<CheckingNetworkState>();
         }
