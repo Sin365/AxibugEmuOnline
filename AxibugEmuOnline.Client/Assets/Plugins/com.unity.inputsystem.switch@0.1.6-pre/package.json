@@ -1,0 +1,17 @@
+{
+  "name": "com.unity.inputsystem.switch",
+  "displayName": "Input System Switch",
+  "version": "0.1.6-pre",
+  "unity": "2019.4",
+  "description": "Switch Devices for new Input System",
+  "keywords": [
+    "input",
+    "keyboard",
+    "mouse",
+    "gamepad",
+    "touch"
+  ],
+  "dependencies": {
+    "com.unity.inputsystem": "1.1.0-pre.5"
+  }
+}
