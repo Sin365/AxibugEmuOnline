@@ -52,7 +52,7 @@ namespace AxibugEmuOnline.Client
             }
         }
 
-        public SimpleFSM<SaveFile>.State GetState()
+        public SimpleFSM<SaveFile>.State GetCurrentState()
         {
             return FSM.CurrentState;
         }
@@ -79,8 +79,10 @@ namespace AxibugEmuOnline.Client
             FSM.AddState<CheckingNetworkState>();//？
             FSM.AddState<CheckingState>();
             FSM.AddState<DownloadingState>();
+            FSM.AddState<ConflictState>();
             FSM.AddState<UploadingState>();
             FSM.AddState<SyncedState>();
+            FSM.AddState<SyncFailedState>();
             FSM.OnStateChanged += FSM_OnStateChanged;
 
             IsEmpty = !AxiIO.File.Exists(FilePath);
@@ -234,6 +236,11 @@ namespace AxibugEmuOnline.Client
             SyncingFilesUtility.Remove(this);
         }
 
+        public override string ToString()
+        {
+            return $"{EmuPlatform}|{RomID}|{SlotIndex}";
+        }
+
         public static class SyncingFilesUtility
         {
             static SyncingFileRecord m_syncFiles = new SyncingFileRecord();
@@ -315,7 +322,6 @@ namespace AxibugEmuOnline.Client
                 var jsonStr = JsonUtility.ToJson(temp);
                 AxiPlayerPrefs.SetString("SYNCING_SAVE", jsonStr);
             }
-
         }
 
         [Serializable]

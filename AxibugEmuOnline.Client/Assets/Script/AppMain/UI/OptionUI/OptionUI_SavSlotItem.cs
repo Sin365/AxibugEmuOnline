@@ -14,7 +14,10 @@ namespace AxibugEmuOnline.Client
         public Text UI_SavTime;
 
         public GameObject UI_Disconnect;
-        public GameObject UI_Syncing;
+        public GameObject UI_DownloadError;
+        public GameObject UI_Downloading;
+        public GameObject UI_Uploading;
+        public GameObject UI_Checking;
         public GameObject UI_Conflict;
         public GameObject UI_Synced;
 
@@ -24,12 +27,13 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
-            m_stateNodes[typeof(SaveFile.CheckingState)] = UI_Syncing;
+            m_stateNodes[typeof(SaveFile.CheckingState)] = UI_Checking;
             m_stateNodes[typeof(SaveFile.ConflictState)] = UI_Conflict;
-            m_stateNodes[typeof(SaveFile.DownloadingState)] = UI_Syncing;
+            m_stateNodes[typeof(SaveFile.DownloadingState)] = UI_Downloading;
             m_stateNodes[typeof(SaveFile.SyncedState)] = UI_Synced;
-            m_stateNodes[typeof(SaveFile.UploadingState)] = UI_Syncing;
+            m_stateNodes[typeof(SaveFile.UploadingState)] = UI_Uploading;
             m_stateNodes[typeof(SaveFile.CheckingNetworkState)] = UI_Disconnect;
+            m_stateNodes[typeof(SaveFile.SyncFailedState)] = UI_DownloadError;
         }
 
         protected override void OnSetData(InternalOptionMenu menuData)
@@ -80,7 +84,7 @@ namespace AxibugEmuOnline.Client
 
         private void UpdateStateNode()
         {
-            var stateType = MenuData.SavFile.GetState().GetType();
+            var stateType = MenuData.SavFile.GetCurrentState().GetType();
 
             foreach (var item in m_stateNodes)
             {
