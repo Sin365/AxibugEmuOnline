@@ -1,0 +1,24 @@
+{
+    "name": "AxibugEmuOnline.Client",
+    "rootNamespace": "",
+    "references": [
+        "AxiReplay",
+        "VirtualNes.Core",
+        "UIEffect2018",
+        "Mame.Core",
+        "Essgee.Unity",
+        "StoicGooseUnity",
+        "Unity.InputSystem",
+        "AxiNSApi",
+        "Unity.InputSystem.Switch"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

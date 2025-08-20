@@ -1,0 +1,294 @@
+[
+  {
+    "Name": "The Castle (SG-1000)",
+    "Notes": "8k volatile RAM",
+    "Crc32": "0x092F29D6",
+    "RomSize": 32768,
+    "RamSize": 8192
+  },
+  {
+    "Name": "Othello (SG-1000)",
+    "Notes": "2k volatile RAM",
+    "Crc32": "0xAF4F14BC",
+    "RomSize": 32768,
+    "RamSize": 2048
+  },
+  {
+    "Name": "Sega Basic Level II (SC-3000)",
+    "Notes": "2k volatile RAM (for Level IIb)",
+    "Crc32": "0xF691F9C7",
+    "RomSize": 32768,
+    "RamSize": 2048
+  },
+  {
+    "Name": "Sega Basic Level III (SC-3000)",
+    "Notes": "32k volatile RAM (for Level IIIb)",
+    "Crc32": "0x5D9F11CA",
+    "RomSize": 32768,
+    "RamSize": 32768
+  },
+  {
+    "Name": "Back to the Future 2 (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0xE5FF50D8",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Back to the Future 3 (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0x2D48C1D3",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "California Games 2 (SMS, Europe)",
+    "Notes": "PAL only",
+    "Crc32": "0xC0E25D62",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Chase HQ (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0x85CFC9C9",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Cosmic Spacehead (SMS)",
+    "Notes": "Codemasters mapper & PAL only",
+    "Crc32": "0x29822980",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge",
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Dinobasher (SMS)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0xEA5C3A6F",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Excellent Dizzy Collection (SMS)",
+    "Notes": "Codemasters mapper & PAL only",
+    "Crc32": "0x8813514B",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge",
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Fantastic Dizzy (SMS)",
+    "Notes": "Codemasters mapper & PAL only",
+    "Crc32": "0xB9664AE1",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge",
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Home Alone (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0xC9DBF936",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Micro Machines (SMS)",
+    "Notes": "Codemasters mapper & PAL only",
+    "Crc32": "0xA577CE46",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge",
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "NewZealand Story (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0xC660FF34",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Power Strike 2 (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0xA109A6FE",
+    "RomSize": 524288,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Predator 2 (SMS, Europe)",
+    "Notes": "PAL only",
+    "Crc32": "0x0047B615",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Sonic the Hedgehog 2 (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0x5B3B922C",
+    "RomSize": 524288,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Sonic the Hedgehog 2 (SMS, Revision 1)",
+    "Notes": "PAL only",
+    "Crc32": "0xD6F2BFCA",
+    "RomSize": 524288,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Space Harrier (SMS, Europe)",
+    "Notes": "PAL only",
+    "Crc32": "0xCA1D3752",
+    "RomSize": 262144,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "CJ Elephant Fugitive (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0x72981057",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Cosmic Spacehead (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0x6CAA625B",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Dropzone (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0x152F0DCC",
+    "RomSize": 131072,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Ernie Els Golf (GG)",
+    "Notes": "Codemasters mapper & 8k volatile RAM",
+    "Crc32": "0x5E53C7F7",
+    "RomSize": 262144,
+    "RamSize": 8192,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Micro Machines (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0xF7C524F6",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Micro Machines 2: Turbo Tournament (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0xDBE8895C",
+    "RomSize": 524288,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Pete Sampras Tennis (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0xC1756BEE",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Pop Breaker (GG, Japan)",
+    "Notes": "Domestic/Japan only",
+    "Crc32": "0x71DEBA5A",
+    "RomSize": 131072,
+    "PreferredRegion": "Domestic"
+  },
+  {
+    "Name": "S.S. Lucifer: Man Overboard (GG)",
+    "Notes": "Codemasters mapper",
+    "Crc32": "0xD9A7F170",
+    "RomSize": 262144,
+    "Mapper": "Sega.CodemastersCartridge"
+  },
+  {
+    "Name": "Sonic Chaos (SMS, Jun 30 1993 Prototype)",
+    "Notes": "Disallow memory control",
+    "Crc32": "0xD3AD67FA",
+    "RomSize": 524288,
+    "AllowMemoryControl": false
+  },
+  {
+    "Name": "94 Super World Cup Soccer (SMS)",
+    "Notes": "Korean mapper",
+    "Crc32": "0x060D6A7C",
+    "RomSize": 262144,
+    "Mapper": "Sega.KoreanMapperCartridge"
+  },
+  {
+    "Name": "Jang Pung II (SMS)",
+    "Notes": "Korean mapper",
+    "Crc32": "0x929222C4",
+    "RomSize": 524288,
+    "Mapper": "Sega.KoreanMapperCartridge"
+  },
+  {
+    "Name": "Jang Pung 3 (SMS)",
+    "Notes": "Korean mapper",
+    "Crc32": "0x18FB98A3",
+    "RomSize": 1048576,
+    "Mapper": "Sega.KoreanMapperCartridge"
+  },
+  {
+    "Name": "Janggun-ui Adeul (SMS)",
+    "Notes": "Korean sprite-flip mapper",
+    "Crc32": "0x192949D5",
+    "RomSize": 524288,
+    "Mapper": "Sega.KoreanSpriteMapperCartridge"
+  },
+  {
+    "Name": "Sangokushi 3 (SMS)",
+    "Notes": "Korean mapper",
+    "Crc32": "0x97D03541",
+    "RomSize": 1048576,
+    "Mapper": "Sega.KoreanMapperCartridge"
+  },
+  {
+    "Name": "4 Pak All Action (SMS)",
+    "Notes": "4 Pak mapper",
+    "Crc32": "0xA67F2A5C",
+    "RomSize": 1048576,
+    "Mapper": "Sega.Multicart4PakAllActionCartridge"
+  },
+  {
+    "Name": "Cyborg Z (SMS)",
+    "Notes": "Korean MSX 8k mapper",
+    "Crc32": "0x77EFE84A",
+    "RomSize": 131072,
+    "Mapper": "Sega.KoreanMSX8kMapperCartridge"
+  },
+  {
+    "Name": "Street Master (SMS)",
+    "Notes": "Korean MSX 8k mapper",
+    "Crc32": "0x83F0EEDE",
+    "RomSize": 131072,
+    "Mapper": "Sega.KoreanMSX8kMapperCartridge"
+  },
+  {
+    "Name": "Wonsiin (SMS)",
+    "Notes": "Korean MSX 8k mapper",
+    "Crc32": "0xA05258F5",
+    "RomSize": 131072,
+    "Mapper": "Sega.KoreanMSX8kMapperCartridge"
+  },
+  {
+    "Name": "SMS Bad Apple 1.00 (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0x38434560",
+    "RomSize": 4194304,
+    "PreferredTVStandard": "PAL"
+  },
+  {
+    "Name": "Be No Sqr 1.01 (SMS)",
+    "Notes": "PAL only",
+    "Crc32": "0xEE701BE6",
+    "RomSize": 524288,
+    "PreferredTVStandard": "PAL"
+  }
+]
