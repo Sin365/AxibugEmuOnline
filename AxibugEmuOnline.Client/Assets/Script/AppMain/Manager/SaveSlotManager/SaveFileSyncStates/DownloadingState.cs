@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Tools;
+using AxibugProtobuf;
 using System;
 
 namespace AxibugEmuOnline.Client
@@ -14,14 +15,14 @@ namespace AxibugEmuOnline.Client
 
             public override void OnEnter(SimpleFSM<SaveFile>.State preState)
             {
-                var checkState = preState as CheckingState;
-
-                var netData = checkState.NetData;
-
-                if (Host.Sequecen >= (uint)netData.Sequence)
+                Protobuf_Mine_GameSavInfo netData = null;
+                if (preState is CheckingState checkState)
                 {
-                    FSM.ChangeState<ConflictState>();
-                    return;
+                    netData = checkState.NetData;
+                }
+                else if (preState is ConflictState conflictState) //由冲突状态转换为下载状态，代表使用网络存档覆盖本地
+                {
+                    netData = conflictState.NetData;
                 }
 
                 m_sequece = (uint)netData.Sequence;
@@ -42,7 +43,8 @@ namespace AxibugEmuOnline.Client
 
                 if (m_downloadTask.downloadHandler.bHadErr) //下载失败
                 {
-                    FSM.ChangeState<IdleState>();
+                    FSM.GetState<SyncFailedState>().Error = m_downloadTask.downloadHandler.ErrInfo;
+                    FSM.ChangeState<SyncFailedState>();
                     return;
                 }
 

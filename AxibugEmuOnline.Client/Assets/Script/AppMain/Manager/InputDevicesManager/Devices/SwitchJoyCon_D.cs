@@ -1,6 +1,4 @@
 ﻿using AxibugProtobuf;
-using System.Collections;
-using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
