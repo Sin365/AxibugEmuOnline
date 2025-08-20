@@ -7,7 +7,10 @@ namespace AxibugEmuOnline.Client.Tools
     public partial class SimpleFSM<HOST>
     {
         public event Action OnStateChanged;
+
         private Dictionary<Type, State> m_states = new Dictionary<Type, State>();
+        private bool isInTransition = false; // 新增：标识是否处于切换过程中
+        private Queue<Type> pendingStateQueue = new Queue<Type>(); // 新增：延迟请求的队列
 
         public HOST Host { get; private set; }
 
@@ -16,15 +19,15 @@ namespace AxibugEmuOnline.Client.Tools
             Host = host;
         }
 
-        private State m_current;
+        private State m_currentState;
         public State CurrentState
         {
-            get => m_current;
+            get => m_currentState;
             set
             {
-                if (m_current == value) return;
+                if (m_currentState == value) return;
 
-                m_current = value;
+                m_currentState = value;
                 OnStateChanged?.Invoke();
             }
         }
@@ -40,44 +43,59 @@ namespace AxibugEmuOnline.Client.Tools
             return (T)state;
         }
 
-        public void BackToLast()
-        {
-            if (m_current == null) return;
-            if (m_current.LastState == null) return;
-
-            if (m_states.Values.FirstOrDefault(s => s == m_current.LastState) is State lastState)
-            {
-                m_current.LastState = null;
-                m_current.OnExit(lastState);
-
-                lastState.OnEnter(m_current);
-                m_current = lastState;
-            }
-        }
-
-        public void Stop()
-        {
-            if (m_current != null)
-            {
-                m_current.OnExit(null);
-                m_current = null;
-            }
-
-            foreach (var state in m_states.Values)
-                state.LastState = null;
-        }
-
+        
         public void ChangeState<T>() where T : State, new()
         {
             var stateType = typeof(T);
-            m_states.TryGetValue(stateType, out State nextState);
+            if (!m_states.ContainsKey(stateType))
+                return;
 
+            // 如果处于切换中，加入队列等待后续处理
+            if (isInTransition)
+            {
+                pendingStateQueue.Enqueue(stateType);
+                return;
+            }
+
+            // 标记开始切换
+            isInTransition = true;
+            InternalChangeState(stateType);
+            isInTransition = false; // 切换结束
+
+            // 处理队列中积累的切换请求
+            ProcessPendingQueue();
+        }
+
+        // 新增：实际执行状态切换的方法
+        private void InternalChangeState(Type stateType)
+        {
+            State nextState = m_states[stateType];
             if (nextState == null) return;
 
-            if (m_current != null) m_current.OnExit(nextState);
-            nextState.LastState = m_current;
-            nextState.OnEnter(m_current);
-            m_current = nextState;
+            State preState = CurrentState;
+            // 退出当前状态
+            if (preState != null) preState.OnExit(nextState);
+
+            // 更新当前状态
+            CurrentState = nextState;
+            CurrentState.LastState = preState;
+
+            // 进入新状态
+            CurrentState.OnEnter(preState);
+        }
+
+        // 新增：处理队列中的切换请求
+        private void ProcessPendingQueue()
+        {
+            while (pendingStateQueue.Count > 0)
+            {
+                Type nextType = pendingStateQueue.Dequeue();
+                if (!m_states.ContainsKey(nextType)) continue;
+
+                isInTransition = true;
+                InternalChangeState(nextType);
+                isInTransition = false;
+            }
         }
 
         public T GetState<T>() where T : State, new()
@@ -88,11 +106,11 @@ namespace AxibugEmuOnline.Client.Tools
 
         public void Update()
         {
-            m_current?.OnUpdate();
+            CurrentState?.OnUpdate();
             foreach (var state in m_states.Values)
             {
-                if (state == m_current) continue;
-                state.AnyStateUpdate(m_current);
+                if (state == CurrentState) continue;
+                state.AnyStateUpdate(CurrentState);
             }
         }
 

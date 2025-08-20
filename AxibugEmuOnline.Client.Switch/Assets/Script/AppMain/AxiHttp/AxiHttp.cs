@@ -166,20 +166,23 @@ public static class AxiHttp
 
     public static IPAddress GetDnsIP(string str)
     {
-        if (!dictIP2Address.ContainsKey(str))
+        lock (dictIP2Address)
         {
-            IPHostEntry host = Dns.GetHostEntry(str);
-            IPAddress ip = null;
-            foreach (var item in host.AddressList)
+            if (!dictIP2Address.ContainsKey(str))
             {
-                if (item.AddressFamily == AddressFamily.InterNetwork)
+                IPHostEntry host = Dns.GetHostEntry(str);
+                IPAddress ip = null;
+                foreach (var item in host.AddressList)
                 {
-                    ip = item; break;
+                    if (item.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        ip = item; break;
+                    }
                 }
+                dictIP2Address[str] = ip;
             }
-            dictIP2Address[str] = ip;
+            return dictIP2Address[str];
         }
-        return dictIP2Address[str];
     }
 
     public enum AxiDownLoadMode

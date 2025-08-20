@@ -158,6 +158,27 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.JOYSTICK.Left, 1);
             controller.SetBinding(UMAMEKSingleKey.RIGHT, device.JOYSTICK.Right, 1);
         }
+
+        public override void Bind(SwitchJoyCon_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.Minus, 0);
+            controller.SetBinding(UMAMEKSingleKey.GAMESTART, device.Plus, 0);
+            controller.SetBinding(UMAMEKSingleKey.UP, device.Up, 0);
+            controller.SetBinding(UMAMEKSingleKey.DOWN, device.Down, 0);
+            controller.SetBinding(UMAMEKSingleKey.LEFT, device.Left, 0);
+            controller.SetBinding(UMAMEKSingleKey.RIGHT, device.Right, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.A, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.B, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_C, device.X, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_D, device.Y, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_E, device.LeftSL, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_F, device.RightSL, 0);
+
+            controller.SetBinding(UMAMEKSingleKey.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(UMAMEKSingleKey.DOWN, device.LeftStick.Down, 1);
+            controller.SetBinding(UMAMEKSingleKey.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(UMAMEKSingleKey.RIGHT, device.LeftStick.Right, 1);
+        }
     }
 
     public class NEOGEOKeyBinding : MAMEKeyBinding

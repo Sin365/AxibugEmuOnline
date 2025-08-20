@@ -33,17 +33,23 @@ namespace AxibugEmuOnline.Client
             public override Type MenuUITemplateType => typeof(OptionUI_SavSlotItem);
             public SaveFile SavFile { get; private set; }
 
-            List<InternalOptionMenu> m_subOptions = new List<InternalOptionMenu>();
             public override string Name => SavFile.AutoSave ? "自动存档" : $"存档{SavFile.SlotIndex}";
+
+            SaveMenuItem saveMENU;
+            LoadMenuItem loadMENU;
+            RetryMenuItem retryMENU;
+            UseLocalSaveMenuItem useLocalMENU;
+            UseRemoteSaveMenuItem useRemoteMENU;
 
             public SaveSlotMenu(InGameUI inGameui, SaveFile savFile)
             {
                 SavFile = savFile;
 
-                //非自动存档,增加保存选项
-                if (!savFile.AutoSave) m_subOptions.Add(new SaveMenuItem(inGameui, savFile));
-                //添加读取选项
-                m_subOptions.Add(new LoadMenuItem(inGameui, savFile));
+                saveMENU = new SaveMenuItem(inGameui, savFile);
+                loadMENU = new LoadMenuItem(inGameui, savFile);
+                retryMENU = new RetryMenuItem(inGameui, savFile);
+                useLocalMENU = new UseLocalSaveMenuItem(inGameui, savFile);
+                useRemoteMENU = new UseRemoteSaveMenuItem(inGameui, savFile);
             }
 
             public override void OnShow(OptionUI_MenuItem ui)
@@ -55,7 +61,21 @@ namespace AxibugEmuOnline.Client
 
             protected override List<InternalOptionMenu> GetOptionMenus()
             {
-                return m_subOptions;
+                var menus = new List<InternalOptionMenu>();
+
+                if (SavFile.GetCurrentState() is SaveFile.ConflictState)
+                {
+                    menus.Add(useRemoteMENU);
+                    menus.Add(useLocalMENU);
+                }
+                else
+                {
+                    if (SavFile.GetCurrentState() is SaveFile.SyncFailedState) menus.Add(retryMENU);
+                    if (!SavFile.AutoSave) menus.Add(saveMENU);
+                    if (!SavFile.IsEmpty) menus.Add(loadMENU);
+                }
+
+                return menus;
             }
 
             public class SaveMenuItem : ExecuteMenu
@@ -109,6 +129,66 @@ namespace AxibugEmuOnline.Client
                     }
 
                     OverlayManager.HideSideBar();
+                }
+            }
+
+            public class RetryMenuItem : ExecuteMenu
+            {
+                SaveFile m_savFile;
+                InGameUI m_ingameUI;
+                public override string Name => "重试";
+                public override bool Visible => m_savFile.GetCurrentState() is SaveFile.SyncFailedState;
+
+                public RetryMenuItem(InGameUI inGameui, SaveFile savFile)
+                {
+                    m_ingameUI = inGameui;
+                    m_savFile = savFile;
+                }
+
+                public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+                {
+                    cancelHide = true;
+                    m_savFile.TrySync();
+                }
+            }
+
+            public class UseRemoteSaveMenuItem : ExecuteMenu
+            {
+                SaveFile m_savFile;
+                InGameUI m_ingameUI;
+                public override string Name => "使用云端存档";
+
+                public UseRemoteSaveMenuItem(InGameUI inGameui, SaveFile savFile)
+                {
+                    m_ingameUI = inGameui;
+                    m_savFile = savFile;
+                }
+
+                public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+                {
+                    if (m_savFile.GetCurrentState() is not SaveFile.ConflictState) return;
+                    cancelHide = true;
+                    m_savFile.FSM.ChangeState<SaveFile.DownloadingState>();
+                }
+            }
+
+            public class UseLocalSaveMenuItem : ExecuteMenu
+            {
+                SaveFile m_savFile;
+                InGameUI m_ingameUI;
+                public override string Name => "使用本地存档";
+
+                public UseLocalSaveMenuItem(InGameUI inGameui, SaveFile savFile)
+                {
+                    m_ingameUI = inGameui;
+                    m_savFile = savFile;
+                }
+
+                public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
+                {
+                    if (m_savFile.GetCurrentState() is not SaveFile.ConflictState) return;
+                    cancelHide = true;
+                    m_savFile.FSM.ChangeState<SaveFile.UploadingState>();
                 }
             }
         }

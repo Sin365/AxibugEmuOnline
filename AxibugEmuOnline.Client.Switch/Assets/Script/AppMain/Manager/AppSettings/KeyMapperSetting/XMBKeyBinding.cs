@@ -112,5 +112,20 @@ namespace AxibugEmuOnline.Client
             controller.SetBinding(EnumCommand.SelectItemRight, device.JOYSTICK.Right, 1);
             controller.SetBinding(EnumCommand.SelectItemUp, device.JOYSTICK.Up, 1);
         }
+        public override void Bind(SwitchJoyCon_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EnumCommand.Back, device.A, 0);
+            controller.SetBinding(EnumCommand.Enter, device.B, 0);
+            controller.SetBinding(EnumCommand.OptionMenu, device.Plus, 0);
+            controller.SetBinding(EnumCommand.SelectItemDown, device.Down, 0);
+            controller.SetBinding(EnumCommand.SelectItemLeft, device.Left, 0);
+            controller.SetBinding(EnumCommand.SelectItemRight, device.Right, 0);
+            controller.SetBinding(EnumCommand.SelectItemUp, device.Up, 0);
+
+            controller.SetBinding(EnumCommand.SelectItemDown, device.LeftStick.Down, 1);
+            controller.SetBinding(EnumCommand.SelectItemLeft, device.LeftStick.Left, 1);
+            controller.SetBinding(EnumCommand.SelectItemRight, device.LeftStick.Right, 1);
+            controller.SetBinding(EnumCommand.SelectItemUp, device.LeftStick.Up, 1);
+        }
     }
 }

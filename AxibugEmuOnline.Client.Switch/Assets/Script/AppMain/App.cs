@@ -90,9 +90,14 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static void Init(bool isTest = false, bool isUseGUIButton = false, string testSrvIP = "", bool bUseLocalWebApi = false, string mLocalWebApi = "")
         {
             log = new LogManager(OnLogOut);
-
             //其他平台必要的初始化
-            if (UnityEngine.Application.platform == RuntimePlatform.PSP2) PSP2Init();
+#if UNITY_PSP2
+            PSP2Init();
+#endif
+
+#if UNITY_SWITCH
+            SwitchInit();
+#endif
 
             input = new InputDevicesManager();
             FileDownloader = new FileDownloader();
@@ -153,11 +158,18 @@ namespace AxibugEmuOnline.Client.ClientCore
             sonyVitaCommonDialog = new GameObject().AddComponent<SonyVitaCommonDialog>();
 #endif
 
-#if UNITY_SWITCH
-            //创建创建Switch
-            switchCommon = new GameObject().AddComponent<SwitchCommon>();
-#endif
 
+        }
+        private static void SwitchInit()
+        {
+#if UNITY_SWITCH
+            AxiNS.instance.Init();
+            if (!AxiIO.Directory.Exists(App.PersistentDataRootPath()))
+                AxiIO.Directory.CreateDirectory(App.PersistentDataRootPath());
+            switchCommon = new GameObject().AddComponent<SwitchCommon>();
+            switchCommon.gameObject.name = "[SwitchCommon]";
+            GameObject.DontDestroyOnLoad(switchCommon);
+#endif
         }
 
 
