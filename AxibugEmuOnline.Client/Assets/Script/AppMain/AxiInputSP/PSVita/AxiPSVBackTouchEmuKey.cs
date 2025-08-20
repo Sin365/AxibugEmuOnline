@@ -62,11 +62,7 @@ namespace AxiInputSP
             m_TouckState[AxiPSVBackTouchType.RightBotton] = new AxiPSVBackTouchState(AxiPSVBackTouchType.RightBotton);
         }
 
-        private void OnEnable()
-        {
-        }
-
-        private void OnDisable()
+        void OnDestroy()
         {
             _instance = null;
         }
