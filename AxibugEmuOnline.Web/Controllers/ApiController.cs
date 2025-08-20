@@ -16,26 +16,6 @@ namespace AxibugEmuOnline.Web.Controllers
             _logger = logger;
         }
 
-        static bool TryDecrypToken(string tokenStr, out Protobuf_Token_Struct tokenData)
-        {
-            if (string.IsNullOrEmpty(tokenStr) || string.IsNullOrEmpty(tokenStr.Trim()))
-            {
-                tokenData = null;
-                return false;
-            }
-            try
-            {
-                byte[] encryptData = Convert.FromBase64String(tokenStr.Trim());
-                byte[] decryptData = AESHelper.Decrypt(encryptData);
-                tokenData = ProtoBufHelper.DeSerizlize<Protobuf_Token_Struct>(decryptData);
-                return true;
-            }
-            catch
-            {
-                tokenData = null;
-                return false;
-            }
-        }
 
         [HttpGet]
         public JsonResult CheckStandInfo(int platform, string version)
@@ -56,7 +36,7 @@ namespace AxibugEmuOnline.Web.Controllers
         public JsonResult RomList(string SearchKey, int Ptype, int GType, int Page, int PageSize, string Token)
         {
             long UID = 0;
-            if (TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
+            if (Helper.TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
             {
                 UID = tokenData.UID;
             }
@@ -191,7 +171,7 @@ namespace AxibugEmuOnline.Web.Controllers
         public JsonResult MarkList(string SearchKey, int Ptype, int GType, int Page, int PageSize, string Token)
         {
             long UID = 0;
-            if (TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
+            if (Helper.TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
             {
                 UID = tokenData.UID;
             }
@@ -304,7 +284,7 @@ LIMIT ?offset, ?pageSize;";
         public JsonResult RomInfo(int Ptype, int RomID, string Token)
         {
             long UID = 0;
-            if (TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
+            if (Helper.TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
             {
                 UID = tokenData.UID;
             }
@@ -439,5 +419,6 @@ LIMIT ?offset, ?pageSize;";
             public int isStar { get; set; }
             public List<int> parentRomIdsList { get; set; } = new List<int>();
         }
+
     }
 }

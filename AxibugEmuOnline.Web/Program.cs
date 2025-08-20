@@ -1,4 +1,5 @@
 using AxibugEmuOnline.Web.Common;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace AxibugEmuOnline.Web
 {
@@ -31,6 +32,15 @@ namespace AxibugEmuOnline.Web
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // 添加自定义 MIME 类型映射
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".sav"] = "application/octet-stream";  // 显式关联扩展名
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ContentTypeProvider = provider  // 注入自定义类型提供程序
+            });
 
             app.Run();
         }
