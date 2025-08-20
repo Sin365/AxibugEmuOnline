@@ -19,11 +19,11 @@ namespace AxibugEmuOnline.Server.Manager
 
         public void RecvGetGameSavList(Socket _socket, byte[] reqData)
         {
-            AppSrv.g_Log.DebugCmd("RecvGetGameSavList");
             Protobuf_Mine_GetGameSavList msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_GetGameSavList>(reqData);
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
             Protobuf_Mine_GetGameSavList_RESP respData = new Protobuf_Mine_GetGameSavList_RESP();
 
+            AppSrv.g_Log.DebugCmd($"RecvGetGameSavList:RomID=>{msg.RomID}");
             respData.RomID = msg.RomID;
             respData.SavDataList.Add(new Protobuf_Mine_GameSavInfo() { BHadSaveData = false, SavDataIdx = 0 });
             respData.SavDataList.Add(new Protobuf_Mine_GameSavInfo() { BHadSaveData = false, SavDataIdx = 1 });
@@ -44,6 +44,7 @@ namespace AxibugEmuOnline.Server.Manager
                         while (reader.Read())
                         {
                             int savidx = reader.GetInt32(3);
+                            AppSrv.g_Log.DebugCmd($"RecvGetGameSavList:read savidx=>{savidx}");
                             respData.SavDataList[savidx].BHadSaveData = true;
                             respData.SavDataList[savidx].SavID = reader.GetInt64(0);
                             respData.SavDataList[savidx].Uid = reader.GetInt64(1);
@@ -225,7 +226,7 @@ namespace AxibugEmuOnline.Server.Manager
                 }
             }
 
-            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavGetGameSavList, (int)errCode, ProtoBufHelper.Serizlize(respData));
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavUploadGameSav, (int)errCode, ProtoBufHelper.Serizlize(respData));
         }
         public void GetNewRomPath(long uid, RomPlatformType ptype, int romid, int stateIdx, string filename, out string path)
         {
