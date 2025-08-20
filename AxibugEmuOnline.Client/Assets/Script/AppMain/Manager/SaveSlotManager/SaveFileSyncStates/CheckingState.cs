@@ -29,7 +29,8 @@ namespace AxibugEmuOnline.Client
                 m_timeOut -= Time.deltaTime;
                 if (m_timeOut < 0) //已超时
                 {
-                    FSM.ChangeState<IdleState>();
+                    FSM.GetState<SyncFailedState>().Error = "拉取云存档数据超时";
+                    FSM.ChangeState<SyncFailedState>();
                 }
             }
 
@@ -44,7 +45,15 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
-                    FSM.ChangeState<DownloadingState>();
+                    if (Host.Sequecen > (uint)NetData.Sequence)//本地序列号大于云存档序列号，视为冲突
+                    {
+                        FSM.GetState<ConflictState>().NetData = NetData;
+                        FSM.ChangeState<ConflictState>();
+                    }
+                    else
+                    {
+                        FSM.ChangeState<DownloadingState>();
+                    }
                 }
             }
         }
