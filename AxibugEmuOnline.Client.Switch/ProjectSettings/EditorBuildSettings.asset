@@ -1,0 +1,12 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scene/AxibugEmuOnline.Client.unity
+    guid: eb0c18a619175384d95147898a43054b
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 31d59a2c9ae135f46b84b41f476f3d35, type: 2}
