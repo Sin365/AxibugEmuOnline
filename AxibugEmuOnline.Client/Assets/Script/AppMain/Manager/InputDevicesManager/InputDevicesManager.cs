@@ -79,6 +79,13 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             foreach (var device in m_devices.Values) device.Update();
 
+            DebugInputSystem();
+        }
+
+        private static void DebugInputSystem()
+        {
+            return;
+#if ENABLE_INPUT_SYSTEM
             foreach (var device in InputSystem.devices)
             {
                 if (device is Mouse)
@@ -91,7 +98,7 @@ namespace AxibugEmuOnline.Client.InputDevices
                     }
                 }
             }
-
+#endif
         }
     }
 }
