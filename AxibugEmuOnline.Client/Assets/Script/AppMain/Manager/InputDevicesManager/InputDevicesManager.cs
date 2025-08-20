@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace AxibugEmuOnline.Client.InputDevices
 {
@@ -77,6 +78,20 @@ namespace AxibugEmuOnline.Client.InputDevices
         public void Update()
         {
             foreach (var device in m_devices.Values) device.Update();
+
+            foreach (var device in InputSystem.devices)
+            {
+                if (device is Mouse)
+                    continue;
+                for (int i = 0; i < device.allControls.Count; i++)
+                {
+                    if (device.allControls[i].IsPressed(0))
+                    {
+                        Debug.Log($"{device.displayName}| {device.allControls[i].displayName}|{device.allControls[i].name}");
+                    }
+                }
+            }
+
         }
     }
 }
