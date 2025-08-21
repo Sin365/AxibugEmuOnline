@@ -26,8 +26,8 @@ namespace AxibugEmuOnline.Client
                 }
 
                 m_sequece = (uint)netData.Sequence;
-                m_downloadTask = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{netData.SavUrl}?v={m_sequece}");
-                m_downloadTaskImg = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{netData.SavImgUrl}?v={m_sequece}");
+                m_downloadTask = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{netData.SavUrl}");
+                m_downloadTaskImg = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{netData.SavImgUrl}");
 
                 Host.SetSavingFlag();
             }
@@ -52,25 +52,14 @@ namespace AxibugEmuOnline.Client
 
                 if (m_downloadTaskImg.downloadHandler.bHadErr) //下载失败
                 {
-                    FSM.GetState<SyncFailedState>().Error = m_downloadTaskImg.downloadHandler.ErrInfo;
-                    FSM.ChangeState<SyncFailedState>();
+                    FSM.ChangeState<IdleState>();
                     return;
                 }
 
-                try
-                {
-                    var savData = Host.CloudAPI.UnGzipData(m_downloadTask.downloadHandler.data);
-                    var imgData = m_downloadTaskImg.downloadHandler.data; //图片数据已被服务器解压
-
-                    Host.Save(m_sequece, savData, imgData);
-                    FSM.ChangeState<SyncedState>();
-                }
-                catch
-                {
-                    FSM.GetState<SyncFailedState>().Error = "云存档解压失败";
-                    FSM.ChangeState<SyncFailedState>();
-                    return;
-                }
+                var savData = Host.CloudAPI.UnGzipData(m_downloadTask.downloadHandler.data);
+                var imgData = Host.CloudAPI.UnGzipData(m_downloadTaskImg.downloadHandler.data);
+                Host.Save(m_sequece, savData, imgData);
+                FSM.ChangeState<SyncedState>();
             }
         }
 

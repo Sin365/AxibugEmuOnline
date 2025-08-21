@@ -147,6 +147,25 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EssgeeSingleKey.LEFT, device.JOYSTICK.Left, 1);
             controller.SetBinding(EssgeeSingleKey.RIGHT, device.JOYSTICK.Right, 1);
         }
+
+        public override void Bind(SwitchJoyCon_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(EssgeeSingleKey.OPTION_1, device.Plus, 0);
+            controller.SetBinding(EssgeeSingleKey.OPTION_2, device.Minus, 0);
+            controller.SetBinding(EssgeeSingleKey.UP, device.Up, 0);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.Down, 0);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.Left, 0);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.Right, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_1, device.A, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_2, device.B, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_3, device.X, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_4, device.Y, 0);
+
+            controller.SetBinding(EssgeeSingleKey.UP, device.LeftStick.Up, 1);
+            controller.SetBinding(EssgeeSingleKey.DOWN, device.LeftStick.Down, 1);
+            controller.SetBinding(EssgeeSingleKey.LEFT, device.LeftStick.Left, 1);
+            controller.SetBinding(EssgeeSingleKey.RIGHT, device.LeftStick.Right, 1);
+        }
     }
 
     public class MasterSystemKeyBinding : EssgeeKeyBinding

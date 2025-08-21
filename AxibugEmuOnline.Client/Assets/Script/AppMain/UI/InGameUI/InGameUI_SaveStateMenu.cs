@@ -92,16 +92,18 @@ namespace AxibugEmuOnline.Client
 
                 public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
                 {
-                    if (m_savFile.IsBusy) //取消同步进程
+                    if (m_savFile.IsBusy)
                     {
-                        m_savFile.FSM.ChangeState<SaveFile.IdleState>();
+                        OverlayManager.PopTip("存档正在同步中");
+                        cancelHide = true;
+                        return;
                     }
 
                     var stateData = m_ingameUI.Core.GetStateBytes();
                     var tex = m_ingameUI.Core.OutputPixel;
                     var screenData = tex.ToJPG(m_ingameUI.Core.DrawCanvas.transform.localScale);
 
-                    m_savFile.Save(m_savFile.Sequecen + 1, stateData, screenData);
+                    m_savFile.Save(m_savFile.Sequecen, stateData, screenData);
                 }
             }
 
@@ -165,6 +167,7 @@ namespace AxibugEmuOnline.Client
                 public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
                 {
                     if (m_savFile.GetCurrentState() is not SaveFile.ConflictState) return;
+                    cancelHide = true;
                     m_savFile.FSM.ChangeState<SaveFile.DownloadingState>();
                 }
             }
@@ -184,6 +187,7 @@ namespace AxibugEmuOnline.Client
                 public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
                 {
                     if (m_savFile.GetCurrentState() is not SaveFile.ConflictState) return;
+                    cancelHide = true;
                     m_savFile.FSM.ChangeState<SaveFile.UploadingState>();
                 }
             }

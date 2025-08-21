@@ -172,6 +172,8 @@ namespace AxibugEmuOnline.Client
 
         public unsafe void Save(uint sequence, byte[] savData, byte[] screenShotData)
         {
+            if (IsBusy) return;
+
             var filePath = FilePath;
 
             var header = new Header

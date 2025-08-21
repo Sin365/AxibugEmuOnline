@@ -16,7 +16,8 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     IDeviceBinder<T, DualShockController_D>,
     IDeviceBinder<T, XboxController_D>,
     IDeviceBinder<T, PSVController_D>,
-    IDeviceBinder<T, ScreenGamepad_D>
+    IDeviceBinder<T, ScreenGamepad_D>,
+    IDeviceBinder<T, SwitchJoyCon_D>
     where T : Enum
 {
     //每一个实例代表一个对应模拟器平台的控制器索引
@@ -83,6 +84,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         else if (device is XboxController_D xbC) Bind(xbC, binding);
         else if (device is PSVController_D psvC) Bind(psvC, binding);
         else if (device is ScreenGamepad_D screenGamepad) Bind(screenGamepad, binding);
+        else if (device is SwitchJoyCon_D nsJoyCon) Bind(nsJoyCon, binding);
         else throw new NotImplementedException($"{device.GetType()}");
     }
 
@@ -305,4 +307,5 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     public abstract void Bind(XboxController_D device, ControllerBinder controller);
     public abstract void Bind(PSVController_D device, ControllerBinder controller);
     public abstract void Bind(ScreenGamepad_D device, ControllerBinder controller);
+    public abstract void Bind(SwitchJoyCon_D device, ControllerBinder controller);
 }
