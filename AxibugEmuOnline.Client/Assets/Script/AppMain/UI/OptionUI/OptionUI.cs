@@ -92,18 +92,27 @@ namespace AxibugEmuOnline.Client
             {
                 Canvas.ForceUpdateCanvases();
 
-                var topParent = FindTopOptionUI();
-                var totalWidth = GetTotalWidth(topParent);
-
-                Vector2 end = new Vector2(-totalWidth, MenuRoot.anchoredPosition.y);
-
                 if (m_popTween != null)
                 {
+                    Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                     m_popTween.ChangeEndValue(end, false);
                 }
                 else
                 {
-                    topParent.MenuRoot.anchoredPosition = end;
+                    Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
+                    var topParent = m_parent;
+                    while (topParent != null && topParent.m_parent != null)
+                    {
+                        topParent = topParent.m_parent;
+                    }
+                    if (topParent != null)
+                    {
+                        topParent.MenuRoot.anchoredPosition = end;
+                    }
+                    else
+                    {
+                        MenuRoot.anchoredPosition = end;
+                    }
                 }
                 RebuildSelectIndex();
             }
@@ -214,6 +223,7 @@ namespace AxibugEmuOnline.Client
 
             if (!m_bPoped)
             {
+
                 m_bPoped = true;
                 Vector2 start = new Vector2(0, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
@@ -224,8 +234,19 @@ namespace AxibugEmuOnline.Client
                         var moveDelta = value - start;
                         start = value;
 
-                        var topParent = FindTopOptionUI();
-                        topParent.MenuRoot.anchoredPosition += moveDelta;
+                        var topParent = m_parent;
+                        while (topParent != null && topParent.m_parent != null)
+                        {
+                            topParent = topParent.m_parent;
+                        }
+                        if (topParent != null)
+                        {
+                            topParent.MenuRoot.anchoredPosition += moveDelta;
+                        }
+                        else
+                        {
+                            MenuRoot.anchoredPosition += moveDelta;
+                        }
                     },
                     end,
                     0.3f
@@ -235,30 +256,7 @@ namespace AxibugEmuOnline.Client
                 m_lastCS = CommandDispatcher.Instance.Mode;
                 CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
             }
-        }
 
-        OptionUI FindTopOptionUI()
-        {
-            if (m_parent == null) return this;
-
-            var topParent = m_parent;
-            while (topParent != null && topParent.m_parent != null)
-            {
-                topParent = topParent.m_parent;
-            }
-
-            return topParent;
-        }
-
-        static float GetTotalWidth(OptionUI root)
-        {
-            float totalWidth = root.MenuRoot.rect.width;
-            if (root.m_child != null)
-            {
-                totalWidth += GetTotalWidth(root.m_child);
-            }
-
-            return totalWidth;
         }
 
         /// <summary>

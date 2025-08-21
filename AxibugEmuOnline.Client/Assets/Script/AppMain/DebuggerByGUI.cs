@@ -24,7 +24,7 @@ public class DebuggerByGUI : MonoBehaviour
 	private Vector2 _scrollLogView = Vector2.zero;
 	private Vector2 _scrollCurrentLogView = Vector2.zero;
 	private Vector2 _scrollSystemView = Vector2.zero;
-	private bool _expansion = false;
+    private bool _expansion = false;
 	private Rect _windowRect = new Rect(0, 0, 100, 60);
 
 	private int _fps = 0;
@@ -32,9 +32,26 @@ public class DebuggerByGUI : MonoBehaviour
 	private int _frameNumber = 0;
 	private float _lastShowFPSTime = 0f;
 
-	private void Start()
+	public bool OpenHubOnStart = false;
+	public bool AutoShowLastLogLine = false;
+    public bool OnlyShowErrOnStart = false;
+
+    private void Start()
 	{
-		DontDestroyOnLoad(this.gameObject);
+		if (OpenHubOnStart)
+		{
+            _expansion = true;
+            _windowRect.width = 1000;
+            _windowRect.height = 600;
+        }
+
+		if (OnlyShowErrOnStart)
+		{
+			_showInfoLog = false;
+			_showWarningLog = false;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
 		if (AllowDebugging)
 		{
 			Application.logMessageReceived += LogHandler;
@@ -237,16 +254,22 @@ public class DebuggerByGUI : MonoBehaviour
 					GUILayout.Label(_logInformations[i].message);
 					GUILayout.FlexibleSpace();
 					GUI.contentColor = Color.white;
-					GUILayout.EndHorizontal();
+                    GUILayout.EndHorizontal();
 				}
 			}
 			GUILayout.EndScrollView();
 
 			_scrollCurrentLogView = GUILayout.BeginScrollView(_scrollCurrentLogView, "Box", GUILayout.Height(100));
-			if (_currentLogIndex != -1)
+
+			if (AutoShowLastLogLine)
+			{ 
+				_scrollLogView.y = Mathf.Lerp(_scrollLogView.y, float.MaxValue, 0.1f);
+			}
+
+            if (_currentLogIndex != -1)
 			{
 				GUILayout.Label(_logInformations[_currentLogIndex].message + "\r\n\r\n" + _logInformations[_currentLogIndex].stackTrace);
-			}
+            }
 			GUILayout.EndScrollView();
 		}
 		#endregion

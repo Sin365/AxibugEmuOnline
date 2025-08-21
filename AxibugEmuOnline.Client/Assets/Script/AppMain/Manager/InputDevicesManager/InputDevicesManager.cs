@@ -73,32 +73,48 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             return m_devices.Values;
         }
-
+        List<string> templog = new List<string>();
         /// <summary> 由外部驱动的逻辑更新入口 </summary>
         public void Update()
         {
             foreach (var device in m_devices.Values) device.Update();
 
-            DebugInputSystem();
-        }
+            //string HadDrive = "";
+            //foreach (var device in InputSystem.devices)
+            //{
+            //    if (device is Mouse)
+            //        continue;
+            //    bool bhadflag = false;
 
-        private static void DebugInputSystem()
-        {
-            return;
-#if ENABLE_INPUT_SYSTEM
-            foreach (var device in InputSystem.devices)
-            {
-                if (device is Mouse)
-                    continue;
-                for (int i = 0; i < device.allControls.Count; i++)
-                {
-                    if (device.allControls[i].IsPressed(0))
-                    {
-                        Debug.Log($"{device.displayName}| {device.allControls[i].displayName}|{device.allControls[i].name}");
-                    }
-                }
-            }
-#endif
+            //    templog.Clear();
+            //    for (int i = 0; i < device.allControls.Count; i++)
+            //    {
+            //        if (device.allControls[i].IsPressed(0))
+            //        {
+            //            if (device.allControls[i].name.ToLower() == "anykey")
+            //                continue;
+            //            bhadflag = true;
+            //            string keyname = $"{device.allControls[i].GetType().FullName}|{device.allControls[i].name},";
+            //            templog.Add(keyname);
+            //        }
+            //    }
+
+            //    if (bhadflag)
+            //    {
+            //        HadDrive += $" D:{device.GetType().FullName}|{device.GetType().BaseType.FullName}|{device.name}, K:";
+            //        foreach (var s in templog)
+            //        {
+            //            HadDrive += s;
+            //        }
+            //    }
+
+            //}
+
+            //if (!string.IsNullOrEmpty(HadDrive))
+            //{
+            //    Debug.Log($"Had Drive: {HadDrive}");
+            //}
+            
         }
     }
 }

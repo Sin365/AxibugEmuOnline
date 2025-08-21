@@ -21,6 +21,8 @@ namespace AxibugEmuOnline.Client
             get => m_target;
             set
             {
+                if (m_target == value) return;
+
                 m_target = value;
                 if (m_target == null)
                 {
