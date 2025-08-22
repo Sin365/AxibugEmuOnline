@@ -8,8 +8,9 @@ using UnityEngine;
 
 /// <summary>
 /// 模拟器核心控制器键位绑定器
+/// <para>用于实现来自<see cref="InputDevicesManager"/>中的输入设备和模拟器的控制器的按键绑定</para>
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">模拟器平台的控制器类型枚举</typeparam>
 public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     IDeviceBinder<T, Keyboard_D>,
     IDeviceBinder<T, GamePad_D>,

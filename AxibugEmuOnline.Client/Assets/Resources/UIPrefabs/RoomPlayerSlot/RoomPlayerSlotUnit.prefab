@@ -53,7 +53,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2371389415552619370}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bfe4359a48b5c349b439e88eb53b8b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_controllerIndex: 0
+  m_slotIndex: 0
   m_connectInfoNode: {fileID: 2371389415552619370}
   m_indexIcon: {fileID: 4536003039670490184}
   m_playerName: {fileID: 6617607173830585898}
@@ -275,8 +275,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30.93, y: -1.59}
-  m_SizeDelta: {x: 146.1, y: 30.63}
+  m_AnchoredPosition: {x: 6.225006, y: -1.59}
+  m_SizeDelta: {x: 238.55, y: 30.63}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4464870872037843803
 CanvasRenderer:
@@ -308,12 +308,12 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 33a3bdf8f6bd1ec4eba7c4bc58183212, type: 3}
-    m_FontSize: 20
+    m_FontSize: 24
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 4
-    m_MaxSize: 20
-    m_Alignment: 4
+    m_MaxSize: 27
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
