@@ -6,9 +6,21 @@ namespace AxibugEmuOnline.Client.InputDevices
     {
         public override GamePadType PadType =>  GamePadType.PsvitaControl;
 
+        /// <summary>
+        /// X
+        /// </summary>
         public Button_C Cross;
+        /// <summary>
+        /// O
+        /// </summary>
         public Button_C Circle;
+        /// <summary>
+        /// 方框
+        /// </summary>
         public Button_C Square;
+        /// <summary>
+        /// 三角
+        /// </summary>
         public Button_C Triangle;
         public Button_C L;
         public Button_C R;

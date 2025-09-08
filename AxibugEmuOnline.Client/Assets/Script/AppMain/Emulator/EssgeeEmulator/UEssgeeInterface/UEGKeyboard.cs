@@ -12,7 +12,7 @@ public class UEGKeyboard : MonoBehaviour
 {
     public EssgeeControllerMapper ControllerMapper { get; private set; }
     public Dictionary<ulong, EssgeeMotionKey> dictKey2Motion = new Dictionary<ulong, EssgeeMotionKey>();
-    public Dictionary<ulong, KeyCode> dictMotion2RealKey = new Dictionary<ulong, KeyCode>()
+    /*public Dictionary<ulong, KeyCode> dictMotion2RealKey = new Dictionary<ulong, KeyCode>()
     {
 { EssgeeUnityKey.P1_UP,KeyCode.W},
 { EssgeeUnityKey.P1_DOWN,KeyCode.S},
@@ -54,7 +54,7 @@ public class UEGKeyboard : MonoBehaviour
 { EssgeeUnityKey.P4_BTN_4,KeyCode.F12},
 { EssgeeUnityKey.P4_POTION_1,KeyCode.F12},
 { EssgeeUnityKey.P4_POTION_2,KeyCode.F12},
-    };
+    };*/
     public ulong[] CheckList;
     public EssgeeMotionKey[] mCurrKey = new EssgeeMotionKey[0];
     List<EssgeeMotionKey> temp = new List<EssgeeMotionKey>();
