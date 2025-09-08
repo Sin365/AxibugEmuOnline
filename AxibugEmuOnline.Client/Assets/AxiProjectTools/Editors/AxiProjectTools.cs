@@ -9,7 +9,9 @@ using UnityEngine;
 
 public class AxiProjectTools : EditorWindow
 {
-	static string cachecfgPath = "Assets/AxiComToolCache.asset";
+    static string ProjectPath => System.Environment.CurrentDirectory;
+    public static string AssetsPath => ProjectPath + "\\Assets\\";
+    static string cachecfgPath = "Assets/AxiComToolCache.asset";
 	public static string toolSenceName = "AxiProjectTools";
 	public static string outCsDir = Application.dataPath + "/AxiCom/";
 	public static Dictionary<string, AxiPrefabCache_Com2GUID> ComType2GUID = new Dictionary<string, AxiPrefabCache_Com2GUID>();
@@ -502,5 +504,16 @@ public class AxiProjectTools : EditorWindow
         File.WriteAllText(filePath, newContent);
     }
 
+
+
+
+    [MenuItem("Axibug移植工具/Git-Bash打开Assets &\\")]
+    public static void OpenGitBashAssets()
+    {
+        System.Diagnostics.Process p = new System.Diagnostics.Process();
+        p.StartInfo.FileName = "C://Program Files//Git//git-bash.exe";
+        p.StartInfo.Arguments = " --cd=" + AssetsPath;
+        p.Start();
+    }
 }
 #endif
