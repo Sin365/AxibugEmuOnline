@@ -736,6 +736,7 @@ public class AxiNSIO
 #endif
     }
 
+#if UNITY_SWITCH
     bool CreateLoopDir(string path)
     {
         // 检查路径是否存在及其类型
@@ -783,7 +784,7 @@ public class AxiNSIO
         return false;
         return true;
     }
-
+#endif
 
     /// <summary>
     /// 解析路径并获取其所有父级目录（从直接父目录到根目录），并排除存储设备挂载根节点（如"save:"或"sd:"）。
