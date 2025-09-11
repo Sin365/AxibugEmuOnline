@@ -163,8 +163,8 @@ namespace AxibugEmuOnline.Client
             switch (controller.ControllerIndex)
             {
                 case 0://设置标准UI控制 
-                    controller.SetBinding(EnumCommand.Back, device.A, 0);
-                    controller.SetBinding(EnumCommand.Enter, device.B, 0);
+                    controller.SetBinding(EnumCommand.Back, device.B, 0);
+                    controller.SetBinding(EnumCommand.Enter, device.A, 0);
                     controller.SetBinding(EnumCommand.OptionMenu, device.Plus, 0);
                     controller.SetBinding(EnumCommand.SelectItemDown, device.Down, 0);
                     controller.SetBinding(EnumCommand.SelectItemLeft, device.Left, 0);
