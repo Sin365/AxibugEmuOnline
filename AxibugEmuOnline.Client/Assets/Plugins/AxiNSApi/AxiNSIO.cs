@@ -797,7 +797,7 @@ public class AxiNSIO
     public bool TryGetDirectoryAndParentsExcludingRoot(string inputPath, out string resolvedDirectory, out List<string> parentDirectories)
     {
         // 捕获路径中包含非法字符引发的异常
-        UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->{inputPath}");
+        //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->{inputPath}");
         resolvedDirectory = null;
         parentDirectories = new List<string>();
 
@@ -808,7 +808,7 @@ public class AxiNSIO
         }
 
         string normalizedPath = inputPath.Replace('\\', '/').Trim(); // 统一使用正斜杠
-        UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath=>{normalizedPath}");
+        //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath=>{normalizedPath}");
         try
         {
             // 1. 判断路径类型并解析出最直接的目标目录
@@ -816,25 +816,25 @@ public class AxiNSIO
 
             if (normalizedPath.EndsWith("/"))
             {
-                UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath.EndsWith(\"/\") == true");
+                //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath.EndsWith(\"/\") == true");
                 resolvedDirectory = normalizedPath.TrimEnd('/');
             }
             else
             {
                 int lastSeparatorIndex = normalizedPath.LastIndexOf('/');
-                UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->lastSeparatorIndex->{lastSeparatorIndex}");
+                //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->lastSeparatorIndex->{lastSeparatorIndex}");
                 string lastPart = (lastSeparatorIndex >= 0) ? normalizedPath.Substring(lastSeparatorIndex + 1) : normalizedPath;
 
                 if (string.IsNullOrEmpty(lastPart) || lastPart.Equals("..") || !lastPart.Contains("."))
                 {
-                    UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step1");
+                    //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step1");
                     resolvedDirectory = normalizedPath;
                 }
                 else
                 {
-                    UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step2");
+                    //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step2");
                     isLikelyFile = true;
-                    UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->lastSeparatorIndex=>{lastSeparatorIndex}");
+                    //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->lastSeparatorIndex=>{lastSeparatorIndex}");
                     if (lastSeparatorIndex >= 0)
                     {
                         resolvedDirectory = normalizedPath.Substring(0, lastSeparatorIndex);
@@ -846,14 +846,14 @@ public class AxiNSIO
                 }
             }
 
-            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->resolvedDirectory=>{resolvedDirectory}");
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->resolvedDirectory=>{resolvedDirectory}");
             if (string.IsNullOrEmpty(resolvedDirectory))
             {
-                UnityEngine.Debug.LogError($"TryGetDirectoryAndParentsExcludingRoot->string.IsNullOrEmpty(resolvedDirectory) == false");
+                //UnityEngine.Debug.LogError($"TryGetDirectoryAndParentsExcludingRoot->string.IsNullOrEmpty(resolvedDirectory) == false");
                 return false;
             }
 
-            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step3");
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step3");
             // 2. 提取并检查挂载根节点（如 "save:" 或 "sd:"）
             string mountRoot = null;
             int colonSlashIndex = resolvedDirectory.IndexOf(":/");
@@ -861,7 +861,7 @@ public class AxiNSIO
             {
                 mountRoot = resolvedDirectory.Substring(0, colonSlashIndex + 1); // 例如 "save:"
             }
-            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->mountRoot=>{mountRoot}");
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->mountRoot=>{mountRoot}");
 
             // 检查挂载状态
             if (!IsMountPointAccessible(mountRoot + "/"))
@@ -870,13 +870,13 @@ public class AxiNSIO
                 return false;
             }
 
-            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step4");
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step4");
             // 3. 手动分割路径，收集父目录，并在到达挂载根节点时停止
             string currentPath = resolvedDirectory;
-            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->currentPath=>{currentPath}");
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->currentPath=>{currentPath}");
             while (!string.IsNullOrEmpty(currentPath))
             {
-                UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step5");
+                //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step5");
                 // 检查当前路径是否已经是挂载根节点（例如 "save:"）
                 if (mountRoot != null && currentPath.Equals(mountRoot, StringComparison.OrdinalIgnoreCase))
                 {
@@ -902,7 +902,7 @@ public class AxiNSIO
 
                 currentPath = nextParent;
             }
-            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step6 True Return");
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step6 True Return");
 
             return true;
         }
