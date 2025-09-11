@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AxiInputSP;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.InputDevices.ForPSV
@@ -48,6 +49,9 @@ namespace AxibugEmuOnline.Client.InputDevices.ForPSV
                 else if (control == psvCon.Right) return Input.GetKey(KeyCode.Joystick1Button9);
                 else if (control == psvCon.Down) return Input.GetKey(KeyCode.Joystick1Button10);
                 else if (control == psvCon.Left) return Input.GetKey(KeyCode.Joystick1Button11);
+                else if (control == psvCon.LeftBackTouch) return AxiPSVBackTouchEmuKey.GetKey(AxiPSVBackTouchType.LeftHalf);
+                else if (control == psvCon.RightBackTouch) return AxiPSVBackTouchEmuKey.GetKey(AxiPSVBackTouchType.RigthHalf);
+
                 else if (control == psvCon.LeftStick || control == psvCon.RightStick)
                 {
                     var vec2 = control.GetVector2();
