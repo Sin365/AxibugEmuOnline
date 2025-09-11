@@ -13,6 +13,13 @@ public interface IControllerSetuper
         uint? con3ToSlot = null);
 
     /// <summary>
+    /// 增量式的修改一个手柄和一个槽位的连接关系
+    /// </summary>
+    /// <param name="conIndex"></param>
+    /// <param name="slotIndex"></param>
+    void LetControllerConnect(int conIndex, uint slotIndex);
+
+    /// <summary>
     /// 指定手柄插槽位,获取当前槽位连接的本地手柄序号
     /// </summary>
     /// <param name="slotIndex"></param>
@@ -26,12 +33,7 @@ public interface IControllerSetuper
     /// <returns></returns>
     uint? GetFreeSlotIndex();
 
-    /// <summary>
-    /// 增量式的修改一个手柄和一个槽位的连接关系
-    /// </summary>
-    /// <param name="conIndex"></param>
-    /// <param name="slotIndex"></param>
-    void LetControllerConnect(int conIndex, uint slotIndex);
+
 }
 public interface IController
 {

@@ -408,27 +408,28 @@ namespace AxibugEmuOnline.Client.Manager
         /// 发送修改玩家槽位,但是增量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
-        public void SendChangePlaySlotIdxWithJoyIdx(uint localJoyIndex, uint slotIndex, GamePadType localGamePadType)
+        public void SendChangePlaySlotIdxWithJoyIdx(uint localJoyIndex, uint slotIndex)
         {
             if (!App.roomMgr.InRoom) return;
 
-            Dictionary<uint, ValueTuple<uint, GamePadType>> temp = new Dictionary<uint, ValueTuple<uint, GamePadType>>();
+            Dictionary<uint, uint> temp = new Dictionary<uint, uint>();
             for (int i = 0; i < App.roomMgr.mineRoomMiniInfo.GamePlaySlotList.Count; i++)
             {
                 var item = App.roomMgr.mineRoomMiniInfo.GamePlaySlotList[i];
                 if (item.PlayerUID <= 0) continue;
                 if (item.PlayerUID != App.user.userdata.UID) return;
-                temp[(uint)i] = new ValueTuple<uint, GamePadType>((uint)item.PlayerLocalJoyIdx, item.PlayerLocalGamePadType);
+                temp[(uint)i] = (uint)item.PlayerLocalJoyIdx;
             }
-            temp[slotIndex] = new ValueTuple<uint, GamePadType>(localJoyIndex, localGamePadType);
+            temp[slotIndex] = localJoyIndex;
 
             SendChangePlaySlotIdxWithJoyIdx(temp);
         }
+
         /// <summary>
         /// 发送修改玩家槽位,全量
         /// </summary>
         /// <param name="dictSlotIdx2LocalJoyIdx">玩家占用房间GamePlaySlot和LocalJoyIdx字典</param>
-        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, ValueTuple<uint, GamePadType>> dictSlotIdx2LocalJoyIdx)
+        public void SendChangePlaySlotIdxWithJoyIdx(Dictionary<uint, uint> dictSlotIdx2LocalJoyIdx)
         {
             if (!InRoom)
                 return;
@@ -440,8 +441,7 @@ namespace AxibugEmuOnline.Client.Manager
                 _Protobuf_Room_Change_PlaySlotWithJoy.SlotWithJoy.Add(new Protobuf_PlaySlotIdxWithJoyIdx()
                 {
                     PlayerSlotIdx = (int)slotdata.Key,
-                    PlayerLocalJoyIdx = (int)slotdata.Value.Item1,
-                    PlayerLocalGamePadType = slotdata.Value.Item2,
+                    PlayerLocalJoyIdx = (int)slotdata.Value,
                 });
             }
 

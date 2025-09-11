@@ -8,8 +8,9 @@ using UnityEngine;
 
 /// <summary>
 /// 模拟器核心控制器键位绑定器
+/// <para>用于实现来自<see cref="InputDevicesManager"/>中的输入设备和模拟器的控制器的按键绑定</para>
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">模拟器平台的控制器类型枚举</typeparam>
 public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     IDeviceBinder<T, Keyboard_D>,
     IDeviceBinder<T, GamePad_D>,
@@ -20,6 +21,13 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     IDeviceBinder<T, SwitchJoyCon_D>
     where T : Enum
 {
+    /// <summary>
+    /// 忽略输入设备的独占属性
+    /// false:标记为独占的设备（Exclusive==true）只能绑定到一个控制器上
+    /// true:设备可以被绑定到所有控制器上，无视设备的独占属性
+    /// </summary>
+    protected virtual bool IgnoreInputDeviceExclusive => false;
+
     //每一个实例代表一个对应模拟器平台的控制器索引
     List<ControllerBinder> m_controllerBinders = new List<ControllerBinder>();
 
@@ -36,7 +44,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         {
             foreach (var binding in m_controllerBinders)
             {
-                if (device.Exclusive && GetRegistedBinder(device) != null) continue;
+                if (!CheckDeviceCanBind(device)) break;
 
                 binding.RegistInputDevice(device);
             }
@@ -63,9 +71,18 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     {
         foreach (var binding in m_controllerBinders)
         {
-            if (connectDevice.Exclusive && GetRegistedBinder(connectDevice) != null) continue;
+            if (!CheckDeviceCanBind(connectDevice)) return;
             binding.RegistInputDevice(connectDevice);
         }
+    }
+
+    private bool CheckDeviceCanBind(InputDevice_D device)
+    {
+        if (IgnoreInputDeviceExclusive) return true;
+        if (!device.Exclusive) return true;
+
+        //当一个输入设备的Exclusive为true时，只能绑定到一个控制器
+        return GetRegistedBinder(device) == null;
     }
 
     private void InputDevicesMgr_OnDeviceLost(InputDevice_D lostDevice)

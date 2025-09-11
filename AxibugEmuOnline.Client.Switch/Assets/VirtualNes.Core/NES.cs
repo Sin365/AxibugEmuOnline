@@ -347,14 +347,13 @@ namespace VirtualNes.Core
             catch (Exception ex)
             {
                 fp?.Close();
-                Debuger.LogError($"Loading TurboFile Error.\n{ex}");
+                //Debuger.LogError($"Loading TurboFile Error.\n{ex}");
             }
         }
 
         private void LoadDISK()
         {
-            //todo : 磁碟机读取支持
-            Debuger.LogError($"磁碟机尚未支持");
+            //todo : 磁碟机读取支持 by alienjack
         }
 
         private void LoadSRAM()

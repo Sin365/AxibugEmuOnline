@@ -28,10 +28,7 @@ public class ControllerInfoPanel : MonoBehaviour
             //找到第一个空闲手柄插槽
             var freeSlotIndex = s_freeSlots[0];
 
-            //TODO 手柄类型
-            GamePadType gpType = GamePadType.GlobalGamePad;
-
-            App.roomMgr.SendChangePlaySlotIdxWithJoyIdx((uint)joyIndex, (uint)freeSlotIndex, gpType);
+            App.roomMgr.SendChangePlaySlotIdxWithJoyIdx((uint)joyIndex, (uint)freeSlotIndex);
         }
         else //不在房间中,直接设置
         {

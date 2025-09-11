@@ -10,6 +10,12 @@ public class SGSoundPlayer : MonoBehaviour//, ISoundPlayer
     private TimeSpan lastElapsed;
     public double audioFPS { get; private set; }
 
+    //TODO 是否需要和 AudioConfiguration关联起来
+    [HideInInspector]
+    public int sampleRate = 44100;
+    [HideInInspector]
+    public int channle = 2;
+
     void Awake()
     {
         // 获取当前音频配置

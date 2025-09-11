@@ -93,7 +93,6 @@ public class UStoicGoose : EmuCore<ulong>
 
         Init();
 
-
         //保存当前正在进行的游戏存档
         if (emulatorHandler != null && !emulatorHandler.IsRunning)
         {
@@ -123,11 +122,17 @@ public class UStoicGoose : EmuCore<ulong>
 
     public override IControllerSetuper GetControllerSetuper()
     {
-        throw new NotImplementedException();
+        return inputHandler.ControllerMapper;
     }
     protected override bool OnPushEmulatorFrame(ulong InputData)
     {
-        throw new NotImplementedException();
+        if (!emulatorHandler.IsRunning) return false;
+        //if (!bLogicUpdatePause) return false;
+
+        inputHandler.SetInputData(InputData);
+
+        emulatorHandler.Frame_Update();
+        return true;
     }
 
     protected override ulong ConvertInputDataFromNet(ReplayStep step)
@@ -142,17 +147,17 @@ public class UStoicGoose : EmuCore<ulong>
 
     protected override ulong GetLocalInput()
     {
-        throw new NotImplementedException();
+        return inputHandler.Update_InputData();
     }
 
     protected override void AfterPushFrame()
     {
-        throw new NotImplementedException();
     }
 
     public override void GetAudioParams(out int frequency, out int channels)
     {
-        throw new NotImplementedException();
+        channels = soundHandler.channle;
+        frequency = soundHandler.sampleRate;
     }
     #endregion
 
@@ -177,15 +182,16 @@ public class UStoicGoose : EmuCore<ulong>
         //Init();
         //LoadAndRunCartridge("G:/BaiduNetdiskDownload/Rockman & Forte - Mirai Kara no Chousen Sha (J) [M][!].ws");
     }
-    private void Update()
-    {
-        if (!emulatorHandler.IsRunning)
-            return;
 
-        inputHandler.Update_InputData();
+    //依靠外部核心驱动
+    //private void Update()
+    //{
+    //    if (!emulatorHandler.IsRunning)
+    //        return;
+    //    inputHandler.Update_InputData();
+    //    emulatorHandler.Frame_Update();
+    //}
 
-        emulatorHandler.Frame_Update();
-    }
     void OnDestroy()
     {
         EmuClose();

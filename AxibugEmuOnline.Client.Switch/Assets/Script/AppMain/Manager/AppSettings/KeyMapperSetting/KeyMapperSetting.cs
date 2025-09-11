@@ -13,6 +13,7 @@ namespace AxibugEmuOnline.Client.Settings
         Dictionary<Type, InternalEmuCoreBinder> m_bindersByType = new Dictionary<Type, InternalEmuCoreBinder>();
         public KeyMapperSetting()
         {
+            //反射拿所有核心的键位绑定
             var baseType = typeof(InternalEmuCoreBinder);
             foreach (var t in baseType.Assembly.ExportedTypes)
             {

@@ -167,8 +167,8 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(UMAMEKSingleKey.DOWN, device.Down, 0);
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.Left, 0);
             controller.SetBinding(UMAMEKSingleKey.RIGHT, device.Right, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.A, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.B, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.B, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.A, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_C, device.X, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_D, device.Y, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_E, device.LeftSL, 0);

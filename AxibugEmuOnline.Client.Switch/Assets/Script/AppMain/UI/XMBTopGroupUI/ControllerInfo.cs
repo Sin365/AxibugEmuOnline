@@ -18,6 +18,7 @@ public class ControllerInfo : MonoBehaviour
     [SerializeField]
     Text m_playerName;
     private bool m_islocal;
+    private Tweener m_tween;
 
     public int SlotIndex
     {
@@ -67,7 +68,16 @@ public class ControllerInfo : MonoBehaviour
             if (controller == null) return;
             if (!controller.AnyButtonDown()) return;
 
-            m_indexIcon.rectTransform.DOShakePosition(0.1f);
+            if (m_tween != null)
+            {
+                m_indexIcon.rectTransform.anchoredPosition = Vector2.zero;
+                m_tween.Kill();
+                m_tween = null;
+            }
+            m_tween = m_indexIcon.rectTransform.DOShakePosition(0.1f).SetLink(gameObject).OnComplete(() =>
+            {
+                m_tween = null;
+            });
         }
     }
 
@@ -94,7 +104,6 @@ public class ControllerInfo : MonoBehaviour
             {
                 SetDisconnect();
                 return;
-
             }
             var connecter = App.emu.Core.GetControllerSetuper();
 
