@@ -160,7 +160,8 @@ public class UMAME : EmuCore<ulong>
 
         mUniKeyboard.SyncInput(InputData);
         emu.UpdateFrame();
-
+        //写入replay
+        UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, InputData);
         return true;
     }
 

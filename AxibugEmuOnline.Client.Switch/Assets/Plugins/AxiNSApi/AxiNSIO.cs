@@ -1,9 +1,10 @@
 #if UNITY_SWITCH
 using nn.fs;
+using System.Text.RegularExpressions;
 #endif
 
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System;
 
 public class AxiNSIO
 {
@@ -106,10 +107,11 @@ public class AxiNSIO
     /// <summary>
     /// 创建目录，目录存在也会返回true
     /// </summary>
-    /// <param name="filePath"></param>
+    /// <param name="dirpath"></param>
     /// <returns></returns>
-    public bool CreateDir(string filePath)
+    public bool CreateDir(string dirpath)
     {
+        UnityEngine.Debug.Log($"CreateDir: {dirpath}");
         lock (commitLock)
         {
 
@@ -117,9 +119,9 @@ public class AxiNSIO
             return false;
 #else
             // 使用封装函数检查和创建父目录
-            if (!EnsureParentDirectory(filePath, true))
+            if (!EnsureParentDirectory(dirpath, true))
             {
-                UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
+                UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {dirpath}");
                 return false;
             }
             return true;
@@ -159,6 +161,7 @@ public class AxiNSIO
     /// <returns></returns>
     public bool FileToSaveWithCreate(string filePath, byte[] data, bool immediatelyCommit = true)
     {
+        UnityEngine.Debug.Log($"FileToSaveWithCreate: {filePath}");
         lock (commitLock)
         {
 #if !UNITY_SWITCH
@@ -171,16 +174,32 @@ public class AxiNSIO
             }
 
             nn.Result result;
-#if UNITY_SWITCH && !UNITY_EDITOR
-        // 阻止用户在保存时，退出游戏
-        // Switch 条例 0080
-        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
-#endif
-            // 使用封装函数检查和创建父目录
-            if (!EnsureParentDirectory(filePath, true))
+
+            //取出父级目录
+            string dirpath = string.Empty;
+            //string filePath = "save:/AxibugEmu/Caches/Texture/516322966";
+            string mountRoot = null;
+            int colonSlashIndex = filePath.IndexOf(":/");
+            if (colonSlashIndex > 0)
+                mountRoot = filePath.Substring(0, colonSlashIndex + 1); // 例如 "save:"
+
+            int lastSlashIndex = filePath.LastIndexOf('/');
+            if (lastSlashIndex >= 0)
             {
-                UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
-                return false;
+                string parent = filePath.Substring(0, lastSlashIndex);
+                if (mountRoot != null && !parent.Equals(mountRoot, StringComparison.OrdinalIgnoreCase))
+                    dirpath = parent;
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(dirpath))
+            {
+                // 使用封装函数检查和创建父目录
+                if (!EnsureParentDirectory(dirpath, true))
+                {
+                    UnityEngine.Debug.LogError($"无法确保父目录，文件写入取消: {filePath}");
+                    return false;
+                }
             }
 
             //string directoryPath = System.IO.Path.GetDirectoryName(filePath.Replace(save_path, ""));
@@ -211,6 +230,11 @@ public class AxiNSIO
             //	return false;
             //}
 
+#if UNITY_SWITCH && !UNITY_EDITOR
+        // 阻止用户在保存时，退出游戏
+        // Switch 条例 0080
+        UnityEngine.Switch.Notification.EnterExitRequestHandlingSection();
+#endif
             if (CheckPathNotFound(filePath))
             {
                 UnityEngine.Debug.Log($"文件({filePath})不存在需要创建");
@@ -711,44 +735,232 @@ public class AxiNSIO
 
 #endif
     }
+
+#if UNITY_SWITCH
+    bool CreateLoopDir(string path)
+    {
+        // 检查路径是否存在及其类型
+        nn.fs.EntryType entryType = 0;
+        nn.Result result;
+        List<string> needcreatedirs = new List<string>();
+        string node = path;
+        while (true)
+        {
+            if (string.IsNullOrEmpty(node) || node.EndsWith(":/"))
+                break;
+
+
+            if (!CheckPathNotFound(node))
+                needcreatedirs.Insert(0, node);
+            else
+                break;
+
+            result = nn.fs.FileSystem.GetEntryType(ref entryType, node);
+            if (!result.IsSuccess())
+                needcreatedirs.Insert(0, node);
+            else
+                break;//文件已存在
+
+            node = System.IO.Path.GetDirectoryName(node);
+        }
+
+        for (int i = 0; i < needcreatedirs.Count; i++)
+        {
+            UnityEngine.Debug.LogError($"需要创建的目录: {needcreatedirs[i]}");
+        }
+
+        for (int i = 0; i < needcreatedirs.Count; i++)
+        {
+            //result = nn.fs.Directory.Create(needcreatedirs[i]);
+            //if (!result.IsSuccess())
+            //{
+            //    UnityEngine.Debug.LogError($"创建父目录失败: {result.GetErrorInfo()}");
+            //    return false;
+            //}
+            //UnityEngine.Debug.Log($"父目录 {needcreatedirs[i]} 创建成功");
+            //CommitSave();
+        }
+
+        return false;
+        return true;
+    }
+#endif
+
+    /// <summary>
+    /// 解析路径并获取其所有父级目录（从直接父目录到根目录），并排除存储设备挂载根节点（如"save:"或"sd:"）。
+    /// 专为Switch平台设计，正确处理如"save:/"或"sd:/"开头的路径。
+    /// </summary>
+    /// <param name="inputPath">输入的绝对路径</param>
+    /// <param name="resolvedDirectory">输出参数，解析出的最直接目录（文件所在目录或目录自身）</param>
+    /// <param name="parentDirectories">输出参数，从直接父目录到挂载点下一级的列表（不包含挂载根节点）</param>
+    /// <returns>操作是否成功（路径格式基本有效）</returns>
+    public bool TryGetDirectoryAndParentsExcludingRoot(string inputPath, out string resolvedDirectory, out List<string> parentDirectories)
+    {
+        // 捕获路径中包含非法字符引发的异常
+        //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->{inputPath}");
+        resolvedDirectory = null;
+        parentDirectories = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(inputPath))
+        {
+            UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->string.IsNullOrWhiteSpace({inputPath})==false");
+            return false;
+        }
+
+        string normalizedPath = inputPath.Replace('\\', '/').Trim(); // 统一使用正斜杠
+        //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath=>{normalizedPath}");
+        try
+        {
+            // 1. 判断路径类型并解析出最直接的目标目录
+            bool isLikelyFile = false;
+
+            if (normalizedPath.EndsWith("/"))
+            {
+                //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath.EndsWith(\"/\") == true");
+                resolvedDirectory = normalizedPath.TrimEnd('/');
+            }
+            else
+            {
+                int lastSeparatorIndex = normalizedPath.LastIndexOf('/');
+                //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->lastSeparatorIndex->{lastSeparatorIndex}");
+                string lastPart = (lastSeparatorIndex >= 0) ? normalizedPath.Substring(lastSeparatorIndex + 1) : normalizedPath;
+
+                if (string.IsNullOrEmpty(lastPart) || lastPart.Equals("..") || !lastPart.Contains("."))
+                {
+                    //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step1");
+                    resolvedDirectory = normalizedPath;
+                }
+                else
+                {
+                    //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step2");
+                    isLikelyFile = true;
+                    //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->lastSeparatorIndex=>{lastSeparatorIndex}");
+                    if (lastSeparatorIndex >= 0)
+                    {
+                        resolvedDirectory = normalizedPath.Substring(0, lastSeparatorIndex);
+                    }
+                    else
+                    {
+                        resolvedDirectory = normalizedPath; // 可能是根目录下的文件，但这种情况在Switch特殊路径中较少
+                    }
+                }
+            }
+
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->resolvedDirectory=>{resolvedDirectory}");
+            if (string.IsNullOrEmpty(resolvedDirectory))
+            {
+                //UnityEngine.Debug.LogError($"TryGetDirectoryAndParentsExcludingRoot->string.IsNullOrEmpty(resolvedDirectory) == false");
+                return false;
+            }
+
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step3");
+            // 2. 提取并检查挂载根节点（如 "save:" 或 "sd:"）
+            string mountRoot = null;
+            int colonSlashIndex = resolvedDirectory.IndexOf(":/");
+            if (colonSlashIndex > 0)
+            {
+                mountRoot = resolvedDirectory.Substring(0, colonSlashIndex + 1); // 例如 "save:"
+            }
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->mountRoot=>{mountRoot}");
+
+            // 检查挂载状态
+            if (!IsMountPointAccessible(mountRoot + "/"))
+            {
+                UnityEngine.Debug.LogError($"挂载点 {mountRoot + "/"} 未挂载，无法操作路径 {inputPath}");
+                return false;
+            }
+
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step4");
+            // 3. 手动分割路径，收集父目录，并在到达挂载根节点时停止
+            string currentPath = resolvedDirectory;
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->currentPath=>{currentPath}");
+            while (!string.IsNullOrEmpty(currentPath))
+            {
+                //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step5");
+                // 检查当前路径是否已经是挂载根节点（例如 "save:"）
+                if (mountRoot != null && currentPath.Equals(mountRoot, StringComparison.OrdinalIgnoreCase))
+                {
+                    break; // 停止添加，不将挂载根节点加入父目录列表
+                }
+
+                parentDirectories.Add(currentPath); // 将当前层级的路径加入列表
+
+                int lastSlashIndex = currentPath.LastIndexOf('/');
+                if (lastSlashIndex < 0)
+                {
+                    break; // 没有分隔符了，跳出循环
+                }
+
+                string nextParent = currentPath.Substring(0, lastSlashIndex);
+
+                // 检查下一级父目录是否就是挂载根节点（例如 "save:"），如果是，则停止
+                if (mountRoot != null && nextParent.Equals(mountRoot, StringComparison.OrdinalIgnoreCase))
+                {
+                    // 可以选择是否将 mountRoot 加入列表，这里根据需求不加入
+                    break;
+                }
+
+                currentPath = nextParent;
+            }
+            //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->step6 True Return");
+
+            return true;
+        }
+        catch (ArgumentException ex)
+        {
+            // 捕获路径中包含非法字符引发的异常
+            UnityEngine.Debug.LogError($"路径中包含非法字符: {ex.Message}");
+            return false;
+        }
+    }
+
     bool EnsureParentDirectory(string filePath, bool bAutoCreateDir = true)
     {
 #if !UNITY_SWITCH
         return false;
 #else
-        // 参数校验
-        if (string.IsNullOrEmpty(filePath))
+        //// 参数校验
+        //if (string.IsNullOrEmpty(filePath))
+        //{
+        //    UnityEngine.Debug.LogError($"无效参数：filePath={filePath}");
+        //    return false;
+        //}
+
+        //// 提取路径前缀（如 save:/、sd:/）
+        //int prefixEndIndex = filePath.IndexOf(":/");
+        //if (prefixEndIndex == -1)
+        //{
+        //    UnityEngine.Debug.LogError($"文件路径 {filePath} 格式无效，未找到 ':/' 前缀");
+        //    return false;
+        //}
+        //string pathPrefix = filePath.Substring(0, prefixEndIndex + 2); // 提取前缀，例如 "save:/"
+        //string relativePath = filePath.Substring(prefixEndIndex + 2); // 移除前缀，得到相对路径
+
+        //// 检查挂载状态
+        //if (!IsMountPointAccessible(pathPrefix))
+        //{
+        //    UnityEngine.Debug.LogError($"挂载点 {pathPrefix} 未挂载，无法操作路径 {filePath}");
+        //    return false;
+        //}
+
+        //// 提取父目录路径
+        //string directoryPath = System.IO.Path.GetDirectoryName(relativePath); // 获取父目录相对路径
+        //UnityEngine.Debug.Log($"提取 {relativePath} 的 父级路径：{directoryPath}");
+        //if (string.IsNullOrEmpty(directoryPath))
+        //{
+        //    UnityEngine.Debug.Log($"文件路径 {filePath} 无需创建父目录（位于根目录）");
+        //    return true; // 根目录无需创建
+        //}
+
+        //string fullDirectoryPath = $"{pathPrefix}{directoryPath}"; // 拼接完整父目录路径
+
+
+        if (!TryGetDirectoryAndParentsExcludingRoot(filePath, out string fullDirectoryPath, out List<string> parentDirectories))
         {
-            UnityEngine.Debug.LogError($"无效参数：filePath={filePath}");
+            UnityEngine.Debug.LogError($"TryGetDirectoryAndParentsExcludingRoot 操作失败:{filePath}");
             return false;
         }
 
-        // 提取路径前缀（如 save:/、sd:/）
-        int prefixEndIndex = filePath.IndexOf(":/");
-        if (prefixEndIndex == -1)
-        {
-            UnityEngine.Debug.LogError($"文件路径 {filePath} 格式无效，未找到 ':/' 前缀");
-            return false;
-        }
-        string pathPrefix = filePath.Substring(0, prefixEndIndex + 2); // 提取前缀，例如 "save:/"
-        string relativePath = filePath.Substring(prefixEndIndex + 2); // 移除前缀，得到相对路径
-
-        // 检查挂载状态
-        if (!IsMountPointAccessible(pathPrefix))
-        {
-            UnityEngine.Debug.LogError($"挂载点 {pathPrefix} 未挂载，无法操作路径 {filePath}");
-            return false;
-        }
-
-        // 提取父目录路径
-        string directoryPath = System.IO.Path.GetDirectoryName(relativePath); // 获取父目录相对路径
-        if (string.IsNullOrEmpty(directoryPath))
-        {
-            UnityEngine.Debug.Log($"文件路径 {filePath} 无需创建父目录（位于根目录）");
-            return true; // 根目录无需创建
-        }
-
-        string fullDirectoryPath = $"{pathPrefix}{directoryPath}"; // 拼接完整父目录路径
         UnityEngine.Debug.Log($"检查父目录: {fullDirectoryPath}");
 
         // 检查路径是否存在及其类型
@@ -758,46 +970,45 @@ public class AxiNSIO
         {
             if (bAutoCreateDir)
             {
-                //List<string> NeedCreateList = new List<string>();
-                //NeedCreateList.Add(fullDirectoryPath);
-                //nn.fs.EntryType entryTypeLoop = 0;
-                //nn.Result resultloop;
-                //string NodeLoop = fullDirectoryPath;
-                //while (!NodeLoop.EndsWith(":/"))
-                //{
-                //    NodeLoop = System.IO.Path.GetDirectoryName(NodeLoop);
-                //    if (NodeLoop.EndsWith(":/"))
-                //        break;
-                //    resultloop = nn.fs.FileSystem.GetEntryType(ref entryTypeLoop, NodeLoop);
-                //    if (!resultloop.IsSuccess() && nn.fs.FileSystem.ResultPathNotFound.Includes(resultloop))
-                //    {
-                //        NeedCreateList.Add(NodeLoop);
-                //    }
-                //}
-
-                //for(int i = NeedCreateList.Count - 1; i >= 0; i--)
-                //{
-                //    string dirToCreate = NeedCreateList[i];
-                //    // 路径不存在，尝试创建
-                //    UnityEngine.Debug.Log($"父目录 {dirToCreate} 不存在，尝试创建 (判断依据 result=>{result.ToString()})");
-                //    resultloop = nn.fs.Directory.Create(dirToCreate);
-                //    if (!resultloop.IsSuccess())
-                //    {
-                //        UnityEngine.Debug.LogError($"创建父目录失败: {resultloop.GetErrorInfo()}");
-                //        return false;
-                //    }
-                //    UnityEngine.Debug.Log($"父目录 {dirToCreate} 创建成功");
-                //}
-                //return true;
-
                 // 路径不存在，尝试创建
                 UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 不存在，尝试创建 (判断依据 result=>{result.ToString()})");
-                result = nn.fs.Directory.Create(fullDirectoryPath);
-                if (!result.IsSuccess())
+
+                for (int i = parentDirectories.Count - 1; i >= 0; i--)
                 {
-                    UnityEngine.Debug.LogError($"创建父目录失败: {result.GetErrorInfo()}");
-                    return false;
+                    UnityEngine.Debug.Log($">>待检查目录: {parentDirectories[i]}");
                 }
+
+                for (int i = parentDirectories.Count - 1; i >= 0; i--)
+                {
+                    string dir = parentDirectories[i];
+                    if (CheckPathNotFound(dir))
+                    {
+                        UnityEngine.Debug.Log($"需要创建的目录: {dir}");
+                        result = nn.fs.Directory.Create(dir);
+                        if (!result.IsSuccess())
+                        {
+                            UnityEngine.Debug.LogError($"创建父 {dir} 目录失败: {result.GetErrorInfo()}");
+                            return false;
+                        }
+                        UnityEngine.Debug.Log($"父目录 {dir} 创建成功");
+                        //CommitSave();
+                    }
+                    else
+                    {
+                        UnityEngine.Debug.Log($"目录已存在，无需创建: {dir}");
+                    }
+                }
+
+                //result = nn.fs.Directory.Create(fullDirectoryPath);
+                //if (!result.IsSuccess())
+                //{
+                //    UnityEngine.Debug.LogError($"创建父目录失败: {result.GetErrorInfo()}");
+                //    return false;
+                //}
+
+                //if (!CreateLoopDir(fullDirectoryPath))
+                //    return false;
+
                 UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 创建成功");
                 return true;
             }
