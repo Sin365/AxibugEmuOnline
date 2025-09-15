@@ -112,7 +112,15 @@ namespace MAME.Core
                 int samples_to_lose = output_bufindex - max_samples_per_update;
                 for (i = 0; i < streamoutput.Length; i++)
                 {
-                    for (j = 0; j < max_samples_per_update; j++)
+                    //src;
+                    //for (j = 0; j < max_samples_per_update; j++)
+                    //{
+                    //    streamoutput[i][j] = streamoutput[i][samples_to_lose + j];
+                    //}
+
+                    //这是一个Monkey Patch， 这里一维数组是0~2，二位数组可能不正常
+                    int maxcount = Math.Min(streamoutput[i].Length, max_samples_per_update);
+                    for (j = 0; j < maxcount; j++)
                     {
                         streamoutput[i][j] = streamoutput[i][samples_to_lose + j];
                     }
