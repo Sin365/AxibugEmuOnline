@@ -140,8 +140,8 @@ namespace AxibugEmuOnline.Client.Settings
         }
         public override void Bind(ScreenGamepad_D device, ControllerBinder controller)
         {
-            controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.OPTION_1, 0);
-            controller.SetBinding(UMAMEKSingleKey.GAMESTART, device.OPTION_2, 0);
+            controller.SetBinding(UMAMEKSingleKey.GAMESTART, device.OPTION_1, 0);
+            controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.OPTION_2, 0);
             controller.SetBinding(UMAMEKSingleKey.UP, device.UP, 0);
             controller.SetBinding(UMAMEKSingleKey.DOWN, device.DOWN, 0);
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.LEFT, 0);
