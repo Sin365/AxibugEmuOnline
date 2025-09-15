@@ -26,7 +26,11 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
     }
     public void SyncInput(ulong inputData)
     {
-        mPlayMode.CurrLocalInpuAllData = inputData;
+        if (InGameUI.Instance.Core.IsNetPlay)
+            mPlayMode.CurrRemoteInpuAllData = inputData;
+        else
+            mPlayMode.CurrLocalInpuAllData = inputData;
+        //mPlayMode.CurrLocalInpuAllData = inputData;
     }
 
     public ulong DoLocalPressedKeys()
@@ -92,12 +96,12 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
 #endif
 
             CurrLocalInpuAllData = tempLocalInputAllData;
-            //写入replay
-            UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, CurrLocalInpuAllData);
+            ////写入replay
+            //UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, tempLocalInputAllData);
 
             CheckPlayerSlotChanged();
 
-            return CurrLocalInpuAllData;
+            return tempLocalInputAllData;
         }
 
 
