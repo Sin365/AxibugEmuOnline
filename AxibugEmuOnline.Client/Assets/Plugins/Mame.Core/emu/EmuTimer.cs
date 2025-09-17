@@ -52,7 +52,6 @@ namespace MAME.Core
             static ConcurrentQueue<emu_timer> _failedDeletions = new ConcurrentQueue<emu_timer>();
             public static emu_timer GetEmu_timer()
             {
-                int count = _failedDeletions.Count;
                 if (_failedDeletions.TryDequeue(out emu_timer obj))
                 {
                     obj.reset();
@@ -63,7 +62,6 @@ namespace MAME.Core
             }
             public static void EnqueueObj(emu_timer obj)
             {
-                int count = _failedDeletions.Count;
                 _failedDeletions.Enqueue(obj);
             }
 
