@@ -93,7 +93,7 @@
                 //ushort* curbitmap = curbitmapPtr;
                 ushort* curbitmap = (ushort*)Video.bitmapbase_Ptrs[Video.curbitmap];
                 //uint* entry_color = entry_colorPtr;
-                uint* entry_color = (uint*)Palette.entry_color_Ptr;
+                uint* entry_color = (uint*)Palette.entry_color;
                 //int* bitmapcolorRect = bitmapcolorRectPtr;
                 int* bitmapcolorRect = (int*)Video.bitmapcolorRect_Ptr;
 

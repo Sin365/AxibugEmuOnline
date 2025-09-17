@@ -632,7 +632,7 @@ namespace cpu.m68000
 
         void STOP()
         {
-            if (S)
+            if (s)
             {
                 short new_sr = ReadOpWord(PC); PC += 2;
                 stopped = true;

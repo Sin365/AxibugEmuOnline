@@ -8,7 +8,7 @@ namespace cpu.m68000
         {
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
-            if (S == false)
+            if (s == false)
             {
                 //throw new Exception("Write to SR when not in supervisor mode. supposed to trap or something...");
                 TrapVector2(8);
@@ -54,7 +54,7 @@ namespace cpu.m68000
         {
             int dir = (op >> 3) & 1;
             int reg = op & 7;
-            if (S == false)
+            if (s == false)
             {
                 //throw new Exception("MOVE to USP when not supervisor. needs to trap");
                 TrapVector2(8);
@@ -76,7 +76,7 @@ namespace cpu.m68000
 
         void ANDI_SR()
         {
-            if (S == false)
+            if (s == false)
                 throw new Exception("trap!");
             SR &= ReadOpWord(PC); PC += 2;
             pendingCycles -= 20;
@@ -85,7 +85,7 @@ namespace cpu.m68000
 
         void EORI_SR()
         {
-            if (S == false)
+            if (s == false)
                 throw new Exception("trap!");
             SR ^= ReadOpWord(PC); PC += 2;
             pendingCycles -= 20;
@@ -94,7 +94,7 @@ namespace cpu.m68000
 
         void ORI_SR()
         {
-            if (S == false)
+            if (s == false)
                 throw new Exception("trap!");
             SR |= ReadOpWord(PC); PC += 2;
             pendingCycles -= 20;
