@@ -1,4 +1,7 @@
-﻿using AxiInputSP.UGUI;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
+using AxiInputSP.UGUI;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,7 +29,13 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             AxiScreenGamepad.OnGamepadActive += AxiScreenGamepad_OnGamepadActive;
             AxiScreenGamepad.OnGamepadDisactive += AxiScreenGamepad_OnGamepadDisactive;
+            Eventer.Instance.RegisterEvent(EEvent.OnEmuBeginGame, OnEmuBeginGame);
             OnInit();
+        }
+
+        private void OnEmuBeginGame()
+        {
+            ClearLastCheckPerformingValue();
         }
 
         private void AxiScreenGamepad_OnGamepadDisactive(AxiScreenGamepad sender)
@@ -95,15 +104,40 @@ namespace AxibugEmuOnline.Client.InputDevices
             OnDeviceConnected?.Invoke(connectDevice);
         }
 
+        long last_CheckPerformingFrameIdx = -100;
+        bool last_CheckPerformingValue = false;
+        void ClearLastCheckPerformingValue()
+        {
+            last_CheckPerformingFrameIdx = -100;
+            last_CheckPerformingValue = false;
+        }
+
         public bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl_C
         {
-            if (control.Device is ScreenGamepad_D)
+            //减少遍历开销，因为每帧200+次的调用 居然CPU占用了2~3%
+            if (App.emu?.Core == null || last_CheckPerformingFrameIdx != App.emu.Core.Frame)
             {
-                ScreenGamepad_D device = control.Device as ScreenGamepad_D;
+                if (control.Device is ScreenGamepad_D)
+                {
+                    ScreenGamepad_D device = control.Device as ScreenGamepad_D;
 
-                return device.CheckPerforming(control);
+                    last_CheckPerformingValue = device.CheckPerforming(control);
+                }
+                else last_CheckPerformingValue = OnCheckPerforming(control);
+
+                if (App.emu?.Core != null)
+                    last_CheckPerformingFrameIdx = App.emu.Core.Frame;
             }
-            else return OnCheckPerforming(control);
+            return last_CheckPerformingValue;
+
+
+            //if (control.Device is ScreenGamepad_D)
+            //{
+            //    ScreenGamepad_D device = control.Device as ScreenGamepad_D;
+
+            //    return device.CheckPerforming(control);
+            //}
+            //else return OnCheckPerforming(control);
         }
         protected abstract bool OnCheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl_C;
 

@@ -77,6 +77,7 @@ namespace AxibugEmuOnline.Client.Manager
                     break;
             }
 
+
             var result = m_emuCore.StartGame(romFile);
             if (result)
             {
@@ -98,6 +99,7 @@ namespace AxibugEmuOnline.Client.Manager
                 StopGame();
                 OverlayManager.PopTip(result);
             }
+            Eventer.Instance.PostEvent(EEvent.OnEmuBeginGame);
         }
 
         private void OnSlotDataChanged()

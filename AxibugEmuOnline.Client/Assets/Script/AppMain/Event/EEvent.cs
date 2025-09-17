@@ -92,5 +92,9 @@
         /// 网络即时存档删除
         /// </summary>
         OnNetGameSavDeleted,
+        /// <summary>
+        /// 核心开始游戏
+        /// </summary>
+        OnEmuBeginGame,
     }
 }
