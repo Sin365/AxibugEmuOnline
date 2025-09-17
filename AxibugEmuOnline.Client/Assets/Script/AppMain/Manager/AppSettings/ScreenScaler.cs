@@ -1,4 +1,5 @@
 ﻿using AxibugProtobuf;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,13 +10,25 @@ namespace AxibugEmuOnline.Client.Settings
     /// </summary>
     public class ScreenScaler
     {
+        string key_GlobalMode = nameof(ScreenScaler) + ".GlobalMode";
+        Dictionary<RomPlatformType, string> cache_PlatMode = new Dictionary<RomPlatformType, string>();
+        string get_key_PlatMode(RomPlatformType platform) {
+            if (cache_PlatMode.ContainsKey(platform)) 
+                return cache_PlatMode[platform];
+            string val = nameof(ScreenScaler)+".PlatMode." + platform;
+            cache_PlatMode[platform] = val;
+            return val;
+        }
+
         /// <summary>
         /// 全局设置的缩放模式
         /// </summary>
         public EnumScalerMode GlobalMode
         {
-            get => (EnumScalerMode)AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.GlobalMode", 0);
-            set => AxiPlayerPrefs.SetInt($"{nameof(ScreenScaler)}.GlobalMode", (int)value);
+            //get => (EnumScalerMode)AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.GlobalMode", 0);
+            //set => AxiPlayerPrefs.SetInt($"{nameof(ScreenScaler)}.GlobalMode", (int)value);
+            get => (EnumScalerMode)AxiPlayerPrefs.GetInt(key_GlobalMode, 0);
+            set => AxiPlayerPrefs.SetInt(key_GlobalMode, (int)value);
         }
 
         /// <summary>
@@ -25,7 +38,7 @@ namespace AxibugEmuOnline.Client.Settings
         /// <returns></returns>
         public EnumScalerMode GetMode(RomPlatformType platform)
         {
-            int setVal = AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
+            int setVal = AxiPlayerPrefs.GetInt(get_key_PlatMode(platform), -1);
             if (setVal == -1)
                 return GlobalMode;
             else
@@ -34,14 +47,14 @@ namespace AxibugEmuOnline.Client.Settings
 
         public bool IsSetMode(RomPlatformType platform)
         {
-            int setVal = AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", -1);
+            int setVal = AxiPlayerPrefs.GetInt(get_key_PlatMode(platform), -1);
             return setVal != -1;
         }
 
         public void SetMode(RomPlatformType platform, EnumScalerMode? mode)
         {
             int setVal = mode == null ? -1 : (int)mode;
-            AxiPlayerPrefs.SetInt($"{nameof(ScreenScaler)}.PlatMode.{platform}", setVal);
+            AxiPlayerPrefs.SetInt(get_key_PlatMode(platform), setVal);
         }
 
         /// <summary>

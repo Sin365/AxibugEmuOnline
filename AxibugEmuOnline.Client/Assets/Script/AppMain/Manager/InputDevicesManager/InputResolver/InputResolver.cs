@@ -52,7 +52,7 @@ namespace AxibugEmuOnline.Client.InputDevices
         /// 获得所有当前已连入的输入设备
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<InputDevice_D> GetDevices()
+        public List<InputDevice_D> GetDevices()
         {
             m_devicesResultCache.Clear();
             m_devicesResultCache.AddRange(m_devices.Values);

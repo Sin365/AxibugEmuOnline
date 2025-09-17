@@ -19,7 +19,7 @@ namespace AxibugEmuOnline.Client
             m_checkCmds = Enum.GetValues(typeof(EnumCommand)) as EnumCommand[];
         }
 
-        IEnumerable<CommandState> GetCommand()
+        List<CommandState> GetCommand()
         {
             if (CheckFrame == Time.frameCount)
                 return m_commands;
@@ -39,7 +39,7 @@ namespace AxibugEmuOnline.Client
             return m_commands;
         }
 
-        public void Update(IEnumerable<CommandExecuter> executers)
+        public void Update(List<CommandExecuter> executers)
         {
             foreach (var cmd in GetCommand())
             {

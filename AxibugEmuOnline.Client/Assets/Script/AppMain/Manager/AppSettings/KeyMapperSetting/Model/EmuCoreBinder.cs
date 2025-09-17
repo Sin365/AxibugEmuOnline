@@ -285,7 +285,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         }
 
         private List<InputControl_C> m_caches = new List<InputControl_C>();
-        public IEnumerable<InputControl_C> GetBinding(T emuBtn)
+        public List<InputControl_C> GetBinding(T emuBtn)
         {
             m_caches.Clear();
 
