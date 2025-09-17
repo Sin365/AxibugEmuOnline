@@ -1,5 +1,6 @@
 ﻿using cpu.m6800;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace MAME.Core
@@ -15,7 +16,7 @@ namespace MAME.Core
         private static Atime callback_timer_expire_time;
         public delegate void timer_fired_func();
         public static Action setvector;
-        public class emu_timer
+        /*public class emu_timer
         {
             public TIME_ACT action;
             //public string func;
@@ -24,6 +25,58 @@ namespace MAME.Core
             public Atime period;
             public Atime start;
             public Atime expire;
+        }*/
+
+        public class emu_timer
+        {
+            public TIME_ACT action;
+            public bool enabled;
+            public bool temporary;
+            public Atime period;
+            public Atime start;
+            public Atime expire;
+
+            internal void reset()
+            {
+                action = default;
+                enabled = default;
+                temporary = default;
+                period = default;
+                start = default;
+                expire = default;
+            }
+
+            /// <summary>
+            /// 线程安全队列（因为析构函数是额外线程来的）
+            /// </summary>
+            static ConcurrentQueue<emu_timer> _failedDeletions = new ConcurrentQueue<emu_timer>();
+            public static emu_timer GetEmu_timer()
+            {
+                int count = _failedDeletions.Count;
+                if (_failedDeletions.TryDequeue(out emu_timer obj))
+                {
+                    obj.reset();
+                    return obj;
+                }
+
+                return new emu_timer();
+            }
+            public static void EnqueueObj(emu_timer obj)
+            {
+                int count = _failedDeletions.Count;
+                _failedDeletions.Enqueue(obj);
+            }
+
+            ~emu_timer()
+            {
+                //咱也没办法，这样子来实现emu_timer的回收到对象池。只能这样实现，MAME里面对于emu_timer持有引用比较混沌，在确保没有引用计数时，再安全回池。
+                //回池，引用计数+1，使其不被回收。相当于打断CG回收
+                //（原本没有析构函数时，GC是直接回收，有析构时，则调用后下一次GC再回收，但是这就有操作空间了。这里引用计数+1
+                //GC回收，但是不回收，请回对象池
+                //说人话，就是用析构驱动回池，而不破坏现有代码
+                EnqueueObj(this);
+                GC.ReRegisterForFinalize(this);//手动注册，否则析构函数再也不会回调
+            }
         }
         public class emu_timer2
         {
@@ -613,7 +666,8 @@ namespace MAME.Core
         public static emu_timer timer_alloc_common(TIME_ACT action, bool temp)
         {
             Atime time = get_current_time();
-            emu_timer timer = new emu_timer();
+            //emu_timer timer = new emu_timer();
+            emu_timer timer = emu_timer.GetEmu_timer();
             timer.action = action;
             timer.enabled = false;
             timer.temporary = temp;
