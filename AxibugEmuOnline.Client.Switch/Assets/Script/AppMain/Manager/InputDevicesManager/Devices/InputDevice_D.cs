@@ -29,6 +29,7 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         private void DefineControls()
         {
+            //反射初始化所有控制对象 比如Button_C
             foreach (var field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public))
             {
                 if (!typeof(InputControl_C).IsAssignableFrom(field.FieldType)) continue;

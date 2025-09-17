@@ -30,6 +30,8 @@ namespace AxibugEmuOnline.Client.InputDevices
         public Button_C Right;
         public Button_C Down;
         public Button_C Left;
+        public Button_C LeftBackTouch;
+        public Button_C RightBackTouch;
         public Stick_C LeftStick;
         public Stick_C RightStick;
 
