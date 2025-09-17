@@ -142,7 +142,7 @@ namespace AxibugEmuOnline.Client
                 case 0:
                     controller.SetBinding(EnumCommand.Back, device.BTN_A, 0);
                     controller.SetBinding(EnumCommand.Enter, device.BTN_B, 0);
-                    controller.SetBinding(EnumCommand.OptionMenu, device.OPTION_1, 0);
+                    controller.SetBinding(EnumCommand.OptionMenu, device.HOME, 0);
                     controller.SetBinding(EnumCommand.SelectItemDown, device.DOWN, 0);
                     controller.SetBinding(EnumCommand.SelectItemLeft, device.LEFT, 0);
                     controller.SetBinding(EnumCommand.SelectItemRight, device.RIGHT, 0);
