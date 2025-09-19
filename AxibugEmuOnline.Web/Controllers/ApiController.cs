@@ -94,11 +94,11 @@ namespace AxibugEmuOnline.Web.Controllers
 
                 if (UID > 0)
                 {
-                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids`,IF(s.uid = {UID}, TRUE, FALSE) AS is_collected FROM romlist r left join rom_stars s on r.id = s.romid {GetWhereCmd(condition)} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids`,IF(s.uid = {UID}, TRUE, FALSE) AS is_collected FROM romlist r left join rom_stars s on r.id = s.romid {GetWhereCmd(condition)} GROUP BY r.id {HotOrderBy} LIMIT ?offset, ?pageSize;";
                 }
                 else
                 {
-                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids` FROM romlist r {GetWhereCmd(condition)} {HotOrderBy} LIMIT ?offset, ?pageSize;";
+                    query = $"SELECT r.id,r.`Name`,r.GameType,r.Note,r.RomUrl,r.ImgUrl,r.`Hash`,r.`playcount`,r.`stars`,r.`PlatformType`,r.`parentids` FROM romlist r {GetWhereCmd(condition)} GROUP BY r.id {HotOrderBy} LIMIT ?offset, ?pageSize;";
                 }
 
                 using (var command = new MySqlCommand(query, conn))
