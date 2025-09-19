@@ -114,30 +114,30 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         public bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl_C
         {
-            //减少遍历开销，因为每帧200+次的调用 居然CPU占用了2~3%
-            if (App.emu?.Core == null || last_CheckPerformingFrameIdx != App.emu.Core.Frame)
-            {
-                if (control.Device is ScreenGamepad_D)
-                {
-                    ScreenGamepad_D device = control.Device as ScreenGamepad_D;
-
-                    last_CheckPerformingValue = device.CheckPerforming(control);
-                }
-                else last_CheckPerformingValue = OnCheckPerforming(control);
-
-                if (App.emu?.Core != null)
-                    last_CheckPerformingFrameIdx = App.emu.Core.Frame;
-            }
-            return last_CheckPerformingValue;
-
-
-            //if (control.Device is ScreenGamepad_D)
+            ////减少遍历开销，因为每帧200+次的调用 居然CPU占用了2~3%
+            //if (App.emu?.Core == null || last_CheckPerformingFrameIdx != App.emu.Core.Frame)
             //{
-            //    ScreenGamepad_D device = control.Device as ScreenGamepad_D;
+            //    if (control.Device is ScreenGamepad_D)
+            //    {
+            //        ScreenGamepad_D device = control.Device as ScreenGamepad_D;
 
-            //    return device.CheckPerforming(control);
+            //        last_CheckPerformingValue = device.CheckPerforming(control);
+            //    }
+            //    else last_CheckPerformingValue = OnCheckPerforming(control);
+
+            //    if (App.emu?.Core != null)
+            //        last_CheckPerformingFrameIdx = App.emu.Core.Frame;
             //}
-            //else return OnCheckPerforming(control);
+            //return last_CheckPerformingValue;
+
+
+            if (control.Device is ScreenGamepad_D)
+            {
+                ScreenGamepad_D device = control.Device as ScreenGamepad_D;
+
+                return device.CheckPerforming(control);
+            }
+            else return OnCheckPerforming(control);
         }
         protected abstract bool OnCheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl_C;
 
