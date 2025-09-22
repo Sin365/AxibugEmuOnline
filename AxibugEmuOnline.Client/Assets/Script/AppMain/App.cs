@@ -213,7 +213,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 else if (request.downloadHandler.bHadErr)
                 {
                     bHttpCheckDone = false;
-                    App.log.Error(request.downloadHandler.ErrInfo);
+                    App.log.Error(request.downloadHandler.errInfo);
                 }
                 else
                 {
