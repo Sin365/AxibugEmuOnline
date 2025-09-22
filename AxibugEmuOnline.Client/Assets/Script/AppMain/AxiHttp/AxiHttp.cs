@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Compression;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-public static class PSVThread
+public static class AxiHttpThread
 {
 
 #if UNITY_PSP2
@@ -85,7 +86,7 @@ public static class AxiHttp
     public const string Transfer_Encoding = "transfer-encoding";
     public const string Connection = "connection";
     public static long index = 0;
-    static int singlePkgMaxRead = 1024;
+    static int singlePkgMaxRead = 1024 * 4;
 
     public class WaitAxiRequest : UnityEngine.CustomYieldInstruction
     {
@@ -110,7 +111,13 @@ public static class AxiHttp
         //Console.WriteLine(log);
     }
 
-    static Dictionary<string, IPAddress> dictIP2Address = new Dictionary<string, IPAddress>();
+    static ConcurrentDictionary<string, IPAddress> dictIP2Address = new ConcurrentDictionary<string, IPAddress>();
+    public enum AxiDownLoadMode
+    {
+        NotDownLoad = 0,
+        DownLoadBytes = 1,
+        DownloadToBinaryWriter = 2
+    }
 
     public class AxiRespInfo
     {
@@ -120,78 +127,58 @@ public static class AxiHttp
         {
             get
             {
-                return
-                    isDone = true
-                    &&
-                    (
-                    !string.IsNullOrEmpty(ErrInfo)
-                    ||
-                    code != 200
-                    );
+                return isDone == true && (code != 200 || !string.IsNullOrEmpty(errInfo));
             }
         }
-        public string ErrInfo;
-        //public string Err = null;
-        public string host = "";//host主机头
-        public string url = "";//pathAndQuery
-        public int port = 80;
-        public string requestRaw = "";
-        public string encoding = "";
-        public string header = "";
+        public string errInfo;
+        public string host = string.Empty;//host主机头
+        public string url = string.Empty;//pathAndQuery
+        public string requestRaw = string.Empty;
+        public string encoding = string.Empty;
+        public string header = string.Empty;
         public string text { get { return body; } }
-        public string body = "";
-        public string reuqestBody = "";
-        public string reuqestHeader = "";
+        public string body = string.Empty;
+        public string reuqestBody = string.Empty;
+        public string reuqestHeader = string.Empty;
         public Dictionary<string, string> headers = new Dictionary<string, string>();
-        public string response = "";
-        //public string gzip = "";
-        public bool isGzip = false;
+        public bool isgzip = false;
         public int length = 0;
         public int code = 0;
-        public int location = 0;
-        public int runTime = 0;//获取网页消耗时间，毫秒
-        public int sleepTime = 0;//休息时间
-        public string cookies = "";
-        public bool bTimeOut = false;
-
-        public int NeedloadedLenght;
-        public int loadedLenght;
-        public byte[] data { get { return bodyRaw; } }
-        public byte[] bodyRaw;
-        public string fileName;
-        public float DownLoadPr =>
-            NeedloadedLenght <= 0 ? -1 : (float)loadedLenght / NeedloadedLenght;
-        public System.IO.BinaryWriter binaryWriter;
-    }
-
-    public static IPAddress GetDnsIP(string str)
-    {
-        lock (dictIP2Address)
+        public int runtime = 0;//获取网页消耗时间，毫秒
+        public string cookies = string.Empty;
+        public bool isTimeOut = false;
+        public int needdownloadLenght;
+        public int loadedlenght;
+        public byte[] data { get { return bodyraw; } }
+        public byte[] bodyraw;
+        public string filename;
+        public float downLoadPr => needdownloadLenght <= 0 ? -1 : (float)loadedlenght / needdownloadLenght;
+        public void SetIsDone()
         {
-            if (!dictIP2Address.ContainsKey(str))
-            {
-                IPHostEntry host = Dns.GetHostEntry(str);
-                IPAddress ip = null;
-                foreach (var item in host.AddressList)
-                {
-                    if (item.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        ip = item; break;
-                    }
-                }
-                dictIP2Address[str] = ip;
-            }
-            return dictIP2Address[str];
+            this.isDone = true;
+        }
+        public void SetDoneForCantStart(int code, string errmsg)
+        {
+            this.code = code;
+            this.errInfo = errmsg;
+            this.isDone = true;
         }
     }
-
-    public enum AxiDownLoadMode
+    public static IPAddress GetDnsIP(string hostname)
     {
-        NotDownLoad = 0,
-        DownLoadBytes = 1,
-        DownloadToBinaryWriter = 2
+        return dictIP2Address.GetOrAdd(hostname, key =>
+        {
+            IPHostEntry host = Dns.GetHostEntry(hostname);
+            foreach (var item in host.AddressList)
+            {
+                if (item.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return item; ;
+                }
+            }
+            return null;
+        });
     }
-
     public static AxiRespInfo AxiRequest(string url)
     {
         AxiRespInfo respInfo = new AxiRespInfo();
@@ -199,7 +186,6 @@ public static class AxiHttp
         SendAxiRequest(url, ref respInfo);
         return respInfo;
     }
-
     public static WaitAxiRequest AxiRequestAsync(string url)
     {
         AxiRespInfo respInfo = new AxiRespInfo();
@@ -207,10 +193,9 @@ public static class AxiHttp
         WaitAxiRequest respAsync = new WaitAxiRequest(respInfo);
         //Task task = new Task(() => SendAxiRequest(url, ref respInfo));
         //task.Start()
-        PSVThread.DoTask(() => SendAxiRequest(url, ref respInfo));
+        AxiHttpThread.DoTask(() => SendAxiRequest(url, ref respInfo));
         return respAsync;
     }
-
     public static AxiRespInfo AxiDownload(string url)
     {
         AxiRespInfo respInfo = new AxiRespInfo();
@@ -218,32 +203,27 @@ public static class AxiHttp
         SendAxiRequest(url, ref respInfo);
         return respInfo;
     }
-
     public static AxiRespInfo AxiDownloadAsync(string url)
     {
         AxiRespInfo respInfo = new AxiRespInfo();
         respInfo.downloadMode = AxiDownLoadMode.DownLoadBytes;
-        //Task task = new Task(() => SendAxiRequest(url, ref respInfo));
-        //task.Start();
-        PSVThread.DoTask(() => SendAxiRequest(url, ref respInfo));
+        AxiHttpThread.DoTask(() => SendAxiRequest(url, ref respInfo));
         return respInfo;
     }
-
     static void SendAxiRequest(string url, ref AxiRespInfo respinfo, int timeout = 1000 * 1000, string encoding = "UTF-8")
     {
         if (url.ToLower().StartsWith("https://"))
-            SendAxiRequestHttps(url, ref respinfo, timeout, encoding);// SendAxiRequestHttps(url, ref respinfo, timeout, encoding);
+            SendAxiRequestHttps(url, ref respinfo, timeout, encoding);
         else
             SendAxiRequestHttp(url, ref respinfo, timeout, encoding);
     }
-
     static void SendAxiRequestHttp(string url, ref AxiRespInfo respinfo, int timeout, string encoding)
     {
         Log("SendAxiRequestHttp");
         respinfo.url = url;
         Stopwatch sw = new Stopwatch();
         sw.Start();
-        respinfo.loadedLenght = 0;
+        respinfo.loadedlenght = 0;
         try
         {
             string strURI = url;
@@ -258,13 +238,9 @@ public static class AxiHttp
             if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath, ref ourErrMsg))
             {
                 Log("ParseURI False");
-                respinfo.ErrInfo = ourErrMsg;
-                respinfo.code = 0;
-                respinfo.isDone = true;
+                respinfo.SetDoneForCantStart(0, "Can not Connect");
                 return;
             }
-
-
 
             var ip = GetDnsIP(strHost);
             var ipEndPoint = new IPEndPoint(ip, port);
@@ -277,12 +253,10 @@ public static class AxiHttp
                 {
                     client.Close();
                     sw.Stop();
-                    respinfo.code = 0;
-                    respinfo.isDone = true;
+                    respinfo.SetDoneForCantStart(0, "Can not Connect");
                     return;
                 }
 
-                //string requestRaw = $"GET {strRelativePath} HTTP/1.1\r\nHost: {strHost}\r\nConnection: Close\r\n\r\n";
                 string request = $"GET {strURI} HTTP/1.1\r\nHost: {strHost}\r\nConnection: Close\r\n\r\n";
 
                 checkContentLength(ref respinfo, ref request);
@@ -311,7 +285,6 @@ public static class AxiHttp
                 } while (!tmp.Equals(CTRL)
                 && sw.ElapsedMilliseconds < timeout
                 );
-
 
                 respinfo.header = sb.ToString().Replace(CTRL, "");
                 string[] headers = Regex.Split(respinfo.header, CT);
@@ -343,7 +316,6 @@ public static class AxiHttp
                             location = Tools.getCurrentPath(url) + location;
                         }
                         rsb.Insert(urlStart, location);
-                        //return sendHTTPRequest(count, host, port, payload, rsb.ToString(), timeout, encoding, false);
                         client.Close();
                         sw.Stop();
                         SendAxiRequest(url, ref respinfo, timeout, encoding);
@@ -356,33 +328,19 @@ public static class AxiHttp
                 {
                     Log("User Head");
                     int length = int.Parse(respinfo.headers[Content_Length]);
-                    respinfo.NeedloadedLenght = length;
+                    respinfo.needdownloadLenght = length;
 
-                    //               while (respinfo.loadedLenght < length
-                    //	&& sw.ElapsedMilliseconds < timeout
-                    //	)
-                    //{
-                    //	int readsize = length - respinfo.loadedLenght;
-                    //	len = client.Receive(temp_responseBody, respinfo.loadedLenght, readsize, SocketFlags.None);
-
-                    //                   if (len > 0)
-                    //	{
-                    //		respinfo.loadedLenght += len;
-                    //	}
-                    //}
-
-                    while (respinfo.loadedLenght < length
+                    while (respinfo.loadedlenght < length
                         && sw.ElapsedMilliseconds < timeout
                         )
                     {
-                        //len = client.Receive(temp_responseBody, respinfo.loadedLenght, readsize, SocketFlags.None);
-                        int readsize = length - respinfo.loadedLenght;
+                        int readsize = length - respinfo.loadedlenght;
                         readsize = Math.Min(readsize, singlePkgMaxRead);
                         len = client.Receive(temp_responseBody, 0, readsize, SocketFlags.None);
                         if (len > 0)
                         {
                             memoryStream.Write(temp_responseBody, 0, len);
-                            respinfo.loadedLenght += len;
+                            respinfo.loadedlenght += len;
                         }
                     }
                 }
@@ -394,7 +352,7 @@ public static class AxiHttp
                     int chunkedSize = 0;
                     byte[] chunkedByte = new byte[1];
                     //读取总长度
-                    respinfo.loadedLenght = 0;
+                    respinfo.loadedlenght = 0;
                     do
                     {
                         string ctmp = "";
@@ -418,27 +376,12 @@ public static class AxiHttp
                             //结束了
                             break;
                         }
-                        //int onechunkLen = 0;
-                        //while (onechunkLen < chunkedSize
-                        //	&& sw.ElapsedMilliseconds < timeout
-                        //	)
-                        //{
-
-                        //                      len = client.Receive(responseBody, respinfo.loadedLenght, chunkedSize - onechunkLen, SocketFlags.None);
-                        //	if (len > 0)
-                        //	{
-                        //		onechunkLen += len;
-                        //		respinfo.loadedLenght += len;
-                        //	}
-                        //}
 
                         int onechunkLen = 0;
                         while (onechunkLen < chunkedSize
                             && sw.ElapsedMilliseconds < timeout
                             )
                         {
-                            //len = client.Receive(responseBody, respinfo.loadedLenght, chunkedSize - onechunkLen, SocketFlags.None);
-
                             int readsize = chunkedSize - onechunkLen;
                             readsize = Math.Min(readsize, singlePkgMaxRead);
                             len = client.Receive(temp_responseBody, 0, readsize, SocketFlags.None);
@@ -446,7 +389,7 @@ public static class AxiHttp
                             {
                                 memoryStream.Write(temp_responseBody, 0, len);
                                 onechunkLen += len;
-                                respinfo.loadedLenght += len;
+                                respinfo.loadedlenght += len;
                             }
                         }
 
@@ -463,15 +406,14 @@ public static class AxiHttp
                         {
                             if (client.Available > 0)
                             {
-                                //len = client.Receive(responseBody, respinfo.loadedLenght, (1024 * 200) - respinfo.loadedLenght, SocketFlags.None);
-                                int readsize = (1024 * 200) - respinfo.loadedLenght;
+                                int readsize = (1024 * 200) - respinfo.loadedlenght;
                                 readsize = Math.Min(readsize, singlePkgMaxRead);
                                 len = client.Receive(temp_responseBody, 0, readsize, SocketFlags.None);
 
                                 if (len > 0)
                                 {
                                     memoryStream.Write(temp_responseBody, 0, len);
-                                    respinfo.loadedLenght += len;
+                                    respinfo.loadedlenght += len;
                                 }
                             }
                             else
@@ -490,59 +432,52 @@ public static class AxiHttp
                     //判断是否gzip
                     if (respinfo.headers.ContainsKey(Content_Encoding))
                     {
-                        respinfo.bodyRaw = unGzipBytes(responseBody, respinfo.loadedLenght);
+                        respinfo.bodyraw = unGzipBytes(responseBody, respinfo.loadedlenght);
                     }
                     else
                     {
-                        respinfo.bodyRaw = responseBody;
+                        respinfo.bodyraw = responseBody;
                     }
 
                     // 使用Uri类解析URL  
                     Uri uri = new Uri(url);
-                    respinfo.fileName = System.IO.Path.GetFileName(uri.LocalPath);
+                    respinfo.filename = System.IO.Path.GetFileName(uri.LocalPath);
                 }
                 else
                 {
                     //判断是否gzip
                     if (respinfo.headers.ContainsKey(Content_Encoding))
                     {
-                        respinfo.body = unGzip(responseBody, respinfo.loadedLenght, encod);
+                        respinfo.body = unGzip(responseBody, respinfo.loadedlenght, encod);
                     }
                     else
                     {
-                        respinfo.body = encod.GetString(responseBody, 0, respinfo.loadedLenght);
+                        respinfo.body = encod.GetString(responseBody, 0, respinfo.loadedlenght);
                     }
                 }
-
                 client.Close();
             }
 
         }
         catch (Exception ex)
         {
-            respinfo.ErrInfo = $"ex : {ex.ToString()}";
+            respinfo.errInfo = $"ex : {ex.ToString()}";
         }
         finally
         {
             sw.Stop();
-            respinfo.length = respinfo.loadedLenght;
-            respinfo.runTime = (int)sw.ElapsedMilliseconds;
-            respinfo.bTimeOut = sw.ElapsedMilliseconds >= timeout;
-            //if (socket != null)
-            //{
-            //	clientSocket.Close();
-            //}
+            respinfo.length = respinfo.loadedlenght;
+            respinfo.runtime = (int)sw.ElapsedMilliseconds;
+            respinfo.isTimeOut = sw.ElapsedMilliseconds >= timeout;
             respinfo.isDone = true;
         }
     }
-
-
     static void SendAxiRequestHttps(string url, ref AxiRespInfo respinfo, int timeout, string encoding)
     {
         respinfo.url = url;
         Stopwatch sw = new Stopwatch();
         sw.Start();
-        respinfo.loadedLenght = 0;
+        respinfo.loadedlenght = 0;
         TcpClient client = null;
         try
         {
@@ -558,34 +493,22 @@ public static class AxiHttp
             if (!ParseURI(strURI, ref bSSL, ref strHost, ref strIP, ref port, ref strRelativePath, ref ourErrMsg))
             {
                 Log("ParseURI False");
-                respinfo.ErrInfo = ourErrMsg;
-                respinfo.code = 0;
-                respinfo.isDone = true;
+                respinfo.SetDoneForCantStart(0, ourErrMsg);
                 return;
             }
 
-            //var ip = Dns.GetHostEntry(strHost).AddressList[0];
-            //var ipEndPoint = new IPEndPoint(ip, port);
-
-            //using (Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-            //using (TcpClient tcpclient = new TcpClient())
             using (System.IO.MemoryStream memoryStream = new System.IO.MemoryStream())
             {
-                //client.Connect(ipEndPoint);
-
                 TimeOutSocket tos = new TimeOutSocket();
                 client = tos.Connect(strHost, port, timeout);
                 if (!client.Connected)
                 {
                     client.Close();
                     sw.Stop();
-                    respinfo.code = 0;
-                    respinfo.isDone = true;
+                    respinfo.SetDoneForCantStart(0, "");
                     return;
                 }
                 SslStream ssl = null;
-
-                //string requestRaw = $"GET {strRelativePath} HTTP/1.1\r\nHost: {strHost}\r\nConnection: Close\r\n\r\n";
                 string request = $"GET {strURI} HTTP/1.1\r\nHost: {strHost}\r\nConnection: Close\r\n\r\n";
 
                 ssl = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate));
@@ -599,15 +522,9 @@ public static class AxiHttp
                     ssl.Write(requestByte);
                     ssl.Flush();
                 }
-
-
                 checkContentLength(ref respinfo, ref request);
                 respinfo.requestRaw = request;
                 byte[] temp_responseBody = new byte[singlePkgMaxRead];
-
-                //byte[] buffer = Encoding.ASCII.GetBytes(requestRaw);
-                //client.Send(buffer);
-
                 string tmp = "";
                 int len = 0;
                 StringBuilder sb = new StringBuilder();
@@ -626,8 +543,6 @@ public static class AxiHttp
                 } while (!tmp.Equals(CTRL)
                 && sw.ElapsedMilliseconds < timeout
                 );
-
-
                 respinfo.header = sb.ToString().Replace(CTRL, "");
                 string[] headers = Regex.Split(respinfo.header, CT);
                 if (headers != null && headers.Length > 0)
@@ -658,7 +573,6 @@ public static class AxiHttp
                         {
                             respinfo.requestRaw = respinfo.requestRaw.Replace(url, respinfo.headers["location"]);
                         }
-                        //return sendHTTPRequest(count, host, port, payload, rsb.ToString(), timeout, encoding, false);
                         client.Close();
                         sw.Stop();
                         SendAxiRequest(url, ref respinfo, timeout, encoding);
@@ -671,17 +585,16 @@ public static class AxiHttp
                 {
                     Log("Use Head");
                     int length = int.Parse(respinfo.headers[Content_Length]);
-                    respinfo.NeedloadedLenght = length;
-                    while (respinfo.loadedLenght < length && sw.ElapsedMilliseconds < timeout)
+                    respinfo.needdownloadLenght = length;
+                    while (respinfo.loadedlenght < length && sw.ElapsedMilliseconds < timeout)
                     {
-                        //len = ssl.Read(responseBody, respinfo.loadedLenght, length - respinfo.loadedLenght);
-                        int readsize = length - respinfo.loadedLenght;
+                        int readsize = length - respinfo.loadedlenght;
                         readsize = Math.Min(readsize, singlePkgMaxRead);
                         len = ssl.Read(temp_responseBody, 0, readsize);
                         if (len > 0)
                         {
                             memoryStream.Write(temp_responseBody, 0, len);
-                            respinfo.loadedLenght += len;
+                            respinfo.loadedlenght += len;
                         }
                     }
                 }
@@ -693,7 +606,7 @@ public static class AxiHttp
                     int chunkedSize = 0;
                     byte[] chunkedByte = new byte[1];
                     //读取总长度
-                    respinfo.loadedLenght = 0;
+                    respinfo.loadedlenght = 0;
                     do
                     {
                         string ctmp = "";
@@ -728,7 +641,7 @@ public static class AxiHttp
                             {
                                 memoryStream.Write(temp_responseBody, 0, len);
                                 onechunkLen += len;
-                                respinfo.loadedLenght += len;
+                                respinfo.loadedlenght += len;
                             }
                         }
 
@@ -748,13 +661,13 @@ public static class AxiHttp
                                 if (client.Available > 0)
                                 {
                                     //len = ssl.Read(responseBody, respinfo.loadedLenght, (1024 * 200) - respinfo.loadedLenght);
-                                    int readsize = (1024 * 200) - respinfo.loadedLenght;
+                                    int readsize = (1024 * 200) - respinfo.loadedlenght;
                                     readsize = Math.Min(readsize, singlePkgMaxRead);
                                     len = ssl.Read(temp_responseBody, 0, readsize);
                                     if (len > 0)
                                     {
                                         memoryStream.Write(temp_responseBody, 0, len);
-                                        respinfo.loadedLenght += len;
+                                        respinfo.loadedlenght += len;
                                     }
                                 }
                                 else
@@ -771,29 +684,29 @@ public static class AxiHttp
                 if (respinfo.downloadMode > AxiDownLoadMode.NotDownLoad)
                 {
                     //判断是否gzip
-                    if (respinfo.isGzip)
+                    if (respinfo.isgzip)
                     {
-                        respinfo.bodyRaw = unGzipBytes(responseBody, respinfo.loadedLenght);
+                        respinfo.bodyraw = unGzipBytes(responseBody, respinfo.loadedlenght);
                     }
                     else
                     {
-                        respinfo.bodyRaw = responseBody;
+                        respinfo.bodyraw = responseBody;
                     }
 
                     // 使用Uri类解析URL  
                     Uri uri = new Uri(url);
-                    respinfo.fileName = System.IO.Path.GetFileName(uri.LocalPath);
+                    respinfo.filename = System.IO.Path.GetFileName(uri.LocalPath);
                 }
                 else
                 {
                     //判断是否gzip
-                    if (respinfo.isGzip)
+                    if (respinfo.isgzip)
                     {
-                        respinfo.body = unGzip(responseBody, respinfo.loadedLenght, encod);
+                        respinfo.body = unGzip(responseBody, respinfo.loadedlenght, encod);
                     }
                     else
                     {
-                        respinfo.body = encod.GetString(responseBody, 0, respinfo.loadedLenght);
+                        respinfo.body = encod.GetString(responseBody, 0, respinfo.loadedlenght);
                     }
                 }
 
@@ -802,27 +715,21 @@ public static class AxiHttp
         }
         catch (Exception ex)
         {
-            respinfo.ErrInfo = $"ex : {ex.ToString()}";
+            respinfo.errInfo = $"ex : {ex.ToString()}";
         }
         finally
         {
             client?.Close();
             sw.Stop();
-            respinfo.length = respinfo.loadedLenght;
-            respinfo.runTime = (int)sw.ElapsedMilliseconds;
-            respinfo.bTimeOut = sw.ElapsedMilliseconds >= timeout;
-            //if (socket != null)
-            //{
-            //	clientSocket.Close();
-            //}
-            respinfo.isDone = true;
+            respinfo.length = respinfo.loadedlenght;
+            respinfo.runtime = (int)sw.ElapsedMilliseconds;
+            respinfo.isTimeOut = sw.ElapsedMilliseconds >= timeout;
+            respinfo.SetIsDone();
         }
 
         if (client != null)
             client.Dispose();
     }
-
-
     private static void doHeader(ref AxiRespInfo respinfo, ref string[] headers)
     {
 
@@ -832,7 +739,7 @@ public static class AxiHttp
             {
                 respinfo.code = Tools.convertToInt(headers[i].Split(' ')[1]);
                 if (respinfo.code != 200 && respinfo.code != 301 && respinfo.code != 302)
-                    respinfo.ErrInfo = "code:" + respinfo.code;
+                    respinfo.errInfo = "code:" + respinfo.code;
             }
             else
             {
@@ -859,7 +766,7 @@ public static class AxiHttp
                     }
                 }
             }
-            respinfo.isGzip = respinfo.headers.ContainsKey(Content_Encoding);
+            respinfo.isgzip = respinfo.headers.ContainsKey(Content_Encoding);
         }
 
     }
@@ -903,7 +810,6 @@ public static class AxiHttp
         return str;
 
     }
-
     public static byte[] unGzipBytes(byte[] data, int len)
     {
         System.IO.MemoryStream ms = new System.IO.MemoryStream(data, 0, len);
@@ -1016,16 +922,11 @@ public static class AxiHttp
         string strRelativePathRet;
         string strIPRet;
 
-        /*string strProtocol = strURI.Substring(0, 7);
-        if (strProtocol != "http://"
-            ||
-            strProtocol != "https://")
-            return false;*/
-
-        if (!strURI.ToLower().StartsWith("http://") || strURI.ToLower().StartsWith("https://"))
+        // 修复URL协议检查逻辑
+        string lowerUri = strURI.ToLower();
+        if (!lowerUri.StartsWith("http://") && !lowerUri.StartsWith("https://"))
             return false;
-
-        bIsSSL = strURI.ToLower().StartsWith("https://");
+        bIsSSL = lowerUri.StartsWith("https://");
 
         string strLeft = strURI.Substring(7, strURI.Length - 7);
         int nIndexPort = strLeft.IndexOf(':');
@@ -1078,8 +979,6 @@ public static class AxiHttp
         strRelativePath = UrlEncode(strRelativePathRet);
         return true;
     }
-
-
     public static string UrlEncode(string str)
     {
         string sb = "";
@@ -1100,15 +999,12 @@ public static class AxiHttp
         }
         return sb;
     }
-
-
     class Tools
     {
         public static long currentMillis()
         {
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
-
         /// <summary>
         /// 将16进制转换成10进制
         /// </summary>
@@ -1143,8 +1039,6 @@ public static class AxiHttp
                 return "";
             }
         }
-
-
         /// <summary>
         /// 将字符串转换成数字，错误返回0
         /// </summary>
@@ -1164,7 +1058,6 @@ public static class AxiHttp
             return 0;
 
         }
-
     }
     class TimeOutSocket
     {
@@ -1178,16 +1071,9 @@ public static class AxiHttp
             sw.Start();
             TimeoutObject.Reset();
             socketexception = null;
-
             TcpClient tcpclient = new TcpClient();
-
-            //IPHostEntry hostinfo = Dns.GetHostEntry("emu.axibug.com");
-            //IPAddress[] aryIP = hostinfo.AddressList;
-            //host = aryIP[0].ToString();
-
             Log($"BeginConnect {host}:{port} timeoutMSec=>{timeoutMSec}");
             tcpclient.BeginConnect(host, port, new AsyncCallback(CallBackMethod), tcpclient);
-
             if (TimeoutObject.WaitOne(timeoutMSec, false))
             {
                 if (IsConnectionSuccessful)
@@ -1232,5 +1118,4 @@ public static class AxiHttp
             }
         }
     }
-
 }
