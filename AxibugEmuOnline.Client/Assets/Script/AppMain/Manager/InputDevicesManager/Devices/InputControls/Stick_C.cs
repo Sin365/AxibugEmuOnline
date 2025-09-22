@@ -19,16 +19,16 @@ namespace AxibugEmuOnline.Client.InputDevices
             var axis = GetVector2();
 
             var dir = GetDirection(axis, 0.15f);
-            Up.m_performing = dir == Direction.Up;
+            Up.m_performing = (dir &= Direction.Up) > 0;
             Up.Update();
 
-            Down.m_performing = dir == Direction.Down;
+            Down.m_performing = (dir &= Direction.Down) > 0;
             Down.Update();
 
-            Left.m_performing = dir == Direction.Left;
+            Left.m_performing = (dir &= Direction.Left) > 0;
             Left.Update();
 
-            Right.m_performing = dir == Direction.Right;
+            Right.m_performing = (dir &= Direction.Right) > 0;
             Right.Update();
         }
 
@@ -56,22 +56,21 @@ namespace AxibugEmuOnline.Client.InputDevices
             }
         }
 
-        enum Direction
+        [System.Flags]
+        enum Direction : byte
         {
-            None,
-            Up,
-            Down,
-            Left,
-            Right
+            None = 0,
+            Up = 1,
+            Down = 2,
+            Left = 4,
+            Right = 8
         }
 
         static Direction GetDirection(Vector2 input, float deadzone)
         {
             // 检查死区：如果点在死区半径内，返回无
             if (input.magnitude <= deadzone)
-            {
                 return Direction.None;
-            }
 
             // 标准化向量（确保在单位圆上）
             Vector2 normalized = input.normalized;
@@ -90,27 +89,27 @@ namespace AxibugEmuOnline.Client.InputDevices
             if (dotUp > maxDot)
             {
                 maxDot = dotUp;
-                bestDirection = Direction.Up;
+                bestDirection |= Direction.Up;
             }
 
             // 检查下方向
             if (dotDown > maxDot)
             {
                 maxDot = dotDown;
-                bestDirection = Direction.Down;
+                bestDirection |= Direction.Down;
             }
 
             // 检查右方向
             if (dotRight > maxDot)
             {
                 maxDot = dotRight;
-                bestDirection = Direction.Right;
+                bestDirection |= Direction.Right;
             }
 
             // 检查左方向
             if (dotLeft > maxDot)
             {
-                bestDirection = Direction.Left;
+                bestDirection |= Direction.Left;
             }
 
             return bestDirection;
