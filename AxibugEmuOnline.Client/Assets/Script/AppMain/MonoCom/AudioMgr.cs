@@ -96,7 +96,6 @@ namespace AxibugEmuOnline.Client
         void PlayStaticSound(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
         {
             if (clip == null) return;
-
             _staticAudioSource.pitch = Mathf.Clamp(pitch, 0.5f, 2.0f);
             _staticAudioSource.PlayOneShot(clip, Mathf.Clamp01(volume));
         }
@@ -172,9 +171,9 @@ namespace AxibugEmuOnline.Client
         {
             if (_audioStreams == null) return;
             _audioStreams.AxiAudioPullHandle.PullAudio(data, channels);
-            
+
             //TODO 如果要处理采样率差异
-            if (_audioStreams.NeedsResampling){ }
+            if (_audioStreams.NeedsResampling) { }
         }
         #endregion
 
