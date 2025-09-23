@@ -1,8 +1,10 @@
+using AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.ClientCore;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SGSoundPlayer : MonoBehaviour//, ISoundPlayer
+public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
 {
     [SerializeField]
     private AudioSource m_as;
@@ -18,44 +20,82 @@ public class SGSoundPlayer : MonoBehaviour//, ISoundPlayer
 
     void Awake()
     {
-        // 获取当前音频配置
-        AudioConfiguration config = AudioSettings.GetConfiguration();
+        return;
+        //// 获取当前音频配置
+        //AudioConfiguration config = AudioSettings.GetConfiguration();
 
-        // 设置目标音频配置
-        config.sampleRate = 44100;       // 采样率为 44100Hz
-        config.numRealVoices = 32;      // 设置最大音频源数量（可选）
-        config.numVirtualVoices = 512;   // 设置虚拟音频源数量（可选）
-        config.dspBufferSize = 1024;     // 设置 DSP 缓冲区大小（可选）
-        config.speakerMode = AudioSpeakerMode.Stereo; // 设置为立体声（2 声道）
+        //// 设置目标音频配置
+        //config.sampleRate = 44100;       // 采样率为 44100Hz
+        //config.numRealVoices = 32;      // 设置最大音频源数量（可选）
+        //config.numVirtualVoices = 512;   // 设置虚拟音频源数量（可选）
+        //config.dspBufferSize = 1024;     // 设置 DSP 缓冲区大小（可选）
+        //config.speakerMode = AudioSpeakerMode.Stereo; // 设置为立体声（2 声道）
 
-        // 应用新的音频配置
-        if (AudioSettings.Reset(config))
-        {
-            Debug.Log("Audio settings updated successfully.");
-            Debug.Log("Sample Rate: " + config.sampleRate + "Hz");
-            Debug.Log("Speaker Mode: " + config.speakerMode);
-        }
-        else
-        {
-            Debug.LogError("Failed to update audio settings.");
-        }
+        //// 应用新的音频配置
+        //if (AudioSettings.Reset(config))
+        //{
+        //    Debug.Log("Audio settings updated successfully.");
+        //    Debug.Log("Sample Rate: " + config.sampleRate + "Hz");
+        //    Debug.Log("Speaker Mode: " + config.speakerMode);
+        //}
+        //else
+        //{
+        //    Debug.LogError("Failed to update audio settings.");
+        //}
 
+    }
+
+    private void OnEnable()
+    {
+        App.audioMgr.RegisterStream(nameof(UStoicGoose), AudioSettings.outputSampleRate, this);
+    }
+
+    void OnDisable()
+    {
+        App.audioMgr.ClearAudioData(nameof(UStoicGoose));
     }
 
     private Queue<float> sampleQueue = new Queue<float>();
 
 
-    // Unity 音频线程回调
-    void OnAudioFilterRead(float[] data, int channels)
+    public unsafe void PullAudio(float[] data, int channels)
     {
+        fixed (float* pData = data)
+        {
+            float* outputPtr = pData; // 指向数组起始位置的指针
+            int dataLength = data.Length;
+            for (int i = 0; i < dataLength; i++)
+            {
+                float rawData;
+                if (_buffer.TryRead(out rawData))
+                    *outputPtr = rawData;
+                else
+                    *outputPtr = 0; // 无数据时静音
+
+                outputPtr++; // 指针移动到下一个位置
+            }
+        }
+
+        /* 非指针版本，代码保留
         for (int i = 0; i < data.Length; i++)
         {
             if (_buffer.TryRead(out float rawData))
                 data[i] = rawData;
             else
                 data[i] = 0; // 无数据时静音
-        }
+        }*/
     }
+    //// Unity 音频线程回调
+    //void OnAudioFilterRead(float[] data, int channels)
+    //{
+    //    for (int i = 0; i < data.Length; i++)
+    //    {
+    //        if (_buffer.TryRead(out float rawData))
+    //            data[i] = rawData;
+    //        else
+    //            data[i] = 0; // 无数据时静音
+    //    }
+    //}
 
 
     public void Initialize()
