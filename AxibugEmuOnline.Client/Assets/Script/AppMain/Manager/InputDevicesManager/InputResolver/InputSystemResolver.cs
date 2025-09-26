@@ -77,6 +77,15 @@ On-Screen Keyboard：这个是真正的屏幕软键盘。
                 else newDevice = new DualShockController_D(this);
             }
 #endif
+
+#if UNITY_STANDALONE
+            //PC Mac 平台的SwitchPro 手柄（其他平台无法编译，包括NS，电脑连NSPro手柄是不一样的）
+            //inputsystem 文档说的是SwitchProControllerHID：A Nintendo Switch Pro controller connected to a desktop mac/windows PC using the HID interface.
+            else if (ipdev is UnityEngine.InputSystem.Switch.SwitchProControllerHID)
+            {
+                newDevice = new StandaloneSwitchProController_D(this);
+            }
+#endif
             else if (ipdev is XInputController)
             {
                 newDevice = new XboxController_D(this);
@@ -307,6 +316,33 @@ On-Screen Keyboard：这个是真正的屏幕软键盘。
                 mapper[ds_d.TouchpadBtn] = ipDsGamePad.touchpadButton;
                 mapper[ds_d.LeftStick] = ipDsGamePad.leftStick;
                 mapper[ds_d.RightStick] = ipDsGamePad.rightStick;
+            }
+#endif
+
+#if UNITY_STANDALONE
+            //PC Mac 平台的SwitchPro 手柄（其他平台无法编译，包括NS，电脑连NSPro手柄是不一样的）
+            //inputsystem 文档说的是SwitchProControllerHID：A Nintendo Switch Pro controller connected to a desktop mac/windows PC using the HID interface.
+            else if (device_d is StandaloneSwitchProController_D standaloneswitchpro_d)
+            {
+                var ipdevice_joycon = ipdevice as UnityEngine.InputSystem.Switch.SwitchProControllerHID;
+                mapper[standaloneswitchpro_d.LeftSL] = ipdevice_joycon.leftTrigger;
+                mapper[standaloneswitchpro_d.LeftSR] = ipdevice_joycon.leftShoulder;
+                mapper[standaloneswitchpro_d.RightSL] = ipdevice_joycon.rightTrigger;
+                mapper[standaloneswitchpro_d.RightSR] = ipdevice_joycon.rightShoulder;
+                mapper[standaloneswitchpro_d.B] = ipdevice_joycon.bButton;
+                mapper[standaloneswitchpro_d.A] = ipdevice_joycon.aButton;
+                mapper[standaloneswitchpro_d.Y] = ipdevice_joycon.yButton;
+                mapper[standaloneswitchpro_d.X] = ipdevice_joycon.xButton;
+                mapper[standaloneswitchpro_d.Up] = ipdevice_joycon.dpad.up;
+                mapper[standaloneswitchpro_d.Down] = ipdevice_joycon.dpad.down;
+                mapper[standaloneswitchpro_d.Left] = ipdevice_joycon.dpad.left;
+                mapper[standaloneswitchpro_d.Right] = ipdevice_joycon.dpad.right;
+                mapper[standaloneswitchpro_d.Minus] = ipdevice_joycon.selectButton;
+                mapper[standaloneswitchpro_d.Plus] = ipdevice_joycon.startButton;
+                mapper[standaloneswitchpro_d.LeftStick] = ipdevice_joycon.leftStick;
+                mapper[standaloneswitchpro_d.RightStick] = ipdevice_joycon.rightStick;
+                mapper[standaloneswitchpro_d.RightStickPress] = ipdevice_joycon.rightStickButton;
+                mapper[standaloneswitchpro_d.LeftStickPress] = ipdevice_joycon.leftStickButton;
             }
 #endif
             else if (device_d is XboxController_D xbox_d)

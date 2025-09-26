@@ -158,6 +158,29 @@ namespace AxibugEmuOnline.Client
                     break;
             }
         }
+        public override void Bind(StandaloneSwitchProController_D device, ControllerBinder controller)
+        {
+            switch (controller.ControllerIndex)
+            {
+                case 0://设置标准UI控制 
+                    controller.SetBinding(EnumCommand.Back, device.B, 0);
+                    controller.SetBinding(EnumCommand.Enter, device.A, 0);
+                    controller.SetBinding(EnumCommand.OptionMenu, device.Plus, 0);
+                    controller.SetBinding(EnumCommand.SelectItemDown, device.Down, 0);
+                    controller.SetBinding(EnumCommand.SelectItemLeft, device.Left, 0);
+                    controller.SetBinding(EnumCommand.SelectItemRight, device.Right, 0);
+                    controller.SetBinding(EnumCommand.SelectItemUp, device.Up, 0);
+
+                    controller.SetBinding(EnumCommand.SelectItemDown, device.LeftStick.Down, 1);
+                    controller.SetBinding(EnumCommand.SelectItemLeft, device.LeftStick.Left, 1);
+                    controller.SetBinding(EnumCommand.SelectItemRight, device.LeftStick.Right, 1);
+                    controller.SetBinding(EnumCommand.SelectItemUp, device.LeftStick.Up, 1);
+                    break;
+                case 1://游戏中UI控制
+                    controller.SetBinding(EnumCommand.OptionMenu, device.RightStickPress, 0);
+                    break;
+            }
+        }
         public override void Bind(SwitchJoyCon_D device, ControllerBinder controller)
         {
             switch (controller.ControllerIndex)
