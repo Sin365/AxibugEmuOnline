@@ -121,34 +121,35 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
         }
 
     }
-    public class ReplayMode
-    {
-        ulong currInputData;
+//    public class ReplayMode
+//    {
+//        ulong currInputData;
 
-        public ReplayMode()
-        {
-        }
+//        public ReplayMode()
+//        {
+//        }
 
-        public ulong GetPressedKeys()
-        {
-            int targetFrame = (int)UMAME.instance.mUniVideoPlayer.mFrame;
-            AxiReplay.ReplayStep stepData;
-            //有变化
-            if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
-            {
-#if UNITY_EDITOR
-                string ShowKeyNames = string.Empty;
-                foreach (string keyname in GetInputpDataToMotionKey(currInputData))
-                {
-                    ShowKeyNames += keyname + "   |";
-                }
-                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
-#endif
-                currInputData = stepData.InPut;
-            }
-            return currInputData;
-        }
-    }
+//        public ulong GetPressedKeys()
+//        {
+//            int targetFrame = (int)UMAME.instance.mUniVideoPlayer.mFrame;
+//            AxiReplay.ReplayStep stepData;
+            
+//            //有变化
+//            if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
+//            {
+//#if UNITY_EDITOR
+//                string ShowKeyNames = string.Empty;
+//                foreach (string keyname in GetInputpDataToMotionKey(currInputData))
+//                {
+//                    ShowKeyNames += keyname + "   |";
+//                }
+//                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
+//#endif
+//                currInputData = stepData.InPut;
+//            }
+//            return currInputData;
+//        }
+//    }
     #endregion
 }
 
