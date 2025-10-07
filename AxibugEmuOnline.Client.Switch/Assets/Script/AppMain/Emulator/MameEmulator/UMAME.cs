@@ -29,8 +29,8 @@ public class UMAME : EmuCore<ulong>
     public UniTimeSpan mTimeSpan;
     public bool bQuickTestRom = false;
     public string mQuickTestRom = string.Empty;
-    public ReplayWriter mReplayWriter;
-    public ReplayReader mReplayReader;
+    //public ReplayWriter mReplayWriter;
+    //public ReplayReader mReplayReader;
     public long currEmuFrame => emu.currEmuFrame;
     public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
     public static bool bInGame { get; private set; }
@@ -125,7 +125,7 @@ public class UMAME : EmuCore<ulong>
     {
         emu.ResetRomRoot(RomPath);
         //Application.targetFrameRate = 60;
-        mReplayWriter = new ReplayWriter(mChangeRomName, "fuck", ReplayData.ReplayFormat.FM32IP64, Encoding.UTF8);
+        //mReplayWriter = new ReplayWriter(mChangeRomName, "fuck", ReplayData.ReplayFormat.FM32IP64, Encoding.UTF8);
         mChangeRomName = loadRom;
         StopGame();
         //读取ROM
@@ -161,7 +161,7 @@ public class UMAME : EmuCore<ulong>
         mUniKeyboard.SyncInput(InputData);
         emu.UpdateFrame();
         //写入replay
-        UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, InputData);
+        //UMAME.instance.mReplayWriter.NextFramebyFrameIdx((int)UMAME.instance.mUniVideoPlayer.mFrame, InputData);
         return true;
     }
 
@@ -188,7 +188,7 @@ public class UMAME : EmuCore<ulong>
     {
         string Path = SavePath + Machine.sName + ".rp";
         string dbgPath = SavePath + Machine.sName + ".rpwrite";
-        mReplayWriter.SaveData(Path, true, dbgPath);
+        //mReplayWriter.SaveData(Path, true, dbgPath);
     }
     public void StopGame()
     {

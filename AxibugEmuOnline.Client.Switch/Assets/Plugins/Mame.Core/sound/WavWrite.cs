@@ -1,4 +1,4 @@
-﻿
+﻿#if !UNITY_SWITCH
 using System.IO;
 
 namespace MAME.Core
@@ -82,3 +82,4 @@ namespace MAME.Core
         }
     }
 }
+#endif

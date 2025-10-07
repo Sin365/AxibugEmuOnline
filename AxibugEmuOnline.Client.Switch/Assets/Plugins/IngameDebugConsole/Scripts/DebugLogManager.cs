@@ -1805,7 +1805,9 @@ namespace IngameDebugConsole
 
 		public void SaveLogsToFile( string filePath )
 		{
+#if !UNITY_SWITCH
 			File.WriteAllText( filePath, GetAllLogs() );
+#endif
 			Debug.Log( "Logs saved to: " + filePath );
 		}
 
@@ -1815,7 +1817,7 @@ namespace IngameDebugConsole
 			if( !avoidScreenCutout )
 				return;
 
-#if UNITY_2017_2_OR_NEWER && ( UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS )
+#if UNITY_2017_2_OR_NEWER && (UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS)
 			// Check if there is a cutout at the top of the screen
 			int screenHeight = Screen.height;
 			float safeYMax = Screen.safeArea.yMax;

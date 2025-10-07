@@ -39,6 +39,7 @@ namespace Essgee.Emulation
                 var fileExtension = System.IO.Path.GetExtension(fileName);
                 if (fileExtension == ".zip")
                 {
+                    UnityEngine.Debug.Log("使用ZipFile.Open解压Zip:"+fileName);
                     using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Read))
                     {
                         foreach (var entry in zip.Entries)
@@ -60,7 +61,7 @@ namespace Essgee.Emulation
                 else if (fileExtensionSystemDictionary.ContainsKey(fileExtension))
                 {
                     machineType = fileExtensionSystemDictionary[fileExtension];
-                    romData = System.IO.File.ReadAllBytes(fileName);
+                    romData = EmulatorHandler.io.File_ReadAllBytes(fileName);
                 }
             }
             catch (Exception ex) when (!AppEnvironment.DebugMode)
