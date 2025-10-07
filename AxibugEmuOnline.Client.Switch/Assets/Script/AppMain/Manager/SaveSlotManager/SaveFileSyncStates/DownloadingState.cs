@@ -43,7 +43,7 @@ namespace AxibugEmuOnline.Client
 
                 if (m_downloadTask.downloadHandler.bHadErr) //下载失败
                 {
-                    FSM.GetState<SyncFailedState>().Error = m_downloadTask.downloadHandler.ErrInfo;
+                    FSM.GetState<SyncFailedState>().Error = m_downloadTask.downloadHandler.errInfo;
                     FSM.ChangeState<SyncFailedState>();
                     return;
                 }
@@ -52,7 +52,7 @@ namespace AxibugEmuOnline.Client
 
                 if (m_downloadTaskImg.downloadHandler.bHadErr) //下载失败
                 {
-                    FSM.GetState<SyncFailedState>().Error = m_downloadTaskImg.downloadHandler.ErrInfo;
+                    FSM.GetState<SyncFailedState>().Error = m_downloadTaskImg.downloadHandler.errInfo;
                     FSM.ChangeState<SyncFailedState>();
                     return;
                 }

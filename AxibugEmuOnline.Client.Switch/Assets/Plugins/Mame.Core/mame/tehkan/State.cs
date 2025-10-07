@@ -45,7 +45,7 @@ namespace MAME.Core
             writer.Write(Sound.mixerstream.output_sampindex);
             writer.Write(Sound.mixerstream.output_base_sampindex);
         }
-        public static void LoadStateBinary_pbaction(System.IO.BinaryReader reader)
+        public unsafe static void LoadStateBinary_pbaction(System.IO.BinaryReader reader)
         {
             int i;
             dsw1 = reader.ReadByte();

@@ -28,18 +28,9 @@ namespace AxibugEmuOnline.Client
             if (!string.IsNullOrEmpty(searchKey))
             {
                 string oldsearch = searchKey;
-                //searchKey = System.Net.WebUtility.UrlEncode(searchKey);
                 searchKey = AxiHttp.UrlEncode(searchKey);
                 App.log.Info($"search->{oldsearch} ->{searchKey}");
-                //searchKey =  HttpUtility.UrlDecode(searchKey);
             }
-            //避免特殊字符和个别文字编码问题
-            //byte[] gb2312Bytes = Encoding.Default.GetBytes(searchKey);
-            //byte[] utf8Bytes = Encoding.Convert(Encoding.Default, Encoding.UTF8, gb2312Bytes);
-            //// 将UTF-8编码的字节数组转换回字符串（此时是UTF-8编码的字符串）
-            //string utf8String = Encoding.UTF8.GetString(utf8Bytes);
-            //searchKey = UrlEncode(utf8String);
-            //App.log.Info($"search->{utf8String} ->{searchKey}");
             string url = $"{WebSiteApi}/RomList?Page={page}&PageSize={pageSize}&PType={(int)platform}&SearchKey={searchKey}&Token={App.user.Token}";
             App.log.Info($"GetRomList=>{url}");
             AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get(url);
@@ -57,19 +48,8 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            App.log.Error(request.downloadHandler.ErrInfo);
+            App.log.Error(request.downloadHandler.errInfo);
             callback.Invoke(page, null);
-
-            /*
-            UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}&SearchKey={searchKey}");
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                callback.Invoke(null);
-                yield break;
-            }*/
-
         }
         private IEnumerator GetRomListFlow(AxibugProtobuf.RomPlatformType platform, int page, int pageSize, Action<int, Resp_GameList> callback)
         {
@@ -91,18 +71,8 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            App.log.Error(request.downloadHandler.ErrInfo);
+            App.log.Error(request.downloadHandler.errInfo);
             callback.Invoke(page, null);
-            /*
-            UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                callback.Invoke(null);
-                yield break;
-            }
-            */
         }
 
         public void GetMarkList(Action<int, Resp_GameList> callback, AxibugProtobuf.RomPlatformType platform, int page, int pageSize = 10)
@@ -147,7 +117,7 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            App.log.Error(request.downloadHandler.ErrInfo);
+            App.log.Error(request.downloadHandler.errInfo);
             callback.Invoke(page, null);
 
             /*
@@ -181,7 +151,7 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            App.log.Error(request.downloadHandler.ErrInfo);
+            App.log.Error(request.downloadHandler.errInfo);
             callback.Invoke(page, null);
             /*
             UnityWebRequest request = UnityWebRequest.Get($"{WebSiteApi}/NesRomList?Page={page}&PageSize={pageSize}");
@@ -215,7 +185,7 @@ namespace AxibugEmuOnline.Client
                 yield break;
             }
 
-            App.log.Error(request.downloadHandler.ErrInfo);
+            App.log.Error(request.downloadHandler.errInfo);
             callback.Invoke(null);
 
             /*

@@ -101,7 +101,7 @@ namespace AxibugEmuOnline.Editors
 #endif
             string targetName = $"{Application.productName}_{titleid}.nsp";
 
-            string _locationPathName = $"Output/NSPBuild/{targetName}";
+            string _locationPathName = $"Output/NSPBuild/{DateTime.Now.ToString("yyyyMMddHHmmss")}/{targetName}";
             var options = new BuildPlayerOptions
             {
                 scenes = levels.ToArray(),
@@ -217,8 +217,6 @@ namespace AxibugEmuOnline.Editors
 			EditorUtility.ClearProgressBar();
         }
 
-
-
         #region ¸¨Öú·½·¨
         static string GetUserInput()
         {
@@ -288,7 +286,10 @@ namespace AxibugEmuOnline.Editors
                 if (!string.IsNullOrEmpty(args.Data))
                 {
                     errorBuilder.AppendLine(args.Data);
-                    Debug.LogError($"[AxibugNSPTools]{args.Data}");
+                    if (args.Data.Contains("[WARN]"))
+                        Debug.LogWarning($"[AxibugNSPTools]{args.Data}");
+                    else
+                        Debug.LogError($"[AxibugNSPTools]{args.Data}");
                 }
             };
 

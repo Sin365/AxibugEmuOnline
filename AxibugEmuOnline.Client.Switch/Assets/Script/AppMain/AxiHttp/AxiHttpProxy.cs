@@ -13,7 +13,6 @@ public static class AxiHttpProxy
         return new SendDownLoadProxy(AxiDownloadAsync(url));
     }
 
-
     public class SendWebRequestProxy
     {
         public WaitAxiRequest SendWebRequest;
@@ -52,7 +51,7 @@ public static class AxiHttpProxy
         Debug.Log($"url =>{resp.url}");
         Debug.Log($"Raw =>{resp.requestRaw}");
         Debug.Log($"code =>{resp.code}");
-        Debug.Log($"respInfo.bTimeOut =>{resp.bTimeOut}");
+        Debug.Log($"respInfo.bTimeOut =>{resp.isTimeOut}");
         Debug.Log($"");
         Debug.Log($"==== response ====");
         Debug.Log($"==== header ====");
@@ -64,21 +63,21 @@ public static class AxiHttpProxy
         Debug.Log($"==== body ====");
         Debug.Log($"body_text =>{resp.body}");
         Debug.Log($"body_text.Length =>{resp.body.Length}");
-        Debug.Log($"bodyRaw.Length =>{resp.bodyRaw?.Length}");
+        Debug.Log($"bodyRaw.Length =>{resp.bodyraw?.Length}");
         Debug.Log($"");
         Debug.Log($"==== download ====");
         Debug.Log($"downloadMode =>{resp.downloadMode}");
-        Debug.Log($"respInfo.fileName =>{resp.fileName}");
-        Debug.Log($"respInfo.NeedloadedLenght =>{resp.NeedloadedLenght}");
-        Debug.Log($"respInfo.loadedLenght =>{resp.loadedLenght}");
+        Debug.Log($"respInfo.fileName =>{resp.filename}");
+        Debug.Log($"respInfo.NeedloadedLenght =>{resp.needdownloadLenght}");
+        Debug.Log($"respInfo.loadedLenght =>{resp.loadedlenght}");
         if (resp.bHadErr)
         {
-            Debug.LogError($"code->{resp.code} err->{resp.ErrInfo} url->{resp.url}");
+            Debug.LogError($"code->{resp.code} err->{resp.errInfo} url->{resp.url}");
         }
 #else
 		Debug.Log($"==== request url => { resp.url}");
 		Debug.Log($"code =>{resp.code}");
-		Debug.Log($"respInfo.bTimeOut =>{resp.bTimeOut}");
+		Debug.Log($"respInfo.bTimeOut =>{resp.isTimeOut}");
 		Debug.Log($"==== response ====");
 		if (resp.downloadMode == AxiDownLoadMode.NotDownLoad)
 		{
@@ -88,7 +87,7 @@ public static class AxiHttpProxy
 		else
 		{
 			Debug.Log($"==== download ====");
-			Debug.Log($"respInfo.loadedLenght =>{resp.loadedLenght}");
+			Debug.Log($"respInfo.loadedLenght =>{resp.loadedlenght}");
 		}
 #endif
 

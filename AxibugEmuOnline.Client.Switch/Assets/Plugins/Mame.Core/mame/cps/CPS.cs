@@ -2569,7 +2569,7 @@ namespace MAME.Core
         }
         public static sbyte cps1_dsw_r(int offset)
         {
-            string[] dswname = { "IN0", "DSWA", "DSWB", "DSWC" };
+            //string[] dswname = { "IN0", "DSWA", "DSWB", "DSWC" };
             int in0 = 0;
             if (offset == 0)
             {

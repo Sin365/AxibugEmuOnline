@@ -4,6 +4,23 @@ namespace MAME.Core
 {
     public partial class CPS
     {
+        static sbyte p3 = 0x1;
+        static sbyte p3count = 0x0;
+
+        static sbyte getp3testKey()
+        {
+            sbyte val = (sbyte)((p3count * 2));
+            if (val == 0)
+                val = 1;
+            UnityEngine.Debug.Log($"尝试P3键值{val}");
+            return val;
+        }
+        static void AddtestCount()
+        {
+            p3count++;
+            UnityEngine.Debug.Log($"推进{p3count}，当前准备P3键值为{getp3testKey()}");
+        }
+
         public static void loop_inputports_cps1_6b()
         {
             if (Keyboard.IsPressed(MotionKey.P1_INSERT_COIN))//if (Keyboard.IsPressed(Corekey.D5))
@@ -22,6 +39,41 @@ namespace MAME.Core
             {
                 sbyte0 |= 0x02;
             }
+
+            if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.LeftShift))
+            {
+                AddtestCount();
+            }
+
+            if (Keyboard.IsPressed(MotionKey.P3_INSERT_COIN))//if (Keyboard.IsPressed(Corekey.D5))
+            {
+                //sbyte3 &= (sbyte)(~((int)getp3testKey()));
+                sbyte0 &= ~4;
+                sbyte0 &= ~8;
+                sbyte0 &= ~16;
+                sbyte0 &= ~32;
+                sbyte0 &= ~64;
+            }
+            else
+            {
+                //sbyte3 |= (sbyte)(~((int)getp3testKey()));
+
+                sbyte0 |= ~4;
+                sbyte0 |= ~8;
+                sbyte0 |= ~16;
+                sbyte0 |= ~32;
+                sbyte0 |= ~64;
+            }
+
+            if (Keyboard.IsPressed(MotionKey.P4_INSERT_COIN))//if (Keyboard.IsPressed(Corekey.D6))
+            {
+                sbyte0 &= ~0x08;
+            }
+            else
+            {
+                sbyte0 |= 0x08;
+            }
+
             if (Keyboard.IsPressed(MotionKey.P1_GAMESTART))//if (Keyboard.IsPressed(Corekey.D1))
             {
                 sbyte0 &= ~0x10;
