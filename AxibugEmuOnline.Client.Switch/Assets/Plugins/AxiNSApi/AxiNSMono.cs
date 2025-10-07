@@ -7,7 +7,7 @@ public class AxiNSMono : MonoBehaviour
 	float waittime;
 	float lastinvokeTime;
 
-	public static void SetInvoke(Action _act, int _waitsec)
+	public static void SetInvokeLoop(Action _act, int _waitsec)
 	{
 		GameObject gobj = GameObject.Find($"[{nameof(AxiNSMono)}]");
 		if (gobj == null)

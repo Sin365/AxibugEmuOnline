@@ -49,7 +49,7 @@ public class AxiNSWaitHandle
 	static void InitMonoInit()
 	{
 		if (bMonoInit) return;
-		AxiNSMono.SetInvoke(Do,15);
+		AxiNSMono.SetInvokeLoop(Do,15);
 		bMonoInit = true;
 	}
 	#endregion
