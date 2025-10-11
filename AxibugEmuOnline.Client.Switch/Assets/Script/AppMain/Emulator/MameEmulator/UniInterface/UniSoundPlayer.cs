@@ -4,7 +4,7 @@ using MAME.Core;
 using System;
 using UnityEngine;
 
-public class UniSoundPlayer : MonoBehaviour, ISoundPlayer, AxiAudioPull
+public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
 {
     [SerializeField]
     private AudioSource m_as;
@@ -15,24 +15,69 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer, AxiAudioPull
 
     void Awake()
     {
-        ////TODO 采样率需要更准确，而且和clip并没有关系
-        //var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
-        //dummy.SetData(new float[] { 1 }, 0);
-        //m_as.clip = dummy; //just to let unity play the audiosource
-        //m_as.loop = true;
-        //m_as.spatialBlend = 1;
-        //m_as.Play();
+        //TODO 采样率需要更准确，而且和clip并没有关系
+        var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
+        dummy.SetData(new float[] { 1 }, 0);
+        m_as.clip = dummy; //just to let unity play the audiosource
+        m_as.loop = true;
+        m_as.spatialBlend = 1;
+        m_as.Play();
     }
-    private void OnEnable()
-    {
-        App.audioMgr.RegisterStream(nameof(UMAME), AudioSettings.outputSampleRate, this);
-    }
+    //private void OnEnable()
+    //{
+    //    App.audioMgr.RegisterStream(nameof(UMAME), AudioSettings.outputSampleRate, this);
+    //}
+    //void OnDisable()
+    //{
+    //    App.audioMgr.ClearAudioData(nameof(UMAME));
+    //}
+    //public unsafe void PullAudio(float[] data, int channels)
+    //{
+    //    if (!UMAME.bInGame) return;
 
-    void OnDisable()
-    {
-        App.audioMgr.ClearAudioData(nameof(UMAME));
-    }
+    //    //fixed (float* pData = data)
+    //    //{
+    //    //    float* current = pData;
+    //    //    float* end = pData + data.Length;
+    //    //    float currentSample = lastData;
 
+    //    //    while (current < end)
+    //    //    {
+    //    //        // 尝试从缓冲区读取新样本
+    //    //        float newSample;
+    //    //        if (_buffer.TryRead(out newSample))
+    //    //        {
+    //    //            currentSample = newSample;
+    //    //        }
+
+    //    //        // 为所有声道写入相同样本
+    //    //        for (int channel = 0; channel < channels; channel++)
+    //    //        {
+    //    //            *current = currentSample;
+    //    //            current++;
+    //    //        }
+    //    //    }
+
+    //    //    // 保存最后一个样本用于下次调用
+    //    //    lastData = currentSample;
+    //    //}
+    //    // 非指针版本
+    //    int step = channels;
+    //    for (int i = 0; i < data.Length; i += step)
+    //    {
+    //        float rawFloat = lastData;
+    //        float rawData;
+    //        if (_buffer.TryRead(out rawData))
+    //        {
+    //            rawFloat = rawData;
+    //        }
+
+    //        data[i] = rawFloat;
+    //        for (int fill = 1; fill < step; fill++)
+    //            data[i + fill] = rawFloat;
+    //        lastData = rawFloat;
+    //    }
+    //}
     public void GetAudioParams(out int frequency, out int channels)
     {
         frequency = m_as.clip.samples;
@@ -50,45 +95,14 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer, AxiAudioPull
     public void StopPlay()
     {
         if (m_as.isPlaying)
-        {
+        { 
             m_as.Stop();
         }
     }
 
-    public unsafe void PullAudio(float[] data, int channels)
+    void OnAudioFilterRead(float[] data, int channels)
     {
         if (!UMAME.bInGame) return;
-
-        fixed (float* pData = data)
-        {
-            float* outputPtr = pData; // 指向数组起始位置的指针
-            int dataLength = data.Length;
-
-            for (int i = 0; i < dataLength; i += channels)
-            {
-                float rawFloat = lastData;
-                float rawData;
-
-                if (_buffer.TryRead(out rawData))
-                {
-                    rawFloat = rawData;
-                }
-
-                *outputPtr = rawFloat; 
-                outputPtr++;           // 指针移动到下一个位置
-
-                // 填充剩余声道（模拟立体声或多声道）
-                for (int fill = 1; fill < channels; fill++)
-                {
-                    *outputPtr = rawFloat; 
-                    outputPtr++;           // 指针移动到下一个位置
-                }
-
-                lastData = rawFloat;
-            }
-        }
-
-        /* 非指针版本，代码保留
         int step = channels;
         for (int i = 0; i < data.Length; i += step)
         {
@@ -103,27 +117,8 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer, AxiAudioPull
             for (int fill = 1; fill < step; fill++)
                 data[i + fill] = rawFloat;
             lastData = rawFloat;
-        }*/
+        }
     }
-    /*void OnAudioFilterRead(float[] data, int channels)
-    {
-        if (!UMAME.bInGame) return;
-        int step = channels;
-        for (int i = 0; i < data.Length; i += step)
-        {
-            float rawFloat = lastData;
-            float rawData;
-            if (_buffer.TryRead(out rawData))
-            { 
-                rawFloat = rawData;
-            }
-
-            data[i] = rawFloat;
-            for (int fill = 1; fill < step; fill++)
-                data[i + fill] = rawFloat;
-            lastData = rawFloat;
-        }
-    }*/
 
     public void SubmitSamples(byte[] buffer, int samples_a)
     {
@@ -158,5 +153,4 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer, AxiAudioPull
             return;
         m_as.volume = Vol;
     }
-
 }
