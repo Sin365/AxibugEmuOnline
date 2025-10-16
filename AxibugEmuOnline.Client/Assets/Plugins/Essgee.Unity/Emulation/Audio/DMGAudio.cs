@@ -296,6 +296,8 @@ namespace Essgee.Emulation.Audio
             sampleCycleCount = frameCycleCount = 0;
         }
 
+        //独立声明，不在函数内部
+        private bool[] channelEnableFlags = new bool[4];
         public void Step(int clockCyclesInStep)
         {
             if (!isSoundHwEnabled) return;
@@ -385,10 +387,25 @@ namespace Essgee.Emulation.Audio
                 //    new bool[] { !channel1ForceEnable, !channel2ForceEnable, !channel3ForceEnable, !channel4ForceEnable },
                 //    mixedSampleBuffer.ToArray());
 
+                //有GC
+                //EnqueueSamplesEventArgs eventArgs = EnqueueSamplesEventArgs.Create(
+                //    numChannels,
+                //    channelSampleBuffer,
+                //    new bool[] { !channel1ForceEnable, !channel2ForceEnable, !channel3ForceEnable, !channel4ForceEnable },
+                //    mixedSampleBuffer,
+                //    mixedSampleBuffer_writePos);
+
+
+                // 在函数中使用
+                channelEnableFlags[0] = !channel1ForceEnable;
+                channelEnableFlags[1] = !channel2ForceEnable;
+                channelEnableFlags[2] = !channel3ForceEnable;
+                channelEnableFlags[3] = !channel4ForceEnable;
+
                 EnqueueSamplesEventArgs eventArgs = EnqueueSamplesEventArgs.Create(
                     numChannels,
                     channelSampleBuffer,
-                    new bool[] { !channel1ForceEnable, !channel2ForceEnable, !channel3ForceEnable, !channel4ForceEnable },
+                    channelEnableFlags,
                     mixedSampleBuffer,
                     mixedSampleBuffer_writePos);
 
