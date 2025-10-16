@@ -93,14 +93,26 @@ namespace Essgee.Emulation.Video.Nintendo
         protected bool statIrqSignal, vBlankReady;
         protected int[] spritesOnLine;
 
-        readonly byte[][] colorValuesBgr = new byte[][]
+        //      readonly byte[][] colorValuesBgr = new byte[][]
+        //      {
+        //	/*              B     G     R */
+        //	new byte[] { 0xF8, 0xF8, 0xF8 },	/* White */
+        //	new byte[] { 0x9B, 0x9B, 0x9B },	/* Light gray */
+        //	new byte[] { 0x3E, 0x3E, 0x3E },	/* Dark gray */
+        //	new byte[] { 0x1F, 0x1F, 0x1F },	/* Black */
+        //};
+
+
+        //取值范例 colorValuesBgr[colorIndex * 3 + channelIndex];
+        const byte colorValuesBgr_singleLen = 3;
+        // 转换后的一维数组
+        readonly byte[] colorValuesBgr = new byte[]
         {
-			/*              B     G     R */
-			new byte[] { 0xF8, 0xF8, 0xF8 },	/* White */
-			new byte[] { 0x9B, 0x9B, 0x9B },	/* Light gray */
-			new byte[] { 0x3E, 0x3E, 0x3E },	/* Dark gray */
-			new byte[] { 0x1F, 0x1F, 0x1F },	/* Black */
-		};
+        /* White */    0xF8, 0xF8, 0xF8,
+        /* Light gray */0x9B, 0x9B, 0x9B,
+        /* Dark gray */ 0x3E, 0x3E, 0x3E,
+        /* Black */    0x1F, 0x1F, 0x1F
+        };
 
         protected const byte screenUsageEmpty = 0;
         protected const byte screenUsageBackground = 1 << 0;
@@ -719,9 +731,12 @@ namespace Essgee.Emulation.Video.Nintendo
 
         protected virtual void WriteColorToFramebuffer(byte c, int address)
         {
-            outputFramebuffer[address + 0] = colorValuesBgr[c & 0x03][0];
-            outputFramebuffer[address + 1] = colorValuesBgr[c & 0x03][1];
-            outputFramebuffer[address + 2] = colorValuesBgr[c & 0x03][2];
+            //outputFramebuffer[address + 0] = colorValuesBgr[c & 0x03][0];
+            //outputFramebuffer[address + 1] = colorValuesBgr[c & 0x03][1];
+            //outputFramebuffer[address + 2] = colorValuesBgr[c & 0x03][2];
+            outputFramebuffer[address + 0] = colorValuesBgr[(c & 0x03) * 3 + 0];
+            outputFramebuffer[address + 1] = colorValuesBgr[(c & 0x03) * 3 + 1];
+            outputFramebuffer[address + 2] = colorValuesBgr[(c & 0x03) * 3 + 2];
             outputFramebuffer[address + 3] = 0xFF;
         }
 
