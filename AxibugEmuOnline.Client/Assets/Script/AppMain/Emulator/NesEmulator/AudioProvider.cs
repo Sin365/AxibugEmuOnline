@@ -37,7 +37,7 @@ namespace AxibugEmuOnline.Client
 
         private void OnEnable()
         {
-            App.audioMgr.RegisterStream(nameof(NesEmulator), AudioSettings.outputSampleRate, this);
+            App.audioMgr.RegisterStream(nameof(NesEmulator), null, this);
         }
 
         void OnDisable()

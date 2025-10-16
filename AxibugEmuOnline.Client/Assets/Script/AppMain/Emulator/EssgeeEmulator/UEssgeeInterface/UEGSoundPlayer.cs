@@ -34,7 +34,7 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
 
     private void OnEnable()
     {
-        App.audioMgr.RegisterStream(nameof(UEssgee), AudioSettings.outputSampleRate, this);
+        App.audioMgr.RegisterStream(nameof(UEssgee), sampleRate, this);
     }
 
     void OnDisable()

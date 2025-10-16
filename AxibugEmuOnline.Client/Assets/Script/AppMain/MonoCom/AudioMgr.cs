@@ -78,7 +78,7 @@ namespace AxibugEmuOnline.Client
             //函数仅处理设备变化的情况，非设备变化不再本函数处理，避免核心采样率变化和本处循环调用
             if (deviceWasChanged)
             {
-                ResetAudioCfg();
+                ResetAudioCfg(AudioSettings.outputSampleRate);
                 //AudioConfiguration config = AudioSettings.GetConfiguration();
                 //AudioSettings.Reset(config);
                 //TODO 重新播放音效，但是DSP不用，若有UI BGM，后续 这里加重播
@@ -119,20 +119,22 @@ namespace AxibugEmuOnline.Client
         /// </summary>
         /// <param name="channelId">通道标识符 (e.g., "NES", "MAME")</param>
         /// <param name="inputSampleRate">该通道的原始采样率</param>
-        public void RegisterStream(string channelId, int inputSampleRate, AxiAudioPull audioPullHandle)
+        public void RegisterStream(string channelId, int? inputSampleRate, AxiAudioPull audioPullHandle)
         {
             _audioStreams = null;
-            _audioStreams = new AudioStreamData(channelId, inputSampleRate, audioPullHandle);
-            ResetAudioCfg();
+            _audioStreams = new AudioStreamData(channelId,
+                inputSampleRate.HasValue ? inputSampleRate.Value : AudioSettings.outputSampleRate
+                , audioPullHandle);
+            ResetAudioCfg(inputSampleRate);
         }
 
-        private void ResetAudioCfg()
+        private void ResetAudioCfg(int? inputSampleRate)
         {
             // 获取当前音频配置
             AudioConfiguration config = AudioSettings.GetConfiguration();
 
             // 设置目标音频配置
-            config.sampleRate = 48000;       // 采样率为 44100Hz
+            config.sampleRate = inputSampleRate.HasValue ? inputSampleRate.Value : 48000;       // 采样率为 44100Hz
             config.numRealVoices = 32;      // 设置最大音频源数量（可选）
             config.numVirtualVoices = 512;   // 设置虚拟音频源数量（可选）
             config.dspBufferSize = 1024;     // 设置 DSP 缓冲区大小（可选）

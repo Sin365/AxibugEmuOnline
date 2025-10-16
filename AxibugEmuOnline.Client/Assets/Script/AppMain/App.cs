@@ -300,13 +300,13 @@ namespace AxibugEmuOnline.Client.ClientCore
             {
                 case E_LogType.Debug:
                 case E_LogType.Info:
-                    Debug.Log("[AxiNet]:" + msg);
+                    Debug.Log(msg);
                     break;
                 case E_LogType.Warning:
-                    Debug.LogWarning("[AxiNet]:" + msg);
+                    Debug.LogWarning(msg);
                     break;
                 case E_LogType.Error:
-                    Debug.LogError("[AxiNet]:" + msg);
+                    Debug.LogError(msg);
                     break;
             }
         }
