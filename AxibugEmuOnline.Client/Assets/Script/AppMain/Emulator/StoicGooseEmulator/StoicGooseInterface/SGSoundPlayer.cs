@@ -47,7 +47,7 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
 
     private void OnEnable()
     {
-        App.audioMgr.RegisterStream(nameof(UStoicGoose), AudioSettings.outputSampleRate, this);
+        App.audioMgr.RegisterStream(nameof(UStoicGoose), null, this);
     }
 
     void OnDisable()
