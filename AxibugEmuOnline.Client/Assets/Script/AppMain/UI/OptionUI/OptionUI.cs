@@ -204,6 +204,7 @@ namespace AxibugEmuOnline.Client
             {
                 m_hideTween.Kill(true);
             }
+            if (menus.Count == 0) return;
 
             m_onClose = onClose;
             ReleaseRuntimeMenus();
