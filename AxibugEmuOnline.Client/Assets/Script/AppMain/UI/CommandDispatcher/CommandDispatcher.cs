@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AxibugEmuOnline.Client.Event;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -76,6 +77,7 @@ namespace AxibugEmuOnline.Client
             if (m_waitMapperSetting != null)
             {
                 m_listener.Schedule = m_waitMapperSetting.Value;
+                Eventer.Instance.PostEvent(EEvent.OnScreenGamepadPlatformTypeChanged);
                 m_waitMapperSetting = null;
             }
         }

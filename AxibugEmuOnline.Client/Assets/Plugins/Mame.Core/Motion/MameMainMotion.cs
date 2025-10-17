@@ -97,7 +97,8 @@ namespace MAME.Core
                 return;
             }
 
-            EmuTimer.lt = new List<EmuTimer.emu_timer>();
+            //EmuTimer.lt = new List<EmuTimer.emu_timer>();
+            EmuTimer.instancingTimerList();
             sSelect = RomInfo.Rom.Name;
             Machine.mainMotion = this;
             Machine.rom = RomInfo.Rom;
