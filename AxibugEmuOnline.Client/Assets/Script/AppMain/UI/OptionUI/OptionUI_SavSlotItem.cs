@@ -47,7 +47,15 @@ namespace AxibugEmuOnline.Client
 
         private void SavFile_OnSavSuccessed()
         {
-            MenuData.SavFile.TrySync();
+            if (MenuData.SavFile.GetCurrentState() is SaveFile.SyncedState)
+            {
+                //如果原本就处于已经同步状态，那么此处将直接转换到上传本地文档的状态
+                MenuData.SavFile.FSM.ChangeState<SaveFile.UploadingState>();
+            }
+            else
+            {
+                MenuData.SavFile.TrySync();
+            }
             RefreshUI();
         }
 

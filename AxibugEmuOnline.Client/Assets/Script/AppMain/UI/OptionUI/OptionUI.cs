@@ -200,6 +200,8 @@ namespace AxibugEmuOnline.Client
 
         public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : InternalOptionMenu
         {
+            if (menus == null || menus.Count == 0) return;
+
             if (m_hideTween != null)
             {
                 m_hideTween.Kill(true);
