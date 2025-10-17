@@ -66,6 +66,10 @@ namespace Coffee.UIExtensions
 
         static void SaveMaterial(Material mat, Shader shader, bool isMainAsset)
         {
+#if !UNITY_EDITOR
+            return;
+#endif
+
             string materialPath = GetDefaultMaterialPath(shader);
 
 #if UIEFFECT_SEPARATE

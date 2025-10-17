@@ -53,7 +53,7 @@ public static class AxiAutoBuild
         Build_Global(BuildTarget.EmbeddedLinux);
     }
 
-    [MenuItem("Axibug移植工具/AutoBuild/Switch")]
+    [MenuItem("Axibug移植工具/AutoBuild/Switch(打包NSP并重新构建NSP）")]
     public static void Build_Switch()
     {
         AxibugNSPTools.BuildWithRepackNSP();

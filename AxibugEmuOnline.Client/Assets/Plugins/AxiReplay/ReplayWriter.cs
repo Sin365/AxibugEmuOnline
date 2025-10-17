@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !UNITY_SWITCH
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -156,3 +157,4 @@ namespace AxiReplay
 
 	}
 }
+#endif

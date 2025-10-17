@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -206,6 +207,7 @@ namespace AxibugEmuOnline.Client
             {
                 m_hideTween.Kill(true);
             }
+            if (menus.Count == 0) return;
 
             m_onClose = onClose;
             ReleaseRuntimeMenus();

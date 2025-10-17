@@ -19,20 +19,20 @@ namespace AxibugEmuOnline.Client.InputDevices
             var axis = GetVector2();
 
             var dir = GetDirection(axis, 0.15f);
-            Up.m_performing = dir == Direction.Up;
+            Up.m_performing = (dir & Direction.Up) > 0;
             Up.Update();
 
-            Down.m_performing = dir == Direction.Down;
+            Down.m_performing = (dir & Direction.Down) > 0;
             Down.Update();
 
-            Left.m_performing = dir == Direction.Left;
+            Left.m_performing = (dir & Direction.Left) > 0;
             Left.Update();
 
-            Right.m_performing = dir == Direction.Right;
+            Right.m_performing = (dir & Direction.Right) > 0;
             Right.Update();
         }
 
-        
+
 
         public class VirtualButton : InputControl_C
         {
@@ -56,62 +56,41 @@ namespace AxibugEmuOnline.Client.InputDevices
             }
         }
 
-        enum Direction
+        [System.Flags]
+        enum Direction : byte
         {
-            None,
-            Up,
-            Down,
-            Left,
-            Right
+            None = 0,
+            Up = 1,
+            Down = 2,
+            Left = 4,
+            Right = 8
         }
 
         static Direction GetDirection(Vector2 input, float deadzone)
         {
-            // 检查死区：如果点在死区半径内，返回无
+            //// 检查死区：如果点在死区半径内，返回无
             if (input.magnitude <= deadzone)
-            {
                 return Direction.None;
-            }
+
+
+            // 计算点与四个方向基准向量的点积
+            //float dotUp = Vector2.Dot(normalized, Vector2.up);        // (0, 1)
+            //float dotDown = Vector2.Dot(normalized, Vector2.down);    // (0, -1)
+            //float dotRight = Vector2.Dot(normalized, Vector2.right);  // (1, 0)
+            //float dotLeft = Vector2.Dot(normalized, Vector2.left);    // (-1, 0)
 
             // 标准化向量（确保在单位圆上）
             Vector2 normalized = input.normalized;
-
-            // 计算点与四个方向基准向量的点积
-            float dotUp = Vector2.Dot(normalized, Vector2.up);        // (0, 1)
-            float dotDown = Vector2.Dot(normalized, Vector2.down);    // (0, -1)
-            float dotRight = Vector2.Dot(normalized, Vector2.right);  // (1, 0)
-            float dotLeft = Vector2.Dot(normalized, Vector2.left);    // (-1, 0)
-
             // 找出最大点积对应的方向
             Direction bestDirection = Direction.None;
-            float maxDot = -1f;  // 初始化为最小值
-
             // 检查上方向
-            if (dotUp > maxDot)
-            {
-                maxDot = dotUp;
-                bestDirection = Direction.Up;
-            }
-
+            if (normalized.y > deadzone) bestDirection |= Direction.Up;
             // 检查下方向
-            if (dotDown > maxDot)
-            {
-                maxDot = dotDown;
-                bestDirection = Direction.Down;
-            }
-
+            if (normalized.y < -1 * deadzone) bestDirection |= Direction.Down;
             // 检查右方向
-            if (dotRight > maxDot)
-            {
-                maxDot = dotRight;
-                bestDirection = Direction.Right;
-            }
-
+            if (normalized.x > deadzone) bestDirection |= Direction.Right;
             // 检查左方向
-            if (dotLeft > maxDot)
-            {
-                bestDirection = Direction.Left;
-            }
+            if (normalized.x < -1 * deadzone) bestDirection |= Direction.Left;
 
             return bestDirection;
         }

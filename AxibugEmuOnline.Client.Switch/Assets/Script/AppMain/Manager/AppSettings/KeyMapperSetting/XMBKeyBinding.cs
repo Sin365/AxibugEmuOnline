@@ -142,7 +142,7 @@ namespace AxibugEmuOnline.Client
                 case 0:
                     controller.SetBinding(EnumCommand.Back, device.BTN_A, 0);
                     controller.SetBinding(EnumCommand.Enter, device.BTN_B, 0);
-                    controller.SetBinding(EnumCommand.OptionMenu, device.OPTION_1, 0);
+                    controller.SetBinding(EnumCommand.OptionMenu, device.HOME, 0);
                     controller.SetBinding(EnumCommand.SelectItemDown, device.DOWN, 0);
                     controller.SetBinding(EnumCommand.SelectItemLeft, device.LEFT, 0);
                     controller.SetBinding(EnumCommand.SelectItemRight, device.RIGHT, 0);
@@ -155,6 +155,29 @@ namespace AxibugEmuOnline.Client
                     break;
                 case 1:
                     controller.SetBinding(EnumCommand.OptionMenu, device.HOME, 0);
+                    break;
+            }
+        }
+        public override void Bind(StandaloneSwitchProController_D device, ControllerBinder controller)
+        {
+            switch (controller.ControllerIndex)
+            {
+                case 0://设置标准UI控制 
+                    controller.SetBinding(EnumCommand.Back, device.B, 0);
+                    controller.SetBinding(EnumCommand.Enter, device.A, 0);
+                    controller.SetBinding(EnumCommand.OptionMenu, device.Plus, 0);
+                    controller.SetBinding(EnumCommand.SelectItemDown, device.Down, 0);
+                    controller.SetBinding(EnumCommand.SelectItemLeft, device.Left, 0);
+                    controller.SetBinding(EnumCommand.SelectItemRight, device.Right, 0);
+                    controller.SetBinding(EnumCommand.SelectItemUp, device.Up, 0);
+
+                    controller.SetBinding(EnumCommand.SelectItemDown, device.LeftStick.Down, 1);
+                    controller.SetBinding(EnumCommand.SelectItemLeft, device.LeftStick.Left, 1);
+                    controller.SetBinding(EnumCommand.SelectItemRight, device.LeftStick.Right, 1);
+                    controller.SetBinding(EnumCommand.SelectItemUp, device.LeftStick.Up, 1);
+                    break;
+                case 1://游戏中UI控制
+                    controller.SetBinding(EnumCommand.OptionMenu, device.RightStickPress, 0);
                     break;
             }
         }

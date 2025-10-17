@@ -45,7 +45,7 @@ namespace cpu.m68000
         public bool stopped;
 
         /// <summary>Machine/Interrupt mode</summary>
-        public bool M { get { return m; } set { m = value; } } // TODO probably have some switch logic maybe
+        //public bool M { get { return m; } set { m = value; } } // TODO probably have some switch logic maybe
 
         public void SetS(bool b1)
         {
@@ -60,10 +60,11 @@ namespace cpu.m68000
         /// <summary>Supervisor/User mode</summary>
         public bool S
         {
-            get
-            {
-                return s;
-            }
+            //减少不必要的访问器堆栈
+            //get
+            //{
+            //    return s;
+            //}
             set
             {
                 if (value == s)
@@ -109,8 +110,8 @@ namespace cpu.m68000
                 if (Z) value |= 0x0004;
                 if (N) value |= 0x0008;
                 if (X) value |= 0x0010;
-                if (M) value |= 0x1000;
-                if (S) value |= 0x2000;
+                if (m) value |= 0x1000;
+                if (s) value |= 0x2000;
                 value |= (short)((InterruptMaskLevel & 7) << 8);
                 return value;
             }
@@ -121,7 +122,7 @@ namespace cpu.m68000
                 Z = (value & 0x0004) != 0;
                 N = (value & 0x0008) != 0;
                 X = (value & 0x0010) != 0;
-                M = (value & 0x1000) != 0;
+                m = (value & 0x1000) != 0;
                 S = (value & 0x2000) != 0;
                 InterruptMaskLevel = (value >> 8) & 7;
                 //m68ki_check_interrupts();
@@ -197,7 +198,7 @@ namespace cpu.m68000
             stopped = false;
             pendingCycles = 0;
             S = true;
-            M = false;
+            m = false;
             InterruptMaskLevel = 7;
             Interrupt = 0;
             A[7].s32 = ReadOpLong(0);
@@ -287,8 +288,8 @@ namespace cpu.m68000
             }
             writer.Write(MC68000.m1.PPC);
             writer.Write(MC68000.m1.PC);
-            writer.Write(MC68000.m1.S);
-            writer.Write(MC68000.m1.M);
+            writer.Write(MC68000.m1.s);
+            writer.Write(MC68000.m1.m);
             writer.Write(MC68000.m1.X);
             writer.Write(MC68000.m1.N);
             writer.Write(MC68000.m1.Z);
@@ -317,7 +318,7 @@ namespace cpu.m68000
             MC68000.m1.PPC = reader.ReadInt32();
             MC68000.m1.PC = reader.ReadInt32();
             MC68000.m1.SetS(reader.ReadBoolean());
-            MC68000.m1.M = reader.ReadBoolean();
+            MC68000.m1.m = reader.ReadBoolean();
             MC68000.m1.X = reader.ReadBoolean();
             MC68000.m1.N = reader.ReadBoolean();
             MC68000.m1.Z = reader.ReadBoolean();

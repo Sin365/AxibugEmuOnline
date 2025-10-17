@@ -125,6 +125,21 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(StoicGooseKey.A, device.BTN_B, 0);
         }
 
+        public override void Bind(StandaloneSwitchProController_D device, ControllerBinder controller)
+        {
+            controller.SetBinding(StoicGooseKey.Start, device.Plus, 0);
+            controller.SetBinding(StoicGooseKey.X1, device.Up, 0);
+            controller.SetBinding(StoicGooseKey.X2, device.Down, 0);
+            controller.SetBinding(StoicGooseKey.X3, device.Left, 0);
+            controller.SetBinding(StoicGooseKey.X4, device.Right, 0);
+            controller.SetBinding(StoicGooseKey.Y1, device.RightStick.Up, 0);
+            controller.SetBinding(StoicGooseKey.Y2, device.RightStick.Down, 0);
+            controller.SetBinding(StoicGooseKey.Y3, device.RightStick.Left, 0);
+            controller.SetBinding(StoicGooseKey.Y4, device.RightStick.Right, 0);
+            controller.SetBinding(StoicGooseKey.B, device.A, 0);
+            controller.SetBinding(StoicGooseKey.A, device.B, 0);
+        }
+
         public override void Bind(SwitchJoyCon_D device, ControllerBinder controller)
         {
             controller.SetBinding(StoicGooseKey.Start, device.Plus, 0);

@@ -23,7 +23,7 @@ namespace AxibugEmuOnline.Client
             m_downloadingTasks.TryGetValue(url, out var proxy);
             if (proxy == null) return null;
 
-            return Mathf.Clamp01(proxy.downloadHandler.DownLoadPr);
+            return Mathf.Clamp01(proxy.downloadHandler.downLoadPr);
         }
 
         HashSet<string> temp = new HashSet<string>();
@@ -53,7 +53,7 @@ namespace AxibugEmuOnline.Client
                 }
                 else
                 {
-                    Debug.LogError($"{overTask.downloadHandler.ErrInfo}:{overTask.downloadHandler.url}");
+                    Debug.LogError($"{overTask.downloadHandler.errInfo}:{overTask.downloadHandler.url}");
                 }
             }
         }

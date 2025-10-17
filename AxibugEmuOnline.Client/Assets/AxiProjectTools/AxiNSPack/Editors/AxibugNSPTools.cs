@@ -286,7 +286,10 @@ namespace AxibugEmuOnline.Editors
                 if (!string.IsNullOrEmpty(args.Data))
                 {
                     errorBuilder.AppendLine(args.Data);
-                    Debug.LogError($"[AxibugNSPTools]{args.Data}");
+                    if (args.Data.Contains("[WARN]"))
+                        Debug.LogWarning($"[AxibugNSPTools]{args.Data}");
+                    else
+                        Debug.LogError($"[AxibugNSPTools]{args.Data}");
                 }
             };
 

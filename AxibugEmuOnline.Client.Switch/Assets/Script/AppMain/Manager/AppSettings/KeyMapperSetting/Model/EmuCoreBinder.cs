@@ -18,6 +18,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     IDeviceBinder<T, XboxController_D>,
     IDeviceBinder<T, PSVController_D>,
     IDeviceBinder<T, ScreenGamepad_D>,
+    IDeviceBinder<T, StandaloneSwitchProController_D>,
     IDeviceBinder<T, SwitchJoyCon_D>
     where T : Enum
 {
@@ -101,6 +102,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         else if (device is XboxController_D xbC) Bind(xbC, binding);
         else if (device is PSVController_D psvC) Bind(psvC, binding);
         else if (device is ScreenGamepad_D screenGamepad) Bind(screenGamepad, binding);
+        else if (device is StandaloneSwitchProController_D standaloneswitchproC) Bind(standaloneswitchproC, binding);
         else if (device is SwitchJoyCon_D nsJoyCon) Bind(nsJoyCon, binding);
         else throw new NotImplementedException($"{device.GetType()}");
     }
@@ -285,7 +287,7 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         }
 
         private List<InputControl_C> m_caches = new List<InputControl_C>();
-        public IEnumerable<InputControl_C> GetBinding(T emuBtn)
+        public List<InputControl_C> GetBinding(T emuBtn)
         {
             m_caches.Clear();
 
@@ -324,5 +326,6 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
     public abstract void Bind(XboxController_D device, ControllerBinder controller);
     public abstract void Bind(PSVController_D device, ControllerBinder controller);
     public abstract void Bind(ScreenGamepad_D device, ControllerBinder controller);
+    public abstract void Bind(StandaloneSwitchProController_D device, ControllerBinder controller);
     public abstract void Bind(SwitchJoyCon_D device, ControllerBinder controller);
 }

@@ -51,7 +51,7 @@ namespace AxibugEmuOnline.Client.Settings
         {
             //获得激活的滤镜
             Filter activeFilter = null;
-            foreach (var filter in Filters)
+            foreach (var filter in m_filters)
             {
                 if (!filter.m_setting.Enable) continue;
                 activeFilter = filter;
@@ -83,13 +83,16 @@ namespace AxibugEmuOnline.Client.Settings
             renderGraphic.texture = result;
         }
 
+        // 获取 RawImage 在屏幕上的四个顶点的世界坐标
+        Vector3[] corners = new Vector3[4];
         Vector2 GetRawImageScreenResolution(RawImage rawImage)
         {
             // 获取 RawImage 的 RectTransform
             RectTransform rectTransform = rawImage.rectTransform;
-
-            // 获取 RawImage 在屏幕上的四个顶点的世界坐标
-            Vector3[] corners = new Vector3[4];
+            for (int i = 0; i < corners.Length; i++)
+            {
+                corners[0] = Vector3.zero;
+            }
             rectTransform.GetWorldCorners(corners);
 
             // 左下角和右上角的屏幕坐标
@@ -124,7 +127,7 @@ namespace AxibugEmuOnline.Client.Settings
         /// <param name="filter"></param>
         public void EnableFilter(Filter filter)
         {
-            foreach (var selfFiler in Filters)
+            foreach (var selfFiler in m_filters)
             {
                 if (selfFiler != filter) selfFiler.m_setting.Enable = false;
                 else selfFiler.m_setting.Enable = true;
@@ -137,7 +140,7 @@ namespace AxibugEmuOnline.Client.Settings
         public void ShutDownFilter()
         {
             //关闭所有后处理效果
-            foreach (var filter in Filters)
+            foreach (var filter in m_filters)
                 filter.m_setting.Enable = false;
         }
 

@@ -29,7 +29,7 @@ public class AxiHttpTest : MonoBehaviour
 
             while (!request.downloadHandler.isDone)
             {
-                Debug.Log($"下载进度：{request.downloadHandler.DownLoadPr} ->{request.downloadHandler.loadedLenght}/{request.downloadHandler.NeedloadedLenght}");
+                Debug.Log($"下载进度：{request.downloadHandler.downLoadPr} ->{request.downloadHandler.loadedlenght}/{request.downloadHandler.needdownloadLenght}");
                 yield return null;
             }
             AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler);

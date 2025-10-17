@@ -93,7 +93,6 @@ namespace StoicGooseUnity
             }
         }
         #endregion
-
         public static void Write(this System.IO.BinaryWriter bw, byte* bufferPtr, int offset, int count)
         {
             // 使用指针复制数据到临时数组
@@ -101,6 +100,7 @@ namespace StoicGooseUnity
             // 使用BinaryWriter写入临时数组
             bw.Write(TempBuffer_src, 0, count);
         }
+        /*
         public static void Write(this System.IO.FileStream fs, byte* bufferPtr, int offset, int count)
         {
             // 使用指针复制数据到临时数组
@@ -115,7 +115,7 @@ namespace StoicGooseUnity
             // 使用指针复制数据到临时数组
             Buffer.MemoryCopy(TempBuffer, bufferPtr + offset, 0, count);
             return count;
-        }
+        }*/
     }
 
     internal unsafe static class AxiArray

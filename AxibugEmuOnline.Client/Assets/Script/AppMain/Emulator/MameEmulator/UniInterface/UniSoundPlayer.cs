@@ -1,8 +1,10 @@
+using AxibugEmuOnline.Client;
+using AxibugEmuOnline.Client.ClientCore;
 using MAME.Core;
 using System;
 using UnityEngine;
 
-public class UniSoundPlayer : MonoBehaviour, ISoundPlayer
+public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
 {
     [SerializeField]
     private AudioSource m_as;
@@ -21,6 +23,61 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer
         m_as.spatialBlend = 1;
         m_as.Play();
     }
+    //private void OnEnable()
+    //{
+    //    App.audioMgr.RegisterStream(nameof(UMAME), AudioSettings.outputSampleRate, this);
+    //}
+    //void OnDisable()
+    //{
+    //    App.audioMgr.ClearAudioData(nameof(UMAME));
+    //}
+    //public unsafe void PullAudio(float[] data, int channels)
+    //{
+    //    if (!UMAME.bInGame) return;
+
+    //    //fixed (float* pData = data)
+    //    //{
+    //    //    float* current = pData;
+    //    //    float* end = pData + data.Length;
+    //    //    float currentSample = lastData;
+
+    //    //    while (current < end)
+    //    //    {
+    //    //        // 尝试从缓冲区读取新样本
+    //    //        float newSample;
+    //    //        if (_buffer.TryRead(out newSample))
+    //    //        {
+    //    //            currentSample = newSample;
+    //    //        }
+
+    //    //        // 为所有声道写入相同样本
+    //    //        for (int channel = 0; channel < channels; channel++)
+    //    //        {
+    //    //            *current = currentSample;
+    //    //            current++;
+    //    //        }
+    //    //    }
+
+    //    //    // 保存最后一个样本用于下次调用
+    //    //    lastData = currentSample;
+    //    //}
+    //    // 非指针版本
+    //    int step = channels;
+    //    for (int i = 0; i < data.Length; i += step)
+    //    {
+    //        float rawFloat = lastData;
+    //        float rawData;
+    //        if (_buffer.TryRead(out rawData))
+    //        {
+    //            rawFloat = rawData;
+    //        }
+
+    //        data[i] = rawFloat;
+    //        for (int fill = 1; fill < step; fill++)
+    //            data[i + fill] = rawFloat;
+    //        lastData = rawFloat;
+    //    }
+    //}
     public void GetAudioParams(out int frequency, out int channels)
     {
         frequency = m_as.clip.samples;
@@ -38,7 +95,7 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer
     public void StopPlay()
     {
         if (m_as.isPlaying)
-        { 
+        {
             m_as.Stop();
         }
     }
@@ -52,7 +109,7 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer
             float rawFloat = lastData;
             float rawData;
             if (_buffer.TryRead(out rawData))
-            { 
+            {
                 rawFloat = rawData;
             }
 

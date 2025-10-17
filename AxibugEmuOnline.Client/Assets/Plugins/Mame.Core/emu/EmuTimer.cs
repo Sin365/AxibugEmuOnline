@@ -27,6 +27,11 @@ namespace MAME.Core
             public Atime expire;
         }*/
 
+        public static void instancingTimerList()
+        {
+            lt = new List<emu_timer>();
+        }
+
         public class emu_timer
         {
             public TIME_ACT action;
@@ -502,7 +507,8 @@ namespace MAME.Core
             which.period = period;
             timer_list_remove(which);
             timer_list_insert(which);
-            if (lt.IndexOf(which) == 0)
+            //if (lt.IndexOf(which) == 0)
+            if (lt[0] == which)
             {
                 if (Cpuexec.activecpu >= 0 && Cpuexec.activecpu < Cpuexec.ncpu)
                 {
@@ -731,75 +737,76 @@ namespace MAME.Core
             lt = new List<emu_timer>();
             for (i = 0; i < n; i++)
             {
-                lt.Add(new emu_timer());
+                emu_timer etimer = new emu_timer();
+                lt.Add(etimer);
                 i1 = reader.ReadInt32();
-                lt[i].action = getactionbyindex(i1);
-                //lt[i].func = getfuncbyindex(i1);
-                lt[i].enabled = reader.ReadBoolean();
-                lt[i].temporary = reader.ReadBoolean();
-                lt[i].period.seconds = reader.ReadInt32();
-                lt[i].period.attoseconds = reader.ReadInt64();
-                lt[i].start.seconds = reader.ReadInt32();
-                lt[i].start.attoseconds = reader.ReadInt64();
-                lt[i].expire.seconds = reader.ReadInt32();
-                lt[i].expire.attoseconds = reader.ReadInt64();
-                //if (lt[i].func == "vblank_begin_callback")
-                if (lt[i].action == TIME_ACT.Video_vblank_begin_callback)
+                etimer.action = getactionbyindex(i1);
+                //etimer.func = getfuncbyindex(i1);
+                etimer.enabled = reader.ReadBoolean();
+                etimer.temporary = reader.ReadBoolean();
+                etimer.period.seconds = reader.ReadInt32();
+                etimer.period.attoseconds = reader.ReadInt64();
+                etimer.start.seconds = reader.ReadInt32();
+                etimer.start.attoseconds = reader.ReadInt64();
+                etimer.expire.seconds = reader.ReadInt32();
+                etimer.expire.attoseconds = reader.ReadInt64();
+                //if (etimer.func == "vblank_begin_callback")
+                if (etimer.action == TIME_ACT.Video_vblank_begin_callback)
                 {
-                    Video.vblank_begin_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Video.vblank_begin_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Video.vblank_begin_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Video_vblank_end_callback)
+                else if (etimer.action == TIME_ACT.Video_vblank_end_callback)
                 {
-                    Video.vblank_end_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Video.vblank_end_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Video.vblank_end_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Mame_soft_reset)
+                else if (etimer.action == TIME_ACT.Mame_soft_reset)
                 {
-                    Mame.soft_reset_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Mame.soft_reset_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Mame.soft_reset_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Watchdog_watchdog_callback)
+                else if (etimer.action == TIME_ACT.Watchdog_watchdog_callback)
                 {
-                    Watchdog.watchdog_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Watchdog.watchdog_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Watchdog.watchdog_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Generic_irq_1_0_line_hold)
+                else if (etimer.action == TIME_ACT.Generic_irq_1_0_line_hold)
                 {
-                    Cpuexec.timedint_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Cpuexec.timedint_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.timedint_timer);
                 }
-                else if (lt[i].action == TIME_ACT.YM2151_timer_callback_a)
+                else if (etimer.action == TIME_ACT.YM2151_timer_callback_a)
                 {
-                    YM2151.PSG.timer_A = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2151.PSG.timer_A = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2151.PSG.timer_A);
                 }
-                else if (lt[i].action == TIME_ACT.YM2151_timer_callback_b)
+                else if (etimer.action == TIME_ACT.YM2151_timer_callback_b)
                 {
-                    YM2151.PSG.timer_B = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2151.PSG.timer_B = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2151.PSG.timer_B);
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_trigger_partial_frame_interrupt)
+                else if (etimer.action == TIME_ACT.Cpuexec_trigger_partial_frame_interrupt)
                 {
                     switch (Machine.sBoard)
                     {
                         case "CPS2":
                         case "IGS011":
                         case "Konami68000":
-                            Cpuexec.cpu[0].partial_frame_timer = lt[i];
-                            lt.Remove(lt[i]);
+                            Cpuexec.cpu[0].partial_frame_timer = etimer;
+                            lt.Remove(etimer);
                             lt.Add(Cpuexec.cpu[0].partial_frame_timer);
                             break;
                         case "M72":
-                            Cpuexec.cpu[1].partial_frame_timer = lt[i];
-                            lt.Remove(lt[i]);
+                            Cpuexec.cpu[1].partial_frame_timer = etimer;
+                            lt.Remove(etimer);
                             lt.Add(Cpuexec.cpu[1].partial_frame_timer);
                             break;
                         case "Capcom":
@@ -816,186 +823,186 @@ namespace MAME.Core
                                 case "makaimurc":
                                 case "makaimurg":
                                 case "diamond":
-                                    Cpuexec.cpu[1].partial_frame_timer = lt[i];
-                                    lt.Remove(lt[i]);
+                                    Cpuexec.cpu[1].partial_frame_timer = etimer;
+                                    lt.Remove(etimer);
                                     lt.Add(Cpuexec.cpu[1].partial_frame_timer);
                                     break;
                             }
                             break;
                     }
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_null_callback)
+                else if (etimer.action == TIME_ACT.Cpuexec_null_callback)
                 {
-                    Cpuexec.interleave_boost_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Cpuexec.interleave_boost_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.interleave_boost_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_end_interleave_boost)
+                else if (etimer.action == TIME_ACT.Cpuexec_end_interleave_boost)
                 {
-                    Cpuexec.interleave_boost_timer_end = lt[i];
-                    lt.Remove(lt[i]);
+                    Cpuexec.interleave_boost_timer_end = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.interleave_boost_timer_end);
                 }
-                else if (lt[i].action == TIME_ACT.Video_scanline0_callback)
+                else if (etimer.action == TIME_ACT.Video_scanline0_callback)
                 {
-                    Video.scanline0_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Video.scanline0_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Video.scanline0_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_display_position_interrupt_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_display_position_interrupt_callback)
                 {
-                    Neogeo.display_position_interrupt_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Neogeo.display_position_interrupt_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.display_position_interrupt_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_display_position_vblank_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_display_position_vblank_callback)
                 {
-                    Neogeo.display_position_vblank_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Neogeo.display_position_vblank_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.display_position_vblank_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_vblank_interrupt_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_vblank_interrupt_callback)
                 {
-                    Neogeo.vblank_interrupt_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Neogeo.vblank_interrupt_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.vblank_interrupt_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_auto_animation_timer_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_auto_animation_timer_callback)
                 {
-                    Neogeo.auto_animation_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Neogeo.auto_animation_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.auto_animation_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_sprite_line_timer_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_sprite_line_timer_callback)
                 {
-                    Neogeo.sprite_line_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Neogeo.sprite_line_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.sprite_line_timer);
                 }
-                else if (lt[i].action == TIME_ACT.YM2610_F2610_timer_callback_0)
+                else if (etimer.action == TIME_ACT.YM2610_F2610_timer_callback_0)
                 {
-                    YM2610.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2610.timer[0] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2610.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2610_F2610_timer_callback_1)
+                else if (etimer.action == TIME_ACT.YM2610_F2610_timer_callback_1)
                 {
-                    YM2610.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2610.timer[1] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2610.timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.M6800_action_rx)
+                else if (etimer.action == TIME_ACT.M6800_action_rx)
                 {
-                    M6800.m1.m6800_rx_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    M6800.m1.m6800_rx_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(M6800.m1.m6800_rx_timer);
                 }
-                else if (lt[i].action == TIME_ACT.M6800_action_tx)
+                else if (etimer.action == TIME_ACT.M6800_action_tx)
                 {
-                    M6800.m1.m6800_tx_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    M6800.m1.m6800_tx_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(M6800.m1.m6800_tx_timer);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3812_0)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3812_0)
                 {
-                    YM3812.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM3812.timer[0] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3812_1)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3812_1)
                 {
-                    YM3812.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM3812.timer[1] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.ICS2115_timer_cb_0)
+                else if (etimer.action == TIME_ACT.ICS2115_timer_cb_0)
                 {
-                    ICS2115.timer[0].timer = lt[i];
-                    lt.Remove(lt[i]);
+                    ICS2115.timer[0].timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(ICS2115.timer[0].timer);
                 }
-                else if (lt[i].action == TIME_ACT.ICS2115_timer_cb_1)
+                else if (etimer.action == TIME_ACT.ICS2115_timer_cb_1)
                 {
-                    ICS2115.timer[1].timer = lt[i];
-                    lt.Remove(lt[i]);
+                    ICS2115.timer[1].timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(ICS2115.timer[1].timer);
                 }
-                else if (lt[i].action == TIME_ACT.M72_m72_scanline_interrupt)
+                else if (etimer.action == TIME_ACT.M72_m72_scanline_interrupt)
                 {
-                    M72.scanline_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    M72.scanline_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(M72.scanline_timer);
                 }
-                else if (lt[i].action == TIME_ACT.M92_m92_scanline_interrupt)
+                else if (etimer.action == TIME_ACT.M92_m92_scanline_interrupt)
                 {
-                    M92.scanline_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    M92.scanline_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(M92.scanline_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_cpu_timeslicecallback)
+                else if (etimer.action == TIME_ACT.Cpuexec_cpu_timeslicecallback)
                 {
-                    Cpuexec.timeslice_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Cpuexec.timeslice_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.timeslice_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Upd7759_upd7759_slave_update)
+                else if (etimer.action == TIME_ACT.Upd7759_upd7759_slave_update)
                 {
-                    Upd7759.chip.timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Upd7759.chip.timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Upd7759.chip.timer);
                 }
-                else if (lt[i].action == TIME_ACT.Generic_irq_2_0_line_hold)
+                else if (etimer.action == TIME_ACT.Generic_irq_2_0_line_hold)
                 {
-                    Cpuexec.timedint_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    Cpuexec.timedint_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.timedint_timer);
                 }
-                else if (lt[i].action == TIME_ACT.MSM5205_MSM5205_vclk_callback0)
+                else if (etimer.action == TIME_ACT.MSM5205_MSM5205_vclk_callback0)
                 {
-                    MSM5205.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    MSM5205.timer[0] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(MSM5205.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.MSM5205_MSM5205_vclk_callback1)
+                else if (etimer.action == TIME_ACT.MSM5205_MSM5205_vclk_callback1)
                 {
-                    MSM5205.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    MSM5205.timer[1] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(MSM5205.timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_0_0)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_0_0)
                 {
-                    YM2203.FF2203[0].timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2203.FF2203[0].timer[0] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[0].timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_0_1)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_0_1)
                 {
-                    YM2203.FF2203[0].timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2203.FF2203[0].timer[1] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[0].timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_1_0)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_1_0)
                 {
-                    YM2203.FF2203[1].timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2203.FF2203[1].timer[0] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[1].timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_1_1)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_1_1)
                 {
-                    YM2203.FF2203[1].timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM2203.FF2203[1].timer[1] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[1].timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3526_0)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3526_0)
                 {
-                    YM3812.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM3812.timer[0] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3526_1)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3526_1)
                 {
-                    YM3812.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    YM3812.timer[1] = etimer;
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[1]);
                 }
             }

@@ -169,7 +169,7 @@ namespace cpu.m68000
 
         void RESET()
         {
-            if (S)
+            if (s)
             {
                 pendingCycles -= 132;
             }

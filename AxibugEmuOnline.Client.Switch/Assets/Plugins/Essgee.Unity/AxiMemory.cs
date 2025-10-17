@@ -82,7 +82,6 @@ namespace Essgee.Utilities
             }
         }
         #endregion
-
         public static void Write(this System.IO.BinaryWriter bw, byte* bufferPtr, int offset, int count)
         {
             // 使用指针复制数据到临时数组
@@ -90,21 +89,22 @@ namespace Essgee.Utilities
             // 使用BinaryWriter写入临时数组
             bw.Write(TempBuffer_src, 0, count);
         }
-        public static void Write(this System.IO.FileStream fs, byte* bufferPtr, int offset, int count)
-        {
-            // 使用指针复制数据到临时数组
-            Buffer.MemoryCopy(bufferPtr + offset, TempBuffer, 0, count);
-            // 使用BinaryWriter写入临时数组
-            fs.Write(TempBuffer_src, 0, count);
-        }
-        public static int Read(this System.IO.FileStream fs, byte* bufferPtr, int offset, int count)
-        {
-            // 使用BinaryWriter写入临时数组
-            count = fs.Read(TempBuffer_src, offset, count);
-            // 使用指针复制数据到临时数组
-            Buffer.MemoryCopy(TempBuffer, bufferPtr + offset, 0, count);
-            return count;
-        }
+        
+        //public static void Write(this System.IO.FileStream fs, byte* bufferPtr, int offset, int count)
+        //{
+        //    // 使用指针复制数据到临时数组
+        //    Buffer.MemoryCopy(bufferPtr + offset, TempBuffer, 0, count);
+        //    // 使用BinaryWriter写入临时数组
+        //    fs.Write(TempBuffer_src, 0, count);
+        //}
+        //public static int Read(this System.IO.FileStream fs, byte* bufferPtr, int offset, int count)
+        //{
+        //    // 使用BinaryWriter写入临时数组
+        //    count = fs.Read(TempBuffer_src, offset, count);
+        //    // 使用指针复制数据到临时数组
+        //    Buffer.MemoryCopy(TempBuffer, bufferPtr + offset, 0, count);
+        //    return count;
+        //}
     }
 
     internal unsafe static class AxiArray

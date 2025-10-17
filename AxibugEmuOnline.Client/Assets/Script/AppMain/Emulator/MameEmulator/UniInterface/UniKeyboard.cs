@@ -121,34 +121,35 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
         }
 
     }
-    public class ReplayMode
-    {
-        ulong currInputData;
+//    public class ReplayMode
+//    {
+//        ulong currInputData;
 
-        public ReplayMode()
-        {
-        }
+//        public ReplayMode()
+//        {
+//        }
 
-        public ulong GetPressedKeys()
-        {
-            int targetFrame = (int)UMAME.instance.mUniVideoPlayer.mFrame;
-            AxiReplay.ReplayStep stepData;
-            //有变化
-            if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
-            {
-#if UNITY_EDITOR
-                string ShowKeyNames = string.Empty;
-                foreach (string keyname in GetInputpDataToMotionKey(currInputData))
-                {
-                    ShowKeyNames += keyname + "   |";
-                }
-                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
-#endif
-                currInputData = stepData.InPut;
-            }
-            return currInputData;
-        }
-    }
+//        public ulong GetPressedKeys()
+//        {
+//            int targetFrame = (int)UMAME.instance.mUniVideoPlayer.mFrame;
+//            AxiReplay.ReplayStep stepData;
+            
+//            //有变化
+//            if (UMAME.instance.mReplayReader.NextFramebyFrameIdx(targetFrame, out stepData))
+//            {
+//#if UNITY_EDITOR
+//                string ShowKeyNames = string.Empty;
+//                foreach (string keyname in GetInputpDataToMotionKey(currInputData))
+//                {
+//                    ShowKeyNames += keyname + "   |";
+//                }
+//                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
+//#endif
+//                currInputData = stepData.InPut;
+//            }
+//            return currInputData;
+//        }
+//    }
     #endregion
 }
 
@@ -423,32 +424,32 @@ public static class MameSingleControllSetter
                 break;
             //后续修改后 支持P3 P4
             case 2:
-                singlecontrol.tg_INSERT_COIN = MotionKey.FinalKey;
-                singlecontrol.tg_GAMESTART = MotionKey.FinalKey;
-                singlecontrol.tg_UP = MotionKey.FinalKey;
-                singlecontrol.tg_DOWN = MotionKey.FinalKey;
-                singlecontrol.tg_LEFT = MotionKey.FinalKey;
-                singlecontrol.tg_RIGHT = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_A = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_B = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_C = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_D = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_E = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_F = MotionKey.FinalKey;
+                singlecontrol.tg_INSERT_COIN = MotionKey.P3_INSERT_COIN;
+                singlecontrol.tg_GAMESTART = MotionKey.P3_GAMESTART;
+                singlecontrol.tg_UP = MotionKey.P3_UP;
+                singlecontrol.tg_DOWN = MotionKey.P3_DOWN;
+                singlecontrol.tg_LEFT = MotionKey.P3_LEFT;
+                singlecontrol.tg_RIGHT = MotionKey.P3_RIGHT;
+                singlecontrol.tg_BTN_A = MotionKey.P3_BTN_1;
+                singlecontrol.tg_BTN_B = MotionKey.P3_BTN_2;
+                singlecontrol.tg_BTN_C = MotionKey.P3_BTN_3;
+                singlecontrol.tg_BTN_D = MotionKey.P3_BTN_4;
+                singlecontrol.tg_BTN_E = MotionKey.P3_BTN_5;
+                singlecontrol.tg_BTN_F = MotionKey.P3_BTN_6;
                 break;
             case 3:
-                singlecontrol.tg_INSERT_COIN = MotionKey.FinalKey;
-                singlecontrol.tg_GAMESTART = MotionKey.FinalKey;
-                singlecontrol.tg_UP = MotionKey.FinalKey;
-                singlecontrol.tg_DOWN = MotionKey.FinalKey;
-                singlecontrol.tg_LEFT = MotionKey.FinalKey;
-                singlecontrol.tg_RIGHT = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_A = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_B = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_C = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_D = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_E = MotionKey.FinalKey;
-                singlecontrol.tg_BTN_F = MotionKey.FinalKey;
+                singlecontrol.tg_INSERT_COIN = MotionKey.P4_INSERT_COIN;
+                singlecontrol.tg_GAMESTART = MotionKey.P4_GAMESTART;
+                singlecontrol.tg_UP = MotionKey.P4_UP;
+                singlecontrol.tg_DOWN = MotionKey.P4_DOWN;
+                singlecontrol.tg_LEFT = MotionKey.P4_LEFT;
+                singlecontrol.tg_RIGHT = MotionKey.P4_RIGHT;
+                singlecontrol.tg_BTN_A = MotionKey.P4_BTN_1;
+                singlecontrol.tg_BTN_B = MotionKey.P4_BTN_2;
+                singlecontrol.tg_BTN_C = MotionKey.P4_BTN_3;
+                singlecontrol.tg_BTN_D = MotionKey.P4_BTN_4;
+                singlecontrol.tg_BTN_E = MotionKey.P4_BTN_5;
+                singlecontrol.tg_BTN_F = MotionKey.P4_BTN_6;
                 break;
         }
     }

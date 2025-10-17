@@ -3,13 +3,28 @@ using System.Runtime.InteropServices;
 
 namespace MAME.Core
 {
-    public class Palette
+    public unsafe class Palette
     {
-        public static uint[] entry_color;
-        /**  entry_color的指针管理  **/
+        //public static uint[] entry_color;
+
+        #region //指针化 entry_color
+        static uint[] entry_color_src;
         static GCHandle entry_color_handle;
-        public static IntPtr entry_color_Ptr;
-        /**  end **/
+        public static uint* entry_color;
+        public static int entry_colorLength;
+        public static bool entry_color_IsNull => entry_color == null;
+        public static uint[] entry_color_set
+        {
+            set
+            {
+                entry_color_handle.ReleaseGCHandle();
+                entry_color_src = value;
+                entry_colorLength = value.Length;
+                entry_color_src.GetObjectPtr(ref entry_color_handle, ref entry_color);
+            }
+        }
+        #endregion
+
 
         public static float[] entry_contrast;
         private static uint trans_uint;
@@ -174,18 +189,21 @@ namespace MAME.Core
 
             //entry_color = new uint[numcolors];
 
+            entry_color_set = new uint[numcolors];
 
-            /**  entry_color的指针管理  **/
-            // 释放句柄
-            if (entry_color != null && entry_color_handle.IsAllocated)
-                entry_color_handle.Free();
+            ///**  entry_color的指针管理  **/
+            //// 释放句柄
+            //if (entry_color != null && entry_color_handle.IsAllocated)
+            //    entry_color_handle.Free();
 
-            entry_color = new uint[numcolors];
-            // 固定数组，防止垃圾回收器移动它  
-            entry_color_handle = GCHandle.Alloc(entry_color, GCHandleType.Pinned);
-            // 获取数组的指针  
-            entry_color_Ptr = entry_color_handle.AddrOfPinnedObject();
-            /**  end **/
+            //entry_color = new uint[numcolors];
+            //// 固定数组，防止垃圾回收器移动它  
+            //entry_color_handle = GCHandle.Alloc(entry_color, GCHandleType.Pinned);
+            //// 获取数组的指针  
+            //entry_color_Ptr = entry_color_handle.AddrOfPinnedObject();
+            ///**  end **/
+            ///
+
 
 
 
