@@ -131,6 +131,7 @@ namespace AxibugEmuOnline.Client.Manager
             LaunchUI.Instance.ShowMainMenu();
             m_controllerSetuper = null;
             Eventer.Instance.UnregisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
+            Eventer.Instance.PostEvent(EEvent.OnScreenGamepadPlatformTypeChanged);
         }
 
         public void ResetGame()

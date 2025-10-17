@@ -17,7 +17,6 @@ namespace AxibugEmuOnline.Client
             m_itemTemplate.gameObject.SetActiveEx(false);
             m_runtimeItems.Add(m_itemTemplate);
         }
-
         public void Pop(string msg)
         {
             PopTipsItem item = GetPopItem();
