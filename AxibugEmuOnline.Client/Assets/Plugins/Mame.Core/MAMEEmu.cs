@@ -42,10 +42,18 @@ namespace MAME.Core
         public bool IsPaused => Mame.paused;
         public void LoadState(System.IO.BinaryReader sr)
         {
+            //热机逻辑：主要解决NEOGEO问题，避免加入其他人房间自动联机时，加载流程，cpu一次都没执行，部分逻辑没有初始化。
+            //再加载数据之前，推若干帧，确保所有组件充分初始化
+            for (int i = 0; i < 5; i++)
+            {
+                UpdateFrame();
+            }
             Mame.paused = true;
             Thread.Sleep(20);
-            State.loadstate_callback.Invoke(sr);
+            Mame.soft_reset();//软重启一次，确保没有脏数据
+            State.loadstate_callback(sr);
             Mame.postload();
+            Video.popup_text_end = Wintime.osd_ticks() + Wintime.ticks_per_second * 2;
             mameMainMotion.ResetFreameIndex();
             Thread.Sleep(20);
             Mame.paused = false;
@@ -55,7 +63,7 @@ namespace MAME.Core
         {
             Mame.paused = true;
             Thread.Sleep(20);
-            State.savestate_callback.Invoke(sw);
+            State.savestate_callback(sw);
             Thread.Sleep(20);
             Mame.paused = false;
         }
