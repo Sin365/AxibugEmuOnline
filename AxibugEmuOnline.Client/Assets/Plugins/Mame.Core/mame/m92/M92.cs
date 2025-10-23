@@ -351,7 +351,19 @@ namespace MAME.Core
                 gfx21rom[i2 * 2] = (byte)(gfx2rom[i2] >> 4);
                 gfx21rom[i2 * 2 + 1] = (byte)(gfx2rom[i2] & 0x0f);
             }
-            eeprom_set = Machine.GetRom("eeprom.rom");
+            var eepromdata = Machine.GetRom("eeprom.rom");
+            //难绷，eeprom是一个可读写存储器，根本不用dump成rom
+            //但是某些游戏依赖，但实际没有意义。比如棒球小子（忍者棒球）
+            //所以这里如果没有eeprom.rom，就创建一个空的eeprom数据 长度128(0x80)字节
+            if (eepromdata != null)
+            {
+                eeprom_set = eepromdata;
+            }
+            else
+            {
+                eeprom_set = new byte[0x80];
+            }
+            //eeprom_set = Machine.GetRom("eeprom.rom");
             m92_game_kludge = 0;
             m92_irq_vectorbase = 0x80;
             m92_sprite_buffer_busy = 1;
