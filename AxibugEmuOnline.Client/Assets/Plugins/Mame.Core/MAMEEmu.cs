@@ -68,22 +68,29 @@ namespace MAME.Core
             while(bNeedPreheat)
                 UpdateFrame();
             Mame.paused = true;
-            Thread.Sleep(20);
+            if(mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
             Mame.soft_reset();//软重启一次，确保没有脏数据
             State.loadstate_callback(sr);
             Mame.postload();
             Video.popup_text_end = Wintime.osd_ticks() + Wintime.ticks_per_second * 2;
             mameMainMotion.ResetFreameIndex();
-            Thread.Sleep(20);
+            if (mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
             Mame.paused = false;
         }
 
         public void SaveState(System.IO.BinaryWriter sw)
         {
             Mame.paused = true;
-            Thread.Sleep(20);
+
+            if (mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
             State.savestate_callback(sw);
-            Thread.Sleep(20);
+
+            if (mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
+
             Mame.paused = false;
         }
 

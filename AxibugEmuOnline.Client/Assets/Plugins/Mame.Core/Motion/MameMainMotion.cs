@@ -289,16 +289,19 @@ namespace MAME.Core
             if (Machine.bRom)
             {
                 Mame.exit_pending = true;
-                Thread.Sleep(50);
+                if (bIsNewThreadMode)
+                    Thread.Sleep(50);
             }
         }
 
         public void ResetFreameIndex()
         {
             Mame.paused = true;
-            Thread.Sleep(20);
+            if (bIsNewThreadMode)
+                Thread.Sleep(20);
             Video.screenstate.frame_number = 0;
-            Thread.Sleep(20);
+            if (bIsNewThreadMode)
+                Thread.Sleep(20);
             Mame.paused = false;
         }
 
@@ -596,7 +599,7 @@ namespace MAME.Core
 
         int TempWidth = 0;
         int TempHeight = 0;
-        private bool bIsNewThreadMode;
+        public bool bIsNewThreadMode;
 
         private void ResizeMain()
         {
