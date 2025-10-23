@@ -139,9 +139,15 @@
         {
             return (byte)((port2_out & ddr2) | (port2_in & ~ddr2));
         }
+        static byte[] bublbobl_mcu_port2_w_ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
         public static void bublbobl_mcu_port2_w(byte data)
         {
-            byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
+            //使用外部定义减少GC压力
+            bublbobl_mcu_port2_w_ports[0] = dsw0;
+            bublbobl_mcu_port2_w_ports[1] = dsw1;
+            bublbobl_mcu_port2_w_ports[2] = (byte)sbyte1;
+            bublbobl_mcu_port2_w_ports[3] = (byte)sbyte2;
+            //byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
             if ((~port2_out & 0x10) != 0 && (data & 0x10) != 0)
             {
                 int address = port4_out | ((data & 0x0f) << 8);
@@ -149,7 +155,7 @@
                 {
                     if ((address & 0x0800) == 0x0000)
                     {
-                        port3_in = ports[address & 3];
+                        port3_in = bublbobl_mcu_port2_w_ports[address & 3];
                     }
                     else if ((address & 0x0c00) == 0x0c00)
                     {
@@ -332,9 +338,16 @@
         {
             return (byte)((portB_out & ddrB) | (portB_in & ~ddrB));
         }
+        static byte[] bublbobl_68705_portB_w_ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
         public static void bublbobl_68705_portB_w(byte data)
         {
-            byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
+
+            //使用外部定义减少GC压力
+            bublbobl_68705_portB_w_ports[0] = dsw0;
+            bublbobl_68705_portB_w_ports[1] = dsw1;
+            bublbobl_68705_portB_w_ports[2] = (byte)sbyte1;
+            bublbobl_68705_portB_w_ports[3] = (byte)sbyte2;
+            //byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
             if (((ddrB & 0x01) != 0) && ((~data & 0x01) != 0) && ((portB_out & 0x01) != 0))
             {
                 portA_in = (byte)latch;
@@ -353,7 +366,7 @@
                 {
                     if ((address & 0x0800) == 0x0000)
                     {
-                        latch = ports[address & 3];
+                        latch = bublbobl_68705_portB_w_ports[address & 3];
                     }
                     else if ((address & 0x0c00) == 0x0c00)
                     {

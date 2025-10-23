@@ -426,14 +426,17 @@ namespace cpu.nec
             I.regs.b[Reg * 2] = (byte)((ushort)tmp1 % 0x100);
             I.regs.b[Reg * 2 + 1] = (byte)((ushort)tmp1 / 0x100);
         }
+
+        static byte[] JMP_table = new byte[] { 3, 10, 10 };
         public void JMP(bool flag)
         {
             int tmp = (int)((sbyte)FETCH());
             if (flag)
             {
-                byte[] table = new byte[] { 3, 10, 10 };
+                //使用外部定义减少GC压力
+                //byte[] table = new byte[] { 3, 10, 10 };
                 I.ip = (ushort)(I.ip + tmp);
-                pendingCycles -= table[chip_type / 8];
+                pendingCycles -= JMP_table[chip_type / 8];
                 //PC = (I.sregs[1] << 4) + I.ip;
                 return;
             }
@@ -689,17 +692,20 @@ namespace cpu.nec
                 I.regs.b[5] = (byte)((ushort)result2 / 0x100);
             }
         }
+        static byte[] ADD4S_table = new byte[] { 18, 19, 19 };
         public void ADD4S(ref int tmp, ref int tmp2)
         {
             int i, v1, v2, result;
             int count = (I.regs.b[2] + 1) / 2;
             ushort di = (ushort)(I.regs.b[14] + I.regs.b[15] * 0x100);
             ushort si = (ushort)(I.regs.b[12] + I.regs.b[13] * 0x100);
-            byte[] table = new byte[] { 18, 19, 19 };
+
+            //使用外部定义减少GC压力
+            //byte[] table = new byte[] { 18, 19, 19 };
             I.ZeroVal = I.CarryVal = 0;
             for (i = 0; i < count; i++)
             {
-                pendingCycles -= table[chip_type / 8];
+                pendingCycles -= ADD4S_table[chip_type / 8];
                 tmp = GetMemB(3, si);
                 tmp2 = GetMemB(0, di);
                 v1 = (tmp >> 4) * 10 + (tmp & 0xf);
