@@ -136,7 +136,41 @@ namespace AxibugEmuOnline.Client.Network
             ErrorCode err = ((ErrorCode)ERRCODE);
             if (err != ErrorCode.ErrorOk)
             {
-                OverlayManager.PopTip("错误:" + err.ToString());
+                string errMsg = string.Empty;
+                switch (err)
+                {
+                    case ErrorCode.ErrorRoomNotFound:
+                        errMsg = "房间不存在";
+                        break;
+                    case ErrorCode.ErrorRoomSlotAlreadlyHadPlayer:
+                        errMsg = "加入目标位置已经有人";
+                        break;
+                    case ErrorCode.ErrorRoomCantDoCurrState:
+                        errMsg = "当前房间状态不允许本操作";
+                        break;
+                    case ErrorCode.ErrorRomDontHadSavedata:
+                        errMsg = "即时存档不存在";
+                        break;
+                    case ErrorCode.ErrorRomFailSavedata:
+                        errMsg = "处理即时存档失败";
+                        break;
+                    case ErrorCode.ErrorRomAlreadyHadCoverimg:
+                        errMsg = "该游戏已经有封面图";
+                        break;
+                    case ErrorCode.ErrorRomAlreadyHadStar:
+                        errMsg = "已经收藏";
+                        break;
+                    case ErrorCode.ErrorRomDontHadStar:
+                        errMsg = "并没有收藏";
+                        break;
+                    case ErrorCode.ErrorDefaul:
+                    case ErrorCode.ErrorOk:
+                    default:
+                        errMsg = err.ToString();
+                        break;
+                }
+                OverlayManager.PopTip("错误:"+ errMsg);
+                App.log.Error("错误:" + errMsg);
             }
 
             List<Delegate> eventList = GetNetEventDicList(cmd);

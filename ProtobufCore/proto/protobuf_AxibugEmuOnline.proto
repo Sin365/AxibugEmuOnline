@@ -71,6 +71,8 @@ enum CommandID
 	CMD_GAMESAV_DelGameSav = 8005;//玩家删除即时存档 上行 | 下行 对应 Protobuf_Mine_DelGameSavList | Protobuf_Mine_DelGameSavList_RESP
 	CMD_GAMESAV_UploadGameSav = 8010;//玩家上传即时存档 上行 | 下行 对应 Protobuf_Mine_UpLoadGameSavList | Protobuf_Mine_UpLoadGameSavList_RESP
 	
+	CMD_GAMESCREEN_IMG_Upload = 9001;//玩家上传即时存档 上行 | 下行 对应 Protobuf_GameScreen_Img_Upload | Protobuf_GameScreen_Img_Upload_RESP
+	
 	CMD_GAME_MARK = 10101;  //获取即时存档列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
 }
 
@@ -87,9 +89,10 @@ enum ErrorCode
 	ERROR_ROM_DONT_HAD_SAVEDATA = 80;//即时存档不存在
 	ERROR_ROM_FAIL_SAVEDATA = 81;//即时存档不存在
 	
+	ERROR_ROM_ALREADY_HAD_COVERIMG =90;//该游戏已经有封面图
+	
 	ERROR_ROM_ALREADY_HAD_STAR =403;//已经收藏
 	ERROR_ROM_DONT_HAD_STAR =404;//并没有收藏
-
 }
 
 enum LoginType
@@ -515,4 +518,15 @@ message Protobuf_Mine_UpLoadGameSav_RESP
 	int32 RomID = 1;//RomID
 	int32 SavDataIdx = 2;//即时存档下标(其中第0个是自动存档位置)
 	Protobuf_Mine_GameSavInfo UploadSevInfo = 3;//上传成功的存档详情
+}
+
+
+message Protobuf_GameScreen_Img_Upload
+{
+	int32 RomID = 1;//RomID
+	bytes SavImg = 2;//截图模拟器
+}
+
+message Protobuf_GameScreen_Img_Upload_RESP
+{
 }

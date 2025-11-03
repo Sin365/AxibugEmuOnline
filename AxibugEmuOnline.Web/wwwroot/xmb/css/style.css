@@ -1,0 +1,113 @@
+body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+#container {
+  position: absolute;
+  width: 100vmax;
+  height: 100vmax;
+  left: 50%;
+  top: 50%;
+  background: linear-gradient(to bottom, purple, #00d);
+  transform: translate3d(-50%, -40%, 0);
+}
+
+canvas {
+  display: block;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+body {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#1d80d6+0,05306d+34,05306d+70,1d80d6+100 */
+background: #1d80d6; /* Old browsers */
+background: -moz-linear-gradient(-45deg,  #1d80d6 0%, #05306d 34%, #05306d 70%, #1d80d6 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-45deg,  #1d80d6 0%,#05306d 34%,#05306d 70%,#1d80d6 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg,  #1d80d6 0%,#05306d 34%,#05306d 70%,#1d80d6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1d80d6', endColorstr='#1d80d6',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.loader {
+  margin: auto;
+  width: 103px;
+  height: 100px;
+}
+
+.oneline {
+  width: 200px;
+  height: 50px;
+}
+
+.icon,
+.icon svg {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+}
+
+.loader:not(.oneline) .icon:nth-child(odd) {
+  margin-right: 3px;
+}
+
+.icon:nth-child(1) {
+  animation-delay: 0;
+}
+
+.icon:nth-child(2) {
+  animation-delay: 0.05s;
+}
+
+.icon:nth-child(3) {
+  animation-delay: 0.1s;
+}
+
+.icon:nth-child(4) {
+  animation-delay: 0.15s;
+}
+
+.icon {
+  transform: rotate(-90deg) scale(0);
+}
+
+.animate {
+  animation: psicon 2s cubic-bezier(.75,0,1,1);
+  /* If we want, we can add infinite iterations here, but then lose the randomisation of the symbols */
+}
+
+@keyframes psicon {
+  0% {
+    transform: rotate(-90deg) scale(0);
+    animation-timing-function: cubic-bezier(0,0,.25,1);
+  }
+  40%, 60% {
+    transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(90deg) scale(0);
+  }
+}
+
+button {
+  display: block;
+  position: absolute;
+  left: 1em;
+  top: 1em;
+  padding: .5em;
+  font-size: 1em;
+}

@@ -35,6 +35,8 @@ namespace AxibugEmuOnline.Client
             menus.Add(new InGameUI_SaveStateQuick(this));
             menus.Add(new InGameUI_LoadStateQuick(this));
             menus.Add(new InGameUI_SaveStateMenu(this));
+            menus.Add(new InGameUI_OpenOrHideScreenJoyStrick(this));
+            menus.Add(new InGameUI_UploadGameCoverImg(this));
             menus.Add(new InGameUI_QuitGame(this));
 
             base.Awake();

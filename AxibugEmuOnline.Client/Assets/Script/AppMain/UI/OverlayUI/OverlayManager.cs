@@ -25,6 +25,12 @@ namespace AxibugEmuOnline.Client
             m_screenGamepad.gameObject.SetActive(App.bUseGUIButton);
         }
 
+        public static void HideOrShwoGUIButton()
+        {
+            App.bUseGUIButton = !App.bUseGUIButton;
+            s_ins.m_screenGamepad.gameObject.SetActive(App.bUseGUIButton);
+        }
+
         public static void Input(Action<string> callback, string placeHolder, string defaultText)
         {
 #if UNITY_PSP2 && !UNITY_EDITOR
