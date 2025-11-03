@@ -93,7 +93,9 @@ public static class AxiAutoBuild
         
         targetplatformDir += target switch
         {
-            //PC 平台目录追加一层时间
+            //平台目录追加一层时间
+            BuildTarget.iOS => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
+            BuildTarget.StandaloneLinux64 => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
             BuildTarget.StandaloneWindows => "/"+ DateTime.Now.ToString("yyyyMMddHHmmss"),
             _ => "",
         };
