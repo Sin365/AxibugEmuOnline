@@ -130,10 +130,10 @@ namespace cpu.nec
         public Action<int, byte> WriteIOByte;
         public Func<int, ushort> ReadIOWord;
         public Action<int, ushort> WriteIOWord;
-        public delegate void nec_delegate();
-        public nec_delegate[] nec_instruction;
-        public delegate int getea_delegate();
-        public getea_delegate[] GetEA;
+        //public delegate void nec_delegate();
+        //public nec_delegate[] nec_instruction;
+        //public delegate int getea_delegate();
+        //public getea_delegate[] GetEA;
         public Nec()
         {
             nec_init();
@@ -483,7 +483,8 @@ namespace cpu.nec
             }
             else
             {
-                EA = GetEA[ModRM]();
+                //EA = GetEA[ModRM]();
+                EA = DoNecGetEAOpCode(ModRM);
                 tmp = ReadByte(EA);
             }
         }
@@ -496,7 +497,8 @@ namespace cpu.nec
             }
             else
             {
-                EA = GetEA[ModRM]();
+                //EA = GetEA[ModRM]();
+                EA = DoNecGetEAOpCode(ModRM);
                 tmp = ReadWord(EA);
             }
         }
@@ -801,6 +803,8 @@ namespace cpu.nec
             mod_RM.regb = new int[256];
             mod_RM.RMw = new int[256];
             mod_RM.RMb = new int[256];
+            //更换调度方式，不再依赖Delegate委托
+            /*
             nec_instruction = new nec_delegate[]{
                 i_add_br8,
                 i_add_wr16,
@@ -1059,6 +1063,9 @@ namespace cpu.nec
                 i_fepre,
                 i_ffpre
             };
+            */
+
+            /*
             GetEA = new getea_delegate[192]{
                 EA_000, EA_001, EA_002, EA_003, EA_004, EA_005, EA_006, EA_007,
                 EA_000, EA_001, EA_002, EA_003, EA_004, EA_005, EA_006, EA_007,
@@ -1087,17 +1094,26 @@ namespace cpu.nec
                 EA_200, EA_201, EA_202, EA_203, EA_204, EA_205, EA_206, EA_207,
                 EA_200, EA_201, EA_202, EA_203, EA_204, EA_205, EA_206, EA_207
             };
+            */
         }
         public override void Reset()
         {
             nec_reset();
         }
+
+        static int[] nec_reset_reg_name = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
         public void nec_reset()
         {
             //const nec_config *config;
             uint i, j, c;
             //BREGS[] reg_name = new BREGS[8] { BREGS.AL, BREGS.CL, BREGS.DL, BREGS.BL, BREGS.AH, BREGS.CH, BREGS.DH, BREGS.BH };
-            int[] reg_name = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
+
+
+            //静态化减少GC
+            //int[] reg_name = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
+
+
+
             //int (*save_irqcallback)(int);
             //memory_interface save_mem;
             //save_irqcallback = I.irq_callback;
@@ -1145,13 +1161,13 @@ namespace cpu.nec
             I.MF = true;
             for (i = 0; i < 256; i++)
             {
-                mod_RM.regb[i] = reg_name[(i & 0x38) >> 3];
+                mod_RM.regb[i] = nec_reset_reg_name[(i & 0x38) >> 3];
                 mod_RM.regw[i] = (int)((i & 0x38) >> 3);
             }
             for (i = 0xc0; i < 0x100; i++)
             {
                 mod_RM.RMw[i] = (int)(i & 7);
-                mod_RM.RMb[i] = reg_name[i & 7];
+                mod_RM.RMb[i] = nec_reset_reg_name[i & 7];
             }
             I.poll_state = true;
         }
@@ -1180,7 +1196,8 @@ namespace cpu.nec
         }
         public void nec_trap()
         {
-            nec_instruction[fetchop()]();
+            //nec_instruction[fetchop()]();
+            DoInstructionOpCode(fetchop());
             nec_interrupt(1, false);
         }
         public void external_int()
@@ -1289,7 +1306,8 @@ namespace cpu.nec
                     I.no_interrupt--;
                 }
                 iNOP = fetchop();
-                nec_instruction[iNOP]();
+                //nec_instruction[iNOP]();
+                DoInstructionOpCode(iNOP);
                 int delta = prevCycles - pendingCycles;
                 totalExecutedCycles += (ulong)delta;
             }
@@ -1329,7 +1347,8 @@ namespace cpu.nec
                     I.no_interrupt--;
                 }
                 iNOP = fetchop();
-                nec_instruction[iNOP]();
+                //nec_instruction[iNOP]();
+                DoInstructionOpCode(iNOP);
                 int delta = prevCycles - pendingCycles;
                 totalExecutedCycles += (ulong)delta;
             }
