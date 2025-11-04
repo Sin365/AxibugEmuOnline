@@ -8,13 +8,14 @@ using AxibugEmuOnline.Client.Common;
 
 namespace AxibugEmuOnline.Client.Network
 {
-
     public class NetMsg
     {
         private static NetMsg instance = new NetMsg();
         public static NetMsg Instance { get { return instance; } }
 
-        private Dictionary<int, List<Delegate>> netEventDic = new Dictionary<int, List<Delegate>>(128);
+        // 使用强类型字典存储委托，避免DynamicInvoke
+        private Dictionary<int, HashSet<Action<IMessage>>> netEventDic = new Dictionary<int, HashSet<Action<IMessage>>>(128);
+        private Dictionary<Type, Dictionary<Delegate, Action<IMessage>>> delegateWrappers = new Dictionary<Type, Dictionary<Delegate, Action<IMessage>>>();
 
         private Queue<ValueTuple<int, int, byte[]>> queueNetMsg = new Queue<ValueTuple<int, int, byte[]>>();
         public static object lockQueueNetMsg = new object();
@@ -22,60 +23,54 @@ namespace AxibugEmuOnline.Client.Network
         private Queue<Action> queueEventFromNet = new Queue<Action>();
         public static object lockQueueEventFromNet = new object();
 
-
         private NetMsg() { }
 
         private static Dictionary<int, Type> cmd2MsgTypeDict = new Dictionary<int, Type>();
-        private static Type GetTypeByCmd(int cmd, List<Delegate> delegates)
-        {
-            if (cmd2MsgTypeDict.TryGetValue(cmd, out var type)) return type;
-            var paramters = delegates.First().Method.GetParameters();
-            if (paramters.Length != 0)
-            {
-                var protoType = paramters[0].ParameterType;
-                if (!protoType.IsInterface && !protoType.IsAbstract)
-                {
-                    cmd2MsgTypeDict[cmd] = protoType;
-                    return protoType;
-                }
-            }
-
-            return null;
-        }
-
 
         #region RegisterMsgEvent
 
         public void RegNetMsgEvent<T>(int cmd, Action<T> callback) where T : IMessage
         {
-            InterRegNetMsgEvent(cmd, callback);
+            // 创建类型安全的包装委托，避免DynamicInvoke
+            Action<IMessage> wrappedCallback = (message) => { callback((T)message); };
+
+            // 缓存包装委托以便后续取消注册时使用
+            if (!delegateWrappers.ContainsKey(typeof(T)))
+            {
+                delegateWrappers[typeof(T)] = new Dictionary<Delegate, Action<IMessage>>();
+            }
+            delegateWrappers[typeof(T)][callback] = wrappedCallback;
+            InterRegNetMsgEvent(cmd, wrappedCallback);
+            SetTypeByCmd(cmd, callback);
         }
 
-        private void InterRegNetMsgEvent(int cmd, Delegate callback)
+        private void InterRegNetMsgEvent(int cmd, Action<IMessage> callback)
         {
             if (netEventDic.ContainsKey(cmd))
             {
-                if (netEventDic[cmd].IndexOf(callback) < 0)
-                {
+                if (!netEventDic[cmd].Contains(callback))
                     netEventDic[cmd].Add(callback);
-                }
             }
             else
             {
-                netEventDic.Add(cmd, new List<Delegate>() { callback });
+                netEventDic.Add(cmd, new HashSet<Action<IMessage>>() { callback });
             }
         }
         #endregion
 
         #region UnregisterCMD
 
-        public void UnregisterCMD(int evt, Action<byte[]> callback)
+        public void UnregisterCMD<T>(int cmd, Action<T> callback) where T : IMessage
         {
-            Delegate tempDelegate = callback;
-            InterUnregisterCMD(evt, tempDelegate);
+            if (delegateWrappers.TryGetValue(typeof(T), out var wrapperDict) &&
+                wrapperDict.TryGetValue(callback, out var wrappedCallback))
+            {
+                InterUnregisterCMD(cmd, wrappedCallback);
+                wrapperDict.Remove(callback);
+            }
         }
 
-        private void InterUnregisterCMD(int cmd, Delegate callback)
+        private void InterUnregisterCMD(int cmd, Action<IMessage> callback)
         {
             if (netEventDic.ContainsKey(cmd))
             {
@@ -84,7 +79,6 @@ namespace AxibugEmuOnline.Client.Network
             }
         }
         #endregion
-
 
         public void NextNetEvent()
         {
@@ -193,48 +187,72 @@ namespace AxibugEmuOnline.Client.Network
                 App.log.Error("错误:" + errMsg);
             }
 
-            //如果报错，则不往前继续推进
             if (err > ErrorCode.ErrorOk)
                 return;
 
-            List<Delegate> eventList = GetNetEventDicList(cmd);
-            if (eventList != null)
+            HashSet<Action<IMessage>> eventList = GetNetEventDicList(cmd);
+            if (eventList != null && eventList.Count > 0)
             {
-                Type protoType = GetTypeByCmd(cmd, eventList);
-                foreach (Delegate callback in eventList)
+                // 获取消息类型
+                Type protoType = GetTypeByCmd(cmd);
+                if (protoType == null)
                 {
-                    try
+                    App.log.Error($"无法确定命令 {cmd} 的消息类型");
+                    return;
+                }
+                IMessage protobufMsg = ProtoBufHelper.DeSerizlizeFromPool(arg, protoType);
+
+                try
+                {
+                    // 使用强类型调用，避免DynamicInvoke的性能开销
+                    foreach (Action<IMessage> callback in eventList)
                     {
-                        IMessage protobufMsg = ProtoBufHelper.DeSerizlizeFromPool(arg, protoType);
-                        //((Action<IMessage>)callback)(protobufMsg);
-                        callback.DynamicInvoke(protobufMsg);
-                        ProtoBufHelper.ReleaseToPool(protobufMsg);
-                        //((Action<byte[]>)callback)(arg);
+                        try
+                        {
+                            callback(protobufMsg);
+                        }
+                        catch (Exception e)
+                        {
+                            App.log.Error($"处理网络消息时出错 (CMD: {cmd}): {e}");
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        App.log.Error(e.ToString());
-                    }
+                }
+                finally
+                {
+                    ProtoBufHelper.ReleaseToPool(protobufMsg);
                 }
             }
         }
         #endregion
+        /// <summary>
+        /// 设置网络消息类型
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="cmd"></param>
+        /// <param name="callback"></param>
+        private static void SetTypeByCmd<T>(int cmd, Action<T> callback) where T : IMessage
+        {
+            var paramters = callback.Method.GetParameters();
+            if (paramters.Length != 0)
+            {
+                var protoType = paramters[0].ParameterType;
+                if (!protoType.IsInterface && !protoType.IsAbstract)
+                    cmd2MsgTypeDict[cmd] = protoType;
+            }
+        }
+        private static Type GetTypeByCmd(int cmd)
+        {
+            if (cmd2MsgTypeDict.TryGetValue(cmd, out var type)) return type;
+            return null;
+        }
 
         /// <summary>
         /// 获取所有事件
         /// </summary>
-        /// <param name="cmd"></param>
-        /// <returns></returns>
-        private List<Delegate> GetNetEventDicList(int cmd)
+        private HashSet<Action<IMessage>> GetNetEventDicList(int cmd)
         {
-            if (netEventDic.ContainsKey(cmd))
-            {
-                List<Delegate> tempList = netEventDic[cmd];
-                if (null != tempList)
-                {
-                    return tempList;
-                }
-            }
+            if (netEventDic.TryGetValue(cmd, out var tempList) && tempList != null)
+                return tempList;
             return null;
         }
     }
