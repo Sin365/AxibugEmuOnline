@@ -144,36 +144,37 @@ namespace AxibugProtobuf {
             "bnB1dBD/LhIPCgpDTURfU2NyZWVuENk2Eh8KGkNNRF9HQU1FU0FWX0dldEdh",
             "bWVTYXZMaXN0EME+EhsKFkNNRF9HQU1FU0FWX0RlbEdhbWVTYXYQxT4SHgoZ",
             "Q01EX0dBTUVTQVZfVXBsb2FkR2FtZVNhdhDKPhIeChlDTURfR0FNRVNDUkVF",
-            "Tl9JTUdfVXBsb2FkEKlGEhIKDUNNRF9HQU1FX01BUksQ9U4qsgIKCUVycm9y",
+            "Tl9JTUdfVXBsb2FkEKlGEhIKDUNNRF9HQU1FX01BUksQ9U4qzwIKCUVycm9y",
             "Q29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVSUk9S",
             "X1JPT01fTk9UX0ZPVU5EEAoSJwojRVJST1JfUk9PTV9TTE9UX0FMUkVBRExZ",
             "X0hBRF9QTEFZRVIQCxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9TVEFU",
             "RRAyEh8KG0VSUk9SX1JPTV9ET05UX0hBRF9TQVZFREFUQRBQEhsKF0VSUk9S",
             "X1JPTV9GQUlMX1NBVkVEQVRBEFESIgoeRVJST1JfUk9NX0FMUkVBRFlfSEFE",
-            "X0NPVkVSSU1HEFoSHwoaRVJST1JfUk9NX0FMUkVBRFlfSEFEX1NUQVIQkwMS",
-            "HAoXRVJST1JfUk9NX0RPTlRfSEFEX1NUQVIQlAMqQAoJTG9naW5UeXBlEg0K",
-            "CVVzZURldmljZRAAEg4KClVzZUFjY291bnQQARIUChBVc2VIYW9ZdWVBY2Nv",
-            "dW50EAIqpQEKCkRldmljZVR5cGUSFgoSRGV2aWNlVHlwZV9EZWZhdWx0EAAS",
-            "BgoCUEMQARILCgdBbmRyb2lkEAISBwoDSU9TEAMSBwoDUFNWEAQSBwoDUFMz",
-            "EAUSBwoDUFM0EAYSCwoHWEJPWDM2MBAHEgsKB1hCT1hPTkUQCBIICgRXaWlV",
-            "EAkSDwoLTmludGVuZG8zRFMQChIRCg1BbmRyb2lkQ2FyQXBwEAsqkwIKC0dh",
-            "bWVQYWRUeXBlEgwKCEtleWJvYXJkEAASEQoNR2xvYmFsR2FtZVBhZBABEg4K",
-            "ClRvdWNoUGFuZWwQAhIOCgpEUzNDb250cm9sEAMSDgoKRFM0Q29udHJvbBAE",
-            "Eg4KCkRTNUNvbnRyb2wQBRIUChBTd2l0Y2hQcm9Db250cm9sEAYSEAoMU3dp",
-            "dGNoSm95Q29uEAcSEgoOWEJPWDM2MENvbnRyb2wQCBISCg5YQk9YT05FQ29u",
-            "dHJvbBAJEhEKDVBTVml0YUNvbnRyb2wQChISCg5XaWlVUGFkQ29udHJvbBAL",
-            "EhQKEFdpaVJlbW90ZUNvbnRyb2wQDBIWChJOaW50ZW5kbzNEU0NvbnRyb2wQ",
-            "DSqDAgoPUm9tUGxhdGZvcm1UeXBlEgsKB0ludmFsaWQQABIHCgNOZXMQARIR",
-            "Cg1NYXN0ZXJfU3lzdGVtEAISDQoJR2FtZV9HZWFyEAMSDAoIR2FtZV9Cb3kQ",
-            "BBISCg5HYW1lX0JveV9Db2xvchAFEhEKDUNvbGVjb19WaXNpb24QBhILCgdT",
-            "Q18zMDAwEAcSCwoHU0dfMTAwMBAIEgoKBk5FT0dFTxAUEgcKA0lHUxAVEggK",
-            "BENQUzEQFhIICgRDUFMyEBcSDgoKQXJjYWRlX09MRBAeEg8KC1dvbmRlcl9T",
-            "d2FuECgSFQoRV29uZGVyX1N3YW5fQ29sb3IQKRIICgNBbGwQ5wcqcAoNUm9v",
-            "bUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVTdGF0ZRAAEgwKCE9ubHlIb3N0EAES",
-            "EQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdhaXRSZWFkeRADEgkKBVBhdXNlEAQS",
-            "EAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9naW5SZXN1bHRTdGF0dXMSIQodTG9n",
-            "aW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1bHQQABIGCgJPSxABEg4KCkFjY291",
-            "bnRFcnIQAkICSAFiBnByb3RvMw=="));
+            "X0NPVkVSSU1HEFoSGwoXRVJST1JfUk9NX0ZBSUxfQ09WRVJJTUcQWxIfChpF",
+            "UlJPUl9ST01fQUxSRUFEWV9IQURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9O",
+            "VF9IQURfU1RBUhCUAypACglMb2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoK",
+            "VXNlQWNjb3VudBABEhQKEFVzZUhhb1l1ZUFjY291bnQQAiqlAQoKRGV2aWNl",
+            "VHlwZRIWChJEZXZpY2VUeXBlX0RlZmF1bHQQABIGCgJQQxABEgsKB0FuZHJv",
+            "aWQQAhIHCgNJT1MQAxIHCgNQU1YQBBIHCgNQUzMQBRIHCgNQUzQQBhILCgdY",
+            "Qk9YMzYwEAcSCwoHWEJPWE9ORRAIEggKBFdpaVUQCRIPCgtOaW50ZW5kbzNE",
+            "UxAKEhEKDUFuZHJvaWRDYXJBcHAQCyqTAgoLR2FtZVBhZFR5cGUSDAoIS2V5",
+            "Ym9hcmQQABIRCg1HbG9iYWxHYW1lUGFkEAESDgoKVG91Y2hQYW5lbBACEg4K",
+            "CkRTM0NvbnRyb2wQAxIOCgpEUzRDb250cm9sEAQSDgoKRFM1Q29udHJvbBAF",
+            "EhQKEFN3aXRjaFByb0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxISCg5Y",
+            "Qk9YMzYwQ29udHJvbBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNWaXRh",
+            "Q29udHJvbBAKEhIKDldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3RlQ29u",
+            "dHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKoMCCg9Sb21QbGF0Zm9y",
+            "bVR5cGUSCwoHSW52YWxpZBAAEgcKA05lcxABEhEKDU1hc3Rlcl9TeXN0ZW0Q",
+            "AhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVfQm95X0Nv",
+            "bG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1NDXzMwMDAQBxILCgdTR18x",
+            "MDAwEAgSCgoGTkVPR0VPEBQSBwoDSUdTEBUSCAoEQ1BTMRAWEggKBENQUzIQ",
+            "FxIOCgpBcmNhZGVfT0xEEB4SDwoLV29uZGVyX1N3YW4QKBIVChFXb25kZXJf",
+            "U3dhbl9Db2xvchApEggKA0FsbBDnBypwCg1Sb29tR2FtZVN0YXRlEhIKDk5v",
+            "bmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1XYWl0UmF3VXBkYXRl",
+            "EAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJbk9ubGluZUdhbWUQ",
+            "BSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJlc3VsdFN0YXR1c19C",
+            "YXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVychACQgJIAWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -406,13 +407,17 @@ namespace AxibugProtobuf {
     /// </summary>
     [pbr::OriginalName("ERROR_ROM_DONT_HAD_SAVEDATA")] ErrorRomDontHadSavedata = 80,
     /// <summary>
-    ///即时存档不存在
+    ///处理即时存档失败
     /// </summary>
     [pbr::OriginalName("ERROR_ROM_FAIL_SAVEDATA")] ErrorRomFailSavedata = 81,
     /// <summary>
     ///该游戏已经有封面图
     /// </summary>
     [pbr::OriginalName("ERROR_ROM_ALREADY_HAD_COVERIMG")] ErrorRomAlreadyHadCoverimg = 90,
+    /// <summary>
+    ///封面图处理失败
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROM_FAIL_COVERIMG")] ErrorRomFailCoverimg = 91,
     /// <summary>
     ///已经收藏
     /// </summary>

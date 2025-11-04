@@ -4,6 +4,7 @@ using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
 using System.Net.Sockets;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace AxibugEmuOnline.Server.Manager
 {
@@ -13,7 +14,9 @@ namespace AxibugEmuOnline.Server.Manager
         public GameShareManager()
         {
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGameMark, RecvGameMark);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamescreenImgUpload, RecvGameScreenCoverImgUpload);
         }
+
 
         public void RecvGameMark(Socket _socket, byte[] reqData)
         {
@@ -103,6 +106,66 @@ namespace AxibugEmuOnline.Server.Manager
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGameMark, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(respData));
         }
 
+        private void RecvGameScreenCoverImgUpload(Socket _socket, byte[] reqData)
+        {
+            AppSrv.g_Log.DebugCmd("RecvGameScreenCoverImgUpload");
+            ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
+            Protobuf_GameScreen_Img_Upload msg = ProtoBufHelper.DeSerizlize<Protobuf_GameScreen_Img_Upload>(reqData);
+            Protobuf_GameScreen_Img_Upload_RESP respData = new Protobuf_GameScreen_Img_Upload_RESP();
+            CheckRomHadCover(msg.RomID, out bool bhadGame, out bool bHadCover, out string coverPath);
+            ErrorCode errCode = ErrorCode.ErrorOk;
+            if (!bhadGame || bHadCover)
+            {
+                errCode = ErrorCode.ErrorRomAlreadyHadCoverimg;
+            }
+
+            if (errCode == ErrorCode.ErrorOk)
+            {
+                Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, coverPath));
+                byte[] ImgData = msg.SavImg.ToArray();
+                string imgpath = Path.Combine("UpCover", $"{_c.UID}_{msg.RomID}.jpg");
+
+                ImgData = Helper.DecompressByteArray(ImgData);
+
+                if (Helper.CreateFile(Path.Combine(Config.cfg.wwwRootPath, imgpath), ImgData))
+                {
+                    string query = "update romlist set ImgUrl = ?imgUrl WHERE id = ?romid;";
+                    using (MySqlConnection conn = SQLRUN.GetConn("RecvGameScreenCoverImgUpload_updateImg"))
+                    {
+                        using (var command = new MySqlCommand(query, conn))
+                        {
+                            // 设置参数值
+                            command.Parameters.AddWithValue("?romid", msg.RomID);
+                            command.Parameters.AddWithValue("?imgUrl", imgpath);
+                            if (command.ExecuteNonQuery() < 1)
+                            {
+                                AppSrv.g_Log.Error("执行即时存档保存失败");
+                            }
+                        }
+                    }
+                    query = "INSERT INTO `haoyue_emu`.`uploadcover_log` (`uid`, `romid`) VALUES (?uid, ?romid);";
+                    using (MySqlConnection conn = SQLRUN.GetConn("RecvGameScreenCoverImgUpload_insertlog"))
+                    {
+                        using (var command = new MySqlCommand(query, conn))
+                        {
+                            // 设置参数值
+                            command.Parameters.AddWithValue("?uid", _c.UID);
+                            command.Parameters.AddWithValue("?romid", msg.RomID);
+                            if (command.ExecuteNonQuery() < 1)
+                            {
+                                AppSrv.g_Log.Error("执行即时存档保存失败");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    errCode = ErrorCode.ErrorRomFailCoverimg;
+                }
+            }
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamescreenImgUpload, (int)errCode, ProtoBufHelper.Serizlize(respData));
+        }
+
         public int GetRomStart(int RomId)
         {
             int stars = 0;
@@ -162,6 +225,41 @@ namespace AxibugEmuOnline.Server.Manager
                 }
             }
             return bhad;
+        }
+
+
+        public void CheckRomHadCover(int RomId, out bool bhadGame, out bool bHadCover, out string coverPath)
+        {
+            bhadGame = false;
+            bHadCover = false;
+            coverPath = string.Empty;
+            using (MySqlConnection conn = SQLRUN.GetConn("CheckRomHadCover"))
+            {
+                try
+                {
+                    string query = $"SELECT id,ImgUrl from romlist where Id = ?romid";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        // 设置参数值  
+                        command.Parameters.AddWithValue("?romid", RomId);
+                        // 执行查询并处理结果  
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                bhadGame = reader.GetInt32(0) > 0;
+                                coverPath = reader.GetString(1);
+                                if (!string.IsNullOrEmpty(coverPath))
+                                    bHadCover = true;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    AppSrv.g_Log.Error("CheckRomHadCover：" + e);
+                }
+            }
         }
 
         public RomPlatformType GetRomPlatformType(int RomID)

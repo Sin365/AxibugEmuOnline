@@ -89,6 +89,11 @@ namespace AxibugEmuOnline.Server
                             AppSrv.g_GameShareMgr.RecvGameMark(null, null);
                         }
                         break;
+                    case "t2":
+                        {
+                            AppSrv.g_GameShareMgr.CheckRomHadCover(10089, out bool bhadGame, out bool bHadCover, out string coverPath);
+                        }
+                        break;
                     case "sql":
                         {
                             SQLRUN.GetPoolState();

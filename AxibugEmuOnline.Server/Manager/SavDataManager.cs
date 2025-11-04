@@ -99,8 +99,8 @@ namespace AxibugEmuOnline.Server.Manager
                 }
                 else
                 {
-                    bool bDelSav = FileDelete(Path.Combine(Config.cfg.savDataPath, SavUrl));
-                    bool bDelImg = FileDelete(Path.Combine(Config.cfg.savDataPath, SavImgUrl));
+                    bool bDelSav = Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, SavUrl));
+                    bool bDelImg = Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, SavImgUrl));
                     if (!bDelSav || !bDelImg)
                     {
                         errCode = ErrorCode.ErrorRomDontHadSavedata;
@@ -148,8 +148,8 @@ namespace AxibugEmuOnline.Server.Manager
 
             if (GetProtobufMineGameSavInfo(_c.UID, msg.RomID, msg.SavDataIdx, out Protobuf_Mine_GameSavInfo oldSavInfo))
             {
-                bool bDelSav = FileDelete(Path.Combine(Config.cfg.savDataPath, oldSavInfo.SavUrl));
-                bool bDelImg = FileDelete(Path.Combine(Config.cfg.savDataPath, oldSavInfo.SavImgUrl));
+                bool bDelSav = Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, oldSavInfo.SavUrl));
+                bool bDelImg = Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, oldSavInfo.SavImgUrl));
                 if (!bDelSav || !bDelImg)
                 {
                     errCode = ErrorCode.ErrorRomDontHadSavedata;
@@ -166,18 +166,17 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 byte[] StateRawData = msg.StateRaw.ToArray();
                 byte[] ImgData = msg.SavImg.ToArray();
-                GetNewRomPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.sav", out string rompath);
-                GetNewRomPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.jpg", out string imgpath);
+                GetNewUserSavPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.sav", out string rompath);
+                GetNewUserSavPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.jpg", out string imgpath);
 
                 ImgData = Helper.DecompressByteArray(ImgData);
 
                 if (
-                    CreateFile(Path.Combine(Config.cfg.savDataPath, rompath), StateRawData)
+                    Helper.CreateFile(Path.Combine(Config.cfg.wwwRootPath, rompath), StateRawData)
                     &&
-                    CreateFile(Path.Combine(Config.cfg.savDataPath, imgpath), ImgData)
+                    Helper.CreateFile(Path.Combine(Config.cfg.wwwRootPath, imgpath), ImgData)
                     )
                 {
-                    //INSERT INTO `haoyue_emu`.`user_gamesavedata` ( `uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate`) VALUES ( 0, 0, 2147483647, '', '', '', '', '0000-00-00 00:00:00');
                     string query = "INSERT INTO `haoyue_emu`.`user_gamesavedata`" +
                         " ( `uid`, `romid`, `savidx`, `savName`, `savNote`, `savUrl`, `savImgUrl`, `savDate`, `savSequence`)" +
                         " VALUES ( ?uid, ?romid, ?savidx, ?savName, ?savNote, ?savUrl, ?savImgUrl, ?savDate, ?savSequence);";
@@ -228,46 +227,12 @@ namespace AxibugEmuOnline.Server.Manager
 
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavUploadGameSav, (int)errCode, ProtoBufHelper.Serizlize(respData));
         }
-        public void GetNewRomPath(long uid, RomPlatformType ptype, int romid, int stateIdx, string filename, out string path)
+        public void GetNewUserSavPath(long uid, RomPlatformType ptype, int romid, int stateIdx, string filename, out string path)
         {
             path = Path.Combine("UserSav", uid.ToString(), ptype.ToString(), romid.ToString(), stateIdx.ToString(), filename);
         }
-        public bool FileDelete(string path)
-        {
-            if (!File.Exists(path))
-                return false;
-            try
-            {
-                File.Delete(path);
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
 
-        public bool CreateFile(string path, byte[] data)
-        {
-            try
-            {
-                string dir = Path.GetDirectoryName(path);
-                if (!Directory.Exists(dir))
-                    Directory.CreateDirectory(dir);
-
-                using (var fs = new FileStream(path, FileMode.Create))
-                {
-                    fs.Write(data, 0, data.Length);
-                }
-                AppSrv.g_Log.Error($"CreeateFile {path}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AppSrv.g_Log.Error($"CreeateFile Err =>{ex.ToString()}");
-                return false;
-            }
-        }
+        
 
         public bool GetProtobufMineGameSavInfo(long uid, int romid, int savIdx, out Protobuf_Mine_GameSavInfo protoData)
         {

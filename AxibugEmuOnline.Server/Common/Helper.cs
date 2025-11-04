@@ -6,6 +6,42 @@ namespace AxibugEmuOnline.Server.Common
 {
     public static class Helper
     {
+
+        public static bool FileDelete(string path)
+        {
+            if (!File.Exists(path))
+                return false;
+            try
+            {
+                File.Delete(path);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public static bool CreateFile(string path, byte[] data)
+        {
+            try
+            {
+                string dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                using (var fs = new FileStream(path, FileMode.Create))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
+                AppSrv.g_Log.Error($"CreeateFile {path}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppSrv.g_Log.Error($"CreeateFile Err =>{ex.ToString()}");
+                return false;
+            }
+        }
         public static long GetNowTimeStamp()
         {
             return GetTimeStamp(DateTime.Now);
