@@ -163,15 +163,21 @@ namespace AxibugEmuOnline.Client.Network
                     case ErrorCode.ErrorRomDontHadStar:
                         errMsg = "并没有收藏";
                         break;
+                    case ErrorCode.ErrorRomFailCoverimg:
+                        errMsg = "处理游戏截图失败";
+                        break;
                     case ErrorCode.ErrorDefaul:
                     case ErrorCode.ErrorOk:
                     default:
-                        errMsg = err.ToString();
                         break;
                 }
                 OverlayManager.PopTip("错误:"+ errMsg);
                 App.log.Error("错误:" + errMsg);
             }
+
+            //如果报错，则不往前继续推进
+            if (err > ErrorCode.ErrorOk)
+                return;
 
             List<Delegate> eventList = GetNetEventDicList(cmd);
             if (eventList != null)

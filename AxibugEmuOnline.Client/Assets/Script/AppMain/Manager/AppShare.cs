@@ -63,9 +63,9 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdGamescreenImgUpload, ProtoBufHelper.Serizlize(req));
         }
 
-        private void RecvGamescreenImgUpload(byte[] obj)
+        private void RecvGamescreenImgUpload(byte[] data)
         {
-            OverlayManager.PopTip("登录成功");
+            OverlayManager.PopTip("封面图上传成功");
         }
     }
 }
