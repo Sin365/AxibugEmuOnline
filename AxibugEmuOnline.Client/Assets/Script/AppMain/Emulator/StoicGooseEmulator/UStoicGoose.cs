@@ -57,6 +57,9 @@ public class UStoicGoose : EmuCore<ulong>
     public override Texture OutputPixel => graphicsHandler.rawBufferWarper;
 
     public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
+
+    public override Vector3 DrawLocalScale => DrawCanvas.transform.localScale;
+
     public override object GetState()
     {
         throw new NotImplementedException();

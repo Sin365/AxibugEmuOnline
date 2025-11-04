@@ -44,6 +44,11 @@ namespace AxibugEmuOnline.Client
         public abstract Texture OutputPixel { get; }
         public abstract RawImage DrawCanvas { get; }
 
+        /// <summary>
+        /// 渲染朝向，用于截图
+        /// </summary>
+        public abstract Vector3 DrawLocalScale { get; }
+
 
         /// <summary> 指示该游戏实例是否处于联机模式 </summary>
         public bool IsNetPlay

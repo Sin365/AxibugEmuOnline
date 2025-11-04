@@ -167,6 +167,7 @@ namespace AxibugEmuOnline.Client
 
         public override Texture OutputPixel => VideoProvider.OutputPixel;
         public override RawImage DrawCanvas => VideoProvider.Drawer;
+        public override Vector3 DrawLocalScale => DrawCanvas.transform.localScale;
         public override void GetAudioParams(out int frequency, out int channels)
         {
             AudioProvider.GetAudioParams(out frequency, out channels);

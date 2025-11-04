@@ -15,7 +15,7 @@ namespace AxibugEmuOnline.Client
         public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
         {
             var tex = m_gameUI.Core.OutputPixel;
-            var screenData = tex.ToJPG(m_gameUI.Core.DrawCanvas.transform.localScale);
+            var screenData = tex.ToJPG(m_gameUI.Core.DrawLocalScale);
             App.share.SendUpLoadGameScreenCover(m_gameUI.RomFile.ID, screenData);
         }
     }

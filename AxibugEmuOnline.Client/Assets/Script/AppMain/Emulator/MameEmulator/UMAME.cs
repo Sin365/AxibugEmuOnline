@@ -230,11 +230,7 @@ public class UMAME : EmuCore<ulong>
         br.Close();
         fs.Close();
     }
-
-
     public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
-
     public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
-
-
+    public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
 }
