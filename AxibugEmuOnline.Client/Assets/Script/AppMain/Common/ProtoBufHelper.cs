@@ -1,21 +1,33 @@
-﻿using Google.Protobuf;
+﻿using AxibugEmuOnline.Client.Network;
+using Google.Protobuf;
 using System;
 
 namespace AxibugEmuOnline.Client.Common
 {
     public static class ProtoBufHelper
     {
+        private static ProtobufferMsgPool _msgPool = new ProtobufferMsgPool();
         public static byte[] Serizlize(IMessage msg)
         {
             return msg.ToByteArray();
         }
-        public static T DeSerizlize<T>(byte[] bytes)
+        public static T DeSerizlizeFromPool<T>(byte[] bytes)
         {
             var msgType = typeof(T);
-            object msg = Activator.CreateInstance(msgType);
+            object msg = _msgPool.Get(msgType);
             ((IMessage)msg).MergeFrom(bytes);
             return (T)msg;
         }
+        public static IMessage DeSerizlizeFromPool(byte[] bytes, Type protoType)
+        {
+            var msgType = protoType;
+            object msg = _msgPool.Get(msgType);
+            ((IMessage)msg).MergeFrom(bytes);
+            return (IMessage)msg;
+        }
+        public static void ReleaseToPool(IMessage msg)
+        {
+            _msgPool.Release(msg);
+        }
     }
-
 }

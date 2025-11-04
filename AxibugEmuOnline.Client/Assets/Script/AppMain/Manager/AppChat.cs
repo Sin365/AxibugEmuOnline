@@ -10,7 +10,7 @@ namespace AxibugEmuOnline.Client.Manager
     {
         public AppChat()
         {
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdChatmsg, RecvChatMsg);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_ChatMsg_RESP>((int)CommandID.CmdChatmsg, RecvChatMsg);
         }
 
         public void SendChatMsg(string ChatMsg)
@@ -22,9 +22,8 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdChatmsg, ProtoBufHelper.Serizlize(msg));
         }
 
-        public void RecvChatMsg(byte[] reqData)
+        public void RecvChatMsg(Protobuf_ChatMsg_RESP msg)
         {
-            Protobuf_ChatMsg_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_ChatMsg_RESP>(reqData);
             Eventer.Instance.PostEvent(EEvent.OnChatMsg, msg.NickName, msg.ChatMsg);
         }
     }

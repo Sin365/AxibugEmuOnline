@@ -11,8 +11,8 @@ namespace AxibugEmuOnline.Client.Manager
     {
         public AppShare()
         {
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGameMark, RecvGameStar);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamescreenImgUpload, RecvGamescreenImgUpload);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Game_Mark_RESP>((int)CommandID.CmdGameMark, RecvGameStar);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_GameScreen_Img_Upload_RESP>((int)CommandID.CmdGamescreenImgUpload, RecvGamescreenImgUpload);
         }
 
         /// <summary>
@@ -35,9 +35,8 @@ namespace AxibugEmuOnline.Client.Manager
         /// 收藏
         /// </summary>
         /// <param name="reqData"></param>
-        void RecvGameStar(byte[] reqData)
+        void RecvGameStar(Protobuf_Game_Mark_RESP msg)
         {
-            Protobuf_Game_Mark_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Game_Mark_RESP>(reqData);
             Eventer.Instance.PostEvent(EEvent.OnRomStarStateChanged, msg.RomID, msg.IsStar == 1);
         }
 
@@ -63,7 +62,7 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdGamescreenImgUpload, ProtoBufHelper.Serizlize(req));
         }
 
-        private void RecvGamescreenImgUpload(byte[] data)
+        private void RecvGamescreenImgUpload(Protobuf_GameScreen_Img_Upload_RESP msg)
         {
             OverlayManager.PopTip("封面图上传成功");
         }

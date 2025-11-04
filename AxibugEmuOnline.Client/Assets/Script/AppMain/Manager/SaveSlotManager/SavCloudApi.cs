@@ -20,9 +20,9 @@ namespace AxibugEmuOnline.Client
 
         public SavCloudApi()
         {
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavGetGameSavList, RecvGetGameSavList);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavDelGameSav, RecvDelGameSavList);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavUploadGameSav, RecvUpLoadGameSav);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Mine_GetGameSavList_RESP>((int)CommandID.CmdGamesavGetGameSavList, RecvGetGameSavList);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Mine_DelGameSav_RESP>((int)CommandID.CmdGamesavDelGameSav, RecvDelGameSavList);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Mine_UpLoadGameSav_RESP>((int)CommandID.CmdGamesavUploadGameSav, RecvUpLoadGameSav);
         }
 
         private HashSet<int> m_fetchingRomIDs = new HashSet<int>();
@@ -42,10 +42,8 @@ namespace AxibugEmuOnline.Client
             App.network.SendToServer((int)CommandID.CmdGamesavGetGameSavList, ProtoBufHelper.Serizlize(req));
         }
 
-        void RecvGetGameSavList(byte[] reqData)
+        void RecvGetGameSavList(Protobuf_Mine_GetGameSavList_RESP msg)
         {
-            Protobuf_Mine_GetGameSavList_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_GetGameSavList_RESP>(reqData);
-
             if (m_fetchingRomIDs.Remove(msg.RomID)) return;
 
             Protobuf_Mine_GameSavInfo[] savArr = new Protobuf_Mine_GameSavInfo[4];
@@ -73,9 +71,8 @@ namespace AxibugEmuOnline.Client
             App.network.SendToServer((int)CommandID.CmdGamesavDelGameSav, ProtoBufHelper.Serizlize(req));
         }
 
-        void RecvDelGameSavList(byte[] reqData)
+        void RecvDelGameSavList(Protobuf_Mine_DelGameSav_RESP msg)
         {
-            Protobuf_Mine_DelGameSav_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_DelGameSav_RESP>(reqData);
             Eventer.Instance.PostEvent(EEvent.OnNetGameSavDeleted, msg.RomID, msg.SavDataIdx);
         }
 
@@ -108,9 +105,8 @@ namespace AxibugEmuOnline.Client
             App.network.SendToServer((int)CommandID.CmdGamesavUploadGameSav, ProtoBufHelper.Serizlize(req));
         }
 
-        void RecvUpLoadGameSav(byte[] reqData)
+        void RecvUpLoadGameSav(Protobuf_Mine_UpLoadGameSav_RESP msg)
         {
-            Protobuf_Mine_UpLoadGameSav_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_UpLoadGameSav_RESP>(reqData);
             OnUploadedSavData?.Invoke(msg.RomID, msg.SavDataIdx, msg.UploadSevInfo);
         }
 

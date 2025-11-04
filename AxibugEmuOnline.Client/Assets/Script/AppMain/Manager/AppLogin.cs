@@ -14,7 +14,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public AppLogin()
         {
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdLogin, RecvLoginMsg);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Login_RESP>((int)CommandID.CmdLogin, RecvLoginMsg);
         }
 
         public void Login()
@@ -67,9 +67,8 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdLogin, ProtoBufHelper.Serizlize(msg));
         }
 
-        public void RecvLoginMsg(byte[] reqData)
+        public void RecvLoginMsg(Protobuf_Login_RESP msg)
         {
-            Protobuf_Login_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Login_RESP>(reqData);
             if (msg.Status == LoginResultStatus.Ok)
             {
                 App.log.Info("登录成功");

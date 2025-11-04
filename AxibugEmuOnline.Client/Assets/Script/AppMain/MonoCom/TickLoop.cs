@@ -26,8 +26,8 @@ namespace AxibugEmuOnline.Client
         public const int NetAveDelayCount = 3;
         private void Awake()
         {
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdPing, OnCmdPing);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdPong, OnCmdPong);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Ping>((int)CommandID.CmdPing, OnCmdPing);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Pong>((int)CommandID.CmdPong, OnCmdPong);
 
             LoopAction_3s += Ping;
 
@@ -97,10 +97,9 @@ namespace AxibugEmuOnline.Client
         }
 
 
-        public void OnCmdPing(byte[] reqData)
+        public void OnCmdPing(Protobuf_Ping msg)
         {
             //App.log.Debug($"OnCmdPing");
-            Protobuf_Ping msg = ProtoBufHelper.DeSerizlize<Protobuf_Ping>(reqData);
             Protobuf_Pong resp = new Protobuf_Pong()
             {
                 Seed = msg.Seed,
@@ -108,10 +107,9 @@ namespace AxibugEmuOnline.Client
             App.network.SendToServer((int)CommandID.CmdPong, ProtoBufHelper.Serizlize(resp));
         }
 
-        public void OnCmdPong(byte[] reqData)
+        public void OnCmdPong(Protobuf_Pong msg)
         {
             //App.log.Debug($"OnCmdPong");
-            Protobuf_Pong msg = ProtoBufHelper.DeSerizlize<Protobuf_Pong>(reqData);
 
             if (LastPingSeed == msg.Seed)
             {

@@ -1,9 +1,10 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
+using Google.Protobuf;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using AxibugEmuOnline.Client.Common;
 
 namespace AxibugEmuOnline.Client.Network
 {
@@ -24,11 +25,28 @@ namespace AxibugEmuOnline.Client.Network
 
         private NetMsg() { }
 
+        private static Dictionary<int, Type> cmd2MsgTypeDict = new Dictionary<int, Type>();
+        private static Type GetTypeByCmd(int cmd, List<Delegate> delegates)
+        {
+            if (cmd2MsgTypeDict.TryGetValue(cmd, out var type)) return type;
+            var paramters = delegates.First().Method.GetParameters();
+            if (paramters.Length != 0)
+            {
+                var protoType = paramters[0].ParameterType;
+                if (!protoType.IsInterface && !protoType.IsAbstract)
+                {
+                    cmd2MsgTypeDict[cmd] = protoType;
+                    return protoType;
+                }
+            }
+
+            return null;
+        }
 
 
         #region RegisterMsgEvent
 
-        public void RegNetMsgEvent(int cmd, Action<byte[]> callback)
+        public void RegNetMsgEvent<T>(int cmd, Action<T> callback) where T : IMessage
         {
             InterRegNetMsgEvent(cmd, callback);
         }
@@ -99,10 +117,10 @@ namespace AxibugEmuOnline.Client.Network
         void PostNetEventFromNet(Action act)
         {
             try
-            { 
+            {
                 act?.Invoke();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 App.log.Error(ex.ToString());
             }
@@ -171,7 +189,7 @@ namespace AxibugEmuOnline.Client.Network
                     default:
                         break;
                 }
-                OverlayManager.PopTip("错误:"+ errMsg);
+                OverlayManager.PopTip("错误:" + errMsg);
                 App.log.Error("错误:" + errMsg);
             }
 
@@ -182,11 +200,16 @@ namespace AxibugEmuOnline.Client.Network
             List<Delegate> eventList = GetNetEventDicList(cmd);
             if (eventList != null)
             {
+                Type protoType = GetTypeByCmd(cmd, eventList);
                 foreach (Delegate callback in eventList)
                 {
                     try
                     {
-                        ((Action<byte[]>)callback)(arg);
+                        IMessage protobufMsg = ProtoBufHelper.DeSerizlizeFromPool(arg, protoType);
+                        //((Action<IMessage>)callback)(protobufMsg);
+                        callback.DynamicInvoke(protobufMsg);
+                        ProtoBufHelper.ReleaseToPool(protobufMsg);
+                        //((Action<byte[]>)callback)(arg);
                     }
                     catch (Exception e)
                     {

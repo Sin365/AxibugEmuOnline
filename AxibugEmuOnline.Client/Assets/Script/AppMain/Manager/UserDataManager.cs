@@ -29,13 +29,13 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.OnReConnected += OnReConnected;
 
             //网络事件注册
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdUserOnlinelist, RecvUserOnlinelist);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdUserJoin, RecvCmdUserJoin);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdUserLeave, RecvGetUserLeave);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_UserList_RESP>((int)CommandID.CmdUserOnlinelist, RecvUserOnlinelist);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_UserJoin_RESP>((int)CommandID.CmdUserJoin, RecvCmdUserJoin);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_UserLeave_RESP>((int)CommandID.CmdUserLeave, RecvGetUserLeave);
 
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdModifyNickName, RecvModifyNickName);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdUpdateSelfUserInfo, RecvUpdateSelfUserInfo);
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdUpdateOtherUserInfo, RecvUpdateOtherUserInfo);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Modify_NickName_RESP>((int)CommandID.CmdModifyNickName, RecvModifyNickName);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Update_UserInfo_RESP>((int)CommandID.CmdUpdateSelfUserInfo, RecvUpdateSelfUserInfo);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Update_OtherUserInfo_RESP>((int)CommandID.CmdUpdateOtherUserInfo, RecvUpdateOtherUserInfo);
         }
 
         public MainUserDataBase userdata { get; private set; } = new MainUserDataBase();
@@ -153,9 +153,8 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdUserOnlinelist, ProtoBufHelper.Serizlize(msg));
         }
 
-        public void RecvUserOnlinelist(byte[] reqData)
+        public void RecvUserOnlinelist(Protobuf_UserList_RESP msg)
         {
-            Protobuf_UserList_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserList_RESP>(reqData);
             DictUID2User.Clear();
             for (int i = 0; i < msg.UserList.Count; i++)
             {
@@ -165,9 +164,8 @@ namespace AxibugEmuOnline.Client.Manager
             }
             Eventer.Instance.PostEvent(EEvent.OnUserListAllUpdate);
         }
-        public void RecvCmdUserJoin(byte[] reqData)
+        public void RecvCmdUserJoin(Protobuf_UserJoin_RESP msg)
         {
-            Protobuf_UserJoin_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserJoin_RESP>(reqData);
             bool isNewUser;
             UpdateOrAddUser(msg.UserInfo, out isNewUser);
             if (isNewUser)
@@ -177,9 +175,8 @@ namespace AxibugEmuOnline.Client.Manager
             }
         }
 
-        public void RecvGetUserLeave(byte[] reqData)
+        public void RecvGetUserLeave(Protobuf_UserLeave_RESP msg)
         {
-            Protobuf_UserLeave_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_UserLeave_RESP>(reqData);
             RemoveUser(msg.UID);
         }
 
@@ -196,28 +193,23 @@ namespace AxibugEmuOnline.Client.Manager
             App.network.SendToServer((int)CommandID.CmdModifyNickName, ProtoBufHelper.Serizlize(msg));
         }
 
-        void RecvModifyNickName(byte[] reqData)
+        void RecvModifyNickName(Protobuf_Modify_NickName_RESP msg)
         {
-            Protobuf_Modify_NickName_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Modify_NickName_RESP>(reqData);
         }
 
-        private void RecvUpdateSelfUserInfo(byte[] reqData)
+        private void RecvUpdateSelfUserInfo(Protobuf_Update_UserInfo_RESP msg)
         {
-            Protobuf_Update_UserInfo_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Update_UserInfo_RESP>(reqData);
             userdata.NickName = msg.UserInfo.NickName;
             Eventer.Instance.PostEvent(EEvent.OnSelfInfoUpdate);
         }
 
-        private void RecvUpdateOtherUserInfo(byte[] reqData)
+        private void RecvUpdateOtherUserInfo(Protobuf_Update_OtherUserInfo_RESP msg)
         {
-            Protobuf_Update_OtherUserInfo_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Update_OtherUserInfo_RESP>(reqData);
             UserDataBase userdata = GetUserByUid(msg.UID);
             if (userdata == null)
                 return;
             userdata.NickName = msg.UserInfo.NickName;
-
             App.roomMgr.ChangeCurrRoomPlayerName(msg.UID);
-
             Eventer.Instance.PostEvent(EEvent.OnOtherUserInfoUpdate, msg.UID);
         }
 
