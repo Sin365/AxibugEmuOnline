@@ -120,7 +120,8 @@ namespace AxibugEmuOnline.Client
                 public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
                 {
                     cancelHide = true;
-                    m_savFile.GetSavData(out byte[] savData, out var _);
+                    byte[] data, savData;
+                    m_savFile.GetSavData(out savData, out data);
                     if (savData != null)
                     {
                         m_ingameUI.Core.LoadStateFromBytes(savData);

@@ -21,7 +21,8 @@ namespace MAME.Core
         }
         public static RomInfo GetRomByName(string s1)
         {
-            if (!dictName2Rom.TryGetValue(s1, out RomInfo info))
+            RomInfo info;
+            if (!dictName2Rom.TryGetValue(s1, out info))
                 return null;
             return info;
         }

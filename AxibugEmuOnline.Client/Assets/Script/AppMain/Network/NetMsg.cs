@@ -62,8 +62,10 @@ namespace AxibugEmuOnline.Client.Network
 
         public void UnregisterCMD<T>(int cmd, Action<T> callback) where T : IMessage
         {
-            if (delegateWrappers.TryGetValue(typeof(T), out var wrapperDict) &&
-                wrapperDict.TryGetValue(callback, out var wrappedCallback))
+            Dictionary<Delegate, Action<IMessage>> wrapperDict;
+            Action<IMessage> wrappedCallback;
+            if (delegateWrappers.TryGetValue(typeof(T), out wrapperDict) &&
+                wrapperDict.TryGetValue(callback, out wrappedCallback))
             {
                 InterUnregisterCMD(cmd, wrappedCallback);
                 wrapperDict.Remove(callback);
@@ -242,7 +244,8 @@ namespace AxibugEmuOnline.Client.Network
         }
         private static Type GetTypeByCmd(int cmd)
         {
-            if (cmd2MsgTypeDict.TryGetValue(cmd, out var type)) return type;
+            Type type;
+            if (cmd2MsgTypeDict.TryGetValue(cmd, out type)) return type;
             return null;
         }
 
@@ -251,7 +254,8 @@ namespace AxibugEmuOnline.Client.Network
         /// </summary>
         private HashSet<Action<IMessage>> GetNetEventDicList(int cmd)
         {
-            if (netEventDic.TryGetValue(cmd, out var tempList) && tempList != null)
+            HashSet<Action<IMessage>> tempList;
+            if (netEventDic.TryGetValue(cmd, out tempList) && tempList != null)
                 return tempList;
             return null;
         }

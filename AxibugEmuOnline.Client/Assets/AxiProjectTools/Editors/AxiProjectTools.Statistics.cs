@@ -438,7 +438,8 @@ public class AxiProjectToolsStatistics : EditorWindow
                 int DirtyCount = 0;
                 foreach (var node in cache.nodes)
                 {
-                    GameObject targetNodePathObj = GetNodeByLink(cache.FullPath, node.link, out string errStr);
+                    string errStr;
+                    GameObject targetNodePathObj = GetNodeByLink(cache.FullPath, node.link, out errStr);
                     if (targetNodePathObj == null)
                     {
                         errLog.Add(errStr);

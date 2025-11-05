@@ -15,7 +15,8 @@ namespace MAME.Core
         public static void Update()
         {
             int X, Y;
-            iMouse.MouseXY(out X, out Y, out byte[] MouseButtons);
+            byte[] MouseButtons;
+            iMouse.MouseXY(out X, out Y, out MouseButtons);
             deltaX = X - oldX;
             deltaY = Y - oldY;
             oldX = X;

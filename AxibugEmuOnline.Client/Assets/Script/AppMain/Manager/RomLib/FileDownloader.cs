@@ -11,7 +11,8 @@ namespace AxibugEmuOnline.Client
         Dictionary<string, Action<byte[]>> m_completeCallback = new Dictionary<string, Action<byte[]>>();
         public void BeginDownload(string url, Action<byte[]> callback)
         {
-            if (m_downloadingTasks.TryGetValue(url, out var downloadProxy)) return;
+            AxiHttpProxy.SendDownLoadProxy downloadProxy;
+            if (m_downloadingTasks.TryGetValue(url, out downloadProxy)) return;
 
             m_completeCallback[url] = callback;
             var downloadRequest = AxiHttpProxy.GetDownLoad($"{App.httpAPI.WebHost}/{url}");
@@ -20,7 +21,8 @@ namespace AxibugEmuOnline.Client
 
         public float? GetDownloadProgress(string url)
         {
-            m_downloadingTasks.TryGetValue(url, out var proxy);
+            AxiHttpProxy.SendDownLoadProxy proxy;
+            m_downloadingTasks.TryGetValue(url, out proxy);
             if (proxy == null) return null;
 
             return Mathf.Clamp01(proxy.downloadHandler.downLoadPr);

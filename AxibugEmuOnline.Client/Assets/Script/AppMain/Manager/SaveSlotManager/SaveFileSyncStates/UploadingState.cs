@@ -15,7 +15,8 @@ namespace AxibugEmuOnline.Client
                     FSM.ChangeState<SyncedState>();
                     return;
                 }
-                Host.GetSavData(out byte[] savData, out byte[] screenData);
+                byte[] savData, screenData;
+                Host.GetSavData(out savData, out screenData);
                 Host.CloudAPI.SendUpLoadGameSav(Host.RomID, Host.SlotIndex, Host.Sequecen, savData, screenData);
 
                 Host.SetSavingFlag();

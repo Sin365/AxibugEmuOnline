@@ -330,7 +330,8 @@ namespace AxibugEmuOnline.Client
 
         private void CreateRuntimeMenuItem(InternalOptionMenu menuData)
         {
-            m_menuUI_templates.TryGetValue(menuData.MenuUITemplateType, out var template);
+            OptionUI_MenuItem template;
+            m_menuUI_templates.TryGetValue(menuData.MenuUITemplateType, out template);
             if (template == null)
             {
                 throw new NotImplementedException($"{menuData.GetType().Name}指定的MenuUI类型实例未在OptionUI中找到");

@@ -40,7 +40,8 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         private void AxiScreenGamepad_OnGamepadDisactive(AxiScreenGamepad sender)
         {
-            if (m_devices.TryGetValue(sender, out var device))
+            ScreenGamepad_D device;
+            if (m_devices.TryGetValue(sender, out device))
             {
                 m_devices.Remove(sender);
                 RaiseDeviceLost(device);
@@ -76,7 +77,8 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             if (device is ScreenGamepad_D)
             {
-                return m_devices.TryGetKey(device as ScreenGamepad_D, out var _);
+                AxiScreenGamepad val;
+                return m_devices.TryGetKey(device as ScreenGamepad_D, out val);
             }
             else
             {
@@ -168,7 +170,8 @@ namespace AxibugEmuOnline.Client.InputDevices
         {
             if (inputDevice is ScreenGamepad_D)
             {
-                m_devices.TryGetKey(inputDevice as ScreenGamepad_D, out var realDeviceScript);
+                AxiScreenGamepad realDeviceScript;
+                m_devices.TryGetKey(inputDevice as ScreenGamepad_D, out realDeviceScript);
                 return $"{realDeviceScript.GetType().Name}_{realDeviceScript.GetHashCode()}";
             }
             else return OnGetDeviceName(inputDevice);

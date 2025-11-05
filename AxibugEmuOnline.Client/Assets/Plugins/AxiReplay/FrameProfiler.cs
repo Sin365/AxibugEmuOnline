@@ -53,7 +53,8 @@ namespace AxiReplay
         void CalcCacheCount()
         {
             double deltaMax = 0;
-            while (m_timePoints.TryRead(out double delta))
+            double delta;
+            while (m_timePoints.TryRead(out delta))
             {
                 deltaMax = Math.Max(deltaMax, delta);
             }

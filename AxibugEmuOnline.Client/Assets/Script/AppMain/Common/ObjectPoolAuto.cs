@@ -162,7 +162,8 @@ namespace AxibugEmuOnline.Client.Common
         public static T GetCachedResult<T>(Func<T> function)
         {
             var method = function.Method;
-            if (!Cache<T>.Results.TryGetValue(method, out var result))
+            KeyValuePair<Func<T>, T> result;
+            if (!Cache<T>.Results.TryGetValue(method, out result))
             {
 
                 result = new KeyValuePair<Func<T>, T>(function, function());

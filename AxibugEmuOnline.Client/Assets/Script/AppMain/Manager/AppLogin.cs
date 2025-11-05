@@ -68,7 +68,7 @@ namespace AxibugEmuOnline.Client.Manager
         }
 
         public void RecvLoginMsg(Protobuf_Login_RESP msg)
-        {
+         {
             if (msg.Status == LoginResultStatus.Ok)
             {
                 App.log.Info("登录成功");

@@ -258,12 +258,14 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
         public void SetBinding(T emuBtn, InputControl_C key, int settingSlot)
         {
             var device = key.Device;
-            m_registedDevices.TryGetValue(device.GetType(), out var inputDevice);
+            InputDevice_D inputDevice;
+            m_registedDevices.TryGetValue(device.GetType(), out inputDevice);
 
             Debug.Assert(inputDevice == device);
 
             var setting = m_mapSetting[inputDevice];
-            if (!setting.TryGetValue(emuBtn, out var settingList))
+            List<InputControl_C> settingList;
+            if (!setting.TryGetValue(emuBtn, out settingList))
             {
                 settingList = new List<InputControl_C>();
                 setting[emuBtn] = settingList;
@@ -277,10 +279,12 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
 
         public InputControl_C GetBinding(T emuBtn, InputDevice_D device, int settingSlot)
         {
-            m_mapSetting.TryGetValue(device, out var mapSetting);
+            MapSetting mapSetting;
+            m_mapSetting.TryGetValue(device, out mapSetting);
             if (mapSetting == null) return null;
 
-            mapSetting.TryGetValue(emuBtn, out var settingList);
+            List<InputControl_C> settingList;
+            mapSetting.TryGetValue(emuBtn, out settingList);
             if (settingList == null || settingSlot >= settingList.Count) return null;
 
             return settingList[settingSlot];
@@ -293,7 +297,8 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
 
             foreach (var mapSettings in m_mapSetting.Values)
             {
-                mapSettings.TryGetValue(emuBtn, out var bindControls);
+                List<InputControl_C> bindControls;
+                mapSettings.TryGetValue(emuBtn, out bindControls);
                 if (bindControls != null)
                 {
                     m_caches.AddRange(bindControls);

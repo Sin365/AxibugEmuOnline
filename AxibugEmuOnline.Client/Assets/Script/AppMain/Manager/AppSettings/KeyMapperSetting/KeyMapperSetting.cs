@@ -28,13 +28,15 @@ namespace AxibugEmuOnline.Client.Settings
 
         public T GetBinder<T>() where T : InternalEmuCoreBinder
         {
-            m_bindersByType.TryGetValue(typeof(T), out var binder);
+            InternalEmuCoreBinder binder;
+            m_bindersByType.TryGetValue(typeof(T), out binder);
             return binder as T;
         }
 
         public T GetBinder<T>(RomPlatformType romType) where T : InternalEmuCoreBinder
         {
-            m_binders.TryGetValue(romType, out var binder);
+            InternalEmuCoreBinder binder;
+            m_binders.TryGetValue(romType, out binder);
             return binder as T;
         }
     }

@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
+using UnityEditor.Search;
 
 namespace AxibugEmuOnline.Client.Network
 {
@@ -11,7 +12,8 @@ namespace AxibugEmuOnline.Client.Network
 
         public IMessage Get(Type msgType)
         {
-            if (!_pool.TryGetValue(msgType, out var queue))
+            Queue<IResetable> queue;
+            if (!_pool.TryGetValue(msgType, out queue))
             {
                 queue = new Queue<IResetable>();
                 _pool[msgType] = queue;
@@ -36,7 +38,8 @@ namespace AxibugEmuOnline.Client.Network
             if (msg is IResetable resetableMsg)
             {
                 var msgType = msg.GetType();
-                if (!_pool.TryGetValue(msgType, out var queue))
+                Queue<IResetable> queue;
+                if (!_pool.TryGetValue(msgType, out queue))
                 {
                     queue = new Queue<IResetable>();
                     _pool[msgType] = queue;

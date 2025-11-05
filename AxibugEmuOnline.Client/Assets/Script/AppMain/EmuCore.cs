@@ -88,7 +88,8 @@ namespace AxibugEmuOnline.Client
 
         bool TryPushEmulatorFrame()
         {
-            if (SampleInputData(out var inputData))
+            INPUTDATA inputData;
+            if (SampleInputData(out inputData))
             {
                 if (IsNetPlay) SendLocalInput();
 

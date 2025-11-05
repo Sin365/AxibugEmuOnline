@@ -201,7 +201,8 @@ namespace AxibugEmuOnline.Client
 
         public void BeginRecordGameAudio()
         {
-            App.emu.Core.GetAudioParams(out int frequency, out int channels);
+            int frequency, channels;
+            App.emu.Core.GetAudioParams(out frequency, out channels);
             BeginRecording(frequency, channels);
         }
 
@@ -275,7 +276,8 @@ namespace AxibugEmuOnline.Client
             this.SourceSampleRate = SourceSampleRate;
             this.AxiAudioPullHandle = audiohandle;
             NeedsResampling = SourceSampleRate != AudioSettings.outputSampleRate;
-            AudioSettings.GetDSPBufferSize(out int bufferLength, out int numBuffers);
+            int bufferLength, numBuffers;
+            AudioSettings.GetDSPBufferSize(out bufferLength, out numBuffers);
         }
     }
     class WaveHeader

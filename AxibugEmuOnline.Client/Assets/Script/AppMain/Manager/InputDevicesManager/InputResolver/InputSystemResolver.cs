@@ -108,7 +108,8 @@ On-Screen Keyboard：这个是真正的屏幕软键盘。
 
         private void RemoveDevice(InputDevice ipdev)
         {
-            if (m_devices.TryGetValue(ipdev, out var device))
+            InputDevice_D device;
+            if (m_devices.TryGetValue(ipdev, out device))
             {
                 RemoveDeviceMapper(device);
                 RaiseDeviceLost(device);
@@ -118,7 +119,8 @@ On-Screen Keyboard：这个是真正的屏幕软键盘。
 
         private T GetInputSystemDevice<T>(InputDevice_D device) where T : InputDevice
         {
-            m_devices.TryGetKey(device, out var ipDev);
+            InputDevice ipDev;
+            m_devices.TryGetKey(device, out ipDev);
             return ipDev as T;
         }
 
@@ -132,7 +134,8 @@ On-Screen Keyboard：这个是真正的屏幕软键盘。
 
         protected override bool OnCheckOnline(InputDevice_D device)
         {
-            return m_devices.TryGetKey(device, out var _);
+            InputDevice val;
+            return m_devices.TryGetKey(device, out val);
         }
 
         private void IP_onDeviceChange(InputDevice device, InputDeviceChange changeType)
@@ -171,7 +174,8 @@ On-Screen Keyboard：这个是真正的屏幕软键盘。
         {
             var device_d = key.Device;
             var mapper = m_deviceMapper[device_d];
-            mapper.TryGetValue(key, out InputControl inputBtn);
+            InputControl inputBtn;
+            mapper.TryGetValue(key, out inputBtn);
             if (inputBtn != null)
                 return inputBtn;
             else

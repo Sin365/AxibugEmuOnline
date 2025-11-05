@@ -78,7 +78,8 @@ public abstract class FilterChainEffect : FilterEffect
             {
                 var existoutput = m_passOutputTexNames[index];
                 var existoutputSize = m_passOutputTexSizes[index];
-                if (m_outputCaches.TryGetValue(existoutput, out var passOutput))
+                RenderTexture passOutput;
+                if (m_outputCaches.TryGetValue(existoutput, out passOutput))
                 {
                     if (pass.Mat.HasTexture(existoutput))
                         pass.Mat.SetTexture(existoutput, passOutput);

@@ -14,7 +14,8 @@ public sealed class DatabaseHandler
     {
         {
             string wsc = "Bandai - WonderSwan Color.dat";
-            GetDatBytes(wsc, out byte[] loadedData);
+            byte[] loadedData;
+            GetDatBytes(wsc, out loadedData);
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream(loadedData))
             {
                 var root = new XmlRootAttribute("datafile") { IsNullable = true };
@@ -26,7 +27,8 @@ public sealed class DatabaseHandler
 
         {
             string ws = "Bandai - WonderSwan.dat";
-            GetDatBytes(ws, out byte[] loadedData);
+            byte[] loadedData;
+            GetDatBytes(ws, out loadedData);
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream(loadedData))
             {
                 var root = new XmlRootAttribute("datafile") { IsNullable = true };
