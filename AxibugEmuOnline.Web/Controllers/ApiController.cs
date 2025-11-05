@@ -129,6 +129,7 @@ namespace AxibugEmuOnline.Web.Controllers
                                 stars = reader.GetInt32(8),
                                 ptype = reader.GetInt32(9),
                             };
+                            Helper.CheckDefaultImg(data);
                             string parentsStr = !reader.IsDBNull(10) ? reader.GetString(10) : string.Empty;
                             if (!string.IsNullOrEmpty(parentsStr))
                             {
@@ -259,6 +260,7 @@ LIMIT ?offset, ?pageSize;";
                                 stars = reader.GetInt32(8),
                                 ptype = reader.GetInt32(9),
                             };
+                            Helper.CheckDefaultImg(data);
                             string parentsStr = !reader.IsDBNull(10) ? reader.GetString(10) : string.Empty;
                             if (!string.IsNullOrEmpty(parentsStr))
                             {
@@ -326,6 +328,7 @@ LIMIT ?offset, ?pageSize;";
                     }
                 }
             }
+            Helper.CheckDefaultImg(resp);
 
             if (UID > 0)
             {

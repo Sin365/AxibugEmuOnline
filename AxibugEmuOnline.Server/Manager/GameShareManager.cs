@@ -114,7 +114,7 @@ namespace AxibugEmuOnline.Server.Manager
             Protobuf_GameScreen_Img_Upload_RESP respData = new Protobuf_GameScreen_Img_Upload_RESP();
             CheckRomHadCover(msg.RomID, out bool bhadGame, out bool bHadCover, out string coverPath);
             ErrorCode errCode = ErrorCode.ErrorOk;
-            if (!bhadGame || bHadCover)
+            if (!bhadGame || (_c.UID > 1 && bHadCover))//UID == 1允许连续上传
             {
                 errCode = ErrorCode.ErrorRomAlreadyHadCoverimg;
             }
@@ -123,7 +123,7 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, coverPath));
                 byte[] ImgData = msg.SavImg.ToArray();
-                string imgpath = Path.Combine("UpCover", $"{_c.UID}_{msg.RomID}.jpg");
+                string imgpath = Path.Combine("UpCover", $"{_c.UID}_{msg.RomID}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.jpg");
 
                 ImgData = Helper.DecompressByteArray(ImgData);
 
