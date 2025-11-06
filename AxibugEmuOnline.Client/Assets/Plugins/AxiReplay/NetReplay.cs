@@ -55,7 +55,7 @@ namespace AxiReplay
             mRemoteForwardCount = (int)ServerForwardCount;
             mNetReplayQueue.Enqueue(inputData);
 #if UNITY_EDITOR
-            Debug.Log($"InData=>{inputData.FrameStartID} QCount = >{mNetReplayQueue.Count}");
+            //Debug.Log($"InData=>{inputData.FrameStartID} QCount = >{mNetReplayQueue.Count}");
 #endif
             mRemoteFrameIdx = inputData.FrameStartID;
             if (!bNetInit)

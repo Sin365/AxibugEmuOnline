@@ -8,6 +8,7 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppChat
     {
+        Protobuf_ChatMsg _Protobuf_ChatMsg = new Protobuf_ChatMsg();
         public AppChat()
         {
             NetMsg.Instance.RegNetMsgEvent<Protobuf_ChatMsg_RESP>((int)CommandID.CmdChatmsg, RecvChatMsg);
@@ -15,11 +16,8 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void SendChatMsg(string ChatMsg)
         {
-            Protobuf_ChatMsg msg = new Protobuf_ChatMsg()
-            {
-                ChatMsg = ChatMsg,
-            };
-            App.network.SendToServer((int)CommandID.CmdChatmsg, ProtoBufHelper.Serizlize(msg));
+            _Protobuf_ChatMsg.ChatMsg = ChatMsg;
+            App.network.SendToServer((int)CommandID.CmdChatmsg, _Protobuf_ChatMsg);
         }
 
         public void RecvChatMsg(Protobuf_ChatMsg_RESP msg)

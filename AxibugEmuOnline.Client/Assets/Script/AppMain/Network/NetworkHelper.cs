@@ -1,6 +1,8 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
+using Google.Protobuf;
 using HaoYueNet.ClientNetwork;
 using System;
 using System.Net.Sockets;
@@ -88,7 +90,6 @@ namespace AxibugEmuOnline.Client.Network
         /// <param name="data">业务数据</param>
         void GetDataCallBack(int CMDID, int ERRCODE, byte[] data)
         {
-            //NetworkDeBugLog("收到消息 CMDID =>" + CMDID + " ERRCODE =>" + ERRCODE + " 数据长度=>" + data.Length);
             try
             {
                 //抛出网络数据
@@ -163,6 +164,38 @@ namespace AxibugEmuOnline.Client.Network
             if (socket == null)
                 return false;
             return socket.Connected;
+        }
+
+        public void SendToServer(int CmdID, IMessage msg)
+        {
+
+            //SendToServer(CmdID, ProtoBufHelper.Serizlize(msg));
+            //return;
+
+            //            byte[] data2 = ProtoBufHelper.Serizlize(msg);
+            //            base.SendToServerWithLength(CmdID, ref data2, data2.Length);
+            //#if UNITY_EDITOR
+            //            if (CmdID > (int)CommandID.CmdPong)
+            //                NetworkDeBugLog("[NET]<color=cyan>" + CmdID + "|" + (CommandID)CmdID + "| alllen:" + data2.Length + " usedlength:" + data2 + "</color>");
+            //#endif
+            //            return;
+
+            ProtoBufHelper.RentSerizlizeData(msg, out byte[] data, out int usedlength);
+            base.SendToServerWithLength(CmdID, ref data, usedlength);
+#if UNITY_EDITOR
+            //if (CmdID > (int)CommandID.CmdPong)
+                //NetworkDeBugLog("[NET]<color=cyan>" + CmdID + "|" + (CommandID)CmdID + "| alllen:"+ data.Length + " usedlength:" + usedlength + "</color>");
+#endif
+            ProtoBufHelper.ReturnSerizlizeData(data);
+        }
+
+        public new void SendToServer(int CmdID, byte[] data)
+        {
+#if UNITY_EDITOR
+            //if(CmdID > (int)CommandID.CmdPong)
+                //NetworkDeBugLog("[NET]<color=cyan>" + CmdID + "|" + (CommandID)CmdID + "| length:" + data.Length + "</color>");
+#endif
+            base.SendToServer(CmdID, data);
         }
     }
 }

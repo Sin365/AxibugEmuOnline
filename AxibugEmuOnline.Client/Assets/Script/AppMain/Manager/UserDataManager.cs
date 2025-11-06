@@ -43,6 +43,10 @@ namespace AxibugEmuOnline.Client.Manager
         public string Token => userdata.IsLoggedIn ? userdata.Token : string.Empty;
         Dictionary<long, UserDataBase> DictUID2User = new Dictionary<long, UserDataBase>();
         public int OnlinePlayerCount => DictUID2User.Count;
+
+        static Protobuf_UserList _Protobuf_UserList = new Protobuf_UserList();
+        static Protobuf_Modify_NickName _Protobuf_Modify_NickName = new Protobuf_Modify_NickName();
+
         public void InitMainUserData(string UName, long UID, string token)
         {
             userdata.NickName = UName;
@@ -147,10 +151,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// </summary>
         public void Send_GetUserList()
         {
-            Protobuf_UserList msg = new Protobuf_UserList()
-            {
-            };
-            App.network.SendToServer((int)CommandID.CmdUserOnlinelist, ProtoBufHelper.Serizlize(msg));
+            App.network.SendToServer((int)CommandID.CmdUserOnlinelist, _Protobuf_UserList);
         }
 
         public void RecvUserOnlinelist(Protobuf_UserList_RESP msg)
@@ -179,18 +180,14 @@ namespace AxibugEmuOnline.Client.Manager
         {
             RemoveUser(msg.UID);
         }
-
         /// <summary>
         /// 发送修改昵称请求
         /// </summary>
         /// <param name="NickName"></param>
         public void Send_ModifyNickName(string NickName)
         {
-            Protobuf_Modify_NickName msg = new Protobuf_Modify_NickName()
-            {
-                NickName = NickName
-            };
-            App.network.SendToServer((int)CommandID.CmdModifyNickName, ProtoBufHelper.Serizlize(msg));
+            _Protobuf_Modify_NickName.NickName = NickName;
+            App.network.SendToServer((int)CommandID.CmdModifyNickName, _Protobuf_Modify_NickName);
         }
 
         void RecvModifyNickName(Protobuf_Modify_NickName_RESP msg)
@@ -212,6 +209,5 @@ namespace AxibugEmuOnline.Client.Manager
             App.roomMgr.ChangeCurrRoomPlayerName(msg.UID);
             Eventer.Instance.PostEvent(EEvent.OnOtherUserInfoUpdate, msg.UID);
         }
-
     }
 }

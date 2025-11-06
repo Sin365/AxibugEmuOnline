@@ -3,7 +3,6 @@ using AxibugProtobuf;
 using Google.Protobuf;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using AxibugEmuOnline.Client.Common;
 
 namespace AxibugEmuOnline.Client.Network
@@ -189,6 +188,10 @@ namespace AxibugEmuOnline.Client.Network
                 App.log.Error("错误:" + errMsg);
             }
 
+#if UNITY_EDITOR
+            //if (cmd > (int)CommandID.CmdPong)
+                //App.log.Info("[NET]<color=yellow>" + cmd + "|" + (CommandID)cmd + "| ERRCODE:" + ERRCODE + "| length:" + arg.Length + "</color>");
+#endif
             if (err > ErrorCode.ErrorOk)
                 return;
 

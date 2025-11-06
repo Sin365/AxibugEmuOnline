@@ -18,6 +18,10 @@ namespace AxibugEmuOnline.Client
         public delegate void OnUploadedSavDataHandle(int romID, int slotIndex, Protobuf_Mine_GameSavInfo savInfo);
         public event OnUploadedSavDataHandle OnUploadedSavData;
 
+        static Protobuf_Mine_DelGameSav _Protobuf_Mine_DelGameSav = new Protobuf_Mine_DelGameSav();
+        static Protobuf_Mine_UpLoadGameSav _Protobuf_Mine_UpLoadGameSav = new Protobuf_Mine_UpLoadGameSav();
+        static Protobuf_Mine_GetGameSavList _Protobuf_Mine_GetGameSavList = new Protobuf_Mine_GetGameSavList();
+
         public SavCloudApi()
         {
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Mine_GetGameSavList_RESP>((int)CommandID.CmdGamesavGetGameSavList, RecvGetGameSavList);
@@ -33,13 +37,9 @@ namespace AxibugEmuOnline.Client
         public void SendGetGameSavList(int RomID)
         {
             if (m_fetchingRomIDs.Contains(RomID)) return;
-
-            Protobuf_Mine_GetGameSavList req = new Protobuf_Mine_GetGameSavList()
-            {
-                RomID = RomID,
-            };
+            _Protobuf_Mine_GetGameSavList.RomID = RomID;
             App.log.Info($"SendGetGameSavList");
-            App.network.SendToServer((int)CommandID.CmdGamesavGetGameSavList, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGamesavGetGameSavList, _Protobuf_Mine_GetGameSavList);
         }
 
         void RecvGetGameSavList(Protobuf_Mine_GetGameSavList_RESP msg)
@@ -62,13 +62,10 @@ namespace AxibugEmuOnline.Client
         /// <param name="SavDataIdx"></param>
         public void SendDelGameSavList(int RomID, int SavDataIdx)
         {
-            Protobuf_Mine_DelGameSav req = new Protobuf_Mine_DelGameSav()
-            {
-                RomID = RomID,
-                SavDataIdx = SavDataIdx
-            };
+            _Protobuf_Mine_DelGameSav.RomID = RomID;
+            _Protobuf_Mine_DelGameSav.SavDataIdx = SavDataIdx;
             App.log.Info($"SendDelGameSavList");
-            App.network.SendToServer((int)CommandID.CmdGamesavDelGameSav, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGamesavDelGameSav, _Protobuf_Mine_DelGameSav);
         }
 
         void RecvDelGameSavList(Protobuf_Mine_DelGameSav_RESP msg)
@@ -89,20 +86,18 @@ namespace AxibugEmuOnline.Client
             //压缩
             byte[] compressImgData = Helper.CompressByteArray(SavImgData);
 
-            Protobuf_Mine_UpLoadGameSav req = new Protobuf_Mine_UpLoadGameSav()
-            {
-                RomID = RomID,
-                SavDataIdx = SavDataIdx,
-                StateRaw = Google.Protobuf.ByteString.CopyFrom(compressRawData),
-                SavImg = Google.Protobuf.ByteString.CopyFrom(compressImgData),
-                Sequence = (int)sequence
-            };
+            _Protobuf_Mine_UpLoadGameSav.RomID = RomID;
+            _Protobuf_Mine_UpLoadGameSav.SavDataIdx = SavDataIdx;
+            _Protobuf_Mine_UpLoadGameSav.StateRaw = Google.Protobuf.ByteString.CopyFrom(compressRawData);
+            _Protobuf_Mine_UpLoadGameSav.SavImg = Google.Protobuf.ByteString.CopyFrom(compressImgData);
+            _Protobuf_Mine_UpLoadGameSav.Sequence = (int)sequence;
 
             App.log.Info($"SendDelGameSavList");
             App.log.Info($"上传即时存档数据 原数据大小:{RawData.Length},压缩后;{compressRawData.Length}");
             App.log.Info($"上传截图 原数据大小:{SavImgData.Length},压缩后;{compressImgData.Length}");
 
-            App.network.SendToServer((int)CommandID.CmdGamesavUploadGameSav, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGamesavUploadGameSav, _Protobuf_Mine_UpLoadGameSav);
+            _Protobuf_Mine_UpLoadGameSav.Reset();
         }
 
         void RecvUpLoadGameSav(Protobuf_Mine_UpLoadGameSav_RESP msg)

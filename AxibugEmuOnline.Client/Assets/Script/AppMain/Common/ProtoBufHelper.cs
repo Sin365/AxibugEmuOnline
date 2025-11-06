@@ -1,5 +1,6 @@
 ﻿using AxibugEmuOnline.Client.Network;
 using Google.Protobuf;
+using HaoYueNet.ClientNetwork;
 using System;
 
 namespace AxibugEmuOnline.Client.Common
@@ -7,6 +8,18 @@ namespace AxibugEmuOnline.Client.Common
     public static class ProtoBufHelper
     {
         private static ProtobufferMsgPool _msgPool = new ProtobufferMsgPool();
+
+        public static void RentSerizlizeData(IMessage msg, out byte[] data, out int usedlength)
+        {
+            usedlength = msg.CalculateSize();
+            data = BytesArrayPool.RentBuffer(usedlength);
+            msg.WriteTo(data.AsSpan(0, usedlength));
+        }
+        public static void ReturnSerizlizeData(byte[] data)
+        {
+            BytesArrayPool.ReturnBuffer(data);
+        }
+
         public static byte[] Serizlize(IMessage msg)
         {
             return msg.ToByteArray();

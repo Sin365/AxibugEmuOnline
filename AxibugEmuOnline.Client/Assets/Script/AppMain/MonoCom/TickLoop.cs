@@ -24,6 +24,9 @@ namespace AxibugEmuOnline.Client
         public double MaxNetDelay;
         public List<double> NetDelays = new List<double>();
         public const int NetAveDelayCount = 3;
+
+        static Protobuf_Ping _Protobuf_Ping = new Protobuf_Ping();
+        static Protobuf_Pong _Protobuf_Pong = new Protobuf_Pong();
         private void Awake()
         {
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Ping>((int)CommandID.CmdPing, OnCmdPing);
@@ -89,22 +92,14 @@ namespace AxibugEmuOnline.Client
             int randSeed = new System.Random().Next(0, int.MaxValue);
             LastPingSeed = randSeed;
             LastStartPingTime = App.tick.sw.Elapsed;
-            Protobuf_Ping resp = new Protobuf_Ping()
-            {
-                Seed = randSeed,
-            };
-            App.network.SendToServer((int)CommandID.CmdPing, ProtoBufHelper.Serizlize(resp));
+            _Protobuf_Ping.Seed = randSeed;
+            App.network.SendToServer((int)CommandID.CmdPing, _Protobuf_Ping);
         }
-
-
         public void OnCmdPing(Protobuf_Ping msg)
         {
             //App.log.Debug($"OnCmdPing");
-            Protobuf_Pong resp = new Protobuf_Pong()
-            {
-                Seed = msg.Seed,
-            };
-            App.network.SendToServer((int)CommandID.CmdPong, ProtoBufHelper.Serizlize(resp));
+            _Protobuf_Pong.Seed = msg.Seed;
+            App.network.SendToServer((int)CommandID.CmdPong, _Protobuf_Pong);
         }
 
         public void OnCmdPong(Protobuf_Pong msg)

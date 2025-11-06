@@ -76,7 +76,7 @@ namespace AxibugEmuOnline.Client
             if (IsNetPlay) //skip frame handle
             {
                 var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-                if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
+                //if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
                 for (var i = 0; i < skipFrameCount; i++)
                 {
                     if (!TryPushEmulatorFrame()) break;

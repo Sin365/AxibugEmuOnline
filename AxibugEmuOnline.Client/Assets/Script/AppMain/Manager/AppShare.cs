@@ -9,6 +9,8 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppShare
     {
+        static Protobuf_Game_Mark _Protobuf_Game_Mark = new Protobuf_Game_Mark();
+        static Protobuf_GameScreen_Img_Upload _Protobuf_GameScreen_Img_Upload = new Protobuf_GameScreen_Img_Upload();
         public AppShare()
         {
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Game_Mark_RESP>((int)CommandID.CmdGameMark, RecvGameStar);
@@ -22,13 +24,10 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="Motion">[0]取消收藏[1]收藏</param>
         public void SendGameStar(int RomID, int Motion)
         {
-            Protobuf_Game_Mark req = new Protobuf_Game_Mark()
-            {
-                Motion = Motion,
-                RomID = RomID,
-            };
+            _Protobuf_Game_Mark.Motion = Motion;
+            _Protobuf_Game_Mark.RomID = RomID;
             App.log.Info($"SendGameStar");
-            App.network.SendToServer((int)CommandID.CmdGameMark, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGameMark, _Protobuf_Game_Mark);
         }
 
         /// <summary>
@@ -50,16 +49,14 @@ namespace AxibugEmuOnline.Client.Manager
             //压缩
             byte[] compressImgData = Helper.CompressByteArray(SavImgData);
 
-            Protobuf_GameScreen_Img_Upload req = new Protobuf_GameScreen_Img_Upload()
-            {
-                RomID = RomID,
-                SavImg = Google.Protobuf.ByteString.CopyFrom(compressImgData),
-            };
+            _Protobuf_GameScreen_Img_Upload.RomID = RomID;
+            _Protobuf_GameScreen_Img_Upload.SavImg = Google.Protobuf.ByteString.CopyFrom(compressImgData);
 
             App.log.Info($"SendUpLoadGameScreenCover");
             App.log.Info($"上传截图 原数据大小:{SavImgData.Length},压缩后;{compressImgData.Length}");
 
-            App.network.SendToServer((int)CommandID.CmdGamescreenImgUpload, ProtoBufHelper.Serizlize(req));
+            App.network.SendToServer((int)CommandID.CmdGamescreenImgUpload, _Protobuf_GameScreen_Img_Upload);
+            _Protobuf_GameScreen_Img_Upload.Reset();
         }
 
         private void RecvGamescreenImgUpload(Protobuf_GameScreen_Img_Upload_RESP msg)
