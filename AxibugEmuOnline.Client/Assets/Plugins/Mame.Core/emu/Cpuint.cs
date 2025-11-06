@@ -78,6 +78,12 @@ namespace MAME.Core
             vector = _vector;
             time = _time;
         }
+        public vec setdata(int _vector, Atime _time)
+        {
+            vector = _vector;
+            time = _time;
+            return this;
+        }
     }
     public class Cpuint
     {
@@ -88,11 +94,29 @@ namespace MAME.Core
         //public static int[, ,] input_state;
         public static List<irq> lirq;
         public static List<vec> lvec;
+
+        static void lvec_reinit()
+        {
+            if (lvec == null)
+            {
+                lvec = ObjectPoolAuto.AcquireList<vec>();
+            }
+            else
+            {
+                for (int i = lvec.Count - 1; i >= 0; i--)
+                {
+                    ObjectPoolAuto.Release(lvec[i]);
+                }
+                lvec.Clear();
+            }
+        }
+
         public static void cpuint_init()
         {
             int i, j;
             lirq = new List<irq>();
-            lvec = new List<vec>();
+            //lvec = new List<vec>();
+            lvec_reinit();
             interrupt_vector = new int[8, 35];
             input_line_state = new byte[8, 35];
             input_line_vector = new int[8, 35];
@@ -112,7 +136,8 @@ namespace MAME.Core
         {
             int i, j;
             lirq = new List<irq>();
-            lvec = new List<vec>();
+            //lvec = new List<vec>();
+            lvec_reinit();
             for (i = 0; i < 8; i++)
             {
                 for (j = 0; j < 35; j++)
@@ -282,10 +307,12 @@ namespace MAME.Core
         {
             int i, n;
             n = reader.ReadInt32();
-            lvec = new List<vec>();
+            //lvec = new List<vec>();
+            lvec_reinit();
             for (i = 0; i < n; i++)
             {
-                lvec.Add(new vec());
+                //lvec.Add(new vec());
+                lvec.Add(ObjectPoolAuto.Acquire<vec>());
                 lvec[i].vector = reader.ReadInt32();
                 lvec[i].time.seconds = reader.ReadInt32();
                 lvec[i].time.attoseconds = reader.ReadInt64();

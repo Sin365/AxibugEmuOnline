@@ -468,7 +468,8 @@ namespace MAME.Core
         }
         public static void setvector_callback()
         {
-            List<vec> lsvec = new List<vec>();
+            List<vec> lsvec = ObjectPoolAuto.AcquireList<vec>();
+            //List<vec> lsvec = new List<vec>();
             foreach (vec v1 in Cpuint.lvec)
             {
                 if (Attotime.attotime_compare(v1.time, EmuTimer.global_basetime) < 0)
@@ -485,7 +486,10 @@ namespace MAME.Core
             foreach (vec v1 in lsvec)
             {
                 Cpuint.lvec.Remove(v1);
+                ObjectPoolAuto.Release(v1);
             }
+
+            ObjectPoolAuto.Release(lsvec);
             switch (setvector_param)
             {
                 case 0:
@@ -523,7 +527,8 @@ namespace MAME.Core
         }
         public static void m92_soundlatch_w(ushort data)
         {
-            Cpuint.lvec.Add(new vec(3, EmuTimer.get_current_time()));
+            //Cpuint.lvec.Add(new vec(3, EmuTimer.get_current_time()));
+            Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(3, EmuTimer.get_current_time()));
             setvector_param = 3;
             EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
             EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
@@ -539,7 +544,8 @@ namespace MAME.Core
         }
         public static void m92_sound_irq_ack_w()
         {
-            Cpuint.lvec.Add(new vec(4, EmuTimer.get_current_time()));
+            //Cpuint.lvec.Add(new vec(4, EmuTimer.get_current_time()));
+            Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(4, EmuTimer.get_current_time()));
             setvector_param = 4;
             EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
             EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
@@ -553,14 +559,16 @@ namespace MAME.Core
         {
             if (state != 0)
             {
-                Cpuint.lvec.Add(new vec(1, EmuTimer.get_current_time()));
+                //Cpuint.lvec.Add(new vec(1, EmuTimer.get_current_time()));
+                Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(1, EmuTimer.get_current_time()));
                 setvector_param = 1;
                 EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             }
             else
             {
-                Cpuint.lvec.Add(new vec(2, EmuTimer.get_current_time()));
+                //Cpuint.lvec.Add(new vec(2, EmuTimer.get_current_time()));
+                Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(2, EmuTimer.get_current_time()));
                 setvector_param = 2;
                 EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
