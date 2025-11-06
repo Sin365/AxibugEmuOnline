@@ -22,7 +22,7 @@ namespace [NAMESPACE]
     }
 }
 ";
-    [MenuItem("项目工具/生成Protobuff Reset代码文件")]
+    [MenuItem("Axibug移植工具/生成Protobuff Reset代码文件")]
     public static void GenResetCode()
     {
         StringBuilder sb = new StringBuilder();
