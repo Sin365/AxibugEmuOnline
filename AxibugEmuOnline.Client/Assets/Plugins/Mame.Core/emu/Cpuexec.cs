@@ -2244,12 +2244,15 @@ namespace MAME.Core
                 case "CPS-1(QSound)":
                 case "CPS2":
                     timedint_period = new Atime(0, (long)(1e18 / 250));
-                    timedint_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Generic_irq_1_0_line_hold, false);
+                    //timedint_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Generic_irq_1_0_line_hold, false);
+                    EmuTimer.timer_alloc_common(ref timedint_timer, EmuTimer.TIME_ACT.Generic_irq_1_0_line_hold, false);
                     EmuTimer.timer_adjust_periodic(timedint_timer, timedint_period, timedint_period);
                     break;
                 case "Neo Geo":
-                    interleave_boost_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_null_callback, false);
-                    interleave_boost_timer_end = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_end_interleave_boost, false);
+                    //interleave_boost_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_null_callback, false);
+                    EmuTimer.timer_alloc_common(ref interleave_boost_timer, EmuTimer.TIME_ACT.Cpuexec_null_callback, false);
+                    //interleave_boost_timer_end = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_end_interleave_boost, false);
+                    EmuTimer.timer_alloc_common(ref interleave_boost_timer_end, EmuTimer.TIME_ACT.Cpuexec_end_interleave_boost, false);
                     break;
                 case "CPS1":
                 case "Namco System 1":
@@ -2295,7 +2298,7 @@ namespace MAME.Core
                         case "bublcave11":
                         case "bublcave10":
                             timeslice_period = new Atime(0, Video.screenstate.frame_period / 100);
-                            timeslice_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_cpu_timeslicecallback, false);
+                            EmuTimer.timer_alloc_common(ref timeslice_timer, EmuTimer.TIME_ACT.Cpuexec_cpu_timeslicecallback, false);
                             EmuTimer.timer_adjust_periodic(timeslice_timer, timeslice_period, timeslice_period);
                             break;
                         case "opwolf":
@@ -2305,14 +2308,14 @@ namespace MAME.Core
                         case "opwolfb":
                         case "opwolfp":
                             timeslice_period = new Atime(0, Video.screenstate.frame_period / 10);
-                            timeslice_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_cpu_timeslicecallback, false);
+                            EmuTimer.timer_alloc_common(ref timeslice_timer, EmuTimer.TIME_ACT.Cpuexec_cpu_timeslicecallback, false);
                             EmuTimer.timer_adjust_periodic(timeslice_timer, timeslice_period, timeslice_period);
                             break;
                     }
                     break;
                 case "Taito B":
                     timeslice_period = new Atime(0, Video.screenstate.frame_period / 10);
-                    timeslice_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Cpuexec_cpu_timeslicecallback, false);
+                    EmuTimer.timer_alloc_common(ref timeslice_timer, EmuTimer.TIME_ACT.Cpuexec_cpu_timeslicecallback, false);
                     EmuTimer.timer_adjust_periodic(timeslice_timer, timeslice_period, timeslice_period);
                     break;
                 case "Capcom":
@@ -2338,7 +2341,7 @@ namespace MAME.Core
                         case "sfan":
                         case "sfp":
                             timedint_period = new Atime(0, (long)(1e18 / 8000));
-                            timedint_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Generic_irq_2_0_line_hold, false);
+                            EmuTimer.timer_alloc_common(ref timedint_timer, EmuTimer.TIME_ACT.Generic_irq_2_0_line_hold, false);
                             EmuTimer.timer_adjust_periodic(timedint_timer, timedint_period, timedint_period);
                             break;
                     }

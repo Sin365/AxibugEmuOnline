@@ -74,7 +74,8 @@ namespace MAME.Core
                     latched_value = new ushort[2];
                     utempdata = new ushort[2];
                     sound_update = sound_updateC;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    //sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM2151.ym2151_init(3579545);
                     OKI6295.okim6295_start();
                     ym2151stream = new sound_stream(55930, 0, 2, YM2151.ym2151_update_one);
@@ -84,7 +85,8 @@ namespace MAME.Core
                 case "CPS-1(QSound)":
                 case "CPS2":
                     sound_update = sound_updateQ;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    //sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     QSound.qsound_start();
                     qsoundstream = new sound_stream(4000000 / 166, 0, 2, QSound.qsound_update);
                     mixerstream = new sound_stream(48000, 2, 0, null);
@@ -93,7 +95,8 @@ namespace MAME.Core
                     latched_value = new ushort[1];
                     utempdata = new ushort[1];
                     sound_update = sound_updateDataeast_pcktgal;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    //sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM2203.ym2203_start(0, 1500000);
                     YM3812.ym3812_start(3000000);
                     MSM5205.msm5205_start(0, 384000, Dataeast.pcktgal_adpcm_int, 5);
@@ -104,7 +107,8 @@ namespace MAME.Core
                     latched_value = new ushort[1];
                     utempdata = new ushort[1];
                     sound_update = sound_updateTehkan_pbaction;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    //sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     AY8910.ay8910_interface generic_ay8910 = new AY8910.ay8910_interface();
                     generic_ay8910.flags = 1;
                     generic_ay8910.res_load = new int[3] { 1000, 1000, 1000 };
@@ -121,7 +125,7 @@ namespace MAME.Core
                     latched_value = new ushort[2];
                     utempdata = new ushort[2];
                     sound_update = sound_updateN;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM2610.ym2610_start(8000000);
                     ym2610stream = new sound_stream(111111, 0, 2, YM2610.F2610.ym2610_update_one);
                     mixerstream = new sound_stream(48000, 3, 0, null);
@@ -130,7 +134,7 @@ namespace MAME.Core
                     latched_value = new ushort[2];
                     utempdata = new ushort[2];
                     sound_update = sound_updateSunA8;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM3812.ym3812_start(4000000);
                     AY8910.ay8910_interface starfigh_ay8910_interface = new AY8910.ay8910_interface();
                     starfigh_ay8910_interface.flags = 1;
@@ -147,7 +151,7 @@ namespace MAME.Core
                     break;
                 case "Namco System 1":
                     sound_update = sound_updateNa;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM2151.ym2151_init(3579580);
                     Namco.namco_start();
                     DAC.dac_start();
@@ -168,7 +172,7 @@ namespace MAME.Core
                         case "drgnwrldv11h":
                         case "drgnwrldv40k":
                             sound_update = sound_updateIGS011_drgnwrld;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             OKI6295.okim6295_start();
                             YM3812.ym3812_start(3579545);
                             okistream = new sound_stream(1047600 / 132, 0, 1, OKI6295.okim6295_update);
@@ -182,7 +186,7 @@ namespace MAME.Core
                         case "xymg":
                         case "wlcc":
                             sound_update = sound_updateIGS011_lhb;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             OKI6295.okim6295_start();
                             okistream = new sound_stream(1047600 / 132, 0, 1, OKI6295.okim6295_update);
                             mixerstream = new sound_stream(48000, 1, 0, null);
@@ -190,7 +194,7 @@ namespace MAME.Core
                         case "lhb2":
                         case "nkishusp":
                             sound_update = sound_updateIGS011_lhb2;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             OKI6295.okim6295_start();
                             YM2413.ym2413_start(3579545);
                             okistream = new sound_stream(1047600 / 132, 0, 1, OKI6295.okim6295_update);
@@ -200,7 +204,7 @@ namespace MAME.Core
                         case "vbowl":
                         case "vbowlj":
                             sound_update = sound_updateIGS011_vbowl;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             ICS2115.ics2115_start();
                             ics2115stream = new sound_stream(33075, 0, 2, ICS2115.ics2115_update);
                             mixerstream = new sound_stream(48000, 2, 0, null);
@@ -211,7 +215,7 @@ namespace MAME.Core
                     latched_value = new ushort[3];
                     utempdata = new ushort[3];
                     sound_update = sound_updatePGM;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     ICS2115.ics2115_start();
                     ics2115stream = new sound_stream(33075, 0, 2, ICS2115.ics2115_update);
                     mixerstream = new sound_stream(48000, 2, 0, null);
@@ -220,7 +224,7 @@ namespace MAME.Core
                     latched_value = new ushort[1];
                     utempdata = new ushort[1];
                     sound_update = sound_updateM72;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM2151.ym2151_init(3579545);
                     DAC.dac_start();
                     ym2151stream = new sound_stream(55930, 0, 2, YM2151.ym2151_update_one);
@@ -231,7 +235,7 @@ namespace MAME.Core
                     latched_value = new ushort[1];
                     utempdata = new ushort[1];
                     sound_update = sound_updateM92;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     YM2151.ym2151_init(3579545);
                     Iremga20.iremga20_start();
                     ym2151stream = new sound_stream(55930, 0, 2, YM2151.ym2151_update_one);
@@ -248,7 +252,7 @@ namespace MAME.Core
                             latched_value = new ushort[2];
                             utempdata = new ushort[2];
                             sound_update = sound_updateTaito_tokio;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             YM2203.ym2203_start(0, 3000000);
                             mixerstream = new sound_stream(48000, 4, 0, null);
                             break;
@@ -273,7 +277,7 @@ namespace MAME.Core
                             latched_value = new ushort[2];
                             utempdata = new ushort[2];
                             sound_update = sound_updateTaito_bublbobl;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             YM2203.ym2203_start(0, 3000000);
                             YM3812.ym3526_start(3000000);
                             ym3526stream = new sound_stream(41666, 0, 1, FMOpl.ym3526_update_one);
@@ -288,7 +292,7 @@ namespace MAME.Core
                             latched_value = new ushort[1];
                             utempdata = new ushort[1];
                             sound_update = sound_updateTaito_opwolf;
-                            sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                            EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                             YM2151.ym2151_init(4000000);
                             ym2151stream = new sound_stream(62500, 0, 2, YM2151.ym2151_update_one);
                             MSM5205.msm5205_start(0, 384000, Taito.opwolf_msm5205_vck, 5);
@@ -315,7 +319,7 @@ namespace MAME.Core
                     AY8910.AA8910[0].stream.gain = 0x100;
                     ym2610stream.gain = 0x100;
                     sound_update = sound_updateTaitoB;
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     mixerstream = new sound_stream(48000, 3, 0, null);
                     break;
                 case "Konami 68000":
@@ -441,7 +445,7 @@ namespace MAME.Core
                             mixerstream = new sound_stream(48000, 2, 0, null);
                             break;
                     }
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     break;
                 case "Capcom":
                     latched_value = new ushort[1];
@@ -480,7 +484,8 @@ namespace MAME.Core
                             mixerstream = new sound_stream(48000, 4, 0, null);
                             break;
                     }
-                    sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    //sound_update_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Sound_sound_update, false);
+                    EmuTimer.timer_alloc_common(ref sound_update_timer, EmuTimer.TIME_ACT.Sound_sound_update, false);
                     break;
             }
             EmuTimer.timer_adjust_periodic(sound_update_timer, update_frequency, update_frequency);

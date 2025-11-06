@@ -981,7 +981,7 @@ namespace MAME.Core
             if (cchip_ram[0x7a] == 0 && cchip_last_7a != 0 && current_cmd != 0xf5)
             {
                 current_cmd = 0xf5;
-                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Taito_opwolf_timer_callback, true);
+                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.Taito_opwolf_timer_callback, true);
                 EmuTimer.timer_adjust_periodic(timer, new Atime(0, (long)(80000 * Cpuexec.cpu[0].attoseconds_per_cycle)), Attotime.ATTOTIME_NEVER);
             }
             cchip_last_7a = cchip_ram[0x7a];

@@ -328,13 +328,36 @@ namespace MAME.Core
                     return 0;
             }
         }
+
+        static void ReInit_timer()
+        {
+            if (timer != null)
+            {
+                if (timer[0].timer != null) EmuTimer.emu_timer.SetNull(ref timer[0].timer);
+                if (timer[1].timer != null) EmuTimer.emu_timer.SetNull(ref timer[1].timer);
+                timer[0].scale = default;
+                timer[0].preset = default;
+                timer[0].period = default;
+                timer[1].scale = default;
+                timer[1].preset = default;
+                timer[1].period = default;
+            }
+            else
+            {
+                timer = new timer_struct[2];
+            }
+        }
+
         public static void ics2115_start()
         {
             int i;
             voice2 = new voice_struct[32];
-            timer = new timer_struct[2];
-            timer[0].timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.ICS2115_timer_cb_0, false);
-            timer[1].timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.ICS2115_timer_cb_1, false);
+            //timer = new timer_struct[2];
+            ReInit_timer();
+            //timer[0].timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.ICS2115_timer_cb_0, false);
+            EmuTimer.timer_alloc_common(ref timer[0].timer,EmuTimer.TIME_ACT.ICS2115_timer_cb_0, false);
+            //timer[1].timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.ICS2115_timer_cb_1, false);
+            EmuTimer.timer_alloc_common(ref timer[1].timer,EmuTimer.TIME_ACT.ICS2115_timer_cb_1, false);
             ulaw = new short[256];
             for (i = 0; i < 256; i++)
             {
