@@ -125,18 +125,19 @@ namespace MAME.Core
                 period = default;
                 start = default;
                 expire = default;
-                _refCount = 1;
+                _refCount = 0;
             }
 
-            static HashSet<emu_timer> _readyToRelease = new HashSet<emu_timer>();
+            static Queue<emu_timer> _readyToRelease = new Queue<emu_timer>();
             /// <summary>
             /// 线程安全队列（因为析构函数是额外线程来的）
             /// </summary>
-            static ConcurrentQueue<emu_timer> _failedDeletions = new ConcurrentQueue<emu_timer>();
+            static Queue<emu_timer> _failedDeletions = new Queue<emu_timer>();
+            static HashSet<emu_timer> _tempCheck = new HashSet<emu_timer>();
 
             static int outTimerAllCount = 0;
             static int newTimerCount = 0;
-            public static emu_timer GetEmu_timer()
+            public static emu_timer GetEmu_timerNoRef()
             {
                 emu_timer obj;
                 if (!_failedDeletions.TryDequeue(out obj))
@@ -144,38 +145,36 @@ namespace MAME.Core
                     obj = new emu_timer();
                     newTimerCount++;
                 }
+                //这里引用计数为0，直接放入带Ready里，等待下一帧检测
                 obj.reset();
+                _readyToRelease.Enqueue(obj);
                 outTimerAllCount++;
                 return obj;
             }
-            /// <summary>
-            /// 释放创建的引用，这个要和GetEmu_timer成对
-            /// </summary>
-            /// <returns></returns>
-            public static void ReleaseCreateRef(emu_timer obj)
-            {
-                obj.ReleaseRef();
-            }
 
-            public static void CheckReadyRelaseAfterRun()
+            public static void CheckReadyRelaseBeforeFrameRun()
             {
                 if (_readyToRelease.Count < 1)
                     return;
-
+                int checkcount = _readyToRelease.Count;
                 int beforpoolcount = _failedDeletions.Count;
                 int releaseCount = 0;
-                foreach (var ready in _readyToRelease)
+                while(_readyToRelease.TryDequeue(out emu_timer ready))
                 {
+                    if (_tempCheck.Contains(ready))
+                        continue;
+                    _tempCheck.Add(ready);
                     if (ready._refCount <= 0)
                     {
                         ready.ReturnToPool();
                         releaseCount++;
                     }
                 }
-                //UnityEngine.Debug.Log($"CheckReadyRelaseAfterRun 出池数量{outTimerAllCount}，其中new创建的数量{newTimerCount} 回收数量{releaseCount} ,处理前池数量{beforpoolcount}，处理后池数量{_failedDeletions.Count}");
+                //UnityEngine.Debug.Log($"CheckReadyRelaseAfterRun 检查数量{checkcount}| 出池数量{outTimerAllCount}，其中new创建的数量{newTimerCount} 回收数量{releaseCount} ,处理前池数量{beforpoolcount}，处理后池数量{_failedDeletions.Count}");
                 outTimerAllCount = 0;
                 newTimerCount = 0;
                 _readyToRelease.Clear();
+                _tempCheck.Clear();
             }
 
             // 引用计数字段（线程安全）
@@ -188,15 +187,16 @@ namespace MAME.Core
             {
                 int newCount = Interlocked.Increment(ref _refCount);
 
-                //引用计数重新回到1时，移除。
-                //但是还是不在这里做把注释了，在每一帧开始之前统一检测
+                ////引用计数重新回到1时，移除。
+                ////但是还是不在这里做把注释了，在每一帧开始之前统一检测
                 //if (newCount == 1)
                 //{
-                //    if (_readyToRelease.Contains(this))
-                //    {
-                //        //UnityEngine.Debug.Log("移除ReadyToRelease");
-                //        _readyToRelease.Remove(this);
-                //    }
+                //    UnityEngine.Debug.Log("CheckReadyRelaseAfterRun AddRef 复活");
+                //    //if (_readyToRelease.Contains(this))
+                //    //{
+                //    //    //UnityEngine.Debug.Log("移除ReadyToRelease");
+                //    //    _readyToRelease.Remove(this);
+                //    //}
                 //}
             }
 
@@ -208,6 +208,7 @@ namespace MAME.Core
                 int newCount = Interlocked.Decrement(ref _refCount);
                 if (newCount == 0)
                 {
+                    //UnityEngine.Debug.Log("CheckReadyRelaseAfterRun ReleaseRef 预回收");
                     // 引用计数为0，释放资源并回池
                     ReadyToRelease();
                 }
@@ -221,8 +222,7 @@ namespace MAME.Core
             void ReadyToRelease()
             {
                 //UnityEngine.Debug.Log("ReadyToRelease");
-                if(!_readyToRelease.Contains(this))
-                    _readyToRelease.Add(this);
+                _readyToRelease.Enqueue(this);
             }
 
             /// <summary>
@@ -230,7 +230,6 @@ namespace MAME.Core
             /// </summary>
             void ReturnToPool()
             {
-                reset();
                 _failedDeletions.Enqueue(this);
             }
 
@@ -699,14 +698,14 @@ namespace MAME.Core
             }
             return global_basetime;
         }
-        public static void timer_remove(emu_timer timer1)
+        /*public static void timer_remove(emu_timer timer1)
         {
             if (timer1 == callback_timer)
             {
                 callback_timer_modified = true;
             }
             timer_list_remove(timer1);
-        }
+        }*/
         public static void timer_adjust_periodic(emu_timer which, Atime start_delay, Atime period)
         {
             Atime time = get_current_time();
@@ -722,8 +721,11 @@ namespace MAME.Core
             which.start = time;
             which.expire = Attotime.attotime_add(time, start_delay);
             which.period = period;
-            timer_list_remove(which);
-            timer_list_insert(which);
+
+            timer_list_remove_and_insert(which);
+            //timer_list_remove(which);
+            //timer_list_insert(which);
+
             //if (lt.IndexOf(which) == 0)
             if (lt[0] == which)
             {
@@ -745,7 +747,20 @@ namespace MAME.Core
             emu_timer timer = timer_alloc_common_NoRef(action, true);
             timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
         }
-        public static void timer_list_insert(emu_timer timer1)
+
+        static void timer_list_remove_and_insert(emu_timer timer)
+        {
+            //包一层引用避免引用计数中间丢失，进等待检测队列（减少这样的情况）
+            {
+                emu_timer tempref = null;
+                emu_timer.SetRefUsed(ref tempref, ref timer);
+                timer_list_remove(timer);
+                timer_list_insert(timer);
+                emu_timer.SetNull(ref tempref);
+            }
+        }
+
+        static void timer_list_insert(emu_timer timer1)
         {
             int i;
             int i1 = -1;
@@ -885,8 +900,10 @@ namespace MAME.Core
                     {
                         timer.start = timer.expire;
                         timer.expire = Attotime.attotime_add(timer.expire, timer.period);
-                        timer_list_remove(timer);
-                        timer_list_insert(timer);
+
+                        timer_list_remove_and_insert(timer);
+                        //timer_list_remove(timer);
+                        //timer_list_insert(timer);
                     }
                 }
             }
@@ -939,7 +956,7 @@ namespace MAME.Core
         {
             Atime time = get_current_time();
             //创建一个timer
-            emu_timer timer = emu_timer.GetEmu_timer();
+            emu_timer timer = emu_timer.GetEmu_timerNoRef();
             timer.action = action;
             timer.enabled = false;
             timer.temporary = temp;
@@ -948,8 +965,6 @@ namespace MAME.Core
             timer.start = time;
             timer.expire = Attotime.ATTOTIME_NEVER;
             timer_list_insert(timer);
-            //断开创建的引用计数
-            emu_timer.ReleaseCreateRef(timer);
             return timer;
         }
 
@@ -958,8 +973,11 @@ namespace MAME.Core
             bool old;
             old = which.enabled;
             which.enabled = enable;
-            timer_list_remove(which);
-            timer_list_insert(which);
+
+            timer_list_remove_and_insert(which);
+            //timer_list_remove(which);
+            //timer_list_insert(which);
+
             return old;
         }
         public static bool timer_enabled(emu_timer which)
@@ -1009,7 +1027,7 @@ namespace MAME.Core
             EmuTimerLister.GetNewTimerLister(ref lt);
             for (i = 0; i < n; i++)
             {
-                emu_timer etimer = emu_timer.GetEmu_timer();
+                emu_timer etimer = emu_timer.GetEmu_timerNoRef();
                 #region
                 lt.Add(etimer);
                 i1 = reader.ReadInt32();
@@ -1317,8 +1335,6 @@ namespace MAME.Core
                     lt.Add(YM3812.timer[1]);
                 }
                 #endregion
-                //断开创建的引用计数
-                emu_timer.ReleaseCreateRef(etimer);
             }
             for (i = n; i < 32; i++)
             {

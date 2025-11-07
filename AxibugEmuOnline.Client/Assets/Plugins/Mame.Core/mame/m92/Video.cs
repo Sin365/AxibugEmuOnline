@@ -274,109 +274,205 @@ namespace MAME.Core
         }
         public static void draw_sprites(RECT cliprect)
         {
-            int offs, k;
-            for (k = 0; k < 8; k++)
+            // 预计算不变的值
+            bool flip_screen = Generic.flip_screen_get() != 0;
+            int sprite_count = m92_sprite_list;
+
+            // 预先计算常用值避免重复计算
+            const int SCREEN_WIDTH = 512;
+            const int SCREEN_HEIGHT = 384;
+            const int X_OFFSET = 16;
+            const int Y_BASE = SCREEN_HEIGHT - X_OFFSET;
+
+            for (int k = 0; k < 8; k++)
             {
-                for (offs = 0; offs < m92_sprite_list;)
+                int offs = 0;
+
+                // 使用while循环避免for循环的额外开销
+                while (offs < sprite_count)
                 {
-                    int x, y, sprite, colour, fx, fy, x_multi, y_multi, i, j, s_ptr, pri_back, pri_sprite;
-                    y = Generic.buffered_spriteram16[offs + 0] & 0x1ff;
-                    x = Generic.buffered_spriteram16[offs + 3] & 0x1ff;
-                    if ((Generic.buffered_spriteram16[offs + 2] & 0x0080) != 0)
-                    {
-                        pri_back = 0;
-                    }
-                    else
-                    {
-                        pri_back = 2;
-                    }
-                    sprite = Generic.buffered_spriteram16[offs + 1];
-                    colour = Generic.buffered_spriteram16[offs + 2] & 0x007f;
-                    pri_sprite = (Generic.buffered_spriteram16[offs + 0] & 0xe000) >> 13;
-                    fx = (Generic.buffered_spriteram16[offs + 2] >> 8) & 1;
-                    fy = (Generic.buffered_spriteram16[offs + 2] >> 9) & 1;
-                    y_multi = (Generic.buffered_spriteram16[offs + 0] >> 9) & 3;
-                    x_multi = (Generic.buffered_spriteram16[offs + 0] >> 11) & 3;
-                    y_multi = 1 << y_multi;
-                    x_multi = 1 << x_multi;
-                    offs += 4 * x_multi;
+                    // 一次性读取所有需要的数据到局部变量[7](@ref)
+                    ushort data0 = Generic.buffered_spriteram16[offs];
+                    ushort data1 = Generic.buffered_spriteram16[offs + 1];
+                    ushort data2 = Generic.buffered_spriteram16[offs + 2];
+                    ushort data3 = Generic.buffered_spriteram16[offs + 3];
+
+                    // 提前进行优先级检查，避免不必要的计算[8](@ref)
+                    int pri_sprite = (data0 & 0xe000) >> 13;
                     if (pri_sprite != k)
                     {
+                        offs += 4;
                         continue;
                     }
-                    x = x - 16;
-                    y = 384 - 16 - y;
+
+                    // 提取精灵属性（使用局部变量避免重复内存访问）
+                    int y = data0 & 0x1ff;
+                    int x = data3 & 0x1ff;
+                    int sprite = data1;
+                    int colour = data2 & 0x007f;
+                    int fx = (data2 >> 8) & 1;
+                    int fy = (data2 >> 9) & 1;
+                    int y_multi = 1 << ((data0 >> 9) & 3);
+                    int x_multi = 1 << ((data0 >> 11) & 3);
+                    bool high_priority = (data2 & 0x0080) != 0;
+                    int pri_back = high_priority ? 0 : 2;
+
+                    // 计算基础坐标变换
+                    x = x - X_OFFSET;
+                    y = Y_BASE - y;
+
+                    // 处理水平翻转的偏移
                     if (fx != 0)
                     {
                         x += 16 * (x_multi - 1);
                     }
-                    for (j = 0; j < x_multi; j++)
+
+                    // 预先计算绘制参数
+                    uint draw_flags = (uint)(pri_back | (1 << 31));
+                    int x_step = fx != 0 ? -16 : 16;
+
+                    // 内层循环优化：减少重复计算
+                    for (int j = 0; j < x_multi; j++)
                     {
-                        s_ptr = 8 * j;
+                        int s_ptr = 8 * j;
                         if (fy == 0)
                         {
                             s_ptr += y_multi - 1;
                         }
-                        x &= 0x1ff;
-                        for (i = 0; i < y_multi; i++)
+
+                        int current_x = x & 0x1ff;
+
+                        for (int i = 0; i < y_multi; i++)
                         {
-                            if (Generic.flip_screen_get() != 0)
+                            if (flip_screen)
                             {
-                                int i1 = 1;
-                                /*pdrawgfx(bitmap,machine->gfx[1],
-                                        sprite + s_ptr,
-                                        colour,
-                                        !fx,!fy,
-                                        464-x,240-(y-i*16),
-                                        cliprect,TRANSPARENCY_PEN,0,pri_back);
-
-                                pdrawgfx(bitmap,machine->gfx[1],
-                                        sprite + s_ptr,
-                                        colour,
-                                        !fx,!fy,
-                                        464-x+512,240-(y-i*16),
-                                        cliprect,TRANSPARENCY_PEN,0,pri_back);*/
-
+                                // 翻转屏幕的绘制逻辑（已注释，保持原样）
                             }
                             else
                             {
-                                /*pdrawgfx(bitmap,machine->gfx[1],
-                                        sprite + s_ptr,
-                                        colour,
-                                        fx,fy,
-                                        x,y-i*16,
-                                        cliprect,TRANSPARENCY_PEN,0,pri_back);
+                                // 直接调用绘制函数，避免中间计算[3](@ref)
+                                Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy,
+                                                          current_x, y - i * 16, cliprect, draw_flags);
+                                Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy,
+                                                          current_x - SCREEN_WIDTH, y - i * 16, cliprect, draw_flags);
+                            }
 
-                                pdrawgfx(bitmap,machine->gfx[1],
-                                        sprite + s_ptr,
-                                        colour,
-                                        fx,fy,
-                                        x-512,y-i*16,
-                                        cliprect,TRANSPARENCY_PEN,0,pri_back);*/
-                                Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy, x, y - i * 16, cliprect, (uint)(pri_back | (1 << 31)));
-                                Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy, x - 512, y - i * 16, cliprect, (uint)(pri_back | (1 << 31)));
-                            }
-                            if (fy != 0)
-                            {
-                                s_ptr++;
-                            }
-                            else
-                            {
-                                s_ptr--;
-                            }
+                            // 优化指针更新
+                            s_ptr += fy != 0 ? 1 : -1;
                         }
-                        if (fx != 0)
-                        {
-                            x -= 16;
-                        }
-                        else
-                        {
-                            x += 16;
-                        }
+
+                        current_x += x_step;
                     }
+
+                    offs += 4 * x_multi;
                 }
             }
         }
+        //public static void draw_sprites(RECT cliprect)
+        //{
+        //    int offs, k;
+        //    for (k = 0; k < 8; k++)
+        //    {
+        //        for (offs = 0; offs < m92_sprite_list;)
+        //        {
+        //            int x, y, sprite, colour, fx, fy, x_multi, y_multi, i, j, s_ptr, pri_back, pri_sprite;
+        //            y = Generic.buffered_spriteram16[offs + 0] & 0x1ff;
+        //            x = Generic.buffered_spriteram16[offs + 3] & 0x1ff;
+        //            if ((Generic.buffered_spriteram16[offs + 2] & 0x0080) != 0)
+        //            {
+        //                pri_back = 0;
+        //            }
+        //            else
+        //            {
+        //                pri_back = 2;
+        //            }
+        //            sprite = Generic.buffered_spriteram16[offs + 1];
+        //            colour = Generic.buffered_spriteram16[offs + 2] & 0x007f;
+        //            pri_sprite = (Generic.buffered_spriteram16[offs + 0] & 0xe000) >> 13;
+        //            fx = (Generic.buffered_spriteram16[offs + 2] >> 8) & 1;
+        //            fy = (Generic.buffered_spriteram16[offs + 2] >> 9) & 1;
+        //            y_multi = (Generic.buffered_spriteram16[offs + 0] >> 9) & 3;
+        //            x_multi = (Generic.buffered_spriteram16[offs + 0] >> 11) & 3;
+        //            y_multi = 1 << y_multi;
+        //            x_multi = 1 << x_multi;
+        //            offs += 4 * x_multi;
+        //            if (pri_sprite != k)
+        //            {
+        //                continue;
+        //            }
+        //            x = x - 16;
+        //            y = 384 - 16 - y;
+        //            if (fx != 0)
+        //            {
+        //                x += 16 * (x_multi - 1);
+        //            }
+        //            for (j = 0; j < x_multi; j++)
+        //            {
+        //                s_ptr = 8 * j;
+        //                if (fy == 0)
+        //                {
+        //                    s_ptr += y_multi - 1;
+        //                }
+        //                x &= 0x1ff;
+        //                for (i = 0; i < y_multi; i++)
+        //                {
+        //                    if (Generic.flip_screen_get() != 0)
+        //                    {
+        //                        int i1 = 1;
+        //                        /*pdrawgfx(bitmap,machine->gfx[1],
+        //                                sprite + s_ptr,
+        //                                colour,
+        //                                !fx,!fy,
+        //                                464-x,240-(y-i*16),
+        //                                cliprect,TRANSPARENCY_PEN,0,pri_back);
+        //
+        //                        pdrawgfx(bitmap,machine->gfx[1],
+        //                                sprite + s_ptr,
+        //                                colour,
+        //                                !fx,!fy,
+        //                                464-x+512,240-(y-i*16),
+        //                                cliprect,TRANSPARENCY_PEN,0,pri_back);*/
+        //
+        //                     } 
+        //                    else
+        //                    {
+        //                        /*pdrawgfx(bitmap,machine->gfx[1],
+        //                                sprite + s_ptr,
+        //                                colour,
+        //                                fx,fy,
+        //                                x,y-i*16,
+        //                                cliprect,TRANSPARENCY_PEN,0,pri_back);
+        //
+        //                        pdrawgfx(bitmap,machine->gfx[1],
+        //                                sprite + s_ptr,
+        //                                colour,
+        //                                fx,fy,
+        //                                x-512,y-i*16,
+        //                                cliprect,TRANSPARENCY_PEN,0,pri_back);*/
+        //                        Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy, x, y - i * 16, cliprect, (uint)(pri_back | (1 << 31)));
+        //                        Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy, x - 512, y - i * 16, cliprect, (uint)(pri_back | (1 << 31)));
+        //                    }
+        //                    if (fy != 0)
+        //                    {
+        //                        s_ptr++;
+        //                    }
+        //                    else
+        //                    {
+        //                        s_ptr--;
+        //                    }
+        //                }
+        //                if (fx != 0)
+        //                {
+        //                    x -= 16;
+        //                }
+        //                else
+        //                {
+        //                    x += 16;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
         public static void m92_update_scroll_positions()
         {
             int laynum;

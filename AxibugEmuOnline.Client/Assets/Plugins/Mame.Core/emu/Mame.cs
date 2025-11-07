@@ -99,7 +99,7 @@ namespace MAME.Core
             if (exit_pending)
                 return;
 
-            EmuTimer.emu_timer.CheckReadyRelaseAfterRun();
+            EmuTimer.emu_timer.CheckReadyRelaseBeforeFrameRun();
             long lastframe = Video.screenstate.frame_number;
             //执行CPU命令，直到一次画面更新
             while (lastframe == Video.screenstate.frame_number)
