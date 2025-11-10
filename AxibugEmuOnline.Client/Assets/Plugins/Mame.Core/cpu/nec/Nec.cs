@@ -428,9 +428,25 @@ namespace cpu.nec
         }
 
         static byte[] JMP_table = new byte[] { 3, 10, 10 };
+        //public void JMP(bool flag)
+        //{
+        //    int tmp = (int)((sbyte)FETCH());
+        //    if (flag)
+        //    {
+        //        //使用外部定义减少GC压力
+        //        //byte[] table = new byte[] { 3, 10, 10 };
+        //        I.ip = (ushort)(I.ip + tmp);
+        //        pendingCycles -= JMP_table[chip_type / 8];
+        //        //PC = (I.sregs[1] << 4) + I.ip;
+        //        return;
+        //    }
+        //}
+
+        //手动内联
         public void JMP(bool flag)
         {
-            int tmp = (int)((sbyte)FETCH());
+            //int tmp = (int)((sbyte)FETCH());
+            int tmp = (sbyte)(ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0));
             if (flag)
             {
                 //使用外部定义减少GC压力
