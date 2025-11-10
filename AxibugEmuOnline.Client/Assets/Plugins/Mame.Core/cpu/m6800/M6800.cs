@@ -245,8 +245,10 @@ namespace cpu.m6800
             cycles = cycles_63701;
             clock = 1536000;
             irq_callback = null;
-            m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
-            m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            //m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
+            EmuTimer.timer_alloc_common(ref m6800_rx_timer, EmuTimer.TIME_ACT.M6800_action_rx, false);
+            //m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            EmuTimer.timer_alloc_common(ref m6800_tx_timer, EmuTimer.TIME_ACT.M6800_action_tx, false);
         }
         public override void Reset()
         {
@@ -1344,8 +1346,10 @@ namespace cpu.m6800
             };
             clock = 1000000;
             irq_callback = Cpuint.cpu_3_irq_callback;
-            m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
-            m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            //m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
+            EmuTimer.timer_alloc_common(ref m6800_rx_timer, EmuTimer.TIME_ACT.M6800_action_rx, false);
+            //m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            EmuTimer.timer_alloc_common(ref m6800_tx_timer, EmuTimer.TIME_ACT.M6800_action_tx, false);
         }
         public override int ExecuteCycles(int cycles)
         {

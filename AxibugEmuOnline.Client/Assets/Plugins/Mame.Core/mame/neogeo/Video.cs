@@ -130,7 +130,8 @@ namespace MAME.Core
         }
         private static void create_auto_animation_timer()
         {
-            auto_animation_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Neogeo_auto_animation_timer_callback, false);
+            //auto_animation_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Neogeo_auto_animation_timer_callback, false);
+            EmuTimer.timer_alloc_common(ref auto_animation_timer, EmuTimer.TIME_ACT.Neogeo_auto_animation_timer_callback, false);
         }
         private static void start_auto_animation_timer()
         {
@@ -516,7 +517,7 @@ namespace MAME.Core
                 }
             }
         }
-        
+
         //private static void draw_sprites(int iBitmap, int scanline)
         //{
         //    int x_2, code_2;
@@ -735,7 +736,7 @@ namespace MAME.Core
         }
         private static void create_sprite_line_timer()
         {
-            sprite_line_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Neogeo_sprite_line_timer_callback, false);
+            EmuTimer.timer_alloc_common(ref sprite_line_timer, EmuTimer.TIME_ACT.Neogeo_sprite_line_timer_callback, false);
         }
         private static void start_sprite_line_timer()
         {

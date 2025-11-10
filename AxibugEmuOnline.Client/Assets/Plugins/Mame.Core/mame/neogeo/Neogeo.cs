@@ -365,9 +365,12 @@ namespace MAME.Core
             audio_cpu_banks[1] = 0x0e;
             audio_cpu_banks[2] = 0x06;
             audio_cpu_banks[3] = 0x02;
-            display_position_interrupt_timer = EmuTimer.timer_alloc_common( EmuTimer.TIME_ACT.Neogeo_display_position_interrupt_callback, false);
-            display_position_vblank_timer = EmuTimer.timer_alloc_common( EmuTimer.TIME_ACT.Neogeo_display_position_vblank_callback, false);
-            vblank_interrupt_timer = EmuTimer.timer_alloc_common( EmuTimer.TIME_ACT.Neogeo_vblank_interrupt_callback, false);
+            //display_position_interrupt_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Neogeo_display_position_interrupt_callback, false);
+            EmuTimer.timer_alloc_common(ref display_position_interrupt_timer, EmuTimer.TIME_ACT.Neogeo_display_position_interrupt_callback, false);
+            //display_position_vblank_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Neogeo_display_position_vblank_callback, false);
+            EmuTimer.timer_alloc_common(ref display_position_vblank_timer, EmuTimer.TIME_ACT.Neogeo_display_position_vblank_callback, false);
+            //vblank_interrupt_timer = EmuTimer.timer_alloc_common( EmuTimer.TIME_ACT.Neogeo_vblank_interrupt_callback, false);
+            EmuTimer.timer_alloc_common(ref vblank_interrupt_timer, EmuTimer.TIME_ACT.Neogeo_vblank_interrupt_callback, false);
             Pd4900a.pd4990a_init();
             calendar_init();
             irq3_pending = 1;
@@ -393,8 +396,8 @@ namespace MAME.Core
             byte[] temp = new byte[0x2000];
             Buffer.BlockCopy(mainram2_src, 0, temp, 0, temp.Length);
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream(temp))
-            { 
-                MameMainMotion.IoSupport.File_WriteAllBytesFromStre("nvram\\" + Machine.sName + ".nv",ms);
+            {
+                MameMainMotion.IoSupport.File_WriteAllBytesFromStre("nvram\\" + Machine.sName + ".nv", ms);
             }
         }
         public static void machine_reset_neogeo()

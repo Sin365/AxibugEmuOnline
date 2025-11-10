@@ -85,6 +85,21 @@ namespace MAME.Core
             }
             FM.out_adpcm[FM.ipan[c]] += adpcm[c].adpcm_out;
         }
+
+
+        static void ReInit_timer()
+        {
+            if (timer != null)
+            {
+                if (timer[0] != null) EmuTimer.emu_timer.SetNull(ref timer[0]);
+                if (timer[1] != null) EmuTimer.emu_timer.SetNull(ref timer[1]);
+            }
+            else
+            {
+                timer = new EmuTimer.emu_timer[2];
+            }
+        }
+
         public static void ym2610_start(int clock)
         {
             F2610 = new YM2610();
@@ -98,9 +113,12 @@ namespace MAME.Core
             generic_ay8910.portBwrite = null;
             int rate = clock / 72;
             AY8910.ay8910_start_ym(17, 0, clock, generic_ay8910);
-            timer = new EmuTimer.emu_timer[2];
-            timer[0] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2610_F2610_timer_callback_0, false);
-            timer[1] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2610_F2610_timer_callback_1, false);
+            ReInit_timer();
+            //timer = new EmuTimer.emu_timer[2];
+            //timer[0] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2610_F2610_timer_callback_0, false);
+            EmuTimer.timer_alloc_common(ref timer[0], EmuTimer.TIME_ACT.YM2610_F2610_timer_callback_0, false);
+            //timer[1] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2610_F2610_timer_callback_1, false);
+            EmuTimer.timer_alloc_common(ref timer[1], EmuTimer.TIME_ACT.YM2610_F2610_timer_callback_1, false);
             ym2610_init(clock, rate);
         }
         public static void ym2610_init(int clock, int rate)

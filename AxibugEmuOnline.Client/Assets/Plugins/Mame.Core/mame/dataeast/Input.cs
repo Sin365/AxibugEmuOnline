@@ -9,14 +9,44 @@ namespace MAME.Core
         {
             public int fr;
             public byte by;
-            public fr1(int i1, byte b1)
+            //public fr1(int i1, byte b1)
+            //{
+            //    fr = i1;
+            //    by = b1;
+            //}
+            public void reset()
             {
-                fr = i1;
-                by = b1;
+                fr = default;
+                by = default;
+            }
+            public static fr1 getnew(int i1, byte b1)
+            {
+                fr1 obj = ObjectPoolAuto.Acquire<fr1>();
+                obj.fr = i1;
+                obj.by = b1;
+                return obj;
             }
         }
         public static int i3 = 70;
-        public static List<fr1> lfr = new List<fr1>();
+        static List<fr1> lfr = resetlfr_list();//= new List<fr1>();
+
+        static List<fr1> resetlfr_list()
+        {
+            if (lfr == null)
+            {
+                lfr = ObjectPoolAuto.AcquireList<fr1>();
+            }
+            else
+            {
+                for (int i = 0; i < lfr.Count; i++)
+                {
+                    lfr[i].reset();
+                    ObjectPoolAuto.Release(lfr[i]);
+                }
+                lfr.Clear();
+            }
+            return lfr;
+        }
         public static void loop_inputports_dataeast_pcktgal()
         {
             if (Keyboard.IsPressed(MotionKey.P1_INSERT_COIN))//if (Keyboard.IsPressed(Corekey.D5))
@@ -149,36 +179,41 @@ namespace MAME.Core
             }
             if (Keyboard.IsPressed(MotionKey.UNKNOW_N))//if (Keyboard.IsPressed(Corekey.N))
             {
-                lfr = new List<fr1>();
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 1), 0x7f));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2), 0xff));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2 + i3), 0x7f));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2 + i3 + 1), 0xff));
+                //lfr = new List<fr1>();
+                resetlfr_list();
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 1), 0x7f));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2), 0xff));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2 + i3), 0x7f));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2 + i3 + 1), 0xff));
             }
             if (Keyboard.IsPressed(MotionKey.P1_BTN_3))//if (Keyboard.IsPressed(Corekey.U))
             {
-                lfr = new List<fr1>();
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 1), 0xf7));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2), 0xff));
+                //lfr = new List<fr1>();
+                resetlfr_list();
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 1), 0xf7));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2), 0xff));
             }
             if (Keyboard.IsPressed(MotionKey.P1_BTN_4))//if (Keyboard.IsPressed(Corekey.I))
             {
-                lfr = new List<fr1>();
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 1), 0xfb));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2), 0xff));
+                //lfr = new List<fr1>();
+                resetlfr_list();
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 1), 0xfb));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2), 0xff));
             }
 
             if (Keyboard.IsPressed(MotionKey.UNKNOW_V))//if (Keyboard.IsPressed(Corekey.V))
             {
-                lfr = new List<fr1>();
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 1), 0xfd));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2), 0xff));
+                //lfr = new List<fr1>();
+                resetlfr_list();
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 1), 0xfd));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2), 0xff));
             }
             if (Keyboard.IsPressed(MotionKey.UNKNOW_B))//if (Keyboard.IsPressed(Corekey.B))
             {
-                lfr = new List<fr1>();
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 1), 0xfe));
-                lfr.Add(new fr1((int)(Video.screenstate.frame_number + 2), 0xff));
+                //lfr = new List<fr1>();
+                resetlfr_list();
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 1), 0xfe));
+                lfr.Add(fr1.getnew((int)(Video.screenstate.frame_number + 2), 0xff));
             }
             foreach (fr1 f in lfr)
             {

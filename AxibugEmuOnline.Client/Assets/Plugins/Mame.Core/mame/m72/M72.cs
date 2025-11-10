@@ -297,7 +297,7 @@ namespace MAME.Core
         }
         public static void machine_start_m72()
         {
-            scanline_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M72_m72_scanline_interrupt, false);
+            EmuTimer.timer_alloc_common(ref scanline_timer, EmuTimer.TIME_ACT.M72_m72_scanline_interrupt, false);
         }
         public static void machine_reset_m72()
         {

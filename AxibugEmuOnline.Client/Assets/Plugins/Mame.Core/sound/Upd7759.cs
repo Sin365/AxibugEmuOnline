@@ -302,7 +302,8 @@ namespace MAME.Core
             chip.rombase = 0;
             if (updrom == null)
             {
-                chip.timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Upd7759_upd7759_slave_update, false);
+                //chip.timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Upd7759_upd7759_slave_update, false);
+                EmuTimer.timer_alloc_common(ref chip.timer, EmuTimer.TIME_ACT.Upd7759_upd7759_slave_update, false);
             }
             chip.reset = 1;
             chip.start = 1;

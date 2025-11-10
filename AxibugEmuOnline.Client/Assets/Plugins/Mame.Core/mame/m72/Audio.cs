@@ -47,7 +47,7 @@
                 //Cpuint.lvec.Add(new vec(1, EmuTimer.get_current_time()));
                 Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(1, EmuTimer.get_current_time()));
                 setvector_param = 1;
-                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             }
             else
@@ -55,7 +55,7 @@
                 //Cpuint.lvec.Add(new vec(2, EmuTimer.get_current_time()));
                 Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(2, EmuTimer.get_current_time()));
                 setvector_param = 2;
-                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             }
         }
@@ -67,7 +67,7 @@
                 //Cpuint.lvec.Add(new vec(3, EmuTimer.get_current_time()));
                 Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(3, EmuTimer.get_current_time()));
                 setvector_param = 3;
-                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             }
         }
@@ -77,7 +77,7 @@
             //Cpuint.lvec.Add(new vec(3, EmuTimer.get_current_time()));
             Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(3, EmuTimer.get_current_time()));
             setvector_param = 3;
-            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
             EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
         }
         public static void m72_sound_irq_ack_w(int offset, byte data)
@@ -85,7 +85,7 @@
             //Cpuint.lvec.Add(new vec(4, EmuTimer.get_current_time()));
             Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(4, EmuTimer.get_current_time()));
             setvector_param = 4;
-            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
             EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
         }
         public static void m72_set_sample_start(int start)

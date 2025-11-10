@@ -372,8 +372,8 @@
             seg_prefix = 1;
             prefix_base = I.sregs[0] << 4;
             CLK(2);
-            //nec_instruction[fetchop()]();
-            DoInstructionOpCode(fetchop());
+            nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_daa()
@@ -442,8 +442,8 @@
             seg_prefix = 1;
             prefix_base = I.sregs[1] << 4;
             CLK(2);
-            //nec_instruction[fetchop()]();
-            DoInstructionOpCode(fetchop());
+            nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_das()
@@ -512,8 +512,8 @@
             seg_prefix = 1;
             prefix_base = I.sregs[2] << 4;
             CLK(2);
-            //nec_instruction[fetchop()]();
-            DoInstructionOpCode(fetchop());
+            nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_aaa()
@@ -572,8 +572,8 @@
             seg_prefix = 1;
             prefix_base = I.sregs[3] << 4;
             CLK(2);
-            //nec_instruction[fetchop()]();
-            DoInstructionOpCode(fetchop());
+            nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_aas()
@@ -844,8 +844,8 @@
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && !CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && !CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 default:
-                    //nec_instruction[next]();
-                    DoInstructionOpCode(next);
+                    nec_instruction[next]();
+                    //DoInstructionOpCode(next);
                     break;
             }
             seg_prefix = 0;
@@ -878,8 +878,8 @@
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 default:
-                    //nec_instruction[next](); 
-                    DoInstructionOpCode(next);
+                    nec_instruction[next](); 
+                    //DoInstructionOpCode(next);
                     break;
             }
             seg_prefix = 0;
@@ -1325,8 +1325,8 @@
         void i_lea()
         {
             int ModRM = FETCH();
-            //GetEA[ModRM]();
-            DoNecGetEAOpCode(ModRM);
+            GetEA[ModRM]();
+            //DoNecGetEAOpCode(ModRM);
 
 
             //I.regs.w[mod_RM.regw[ModRM]] = EO;
@@ -2217,8 +2217,8 @@
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && ZF() == false); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && ZF() == false); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 default:
-                    //nec_instruction[next](); 
-                    DoInstructionOpCode(next);
+                    nec_instruction[next](); 
+                    //DoInstructionOpCode(next);
                     break;
             }
             seg_prefix = 0;
@@ -2251,8 +2251,8 @@
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && ZF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && ZF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 default:
-                    //nec_instruction[next]();
-                    DoInstructionOpCode(next);
+                    nec_instruction[next]();
+                    //DoInstructionOpCode(next);
                     break;
             }
             seg_prefix = 0;

@@ -7,7 +7,8 @@
         public static Atime watchdog_time;
         public static void watchdog_init()
         {
-            watchdog_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Watchdog_watchdog_callback, false);
+            //watchdog_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Watchdog_watchdog_callback, false);
+            EmuTimer.timer_alloc_common(ref watchdog_timer, EmuTimer.TIME_ACT.Watchdog_watchdog_callback, false);
             switch (Machine.sBoard)
             {
                 case "CPS-1":
