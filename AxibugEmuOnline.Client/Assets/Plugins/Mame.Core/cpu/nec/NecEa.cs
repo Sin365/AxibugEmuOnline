@@ -2,8 +2,8 @@
 {
     partial class Nec
     {
-        static int EA;
-        static ushort EO;
+        public static int EA;
+        public static ushort EO;
         static ushort E16;
         int EA_000()
         {
