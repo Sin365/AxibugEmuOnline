@@ -26,4 +26,16 @@ public class UniResources : IResources
     public byte[] readme => Resources.Load<TextAsset>(ResourceRoot + "readme.txt").bytes;
 
     public string mame => Resources.Load<TextAsset>(ResourceRoot + "mame.xml").text;//ok
+
+    public bool getnvram(string sName, out byte[] data)
+    {
+        TextAsset asset = Resources.Load<TextAsset>(ResourceRoot + "nvram/" + sName + ".nv");
+        if (asset == null)
+        {
+            data = null;
+            return false;
+        }
+        data = asset.bytes;
+        return true;
+    }
 }

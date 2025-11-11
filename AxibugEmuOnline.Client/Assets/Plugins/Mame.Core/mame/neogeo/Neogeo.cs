@@ -378,9 +378,9 @@ namespace MAME.Core
 
         public static void nvram_handler_load_neogeo()
         {
-            if (MameMainMotion.IoSupport.File_Exists("nvram\\" + Machine.sName + ".nv"))
+            if (MameMainMotion.resource.getnvram(Machine.sName,out byte[] data))
             {
-                MameMainMotion.IoSupport.File_ReadAllBytes("nvram\\" + Machine.sName + ".nv");
+                mainram2_set = data;
                 //FileStream fs1 = new FileStream("nvram\\" + Machine.sName + ".nv", FileMode.Open);
                 //int n = (int)fs1.Length;
                 //fs1.Read(mainram2, 0, n);

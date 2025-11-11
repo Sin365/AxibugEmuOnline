@@ -13,5 +13,6 @@
         byte[] _1 { get; }
         byte[] readme { get; }
         string mame { get; }
+        bool getnvram(string sName,out byte[] data);
     }
 }
