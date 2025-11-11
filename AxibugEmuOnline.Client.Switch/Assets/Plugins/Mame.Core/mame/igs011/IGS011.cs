@@ -199,16 +199,24 @@ namespace MAME.Core
         {
             igs_dips_sel = data;
         }
+        static byte[] igs_dips_r_dip = new byte[] { dsw1, dsw2, dsw3, dsw4, dsw5 };
         private static byte igs_dips_r(int num)
         {
             int i;
             byte ret = 0;
-            byte[] dip = new byte[] { dsw1, dsw2, dsw3, dsw4, dsw5 };
+
+            //使用外部定义减少GC压力(其实赋值也可以简化，TODO)
+            igs_dips_r_dip[0] = dsw1;
+            igs_dips_r_dip[1] = dsw2;
+            igs_dips_r_dip[2] = dsw3;
+            igs_dips_r_dip[0] = dsw4;
+            igs_dips_r_dip[0] = dsw5;
+            //byte[] dip = new byte[] { dsw1, dsw2, dsw3, dsw4, dsw5 };
             for (i = 0; i < num; i++)
             {
                 if (((~igs_dips_sel) & (1 << i)) != 0)
                 {
-                    ret = dip[i];
+                    ret = igs_dips_r_dip[i];
                 }
             }
             return ret;

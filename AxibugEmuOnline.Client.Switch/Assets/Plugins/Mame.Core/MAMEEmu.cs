@@ -14,6 +14,18 @@ namespace MAME.Core
             mameMainMotion = new MameMainMotion();
         }
 
+        #region 热机
+        //是否需要预热
+        bool bNeedPreheat { get
+            {
+                return historyUpdateCount < 5;
+            } }
+        /// <summary>
+        /// 推帧计数，（记录本次加载Rom之后推帧的计数）
+        /// </summary>
+        ulong historyUpdateCount = 0;
+        #endregion
+
         public bool bRom => mameMainMotion.bRom;
 
         public void Init(
@@ -31,32 +43,54 @@ namespace MAME.Core
         public void ResetRomRoot(string RomDir) => mameMainMotion.ResetRomRoot(RomDir);
 
         public Dictionary<string, RomInfo> GetGameList() => mameMainMotion.GetGameList();
-        public void LoadRom(string Name) => mameMainMotion.LoadRom(Name);
+        public void LoadRom(string Name)
+        {
+            historyUpdateCount = 0;
+            mameMainMotion.LoadRom(Name);
+        }
+
         public void GetGameScreenSize(out int _width, out int _height, out IntPtr _framePtr) => mameMainMotion.GetGameScreenSize(out _width, out _height, out _framePtr);
         public void StartGame() => mameMainMotion.StartGame();
         public void StartGame_WithNewThread() => mameMainMotion.StartGame_WithNewThread();
-        public void UpdateFrame() => Mame.mame_execute_UpdateMode_NextFrame();
+        public void UpdateFrame()
+        {
+            historyUpdateCount++;
+            Mame.mame_execute_UpdateMode_NextFrame();
+        }
         public void UnlockNextFreme(int moreTick = 1) => mameMainMotion.UnlockNextFreme(moreTick);
         public void StopGame() => mameMainMotion.StopGame();
         public long currEmuFrame => Video.screenstate.frame_number;
         public bool IsPaused => Mame.paused;
         public void LoadState(System.IO.BinaryReader sr)
         {
+            //热机逻辑：主要解决NEOGEO问题，避免加入其他人房间自动联机时，加载流程，cpu一次都没执行，部分逻辑没有初始化。
+            //再加载数据之前，推若干帧，确保所有组件充分初始化
+            while(bNeedPreheat)
+                UpdateFrame();
             Mame.paused = true;
-            Thread.Sleep(20);
-            State.loadstate_callback.Invoke(sr);
+            if(mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
+            Mame.soft_reset();//软重启一次，确保没有脏数据
+            State.loadstate_callback(sr);
             Mame.postload();
+            Video.popup_text_end = Wintime.osd_ticks() + Wintime.ticks_per_second * 2;
             mameMainMotion.ResetFreameIndex();
-            Thread.Sleep(20);
+            if (mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
             Mame.paused = false;
         }
 
         public void SaveState(System.IO.BinaryWriter sw)
         {
             Mame.paused = true;
-            Thread.Sleep(20);
-            State.savestate_callback.Invoke(sw);
-            Thread.Sleep(20);
+
+            if (mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
+            State.savestate_callback(sw);
+
+            if (mameMainMotion.bIsNewThreadMode)
+                Thread.Sleep(20);
+
             Mame.paused = false;
         }
 

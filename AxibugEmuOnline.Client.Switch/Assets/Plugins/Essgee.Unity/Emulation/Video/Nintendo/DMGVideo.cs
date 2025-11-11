@@ -8,7 +8,7 @@ using static Essgee.Emulation.CPU.SM83;
 
 namespace Essgee.Emulation.Video.Nintendo
 {
-    public class DMGVideo : IVideo
+    public unsafe class DMGVideo : IVideo
     {
         protected const int displayActiveWidth = 160;
         protected const int displayActiveHeight = 144;
@@ -93,14 +93,26 @@ namespace Essgee.Emulation.Video.Nintendo
         protected bool statIrqSignal, vBlankReady;
         protected int[] spritesOnLine;
 
-        readonly byte[][] colorValuesBgr = new byte[][]
+        //      readonly byte[][] colorValuesBgr = new byte[][]
+        //      {
+        //	/*              B     G     R */
+        //	new byte[] { 0xF8, 0xF8, 0xF8 },	/* White */
+        //	new byte[] { 0x9B, 0x9B, 0x9B },	/* Light gray */
+        //	new byte[] { 0x3E, 0x3E, 0x3E },	/* Dark gray */
+        //	new byte[] { 0x1F, 0x1F, 0x1F },	/* Black */
+        //};
+
+
+        //取值范例 colorValuesBgr[colorIndex * 3 + channelIndex];
+        const byte colorValuesBgr_singleLen = 3;
+        // 转换后的一维数组
+        readonly byte[] colorValuesBgr = new byte[]
         {
-			/*              B     G     R */
-			new byte[] { 0xF8, 0xF8, 0xF8 },	/* White */
-			new byte[] { 0x9B, 0x9B, 0x9B },	/* Light gray */
-			new byte[] { 0x3E, 0x3E, 0x3E },	/* Dark gray */
-			new byte[] { 0x1F, 0x1F, 0x1F },	/* Black */
-		};
+        /* White */    0xF8, 0xF8, 0xF8,
+        /* Light gray */0x9B, 0x9B, 0x9B,
+        /* Dark gray */ 0x3E, 0x3E, 0x3E,
+        /* Black */    0x1F, 0x1F, 0x1F
+        };
 
         protected const byte screenUsageEmpty = 0;
         protected const byte screenUsageBackground = 1 << 0;
@@ -109,7 +121,48 @@ namespace Essgee.Emulation.Video.Nintendo
         protected byte[,] screenUsageFlags, screenUsageSpriteXCoords, screenUsageSpriteSlots;
 
         protected int cycleCount, cycleDotPause, currentScanline;
-        protected byte[] outputFramebuffer;
+        //protected byte[] outputFramebuffer;
+
+        #region //指针化 outputFramebuffer
+        byte[] outputFramebuffer_src;
+        protected GCHandle outputFramebuffer_handle;
+        public byte* outputFramebuffer;
+        public int outputFramebufferLength;
+        public bool outputFramebuffer_IsNull => outputFramebuffer == null;
+        public byte[] outputFramebuffer_set
+        {
+            set
+            {
+                outputFramebuffer_handle.ReleaseGCHandle();
+                outputFramebuffer_src = value;
+                outputFramebufferLength = value.Length;
+                outputFramebuffer_src.GetObjectPtr(ref outputFramebuffer_handle, ref outputFramebuffer);
+            }
+        }
+        #endregion
+
+
+        #region //指针化 outputFramebufferCopy
+        byte[] outputFramebufferCopy_src;
+        GCHandle outputFramebufferCopy_handle;
+        public byte* outputFramebufferCopy;
+        public int outputFramebufferCopyLength;
+        public bool outputFramebufferCopy_IsNull => outputFramebufferCopy == null;
+        private IntPtr outputFramebufferCopy_IntPtr;
+        public byte[] outputFramebufferCopy_set
+        {
+            set
+            {
+                outputFramebufferCopy_handle.ReleaseGCHandle();
+                outputFramebufferCopy_src = value;
+                outputFramebufferCopyLength = value.Length;
+                outputFramebufferCopy_src.GetObjectPtr(ref outputFramebufferCopy_handle, ref outputFramebufferCopy);
+                outputFramebufferCopy_IntPtr = outputFramebufferCopy_handle.AddrOfPinnedObject();
+            }
+        }
+        #endregion
+
+
 
         protected int clockCyclesPerLine;
 
@@ -247,7 +300,10 @@ namespace Essgee.Emulation.Video.Nintendo
             screenUsageFlags = new byte[displayActiveWidth, displayActiveHeight];
             screenUsageSpriteXCoords = new byte[displayActiveWidth, displayActiveHeight];
             screenUsageSpriteSlots = new byte[displayActiveWidth, displayActiveHeight];
-            outputFramebuffer = new byte[numDisplayPixels * 4];
+            //outputFramebuffer = new byte[numDisplayPixels * 4];
+            outputFramebuffer_set = new byte[numDisplayPixels * 4];
+
+            outputFramebufferCopy_set = new byte[numDisplayPixels * 4];
 
             for (var y = 0; y < displayActiveHeight; y++)
                 SetLine(y, 0xFF, 0xFF, 0xFF);
@@ -398,7 +454,8 @@ namespace Essgee.Emulation.Video.Nintendo
         }
 
 
-        GCHandle? lasyRenderHandle;
+        GCHandle? lastRenderHandle;
+
         protected virtual void EndHBlank()
         {
             /* End of scanline reached */
@@ -423,16 +480,25 @@ namespace Essgee.Emulation.Video.Nintendo
 
                 /* Submit screen for rendering */
 
-                // 固定数组，防止垃圾回收器移动它  
-                var bitmapcolorRect_handle = GCHandle.Alloc(outputFramebuffer.Clone() as byte[], GCHandleType.Pinned);
-                // 获取数组的指针  
-                IntPtr mFrameDataPtr = bitmapcolorRect_handle.AddrOfPinnedObject();
+                //// 固定数组，防止垃圾回收器移动它  
+                //var bitmapcolorRect_handle = GCHandle.Alloc(outputFramebuffer_src.Clone() as byte[], GCHandleType.Pinned);
+                //// 获取数组的指针  
+                //IntPtr mFrameDataPtr = bitmapcolorRect_handle.AddrOfPinnedObject();
+
+
+                for (int i = 0; i < outputFramebufferLength; i++)
+                {
+                    outputFramebufferCopy[i] = outputFramebuffer[i];
+                }
+                IntPtr mFrameDataPtr = outputFramebufferCopy_IntPtr;
+
                 var eventArgs = RenderScreenEventArgs.Create(displayActiveWidth, displayActiveHeight, mFrameDataPtr);
                 OnRenderScreen(eventArgs);
                 eventArgs.Release();
-                if (lasyRenderHandle != null)
-                    lasyRenderHandle.Value.Free();
-                lasyRenderHandle = bitmapcolorRect_handle;
+
+                //if (lastRenderHandle.HasValue)
+                //    lastRenderHandle.Value.Free();
+                //lastRenderHandle = bitmapcolorRect_handle;
 
                 //OnRenderScreen(new RenderScreenEventArgs(displayActiveWidth, displayActiveHeight, outputFramebuffer.Clone() as byte[]));
             }
@@ -665,9 +731,12 @@ namespace Essgee.Emulation.Video.Nintendo
 
         protected virtual void WriteColorToFramebuffer(byte c, int address)
         {
-            outputFramebuffer[address + 0] = colorValuesBgr[c & 0x03][0];
-            outputFramebuffer[address + 1] = colorValuesBgr[c & 0x03][1];
-            outputFramebuffer[address + 2] = colorValuesBgr[c & 0x03][2];
+            //outputFramebuffer[address + 0] = colorValuesBgr[c & 0x03][0];
+            //outputFramebuffer[address + 1] = colorValuesBgr[c & 0x03][1];
+            //outputFramebuffer[address + 2] = colorValuesBgr[c & 0x03][2];
+            outputFramebuffer[address + 0] = colorValuesBgr[(c & 0x03) * 3 + 0];
+            outputFramebuffer[address + 1] = colorValuesBgr[(c & 0x03) * 3 + 1];
+            outputFramebuffer[address + 2] = colorValuesBgr[(c & 0x03) * 3 + 2];
             outputFramebuffer[address + 3] = 0xFF;
         }
 

@@ -229,11 +229,11 @@ namespace AxibugEmuOnline.Client
             }
             App.FileDownloader.BeginDownload(webData.url, (bytes) =>
             {
-                HandleRomFilePostProcess(bytes);
+                HandleRomFilePostProcess(bytes, webData.romName);
             });
         }
 
-        private void HandleRomFilePostProcess(byte[] bytes)
+        private void HandleRomFilePostProcess(byte[] bytes, string romName)
         {
             if (bytes == null) return;
 
@@ -285,6 +285,7 @@ namespace AxibugEmuOnline.Client
 
                 AxiIO.File.WriteAllBytes(LocalFilePath, bytes);
             }
+            OverlayManager.PopTip($"下载完毕:[{romName}]");
             Eventer.Instance.PostEvent(EEvent.OnRomFileDownloaded, ID);
             OnDownloadOver?.Invoke(this);
         }

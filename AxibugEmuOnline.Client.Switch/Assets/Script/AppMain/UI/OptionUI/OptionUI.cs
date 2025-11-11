@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -200,10 +201,13 @@ namespace AxibugEmuOnline.Client
 
         public void Pop<T>(List<T> menus, int defaultIndex = 0, Action onClose = null) where T : InternalOptionMenu
         {
+            if (menus == null || menus.Count == 0) return;
+
             if (m_hideTween != null)
             {
                 m_hideTween.Kill(true);
             }
+            if (menus.Count == 0) return;
 
             m_onClose = onClose;
             ReleaseRuntimeMenus();
@@ -326,7 +330,8 @@ namespace AxibugEmuOnline.Client
 
         private void CreateRuntimeMenuItem(InternalOptionMenu menuData)
         {
-            m_menuUI_templates.TryGetValue(menuData.MenuUITemplateType, out var template);
+            OptionUI_MenuItem template;
+            m_menuUI_templates.TryGetValue(menuData.MenuUITemplateType, out template);
             if (template == null)
             {
                 throw new NotImplementedException($"{menuData.GetType().Name}指定的MenuUI类型实例未在OptionUI中找到");

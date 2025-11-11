@@ -18,7 +18,9 @@ namespace IngameDebugConsole
 
 		protected void OnValidate()
 		{
-			if( preventFontCallback != null && TryGetComponent( out InputField inputField ) )
+			InputField inputField;
+
+            if ( preventFontCallback != null && TryGetComponent( out inputField ) )
 			{
 				preventFontCallback.SetValue( inputField, true );
 				UnityEditor.EditorApplication.delayCall += () => preventFontCallback.SetValue( inputField, false );

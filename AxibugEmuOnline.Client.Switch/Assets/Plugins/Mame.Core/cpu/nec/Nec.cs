@@ -142,9 +142,16 @@ namespace cpu.nec
         {
             return (((seg_prefix != 0) && (Seg == 3 || Seg == 2)) ? prefix_base : (int)(I.sregs[Seg] << 4));
         }
+        //private byte GetMemB(int Seg, int Off)
+        //{
+        //    return ReadByte(DefaultBase(Seg, I) + Off);
+        //}
+
+        //手动内联
         private byte GetMemB(int Seg, int Off)
         {
-            return ReadByte(DefaultBase(Seg, I) + Off);
+            //return ReadByte(DefaultBase(Seg, I) + Off);
+            return ReadByte((((seg_prefix != 0) && (Seg == 3 || Seg == 2)) ? prefix_base : (int)(I.sregs[Seg] << 4)) + Off);
         }
         private ushort GetMemW(int Seg, int Off)
         {
@@ -265,13 +272,28 @@ namespace cpu.nec
             SetSZPF_Byte((int)res);
             dst = (byte)res;
         }
+        //public void ADDW(ref ushort src, ref ushort dst)
+        //{
+        //    uint res = (uint)(dst + src);
+        //    SetCFW(res);
+        //    SetOFW_Add((int)res, src, dst);
+        //    SetAF((int)res, src, dst);
+        //    SetSZPF_Word((int)res);
+        //    dst = (ushort)res;
+        //}
+        //手动内联
         public void ADDW(ref ushort src, ref ushort dst)
         {
             uint res = (uint)(dst + src);
-            SetCFW(res);
-            SetOFW_Add((int)res, src, dst);
-            SetAF((int)res, src, dst);
-            SetSZPF_Word((int)res);
+            //SetCFW(res);
+            I.CarryVal = res & 0x10000;
+            //SetOFW_Add((int)res, src, dst);
+            I.OverVal = (uint)((((int)res) ^ (src)) & (((int)res) ^ (dst)) & 0x8000);
+            //SetAF((int)res, src, dst);
+            I.AuxVal = (uint)((((int)res) ^ ((src) ^ (dst))) & 0x10);
+            //SetSZPF_Word((int)res);
+            I.ZeroVal = I.ParityVal = (uint)((short)(int)res);
+            I.SignVal = (int)I.ZeroVal;
             dst = (ushort)res;
         }
         public void SUBB(ref byte src, ref byte dst)
@@ -426,16 +448,35 @@ namespace cpu.nec
             I.regs.b[Reg * 2] = (byte)((ushort)tmp1 % 0x100);
             I.regs.b[Reg * 2 + 1] = (byte)((ushort)tmp1 / 0x100);
         }
+
+        readonly static byte[] JMP_table = new byte[] { 3, 10, 10 };
+        //public void JMP(bool flag)
+        //{
+        //    int tmp = (int)((sbyte)FETCH());
+        //    if (flag)
+        //    {
+        //        //使用外部定义减少GC压力
+        //        //byte[] table = new byte[] { 3, 10, 10 };
+        //        I.ip = (ushort)(I.ip + tmp);
+        //        pendingCycles -= JMP_table[chip_type / 8];
+        //        //PC = (I.sregs[1] << 4) + I.ip;
+        //        return;
+        //    }
+        //}
+
+        //手动内联
         public void JMP(bool flag)
         {
-            int tmp = (int)((sbyte)FETCH());
+            //int tmp = (int)((sbyte)FETCH());
+            int tmp = (sbyte)(ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0));
             if (flag)
             {
-                byte[] table = new byte[] { 3, 10, 10 };
+                //使用外部定义减少GC压力
+                //byte[] table = new byte[] { 3, 10, 10 };
                 I.ip = (ushort)(I.ip + tmp);
-                pendingCycles -= table[chip_type / 8];
+                pendingCycles -= JMP_table[chip_type / 8];
                 //PC = (I.sregs[1] << 4) + I.ip;
-                return;
+                //return;
             }
         }
         public void ADJ4(int param1, int param2)
@@ -481,6 +522,7 @@ namespace cpu.nec
             else
             {
                 EA = GetEA[ModRM]();
+                //EA = DoNecGetEAOpCode(ModRM);
                 tmp = ReadByte(EA);
             }
         }
@@ -494,6 +536,7 @@ namespace cpu.nec
             else
             {
                 EA = GetEA[ModRM]();
+                //EA = DoNecGetEAOpCode(ModRM);
                 tmp = ReadWord(EA);
             }
         }
@@ -689,17 +732,20 @@ namespace cpu.nec
                 I.regs.b[5] = (byte)((ushort)result2 / 0x100);
             }
         }
+        readonly static byte[] ADD4S_table = new byte[] { 18, 19, 19 };
         public void ADD4S(ref int tmp, ref int tmp2)
         {
             int i, v1, v2, result;
             int count = (I.regs.b[2] + 1) / 2;
             ushort di = (ushort)(I.regs.b[14] + I.regs.b[15] * 0x100);
             ushort si = (ushort)(I.regs.b[12] + I.regs.b[13] * 0x100);
-            byte[] table = new byte[] { 18, 19, 19 };
+
+            //使用外部定义减少GC压力
+            //byte[] table = new byte[] { 18, 19, 19 };
             I.ZeroVal = I.CarryVal = 0;
             for (i = 0; i < count; i++)
             {
-                pendingCycles -= table[chip_type / 8];
+                pendingCycles -= ADD4S_table[chip_type / 8];
                 tmp = GetMemB(3, si);
                 tmp2 = GetMemB(0, di);
                 v1 = (tmp >> 4) * 10 + (tmp & 0xf);
@@ -788,6 +834,7 @@ namespace cpu.nec
                 di++;
             }
         }
+
         public void nec_init()
         {
             mod_RM = new Mod_RM();
@@ -1053,6 +1100,7 @@ namespace cpu.nec
                 i_fepre,
                 i_ffpre
             };
+
             GetEA = new getea_delegate[192]{
                 EA_000, EA_001, EA_002, EA_003, EA_004, EA_005, EA_006, EA_007,
                 EA_000, EA_001, EA_002, EA_003, EA_004, EA_005, EA_006, EA_007,
@@ -1086,12 +1134,20 @@ namespace cpu.nec
         {
             nec_reset();
         }
+
+        static int[] nec_reset_reg_name = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
         public void nec_reset()
         {
             //const nec_config *config;
             uint i, j, c;
             //BREGS[] reg_name = new BREGS[8] { BREGS.AL, BREGS.CL, BREGS.DL, BREGS.BL, BREGS.AH, BREGS.CH, BREGS.DH, BREGS.BH };
-            int[] reg_name = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
+
+
+            //静态化减少GC
+            //int[] reg_name = new int[8] { 0, 2, 4, 6, 1, 3, 5, 7 };
+
+
+
             //int (*save_irqcallback)(int);
             //memory_interface save_mem;
             //save_irqcallback = I.irq_callback;
@@ -1139,13 +1195,13 @@ namespace cpu.nec
             I.MF = true;
             for (i = 0; i < 256; i++)
             {
-                mod_RM.regb[i] = reg_name[(i & 0x38) >> 3];
+                mod_RM.regb[i] = nec_reset_reg_name[(i & 0x38) >> 3];
                 mod_RM.regw[i] = (int)((i & 0x38) >> 3);
             }
             for (i = 0xc0; i < 0x100; i++)
             {
                 mod_RM.RMw[i] = (int)(i & 7);
-                mod_RM.RMb[i] = reg_name[i & 7];
+                mod_RM.RMb[i] = nec_reset_reg_name[i & 7];
             }
             I.poll_state = true;
         }
@@ -1175,6 +1231,7 @@ namespace cpu.nec
         public void nec_trap()
         {
             nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             nec_interrupt(1, false);
         }
         public void external_int()
@@ -1257,11 +1314,42 @@ namespace cpu.nec
             nec_init();
             chip_type = 8;
         }
+        //public override int ExecuteCycles(int cycles)
+        //{
+        //    return v30_execute(cycles);
+        //}
+        //public int v30_execute(int cycles)
+        //{
+        //    pendingCycles = cycles;
+        //    while (pendingCycles > 0)
+        //    {
+        //        int prevCycles = pendingCycles;
+        //        if (I.pending_irq != 0 && I.no_interrupt == 0)
+        //        {
+        //            if ((I.pending_irq & NMI_IRQ) != 0)
+        //            {
+        //                external_int();
+        //            }
+        //            else if (I.IF)
+        //            {
+        //                external_int();
+        //            }
+        //        }
+        //        if (I.no_interrupt != 0)
+        //        {
+        //            I.no_interrupt--;
+        //        }
+        //        iNOP = fetchop();
+        //        nec_instruction[iNOP]();
+        //        //DoInstructionOpCode(iNOP);
+        //        int delta = prevCycles - pendingCycles;
+        //        totalExecutedCycles += (ulong)delta;
+        //    }
+        //    return cycles - pendingCycles;
+        //}
+
+        //手动内联
         public override int ExecuteCycles(int cycles)
-        {
-            return v30_execute(cycles);
-        }
-        public int v30_execute(int cycles)
         {
             pendingCycles = cycles;
             while (pendingCycles > 0)
@@ -1271,19 +1359,101 @@ namespace cpu.nec
                 {
                     if ((I.pending_irq & NMI_IRQ) != 0)
                     {
-                        external_int();
+                        //external_int();
+
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                     else if (I.IF)
                     {
-                        external_int();
+                        //external_int();
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                 }
                 if (I.no_interrupt != 0)
                 {
                     I.no_interrupt--;
                 }
-                iNOP = fetchop();
+                //iNOP = fetchop();
+                byte ret = ReadOp(((I.sregs[1] << 4) + I.ip++) ^ 0);
+                if (I.MF)
+                {
+                    if (v25v35_decryptiontable != null)
+                    {
+                        ret = v25v35_decryptiontable[ret];
+                    }
+                }
+                iNOP = ret;
+
                 nec_instruction[iNOP]();
+                //DoInstructionOpCode(iNOP);
                 int delta = prevCycles - pendingCycles;
                 totalExecutedCycles += (ulong)delta;
             }
@@ -1297,11 +1467,42 @@ namespace cpu.nec
             nec_init();
             chip_type = 0;
         }
+        //public override int ExecuteCycles(int cycles)
+        //{
+        //    return v33_execute(cycles);
+        //}
+        //public int v33_execute(int cycles)
+        //{
+        //    pendingCycles = cycles;
+        //    while (pendingCycles > 0)
+        //    {
+        //        int prevCycles = pendingCycles;
+        //        if (I.pending_irq != 0 && I.no_interrupt == 0)
+        //        {
+        //            if ((I.pending_irq & NMI_IRQ) != 0)
+        //            {
+        //                external_int();
+        //            }
+        //            else if (I.IF)
+        //            {
+        //                external_int();
+        //            }
+        //        }
+        //        if (I.no_interrupt != 0)
+        //        {
+        //            I.no_interrupt--;
+        //        }
+        //        iNOP = fetchop();
+        //        nec_instruction[iNOP]();
+        //        //DoInstructionOpCode(iNOP);
+        //        int delta = prevCycles - pendingCycles;
+        //        totalExecutedCycles += (ulong)delta;
+        //    }
+        //    return cycles - pendingCycles;
+        //}
+
+        //手动内联
         public override int ExecuteCycles(int cycles)
-        {
-            return v33_execute(cycles);
-        }
-        public int v33_execute(int cycles)
         {
             pendingCycles = cycles;
             while (pendingCycles > 0)
@@ -1311,19 +1512,100 @@ namespace cpu.nec
                 {
                     if ((I.pending_irq & NMI_IRQ) != 0)
                     {
-                        external_int();
+                        //external_int();
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                     else if (I.IF)
                     {
-                        external_int();
+                        //external_int();
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                 }
                 if (I.no_interrupt != 0)
                 {
                     I.no_interrupt--;
                 }
-                iNOP = fetchop();
+                //iNOP = fetchop();
+                byte ret = ReadOp(((I.sregs[1] << 4) + I.ip++) ^ 0);
+                if (I.MF)
+                {
+                    if (v25v35_decryptiontable != null)
+                    {
+                        ret = v25v35_decryptiontable[ret];
+                    }
+                }
+                iNOP = ret;
+
                 nec_instruction[iNOP]();
+                //DoInstructionOpCode(iNOP);
                 int delta = prevCycles - pendingCycles;
                 totalExecutedCycles += (ulong)delta;
             }

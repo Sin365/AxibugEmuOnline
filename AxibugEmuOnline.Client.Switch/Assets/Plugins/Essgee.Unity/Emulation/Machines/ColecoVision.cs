@@ -186,7 +186,8 @@ namespace Essgee.Emulation.Machines
 
             //var (type, bootstrapRomData) = CartridgeLoader.Load(configuration.BiosRom, "ColecoVision BIOS");
             //直接加载BootStrap
-            GameMetadataHandler.instance.gameMetaReources.GetDatBytes("Bootstrap/[BIOS] ColecoVision (USA, Europe).col", out byte[] bootstrapRomData);
+            byte[] bootstrapRomData;
+            GameMetadataHandler.instance.gameMetaReources.GetDatBytes("Bootstrap/[BIOS] ColecoVision (USA, Europe).col", out bootstrapRomData);
             bios = new ColecoCartridge(bootstrapRomData.Length, 0);
             bios.LoadRom(bootstrapRomData);
         }

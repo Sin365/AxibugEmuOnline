@@ -10,7 +10,8 @@
         "StoicGooseUnity",
         "Unity.InputSystem",
         "AxiNSApi",
-        "Unity.InputSystem.Switch"
+        "Unity.InputSystem.Switch",
+        "Google.Protobuf"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

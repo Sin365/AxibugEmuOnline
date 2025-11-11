@@ -100,7 +100,8 @@ namespace AxibugEmuOnline.Client.Tools
 
         public T GetState<T>() where T : State, new()
         {
-            m_states.TryGetValue(typeof(T), out var value);
+            State value;
+            m_states.TryGetValue(typeof(T), out value);
             return value as T;
         }
 

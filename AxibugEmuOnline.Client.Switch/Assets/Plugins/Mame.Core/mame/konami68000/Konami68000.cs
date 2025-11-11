@@ -814,7 +814,7 @@ namespace MAME.Core
         public static void sound_arm_nmi_w()
         {
             Cpuint.cpunum_set_input_line(1, (int)LineState.INPUT_LINE_NMI, LineState.CLEAR_LINE);
-            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common( EmuTimer.TIME_ACT.Konami68000_nmi_callback, true);
+            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.Konami68000_nmi_callback, true);
             EmuTimer.timer_adjust_periodic(timer, new Atime(0, (long)50e12), Attotime.ATTOTIME_NEVER);
         }
         public static ushort punkshot_kludge_r()

@@ -11,7 +11,7 @@
         public static byte port1_out, port2_out, port3_out, port4_out;
         public static byte portA_in, portA_out, ddrA, portB_in, portB_out, ddrB;
         public static int ic43_a, ic43_b;
-        public static byte[] tokio_prot_data = new byte[]
+        public readonly static byte[] tokio_prot_data = new byte[]
         {
             0x6c,
             0x7f,0x5f,0x7f,0x6f,0x5f,0x77,0x5f,0x7f,0x5f,0x7f,0x5f,0x7f,0x5b,0x7f,0x5f,0x7f,
@@ -139,9 +139,15 @@
         {
             return (byte)((port2_out & ddr2) | (port2_in & ~ddr2));
         }
+        static byte[] bublbobl_mcu_port2_w_ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
         public static void bublbobl_mcu_port2_w(byte data)
         {
-            byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
+            //使用外部定义减少GC压力
+            bublbobl_mcu_port2_w_ports[0] = dsw0;
+            bublbobl_mcu_port2_w_ports[1] = dsw1;
+            bublbobl_mcu_port2_w_ports[2] = (byte)sbyte1;
+            bublbobl_mcu_port2_w_ports[3] = (byte)sbyte2;
+            //byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
             if ((~port2_out & 0x10) != 0 && (data & 0x10) != 0)
             {
                 int address = port4_out | ((data & 0x0f) << 8);
@@ -149,7 +155,7 @@
                 {
                     if ((address & 0x0800) == 0x0000)
                     {
-                        port3_in = ports[address & 3];
+                        port3_in = bublbobl_mcu_port2_w_ports[address & 3];
                     }
                     else if ((address & 0x0c00) == 0x0c00)
                     {
@@ -289,10 +295,10 @@
             }
             ic43_a = res;
         }
+        readonly static int[] boblbobl_ic43_b_w_xor = new int[] { 4, 1, 8, 2 };
         public static void boblbobl_ic43_b_w(int offset, byte data)
         {
-            int[] xor = new int[] { 4, 1, 8, 2 };
-            ic43_b = (data >> 4) ^ xor[offset];
+            ic43_b = (data >> 4) ^ boblbobl_ic43_b_w_xor[offset];
         }
         public static byte boblbobl_ic43_b_r(int offset)
         {
@@ -332,9 +338,16 @@
         {
             return (byte)((portB_out & ddrB) | (portB_in & ~ddrB));
         }
+        static byte[] bublbobl_68705_portB_w_ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
         public static void bublbobl_68705_portB_w(byte data)
         {
-            byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
+
+            //使用外部定义减少GC压力
+            bublbobl_68705_portB_w_ports[0] = dsw0;
+            bublbobl_68705_portB_w_ports[1] = dsw1;
+            bublbobl_68705_portB_w_ports[2] = (byte)sbyte1;
+            bublbobl_68705_portB_w_ports[3] = (byte)sbyte2;
+            //byte[] ports = new byte[] { dsw0, dsw1, (byte)sbyte1, (byte)sbyte2 };
             if (((ddrB & 0x01) != 0) && ((~data & 0x01) != 0) && ((portB_out & 0x01) != 0))
             {
                 portA_in = (byte)latch;
@@ -353,7 +366,7 @@
                 {
                     if ((address & 0x0800) == 0x0000)
                     {
-                        latch = ports[address & 3];
+                        latch = bublbobl_68705_portB_w_ports[address & 3];
                     }
                     else if ((address & 0x0c00) == 0x0c00)
                     {

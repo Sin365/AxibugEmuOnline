@@ -119,8 +119,8 @@ namespace MAME.Core
                     //}
 
                     //这是一个Monkey Patch， 这里一维数组是0~2，二位数组可能不正常
-                    int maxcount = Math.Min(streamoutput[i].Length, max_samples_per_update);
-                    for (j = 0; j < maxcount; j++)
+                    max_samples_per_update = Math.Min(max_samples_per_update, streamoutput[i].Length - samples_to_lose);
+                    for (j = 0; j < max_samples_per_update; j++)
                     {
                         streamoutput[i][j] = streamoutput[i][samples_to_lose + j];
                     }

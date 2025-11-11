@@ -2,6 +2,8 @@
 {
     partial class Nec
     {
+
+        #region 可用段
         void i_add_br8()
         {
             int ModRM;
@@ -9,7 +11,9 @@
             DEF_br8(out ModRM, out src, out dst);
             ADDB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_add_wr16()
         {
@@ -20,25 +24,108 @@
             PutbackRMWord(ModRM, dst);
             CLKR(ModRM, 24, 24, 11, 24, 16, 7, 2, EA);
         }
+        //void i_add_r8b()
+        //{
+        //    int ModRM;
+        //    byte src, dst;
+        //    DEF_r8b(out ModRM, out src, out dst);
+        //    ADDB(ref src, ref dst);
+        //    I.regs.b[mod_RM.regb[ModRM]] = dst;
+        //    //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+        //    const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+        //    pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+        //}
+
+        //手动内联
         void i_add_r8b()
         {
             int ModRM;
             byte src, dst;
-            DEF_r8b(out ModRM, out src, out dst);
-            ADDB(ref src, ref dst);
+            //DEF_r8b(out ModRM, out src, out dst);
+            //ModRM = FETCH();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //dst = RegByte(ModRM);
+            dst = I.regs.b[mod_RM.regb[ModRM]];
+            //src = GetRMByte(ModRM);
+            src = ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(
+                GetEA[ModRM]()
+                //DoNecGetEAOpCode(ModRM)
+                ));
+
+            //ADDB(ref src, ref dst);
+            uint res = (uint)(dst + src);
+            //SetCFB((uint)res);
+            I.CarryVal = (uint)res & 0x100;
+            //SetOFB_Add((int)res, src, dst);
+            I.OverVal = (uint)((((int)res) ^ (src)) & (((int)res) ^ (dst)) & 0x80);
+            //SetAF((int)res, src, dst);
+            I.AuxVal = (uint)((((int)res) ^ ((src) ^ (dst))) & 0x10);
+            //SetSZPF_Byte((int)res);
+            I.ZeroVal = I.ParityVal = (uint)((sbyte)(int)res);
+            I.SignVal = (int)I.ZeroVal;
+            dst = (byte)res;
+
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
+        //void i_add_r16w()
+        //{
+        //    int ModRM;
+        //    ushort src, dst;
+        //    DEF_r16w(out ModRM, out src, out dst);
+        //    ADDW(ref src, ref dst);
+        //    //I.regs.w[mod_RM.regw[ModRM]] = dst;
+        //    I.regs.b[mod_RM.regw[ModRM] * 2] = (byte)(dst % 0x100);
+        //    I.regs.b[mod_RM.regw[ModRM] * 2 + 1] = (byte)(dst / 0x100);
+        //    CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
+        //}
+
+        //手动内联
         void i_add_r16w()
         {
             int ModRM;
             ushort src, dst;
-            DEF_r16w(out ModRM, out src, out dst);
-            ADDW(ref src, ref dst);
+            //DEF_r16w(out ModRM, out src, out dst);
+            //ModRM = FETCH();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //dst = RegWord(ModRM);
+            dst = (ushort)(I.regs.b[mod_RM.regw[ModRM] * 2] + I.regs.b[mod_RM.regw[ModRM] * 2 + 1] * 0x100);
+            //src = GetRMWord(ModRM);
+            src = (ushort)(ModRM >= 0xc0 ? I.regs.b[mod_RM.RMw[ModRM] * 2] + I.regs.b[mod_RM.RMw[ModRM] * 2 + 1] * 0x100 :
+                ReadWord(
+            GetEA[ModRM]()
+            //DoNecGetEAOpCode(ModRM)
+                ));
+
+            //ADDW(ref src, ref dst);
+
+            uint res = (uint)(dst + src);
+            //SetCFW(res);
+            I.CarryVal = res & 0x10000;
+            //SetOFW_Add((int)res, src, dst);
+            I.OverVal = (uint)((((int)res) ^ (src)) & (((int)res) ^ (dst)) & 0x8000);
+            //SetAF((int)res, src, dst);
+            I.AuxVal = (uint)((((int)res) ^ ((src) ^ (dst))) & 0x10);
+            //SetSZPF_Word((int)res);
+            I.ZeroVal = I.ParityVal = (uint)((short)(int)res);
+            I.SignVal = (int)I.ZeroVal;
+            dst = (ushort)res;
+
             //I.regs.w[mod_RM.regw[ModRM]] = dst;
             I.regs.b[mod_RM.regw[ModRM] * 2] = (byte)(dst % 0x100);
             I.regs.b[mod_RM.regw[ModRM] * 2 + 1] = (byte)(dst / 0x100);
-            CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
+            //CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
+            const int ocount = (15 << 16) | (15 << 8) | 8, ecount = (15 << 16) | (11 << 8) | 6;
+            if (ModRM >= 0xc0)
+            {
+                pendingCycles -= 2;
+            }
+            else
+            {
+                pendingCycles -= ((EA & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
+            }
         }
         void i_add_ald8()
         {
@@ -46,7 +133,9 @@
             DEF_ald8(out src, out dst);
             ADDB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_add_axd16()
         {
@@ -56,17 +145,23 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_es()
         {
             PUSH(I.sregs[0]);
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_es()
         {
             POP(ref I.sregs[0]);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_or_br8()
         {
@@ -75,7 +170,9 @@
             DEF_br8(out ModRM, out src, out dst);
             ORB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_or_wr16()
         {
@@ -93,7 +190,9 @@
             DEF_r8b(out ModRM, out src, out dst);
             ORB(ref src, ref dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_or_r16w()
         {
@@ -112,7 +211,9 @@
             DEF_ald8(out src, out dst);
             ORB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_or_axd16()
         {
@@ -122,41 +223,208 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_cs()
         {
             PUSH(I.sregs[1]);
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pre_nec()
         {
             int ModRM = 0, tmp = 0, tmp2 = 0;
             switch (FETCH())
             {
-                case 0x10: BITOP_BYTE(ref ModRM, ref tmp); CLKS(3, 3, 4); tmp2 = I.regs.b[2] & 0x7; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0; break; /* Test */
-                case 0x11: BITOP_WORD(ref ModRM, ref tmp); CLKS(3, 3, 4); tmp2 = I.regs.b[2] & 0xf; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0; break; /* Test */
-                case 0x12: BITOP_BYTE(ref ModRM, ref tmp); CLKS(5, 5, 4); tmp2 = I.regs.b[2] & 0x7; tmp &= ~(1 << tmp2); PutbackRMByte(ModRM, (byte)tmp); break; /* Clr */
-                case 0x13: BITOP_WORD(ref ModRM, ref tmp); CLKS(5, 5, 4); tmp2 = I.regs.b[2] & 0xf; tmp &= ~(1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp); break; /* Clr */
-                case 0x14: BITOP_BYTE(ref ModRM, ref tmp); CLKS(4, 4, 4); tmp2 = I.regs.b[2] & 0x7; tmp |= (1 << tmp2); PutbackRMByte(ModRM, (byte)tmp); break; /* Set */
-                case 0x15: BITOP_WORD(ref ModRM, ref tmp); CLKS(4, 4, 4); tmp2 = I.regs.b[2] & 0xf; tmp |= (1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp); break; /* Set */
-                case 0x16: BITOP_BYTE(ref ModRM, ref tmp); CLKS(4, 4, 4); tmp2 = I.regs.b[2] & 0x7; BIT_NOT(ref tmp, ref tmp2); PutbackRMByte(ModRM, (byte)tmp); break; /* Not */
-                case 0x17: BITOP_WORD(ref ModRM, ref tmp); CLKS(4, 4, 4); tmp2 = I.regs.b[2] & 0xf; BIT_NOT(ref tmp, ref tmp2); PutbackRMWord(ModRM, (ushort)tmp); break; /* Not */
+                case 0x10:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(3, 3, 4);
+                        const int ccount = (3 << 16) | (3 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0x7; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0;
+                    }
+                    break; /* Test */
+                case 0x11:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(3, 3, 4);
+                        const int ccount = (3 << 16) | (3 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0xf; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0;
+                    }
+                    break; /* Test */
+                case 0x12:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(5, 5, 4);
+                        const int ccount = (5 << 16) | (5 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0x7; tmp &= ~(1 << tmp2); PutbackRMByte(ModRM, (byte)tmp);
+                    }
+                    break; /* Clr */
+                case 0x13:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(5, 5, 4);
+                        const int ccount = (5 << 16) | (5 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0xf; tmp &= ~(1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp);
+                    }
+                    break; /* Clr */
+                case 0x14:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(4, 4, 4);
+                        const int ccount = (4 << 16) | (4 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0x7; tmp |= (1 << tmp2); PutbackRMByte(ModRM, (byte)tmp);
+                    }
+                    break; /* Set */
+                case 0x15:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(4, 4, 4);
+                        const int ccount = (4 << 16) | (4 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0xf; tmp |= (1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp);
+                    }
+                    break; /* Set */
+                case 0x16:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(4, 4, 4);
+                        const int ccount = (4 << 16) | (4 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0x7; BIT_NOT(ref tmp, ref tmp2); PutbackRMByte(ModRM, (byte)tmp);
+                    }
+                    break; /* Not */
+                case 0x17:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(4, 4, 4); 
+                        const int ccount = (4 << 16) | (4 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = I.regs.b[2] & 0xf; BIT_NOT(ref tmp, ref tmp2); PutbackRMWord(ModRM, (ushort)tmp);
+                    }
+                    break; /* Not */
 
-                case 0x18: BITOP_BYTE(ref ModRM, ref tmp); CLKS(4, 4, 4); tmp2 = (FETCH()) & 0x7; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0; break; /* Test */
-                case 0x19: BITOP_WORD(ref ModRM, ref tmp); CLKS(4, 4, 4); tmp2 = (FETCH()) & 0xf; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0; break; /* Test */
-                case 0x1a: BITOP_BYTE(ref ModRM, ref tmp); CLKS(6, 6, 4); tmp2 = (FETCH()) & 0x7; tmp &= ~(1 << tmp2); PutbackRMByte(ModRM, (byte)tmp); break; /* Clr */
-                case 0x1b: BITOP_WORD(ref ModRM, ref tmp); CLKS(6, 6, 4); tmp2 = (FETCH()) & 0xf; tmp &= ~(1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp); break; /* Clr */
-                case 0x1c: BITOP_BYTE(ref ModRM, ref tmp); CLKS(5, 5, 4); tmp2 = (FETCH()) & 0x7; tmp |= (1 << tmp2); PutbackRMByte(ModRM, (byte)tmp); break; /* Set */
-                case 0x1d: BITOP_WORD(ref ModRM, ref tmp); CLKS(5, 5, 4); tmp2 = (FETCH()) & 0xf; tmp |= (1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp); break; /* Set */
-                case 0x1e: BITOP_BYTE(ref ModRM, ref tmp); CLKS(5, 5, 4); tmp2 = (FETCH()) & 0x7; BIT_NOT(ref tmp, ref tmp2); PutbackRMByte(ModRM, (byte)tmp); break; /* Not */
-                case 0x1f: BITOP_WORD(ref ModRM, ref tmp); CLKS(5, 5, 4); tmp2 = (FETCH()) & 0xf; BIT_NOT(ref tmp, ref tmp2); PutbackRMWord(ModRM, (ushort)tmp); break; /* Not */
+                case 0x18:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(4, 4, 4);
+                        const int ccount = (4 << 16) | (4 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0x7; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0;
+                    }
+                    break; /* Test */
+                case 0x19:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(4, 4, 4);
+                        const int ccount = (4 << 16) | (4 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0xf; I.ZeroVal = (uint)(((tmp & (1 << tmp2)) != 0) ? 1 : 0); I.CarryVal = I.OverVal = 0;
+                    }
+                    break; /* Test */
+                case 0x1a:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(6, 6, 4);
+                        const int ccount = (6 << 16) | (6 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0x7; tmp &= ~(1 << tmp2); PutbackRMByte(ModRM, (byte)tmp);
+                    }
+                    break; /* Clr */
+                case 0x1b:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(6, 6, 4);
+                        const int ccount = (6 << 16) | (6 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0xf; tmp &= ~(1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp);
+                    }
+                    break; /* Clr */
+                case 0x1c:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(5, 5, 4);
+                        const int ccount = (5 << 16) | (5 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0x7; tmp |= (1 << tmp2); PutbackRMByte(ModRM, (byte)tmp);
+                    }
+                    break; /* Set */
+                case 0x1d:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(5, 5, 4);
+                        const int ccount = (5 << 16) | (5 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0xf; tmp |= (1 << tmp2); PutbackRMWord(ModRM, (ushort)tmp);
+                    }
+                    break; /* Set */
+                case 0x1e:
+                    {
+                        BITOP_BYTE(ref ModRM, ref tmp);
+                        //CLKS(5, 5, 4);
+                        const int ccount = (5 << 16) | (5 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0x7; BIT_NOT(ref tmp, ref tmp2); PutbackRMByte(ModRM, (byte)tmp);
+                    }
+                    break; /* Not */
+                case 0x1f:
+                    {
+                        BITOP_WORD(ref ModRM, ref tmp);
+                        //CLKS(5, 5, 4);
+                        const int ccount = (5 << 16) | (5 << 8) | 4;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                        tmp2 = (FETCH()) & 0xf; BIT_NOT(ref tmp, ref tmp2); PutbackRMWord(ModRM, (ushort)tmp);
+                    }
+                    break; /* Not */
 
-                case 0x20: ADD4S(ref tmp, ref tmp2); CLKS(7, 7, 2); break;
-                case 0x22: SUB4S(ref tmp, ref tmp2); CLKS(7, 7, 2); break;
-                case 0x26: CMP4S(ref tmp, ref tmp2); CLKS(7, 7, 2); break;
-                case 0x28: ModRM = FETCH(); tmp = GetRMByte(ModRM); tmp <<= 4; tmp |= I.regs.b[0] & 0xf; I.regs.b[0] = (byte)((I.regs.b[0] & 0xf0) | ((tmp >> 8) & 0xf)); tmp &= 0xff; PutbackRMByte(ModRM, (byte)tmp); CLKM(ModRM, 13, 13, 9, 28, 28, 15); break;
-                case 0x2a: ModRM = FETCH(); tmp = GetRMByte(ModRM); tmp2 = (I.regs.b[0] & 0xf) << 4; I.regs.b[0] = (byte)((I.regs.b[0] & 0xf0) | (tmp & 0xf)); tmp = tmp2 | (tmp >> 4); PutbackRMByte(ModRM, (byte)tmp); CLKM(ModRM, 17, 17, 13, 32, 32, 19); break;
+                case 0x20:
+                    {
+                        ADD4S(ref tmp, ref tmp2);
+                        //CLKS(7, 7, 2);
+                        const int ccount = (7 << 16) | (7 << 8) | 2;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                    }
+                    break;
+                case 0x22:
+                    {
+                        SUB4S(ref tmp, ref tmp2);
+                        //CLKS(7, 7, 2);
+                        const int ccount = (7 << 16) | (7 << 8) | 2;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                    }
+                    break;
+                case 0x26:
+                    {
+                        CMP4S(ref tmp, ref tmp2);
+                        //CLKS(7, 7, 2);
+                        const int ccount = (7 << 16) | (7 << 8) | 2;
+                        pendingCycles -= (ccount >> chip_type) & 0x7f;
+                    }
+                    break;
+                case 0x28:
+                    {
+                        ModRM = FETCH(); tmp = GetRMByte(ModRM); tmp <<= 4; tmp |= I.regs.b[0] & 0xf; I.regs.b[0] = (byte)((I.regs.b[0] & 0xf0) | ((tmp >> 8) & 0xf)); tmp &= 0xff; PutbackRMByte(ModRM, (byte)tmp);
+                        //CLKM(ModRM, 13, 13, 9, 28, 28, 15);
+                        const int ccount = (13 << 16) | (13 << 8) | 9, mcount = (28 << 16) | (28 << 8) | 15;
+                        pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+                    }
+                    break;
+                case 0x2a:
+                    {
+                        ModRM = FETCH(); tmp = GetRMByte(ModRM); tmp2 = (I.regs.b[0] & 0xf) << 4; I.regs.b[0] = (byte)((I.regs.b[0] & 0xf0) | (tmp & 0xf)); tmp = tmp2 | (tmp >> 4); PutbackRMByte(ModRM, (byte)tmp);
+                        //CLKM(ModRM, 17, 17, 13, 32, 32, 19);
+                        const int ccount = (17 << 16) | (17 << 8) | 13, mcount = (32 << 16) | (32 << 8) | 19;
+                        pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+                    }
+                    break;
                 case 0x31: ModRM = FETCH(); ModRM = 0; break;
                 case 0x33: ModRM = FETCH(); ModRM = 0; break;
                 case 0x92: CLK(2); break; /* V25/35 FINT */
@@ -174,7 +442,9 @@
             src += (byte)(CF() ? 1 : 0);
             ADDB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_adc_wr16()
         {
@@ -194,7 +464,9 @@
             src += (byte)(CF() ? 1 : 0);
             ADDB(ref src, ref dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_adc_r16w()
         {
@@ -215,7 +487,9 @@
             src += (byte)(CF() ? 1 : 0);
             ADDB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_adc_axd16()
         {
@@ -226,17 +500,23 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_ss()
         {
             PUSH(I.sregs[2]);
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_ss()
         {
             POP(ref I.sregs[2]);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
             I.no_interrupt = 1;
         }
         void i_sbb_br8()
@@ -247,7 +527,9 @@
             src += (byte)(CF() ? 1 : 0);
             SUBB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_sbb_wr16()
         {
@@ -267,7 +549,9 @@
             src += (byte)(CF() ? 1 : 0);
             SUBB(ref src, ref dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_sbb_r16w()
         {
@@ -288,7 +572,9 @@
             src += (byte)(CF() ? 1 : 0);
             SUBB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_sbb_axd16()
         {
@@ -299,17 +585,23 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_ds()
         {
             PUSH(I.sregs[3]);
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_ds()
         {
             POP(ref I.sregs[3]);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_and_br8()
         {
@@ -318,7 +610,9 @@
             DEF_br8(out ModRM, out src, out dst);
             ANDB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_and_wr16()
         {
@@ -336,7 +630,9 @@
             DEF_r8b(out ModRM, out src, out dst);
             ANDB(ref src, ref dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_and_r16w()
         {
@@ -355,7 +651,9 @@
             DEF_ald8(out src, out dst);
             ANDB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_and_axd16()
         {
@@ -365,7 +663,9 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_es()
         {
@@ -373,12 +673,15 @@
             prefix_base = I.sregs[0] << 4;
             CLK(2);
             nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_daa()
         {
             ADJ4(6, 0x60);
-            CLKS(3, 3, 2);
+            //CLKS(3, 3, 2);
+            const int ccount = (3 << 16) | (3 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_sub_br8()
         {
@@ -387,7 +690,9 @@
             DEF_br8(out ModRM, out src, out dst);
             SUBB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_sub_wr16()
         {
@@ -405,7 +710,9 @@
             DEF_r8b(out ModRM, out src, out dst);
             SUBB(ref src, ref dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_sub_r16w()
         {
@@ -424,7 +731,9 @@
             DEF_ald8(out src, out dst);
             SUBB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_sub_axd16()
         {
@@ -434,7 +743,9 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_cs()
         {
@@ -442,12 +753,15 @@
             prefix_base = I.sregs[1] << 4;
             CLK(2);
             nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_das()
         {
             ADJ4(-6, -0x60);
-            CLKS(3, 3, 2);
+            //CLKS(3, 3, 2);
+            const int ccount = (3 << 16) | (3 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_xor_br8()
         {
@@ -456,7 +770,9 @@
             DEF_br8(out ModRM, out src, out dst);
             XORB(ref src, ref dst);
             PutbackRMByte(ModRM, dst);
-            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            //CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_xor_wr16()
         {
@@ -474,7 +790,9 @@
             DEF_r8b(out ModRM, out src, out dst);
             XORB(ref src, ref dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_xor_r16w()
         {
@@ -493,7 +811,9 @@
             DEF_ald8(out src, out dst);
             XORB(ref src, ref dst);
             I.regs.b[0] = dst;
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_xor_axd16()
         {
@@ -503,20 +823,49 @@
             //I.regs.w[0] = dst;
             I.regs.b[0] = (byte)(dst % 0x100);
             I.regs.b[1] = (byte)(dst / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
+        //void i_ss()
+        //{
+        //    seg_prefix = 1;
+        //    prefix_base = I.sregs[2] << 4;
+        //    CLK(2);
+        //    nec_instruction[fetchop()]();
+        //    //DoInstructionOpCode(fetchop());
+        //    seg_prefix = 0;
+        //}
+
+        //手动内联
         void i_ss()
         {
             seg_prefix = 1;
             prefix_base = I.sregs[2] << 4;
-            CLK(2);
-            nec_instruction[fetchop()]();
+
+            //CLK(2);
+            pendingCycles -= 2;
+
+            //nec_instruction[fetchop()]();
+
+            byte ret = ReadOp(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            if (I.MF)
+            {
+                if (v25v35_decryptiontable != null)
+                {
+                    ret = v25v35_decryptiontable[ret];
+                }
+            }
+            nec_instruction[ret]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_aaa()
         {
             ADJB(6, (I.regs.b[0] > 0xf9) ? 2 : 1);
-            CLKS(7, 7, 4);
+            //CLKS(7, 7, 4);
+            const int ccount = (7 << 16) | (7 << 8) | 4;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_cmp_br8()
         {
@@ -524,7 +873,9 @@
             byte src, dst;
             DEF_br8(out ModRM, out src, out dst);
             SUBB(ref src, ref dst);
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_cmp_wr16()
         {
@@ -534,35 +885,118 @@
             SUBW(ref src, ref dst);
             CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
         }
+        //void i_cmp_r8b()
+        //{
+        //    int ModRM;
+        //    byte src, dst;
+        //    DEF_r8b(out ModRM, out src, out dst);
+        //    SUBB(ref src, ref dst);
+        //    CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+        //}
+
+        const int i_cmp_r8b_ccount = (2 << 16) | (2 << 8) | 2, i_cmp_r8b_mcount = (11 << 16) | (11 << 8) | 6;
+        //手动内联
         void i_cmp_r8b()
         {
             int ModRM;
             byte src, dst;
-            DEF_r8b(out ModRM, out src, out dst);
-            SUBB(ref src, ref dst);
-            CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //DEF_r8b(out ModRM, out src, out dst);
+
+            //ModRM = FETCH();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //dst = RegByte(ModRM);
+            dst = I.regs.b[mod_RM.regb[ModRM]];
+            //src = GetRMByte(ModRM);
+            src = ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(
+                GetEA[ModRM]()
+                //DoNecGetEAOpCode(ModRM)
+                ));
+
+            //SUBB(ref src, ref dst);
+            uint res = (uint)(dst - src);
+            //SetCFB(res);
+            I.CarryVal = res & 0x100;
+            //SetOFB_Sub((int)res, src, dst);
+            I.OverVal = (uint)(((dst) ^ (src)) & ((dst) ^ (res)) & 0x80);
+            //SetAF((int)res, src, dst);
+            I.AuxVal = (uint)(((res) ^ ((src) ^ (dst))) & 0x10);
+            //SetSZPF_Byte((int)res);
+            I.ZeroVal = I.ParityVal = (uint)((sbyte)res);
+            I.SignVal = (int)I.ZeroVal;
+            dst = (byte)res;
+
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 6);
+            //int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_cmp_r8b_ccount >> chip_type) & 0x7f) : ((i_cmp_r8b_mcount >> chip_type) & 0x7f);
         }
+
+        //void i_cmp_r16w()
+        //{
+        //    int ModRM;
+        //    ushort src, dst;
+        //    DEF_r16w(out ModRM, out src, out dst);
+        //    SUBW(ref src, ref dst);
+        //    CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
+        //}
+
+        //手动内联
         void i_cmp_r16w()
         {
             int ModRM;
             ushort src, dst;
-            DEF_r16w(out ModRM, out src, out dst);
-            SUBW(ref src, ref dst);
-            CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
+            //DEF_r16w(out ModRM, out src, out dst);
+            //ModRM = FETCH();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //dst = RegWord(ModRM);
+            dst = (ushort)(I.regs.b[mod_RM.regw[ModRM] * 2] + I.regs.b[mod_RM.regw[ModRM] * 2 + 1] * 0x100);
+            //src = GetRMWord(ModRM);
+            src = (ushort)(ModRM >= 0xc0 ? I.regs.b[mod_RM.RMw[ModRM] * 2] + I.regs.b[mod_RM.RMw[ModRM] * 2 + 1] * 0x100 :
+                ReadWord(
+            GetEA[ModRM]()
+            //DoNecGetEAOpCode(ModRM)
+                ));
+
+            //SUBW(ref src, ref dst);
+            uint res = (uint)(dst - src);
+            //SetCFW(res);
+            I.CarryVal = res & 0x10000;
+            //SetOFW_Sub((int)res, src, dst);
+            I.OverVal = (uint)(((dst) ^ (src)) & ((dst) ^ ((int)res)) & 0x8000);
+            //SetAF((int)res, src, dst);
+            I.AuxVal = (uint)((((int)res) ^ ((src) ^ (dst))) & 0x10);
+            //SetSZPF_Word((int)res);
+            I.ZeroVal = I.ParityVal = (uint)((short)(int)res);
+            I.SignVal = (int)I.ZeroVal;
+            dst = (ushort)res;
+
+            //CLKR(ModRM, 15, 15, 8, 15, 11, 6, 2, EA);
+            const int ocount = (15 << 16) | (15 << 8) | 8, ecount = (15 << 16) | (11 << 8) | 6;
+            if (ModRM >= 0xc0)
+            {
+                pendingCycles -= 2;
+            }
+            else
+            {
+                pendingCycles -= ((EA & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
+            }
         }
         void i_cmp_ald8()
         {
             byte src, dst;
             DEF_ald8(out src, out dst);
             SUBB(ref src, ref dst);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_cmp_axd16()
         {
             ushort src, dst;
             DEF_axd16(out src, out dst);
             SUBW(ref src, ref dst);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_ds()
         {
@@ -570,12 +1004,15 @@
             prefix_base = I.sregs[3] << 4;
             CLK(2);
             nec_instruction[fetchop()]();
+            //DoInstructionOpCode(fetchop());
             seg_prefix = 0;
         }
         void i_aas()
         {
             ADJB(-6, (I.regs.b[0] < 6) ? -2 : -1);
-            CLKS(7, 7, 4);
+            //CLKS(7, 7, 4);
+            const int ccount = (7 << 16) | (7 << 8) | 4;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_inc_ax()
         {
@@ -661,97 +1098,129 @@
         {
             //PUSH(I.regs.w[0]);
             PUSH((ushort)(I.regs.b[0] + I.regs.b[1] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_cx()
         {
             //PUSH(I.regs.w[1]);
             PUSH((ushort)(I.regs.b[2] + I.regs.b[3] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_dx()
         {
             //PUSH(I.regs.w[2]);
             PUSH((ushort)(I.regs.b[4] + I.regs.b[5] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_bx()
         {
             //PUSH(I.regs.w[3]);
             PUSH((ushort)(I.regs.b[6] + I.regs.b[7] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_sp()
         {
             //PUSH(I.regs.w[4]);
             PUSH((ushort)(I.regs.b[8] + I.regs.b[9] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_bp()
         {
             //PUSH(I.regs.w[5]);
             PUSH((ushort)(I.regs.b[10] + I.regs.b[11] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_si()
         {
             //PUSH(I.regs.w[6]);
             PUSH((ushort)(I.regs.b[12] + I.regs.b[13] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_push_di()
         {
             //PUSH(I.regs.w[7]);
             PUSH((ushort)(I.regs.b[14] + I.regs.b[15] * 0x100));
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_ax()
         {
             //POP(ref I.regs.w[0]);
             POPW(0);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_cx()
         {
             //POP(ref I.regs.w[1]);
             POPW(1);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_dx()
         {
             //POP(ref I.regs.w[2]);
             POPW(2);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_bx()
         {
             //POP(ref I.regs.w[3]);
             POPW(3);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_sp()
         {
             //POP(ref I.regs.w[4]);
             POPW(4);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_bp()
         {
             //POP(ref I.regs.w[5]);
             POPW(5);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_si()
         {
             //POP(ref I.regs.w[6]);
             POPW(6);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pop_di()
         {
             //POP(ref I.regs.w[7]);
             POPW(7);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_pusha()
         {
@@ -791,7 +1260,9 @@
             POPW(2);
             POPW(1);
             POPW(0);
-            CLKS(75, 43, 22);
+            //CLKS(75, 43, 22);
+            const int ccount = (75 << 16) | (43 << 8) | 22;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_chkind()
         {
@@ -839,7 +1310,10 @@
                 case 0xad: CLK(2); if (c != 0) do { i_lodsw(); c--; } while (c > 0 && !CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && !CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && !CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
-                default: nec_instruction[next](); break;
+                default:
+                    nec_instruction[next]();
+                    //DoInstructionOpCode(next);
+                    break;
             }
             seg_prefix = 0;
         }
@@ -870,7 +1344,10 @@
                 case 0xad: CLK(2); if (c != 0) do { i_lodsw(); c--; } while (c > 0 && CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && CF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
-                default: nec_instruction[next](); break;
+                default:
+                    nec_instruction[next]();
+                    //DoInstructionOpCode(next);
+                    break;
             }
             seg_prefix = 0;
         }
@@ -967,7 +1444,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jno()
@@ -976,7 +1455,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jc()
@@ -985,43 +1466,115 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
+        //void i_jnc()
+        //{
+        //    bool b1 = !CF();
+        //    JMP(b1);
+        //    if (!b1)
+        //    {
+        //        //CLKS(4, 4, 3);
+        //        const int ccount = (4 << 16) | (4 << 8) | 3;
+        //        pendingCycles -= (ccount >> chip_type) & 0x7f;
+        //    }
+        //}
+
         void i_jnc()
         {
-            bool b1 = !CF();
-            JMP(b1);
-            if (!b1)
+            //bool b1 = !CF();
+            bool b1 = !(I.CarryVal != 0);
+            //JMP(b1);
+            int tmp = (sbyte)(ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0));
+            if (b1)
             {
-                CLKS(4, 4, 3);
+                I.ip = (ushort)(I.ip + tmp);
+                pendingCycles -= JMP_table[chip_type / 8];
+            }
+            else
+            {
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
+
+        //void i_jz()
+        //{
+        //    bool b1 = ZF();
+        //    JMP(b1);
+        //    if (!b1)
+        //    {
+        //        //CLKS(4, 4, 3);
+        //        const int ccount = (4 << 16) | (4 << 8) | 3;
+        //        pendingCycles -= (ccount >> chip_type) & 0x7f;
+        //    }
+        //}
+
+        //手动内联
         void i_jz()
         {
-            bool b1 = ZF();
-            JMP(b1);
+            //bool b1 = ZF();
+            bool b1 = (I.ZeroVal == 0);
+            //JMP(b1);
+            int tmp = (sbyte)(ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0));
+            if (b1)
+            {
+                I.ip = (ushort)(I.ip + tmp);
+                pendingCycles -= JMP_table[chip_type / 8];
+            }
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
+        #endregion
+
+        //void i_jnz()
+        //{
+        //    bool b1 = !ZF();
+        //    JMP(b1);
+        //    if (!b1)
+        //    {
+        //        CLKS(4, 4, 3);
+        //    }
+        //}
+
+        //手动内联
         void i_jnz()
         {
-            bool b1 = !ZF();
-            JMP(b1);
-            if (!b1)
+            //bool b1 = !ZF();
+            bool b1 = I.ZeroVal != 0;
+            //JMP(b1);
+            int tmp = (sbyte)(ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0));
+            if (b1)
             {
-                CLKS(4, 4, 3);
+                I.ip = (ushort)(I.ip + tmp);
+                pendingCycles -= JMP_table[chip_type / 8];
+            }
+            else
+            {
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
+
+        #region 可用段
         void i_jce()
         {
             bool b1 = CF() || ZF();
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jnce()
@@ -1030,7 +1583,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_js()
@@ -1039,7 +1594,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jns()
@@ -1048,7 +1605,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jp()
@@ -1057,7 +1616,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jnp()
@@ -1066,7 +1627,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jl()
@@ -1075,7 +1638,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jnl()
@@ -1084,7 +1649,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jle()
@@ -1093,7 +1660,9 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jnle()
@@ -1102,9 +1671,13 @@
             JMP(b1);
             if (!b1)
             {
-                CLKS(4, 4, 3);
+                //CLKS(4, 4, 3);
+                const int ccount = (4 << 16) | (4 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
+
+
         void i_80pre()
         {
             int ModRM;
@@ -1114,15 +1687,21 @@
             src = FETCH();
             if (ModRM >= 0xc0)
             {
-                CLKS(4, 4, 2);
+                //CLKS(4, 4, 2);
+                const int ccount = (4 << 16) | (4 << 8) | 2;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else if ((ModRM & 0x38) == 0x38)
             {
-                CLKS(13, 13, 6);
+                //CLKS(13, 13, 6);
+                const int ccount = (13 << 16) | (13 << 8) | 6;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else
             {
-                CLKS(18, 18, 7);
+                //CLKS(18, 18, 7);
+                const int ccount = (18 << 16) | (18 << 8) | 7;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             switch (ModRM & 0x38)
             {
@@ -1146,7 +1725,9 @@
             src += (ushort)(FETCH() << 8);
             if (ModRM >= 0xc0)
             {
-                CLKS(4, 4, 2);
+                //CLKS(4, 4, 2);
+                const int ccount = (4 << 16) | (4 << 8) | 2;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else if ((ModRM & 0x38) == 0x38)
             {
@@ -1177,11 +1758,15 @@
             src = (byte)((sbyte)FETCH());
             if (ModRM >= 0xc0)
             {
-                CLKS(4, 4, 2);
+                //CLKS(4, 4, 2);
+                const int ccount = (4 << 16) | (4 << 8) | 2;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else if ((ModRM & 0x38) == 0x38)
             {
-                CLKS(13, 13, 6);
+                //CLKS(13, 13, 6);
+                const int ccount = (13 << 16) | (13 << 8) | 6;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else
             {
@@ -1208,7 +1793,9 @@
             src = (ushort)((short)((sbyte)FETCH()));
             if (ModRM >= 0xc0)
             {
-                CLKS(4, 4, 2);
+                //CLKS(4, 4, 2);
+                const int ccount = (4 << 16) | (4 << 8) | 2;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else if ((ModRM & 0x38) == 0x38)
             {
@@ -1236,7 +1823,9 @@
             byte src, dst;
             DEF_br8(out ModRM, out src, out dst);
             ANDB(ref src, ref dst);
-            CLKM(ModRM, 2, 2, 2, 10, 10, 6);
+            //CLKM(ModRM, 2, 2, 2, 10, 10, 6);
+            int ccount = (2 << 16) | (2 << 8) | 2, mcount = (10 << 16) | (10 << 8) | 6;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_test_wr16()
         {
@@ -1253,7 +1842,9 @@
             DEF_br8(out ModRM, out src, out dst);
             I.regs.b[mod_RM.regb[ModRM]] = dst;
             PutbackRMByte(ModRM, src);
-            CLKM(ModRM, 3, 3, 3, 16, 18, 8);
+            //CLKM(ModRM, 3, 3, 3, 16, 18, 8);
+            const int ccount = (3 << 16) | (3 << 8) | 3, mcount = (16 << 16) | (18 << 8) | 8;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_xchg_wr16()
         {
@@ -1266,33 +1857,115 @@
             PutbackRMWord(ModRM, src);
             CLKR(ModRM, 24, 24, 12, 24, 16, 8, 3, EA);
         }
+        //void i_mov_br8()
+        //{
+        //    int ModRM;
+        //    byte src;
+        //    ModRM = GetModRM();
+        //    src = I.regs.b[mod_RM.regb[ModRM]];
+        //    PutRMByte(ModRM, src);
+        //    //CLKM(ModRM, 2, 2, 2, 9, 9, 3);
+        //    const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (9 << 16) | (9 << 8) | 3;
+        //    pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+        //}
+
+        //手动内联
         void i_mov_br8()
         {
             int ModRM;
             byte src;
-            ModRM = GetModRM();
+            //ModRM = GetModRM();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
             src = I.regs.b[mod_RM.regb[ModRM]];
-            PutRMByte(ModRM, src);
-            CLKM(ModRM, 2, 2, 2, 9, 9, 3);
+            //PutRMByte(ModRM, src);
+            if(ModRM >= 0xc0)
+            {
+                I.regs.b[mod_RM.RMb[ModRM]] = src;
+            }
+            else
+            {
+                WriteByte(
+                    GetEA[ModRM]()
+                    //DoNecGetEAOpCode(ModRM)
+                    , src);
+            }
+            //CLKM(ModRM, 2, 2, 2, 9, 9, 3);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (9 << 16) | (9 << 8) | 3;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
+
+        //void i_mov_wr16()
+        //{
+        //    int ModRM;
+        //    ushort src;
+        //    ModRM = GetModRM();
+        //    //src = I.regs.w[mod_RM.regw[ModRM]];
+        //    src = (ushort)(I.regs.b[mod_RM.regw[ModRM] * 2] + I.regs.b[mod_RM.regw[ModRM] * 2 + 1] * 0x100);
+        //    PutRMWord(ModRM, src);
+        //    CLKR(ModRM, 13, 13, 5, 13, 9, 3, 2, EA);
+        //}
+
+        //手动内联
         void i_mov_wr16()
         {
             int ModRM;
             ushort src;
-            ModRM = GetModRM();
-            //src = I.regs.w[mod_RM.regw[ModRM]];
+            //ModRM = GetModRM();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
             src = (ushort)(I.regs.b[mod_RM.regw[ModRM] * 2] + I.regs.b[mod_RM.regw[ModRM] * 2 + 1] * 0x100);
-            PutRMWord(ModRM, src);
-            CLKR(ModRM, 13, 13, 5, 13, 9, 3, 2, EA);
+            //PutRMWord(ModRM, src);
+            if (ModRM >= 0xc0)
+            {
+                I.regs.b[mod_RM.RMw[ModRM] * 2] = (byte)(src % 0x100);
+                I.regs.b[mod_RM.RMw[ModRM] * 2 + 1] = (byte)(src / 0x100);
+            }
+            else
+            {
+                WriteWord(
+                GetEA[ModRM]()
+                    , src);
+            }
+
+            //CLKR(ModRM, 13, 13, 5, 13, 9, 3, 2, EA);
+            //(int ModRM, int v20o, int v30o, int v33o, int v20e, int v30e, int v33e, int vall, int addr)
+            const int ocount = (13 << 16) | (13 << 8) | 5, ecount = (13 << 16) | (9 << 8) | 3;
+            if (ModRM >= 0xc0)
+            {
+                pendingCycles -= 2;
+            }
+            else
+            {
+                pendingCycles -= ((EA & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
+            }
         }
+        //void i_mov_r8b()
+        //{
+        //    int ModRM;
+        //    byte src;
+        //    ModRM = GetModRM();
+        //    src = GetRMByte(ModRM);
+        //    I.regs.b[mod_RM.regb[ModRM]] = src;
+        //    //CLKM(ModRM, 2, 2, 2, 11, 11, 5);
+        //    const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 5;
+        //    pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+        //}
+
+        //手动内联
         void i_mov_r8b()
         {
             int ModRM;
             byte src;
-            ModRM = GetModRM();
-            src = GetRMByte(ModRM);
+            //ModRM = GetModRM();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //src = GetRMByte(ModRM);
+            src = ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(
+               GetEA[ModRM]()
+               //DoNecGetEAOpCode(ModRM)
+               ));
             I.regs.b[mod_RM.regb[ModRM]] = src;
-            CLKM(ModRM, 2, 2, 2, 11, 11, 5);
+            //CLKM(ModRM, 2, 2, 2, 11, 11, 5);
+            const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (11 << 16) | (11 << 8) | 5;
+            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         void i_mov_r16w()
         {
@@ -1316,10 +1989,15 @@
         {
             int ModRM = FETCH();
             GetEA[ModRM]();
+            //DoNecGetEAOpCode(ModRM);
+
+
             //I.regs.w[mod_RM.regw[ModRM]] = EO;
             I.regs.b[mod_RM.regw[ModRM] * 2] = (byte)(EO % 0x100);
             I.regs.b[mod_RM.regw[ModRM] * 2 + 1] = (byte)(EO / 0x100);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_sregw()
         {
@@ -1421,18 +2099,22 @@
             }
             CLK(5);
         }
-        void i_pushf()
+        public void i_pushf()
         {
             ushort tmp = CompressFlags();
             PUSH(tmp);
-            CLKS(12, 8, 3);
+            //CLKS(12, 8, 3);
+            const int ccount = (12 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_popf()
         {
             ushort tmp = 0;
             POP(ref tmp);
             ExpandFlags(tmp);
-            CLKS(12, 8, 5);
+            //CLKS(12, 8, 5);
+            const int ccount = (12 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
             if (I.TF)
             {
                 nec_trap();
@@ -1442,19 +2124,39 @@
         {
             ushort tmp = (ushort)((CompressFlags() & 0xff00) | (I.regs.b[1] & 0xd5));
             ExpandFlags(tmp);
-            CLKS(3, 3, 2);
+            //CLKS(3, 3, 2);
+            const int ccount = (3 << 16) | (3 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_lahf()
         {
             I.regs.b[1] = (byte)(CompressFlags() & 0xff);
-            CLKS(3, 3, 2);
+            //CLKS(3, 3, 2);
+            const int ccount = (3 << 16) | (3 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
+        //void i_mov_aldisp()
+        //{
+        //    ushort addr;
+        //    addr = FETCHWORD();
+        //    I.regs.b[0] = GetMemB(3, addr);
+        //    CLKS(10, 10, 5);
+        //}
+
+        //手动内联
         void i_mov_aldisp()
         {
             ushort addr;
-            addr = FETCHWORD();
-            I.regs.b[0] = GetMemB(3, addr);
-            CLKS(10, 10, 5);
+            //addr = FETCHWORD();
+            addr = (ushort)(ReadOpArg(((I.sregs[1] << 4) + I.ip) ^ 0) + (ReadOpArg(((I.sregs[1] << 4) + I.ip + 1) ^ 0) << 8));
+            I.ip += 2;
+
+            //I.regs.b[0] = GetMemB(3, addr);
+            I.regs.b[0] = ReadByte(( seg_prefix != 0 ? prefix_base : (I.sregs[3] << 4)) + addr);
+
+            //CLKS(10, 10, 5);
+            const int ccount = (10 << 16) | (10 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_axdisp()
         {
@@ -1471,7 +2173,9 @@
             ushort addr;
             addr = FETCHWORD();
             PutMemB(3, addr, I.regs.b[0]);
-            CLKS(9, 9, 3);
+            //CLKS(9, 9, 3);
+            const int ccount = (9 << 16) | (9 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_dispax()
         {
@@ -1492,7 +2196,9 @@
             ushort w6 = (ushort)(I.regs.b[12] + I.regs.b[13] * 0x100 + (-2 * (I.DF ? 1 : 0) + 1));
             I.regs.b[12] = (byte)(w6 % 0x100);
             I.regs.b[13] = (byte)(w6 / 0x100);
-            CLKS(8, 8, 6);
+            //CLKS(8, 8, 6);
+            const int ccount = (8 << 16) | (8 << 8) | 6;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_movsw()
         {
@@ -1543,14 +2249,18 @@
             byte src, dst;
             DEF_ald8(out src, out dst);
             ANDB(ref src, ref dst);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_test_axd16()
         {
             ushort src, dst;
             DEF_axd16(out src, out dst);
             ANDW(ref src, ref dst);
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_stosb()
         {
@@ -1559,7 +2269,9 @@
             ushort w7 = (ushort)(I.regs.b[14] + I.regs.b[15] * 0x100 + (-2 * (I.DF ? 1 : 0) + 1));
             I.regs.b[14] = (byte)(w7 % 0x100);
             I.regs.b[15] = (byte)(w7 / 0x100);
-            CLKS(4, 4, 3);
+            //CLKS(4, 4, 3);
+            const int ccount = (4 << 16) | (4 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_stosw()
         {
@@ -1577,7 +2289,9 @@
             ushort w6 = (ushort)(I.regs.b[12] + I.regs.b[13] * 0x100 + (-2 * (I.DF ? 1 : 0) + 1));
             I.regs.b[12] = (byte)(w6 % 0x100);
             I.regs.b[13] = (byte)(w6 / 0x100);
-            CLKS(4, 4, 3);
+            //CLKS(4, 4, 3);
+            const int ccount = (4 << 16) | (4 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_lodsw()
         {
@@ -1600,7 +2314,9 @@
             ushort w7 = (ushort)(I.regs.b[14] + I.regs.b[15] * 0x100 + (-2 * (I.DF ? 1 : 0) + 1));
             I.regs.b[14] = (byte)(w7 % 0x100);
             I.regs.b[15] = (byte)(w7 / 0x100);
-            CLKS(4, 4, 3);
+            //CLKS(4, 4, 3);
+            const int ccount = (4 << 16) | (4 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_scasw()
         {
@@ -1616,91 +2332,125 @@
         void i_mov_ald8()
         {
             I.regs.b[0] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_cld8()
         {
             I.regs.b[2] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_dld8()
         {
             I.regs.b[4] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_bld8()
         {
             I.regs.b[6] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_ahd8()
         {
             I.regs.b[1] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_chd8()
         {
             I.regs.b[3] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_dhd8()
         {
             I.regs.b[5] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_bhd8()
         {
             I.regs.b[7] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_axd16()
         {
             I.regs.b[0] = FETCH();
             I.regs.b[1] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_cxd16()
         {
             I.regs.b[2] = FETCH();
             I.regs.b[3] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_dxd16()
         {
             I.regs.b[4] = FETCH();
             I.regs.b[5] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_bxd16()
         {
             I.regs.b[6] = FETCH();
             I.regs.b[7] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_spd16()
         {
             I.regs.b[8] = FETCH();
             I.regs.b[9] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_bpd16()
         {
             I.regs.b[10] = FETCH();
             I.regs.b[11] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_sid16()
         {
             I.regs.b[12] = FETCH();
             I.regs.b[13] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_mov_did16()
         {
             I.regs.b[14] = FETCH();
             I.regs.b[15] = FETCH();
-            CLKS(4, 4, 2);
+            //CLKS(4, 4, 2);
+            const int ccount = (4 << 16) | (4 << 8) | 2;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
+
+        const int i_rotshft_bd8_ccount = (7 << 16) | (7 << 8) | 2, i_rotshft_bd8_mcount = (19 << 16) | (19 << 8) | 6;
         void i_rotshft_bd8()
         {
             int ModRM;
@@ -1710,7 +2460,8 @@
             src = GetRMByte(ModRM);
             dst = src;
             c = FETCH();
-            CLKM(ModRM, 7, 7, 2, 19, 19, 6);
+            //CLKM(ModRM, 7, 7, 2, 19, 19, 6);
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_rotshft_bd8_ccount >> chip_type) & 0x7f) : ((i_rotshft_bd8_mcount >> chip_type) & 0x7f);
             if (c != 0)
             {
                 switch (ModRM & 0x38)
@@ -1726,6 +2477,8 @@
                 }
             }
         }
+
+        const int i_rotshft_wd8_ccount = (7 << 16) | (7 << 8) | 2, i_rotshft_wd8_mcount = (27 << 16) | (17 << 8) | 6;
         void i_rotshft_wd8()
         {
             int ModRM;
@@ -1735,7 +2488,9 @@
             src = GetRMWord(ModRM);
             dst = src;
             c = FETCH();
-            CLKM(ModRM, 7, 7, 2, 27, 19, 6);
+            //CLKM(ModRM, 7, 7, 2, 27, 19, 6);
+            //int ccount = (v20 << 16) | (v30 << 8) | v33, mcount = (v20m << 16) | (v30m << 8) | v33m;
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_rotshft_wd8_ccount >> chip_type) & 0x7f) : ((i_rotshft_wd8_mcount >> chip_type) & 0x7f);
             if (c != 0)
             {
                 switch (ModRM & 0x38)
@@ -1890,6 +2645,8 @@
             //CHANGE_PC;
             CLKS(39, 39, 19);
         }
+
+        const int i_rotshft_b_ccount = (6 << 16) | (6 << 8) | 2, i_rotshft_b_mcount = (16 << 16) | (16 << 8) | 7;
         void i_rotshft_b()
         {
             int ModRM;
@@ -1897,7 +2654,8 @@
             ModRM = GetModRM();
             src = GetRMByte(ModRM);
             dst = src;
-            CLKM(ModRM, 6, 6, 2, 16, 16, 7);
+            //CLKM(ModRM, 6, 6, 2, 16, 16, 7);
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_rotshft_b_ccount >> chip_type) & 0x7f) : ((i_rotshft_b_mcount >> chip_type) & 0x7f);
             switch (ModRM & 0x38)
             {
                 case 0x00: ROL_BYTE(ref dst); PutbackRMByte(ModRM, (byte)dst); I.OverVal = (uint)((src ^ dst) & 0x80); break;
@@ -1910,6 +2668,7 @@
                 case 0x38: SHRA_BYTE(1, ref dst, ModRM); I.OverVal = 0; break;
             }
         }
+        const int i_rotshft_w_ccount = (6 << 16) | (6 << 8) | 2, i_rotshft_w_mcount = (24 << 16) | (16 << 8) | 7;
         void i_rotshft_w()
         {
             int ModRM;
@@ -1917,7 +2676,8 @@
             ModRM = GetModRM();
             src = GetRMWord(ModRM);
             dst = src;
-            CLKM(ModRM, 6, 6, 2, 24, 16, 7);
+            //CLKM(ModRM, 6, 6, 2, 24, 16, 7);
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_rotshft_w_ccount >> chip_type) & 0x7f) : ((i_rotshft_w_mcount >> chip_type) & 0x7f);
             switch (ModRM & 0x38)
             {
                 case 0x00: ROL_WORD(ref dst); PutbackRMWord(ModRM, (ushort)dst); I.OverVal = (uint)((src ^ dst) & 0x8000); break;
@@ -1930,6 +2690,7 @@
                 case 0x38: SHRA_WORD(1, ref dst, ModRM); I.OverVal = 0; break;
             }
         }
+        const int i_rotshft_bcl_ccount = (7 << 16) | (7 << 8) | 2, i_rotshft_bcl_mcount = (19 << 16) | (19 << 8) | 6;
         void i_rotshft_bcl()
         {
             int ModRM;
@@ -1939,7 +2700,8 @@
             src = GetRMByte(ModRM);
             dst = src;
             c = I.regs.b[2];
-            CLKM(ModRM, 7, 7, 2, 19, 19, 6);
+            //CLKM(ModRM, 7, 7, 2, 19, 19, 6);
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_rotshft_bcl_ccount >> chip_type) & 0x7f) : ((i_rotshft_bcl_mcount >> chip_type) & 0x7f);
             if (c != 0)
             {
                 switch (ModRM & 0x38)
@@ -1955,6 +2717,7 @@
                 }
             }
         }
+        const int i_rotshft_wcl_ccount = (7 << 16) | (7 << 8) | 2, i_rotshft_wcl_mcount = (27 << 16) | (17 << 8) | 6;
         void i_rotshft_wcl()
         {
             int ModRM;
@@ -1964,7 +2727,8 @@
             src = GetRMWord(ModRM);
             dst = src;
             c = I.regs.b[2];
-            CLKM(ModRM, 7, 7, 2, 27, 19, 6);
+            //CLKM(ModRM, 7, 7, 2, 27, 19, 6);
+            pendingCycles -= (ModRM >= 0xc0) ? ((i_rotshft_wcl_ccount >> chip_type) & 0x7f) : ((i_rotshft_wcl_mcount >> chip_type) & 0x7f);
             if (c != 0)
             {
                 switch (ModRM & 0x38)
@@ -1996,7 +2760,9 @@
             I.regs.b[0] = (byte)(I.regs.b[1] * 10 + I.regs.b[0]);
             I.regs.b[1] = 0;
             SetSZPF_Byte(I.regs.b[0]);
-            CLKS(7, 7, 8);
+            //CLKS(7, 7, 8);
+            const int ccount = (7 << 16) | (7 << 8) | 8;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_setalc()
         {
@@ -2007,7 +2773,9 @@
         {
             int dest = (I.regs.b[6] + I.regs.b[7] * 0x100 + I.regs.b[0]) & 0xffff;
             I.regs.b[0] = GetMemB(3, dest);
-            CLKS(9, 9, 5);
+            //CLKS(9, 9, 5);
+            const int ccount = (9 << 16) | (9 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_fpo()
         {
@@ -2029,7 +2797,9 @@
             }
             else
             {
-                CLKS(5, 5, 3);
+                //CLKS(5, 5, 3);
+                const int ccount = (5 << 16) | (5 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_loope()
@@ -2046,12 +2816,38 @@
             }
             else
             {
-                CLKS(5, 5, 3);
+                //CLKS(5, 5, 3);
+                const int ccount = (5 << 16) | (5 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
+        //void i_loop()
+        //{
+        //    sbyte disp = (sbyte)FETCH();
+        //    //I.regs.w[1]--;
+        //    ushort w1 = (ushort)(I.regs.b[2] + I.regs.b[3] * 0x100 - 1);
+        //    I.regs.b[2] = (byte)(w1 % 0x100);
+        //    I.regs.b[3] = (byte)(w1 / 0x100);
+        //    if (I.regs.b[2] + I.regs.b[3] * 0x100 != 0)
+        //    {
+        //        I.ip = (ushort)(I.ip + disp);
+        //        //CLKS(13, 13, 6);
+        //        const int ccount = (13 << 16) | (13 << 8) | 6;
+        //        pendingCycles -= (ccount >> chip_type) & 0x7f;
+        //    }
+        //    else
+        //    {
+        //        //CLKS(5, 5, 3);
+        //        const int ccount = (5 << 16) | (5 << 8) | 3;
+        //        pendingCycles -= (ccount >> chip_type) & 0x7f;
+        //    }
+        //}
+
+        //手动内联
         void i_loop()
         {
-            sbyte disp = (sbyte)FETCH();
+            //sbyte disp = (sbyte)FETCH();
+            sbyte disp = (sbyte)ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
             //I.regs.w[1]--;
             ushort w1 = (ushort)(I.regs.b[2] + I.regs.b[3] * 0x100 - 1);
             I.regs.b[2] = (byte)(w1 % 0x100);
@@ -2059,11 +2855,15 @@
             if (I.regs.b[2] + I.regs.b[3] * 0x100 != 0)
             {
                 I.ip = (ushort)(I.ip + disp);
-                CLKS(13, 13, 6);
+                //CLKS(13, 13, 6);
+                const int ccount = (13 << 16) | (13 << 8) | 6;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
             else
             {
-                CLKS(5, 5, 3);
+                //CLKS(5, 5, 3);
+                const int ccount = (5 << 16) | (5 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_jcxz()
@@ -2076,14 +2876,18 @@
             }
             else
             {
-                CLKS(5, 5, 3);
+                //CLKS(5, 5, 3);
+                const int ccount = (5 << 16) | (5 << 8) | 3;
+                pendingCycles -= (ccount >> chip_type) & 0x7f;
             }
         }
         void i_inal()
         {
             byte port = FETCH();
             I.regs.b[0] = ReadIOByte(port);
-            CLKS(9, 9, 5);
+            //CLKS(9, 9, 5);
+            const int ccount = (9 << 16) | (9 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_inax()
         {
@@ -2098,7 +2902,9 @@
         {
             byte port = FETCH();
             WriteIOByte(port, I.regs.b[0]);
-            CLKS(8, 8, 3);
+            //CLKS(8, 8, 3);
+            const int ccount = (8 << 16) | (8 << 8) | 6;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_outax()
         {
@@ -2148,7 +2954,9 @@
         {
             //I.regs.b[0] = ReadIOByte(I.regs.w[2]);
             I.regs.b[0] = ReadIOByte(I.regs.b[4] + I.regs.b[5] * 0x100);
-            CLKS(8, 8, 5);
+            //CLKS(8, 8, 5);
+            const int ccount = (8 << 16) | (8 << 8) | 5;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_inaxdx()
         {
@@ -2162,7 +2970,9 @@
         {
             //WriteIOByte(I.regs.w[2], I.regs.b[0]);
             WriteIOByte(I.regs.b[4] + I.regs.b[5] * 0x100, I.regs.b[0]);
-            CLKS(8, 8, 3);
+            //CLKS(8, 8, 3);
+            const int ccount = (8 << 16) | (8 << 8) | 3;
+            pendingCycles -= (ccount >> chip_type) & 0x7f;
         }
         void i_outdxax()
         {
@@ -2203,7 +3013,10 @@
                 case 0xad: CLK(2); if (c != 0) do { i_lodsw(); c--; } while (c > 0); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && ZF() == false); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && ZF() == false); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
-                default: nec_instruction[next](); break;
+                default:
+                    nec_instruction[next]();
+                    //DoInstructionOpCode(next);
+                    break;
             }
             seg_prefix = 0;
         }
@@ -2234,7 +3047,10 @@
                 case 0xad: CLK(2); if (c != 0) do { i_lodsw(); c--; } while (c > 0); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xae: CLK(2); if (c != 0) do { i_scasb(); c--; } while (c > 0 && ZF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
                 case 0xaf: CLK(2); if (c != 0) do { i_scasw(); c--; } while (c > 0 && ZF()); I.regs.b[2] = (byte)(c % 0x100); I.regs.b[3] = (byte)(c / 0x100); break;
-                default: nec_instruction[next](); break;
+                default:
+                    nec_instruction[next]();
+                    //DoInstructionOpCode(next);
+                    break;
             }
             seg_prefix = 0;
         }
@@ -2247,14 +3063,85 @@
             I.CarryVal = (uint)(CF() ? 0 : 1);
             CLK(2);
         }
+        //void i_f6pre()
+        //{
+        //    int ModRM;
+        //    uint tmp;
+        //    uint uresult, uresult2;
+        //    int result, result2;
+        //    ModRM = GetModRM();
+        //    tmp = GetRMByte(ModRM);
+        //    switch (ModRM & 0x38)
+        //    {
+        //        case 0x00: tmp &= FETCH(); I.CarryVal = I.OverVal = 0; SetSZPF_Byte((int)tmp); pendingCycles -= (ModRM >= 0xc0) ? 4 : 11; break;
+        //        case 0x08: break;
+        //        case 0x10: PutbackRMByte(ModRM, (byte)(~tmp)); pendingCycles -= (ModRM >= 0xc0) ? 2 : 16; break;
+        //        case 0x18: I.CarryVal = (uint)((tmp != 0) ? 1 : 0); tmp = (~tmp) + 1; SetSZPF_Byte((int)tmp); PutbackRMByte(ModRM, (byte)(tmp & 0xff)); pendingCycles -= (ModRM >= 0xc0) ? 2 : 16; break;
+        //        case 0x20:
+        //            uresult = I.regs.b[0] * tmp;
+        //            //I.regs.w[0] = (ushort)uresult;
+        //            I.regs.b[0] = (byte)((ushort)uresult % 0x100);
+        //            I.regs.b[1] = (byte)((ushort)uresult / 0x100);
+        //            I.CarryVal = I.OverVal = (uint)((I.regs.b[1] != 0) ? 1 : 0);
+        //            pendingCycles -= (ModRM >= 0xc0) ? 30 : 36;
+        //            break;
+        //        case 0x28:
+        //            result = (short)((sbyte)I.regs.b[0]) * (short)((sbyte)tmp);
+        //            //I.regs.w[0] = (ushort)result;
+        //            I.regs.b[0] = (byte)((ushort)result % 0x100);
+        //            I.regs.b[1] = (byte)((ushort)result / 0x100);
+        //            I.CarryVal = I.OverVal = (uint)((I.regs.b[1] != 0) ? 1 : 0);
+        //            pendingCycles -= (ModRM >= 0xc0) ? 30 : 36;
+        //            break;
+        //        case 0x30:
+        //            if (tmp != 0)
+        //            {
+        //                bool b1;
+        //                DIVUB((int)tmp, out b1);
+        //                if (b1)
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                nec_interrupt(0, false);
+        //            }
+        //            pendingCycles -= (ModRM >= 0xc0) ? 43 : 53;
+        //            break;
+        //        case 0x38:
+        //            if (tmp != 0)
+        //            {
+        //                bool b1;
+        //                DIVB((int)tmp, out b1);
+        //                if (b1)
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                nec_interrupt(0, false);
+        //            }
+        //            pendingCycles -= (ModRM >= 0xc0) ? 43 : 53;
+        //            break;
+        //    }
+        //}
+
+        //手动内联
         void i_f6pre()
         {
             int ModRM;
             uint tmp;
             uint uresult, uresult2;
             int result, result2;
-            ModRM = GetModRM();
-            tmp = GetRMByte(ModRM);
+            //ModRM = GetModRM();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //tmp = GetRMByte(ModRM);
+            tmp = ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(
+                GetEA[ModRM]()
+                //DoNecGetEAOpCode(ModRM)
+                ));
             switch (ModRM & 0x38)
             {
                 case 0x00: tmp &= FETCH(); I.CarryVal = I.OverVal = 0; SetSZPF_Byte((int)tmp); pendingCycles -= (ModRM >= 0xc0) ? 4 : 11; break;
@@ -2311,6 +3198,7 @@
                     break;
             }
         }
+
         void i_f7pre()
         {
             int ModRM;
@@ -2411,16 +3299,96 @@
             I.DF = true;
             CLK(2);
         }
+        //void i_fepre()
+        //{
+        //    int ModRM;
+        //    byte tmp, tmp1;
+        //    ModRM = GetModRM();
+        //    tmp = GetRMByte(ModRM);
+        //    switch (ModRM & 0x38)
+        //    {
+        //        case 0x00:
+        //            tmp1 = (byte)(tmp + 1);
+        //            I.OverVal = (uint)((tmp == 0x7f) ? 1 : 0);
+        //            SetAF(tmp1, tmp, 1);
+        //            SetSZPF_Byte(tmp1);
+        //            PutbackRMByte(ModRM, (byte)tmp1);
+        //            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+        //            break;
+        //        case 0x08:
+        //            tmp1 = (byte)(tmp - 1);
+        //            I.OverVal = (uint)((tmp == 0x80) ? 1 : 0);
+        //            SetAF(tmp1, tmp, 1); SetSZPF_Byte(tmp1);
+        //            PutbackRMByte(ModRM, (byte)tmp1);
+        //            CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+        //            break;
+        //        default: break;
+        //    }
+        //}
+
+        //手动内联
+
         void i_fepre()
         {
             int ModRM;
             byte tmp, tmp1;
-            ModRM = GetModRM();
-            tmp = GetRMByte(ModRM);
+            //ModRM = GetModRM();
+            ModRM = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //tmp = GetRMByte(ModRM);
+            tmp = ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(
+                GetEA[ModRM]()
+                //DoNecGetEAOpCode(ModRM)
+                ));
             switch (ModRM & 0x38)
             {
-                case 0x00: tmp1 = (byte)(tmp + 1); I.OverVal = (uint)((tmp == 0x7f) ? 1 : 0); SetAF(tmp1, tmp, 1); SetSZPF_Byte(tmp1); PutbackRMByte(ModRM, (byte)tmp1); CLKM(ModRM, 2, 2, 2, 16, 16, 7); break;
-                case 0x08: tmp1 = (byte)(tmp - 1); I.OverVal = (uint)((tmp == 0x80) ? 1 : 0); SetAF(tmp1, tmp, 1); SetSZPF_Byte(tmp1); PutbackRMByte(ModRM, (byte)tmp1); CLKM(ModRM, 2, 2, 2, 16, 16, 7); break;
+                case 0x00:
+                    {
+                        tmp1 = (byte)(tmp + 1);
+                        I.OverVal = (uint)((tmp == 0x7f) ? 1 : 0);
+                        //SetAF(tmp1, tmp, 1);
+                        I.AuxVal = (uint)(((tmp1) ^ ((tmp) ^ (1))) & 0x10);
+                        //SetSZPF_Byte(tmp1);
+                        I.ZeroVal = I.ParityVal = (uint)((sbyte)tmp1);
+                        I.SignVal = (int)I.ZeroVal;
+                        //PutbackRMByte(ModRM, (byte)tmp1);
+                        byte val = (byte)tmp1;
+                        if (ModRM >= 0xc0)
+                        {
+                            I.regs.b[mod_RM.RMb[ModRM]] = val;
+                        }
+                        else
+                        {
+                            WriteByte(EA, val);
+                        }
+                        //CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+                        const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+                        pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+                    }
+                    break;
+                case 0x08:
+                    {
+                        tmp1 = (byte)(tmp - 1);
+                        I.OverVal = (uint)((tmp == 0x80) ? 1 : 0);
+                        //SetAF(tmp1, tmp, 1);
+                        I.AuxVal = (uint)(((tmp1) ^ ((tmp) ^ (1))) & 0x10);
+                        //SetSZPF_Byte(tmp1);
+                        I.ZeroVal = I.ParityVal = (uint)((sbyte)tmp1);
+                        I.SignVal = (int)I.ZeroVal;
+                        //PutbackRMByte(ModRM, (byte)tmp1);
+                        byte val = (byte)tmp1;
+                        if (ModRM >= 0xc0)
+                        {
+                            I.regs.b[mod_RM.RMb[ModRM]] = val;
+                        }
+                        else
+                        {
+                            WriteByte(EA, val);
+                        }
+                        //CLKM(ModRM, 2, 2, 2, 16, 16, 7);
+                        const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (16 << 16) | (16 << 8) | 7;
+                        pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+                    }
+                    break;
                 default: break;
             }
         }
@@ -2432,8 +3400,22 @@
             tmp = GetRMWord(ModRM);
             switch (ModRM & 0x38)
             {
-                case 0x00: tmp1 = (ushort)(tmp + 1); I.OverVal = (uint)((tmp == 0x7fff) ? 1 : 0); SetAF(tmp1, tmp, 1); SetSZPF_Word(tmp1); PutbackRMWord(ModRM, (ushort)tmp1); CLKM(ModRM, 2, 2, 2, 24, 16, 7); break;
-                case 0x08: tmp1 = (ushort)(tmp - 1); I.OverVal = (uint)((tmp == 0x8000) ? 1 : 0); SetAF(tmp1, tmp, 1); SetSZPF_Word(tmp1); PutbackRMWord(ModRM, (ushort)tmp1); CLKM(ModRM, 2, 2, 2, 24, 16, 7); break;
+                case 0x00:
+                    {
+                        tmp1 = (ushort)(tmp + 1); I.OverVal = (uint)((tmp == 0x7fff) ? 1 : 0); SetAF(tmp1, tmp, 1); SetSZPF_Word(tmp1); PutbackRMWord(ModRM, (ushort)tmp1);
+                        //CLKM(ModRM, 2, 2, 2, 24, 16, 7);
+                        const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (24 << 16) | (16 << 8) | 7;
+                        pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+                    }
+                    break;
+                case 0x08:
+                    {
+                        tmp1 = (ushort)(tmp - 1); I.OverVal = (uint)((tmp == 0x8000) ? 1 : 0); SetAF(tmp1, tmp, 1); SetSZPF_Word(tmp1); PutbackRMWord(ModRM, (ushort)tmp1);
+                        //CLKM(ModRM, 2, 2, 2, 24, 16, 7);
+                        const int ccount = (2 << 16) | (2 << 8) | 2, mcount = (24 << 16) | (16 << 8) | 7;
+                        pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+                    }
+                    break;
                 case 0x10:
                     PUSH(I.ip);
                     I.ip = (ushort)tmp;
@@ -2468,5 +3450,6 @@
         {
             pendingCycles -= 10;
         }
+        #endregion
     }
 }

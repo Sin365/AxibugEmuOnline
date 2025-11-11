@@ -1,13 +1,88 @@
 ﻿using cpu.m6800;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using static MAME.Core.EmuTimer;
 
 namespace MAME.Core
 {
+    public class EmuTimerLister
+    {
+        public emu_timer this[int index]
+        {
+            get { return timerlist[index]; }
+            set { timerlist[index] = value; } // 如果需要设置的话
+        }
+        public static void GetNewTimerLister(ref EmuTimerLister tlistObj)
+        {
+            //如果新旧值替换
+            if (tlistObj != null)
+            {
+                tlistObj.ReleaseLister();
+                ObjectPoolAuto.Release(tlistObj);
+                tlistObj = null;
+            }
+
+            tlistObj = ObjectPoolAuto.Acquire<EmuTimerLister>();
+            tlistObj.InitLister();
+        }
+
+        List<emu_timer> timerlist;
+
+        public List<emu_timer> GetSrcList()
+        {
+            return timerlist;
+        }
+        public int Count
+        {
+            get { return timerlist.Count; }
+        }
+
+        void InitLister()
+        {
+            ReleaseLister();
+            timerlist = ObjectPoolAuto.AcquireList<emu_timer>();
+        }
+        void ReleaseLister()
+        {
+            if (timerlist != null)
+            {
+                Clear();
+                ObjectPoolAuto.Release(timerlist);
+                timerlist = null;
+            }
+        }
+
+        public void Clear()
+        {
+            emu_timer.ClearList(ref timerlist);
+        }
+        public void Add(emu_timer timer)
+        {
+            emu_timer.AddList(ref timerlist, ref timer);
+        }
+        public void Remove(emu_timer timer)
+        {
+            emu_timer.RemoveToList(ref timerlist, ref timer);
+        }
+        public void Insert(int index, emu_timer timer)
+        {
+            emu_timer.InsertToList(ref timerlist, index, ref timer);
+        }
+
+        public int IndexOf(emu_timer timer)
+        {
+            return timerlist.IndexOf(timer);
+        }
+
+        public void RemoveAt(int index)
+        {
+            emu_timer.RemoveAtToList(ref timerlist, index);
+        }
+    }
+
     public class EmuTimer
     {
-        public static List<emu_timer> lt;
+        public static EmuTimerLister lt;
         private static List<emu_timer2> lt2;
         public static Atime global_basetime;
         public static Atime global_basetime_obj;
@@ -27,6 +102,12 @@ namespace MAME.Core
             public Atime expire;
         }*/
 
+        public static void instancingTimerList()
+        {
+            //lt = new List<emu_timer>();
+            EmuTimerLister.GetNewTimerLister(ref lt);
+        }
+
         public class emu_timer
         {
             public TIME_ACT action;
@@ -36,6 +117,11 @@ namespace MAME.Core
             public Atime start;
             public Atime expire;
 
+            // 引用计数字段
+            private int _refCount;
+            // 是否在检查池中
+            private bool _inReadyQueue;
+
             internal void reset()
             {
                 action = default;
@@ -44,27 +130,154 @@ namespace MAME.Core
                 period = default;
                 start = default;
                 expire = default;
+                _refCount = 0;
+                _inReadyQueue = false;
+            }
+
+            static Queue<emu_timer> _readyToRelease = new Queue<emu_timer>();
+            static Queue<emu_timer> _timerPool = new Queue<emu_timer>();
+
+            static int outTimerAllCount = 0;
+            static int newTimerCount = 0;
+            public static emu_timer GetEmu_timerNoRef()
+            {
+                emu_timer obj;
+                if (!_timerPool.TryDequeue(out obj))
+                {
+                    obj = new emu_timer();
+                    newTimerCount++;
+                }
+                //这里引用计数为0，直接放入带Ready里，等待下一帧检测
+                obj.reset();
+                obj._inReadyQueue = true;
+                _readyToRelease.Enqueue(obj);
+                outTimerAllCount++;
+                return obj;
+            }
+
+            public static void CheckReadyRelaseBeforeFrameRun()
+            {
+                if (_readyToRelease.Count < 1)
+                    return;
+                int checkcount = _readyToRelease.Count;
+                int beforpoolcount = _timerPool.Count;
+                int releaseCount = 0;
+                while (_readyToRelease.TryDequeue(out emu_timer ready))
+                {
+                    ready._inReadyQueue = false;
+                    if (ready._refCount <= 0)
+                    {
+                        ready.ReturnToPool();
+                        releaseCount++;
+                    }
+                }
+                //UnityEngine.Debug.Log($"CheckReadyRelaseAfterRun 检查数量{checkcount}| 出池数量{outTimerAllCount}，其中new创建的数量{newTimerCount} 回收数量{releaseCount} ,处理前池数量{beforpoolcount}，处理后池数量{_timerPool.Count}");
+                outTimerAllCount = 0;
+                newTimerCount = 0;
+                //_readyToRelease.Clear();
+            }
+
+
+            /// <summary>
+            /// 增加引用计数
+            /// </summary>
+            void AddRef()
+            {
+                //int newCount = Interlocked.Increment(ref _refCount);
+                _refCount++;
             }
 
             /// <summary>
-            /// 线程安全队列（因为析构函数是额外线程来的）
+            /// 减少引用计数，当计数为0时释放对象回池
             /// </summary>
-            static ConcurrentQueue<emu_timer> _failedDeletions = new ConcurrentQueue<emu_timer>();
-            public static emu_timer GetEmu_timer()
+            void ReleaseRef()
             {
-                if (_failedDeletions.TryDequeue(out emu_timer obj))
+                //int newCount = Interlocked.Decrement(ref _refCount);
+                _refCount--;
+                if (_refCount == 0)
                 {
-                    obj.reset();
-                    return obj;
+                    // 引用计数为0，释放资源并回池
+                    ReadyToRelease();
                 }
-
-                return new emu_timer();
+                else if (_refCount < 0)
+                {
+                    // 引用计数异常，不应出现负数
+                    throw new InvalidOperationException("引用计数出现负数");
+                }
             }
-            public static void EnqueueObj(emu_timer obj)
+
+            void ReadyToRelease()
+            {
+                if (this._inReadyQueue) return;
+                //UnityEngine.Debug.Log("ReadyToRelease");
+                this._inReadyQueue = true;
+                _readyToRelease.Enqueue(this);
+            }
+
+            /// <summary>
+            /// 释放资源并回池
+            /// </summary>
+            void ReturnToPool()
+            {
+                _timerPool.Enqueue(this);
+            }
+
+            #region 外部操作 间接影响引用计数
+            public static void SetRefUsed(ref emu_timer refattr, ref emu_timer emu_timer)
+            {
+                if (refattr == emu_timer)
+                    return;
+                if (emu_timer == null)
+                {
+                    SetNull(ref refattr);
+                    return;
+                }
+                if (refattr != null)
+                    refattr.ReleaseRef();
+                refattr = emu_timer;
+                refattr.AddRef();
+            }
+            public static void SetNull(ref emu_timer timer)
+            {
+                if (timer != null)
+                {
+                    timer.ReleaseRef();
+                    timer = null;
+                }
+            }
+            public static void AddList(ref List<emu_timer> list, ref emu_timer timer)
+            {
+                list.Add(timer);
+                timer.AddRef();
+            }
+            internal static void InsertToList(ref List<emu_timer> list, int index, ref emu_timer timer)
+            {
+                list.Insert(index, timer);
+                timer.AddRef();
+            }
+            public static void RemoveToList(ref List<emu_timer> list, ref emu_timer timer)
+            {
+                list.Remove(timer);
+                timer.ReleaseRef();
+            }
+            internal static void ClearList(ref List<emu_timer> list)
+            {
+                for (int i = 0; i < list.Count; i++)
+                    list[i].ReleaseRef();
+                list.Clear();
+            }
+
+            internal static void RemoveAtToList(ref List<emu_timer> list, int index)
+            {
+                list.RemoveAt(index);
+            }
+            #endregion
+            /*
+            static void EnqueueObj(emu_timer obj)
             {
                 _failedDeletions.Enqueue(obj);
             }
-
+            
             ~emu_timer()
             {
                 //咱也没办法，这样子来实现emu_timer的回收到对象池。只能这样实现，MAME里面对于emu_timer持有引用比较混沌，在确保没有引用计数时，再安全回池。
@@ -74,7 +287,7 @@ namespace MAME.Core
                 //说人话，就是用析构驱动回池，而不破坏现有代码
                 EnqueueObj(this);
                 GC.ReRegisterForFinalize(this);//手动注册，否则析构函数再也不会回调
-            }
+            }*/
         }
         public class emu_timer2
         {
@@ -253,7 +466,8 @@ namespace MAME.Core
         public static void timer_init()
         {
             global_basetime = Attotime.ATTOTIME_ZERO;
-            lt = new List<emu_timer>();
+            //lt = new List<emu_timer>();
+            EmuTimerLister.GetNewTimerLister(ref lt);
             lt2 = new List<emu_timer2>();
             lt2.Add(new emu_timer2(1, TIME_ACT.Video_vblank_begin_callback));
             lt2.Add(new emu_timer2(2, TIME_ACT.Mame_soft_reset));
@@ -477,14 +691,14 @@ namespace MAME.Core
             }
             return global_basetime;
         }
-        public static void timer_remove(emu_timer timer1)
+        /*public static void timer_remove(emu_timer timer1)
         {
             if (timer1 == callback_timer)
             {
                 callback_timer_modified = true;
             }
             timer_list_remove(timer1);
-        }
+        }*/
         public static void timer_adjust_periodic(emu_timer which, Atime start_delay, Atime period)
         {
             Atime time = get_current_time();
@@ -500,9 +714,13 @@ namespace MAME.Core
             which.start = time;
             which.expire = Attotime.attotime_add(time, start_delay);
             which.period = period;
-            timer_list_remove(which);
-            timer_list_insert(which);
-            if (lt.IndexOf(which) == 0)
+
+            timer_list_remove_and_insert(which);
+            //timer_list_remove(which);
+            //timer_list_insert(which);
+
+            //if (lt.IndexOf(which) == 0)
+            if (lt[0] == which)
             {
                 if (Cpuexec.activecpu >= 0 && Cpuexec.activecpu < Cpuexec.ncpu)
                 {
@@ -512,80 +730,363 @@ namespace MAME.Core
         }
         public static void timer_pulse_internal(Atime period, TIME_ACT action)
         {
-            emu_timer timer = timer_alloc_common(action, false);
+            //emu_timer timer = timer_alloc_common(action, false);
+            emu_timer timer = timer_alloc_common_NoRef(action, false);
             timer_adjust_periodic(timer, period, period);
         }
         public static void timer_set_internal(TIME_ACT action)
         {
-            emu_timer timer = timer_alloc_common(action, true);
+            //emu_timer timer = timer_alloc_common(action, true);
+            emu_timer timer = timer_alloc_common_NoRef(action, true);
             timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
         }
-        public static void timer_list_insert(emu_timer timer1)
+
+        static void timer_list_remove_and_insert(emu_timer timer)
         {
-            int i;
-            int i1 = -1;
-            if (timer1.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer1.action == TIME_ACT.setvector)
+            //包一层引用避免引用计数中间丢失，进等待检测队列（减少这样的情况）
             {
-                foreach (emu_timer et in lt)
+                emu_timer tempref = null;
+                emu_timer.SetRefUsed(ref tempref, ref timer);
+                timer_list_remove(timer);
+                timer_list_insert(timer);
+                emu_timer.SetNull(ref tempref);
+            }
+        }
+
+        //static void timer_list_remove_and_insert(emu_timer timer)
+        //{
+        //    // 包一层引用避免引用计数中间丢失
+        //    {
+        //        emu_timer tempref = null;
+        //        emu_timer.SetRefUsed(ref tempref, ref timer);
+
+        //        // 内联移除逻辑
+        //        bool isSpecialAction = (timer.action == TIME_ACT.Cpuint_cpunum_empty_event_queue ||
+        //                               timer.action == TIME_ACT.setvector);
+
+        //        if (isSpecialAction)
+        //        {
+        //            // 优化：批量移除相同action和过期时间的定时器
+        //            for (int i = lt.Count - 1; i >= 0; i--)
+        //            {
+        //                emu_timer et = lt[i];
+        //                if (et.action == timer.action &&
+        //                    Attotime.attotime_compare(et.expire, timer.expire) == 0)
+        //                {
+        //                    lt.RemoveAt(i); // 直接从后往前移除，避免数组拷贝
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // 优化：只移除第一个匹配的定时器
+        //            int tempcount = lt.Count;
+        //            for (int i = 0; i < tempcount; i++)
+        //            {
+        //                if (lt[i].action == timer.action)
+        //                {
+        //                    lt.RemoveAt(i);
+        //                    break; // 找到第一个就退出
+        //                }
+        //            }
+        //        }
+
+        //        // 内联插入逻辑
+        //        int insertIndex = lt.Count; // 默认插入到最后
+
+        //        // 优化：只有当定时器启用时才按时间排序插入
+        //        if (timer.enabled)
+        //        {
+        //            Atime expire = timer.expire;
+
+
+        //            int tempcount = lt.Count;
+        //            // 查找插入位置
+        //            for (int i = 0; i < tempcount; i++)
+        //            {
+        //                if (Attotime.attotime_compare(lt[i].expire, expire) > 0)
+        //                {
+        //                    insertIndex = i;
+        //                    break;
+        //                }
+        //            }
+        //        }
+
+        //        // 在找到的位置插入
+        //        if (insertIndex < lt.Count)
+        //        {
+        //            lt.Insert(insertIndex, timer);
+        //        }
+        //        else
+        //        {
+        //            lt.Add(timer); // 添加到末尾，比Insert性能更好[8](@ref)
+        //        }
+
+        //        emu_timer.SetNull(ref tempref);
+        //    }
+        //}
+
+        //static void timer_list_remove_and_insert(emu_timer timer)
+        //{
+        //    {
+        //        emu_timer tempref = null;
+        //        emu_timer.SetRefUsed(ref tempref, ref timer);
+
+        //        List<emu_timer> ltsrc = lt.GetSrcList();
+        //        // inline remove
+        //        if (timer.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer.action == TIME_ACT.setvector)
+        //        {
+        //            int low = 0;
+        //            int high = ltsrc.Count - 1;
+        //            int start = -1;
+        //            while (low <= high)
+        //            {
+        //                int mid = low + (high - low) / 2;
+        //                int cmp = Attotime.attotime_compare(ltsrc[mid].expire, timer.expire);
+        //                if (cmp < 0)
+        //                    low = mid + 1;
+        //                else if (cmp > 0)
+        //                    high = mid - 1;
+        //                else
+        //                {
+        //                    start = mid;
+        //                    high = mid - 1;
+        //                }
+        //            }
+        //            if (start == -1) start = low;
+        //            int end = start;
+        //            int tempcount = ltsrc.Count;
+        //            while (end < tempcount && Attotime.attotime_compare(ltsrc[end].expire, timer.expire) == 0)
+        //                end++;
+        //            for (int j = end - 1; j >= start; j--)
+        //            {
+        //                if (ltsrc[j].action == timer.action)
+        //                    lt.RemoveAt(j);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            int tempcount = lt.Count;
+        //            for (int j = 0; j < tempcount; j++)
+        //            {
+        //                if (lt[j].action == timer.action)
+        //                {
+        //                    lt.RemoveAt(j);
+        //                    break;
+        //                }
+        //            }
+        //        }
+
+        //        // inline insert
+        //        int i1 = -1;
+        //        if (timer.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer.action == TIME_ACT.setvector)
+        //        {
+        //            int tempcount = ltsrc.Count;
+        //            for (int j = 0; j < tempcount; j++)
+        //            {
+        //                emu_timer temptimer = ltsrc[j];
+        //                if (temptimer.action == timer.action && Attotime.attotime_compare(temptimer.expire, global_basetime) <= 0)
+        //                {
+        //                    i1 = j;
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //        if (i1 == -1)
+        //        {
+        //            int low = 0;
+        //            int high = ltsrc.Count - 1;
+        //            int pos = ltsrc.Count;
+        //            while (low <= high)
+        //            {
+        //                int mid = low + (high - low) / 2;
+        //                if (Attotime.attotime_compare(ltsrc[mid].expire, timer.expire) > 0)
+        //                {
+        //                    pos = mid;
+        //                    high = mid - 1;
+        //                }
+        //                else
+        //                {
+        //                    low = mid + 1;
+        //                }
+        //            }
+        //            lt.Insert(pos, timer);
+        //        }
+
+        //        emu_timer.SetNull(ref tempref);
+        //    }
+        //}
+
+        //static void timer_list_insert(emu_timer timer1)
+        //{
+        //    int i;
+        //    int i1 = -1;
+        //    if (timer1.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer1.action == TIME_ACT.setvector)
+        //    {
+        //        //foreach (emu_timer et in lt)
+        //        foreach (emu_timer et in lt.GetSrcList())
+        //        {
+        //            if (et.action == timer1.action && Attotime.attotime_compare(et.expire, global_basetime) <= 0)
+        //            {
+        //                i1 = lt.IndexOf(et);
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    if (i1 == -1)
+        //    {
+        //        Atime expire = timer1.enabled ? timer1.expire : Attotime.ATTOTIME_NEVER;
+        //        for (i = 0; i < lt.Count; i++)
+        //        {
+        //            if (Attotime.attotime_compare(lt[i].expire, expire) > 0)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        lt.Insert(i, timer1);
+        //    }
+        //}
+
+        //手动优化
+        static void timer_list_insert(emu_timer timer1)
+        {
+            TIME_ACT currAct = timer1.action;
+            int i1 = -1;
+            var tlist = lt.GetSrcList();
+            int scanCount;
+            int tempMaxIdx = tlist.Count - 1;
+            if (currAct == TIME_ACT.Cpuint_cpunum_empty_event_queue || currAct == TIME_ACT.setvector)
+            {
+                //foreach (emu_timer et in lt)
+                //foreach (emu_timer et in lt.GetSrcList())
+                //{
+                //    if (et.action == currAct && Attotime.attotime_compare(et.expire, global_basetime) <= 0)
+                //    {
+                //        i1 = lt.IndexOf(et);
+                //        break;
+                //    }
+                //}
+                scanCount = 0;
+                while (scanCount >= tempMaxIdx)
                 {
-                    if (et.action == timer1.action && Attotime.attotime_compare(et.expire, global_basetime) <= 0)
+                    emu_timer et = tlist[scanCount];
+                    if (et.action == currAct && Attotime.attotime_compare(et.expire, global_basetime) <= 0)
                     {
-                        i1 = lt.IndexOf(et);
+                        i1 = scanCount;
                         break;
                     }
+                    scanCount++;
                 }
             }
             if (i1 == -1)
             {
                 Atime expire = timer1.enabled ? timer1.expire : Attotime.ATTOTIME_NEVER;
-                for (i = 0; i < lt.Count; i++)
+                scanCount = 0;
+                while (scanCount <= tempMaxIdx)
                 {
-                    if (Attotime.attotime_compare(lt[i].expire, expire) > 0)
-                    {
-                        break;
-                    }
+                    emu_timer et = tlist[scanCount];
+                    if (Attotime.attotime_compare(et.expire, expire) > 0)
+                        break; 
+                    scanCount++;
                 }
-                lt.Insert(i, timer1);
+                lt.Insert(scanCount, timer1);
             }
         }
 
         static List<emu_timer> timer_list_remove_lt1 = new List<emu_timer>();
+        //public static void timer_list_remove(emu_timer timer1)
+        //{
+        //    if (timer1.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer1.action == TIME_ACT.setvector)
+        //    {
+        //        timer_list_remove_lt1.Clear();
+        //        //foreach (emu_timer et in lt)
+        //        foreach (emu_timer et in lt.GetSrcList())
+        //        {
+        //            if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) == 0)
+        //            {
+        //                timer_list_remove_lt1.Add(et);
+        //                //lt.Remove(et);
+        //                //break;
+        //            }
+        //            else if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) < 0)
+        //            {
+        //                int i1 = 1;
+        //            }
+        //            else if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) > 0)
+        //            {
+        //                int i1 = 1;
+        //            }
+        //        }
+        //        foreach (emu_timer et1 in timer_list_remove_lt1)
+        //        {
+        //            lt.Remove(et1);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //TODO MAME.NET原来这么foreach写删除是有问题的
+
+        //        //foreach (emu_timer et in lt)
+        //        foreach (emu_timer et in lt.GetSrcList())
+        //        {
+        //            if (et.action == timer1.action)
+        //            {
+        //                lt.Remove(et);
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //修改优化
         public static void timer_list_remove(emu_timer timer1)
         {
             if (timer1.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer1.action == TIME_ACT.setvector)
             {
-                timer_list_remove_lt1.Clear();
-                foreach (emu_timer et in lt)
+                //timer_list_remove_lt1.Clear();
+                //foreach (emu_timer et in lt.GetSrcList())
+                //{
+                //    if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) == 0)
+                //        timer_list_remove_lt1.Add(et);
+                //}
+                //foreach (emu_timer et1 in timer_list_remove_lt1)
+                //    lt.Remove(et1);
+
+                var tlist = lt.GetSrcList();
+                int tempMaxIdx = tlist.Count - 1;
+                while (tempMaxIdx >= 0)
                 {
+                    emu_timer et = tlist[tempMaxIdx];
                     if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) == 0)
-                    {
-                        timer_list_remove_lt1.Add(et);
-                        //lt.Remove(et);
-                        //break;
-                    }
-                    else if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) < 0)
-                    {
-                        int i1 = 1;
-                    }
-                    else if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) > 0)
-                    {
-                        int i1 = 1;
-                    }
-                }
-                foreach (emu_timer et1 in timer_list_remove_lt1)
-                {
-                    lt.Remove(et1);
+                        lt.Remove(et);
+                    tempMaxIdx--;
                 }
             }
             else
             {
-                foreach (emu_timer et in lt)
+                //TODO MAME.NET原来这么foreach写删除是有问题的
+                //foreach (emu_timer et in lt)
+                //foreach (emu_timer et in lt.GetSrcList())
+                //{
+                //    if (et.action == timer1.action)
+                //    {
+                //        lt.Remove(et);
+                //        break;
+                //    }
+                //}
+
+                var tlist = lt.GetSrcList();
+                int tempMaxIdx = tlist.Count - 1;
+                int scanCount = 0;
+                while (scanCount <= tempMaxIdx)
                 {
+                    emu_timer et = tlist[scanCount];
                     if (et.action == timer1.action)
                     {
                         lt.Remove(et);
                         break;
                     }
+                    scanCount++;
                 }
             }
         }
@@ -655,17 +1156,63 @@ namespace MAME.Core
                     {
                         timer.start = timer.expire;
                         timer.expire = Attotime.attotime_add(timer.expire, timer.period);
-                        timer_list_remove(timer);
-                        timer_list_insert(timer);
+
+                        timer_list_remove_and_insert(timer);
+                        //timer_list_remove(timer);
+                        //timer_list_insert(timer);
                     }
                 }
             }
         }
-        public static emu_timer timer_alloc_common(TIME_ACT action, bool temp)
+        //public static emu_timer timer_alloc_common(TIME_ACT action, bool temp)
+        //{
+        //    Atime time = get_current_time();
+        //    //emu_timer timer = new emu_timer();
+        //    emu_timer timer = emu_timer.GetEmu_timerNoRef();
+        //    timer.action = action;
+        //    timer.enabled = false;
+        //    timer.temporary = temp;
+        //    timer.period = Attotime.ATTOTIME_ZERO;
+        //    //timer.func = func;
+        //    timer.start = time;
+        //    timer.expire = Attotime.ATTOTIME_NEVER;
+        //    timer_list_insert(timer);
+        //    return timer;
+        //}
+
+        /// <summary>
+        /// 申请新的timer，且直接操作引用计数
+        /// </summary>
+        /// <param name="refattr"></param>
+        /// <param name="action"></param>
+        /// <param name="temp"></param>
+        public static void timer_alloc_common(ref emu_timer refattr, TIME_ACT action, bool temp)
+        {
+            //Atime time = get_current_time();
+            //emu_timer timer = emu_timer.GetEmu_timerNoRef();
+            //timer.action = action;
+            //timer.enabled = false;
+            //timer.temporary = temp;
+            //timer.period = Attotime.ATTOTIME_ZERO;
+            ////timer.func = func;
+            //timer.start = time;
+            //timer.expire = Attotime.ATTOTIME_NEVER;
+            //timer_list_insert(timer);
+            emu_timer timer = timer_alloc_common_NoRef(action, temp);
+            emu_timer.SetRefUsed(ref refattr, ref timer);
+        }
+
+        /// <summary>
+        /// 申请新的timer，不操作额外引用计数，用于外部中间传递
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="temp"></param>
+        /// <returns></returns>
+        public static emu_timer timer_alloc_common_NoRef(TIME_ACT action, bool temp)
         {
             Atime time = get_current_time();
-            //emu_timer timer = new emu_timer();
-            emu_timer timer = emu_timer.GetEmu_timer();
+            //创建一个timer
+            emu_timer timer = emu_timer.GetEmu_timerNoRef();
             timer.action = action;
             timer.enabled = false;
             timer.temporary = temp;
@@ -676,13 +1223,17 @@ namespace MAME.Core
             timer_list_insert(timer);
             return timer;
         }
+
         public static bool timer_enable(emu_timer which, bool enable)
         {
             bool old;
             old = which.enabled;
             which.enabled = enable;
-            timer_list_remove(which);
-            timer_list_insert(which);
+
+            timer_list_remove_and_insert(which);
+            //timer_list_remove(which);
+            //timer_list_insert(which);
+
             return old;
         }
         public static bool timer_enabled(emu_timer which)
@@ -728,78 +1279,89 @@ namespace MAME.Core
         {
             int i, i1, n;
             n = reader.ReadInt32();
-            lt = new List<emu_timer>();
+            //lt = new List<emu_timer>();
+            EmuTimerLister.GetNewTimerLister(ref lt);
             for (i = 0; i < n; i++)
             {
-                lt.Add(new emu_timer());
+                emu_timer etimer = emu_timer.GetEmu_timerNoRef();
+                #region
+                lt.Add(etimer);
                 i1 = reader.ReadInt32();
-                lt[i].action = getactionbyindex(i1);
-                //lt[i].func = getfuncbyindex(i1);
-                lt[i].enabled = reader.ReadBoolean();
-                lt[i].temporary = reader.ReadBoolean();
-                lt[i].period.seconds = reader.ReadInt32();
-                lt[i].period.attoseconds = reader.ReadInt64();
-                lt[i].start.seconds = reader.ReadInt32();
-                lt[i].start.attoseconds = reader.ReadInt64();
-                lt[i].expire.seconds = reader.ReadInt32();
-                lt[i].expire.attoseconds = reader.ReadInt64();
-                //if (lt[i].func == "vblank_begin_callback")
-                if (lt[i].action == TIME_ACT.Video_vblank_begin_callback)
+                etimer.action = getactionbyindex(i1);
+                //etimer.func = getfuncbyindex(i1);
+                etimer.enabled = reader.ReadBoolean();
+                etimer.temporary = reader.ReadBoolean();
+                etimer.period.seconds = reader.ReadInt32();
+                etimer.period.attoseconds = reader.ReadInt64();
+                etimer.start.seconds = reader.ReadInt32();
+                etimer.start.attoseconds = reader.ReadInt64();
+                etimer.expire.seconds = reader.ReadInt32();
+                etimer.expire.attoseconds = reader.ReadInt64();
+                //if (etimer.func == "vblank_begin_callback")
+                if (etimer.action == TIME_ACT.Video_vblank_begin_callback)
                 {
-                    Video.vblank_begin_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    emu_timer.SetRefUsed(ref Video.vblank_begin_timer, ref etimer);//Video.vblank_begin_timer = etimer;
+                    lt.Remove(etimer);
                     lt.Add(Video.vblank_begin_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Video_vblank_end_callback)
+                else if (etimer.action == TIME_ACT.Video_vblank_end_callback)
                 {
-                    Video.vblank_end_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Video.vblank_end_timer = etimer;
+                    emu_timer.SetRefUsed(ref Video.vblank_end_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Video.vblank_end_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Mame_soft_reset)
+                else if (etimer.action == TIME_ACT.Mame_soft_reset)
                 {
-                    Mame.soft_reset_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Mame.soft_reset_timer = etimer;
+                    emu_timer.SetRefUsed(ref Mame.soft_reset_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Mame.soft_reset_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Watchdog_watchdog_callback)
+                else if (etimer.action == TIME_ACT.Watchdog_watchdog_callback)
                 {
-                    Watchdog.watchdog_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Watchdog.watchdog_timer = etimer;
+                    emu_timer.SetRefUsed(ref Watchdog.watchdog_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Watchdog.watchdog_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Generic_irq_1_0_line_hold)
+                else if (etimer.action == TIME_ACT.Generic_irq_1_0_line_hold)
                 {
-                    Cpuexec.timedint_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Cpuexec.timedint_timer = etimer;
+                    emu_timer.SetRefUsed(ref Cpuexec.timedint_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.timedint_timer);
                 }
-                else if (lt[i].action == TIME_ACT.YM2151_timer_callback_a)
+                else if (etimer.action == TIME_ACT.YM2151_timer_callback_a)
                 {
-                    YM2151.PSG.timer_A = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2151.PSG.timer_A = etimer;
+                    emu_timer.SetRefUsed(ref YM2151.PSG.timer_A, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2151.PSG.timer_A);
                 }
-                else if (lt[i].action == TIME_ACT.YM2151_timer_callback_b)
+                else if (etimer.action == TIME_ACT.YM2151_timer_callback_b)
                 {
-                    YM2151.PSG.timer_B = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2151.PSG.timer_B = etimer;
+                    emu_timer.SetRefUsed(ref YM2151.PSG.timer_B, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2151.PSG.timer_B);
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_trigger_partial_frame_interrupt)
+                else if (etimer.action == TIME_ACT.Cpuexec_trigger_partial_frame_interrupt)
                 {
                     switch (Machine.sBoard)
                     {
                         case "CPS2":
                         case "IGS011":
                         case "Konami68000":
-                            Cpuexec.cpu[0].partial_frame_timer = lt[i];
-                            lt.Remove(lt[i]);
+                            //Cpuexec.cpu[0].partial_frame_timer = etimer;
+                            emu_timer.SetRefUsed(ref Cpuexec.cpu[0].partial_frame_timer, ref etimer);
+                            lt.Remove(etimer);
                             lt.Add(Cpuexec.cpu[0].partial_frame_timer);
                             break;
                         case "M72":
-                            Cpuexec.cpu[1].partial_frame_timer = lt[i];
-                            lt.Remove(lt[i]);
+                            //Cpuexec.cpu[1].partial_frame_timer = etimer;
+                            emu_timer.SetRefUsed(ref Cpuexec.cpu[1].partial_frame_timer, ref etimer);
+                            lt.Remove(etimer);
                             lt.Add(Cpuexec.cpu[1].partial_frame_timer);
                             break;
                         case "Capcom":
@@ -816,188 +1378,219 @@ namespace MAME.Core
                                 case "makaimurc":
                                 case "makaimurg":
                                 case "diamond":
-                                    Cpuexec.cpu[1].partial_frame_timer = lt[i];
-                                    lt.Remove(lt[i]);
+                                    //Cpuexec.cpu[1].partial_frame_timer = etimer;
+                                    emu_timer.SetRefUsed(ref Cpuexec.cpu[1].partial_frame_timer, ref etimer);
+                                    lt.Remove(etimer);
                                     lt.Add(Cpuexec.cpu[1].partial_frame_timer);
                                     break;
                             }
                             break;
                     }
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_null_callback)
+                else if (etimer.action == TIME_ACT.Cpuexec_null_callback)
                 {
-                    Cpuexec.interleave_boost_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Cpuexec.interleave_boost_timer = etimer;
+                    emu_timer.SetRefUsed(ref Cpuexec.interleave_boost_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.interleave_boost_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_end_interleave_boost)
+                else if (etimer.action == TIME_ACT.Cpuexec_end_interleave_boost)
                 {
-                    Cpuexec.interleave_boost_timer_end = lt[i];
-                    lt.Remove(lt[i]);
+                    //Cpuexec.interleave_boost_timer_end = etimer;
+                    emu_timer.SetRefUsed(ref Cpuexec.interleave_boost_timer_end, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.interleave_boost_timer_end);
                 }
-                else if (lt[i].action == TIME_ACT.Video_scanline0_callback)
+                else if (etimer.action == TIME_ACT.Video_scanline0_callback)
                 {
-                    Video.scanline0_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Video.scanline0_timer = etimer;
+                    emu_timer.SetRefUsed(ref Video.scanline0_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Video.scanline0_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_display_position_interrupt_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_display_position_interrupt_callback)
                 {
-                    Neogeo.display_position_interrupt_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Neogeo.display_position_interrupt_timer = etimer;
+                    emu_timer.SetRefUsed(ref Neogeo.display_position_interrupt_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.display_position_interrupt_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_display_position_vblank_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_display_position_vblank_callback)
                 {
-                    Neogeo.display_position_vblank_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Neogeo.display_position_vblank_timer = etimer;
+                    emu_timer.SetRefUsed(ref Neogeo.display_position_vblank_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.display_position_vblank_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_vblank_interrupt_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_vblank_interrupt_callback)
                 {
-                    Neogeo.vblank_interrupt_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Neogeo.vblank_interrupt_timer = etimer;
+                    emu_timer.SetRefUsed(ref Neogeo.vblank_interrupt_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.vblank_interrupt_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_auto_animation_timer_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_auto_animation_timer_callback)
                 {
-                    Neogeo.auto_animation_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Neogeo.auto_animation_timer = etimer;
+                    emu_timer.SetRefUsed(ref Neogeo.auto_animation_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.auto_animation_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Neogeo_sprite_line_timer_callback)
+                else if (etimer.action == TIME_ACT.Neogeo_sprite_line_timer_callback)
                 {
-                    Neogeo.sprite_line_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Neogeo.sprite_line_timer = etimer;
+                    emu_timer.SetRefUsed(ref Neogeo.sprite_line_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Neogeo.sprite_line_timer);
                 }
-                else if (lt[i].action == TIME_ACT.YM2610_F2610_timer_callback_0)
+                else if (etimer.action == TIME_ACT.YM2610_F2610_timer_callback_0)
                 {
-                    YM2610.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2610.timer[0] = etimer;
+                    emu_timer.SetRefUsed(ref YM2610.timer[0], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2610.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2610_F2610_timer_callback_1)
+                else if (etimer.action == TIME_ACT.YM2610_F2610_timer_callback_1)
                 {
-                    YM2610.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2610.timer[1] = etimer;
+                    emu_timer.SetRefUsed(ref YM2610.timer[1], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2610.timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.M6800_action_rx)
+                else if (etimer.action == TIME_ACT.M6800_action_rx)
                 {
-                    M6800.m1.m6800_rx_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //M6800.m1.m6800_rx_timer = etimer;
+                    emu_timer.SetRefUsed(ref M6800.m1.m6800_rx_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(M6800.m1.m6800_rx_timer);
                 }
-                else if (lt[i].action == TIME_ACT.M6800_action_tx)
+                else if (etimer.action == TIME_ACT.M6800_action_tx)
                 {
-                    M6800.m1.m6800_tx_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //M6800.m1.m6800_tx_timer = etimer;
+                    emu_timer.SetRefUsed(ref M6800.m1.m6800_tx_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(M6800.m1.m6800_tx_timer);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3812_0)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3812_0)
                 {
-                    YM3812.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM3812.timer[0] = etimer;
+                    emu_timer.SetRefUsed(ref YM3812.timer[0], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3812_1)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3812_1)
                 {
-                    YM3812.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM3812.timer[1] = etimer;
+                    emu_timer.SetRefUsed(ref YM3812.timer[1], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.ICS2115_timer_cb_0)
+                else if (etimer.action == TIME_ACT.ICS2115_timer_cb_0)
                 {
-                    ICS2115.timer[0].timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //ICS2115.timer[0].timer = etimer;
+                    emu_timer.SetRefUsed(ref ICS2115.timer[0].timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(ICS2115.timer[0].timer);
                 }
-                else if (lt[i].action == TIME_ACT.ICS2115_timer_cb_1)
+                else if (etimer.action == TIME_ACT.ICS2115_timer_cb_1)
                 {
-                    ICS2115.timer[1].timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //ICS2115.timer[1].timer = etimer;
+                    emu_timer.SetRefUsed(ref ICS2115.timer[1].timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(ICS2115.timer[1].timer);
                 }
-                else if (lt[i].action == TIME_ACT.M72_m72_scanline_interrupt)
+                else if (etimer.action == TIME_ACT.M72_m72_scanline_interrupt)
                 {
-                    M72.scanline_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //M72.scanline_timer = etimer;
+                    emu_timer.SetRefUsed(ref M72.scanline_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(M72.scanline_timer);
                 }
-                else if (lt[i].action == TIME_ACT.M92_m92_scanline_interrupt)
+                else if (etimer.action == TIME_ACT.M92_m92_scanline_interrupt)
                 {
-                    M92.scanline_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //M92.scanline_timer = etimer;
+                    emu_timer.SetRefUsed(ref M72.scanline_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(M92.scanline_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Cpuexec_cpu_timeslicecallback)
+                else if (etimer.action == TIME_ACT.Cpuexec_cpu_timeslicecallback)
                 {
-                    Cpuexec.timeslice_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Cpuexec.timeslice_timer = etimer;
+                    emu_timer.SetRefUsed(ref Cpuexec.timeslice_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.timeslice_timer);
                 }
-                else if (lt[i].action == TIME_ACT.Upd7759_upd7759_slave_update)
+                else if (etimer.action == TIME_ACT.Upd7759_upd7759_slave_update)
                 {
-                    Upd7759.chip.timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Upd7759.chip.timer = etimer;
+                    emu_timer.SetRefUsed(ref Upd7759.chip.timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Upd7759.chip.timer);
                 }
-                else if (lt[i].action == TIME_ACT.Generic_irq_2_0_line_hold)
+                else if (etimer.action == TIME_ACT.Generic_irq_2_0_line_hold)
                 {
-                    Cpuexec.timedint_timer = lt[i];
-                    lt.Remove(lt[i]);
+                    //Cpuexec.timedint_timer = etimer;
+                    emu_timer.SetRefUsed(ref Cpuexec.timedint_timer, ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(Cpuexec.timedint_timer);
                 }
-                else if (lt[i].action == TIME_ACT.MSM5205_MSM5205_vclk_callback0)
+                else if (etimer.action == TIME_ACT.MSM5205_MSM5205_vclk_callback0)
                 {
-                    MSM5205.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    //MSM5205.timer[0] = etimer;
+                    emu_timer.SetRefUsed(ref MSM5205.timer[0], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(MSM5205.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.MSM5205_MSM5205_vclk_callback1)
+                else if (etimer.action == TIME_ACT.MSM5205_MSM5205_vclk_callback1)
                 {
-                    MSM5205.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    //MSM5205.timer[1] = etimer;
+                    emu_timer.SetRefUsed(ref MSM5205.timer[1], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(MSM5205.timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_0_0)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_0_0)
                 {
-                    YM2203.FF2203[0].timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2203.FF2203[0].timer[0] = etimer;
+                    emu_timer.SetRefUsed(ref YM2203.FF2203[0].timer[0], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[0].timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_0_1)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_0_1)
                 {
-                    YM2203.FF2203[0].timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2203.FF2203[0].timer[1] = etimer;
+                    emu_timer.SetRefUsed(ref YM2203.FF2203[0].timer[1], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[0].timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_1_0)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_1_0)
                 {
-                    YM2203.FF2203[1].timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2203.FF2203[1].timer[0] = etimer;
+                    emu_timer.SetRefUsed(ref YM2203.FF2203[1].timer[0], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[1].timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM2203_timer_callback_2203_1_1)
+                else if (etimer.action == TIME_ACT.YM2203_timer_callback_2203_1_1)
                 {
-                    YM2203.FF2203[1].timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM2203.FF2203[1].timer[1] = etimer;
+                    emu_timer.SetRefUsed(ref YM2203.FF2203[1].timer[1], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM2203.FF2203[1].timer[1]);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3526_0)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3526_0)
                 {
-                    YM3812.timer[0] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM3812.timer[0] = etimer;
+                    emu_timer.SetRefUsed(ref YM3812.timer[0], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[0]);
                 }
-                else if (lt[i].action == TIME_ACT.YM3812_timer_callback_3526_1)
+                else if (etimer.action == TIME_ACT.YM3812_timer_callback_3526_1)
                 {
-                    YM3812.timer[1] = lt[i];
-                    lt.Remove(lt[i]);
+                    //YM3812.timer[1] = etimer;
+                    emu_timer.SetRefUsed(ref YM3812.timer[1], ref etimer);
+                    lt.Remove(etimer);
                     lt.Add(YM3812.timer[1]);
                 }
+                #endregion
             }
             for (i = n; i < 32; i++)
             {

@@ -544,18 +544,18 @@
 
             }
         }
+        readonly static int[] K051960_sprites_draw_xoffset = new int[] { 0, 1, 4, 5, 16, 17, 20, 21 };
+        readonly static int[] K051960_sprites_draw_yoffset = new int[] { 0, 2, 8, 10, 32, 34, 40, 42 };
+        readonly static int[] K051960_sprites_draw_width = new int[] { 1, 2, 1, 2, 4, 2, 4, 8 };
+        readonly static int[] K051960_sprites_draw_height = new int[] { 1, 1, 2, 2, 2, 4, 4, 8 };
+        static int[] K051960_sprites_draw_sortedlist = new int[128];
         public static void K051960_sprites_draw(RECT cliprect, int min_priority, int max_priority)
         {
             int ox, oy, code, color, pri, shadow, size, w, h, x, y, flipx, flipy, zoomx, zoomy, code2, color2, pri2;
             int offs, pri_code;
-            int[] sortedlist = new int[128];
-            int[] xoffset = new int[] { 0, 1, 4, 5, 16, 17, 20, 21 };
-            int[] yoffset = new int[] { 0, 2, 8, 10, 32, 34, 40, 42 };
-            int[] width = new int[] { 1, 2, 1, 2, 4, 2, 4, 8 };
-            int[] height = new int[] { 1, 1, 2, 2, 2, 4, 4, 8 };
             for (offs = 0; offs < 128; offs++)
             {
-                sortedlist[offs] = -1;
+                K051960_sprites_draw_sortedlist[offs] = -1;
             }
             for (offs = 0; offs < 0x400; offs += 8)
             {
@@ -563,17 +563,17 @@
                 {
                     if (max_priority == -1)
                     {
-                        sortedlist[(K051960_ram[offs] & 0x7f) ^ 0x7f] = offs;
+                        K051960_sprites_draw_sortedlist[(K051960_ram[offs] & 0x7f) ^ 0x7f] = offs;
                     }
                     else
                     {
-                        sortedlist[K051960_ram[offs] & 0x7f] = offs;
+                        K051960_sprites_draw_sortedlist[K051960_ram[offs] & 0x7f] = offs;
                     }
                 }
             }
             for (pri_code = 0; pri_code < 128; pri_code++)
             {
-                offs = sortedlist[pri_code];
+                offs = K051960_sprites_draw_sortedlist[pri_code];
                 if (offs == -1)
                 {
                     continue;
@@ -594,8 +594,8 @@
                     }
                 }
                 size = (K051960_ram[offs + 1] & 0xe0) >> 5;
-                w = width[size];
-                h = height[size];
+                w = K051960_sprites_draw_width[size];
+                h = K051960_sprites_draw_height[size];
                 if (w >= 2) code &= ~0x01;
                 if (h >= 2) code &= ~0x02;
                 if (w >= 4) code &= ~0x04;
@@ -631,19 +631,19 @@
                             sx = ox + 16 * x;
                             if (flipx != 0)
                             {
-                                c += xoffset[(w - 1 - x)];
+                                c += K051960_sprites_draw_xoffset[(w - 1 - x)];
                             }
                             else
                             {
-                                c += xoffset[x];
+                                c += K051960_sprites_draw_xoffset[x];
                             }
                             if (flipy != 0)
                             {
-                                c += yoffset[(h - 1 - y)];
+                                c += K051960_sprites_draw_yoffset[(h - 1 - y)];
                             }
                             else
                             {
-                                c += yoffset[y];
+                                c += K051960_sprites_draw_yoffset[y];
                             }
                             if (max_priority == -1)
                             {
@@ -682,16 +682,16 @@
                             zw = (ox + ((zoomx * (x + 1) + (1 << 11)) >> 12)) - sx;
                             if (flipx != 0)
                             {
-                                c += xoffset[(w - 1 - x)];
+                                c += K051960_sprites_draw_xoffset[(w - 1 - x)];
                             }
-                            else c += xoffset[x];
+                            else c += K051960_sprites_draw_xoffset[x];
                             if (flipy != 0)
                             {
-                                c += yoffset[(h - 1 - y)];
+                                c += K051960_sprites_draw_yoffset[(h - 1 - y)];
                             }
                             else
                             {
-                                c += yoffset[y];
+                                c += K051960_sprites_draw_yoffset[y];
                             }
                             if (max_priority == -1)
                             {

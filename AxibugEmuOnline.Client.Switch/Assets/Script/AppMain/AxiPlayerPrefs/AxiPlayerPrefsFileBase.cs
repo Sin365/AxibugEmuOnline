@@ -83,23 +83,26 @@ public abstract class AxiPlayerPrefsFileBase : IAxiPlayerPrefs
 
 	public float GetFloat(string key, float defaultValue)
 	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out bool IsNew);
+		bool IsNew;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out IsNew);
 		if (IsNew)
 			kv.floatval = defaultValue;
 		return kv.floatval;
 	}
 
 	public int GetInt(string key, int defaultValue)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out bool IsNew);
+    {
+        bool IsNew;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out IsNew);
 		if (IsNew)
 			kv.intval = defaultValue;
 		return kv.intval;
 	}
 
 	public string GetString(string key, string defaultValue)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out bool IsNew);
+    {
+        bool IsNew;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out IsNew);
 		if (IsNew)
 			kv.strval = defaultValue;
 		return kv.strval;
@@ -107,29 +110,33 @@ public abstract class AxiPlayerPrefsFileBase : IAxiPlayerPrefs
 
 	public float GetFloat(string key)
 	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, false, out bool _);
+		bool val;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, false, out val);
 		if (kv != null) return kv.floatval;
 		return default(float);
 	}
 
 	public int GetInt(string key)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, false, out bool _);
+    {
+        bool val;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, false, out val);
 		if (kv != null) return kv.intval;
 		return default(int);
 	}
 
 	public string GetString(string key)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, false, out bool _);
+    {
+        bool val;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, false, out val);
 		if (kv != null) return kv.strval;
 		return string.Empty;
 	}
 
 
 	public void SetInt(string key, int value)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out bool _);
+    {
+        bool val;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out val);
 		if (kv.intval == value)
 			return;
 		kv.intval = value;
@@ -137,8 +144,9 @@ public abstract class AxiPlayerPrefsFileBase : IAxiPlayerPrefs
 	}
 
 	public void SetString(string key, string value)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out bool _);
+    {
+        bool val;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out val);
 		if (string.Equals(kv.strval, value))
 			return;
 		kv.strval = value;
@@ -146,8 +154,9 @@ public abstract class AxiPlayerPrefsFileBase : IAxiPlayerPrefs
 	}
 
 	public void SetFloat(string key, float value)
-	{
-		AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out bool _);
+    {
+        bool val;
+        AxiPlayerPrefsKeyValye kv = GetByKey(key, true, out val);
 		if (kv.floatval == value)
 			return;
 		kv.floatval = value;

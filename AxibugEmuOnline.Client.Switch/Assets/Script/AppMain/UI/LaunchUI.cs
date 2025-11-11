@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.UI;
 using Coffee.UIExtensions;
 using DG.Tweening;
@@ -50,7 +51,9 @@ namespace AxibugEmuOnline.Client
         private void Update()
         {
             if (CommandDispatcher.Instance.Mode == CommandListener.ScheduleType.Gaming && App.emu.Core == null)
+            { 
                 CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
+            }
         }
 
         public void HideMainMenu()

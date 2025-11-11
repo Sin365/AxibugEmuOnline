@@ -12,7 +12,11 @@
         }
         ushort GetRMWord(int ModRM)
         {
-            return (ushort)(ModRM >= 0xc0 ? I.regs.b[mod_RM.RMw[ModRM] * 2] + I.regs.b[mod_RM.RMw[ModRM] * 2 + 1] * 0x100 : ReadWord(GetEA[ModRM]()));
+            return (ushort)(ModRM >= 0xc0 ? I.regs.b[mod_RM.RMw[ModRM] * 2] + I.regs.b[mod_RM.RMw[ModRM] * 2 + 1] * 0x100 : 
+                ReadWord(
+            GetEA[ModRM]()
+            //DoNecGetEAOpCode(ModRM)
+                ));
         }
         void PutbackRMWord(int ModRM, ushort val)
         {
@@ -41,7 +45,10 @@
             }
             else
             {
-                WriteWord(GetEA[ModRM](), val);
+                WriteWord(
+                GetEA[ModRM]()
+                //DoNecGetEAOpCode(ModRM)
+                    , val);
             }
         }
         void PutImmRMWord(int ModRM)
@@ -57,13 +64,17 @@
             else
             {
                 EA = GetEA[ModRM]();
+                //EA = DoNecGetEAOpCode(ModRM);
                 val = FETCHWORD();
                 WriteWord(EA, val);
             }
         }
         byte GetRMByte(int ModRM)
         {
-            return ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(GetEA[ModRM]()));
+            return ((ModRM) >= 0xc0 ? I.regs.b[mod_RM.RMb[ModRM]] : ReadByte(
+                GetEA[ModRM]()
+                //DoNecGetEAOpCode(ModRM)
+                ));
         }
         void PutRMByte(int ModRM, byte val)
         {
@@ -73,7 +84,10 @@
             }
             else
             {
-                WriteByte(GetEA[ModRM](), val);
+                WriteByte(
+                    GetEA[ModRM]()
+                    //DoNecGetEAOpCode(ModRM)
+                    , val);
             }
         }
         void PutImmRMByte(int ModRM)
@@ -85,6 +99,7 @@
             else
             {
                 EA = GetEA[ModRM]();
+                //EA = DoNecGetEAOpCode(ModRM);
                 WriteByte(EA, FETCH());
             }
         }
@@ -117,11 +132,26 @@
             dst = RegByte(ModRM);
             src = GetRMByte(ModRM);
         }
+        //void DEF_r16w(out int ModRM, out ushort src, out ushort dst)
+        //{
+        //    ModRM = FETCH();
+        //    dst = RegWord(ModRM);
+        //    src = GetRMWord(ModRM);
+        //}
+
+        //手动内联
         void DEF_r16w(out int ModRM, out ushort src, out ushort dst)
         {
-            ModRM = FETCH();
-            dst = RegWord(ModRM);
-            src = GetRMWord(ModRM);
+            //ModRM = FETCH();
+            ModRM  = ReadOpArg(((I.sregs[1] << 4) + I.ip++) ^ 0);
+            //dst = RegWord(ModRM);
+            dst = (ushort)(I.regs.b[mod_RM.regw[ModRM] * 2] + I.regs.b[mod_RM.regw[ModRM] * 2 + 1] * 0x100);
+            //src = GetRMWord(ModRM);
+            src = (ushort)(ModRM >= 0xc0 ? I.regs.b[mod_RM.RMw[ModRM] * 2] + I.regs.b[mod_RM.RMw[ModRM] * 2 + 1] * 0x100 : 
+                ReadWord(
+            GetEA[ModRM]()
+            //DoNecGetEAOpCode(ModRM)
+                ));
         }
         void DEF_ald8(out byte src, out byte dst)
         {

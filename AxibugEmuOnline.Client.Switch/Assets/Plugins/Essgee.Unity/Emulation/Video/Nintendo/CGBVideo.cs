@@ -346,7 +346,7 @@ namespace Essgee.Emulation.Video.Nintendo
             WriteColorToFramebuffer(c, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
         }
 
-        private void WriteColorToFramebuffer(ushort c, int address)
+        private unsafe void WriteColorToFramebuffer(ushort c, int address)
         {
             RGBCGBtoBGRA8888(c, ref outputFramebuffer, address);
         }

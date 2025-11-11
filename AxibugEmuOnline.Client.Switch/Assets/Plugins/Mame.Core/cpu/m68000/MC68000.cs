@@ -163,8 +163,8 @@ namespace cpu.m68000
 
         public MC68000()
         {
-            //倒是已经废弃
-            //BuildOpcodeTable();
+            //使用枚举
+            BuildOpcodeTable();
         }
 
 
@@ -205,7 +205,7 @@ namespace cpu.m68000
             PC = ReadOpLong(4);
         }
 
-        //public Action[] Opcodes = new Action[0x10000];
+        public Action[] Opcodes = new Action[0x10000];
         public ushort op;
 
         public void Step()
@@ -213,10 +213,41 @@ namespace cpu.m68000
             //EmuLogger.Log(Disassemble(PC));
 
             op = (ushort)ReadOpWord(PC); PC += 2;
-            //Opcodes[op]();
-            DoOpCode(op);
+            Opcodes[op]();
+            //DoOpCode(op);
         }
 
+        //public override int ExecuteCycles(int cycles)
+        //{
+        //    if (!stopped)
+        //    {
+        //        pendingCycles = cycles;
+        //        int ran;
+        //        pendingCycles -= int_cycles;
+        //        int_cycles = 0;
+        //        do
+        //        {
+        //            int prevCycles = pendingCycles;
+        //            PPC = PC;
+        //            op = (ushort)ReadOpWord(PC); PC += 2;
+        //            //Opcodes[op]();
+        //            DoOpCode(op);
+        //            m68ki_check_interrupts();
+        //            int delta = prevCycles - pendingCycles;
+        //            totalExecutedCycles += (ulong)delta;
+        //        }
+        //        while (pendingCycles > 0);
+        //        pendingCycles -= int_cycles;
+        //        int_cycles = 0;
+        //        ran = cycles - pendingCycles;
+        //        return ran;
+        //    }
+        //    pendingCycles = 0;
+        //    int_cycles = 0;
+        //    return cycles;
+        //}
+
+        //手动内联
         public override int ExecuteCycles(int cycles)
         {
             if (!stopped)
@@ -230,9 +261,26 @@ namespace cpu.m68000
                     int prevCycles = pendingCycles;
                     PPC = PC;
                     op = (ushort)ReadOpWord(PC); PC += 2;
-                    //Opcodes[op]();
-                    DoOpCode(op);
-                    m68ki_check_interrupts();
+                    Opcodes[op]();
+                    //DoOpCode(op);
+
+                    //m68ki_check_interrupts();
+                    if (Interrupt > 0 && (Interrupt > InterruptMaskLevel || Interrupt > 7))
+                    {
+                        stopped = false;
+                        //int vector = Cpuint.cpu_irq_callback(cpunum, Interrupt);
+                        short sr = (short)SR;                  // capture current SR.
+                        S = true;                               // switch to supervisor mode, if not already in it.
+                        A[7].s32 -= 4;                          // Push PC on stack
+                        WriteLong(A[7].s32, PC);
+                        A[7].s32 -= 2;                          // Push SR on stack
+                        WriteWord(A[7].s32, sr);
+                        PC = ReadLong((24 + Interrupt) * 4);    // Jump to interrupt vector
+                        InterruptMaskLevel = Interrupt;         // Set interrupt mask to level currently being entered
+                        Interrupt = 0;                          // "ack" interrupt. Note: this is wrong.
+                        int_cycles += 0x2c;
+                    }
+
                     int delta = prevCycles - pendingCycles;
                     totalExecutedCycles += (ulong)delta;
                 }

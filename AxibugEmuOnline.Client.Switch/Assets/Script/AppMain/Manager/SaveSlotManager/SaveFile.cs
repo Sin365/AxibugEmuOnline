@@ -275,13 +275,14 @@ namespace AxibugEmuOnline.Client
 
             private static void Add(SyncingFiles file)
             {
-                if (!m_syncFiles.TryGetValue(file.platform, out var mapper))
+                Dictionary<int, HashSet<SyncingFiles>> mapper;
+                if (!m_syncFiles.TryGetValue(file.platform, out mapper))
                 {
                     mapper = new Dictionary<int, HashSet<SyncingFiles>>();
                     m_syncFiles.Add(file.platform, mapper);
                 }
-
-                if (!mapper.TryGetValue(file.romID, out var syncingTables))
+                HashSet<SyncingFiles> syncingTables;
+                if (!mapper.TryGetValue(file.romID, out syncingTables))
                 {
                     syncingTables = new HashSet<SyncingFiles>();
                     mapper[file.romID] = syncingTables;
@@ -296,12 +297,15 @@ namespace AxibugEmuOnline.Client
             public static void Remove(SaveFile savFile)
             {
                 SyncingFiles file = new SyncingFiles { romID = savFile.RomID, platform = savFile.EmuPlatform, slotIndex = savFile.SlotIndex };
-                if (!m_syncFiles.TryGetValue(file.platform, out var mapper))
+
+                Dictionary<int, HashSet<SyncingFiles>> mapper;
+                if (!m_syncFiles.TryGetValue(file.platform, out mapper))
                 {
                     return;
                 }
 
-                if (!mapper.TryGetValue(savFile.RomID, out var syncingTables))
+                HashSet<SyncingFiles> syncingTables;
+                if (!mapper.TryGetValue(savFile.RomID, out syncingTables))
                 {
                     return;
                 }

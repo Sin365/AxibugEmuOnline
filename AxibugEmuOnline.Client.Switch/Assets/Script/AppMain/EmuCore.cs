@@ -44,6 +44,11 @@ namespace AxibugEmuOnline.Client
         public abstract Texture OutputPixel { get; }
         public abstract RawImage DrawCanvas { get; }
 
+        /// <summary>
+        /// 渲染朝向，用于截图
+        /// </summary>
+        public abstract Vector3 DrawLocalScale { get; }
+
 
         /// <summary> 指示该游戏实例是否处于联机模式 </summary>
         public bool IsNetPlay
@@ -71,7 +76,7 @@ namespace AxibugEmuOnline.Client
             if (IsNetPlay) //skip frame handle
             {
                 var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-                if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
+                //if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
                 for (var i = 0; i < skipFrameCount; i++)
                 {
                     if (!TryPushEmulatorFrame()) break;
@@ -83,7 +88,8 @@ namespace AxibugEmuOnline.Client
 
         bool TryPushEmulatorFrame()
         {
-            if (SampleInputData(out var inputData))
+            INPUTDATA inputData;
+            if (SampleInputData(out inputData))
             {
                 if (IsNetPlay) SendLocalInput();
 

@@ -15,6 +15,7 @@ public class AxiNSIOKeepingDisposable : IDisposable
     }
     static void UpdateKeepingState(bool add)
     {
+#if UNITY_SWITCH
         lock (m_CurrLiveHandleLock)
         {
             bool lasthadCounter = hadCounter;
@@ -42,6 +43,7 @@ public class AxiNSIOKeepingDisposable : IDisposable
                 UnityEngine.Debug.Log("取消：阻止用户在保存时，退出游戏 Switch 条例 0080");
             }
         }
+#endif
     }
     private AxiNSIOKeepingDisposable()
     {

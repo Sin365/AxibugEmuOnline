@@ -99,7 +99,7 @@ namespace AxibugEmuOnline.Client
 
                     var stateData = m_ingameUI.Core.GetStateBytes();
                     var tex = m_ingameUI.Core.OutputPixel;
-                    var screenData = tex.ToJPG(m_ingameUI.Core.DrawCanvas.transform.localScale);
+                    var screenData = tex.ToJPG(m_ingameUI.Core.DrawLocalScale);
 
                     m_savFile.Save(m_savFile.Sequecen + 1, stateData, screenData);
                 }
@@ -120,7 +120,8 @@ namespace AxibugEmuOnline.Client
                 public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
                 {
                     cancelHide = true;
-                    m_savFile.GetSavData(out byte[] savData, out var _);
+                    byte[] data, savData;
+                    m_savFile.GetSavData(out savData, out data);
                     if (savData != null)
                     {
                         m_ingameUI.Core.LoadStateFromBytes(savData);

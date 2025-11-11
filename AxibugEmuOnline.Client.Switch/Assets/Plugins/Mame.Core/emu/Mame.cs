@@ -99,6 +99,7 @@ namespace MAME.Core
             if (exit_pending)
                 return;
 
+            EmuTimer.emu_timer.CheckReadyRelaseBeforeFrameRun();
             long lastframe = Video.screenstate.frame_number;
             //执行CPU命令，直到一次画面更新
             while (lastframe == Video.screenstate.frame_number)
@@ -167,7 +168,8 @@ namespace MAME.Core
             Palette.palette_init();
             Generic.generic_machine_init();
             EmuTimer.timer_init();
-            soft_reset_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Mame_soft_reset, false);
+            //soft_reset_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Mame_soft_reset, false);
+            EmuTimer.timer_alloc_common(ref soft_reset_timer,EmuTimer.TIME_ACT.Mame_soft_reset, false);
             Window.osd_init();
             Inptport.input_port_init();
             Cpuexec.cpuexec_init();

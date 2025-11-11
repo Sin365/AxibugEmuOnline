@@ -32,7 +32,7 @@ namespace cpu.m6800
         private ushort M6803_DDR1 = 0x00, M6803_DDR2 = 0x01, M6803_DDR3 = 0x04, M6803_DDR4 = 0x05, M6803_PORT1 = 0x100, M6803_PORT2 = 0x101, M6803_PORT3 = 0x102, M6803_PORT4 = 0x103;
         private byte M6800_RMCR_SS_MASK = 0x03, M6800_RMCR_SS_4096 = 0x03, M6800_RMCR_SS_1024 = 0x02, M6800_RMCR_SS_128 = 0x01, M6800_RMCR_SS_16 = 0x00, M6800_RMCR_CC_MASK = 0x0c;
         private byte M6800_TRCSR_RDRF = 0x80, M6800_TRCSR_ORFE = 0x40, M6800_TRCSR_TDRE = 0x20, M6800_TRCSR_RIE = 0x10, M6800_TRCSR_RE = 0x08, M6800_TRCSR_TIE = 0x04, M6800_TRCSR_TE = 0x02, M6800_TRCSR_WU = 0x01, M6800_PORT2_IO4 = 0x10, M6800_PORT2_IO3 = 0x08;
-        private int[] M6800_RMCR_SS = new int[] { 16, 128, 1024, 4096 };
+        private static int[] M6800_RMCR_SS = new int[] { 16, 128, 1024, 4096 };
         public enum M6800_TX_STATE
         {
             INIT = 0,
@@ -64,7 +64,7 @@ namespace cpu.m6800
             }
         }
         public uint timer_next;
-        public byte[] flags8i = new byte[256]	 /* increment */
+        public readonly static byte[] flags8i = new byte[256]	 /* increment */
 {
 0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -83,7 +83,7 @@ namespace cpu.m6800
 0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,
 0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08
 };
-        private byte[] flags8d = new byte[256] /* decrement */
+        private readonly static byte[] flags8d = new byte[256] /* decrement */
 {
 0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -102,7 +102,7 @@ namespace cpu.m6800
 0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,
 0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08
 };
-        private byte[] cycles_6800 = new byte[]
+        private readonly static byte[] cycles_6800 = new byte[]
 {
 		/* 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
 	/*0*/ 99, 2,99,99,99,99, 2, 2, 4, 4, 2, 2, 2, 2, 2, 2,
@@ -245,8 +245,10 @@ namespace cpu.m6800
             cycles = cycles_63701;
             clock = 1536000;
             irq_callback = null;
-            m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
-            m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            //m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
+            EmuTimer.timer_alloc_common(ref m6800_rx_timer, EmuTimer.TIME_ACT.M6800_action_rx, false);
+            //m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            EmuTimer.timer_alloc_common(ref m6800_tx_timer, EmuTimer.TIME_ACT.M6800_action_tx, false);
         }
         public override void Reset()
         {
@@ -1344,8 +1346,10 @@ namespace cpu.m6800
             };
             clock = 1000000;
             irq_callback = Cpuint.cpu_3_irq_callback;
-            m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
-            m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            //m6800_rx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_rx, false);
+            EmuTimer.timer_alloc_common(ref m6800_rx_timer, EmuTimer.TIME_ACT.M6800_action_rx, false);
+            //m6800_tx_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M6800_action_tx, false);
+            EmuTimer.timer_alloc_common(ref m6800_tx_timer, EmuTimer.TIME_ACT.M6800_action_tx, false);
         }
         public override int ExecuteCycles(int cycles)
         {

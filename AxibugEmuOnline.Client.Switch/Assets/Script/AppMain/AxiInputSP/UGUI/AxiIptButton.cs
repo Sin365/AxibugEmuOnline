@@ -33,6 +33,14 @@ namespace AxiInputSP.UGUI
             return m_state == AxiButtonState.KeyDown;
         }
 
+        /// <summary>
+        /// 重设键值（如按钮重新隐藏之后）
+        /// </summary>
+        public void ResetKeyState()
+        {
+            m_state = AxiButtonState.None;
+        }
+
         public override void OnPointerDown(PointerEventData eventData)
         {
             base.OnPointerDown(eventData);

@@ -36,11 +36,25 @@ namespace MAME.Core
         {
             Sound.ym3812stream.stream_update();
         }
+
+        static void ReInit_timer()
+        {
+            if (timer != null)
+            {
+                if (timer[0] != null) EmuTimer.emu_timer.SetNull(ref timer[0]);
+                if (timer[1] != null) EmuTimer.emu_timer.SetNull(ref timer[1]);
+            }
+            else
+            {
+                timer = new EmuTimer.emu_timer[2];
+            }
+        }
         public static void ym3812_start(int clock)
         {
             FMOpl.tl_tab = new int[0x1800];
             FMOpl.sin_tab = new uint[0x1000];
-            timer = new EmuTimer.emu_timer[2];
+            ReInit_timer();
+            //timer = new EmuTimer.emu_timer[2];
             int rate = clock / 72;
             switch (Machine.sName)
             {
@@ -73,8 +87,8 @@ namespace MAME.Core
             FMOpl.ym3812_set_timer_handler(TimerHandler_3812);
             FMOpl.ym3812_set_irq_handler(IRQHandler_3812);
             FMOpl.ym3812_set_update_handler(_stream_update_3812);
-            timer[0] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM3812_timer_callback_3812_0, false);
-            timer[1] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM3812_timer_callback_3812_1, false);
+            EmuTimer.timer_alloc_common(ref timer[0], EmuTimer.TIME_ACT.YM3812_timer_callback_3812_0, false);
+            EmuTimer.timer_alloc_common(ref timer[1],EmuTimer.TIME_ACT.YM3812_timer_callback_3812_1, false);
         }
         public static void ym3812_control_port_0_w(byte data)
         {
@@ -228,12 +242,13 @@ namespace MAME.Core
         {
             int rate = clock / 72;
             FMOpl.YM3526 = FMOpl.ym3526_init(0, clock, rate);
-            timer = new EmuTimer.emu_timer[2];
+            ReInit_timer();
+            //timer = new EmuTimer.emu_timer[2];
             FMOpl.ym3526_set_timer_handler(TimerHandler_3526);
             FMOpl.ym3526_set_irq_handler(IRQHandler_3526);
             FMOpl.ym3526_set_update_handler(_stream_update_3526);
-            timer[0] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM3812_timer_callback_3526_0, false);
-            timer[1] = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM3812_timer_callback_3526_1, false);
+            EmuTimer.timer_alloc_common(ref timer[0], EmuTimer.TIME_ACT.YM3812_timer_callback_3526_0, false);
+            EmuTimer.timer_alloc_common(ref timer[1], EmuTimer.TIME_ACT.YM3812_timer_callback_3526_1, false);
         }
         public static void ym3526_control_port_0_w(byte data)
         {

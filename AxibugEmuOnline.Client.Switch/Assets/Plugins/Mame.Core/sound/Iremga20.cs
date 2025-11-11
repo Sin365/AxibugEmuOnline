@@ -23,54 +23,58 @@ namespace MAME.Core
         };
         public static IremGA20_chip_def chip;
         public static byte[] iremrom;
+
+
+        static int[] update_rate = new int[4], update_pos = new int[4], update_frac = new int[4], update_end = new int[4], update_vol = new int[4], update_play = new int[4];
+
         public static void iremga20_update(int offset, int length)
         {
-            int[] rate = new int[4], pos = new int[4], frac = new int[4], end = new int[4], vol = new int[4], play = new int[4];
+            //int[] rate = new int[4], pos = new int[4], frac = new int[4], end = new int[4], vol = new int[4], play = new int[4];
             int i, sampleout;
             for (i = 0; i < 4; i++)
             {
-                rate[i] = chip.channel[i].rate;
-                pos[i] = chip.channel[i].pos;
-                frac[i] = chip.channel[i].frac;
-                end[i] = chip.channel[i].end - 0x20;
-                vol[i] = chip.channel[i].volume;
-                play[i] = chip.channel[i].play;
+                update_rate[i] = chip.channel[i].rate;
+                update_pos[i] = chip.channel[i].pos;
+                update_frac[i] = chip.channel[i].frac;
+                update_end[i] = chip.channel[i].end - 0x20;
+                update_vol[i] = chip.channel[i].volume;
+                update_play[i] = chip.channel[i].play;
             }
             i = length;
             for (i = 0; i < length; i++)
             {
                 sampleout = 0;
-                if (play[0] != 0)
+                if (update_play[0] != 0)
                 {
-                    sampleout += (iremrom[pos[0]] - 0x80) * vol[0];
-                    frac[0] += rate[0];
-                    pos[0] += frac[0] >> 24;
-                    frac[0] &= 0xffffff;
-                    play[0] = pos[0] < end[0] ? 1 : 0;
+                    sampleout += (iremrom[update_pos[0]] - 0x80) * update_vol[0];
+                    update_frac[0] += update_rate[0];
+                    update_pos[0] += update_frac[0] >> 24;
+                    update_frac[0] &= 0xffffff;
+                    update_play[0] = update_pos[0] < update_end[0] ? 1 : 0;
                 }
-                if (play[1] != 0)
+                if (update_play[1] != 0)
                 {
-                    sampleout += (iremrom[pos[1]] - 0x80) * vol[1];
-                    frac[1] += rate[1];
-                    pos[1] += frac[1] >> 24;
-                    frac[1] &= 0xffffff;
-                    play[1] = pos[1] < end[1] ? 1 : 0;
+                    sampleout += (iremrom[update_pos[1]] - 0x80) * update_vol[1];
+                    update_frac[1] += update_rate[1];
+                    update_pos[1] += update_frac[1] >> 24;
+                    update_frac[1] &= 0xffffff;
+                    update_play[1] = update_pos[1] < update_end[1] ? 1 : 0;
                 }
-                if (play[2] != 0)
+                if (update_play[2] != 0)
                 {
-                    sampleout += (iremrom[pos[2]] - 0x80) * vol[2];
-                    frac[2] += rate[2];
-                    pos[2] += frac[2] >> 24;
-                    frac[2] &= 0xffffff;
-                    play[2] = pos[2] < end[2] ? 1 : 0;
+                    sampleout += (iremrom[update_pos[2]] - 0x80) * update_vol[2];
+                    update_frac[2] += update_rate[2];
+                    update_pos[2] += update_frac[2] >> 24;
+                    update_frac[2] &= 0xffffff;
+                    update_play[2] = update_pos[2] < update_end[2] ? 1 : 0;
                 }
-                if (play[3] != 0)
+                if (update_play[3] != 0)
                 {
-                    sampleout += (iremrom[pos[3]] - 0x80) * vol[3];
-                    frac[3] += rate[3];
-                    pos[3] += frac[3] >> 24;
-                    frac[3] &= 0xffffff;
-                    play[3] = pos[3] < end[3] ? 1 : 0;
+                    sampleout += (iremrom[update_pos[3]] - 0x80) * update_vol[3];
+                    update_frac[3] += update_rate[3];
+                    update_pos[3] += update_frac[3] >> 24;
+                    update_frac[3] &= 0xffffff;
+                    update_play[3] = update_pos[3] < update_end[3] ? 1 : 0;
                 }
                 sampleout >>= 2;
                 Sound.iremga20stream.streamoutput_Ptrs[0][offset + i] = sampleout;
@@ -78,9 +82,9 @@ namespace MAME.Core
             }
             for (i = 0; i < 4; i++)
             {
-                chip.channel[i].pos = pos[i];
-                chip.channel[i].frac = frac[i];
-                chip.channel[i].play = play[i];
+                chip.channel[i].pos = update_pos[i];
+                chip.channel[i].frac = update_frac[i];
+                chip.channel[i].play = update_play[i];
             }
         }
         public static void irem_ga20_w(int offset, ushort data)

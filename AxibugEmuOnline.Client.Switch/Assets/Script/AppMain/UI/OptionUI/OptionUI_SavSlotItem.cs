@@ -47,7 +47,15 @@ namespace AxibugEmuOnline.Client
 
         private void SavFile_OnSavSuccessed()
         {
-            MenuData.SavFile.TrySync();
+            if (MenuData.SavFile.GetCurrentState() is SaveFile.SyncedState)
+            {
+                //如果原本就处于已经同步状态，那么此处将直接转换到上传本地文档的状态
+                MenuData.SavFile.FSM.ChangeState<SaveFile.UploadingState>();
+            }
+            else
+            {
+                MenuData.SavFile.TrySync();
+            }
             RefreshUI();
         }
 
@@ -71,7 +79,8 @@ namespace AxibugEmuOnline.Client
             {
                 var savTime = MenuData.SavFile.GetSavTimeUTC().ToLocalTime();
                 UI_SavTime.text = $"{savTime.Year}/{savTime.Month:00}/{savTime.Day:00}\n{savTime.Hour}:{savTime.Minute}:{savTime.Second}";
-                MenuData.SavFile.GetSavData(out byte[] _, out byte[] screenShotData);
+                byte[] _tempdata, screenShotData;
+                MenuData.SavFile.GetSavData(out _tempdata, out screenShotData);
 
                 if (!m_screenTex) m_screenTex = new Texture2D(1, 1);
 

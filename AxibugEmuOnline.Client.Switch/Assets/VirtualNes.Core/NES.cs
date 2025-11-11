@@ -426,7 +426,7 @@ namespace VirtualNes.Core
             // 僨僼僅儖僩僶儞僋愝掕
             for (i = 0; i < 8; i++)
             {
-                MMU.CPU_MEM_BANK[i] = null;
+                MMU.CPU_MEM_BANK[i] = new ArrayRef<byte>();
                 MMU.CPU_MEM_TYPE[i] = MMU.BANKTYPE_ROM;
                 MMU.CPU_MEM_PAGE[i] = 0;
             }

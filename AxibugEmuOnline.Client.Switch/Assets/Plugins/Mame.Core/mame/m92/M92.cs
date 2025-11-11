@@ -351,7 +351,19 @@ namespace MAME.Core
                 gfx21rom[i2 * 2] = (byte)(gfx2rom[i2] >> 4);
                 gfx21rom[i2 * 2 + 1] = (byte)(gfx2rom[i2] & 0x0f);
             }
-            eeprom_set = Machine.GetRom("eeprom.rom");
+            var eepromdata = Machine.GetRom("eeprom.rom");
+            //难绷，eeprom是一个可读写存储器，根本不用dump成rom
+            //但是某些游戏依赖，但实际没有意义。比如棒球小子（忍者棒球）
+            //所以这里如果没有eeprom.rom，就创建一个空的eeprom数据 长度128(0x80)字节
+            if (eepromdata != null)
+            {
+                eeprom_set = eepromdata;
+            }
+            else
+            {
+                eeprom_set = new byte[0x80];
+            }
+            //eeprom_set = Machine.GetRom("eeprom.rom");
             m92_game_kludge = 0;
             m92_irq_vectorbase = 0x80;
             m92_sprite_buffer_busy = 1;
@@ -399,7 +411,8 @@ namespace MAME.Core
         {
             setvector_param = 0;
             setvector_callback();
-            scanline_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M92_m92_scanline_interrupt, false);
+            //scanline_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.M92_m92_scanline_interrupt, false);
+            EmuTimer.timer_alloc_common(ref scanline_timer,EmuTimer.TIME_ACT.M92_m92_scanline_interrupt, false);
         }
         public static void machine_reset_m92()
         {
@@ -456,7 +469,8 @@ namespace MAME.Core
         }
         public static void setvector_callback()
         {
-            List<vec> lsvec = new List<vec>();
+            List<vec> lsvec = ObjectPoolAuto.AcquireList<vec>();
+            //List<vec> lsvec = new List<vec>();
             foreach (vec v1 in Cpuint.lvec)
             {
                 if (Attotime.attotime_compare(v1.time, EmuTimer.global_basetime) < 0)
@@ -473,7 +487,10 @@ namespace MAME.Core
             foreach (vec v1 in lsvec)
             {
                 Cpuint.lvec.Remove(v1);
+                ObjectPoolAuto.Release(v1);
             }
+
+            ObjectPoolAuto.Release(lsvec);
             switch (setvector_param)
             {
                 case 0:
@@ -511,9 +528,10 @@ namespace MAME.Core
         }
         public static void m92_soundlatch_w(ushort data)
         {
-            Cpuint.lvec.Add(new vec(3, EmuTimer.get_current_time()));
+            //Cpuint.lvec.Add(new vec(3, EmuTimer.get_current_time()));
+            Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(3, EmuTimer.get_current_time()));
             setvector_param = 3;
-            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
             EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             Sound.soundlatch_w((ushort)(data & 0xff));
         }
@@ -527,9 +545,10 @@ namespace MAME.Core
         }
         public static void m92_sound_irq_ack_w()
         {
-            Cpuint.lvec.Add(new vec(4, EmuTimer.get_current_time()));
+            //Cpuint.lvec.Add(new vec(4, EmuTimer.get_current_time()));
+            Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(4, EmuTimer.get_current_time()));
             setvector_param = 4;
-            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+            EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
             EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
         }
         public static void m92_sound_status_w(ushort data)
@@ -541,16 +560,18 @@ namespace MAME.Core
         {
             if (state != 0)
             {
-                Cpuint.lvec.Add(new vec(1, EmuTimer.get_current_time()));
+                //Cpuint.lvec.Add(new vec(1, EmuTimer.get_current_time()));
+                Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(1, EmuTimer.get_current_time()));
                 setvector_param = 1;
-                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             }
             else
             {
-                Cpuint.lvec.Add(new vec(2, EmuTimer.get_current_time()));
+                //Cpuint.lvec.Add(new vec(2, EmuTimer.get_current_time()));
+                Cpuint.lvec.Add(ObjectPoolAuto.Acquire<vec>().setdata(2, EmuTimer.get_current_time()));
                 setvector_param = 2;
-                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.setvector, true);
+                EmuTimer.emu_timer timer = EmuTimer.timer_alloc_common_NoRef(EmuTimer.TIME_ACT.setvector, true);
                 EmuTimer.timer_adjust_periodic(timer, Attotime.ATTOTIME_ZERO, Attotime.ATTOTIME_NEVER);
             }
         }

@@ -88,8 +88,19 @@ public static class AxiAutoBuild
             _ => "",
         };
 
+        string targetplatformDir = target.ToString();
 
-        string _locationPathName = $"Output/{target}/{targetName}";
+        
+        targetplatformDir += target switch
+        {
+            //平台目录追加一层时间
+            BuildTarget.iOS => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
+            BuildTarget.StandaloneLinux64 => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
+            BuildTarget.StandaloneWindows => "/"+ DateTime.Now.ToString("yyyyMMddHHmmss"),
+            _ => "",
+        };
+
+        string _locationPathName = $"Output/{targetplatformDir}/{targetName}";
         string FullPath = Path.GetFullPath(Path.Combine(Application.dataPath, "..", _locationPathName));
         string dirPath = Path.GetDirectoryName(FullPath);
         if (!Directory.Exists(dirPath))

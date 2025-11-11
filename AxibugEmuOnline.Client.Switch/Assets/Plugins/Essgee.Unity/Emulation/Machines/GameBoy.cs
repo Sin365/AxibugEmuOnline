@@ -445,9 +445,11 @@ namespace Essgee.Emulation.Machines
 
         public void RunStep()
         {
-            var clockCyclesInStep = cpu.Step();
-
-            for (var s = 0; s < clockCyclesInStep / 4; s++)
+            int clockCyclesInStep = cpu.Step();
+            int loopCount = clockCyclesInStep / 4; // 除法计算移出循环
+            // 在循环外检查 cartridge 是否为空，避免每次循环都检查
+            bool hasCartridge = cartridge != null;
+            for (var s = 0; s < loopCount; s++)
             {
                 HandleTimerOverflow();
                 UpdateCycleCounter((ushort)(clockCycleCount + 4));
@@ -456,7 +458,8 @@ namespace Essgee.Emulation.Machines
 
                 video.Step(4);
                 audio.Step(4);
-                cartridge?.Step(4);
+                if(hasCartridge)
+                    cartridge.Step(4);
 
                 currentMasterClockCyclesInFrame += 4;
             }

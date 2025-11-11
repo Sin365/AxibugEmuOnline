@@ -8,7 +8,7 @@
         public static byte kb_swap;
         public static ushort olds_bs, kb_cmd3;
         public static byte[][] kb_source_data;
-        public static byte[][] drgw2_source_data = new byte[0x08][]//[0xec]
+        public readonly static byte[][] drgw2_source_data = new byte[0x08][]//[0xec]
         {
             new byte[]{ 0, }, // Region 0, not used
 	        new byte[]{   // Region 1, $13A886

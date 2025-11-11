@@ -96,5 +96,10 @@
         /// 核心开始游戏
         /// </summary>
         OnEmuBeginGame,
+
+        /// <summary>
+        /// 平台切换
+        /// </summary>
+        OnScreenGamepadPlatformTypeChanged
     }
 }

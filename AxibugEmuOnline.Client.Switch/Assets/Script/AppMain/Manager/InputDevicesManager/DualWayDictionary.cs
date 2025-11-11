@@ -28,7 +28,8 @@ namespace AxibugEmuOnline.Client.InputDevices
             get => _forward[key];
             set
             {
-                if (_forward.TryGetValue(key, out var oldValue))
+                TValue oldValue;
+                if (_forward.TryGetValue(key, out oldValue))
                     _reverse.Remove(oldValue);
                 _forward[key] = value;
                 _reverse[value] = key;
@@ -78,7 +79,11 @@ namespace AxibugEmuOnline.Client.InputDevices
         }
 
         public bool Contains(object key) => key is TKey k && _forward.ContainsKey(k);
-        public bool Contains(KeyValuePair<TKey, TValue> item) => _forward.TryGetValue(item.Key, out var v) && v.Equals(item.Value);
+        public bool Contains(KeyValuePair<TKey, TValue> item)
+        {
+            TValue v;
+            return _forward.TryGetValue(item.Key, out v) && v.Equals(item.Value);
+        }
         public bool ContainsKey(TKey key) => _forward.ContainsKey(key);
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -93,7 +98,8 @@ namespace AxibugEmuOnline.Client.InputDevices
 
         public bool Remove(TKey key)
         {
-            if (!_forward.Remove(key, out var value)) return false;
+            TValue value;
+            if (!_forward.Remove(key, out value)) return false;
             _reverse.Remove(value);
             return true;
         }

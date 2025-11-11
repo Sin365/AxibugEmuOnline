@@ -420,28 +420,33 @@ namespace MAME.Core
 
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref uint* ptr)
         {
-            GetObjectPtr(srcObj, ref handle, out IntPtr intptr);
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (uint*)intptr;
         }
 
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref short* ptr)
         {
-            GetObjectPtr(srcObj, ref handle, out IntPtr intptr);
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (short*)intptr;
         }
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref ushort* ptr)
         {
-            GetObjectPtr(srcObj, ref handle, out IntPtr intptr);
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (ushort*)intptr;
         }
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref int* ptr)
         {
-            GetObjectPtr(srcObj, ref handle, out IntPtr intptr);
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (int*)intptr;
         }
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref byte* ptr)
         {
-            GetObjectPtr(srcObj, ref handle, out IntPtr intptr);
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (byte*)intptr;
         }
 

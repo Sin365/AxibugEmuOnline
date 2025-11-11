@@ -95,7 +95,7 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
     public void StopPlay()
     {
         if (m_as.isPlaying)
-        { 
+        {
             m_as.Stop();
         }
     }

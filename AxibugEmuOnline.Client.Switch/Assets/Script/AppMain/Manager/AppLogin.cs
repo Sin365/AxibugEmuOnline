@@ -11,10 +11,10 @@ namespace AxibugEmuOnline.Client.Manager
     public class AppLogin
     {
         static string LastLoginGuid = "";
-
+        static Protobuf_Login _Protobuf_Login = new Protobuf_Login();
         public AppLogin()
         {
-            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdLogin, RecvLoginMsg);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Login_RESP>((int)CommandID.CmdLogin, RecvLoginMsg);
         }
 
         public void Login()
@@ -57,19 +57,15 @@ namespace AxibugEmuOnline.Client.Manager
                     break;
             }
 
-            Protobuf_Login msg = new Protobuf_Login()
-            {
-                LoginType = LoginType.UseDevice,
-                DeviceStr = Initer.dev_UUID,
-                DeviceType = devType,
-            };
+            _Protobuf_Login.LoginType = LoginType.UseDevice;
+            _Protobuf_Login.DeviceStr = Initer.dev_UUID;
+            _Protobuf_Login.DeviceType = devType;
 
-            App.network.SendToServer((int)CommandID.CmdLogin, ProtoBufHelper.Serizlize(msg));
+            App.network.SendToServer((int)CommandID.CmdLogin, _Protobuf_Login);
         }
 
-        public void RecvLoginMsg(byte[] reqData)
+        public void RecvLoginMsg(Protobuf_Login_RESP msg)
         {
-            Protobuf_Login_RESP msg = ProtoBufHelper.DeSerizlize<Protobuf_Login_RESP>(reqData);
             if (msg.Status == LoginResultStatus.Ok)
             {
                 App.log.Info("登录成功");

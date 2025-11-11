@@ -933,8 +933,10 @@ namespace MAME.Core
             PSG.eg_timer_add = (uint)(0x10000 * (clock / 64.0) / PSG.sampfreq);
             PSG.eg_timer_overflow = 0x30000;
             /* this must be done _before_ a call to ym2151_reset_chip() */
-            PSG.timer_A = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2151_timer_callback_a, false);
-            PSG.timer_B = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2151_timer_callback_b, false);
+            //PSG.timer_A = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2151_timer_callback_a, false);
+            EmuTimer.timer_alloc_common(ref PSG.timer_A,EmuTimer.TIME_ACT.YM2151_timer_callback_a, false);
+            //PSG.timer_B = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2151_timer_callback_b, false);
+            EmuTimer.timer_alloc_common(ref PSG.timer_B,EmuTimer.TIME_ACT.YM2151_timer_callback_b, false);
             ym2151_reset_chip();
             switch (Machine.sBoard)
             {

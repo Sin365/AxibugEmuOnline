@@ -2,12 +2,17 @@ using System;
 using AxibugProtobuf;
 using AxibugEmuOnline.Client.Common;
 
+/// <summary>
+/// ÓÃProtoBuff¼ÇÂ¼´æµµ
+/// </summary>
 public class UEGSaveByteConvert : IAxiEssgssStatusBytesCover
 {
     public AxiEssgssStatusData ToAxiEssgssStatusData(byte[] byteArray)
     {
-        pb_AxiEssgssStatusData pbdata = ProtoBufHelper.DeSerizlize<pb_AxiEssgssStatusData>(byteArray);
-        return pbAxiEssgssStatusDataToSrcData(pbdata);
+        pb_AxiEssgssStatusData dataFromPool = ProtoBufHelper.DeSerizlizeFromPool<pb_AxiEssgssStatusData>(byteArray);
+        AxiEssgssStatusData data = pbAxiEssgssStatusDataToSrcData(dataFromPool);
+        ProtoBufHelper.ReleaseToPool(dataFromPool);
+        return data;
     }
     public byte[] ToByteArray(AxiEssgssStatusData data)
     {
