@@ -617,83 +617,86 @@ namespace MAME.Core
             //}
 
             //手动内联
-            public void chan_calc(int c, int chnum)
+            public unsafe void chan_calc(int c, int chnum)
             {
                 uint eg_out;
-                out_fm[8] = out_fm[9] = out_fm[10] = out_fm[11] = 0;//m2 = c1 = c2 = mem = 0;
-
                 //减少寻址
                 int imem_To_c = imem[c];//
-                FM_SLOT[] CH_c_SLOT = CH[c].SLOT;//因为是引用类型，所以敢这么玩
-
-                //set_mem(c);
-                if (imem_To_c == 8 || imem_To_c == 10 || imem_To_c == 11)
-                    out_fm[imem_To_c] = CH[c].mem_value;
-
-                //eg_out = volume_calc(c, 0);
-                eg_out = (uint)(CH_c_SLOT[0].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[0].AMmask));
-
-                int out1 = CH[c].op1_out0 + CH[c].op1_out1;
-                CH[c].op1_out0 = CH[c].op1_out1;
-
-                //set_value1(c);
-                if (iconnect1[c] == 12)
+                fixed (FM_SLOT* CH_c_SLOT = &CH[c].SLOT[0])//因为是引用类型，所以敢这么玩
+                fixed (int* out_fm_ptr = &out_fm[0])
                 {
-                    out_fm[11] = out_fm[9] = out_fm[10] = CH[c].op1_out0;
-                }
-                else
-                {
-                    out_fm[iconnect1[c]] = CH[c].op1_out0;
-                }
+                    //out_fm[8] = out_fm[9] = out_fm[10] = out_fm[11] = 0;  //本来就是注释->m2 = c1 = c2 = mem = 0;
+                    out_fm_ptr[8] = out_fm_ptr[9] = out_fm_ptr[10] = out_fm_ptr[11] = 0;
 
-                CH[c].op1_out1 = 0;
-                if (eg_out < 832)
-                {
-                    if (CH[c].FB == 0)
+                    //set_mem(c);
+                    if (imem_To_c == 8 || imem_To_c == 10 || imem_To_c == 11)
+                        out_fm_ptr[imem_To_c] = CH[c].mem_value;
+
+                    //eg_out = volume_calc(c, 0);
+                    eg_out = (uint)(CH_c_SLOT[0].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[0].AMmask));
+
+                    int out1 = CH[c].op1_out0 + CH[c].op1_out1;
+                    CH[c].op1_out0 = CH[c].op1_out1;
+
+                    //set_value1(c);
+                    if (iconnect1[c] == 12)
                     {
-                        out1 = 0;
-                    }
-                    CH[c].op1_out1 = op_calc1(CH_c_SLOT[0].phase, eg_out, (out1 << CH[c].FB));
-                }
-                //eg_out = volume_calc(c, 1);
-                eg_out = (uint)(CH_c_SLOT[1].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[1].AMmask));
-                if (eg_out < 832)
-                {
-                    out_fm[iconnect3[c]] += op_calc(CH_c_SLOT[1].phase, eg_out, out_fm[8]);
-                }
-                //eg_out = volume_calc(c, 2);
-                eg_out = (uint)(CH_c_SLOT[2].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[2].AMmask));
-                if (eg_out < 832)
-                {
-                    out_fm[iconnect2[c]] += op_calc(CH_c_SLOT[2].phase, eg_out, out_fm[9]);
-                }
-                //eg_out = volume_calc(c, 3);
-                eg_out = (uint)(CH_c_SLOT[3].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[3].AMmask));
-                if (eg_out < 832)
-                {
-                    out_fm[iconnect4[c]] += op_calc(CH_c_SLOT[3].phase, eg_out, out_fm[10]);
-                }
-                CH[c].mem_value = out_fm[11];//mem;
-                if (CH[c].pms != 0)
-                {
-                    if (((ST.mode & 0xC0) != 0) && (chnum == 2))
-                    {
-                        update_phase_lfo_slot(0, CH[c].pms, SL3.block_fnum[1]);
-                        update_phase_lfo_slot(2, CH[c].pms, SL3.block_fnum[2]);
-                        update_phase_lfo_slot(1, CH[c].pms, SL3.block_fnum[0]);
-                        update_phase_lfo_slot(3, CH[c].pms, CH[c].block_fnum);
+                        out_fm_ptr[11] = out_fm_ptr[9] = out_fm_ptr[10] = CH[c].op1_out0;
                     }
                     else
                     {
-                        update_phase_lfo_channel(CH, c);
+                        out_fm_ptr[iconnect1[c]] = CH[c].op1_out0;
                     }
-                }
-                else
-                {
-                    CH_c_SLOT[0].phase += (uint)CH_c_SLOT[0].Incr;
-                    CH_c_SLOT[2].phase += (uint)CH_c_SLOT[2].Incr;
-                    CH_c_SLOT[1].phase += (uint)CH_c_SLOT[1].Incr;
-                    CH_c_SLOT[3].phase += (uint)CH_c_SLOT[3].Incr;
+
+                    CH[c].op1_out1 = 0;
+                    if (eg_out < 832)
+                    {
+                        if (CH[c].FB == 0)
+                        {
+                            out1 = 0;
+                        }
+                        CH[c].op1_out1 = op_calc1(CH_c_SLOT[0].phase, eg_out, (out1 << CH[c].FB));
+                    }
+                    //eg_out = volume_calc(c, 1);
+                    eg_out = (uint)(CH_c_SLOT[1].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[1].AMmask));
+                    if (eg_out < 832)
+                    {
+                        out_fm_ptr[iconnect3[c]] += op_calc(CH_c_SLOT[1].phase, eg_out, out_fm_ptr[8]);
+                    }
+                    //eg_out = volume_calc(c, 2);
+                    eg_out = (uint)(CH_c_SLOT[2].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[2].AMmask));
+                    if (eg_out < 832)
+                    {
+                        out_fm_ptr[iconnect2[c]] += op_calc(CH_c_SLOT[2].phase, eg_out, out_fm_ptr[9]);
+                    }
+                    //eg_out = volume_calc(c, 3);
+                    eg_out = (uint)(CH_c_SLOT[3].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[3].AMmask));
+                    if (eg_out < 832)
+                    {
+                        out_fm_ptr[iconnect4[c]] += op_calc(CH_c_SLOT[3].phase, eg_out, out_fm[10]);
+                    }
+                    CH[c].mem_value = out_fm_ptr[11];//mem;
+                    if (CH[c].pms != 0)
+                    {
+                        if (((ST.mode & 0xC0) != 0) && (chnum == 2))
+                        {
+                            update_phase_lfo_slot(0, CH[c].pms, SL3.block_fnum[1]);
+                            update_phase_lfo_slot(2, CH[c].pms, SL3.block_fnum[2]);
+                            update_phase_lfo_slot(1, CH[c].pms, SL3.block_fnum[0]);
+                            update_phase_lfo_slot(3, CH[c].pms, CH[c].block_fnum);
+                        }
+                        else
+                        {
+                            update_phase_lfo_channel(CH, c);
+                        }
+                    }
+                    else
+                    {
+                        CH_c_SLOT[0].phase += (uint)CH_c_SLOT[0].Incr;
+                        CH_c_SLOT[2].phase += (uint)CH_c_SLOT[2].Incr;
+                        CH_c_SLOT[1].phase += (uint)CH_c_SLOT[1].Incr;
+                        CH_c_SLOT[3].phase += (uint)CH_c_SLOT[3].Incr;
+                    }
                 }
             }
             public void refresh_fc_eg_slot(int type, int c, int s, int fc, int kc)
