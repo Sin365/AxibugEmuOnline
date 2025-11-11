@@ -325,7 +325,8 @@
                             red = ((Video.bitmapbaseN_Ptrs[Video.curbitmap][i] & 0xff0000) >> 16) * bright / 0xff;
                             green = ((Video.bitmapbaseN_Ptrs[Video.curbitmap][i] & 0xff00) >> 8) * bright / 0xff;
                             blue = (Video.bitmapbaseN_Ptrs[Video.curbitmap][i] & 0xff) * bright / 0xff;
-                            Video.bitmapcolorRect_Ptrunsafe[target_i] = (int)Palette.make_argb(0xff, red, green, blue);
+                            //Video.bitmapcolorRect_Ptrunsafe[target_i] = (int)Palette.make_argb(0xff, red, green, blue);
+                            Video.bitmapcolorRect_Ptrunsafe[target_i] = (int)((((uint)(0xff) & 0xff) << 24) | (((uint)(blue) & 0xff) << 16) | (((uint)(green) & 0xff) << 8) | ((uint)(red) & 0xff));
                         }
                     }
                 }

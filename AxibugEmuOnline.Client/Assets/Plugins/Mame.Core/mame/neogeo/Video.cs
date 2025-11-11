@@ -143,9 +143,20 @@ namespace MAME.Core
                 rows = 0x20;
             return rows * 0x10;
         }
+        //public static bool sprite_on_scanline(int scanline, int y, int rows)
+        //{
+        //    int max_y = (y + rows_to_height(rows) - 1) & 0x1ff;
+        //    return (((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
+        //            ((max_y < y) && ((scanline >= y) || (scanline <= max_y))));
+        //}
+
+        //手动内联
         public static bool sprite_on_scanline(int scanline, int y, int rows)
         {
-            int max_y = (y + rows_to_height(rows) - 1) & 0x1ff;
+            //int max_y = (y + rows_to_height(rows) - 1) & 0x1ff;
+            if ((rows == 0) || (rows > 0x20))
+                rows = 0x20;
+            int max_y = (y + (rows * 0x10) - 1) & 0x1ff;
             return (((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
                     ((max_y < y) && ((scanline >= y) || (scanline <= max_y))));
         }
@@ -405,7 +416,16 @@ namespace MAME.Core
                         {
                             continue;
                         }
-                        if (sprite_on_scanline(scanline, y, rows))
+
+                        //if (sprite_on_scanline(scanline, y, rows))
+                        //手动内联 开始
+                        int tempRows = rows;
+                        if ((rows == 0) || (rows > 0x20))
+                            tempRows = 0x20;
+                        int max_y = (y + (tempRows * 0x10) - 1) & 0x1ff;
+                        if (((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
+                                ((max_y < y) && ((scanline >= y) || (scanline <= max_y))))
+                        //手动内联 结束
                         {
                             sprite_line = (scanline - y) & 0x1ff;
                             zoom_line = sprite_line & 0xff;
@@ -704,7 +724,17 @@ namespace MAME.Core
                 {
                     continue;
                 }
-                if (!sprite_on_scanline(scanline, y, rows))
+
+                //if (!sprite_on_scanline(scanline, y, rows))
+
+                //手动内联 开始
+                int tempRows = rows;
+                if ((rows == 0) || (rows > 0x20))
+                    tempRows = 0x20;
+                int max_y = (y + (tempRows * 0x10) - 1) & 0x1ff;
+                if (!(((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
+                        ((max_y < y) && ((scanline >= y) || (scanline <= max_y)))))
+                //手动内联 结束
                 {
                     continue;
                 }
