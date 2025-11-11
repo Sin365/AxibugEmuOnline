@@ -142,9 +142,16 @@ namespace cpu.nec
         {
             return (((seg_prefix != 0) && (Seg == 3 || Seg == 2)) ? prefix_base : (int)(I.sregs[Seg] << 4));
         }
+        //private byte GetMemB(int Seg, int Off)
+        //{
+        //    return ReadByte(DefaultBase(Seg, I) + Off);
+        //}
+
+        //手动内联
         private byte GetMemB(int Seg, int Off)
         {
-            return ReadByte(DefaultBase(Seg, I) + Off);
+            //return ReadByte(DefaultBase(Seg, I) + Off);
+            return ReadByte((((seg_prefix != 0) && (Seg == 3 || Seg == 2)) ? prefix_base : (int)(I.sregs[Seg] << 4)) + Off);
         }
         private ushort GetMemW(int Seg, int Off)
         {
@@ -265,13 +272,28 @@ namespace cpu.nec
             SetSZPF_Byte((int)res);
             dst = (byte)res;
         }
+        //public void ADDW(ref ushort src, ref ushort dst)
+        //{
+        //    uint res = (uint)(dst + src);
+        //    SetCFW(res);
+        //    SetOFW_Add((int)res, src, dst);
+        //    SetAF((int)res, src, dst);
+        //    SetSZPF_Word((int)res);
+        //    dst = (ushort)res;
+        //}
+        //手动内联
         public void ADDW(ref ushort src, ref ushort dst)
         {
             uint res = (uint)(dst + src);
-            SetCFW(res);
-            SetOFW_Add((int)res, src, dst);
-            SetAF((int)res, src, dst);
-            SetSZPF_Word((int)res);
+            //SetCFW(res);
+            I.CarryVal = res & 0x10000;
+            //SetOFW_Add((int)res, src, dst);
+            I.OverVal = (uint)((((int)res) ^ (src)) & (((int)res) ^ (dst)) & 0x8000);
+            //SetAF((int)res, src, dst);
+            I.AuxVal = (uint)((((int)res) ^ ((src) ^ (dst))) & 0x10);
+            //SetSZPF_Word((int)res);
+            I.ZeroVal = I.ParityVal = (uint)((short)(int)res);
+            I.SignVal = (int)I.ZeroVal;
             dst = (ushort)res;
         }
         public void SUBB(ref byte src, ref byte dst)
@@ -454,7 +476,7 @@ namespace cpu.nec
                 I.ip = (ushort)(I.ip + tmp);
                 pendingCycles -= JMP_table[chip_type / 8];
                 //PC = (I.sregs[1] << 4) + I.ip;
-                return;
+                //return;
             }
         }
         public void ADJ4(int param1, int param2)
@@ -1292,11 +1314,42 @@ namespace cpu.nec
             nec_init();
             chip_type = 8;
         }
+        //public override int ExecuteCycles(int cycles)
+        //{
+        //    return v30_execute(cycles);
+        //}
+        //public int v30_execute(int cycles)
+        //{
+        //    pendingCycles = cycles;
+        //    while (pendingCycles > 0)
+        //    {
+        //        int prevCycles = pendingCycles;
+        //        if (I.pending_irq != 0 && I.no_interrupt == 0)
+        //        {
+        //            if ((I.pending_irq & NMI_IRQ) != 0)
+        //            {
+        //                external_int();
+        //            }
+        //            else if (I.IF)
+        //            {
+        //                external_int();
+        //            }
+        //        }
+        //        if (I.no_interrupt != 0)
+        //        {
+        //            I.no_interrupt--;
+        //        }
+        //        iNOP = fetchop();
+        //        nec_instruction[iNOP]();
+        //        //DoInstructionOpCode(iNOP);
+        //        int delta = prevCycles - pendingCycles;
+        //        totalExecutedCycles += (ulong)delta;
+        //    }
+        //    return cycles - pendingCycles;
+        //}
+
+        //手动内联
         public override int ExecuteCycles(int cycles)
-        {
-            return v30_execute(cycles);
-        }
-        public int v30_execute(int cycles)
         {
             pendingCycles = cycles;
             while (pendingCycles > 0)
@@ -1306,18 +1359,99 @@ namespace cpu.nec
                 {
                     if ((I.pending_irq & NMI_IRQ) != 0)
                     {
-                        external_int();
+                        //external_int();
+
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                     else if (I.IF)
                     {
-                        external_int();
+                        //external_int();
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                 }
                 if (I.no_interrupt != 0)
                 {
                     I.no_interrupt--;
                 }
-                iNOP = fetchop();
+                //iNOP = fetchop();
+                byte ret = ReadOp(((I.sregs[1] << 4) + I.ip++) ^ 0);
+                if (I.MF)
+                {
+                    if (v25v35_decryptiontable != null)
+                    {
+                        ret = v25v35_decryptiontable[ret];
+                    }
+                }
+                iNOP = ret;
+
                 nec_instruction[iNOP]();
                 //DoInstructionOpCode(iNOP);
                 int delta = prevCycles - pendingCycles;
@@ -1333,11 +1467,42 @@ namespace cpu.nec
             nec_init();
             chip_type = 0;
         }
+        //public override int ExecuteCycles(int cycles)
+        //{
+        //    return v33_execute(cycles);
+        //}
+        //public int v33_execute(int cycles)
+        //{
+        //    pendingCycles = cycles;
+        //    while (pendingCycles > 0)
+        //    {
+        //        int prevCycles = pendingCycles;
+        //        if (I.pending_irq != 0 && I.no_interrupt == 0)
+        //        {
+        //            if ((I.pending_irq & NMI_IRQ) != 0)
+        //            {
+        //                external_int();
+        //            }
+        //            else if (I.IF)
+        //            {
+        //                external_int();
+        //            }
+        //        }
+        //        if (I.no_interrupt != 0)
+        //        {
+        //            I.no_interrupt--;
+        //        }
+        //        iNOP = fetchop();
+        //        nec_instruction[iNOP]();
+        //        //DoInstructionOpCode(iNOP);
+        //        int delta = prevCycles - pendingCycles;
+        //        totalExecutedCycles += (ulong)delta;
+        //    }
+        //    return cycles - pendingCycles;
+        //}
+
+        //手动内联
         public override int ExecuteCycles(int cycles)
-        {
-            return v33_execute(cycles);
-        }
-        public int v33_execute(int cycles)
         {
             pendingCycles = cycles;
             while (pendingCycles > 0)
@@ -1347,18 +1512,98 @@ namespace cpu.nec
                 {
                     if ((I.pending_irq & NMI_IRQ) != 0)
                     {
-                        external_int();
+                        //external_int();
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                     else if (I.IF)
                     {
-                        external_int();
+                        //external_int();
+                        if ((I.pending_irq & 0x02) != 0)
+                        {
+                            //nec_interrupt(2, false);
+                            const int int_num = 2;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            const int p1 = int_num * 4;
+                            const int p2 = int_num * 4 + 2;
+                            dest_off = ReadWord(p1);
+                            dest_seg = ReadWord(p2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+
+                            I.pending_irq &= unchecked((uint)(~2));
+                        }
+                        else if (I.pending_irq != 0)
+                        {
+                            //nec_interrupt(-1, false);
+                            int int_num = -1;
+                            uint dest_seg, dest_off;
+                            i_pushf();
+                            I.TF = I.IF = false;
+                            int_num = Cpuint.cpu_irq_callback(cpunum, 0);
+                            I.irq_state = 0;
+                            I.pending_irq &= 0xfffffffe;
+                            dest_off = ReadWord(int_num * 4);
+                            dest_seg = ReadWord(int_num * 4 + 2);
+                            PUSH(I.sregs[1]);
+                            PUSH(I.ip);
+                            I.ip = (ushort)dest_off;
+                            I.sregs[1] = (ushort)dest_seg;
+                        }
                     }
                 }
                 if (I.no_interrupt != 0)
                 {
                     I.no_interrupt--;
                 }
-                iNOP = fetchop();
+                //iNOP = fetchop();
+                byte ret = ReadOp(((I.sregs[1] << 4) + I.ip++) ^ 0);
+                if (I.MF)
+                {
+                    if (v25v35_decryptiontable != null)
+                    {
+                        ret = v25v35_decryptiontable[ret];
+                    }
+                }
+                iNOP = ret;
+
                 nec_instruction[iNOP]();
                 //DoInstructionOpCode(iNOP);
                 int delta = prevCycles - pendingCycles;
