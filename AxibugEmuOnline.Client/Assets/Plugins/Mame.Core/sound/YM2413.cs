@@ -287,7 +287,7 @@ namespace MAME.Core
             6, 3, 0,-3,-6,-3, 0, 3,
             7, 3, 0,-3,-7,-3, 0, 3,
         };
-        private static byte[][] table = new byte[19][]
+        private readonly static byte[][] table = new byte[19][]
         {
             new byte[]{0x49, 0x4c, 0x4c, 0x12, 0x00, 0x00, 0x00, 0x00 },
 

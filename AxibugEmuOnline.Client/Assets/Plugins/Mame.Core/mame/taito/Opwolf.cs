@@ -671,6 +671,9 @@ namespace MAME.Core
         {
             current_bank = (byte)(data & 7);
         }
+
+        static int[] opwolf_cchip_data_w_coin_table = new int[] { 0, 0 };
+        static byte[] opwolf_cchip_data_w_coin_offset = new byte[2];
         public static void opwolf_cchip_data_w(int offset, ushort data)
         {
             cchip_ram[(current_bank * 0x400) + offset] = (byte)(data & 0xff);
@@ -680,28 +683,28 @@ namespace MAME.Core
                 // Shouldn't we directly read the values from the ROM area ?
                 if (offset == 0x14)
                 {
-                    int[] coin_table = new int[] { 0, 0 };
-                    byte[] coin_offset = new byte[2];
+                    //int[] coin_table = new int[] { 0, 0 };
+                    //byte[] coin_offset = new byte[2];
                     int slot;
 
                     if ((opwolf_region == 1) || (opwolf_region == 2))
                     {
-                        coin_table[0] = 0x03ffce;
-                        coin_table[1] = 0x03ffce;
+                        opwolf_cchip_data_w_coin_table[0] = 0x03ffce;
+                        opwolf_cchip_data_w_coin_table[1] = 0x03ffce;
                     }
                     if ((opwolf_region == 3) || (opwolf_region == 4))
                     {
-                        coin_table[0] = 0x03ffde;
-                        coin_table[1] = 0x03ffee;
+                        opwolf_cchip_data_w_coin_table[0] = 0x03ffde;
+                        opwolf_cchip_data_w_coin_table[1] = 0x03ffee;
                     }
-                    coin_offset[0] = (byte)(12 - (4 * ((data & 0x30) >> 4)));
-                    coin_offset[1] = (byte)(12 - (4 * ((data & 0xc0) >> 6)));
+                    opwolf_cchip_data_w_coin_offset[0] = (byte)(12 - (4 * ((data & 0x30) >> 4)));
+                    opwolf_cchip_data_w_coin_offset[1] = (byte)(12 - (4 * ((data & 0xc0) >> 6)));
                     for (slot = 0; slot < 2; slot++)
                     {
-                        if (coin_table[slot] != 0)
+                        if (opwolf_cchip_data_w_coin_table[slot] != 0)
                         {
-                            cchip_coins_for_credit[slot] = (byte)((Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 0) / 2 * 2] * 0x100 + Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 0) / 2 * 2 + 1]) & 0xff);
-                            cchip_credits_for_coin[slot] = (byte)((Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 2) / 2 * 2] * 0x100 + Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 2) / 2 * 2 + 1]) & 0xff);
+                            cchip_coins_for_credit[slot] = (byte)((Memory.mainrom[(opwolf_cchip_data_w_coin_table[slot] + opwolf_cchip_data_w_coin_offset[slot] + 0) / 2 * 2] * 0x100 + Memory.mainrom[(opwolf_cchip_data_w_coin_table[slot] + opwolf_cchip_data_w_coin_offset[slot] + 0) / 2 * 2 + 1]) & 0xff);
+                            cchip_credits_for_coin[slot] = (byte)((Memory.mainrom[(opwolf_cchip_data_w_coin_table[slot] + opwolf_cchip_data_w_coin_offset[slot] + 2) / 2 * 2] * 0x100 + Memory.mainrom[(opwolf_cchip_data_w_coin_table[slot] + opwolf_cchip_data_w_coin_offset[slot] + 2) / 2 * 2 + 1]) & 0xff);
                         }
                     }
                 }
@@ -712,6 +715,8 @@ namespace MAME.Core
                 }
             }
         }
+        static int[] opwolf_cchip_data_w2_coin_table = new int[] { 0, 0 };
+        static byte[] opwolf_cchip_data_w2_coin_offset = new byte[2];
         public static void opwolf_cchip_data_w2(int offset, byte data)
         {
             cchip_ram[(current_bank * 0x400) + offset] = (byte)(data & 0xff);
@@ -721,28 +726,28 @@ namespace MAME.Core
                 // Shouldn't we directly read the values from the ROM area ?
                 if (offset == 0x14)
                 {
-                    int[] coin_table = new int[] { 0, 0 };
-                    byte[] coin_offset = new byte[2];
+                    //int[] coin_table = new int[] { 0, 0 };
+                    //byte[] coin_offset = new byte[2];
                     int slot;
 
                     if ((opwolf_region == 1) || (opwolf_region == 2))
                     {
-                        coin_table[0] = 0x03ffce;
-                        coin_table[1] = 0x03ffce;
+                        opwolf_cchip_data_w2_coin_table[0] = 0x03ffce;
+                        opwolf_cchip_data_w2_coin_table[1] = 0x03ffce;
                     }
                     if ((opwolf_region == 3) || (opwolf_region == 4))
                     {
-                        coin_table[0] = 0x03ffde;
-                        coin_table[1] = 0x03ffee;
+                        opwolf_cchip_data_w2_coin_table[0] = 0x03ffde;
+                        opwolf_cchip_data_w2_coin_table[1] = 0x03ffee;
                     }
-                    coin_offset[0] = (byte)(12 - (4 * ((data & 0x30) >> 4)));
-                    coin_offset[1] = (byte)(12 - (4 * ((data & 0xc0) >> 6)));
+                    opwolf_cchip_data_w2_coin_offset[0] = (byte)(12 - (4 * ((data & 0x30) >> 4)));
+                    opwolf_cchip_data_w2_coin_offset[1] = (byte)(12 - (4 * ((data & 0xc0) >> 6)));
                     for (slot = 0; slot < 2; slot++)
                     {
-                        if (coin_table[slot] != 0)
+                        if (opwolf_cchip_data_w2_coin_table[slot] != 0)
                         {
-                            cchip_coins_for_credit[slot] = (byte)((Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 0) / 2 * 2] * 0x100 + Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 0) / 2 * 2 + 1]) & 0xff);
-                            cchip_credits_for_coin[slot] = (byte)((Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 2) / 2 * 2] * 0x100 + Memory.mainrom[(coin_table[slot] + coin_offset[slot] + 2) / 2 * 2 + 1]) & 0xff);
+                            cchip_coins_for_credit[slot] = (byte)((Memory.mainrom[(opwolf_cchip_data_w2_coin_table[slot] + opwolf_cchip_data_w2_coin_offset[slot] + 0) / 2 * 2] * 0x100 + Memory.mainrom[(opwolf_cchip_data_w2_coin_table[slot] + opwolf_cchip_data_w2_coin_offset[slot] + 0) / 2 * 2 + 1]) & 0xff);
+                            cchip_credits_for_coin[slot] = (byte)((Memory.mainrom[(opwolf_cchip_data_w2_coin_table[slot] + opwolf_cchip_data_w2_coin_offset[slot] + 2) / 2 * 2] * 0x100 + Memory.mainrom[(opwolf_cchip_data_w2_coin_table[slot] + opwolf_cchip_data_w2_coin_offset[slot] + 2) / 2 * 2 + 1]) & 0xff);
                         }
                     }
                 }

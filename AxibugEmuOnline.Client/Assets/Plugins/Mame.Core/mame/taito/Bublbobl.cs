@@ -11,7 +11,7 @@
         public static byte port1_out, port2_out, port3_out, port4_out;
         public static byte portA_in, portA_out, ddrA, portB_in, portB_out, ddrB;
         public static int ic43_a, ic43_b;
-        public static byte[] tokio_prot_data = new byte[]
+        public readonly static byte[] tokio_prot_data = new byte[]
         {
             0x6c,
             0x7f,0x5f,0x7f,0x6f,0x5f,0x77,0x5f,0x7f,0x5f,0x7f,0x5f,0x7f,0x5b,0x7f,0x5f,0x7f,
@@ -295,10 +295,10 @@
             }
             ic43_a = res;
         }
+        readonly static int[] boblbobl_ic43_b_w_xor = new int[] { 4, 1, 8, 2 };
         public static void boblbobl_ic43_b_w(int offset, byte data)
         {
-            int[] xor = new int[] { 4, 1, 8, 2 };
-            ic43_b = (data >> 4) ^ xor[offset];
+            ic43_b = (data >> 4) ^ boblbobl_ic43_b_w_xor[offset];
         }
         public static byte boblbobl_ic43_b_r(int offset)
         {

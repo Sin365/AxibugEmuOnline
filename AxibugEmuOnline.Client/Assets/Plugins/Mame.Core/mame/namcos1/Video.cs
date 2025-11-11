@@ -125,6 +125,7 @@ namespace MAME.Core
                 namcos1_playfield_control[offset & 0x1f] = data;
             }
         }
+        readonly static int[] draw_sprites_sprite_size = new int[] { 16, 8, 32, 4 };
         public static void draw_sprites(int iBitmap, RECT cliprect)
         {
             int source_offset;
@@ -132,14 +133,13 @@ namespace MAME.Core
             int sprite_yoffs = namcos1_spriteram[0x800 + 0x07f7];
             for (source_offset = 0xfe0; source_offset >= 0x800; source_offset -= 0x10)
             {
-                int[] sprite_size = new int[] { 16, 8, 32, 4 };
                 int attr1 = namcos1_spriteram[source_offset + 10];
                 int attr2 = namcos1_spriteram[source_offset + 14];
                 int color = namcos1_spriteram[source_offset + 12];
                 int flipx = (attr1 & 0x20) >> 5;
                 int flipy = (attr2 & 0x01);
-                int sizex = sprite_size[(attr1 & 0xc0) >> 6];
-                int sizey = sprite_size[(attr2 & 0x06) >> 1];
+                int sizex = draw_sprites_sprite_size[(attr1 & 0xc0) >> 6];
+                int sizey = draw_sprites_sprite_size[(attr2 & 0x06) >> 1];
                 int tx = (attr1 & 0x18) & (~(sizex - 1));
                 int ty = (attr2 & 0x18) & (~(sizey - 1));
                 int sx = namcos1_spriteram[source_offset + 13] + ((color & 0x01) << 8);
@@ -163,6 +163,7 @@ namespace MAME.Core
                 Drawgfx.common_drawgfx_na(sizex, sizey, tx, ty, sprite, color, flipx, flipy, sx & 0x1ff, ((sy + 16) & 0xff) - 16, cliprect);
             }
         }
+        readonly static int[] video_update_namcos1_disp_x = new int[] { 25, 27, 28, 29 };
         public static void video_update_namcos1()
         {
             int i, j, scrollx, scrolly;
@@ -195,9 +196,8 @@ namespace MAME.Core
             }
             for (i = 0; i < 4; i++)
             {
-                int[] disp_x = new int[] { 25, 27, 28, 29 };
                 j = i << 2;
-                scrollx = (namcos1_playfield_control[j + 1] + (namcos1_playfield_control[j + 0] << 8)) - disp_x[i];
+                scrollx = (namcos1_playfield_control[j + 1] + (namcos1_playfield_control[j + 0] << 8)) - video_update_namcos1_disp_x[i];
                 scrolly = (namcos1_playfield_control[j + 3] + (namcos1_playfield_control[j + 2] << 8)) + 8;
                 if (Video.flip_screen_get())
                 {

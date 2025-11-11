@@ -449,7 +449,7 @@ namespace cpu.nec
             I.regs.b[Reg * 2 + 1] = (byte)((ushort)tmp1 / 0x100);
         }
 
-        static byte[] JMP_table = new byte[] { 3, 10, 10 };
+        readonly static byte[] JMP_table = new byte[] { 3, 10, 10 };
         //public void JMP(bool flag)
         //{
         //    int tmp = (int)((sbyte)FETCH());
@@ -732,7 +732,7 @@ namespace cpu.nec
                 I.regs.b[5] = (byte)((ushort)result2 / 0x100);
             }
         }
-        static byte[] ADD4S_table = new byte[] { 18, 19, 19 };
+        readonly static byte[] ADD4S_table = new byte[] { 18, 19, 19 };
         public void ADD4S(ref int tmp, ref int tmp2)
         {
             int i, v1, v2, result;

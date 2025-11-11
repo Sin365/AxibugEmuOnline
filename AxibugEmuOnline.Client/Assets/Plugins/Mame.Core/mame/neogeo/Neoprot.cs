@@ -96,10 +96,7 @@ namespace MAME.Core
             neogeo_rng = (ushort)((neogeo_rng << 1) | newbit);
             return old;
         }
-        public static void kof99_bankswitch_w(int data)
-        {
-            int bankaddress;
-            int[] bankoffset = new int[]
+        readonly static int[] kof99_bankswitch_w_bankoffset = new int[]
             {
                 0x000000, 0x100000, 0x200000, 0x300000,
                 0x3cc000, 0x4cc000, 0x3f2000, 0x4f2000,
@@ -111,6 +108,10 @@ namespace MAME.Core
                 0x588800, 0x581800, 0x599800, 0x594800,
                 0x598000
             };
+        public static void kof99_bankswitch_w(int data)
+        {
+            int bankaddress;
+            
             data =
                 (((data >> 14) & 1) << 0) +
                 (((data >> 6) & 1) << 1) +
@@ -118,13 +119,10 @@ namespace MAME.Core
                 (((data >> 10) & 1) << 3) +
                 (((data >> 12) & 1) << 4) +
                 (((data >> 5) & 1) << 5);
-            bankaddress = 0x100000 + bankoffset[data];
+            bankaddress = 0x100000 + kof99_bankswitch_w_bankoffset[data];
             main_cpu_bank_address = bankaddress;
         }
-        public static void garou_bankswitch_w(int data)
-        {
-            int bankaddress;
-            int[] bankoffset = new int[]
+        readonly static int[] garou_bankswitch_w_bankoffset = new int[]
             {
                 0x000000, 0x100000, 0x200000, 0x300000, // 00
 		        0x280000, 0x380000, 0x2d0000, 0x3d0000, // 04
@@ -141,6 +139,10 @@ namespace MAME.Core
 		        0x5d0000, 0x5d8000, 0x5e0000, 0x5e8000, // 48
 		        0x5f0000, 0x5f8000, 0x600000
             };
+        public static void garou_bankswitch_w(int data)
+        {
+            int bankaddress;
+            
             data =
                 (((data >> 5) & 1) << 0) +
                 (((data >> 9) & 1) << 1) +
@@ -148,13 +150,10 @@ namespace MAME.Core
                 (((data >> 6) & 1) << 3) +
                 (((data >> 14) & 1) << 4) +
                 (((data >> 12) & 1) << 5);
-            bankaddress = 0x100000 + bankoffset[data];
+            bankaddress = 0x100000 + garou_bankswitch_w_bankoffset[data];
             main_cpu_bank_address = bankaddress;
         }
-        public static void garouh_bankswitch_w(int data)
-        {
-            int bankaddress;
-            int[] bankoffset = new int[]
+        readonly static int[] garouh_bankswitch_w_bankoffset = new int[]
             {
                 0x000000, 0x100000, 0x200000, 0x300000, // 00
 		        0x280000, 0x380000, 0x2d0000, 0x3d0000, // 04
@@ -173,6 +172,10 @@ namespace MAME.Core
 		        0x000000, 0x000000, 0x000000, 0x000000, // 56
 		        0x000000, 0x000000, 0x000000, 0x000000  // 60
 	        };
+        public static void garouh_bankswitch_w(int data)
+        {
+            int bankaddress;
+
             data =
                 (((data >> 4) & 1) << 0) +
                 (((data >> 8) & 1) << 1) +
@@ -180,14 +183,11 @@ namespace MAME.Core
                 (((data >> 2) & 1) << 3) +
                 (((data >> 11) & 1) << 4) +
                 (((data >> 13) & 1) << 5);
-            bankaddress = 0x100000 + bankoffset[data];
+            bankaddress = 0x100000 + garouh_bankswitch_w_bankoffset[data];
             main_cpu_bank_address = bankaddress;
         }
-        public static void mslug3_bankswitch_w(int data)
+        readonly static int[] mslug3_bankswitch_w_bankoffset = new int[]
         {
-            int bankaddress;
-            int[] bankoffset = new int[]
-            {
               0x000000, 0x020000, 0x040000, 0x060000, // 00
 	          0x070000, 0x090000, 0x0b0000, 0x0d0000, // 04
 	          0x0e0000, 0x0f0000, 0x120000, 0x130000, // 08
@@ -201,7 +201,10 @@ namespace MAME.Core
 	          0x400000, 0x410000, 0x440000, 0x450000, // 40
 	          0x460000, 0x470000, 0x4a0000, 0x4b0000, // 44
 	          0x4c0000
-            };
+        };
+        public static void mslug3_bankswitch_w(int data)
+        {
+            int bankaddress;
             data =
                 (((data >> 14) & 1) << 0) +
                 (((data >> 12) & 1) << 1) +
@@ -209,13 +212,10 @@ namespace MAME.Core
                 (((data >> 6) & 1) << 3) +
                 (((data >> 3) & 1) << 4) +
                 (((data >> 9) & 1) << 5);
-            bankaddress = 0x100000 + bankoffset[data];
+            bankaddress = 0x100000 + mslug3_bankswitch_w_bankoffset[data];
             main_cpu_bank_address = bankaddress;
         }
-        public static void kof2000_bankswitch_w(int data)
-        {
-            int bankaddress;
-            int[] bankoffset = new int[]
+        readonly static int[] kof2000_bankswitch_w_bankoffset = new int[]
             {
                 0x000000, 0x100000, 0x200000, 0x300000, // 00
 		        0x3f7800, 0x4f7800, 0x3ff800, 0x4ff800, // 04
@@ -227,6 +227,10 @@ namespace MAME.Core
 		        0x52d000, 0x62d000, 0x52e800, 0x62e800, // 28
 		        0x618000, 0x619000, 0x61a000, 0x61a800, // 32
 	        };
+        public static void kof2000_bankswitch_w(int data)
+        {
+            int bankaddress;
+
             data =
                 (((data >> 15) & 1) << 0) +
                 (((data >> 14) & 1) << 1) +
@@ -234,7 +238,7 @@ namespace MAME.Core
                 (((data >> 3) & 1) << 3) +
                 (((data >> 10) & 1) << 4) +
                 (((data >> 5) & 1) << 5);
-            bankaddress = 0x100000 + bankoffset[data];
+            bankaddress = 0x100000 + kof2000_bankswitch_w_bankoffset[data];
             main_cpu_bank_address = bankaddress;
         }
         public static void pvc_prot1()

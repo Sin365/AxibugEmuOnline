@@ -416,17 +416,94 @@ namespace MAME.Core
             }
             return result;
         }
+        //public static void MWriteByte(int address, sbyte value)
+        //{
+        //    address &= 0xffffff;
+        //    if (address >= 0x100000 && address <= 0x1fffff)
+        //    {
+        //        if (address == 0x100d0b && value == 0x06)//&&MC68000.m1.TotalExecutedCycles>0x3F6FC8C)
+        //        {
+        //            ulong l1 = MC68000.m1.TotalExecutedCycles;
+        //            int i2 = 1;
+        //            //m68000Form.iStatus = 1;
+        //        }
+        //        Memory.mainram[address & 0xffff] = (byte)value;
+        //    }
+        //    else if (address >= 0x2ffff0 && address <= 0x2fffff)
+        //    {
+        //        main_cpu_bank_select_w(value);
+        //    }
+        //    else if (address >= 0x300000 && address <= 0x31ffff)
+        //    {
+        //        if ((address & 0x01) == 0)
+        //        {
+        //            int i1 = 1;
+        //        }
+        //        else if ((address & 0x01) == 1)
+        //        {
+        //            watchdog_w();
+        //        }
+        //    }
+        //    else if (address >= 0x320000 && address <= 0x33ffff)
+        //    {
+        //        if ((address & 0x01) == 0)
+        //        {
+        //            audio_command_w((byte)value);
+        //        }
+        //        else if ((address & 0x01) == 1)
+        //        {
+        //            int i1 = 1;
+        //        }
+        //    }
+        //    else if (address >= 0x380000 && address <= 0x39ffff)
+        //    {
+        //        io_control_w((address & 0x7f) >> 1, (byte)value);
+        //    }
+        //    else if (address >= 0x3a0000 && address <= 0x3bffff)
+        //    {
+        //        if ((address & 0x01) == 1)
+        //        {
+        //            system_control_w((address & 0x1f) >> 1);
+        //        }
+        //    }
+        //    else if (address >= 0x3c0000 && address <= 0x3dffff)
+        //    {
+        //        if ((address & 0x01) == 0)
+        //        {
+        //            neogeo_video_register_w((address & 0x0f) >> 1, (ushort)((value << 8) | (byte)value));
+        //        }
+        //        else if ((address & 0x01) == 1)
+        //        {
+        //            int i1 = 1;
+        //        }
+        //    }
+        //    else if (address >= 0x400000 && address <= 0x7fffff)
+        //    {
+        //        int i1 = 1;
+        //        //neogeo_paletteram_w((address - 0x400000) >> 1, data, mem_mask);
+        //    }
+        //    else if (address >= 0xd00000 && address <= 0xdfffff)
+        //    {
+        //        save_ram_w(address & 0xffff, (byte)value);
+        //    }
+        //    else
+        //    {
+        //        int i1 = 1;
+        //    }
+        //}
+        
+        //手动优化
         public static void MWriteByte(int address, sbyte value)
         {
             address &= 0xffffff;
             if (address >= 0x100000 && address <= 0x1fffff)
             {
-                if (address == 0x100d0b && value == 0x06)//&&MC68000.m1.TotalExecutedCycles>0x3F6FC8C)
-                {
-                    ulong l1 = MC68000.m1.TotalExecutedCycles;
-                    int i2 = 1;
-                    //m68000Form.iStatus = 1;
-                }
+                //if (address == 0x100d0b && value == 0x06)//&&MC68000.m1.TotalExecutedCycles>0x3F6FC8C)
+                //{
+                //    ulong l1 = MC68000.m1.TotalExecutedCycles;
+                //    int i2 = 1;
+                //    //m68000Form.iStatus = 1;
+                //}
                 Memory.mainram[address & 0xffff] = (byte)value;
             }
             else if (address >= 0x2ffff0 && address <= 0x2fffff)
@@ -435,13 +512,15 @@ namespace MAME.Core
             }
             else if (address >= 0x300000 && address <= 0x31ffff)
             {
-                if ((address & 0x01) == 0)
+                /*if ((address & 0x01) == 0)
                 {
                     int i1 = 1;
                 }
-                else if ((address & 0x01) == 1)
+                else */if ((address & 0x01) == 1)
                 {
-                    watchdog_w();
+                    //watchdog_w();
+                    //减少一次堆栈 无意义套娃
+                    Watchdog.watchdog_reset();
                 }
             }
             else if (address >= 0x320000 && address <= 0x33ffff)
@@ -450,10 +529,11 @@ namespace MAME.Core
                 {
                     audio_command_w((byte)value);
                 }
-                else if ((address & 0x01) == 1)
-                {
-                    int i1 = 1;
-                }
+                //无意义
+                //else if ((address & 0x01) == 1)
+                //{
+                //    int i1 = 1;
+                //}
             }
             else if (address >= 0x380000 && address <= 0x39ffff)
             {
@@ -472,24 +552,28 @@ namespace MAME.Core
                 {
                     neogeo_video_register_w((address & 0x0f) >> 1, (ushort)((value << 8) | (byte)value));
                 }
-                else if ((address & 0x01) == 1)
-                {
-                    int i1 = 1;
-                }
+                //无意义
+                //else if ((address & 0x01) == 1)
+                //{
+                //    int i1 = 1;
+                //}
             }
-            else if (address >= 0x400000 && address <= 0x7fffff)
-            {
-                int i1 = 1;
-                //neogeo_paletteram_w((address - 0x400000) >> 1, data, mem_mask);
-            }
+
+            //无意义
+            //else if (address >= 0x400000 && address <= 0x7fffff)
+            //{
+            //    int i1 = 1;
+            //    //neogeo_paletteram_w((address - 0x400000) >> 1, data, mem_mask);
+            //}
             else if (address >= 0xd00000 && address <= 0xdfffff)
             {
                 save_ram_w(address & 0xffff, (byte)value);
             }
-            else
-            {
-                int i1 = 1;
-            }
+            //无意义
+            //else
+            //{
+            //    int i1 = 1;
+            //}
         }
         public static void MWriteWord(int address, short value)
         {

@@ -286,18 +286,41 @@ namespace MAME.Core
                 }
             }
         }
+        //private int mix_3D()
+        //{
+        //    int indx = 0, chan;
+        //    for (chan = 0; chan < 3; chan++)
+        //    {
+        //        if (TONE_ENVELOPE(chan) != 0)
+        //        {
+        //            indx |= ((1 << (chan + 15)) | ((ay8910info.vol_enabled[chan] != 0) ? ay8910info.env_volume << (chan * 5) : 0));
+        //        }
+        //        else
+        //        {
+        //            indx |= ((ay8910info.vol_enabled[chan] != 0) ? TONE_VOLUME(chan) << (chan * 5) : 0);
+        //        }
+        //    }
+        //    return ay8910info.vol3d_table[indx];
+        //}
+
+        //手动内联
         private int mix_3D()
         {
             int indx = 0, chan;
             for (chan = 0; chan < 3; chan++)
             {
-                if (TONE_ENVELOPE(chan) != 0)
+                //if (TONE_ENVELOPE(chan) != 0)
+                if(((ay8910info.regs[TONE_ENVELOPE_REG_OFFSET + chan] >> TONE_ENVELOPE_MOVE) & TONE_ENVELOPE_VOLUME_MASK)!=0)
                 {
                     indx |= ((1 << (chan + 15)) | ((ay8910info.vol_enabled[chan] != 0) ? ay8910info.env_volume << (chan * 5) : 0));
                 }
                 else
                 {
-                    indx |= ((ay8910info.vol_enabled[chan] != 0) ? TONE_VOLUME(chan) << (chan * 5) : 0);
+                    indx |= ((ay8910info.vol_enabled[chan] != 0) ?
+                        //TONE_VOLUME(chan)
+                        (ay8910info.regs[TONE_VOLUME_REG_OFFSET + chan] & TONE_VOLUME_VOLUME_MASK)
+                        << (chan * 5)
+                        : 0);
                 }
             }
             return ay8910info.vol3d_table[indx];
@@ -373,6 +396,104 @@ namespace MAME.Core
                     break;
             }
         }
+        //public void ay8910_update(int offset, int length)
+        //{
+        //    int chan, i, j;
+        //    if (ay8910info.ready == 0)
+        //    {
+        //        for (chan = 0; chan < ay8910info.streams; chan++)
+        //        {
+        //            for (j = 0; j < length; j++)
+        //            {
+        //                stream.streamoutput_Ptrs[chan][offset + j] = 0;
+        //            }
+        //        }
+        //    }
+        //    for (i = 0; i < length; i++)
+        //    {
+        //        for (chan = 0; chan < 3; chan++)
+        //        {
+        //            ay8910info.count[chan]++;
+        //            if (ay8910info.count[chan] >= TONE_PERIOD(chan))
+        //            {
+        //                ay8910info.output[chan] ^= 1;
+        //                ay8910info.count[chan] = 0; ;
+        //            }
+        //        }
+        //        ay8910info.count_noise++;
+        //        if (ay8910info.count_noise >= NOISE_PERIOD())
+        //        {
+        //            if (((ay8910info.rng + 1) & 2) != 0)
+        //            {
+        //                ay8910info.output_noise ^= 1;
+        //            }
+        //            if ((ay8910info.rng & 1) != 0)
+        //            {
+        //                ay8910info.rng ^= 0x24000;
+        //            }
+        //            ay8910info.rng >>= 1;
+        //            ay8910info.count_noise = 0;
+        //        }
+        //        for (chan = 0; chan < 3; chan++)
+        //        {
+        //            ay8910info.vol_enabled[chan] = (byte)((ay8910info.output[chan] | TONE_ENABLEQ(chan)) & (ay8910info.output_noise | NOISE_ENABLEQ(chan)));
+        //        }
+        //        if (ay8910info.holding == 0)
+        //        {
+        //            ay8910info.count_env++;
+        //            if (ay8910info.count_env >= ENVELOPE_PERIOD() * ay8910info.step)
+        //            {
+        //                ay8910info.count_env = 0;
+        //                ay8910info.env_step--;
+        //                if (ay8910info.env_step < 0)
+        //                {
+        //                    if (ay8910info.hold != 0)
+        //                    {
+        //                        if (ay8910info.alternate != 0)
+        //                        {
+        //                            ay8910info.attack ^= ay8910info.env_step_mask;
+        //                        }
+        //                        ay8910info.holding = 1;
+        //                        ay8910info.env_step = 0;
+        //                    }
+        //                    else
+        //                    {
+        //                        if (ay8910info.alternate != 0 && (ay8910info.env_step & (ay8910info.env_step_mask + 1)) != 0)
+        //                        {
+        //                            ay8910info.attack ^= ay8910info.env_step_mask;
+        //                        }
+        //                        ay8910info.env_step &= (sbyte)ay8910info.env_step_mask;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        ay8910info.env_volume = (ay8910info.env_step ^ ay8910info.attack);
+        //        if (ay8910info.streams == 3)
+        //        {
+        //            for (chan = 0; chan < 3; chan++)
+        //            {
+        //                if (TONE_ENVELOPE(chan) != 0)
+        //                {
+        //                    int i1 = ay8910info.env_table[chan][ay8910info.vol_enabled[chan] != 0 ? ay8910info.env_volume : 0];
+        //                    stream.streamoutput_Ptrs[chan][offset] = ay8910info.env_table[chan][ay8910info.vol_enabled[chan] != 0 ? ay8910info.env_volume : 0];
+        //                }
+        //                else
+        //                {
+        //                    int i1 = ay8910info.vol_table[chan][ay8910info.vol_enabled[chan] != 0 ? TONE_VOLUME(chan) : 0];
+        //                    stream.streamoutput_Ptrs[chan][offset] = ay8910info.vol_table[chan][ay8910info.vol_enabled[chan] != 0 ? TONE_VOLUME(chan) : 0];
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            stream.streamoutput_Ptrs[0][offset] = mix_3D();
+        //        }
+        //        offset++;
+        //    }
+        //}
+
+
+        //手动内联优化
         public void ay8910_update(int offset, int length)
         {
             int chan, i, j;
@@ -391,14 +512,16 @@ namespace MAME.Core
                 for (chan = 0; chan < 3; chan++)
                 {
                     ay8910info.count[chan]++;
-                    if (ay8910info.count[chan] >= TONE_PERIOD(chan))
+                    //if (ay8910info.count[chan] >= TONE_PERIOD(chan))
+                    if (ay8910info.count[chan] >= (ay8910info.regs[chan << 1] | ((ay8910info.regs[(chan << 1) | 1] & 0x0f) << 8)))
                     {
                         ay8910info.output[chan] ^= 1;
                         ay8910info.count[chan] = 0; ;
                     }
                 }
                 ay8910info.count_noise++;
-                if (ay8910info.count_noise >= NOISE_PERIOD())
+                //if (ay8910info.count_noise >= NOISE_PERIOD())
+                if (ay8910info.count_noise >= (ay8910info.regs[6] & 0x1f))
                 {
                     if (((ay8910info.rng + 1) & 2) != 0)
                     {
@@ -413,12 +536,23 @@ namespace MAME.Core
                 }
                 for (chan = 0; chan < 3; chan++)
                 {
-                    ay8910info.vol_enabled[chan] = (byte)((ay8910info.output[chan] | TONE_ENABLEQ(chan)) & (ay8910info.output_noise | NOISE_ENABLEQ(chan)));
+                    //ay8910info.vol_enabled[chan] = (byte)((ay8910info.output[chan] | TONE_ENABLEQ(chan)) & (ay8910info.output_noise | NOISE_ENABLEQ(chan)));
+                    ay8910info.vol_enabled[chan] = (byte)((ay8910info.output[chan] | 
+                        //TONE_ENABLEQ(chan)
+                        ((ay8910info.regs[7] >> chan) & 1)
+                        ) & (ay8910info.output_noise |
+                        //NOISE_ENABLEQ(chan)
+                        ((ay8910info.regs[7] >> (3 + chan)) & 1)
+                        ));
                 }
                 if (ay8910info.holding == 0)
                 {
                     ay8910info.count_env++;
-                    if (ay8910info.count_env >= ENVELOPE_PERIOD() * ay8910info.step)
+                    //if (ay8910info.count_env >= ENVELOPE_PERIOD() * ay8910info.step)
+                    if (ay8910info.count_env >= 
+                        //ENVELOPE_PERIOD()
+                        (ay8910info.regs[11] | (ay8910info.regs[12] << 8))
+                        * ay8910info.step)
                     {
                         ay8910info.count_env = 0;
                         ay8910info.env_step--;
@@ -449,21 +583,46 @@ namespace MAME.Core
                 {
                     for (chan = 0; chan < 3; chan++)
                     {
-                        if (TONE_ENVELOPE(chan) != 0)
+                        //if (TONE_ENVELOPE(chan) != 0)
+                        if(((ay8910info.regs[TONE_ENVELOPE_REG_OFFSET + chan] >> TONE_ENVELOPE_MOVE) & TONE_ENVELOPE_VOLUME_MASK) != 0)
                         {
                             int i1 = ay8910info.env_table[chan][ay8910info.vol_enabled[chan] != 0 ? ay8910info.env_volume : 0];
                             stream.streamoutput_Ptrs[chan][offset] = ay8910info.env_table[chan][ay8910info.vol_enabled[chan] != 0 ? ay8910info.env_volume : 0];
                         }
                         else
                         {
-                            int i1 = ay8910info.vol_table[chan][ay8910info.vol_enabled[chan] != 0 ? TONE_VOLUME(chan) : 0];
-                            stream.streamoutput_Ptrs[chan][offset] = ay8910info.vol_table[chan][ay8910info.vol_enabled[chan] != 0 ? TONE_VOLUME(chan) : 0];
+                            int i1 = ay8910info.vol_table[chan][ay8910info.vol_enabled[chan] != 0 ?
+                                //TONE_VOLUME(chan) 
+                                ay8910info.regs[TONE_VOLUME_REG_OFFSET + chan] & TONE_VOLUME_VOLUME_MASK
+                                : 0];
+                            stream.streamoutput_Ptrs[chan][offset] = ay8910info.vol_table[chan][ay8910info.vol_enabled[chan] != 0 ?
+                                //TONE_VOLUME(chan)
+                                ay8910info.regs[TONE_VOLUME_REG_OFFSET + chan] & TONE_VOLUME_VOLUME_MASK
+                                : 0];
                         }
                     }
                 }
                 else
                 {
-                    stream.streamoutput_Ptrs[0][offset] = mix_3D();
+                    //stream.streamoutput_Ptrs[0][offset] = mix_3D();
+                    {
+                        int indx = 0, tempchan;
+                        for (tempchan = 0; tempchan < 3; tempchan++)
+                        {
+                            if (((ay8910info.regs[TONE_ENVELOPE_REG_OFFSET + tempchan] >> TONE_ENVELOPE_MOVE) & TONE_ENVELOPE_VOLUME_MASK) != 0)
+                            {
+                                indx |= ((1 << (tempchan + 15)) | ((ay8910info.vol_enabled[tempchan] != 0) ? ay8910info.env_volume << (tempchan * 5) : 0));
+                            }
+                            else
+                            {
+                                indx |= ((ay8910info.vol_enabled[tempchan] != 0) ?
+                                    (ay8910info.regs[TONE_VOLUME_REG_OFFSET + tempchan] & TONE_VOLUME_VOLUME_MASK)
+                                    << (tempchan * 5)
+                                    : 0);
+                            }
+                        }
+                        stream.streamoutput_Ptrs[0][offset] = ay8910info.vol3d_table[indx];
+                    }
                 }
                 offset++;
             }
