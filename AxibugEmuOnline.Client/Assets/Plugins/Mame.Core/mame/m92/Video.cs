@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mono.Cecil.Cil;
+using System;
 
 namespace MAME.Core
 {
@@ -350,11 +351,113 @@ namespace MAME.Core
                             }
                             else
                             {
-                                // 直接调用绘制函数，避免中间计算[3](@ref)
-                                Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy,
-                                                          current_x, y - i * 16, cliprect, draw_flags);
-                                Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy,
-                                                          current_x - SCREEN_WIDTH, y - i * 16, cliprect, draw_flags);
+                                //// 直接调用绘制函数，避免中间计算[3](@ref)
+                                //Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy,
+                                //                          current_x, y - i * 16, cliprect, draw_flags);
+                                //Drawgfx.common_drawgfx_m92(gfx21rom, sprite + s_ptr, colour, fx, fy,
+                                //                          current_x - SCREEN_WIDTH, y - i * 16, cliprect, draw_flags);
+
+                                //手动内联
+                                //--start
+                                //参数common_drawgfx_m92(byte* bb1, int code, int color, int flipx, int flipy, int sx, int sy, RECT clip, uint primask)
+                                // 使用常量折叠和预计算[5](@ref)
+
+                                int code = sprite + s_ptr;
+                                int color = colour;
+                                int colorbase = color << 4; // 用移位代替乘法 0x10 * color
+                                int flipx = fx;
+                                int flipy = fy;
+                                RECT clip = cliprect;
+                                uint primask = draw_flags;
+
+                                const int TEMP1 = 0x10 - 1;  // 15
+                                const int TEMP3 = 0x100 - 1; // 255
+                                const int TEMP4 = 0x200 - 1; // 511
+                                //第1次调用
+                                {
+                                    int sx_1st = current_x;
+                                    int sy_1st = y - i * 16;
+
+
+                                    int ox = sx_1st;
+                                    int oy = sy_1st;
+                                    int ex = sx_1st + TEMP1;
+
+                                    // 边界检查优化：减少分支预测错误[5](@ref)
+                                    sx_1st = sx_1st < 0 ? 0 : sx_1st;
+                                    sx_1st = sx_1st < clip.min_x ? clip.min_x : sx_1st;
+                                    ex = ex >= 0x200 ? TEMP4 : ex;
+                                    ex = ex > clip.max_x ? clip.max_x : ex;
+
+                                    if (sx_1st > ex)
+                                    {
+                                    }
+                                    else
+                                    {
+                                        int ey = sy_1st + TEMP1;
+                                        sy_1st = sy_1st < 0 ? 0 : sy_1st;
+                                        sy_1st = sy_1st < clip.min_y ? clip.min_y : sy_1st;
+                                        ey = ey >= 0x100 ? TEMP3 : ey;
+                                        ey = ey > clip.max_y ? clip.max_y : ey;
+
+                                        if (sy_1st > ey)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            // 使用局部变量避免重复计算[2,4](@ref)
+                                            int ls = sx_1st - ox;
+                                            int ts = sy_1st - oy;
+                                            int dw = ex - sx_1st + 1;
+                                            int dh = ey - sy_1st + 1;
+
+                                            // 内联关键函数调用
+                                            Drawgfx.blockmove_8toN_transpen_pri16_m92(gfx21rom, code, 0x10, 0x10, 0x10, ls, ts, flipx, flipy, dw, dh, colorbase, sy_1st, sx_1st, primask);
+                                        }
+                                    }
+                                }
+
+                                //第2次调用
+                                {
+                                    int sx_2nd = current_x - SCREEN_WIDTH;
+                                    int sy_2nd = y - i * 16;
+
+                                    int ox = sx_2nd;
+                                    int oy = sy_2nd;
+                                    int ex = sx_2nd + TEMP1;
+
+                                    // 边界检查优化：减少分支预测错误[5](@ref)
+                                    sx_2nd = sx_2nd < 0 ? 0 : sx_2nd;
+                                    sx_2nd = sx_2nd < clip.min_x ? clip.min_x : sx_2nd;
+                                    ex = ex >= 0x200 ? TEMP4 : ex;
+                                    ex = ex > clip.max_x ? clip.max_x : ex;
+
+                                    if (sx_2nd > ex) { }
+                                    else
+                                    {
+                                        int ey = sy_2nd + TEMP1;
+                                        sy_2nd = sy_2nd < 0 ? 0 : sy_2nd;
+                                        sy_2nd = sy_2nd < clip.min_y ? clip.min_y : sy_2nd;
+                                        ey = ey >= 0x100 ? TEMP3 : ey;
+                                        ey = ey > clip.max_y ? clip.max_y : ey;
+
+                                        if (sy_2nd > ey) { }
+                                        else
+                                        {
+                                            // 使用局部变量避免重复计算[2,4](@ref)
+                                            int ls = sx_2nd - ox;
+                                            int ts = sy_2nd - oy;
+                                            int dw = ex - sx_2nd + 1;
+                                            int dh = ey - sy_2nd + 1;
+
+                                            // 内联关键函数调用
+                                            Drawgfx.blockmove_8toN_transpen_pri16_m92(gfx21rom, code, 0x10, 0x10, 0x10, ls, ts, flipx, flipy, dw, dh, colorbase, sy_2nd, sx_2nd, primask);
+                                        }
+                                    }
+
+                                }
+                                //--end
                             }
 
                             // 优化指针更新
