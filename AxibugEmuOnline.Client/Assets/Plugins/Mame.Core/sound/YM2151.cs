@@ -934,9 +934,9 @@ namespace MAME.Core
             PSG.eg_timer_overflow = 0x30000;
             /* this must be done _before_ a call to ym2151_reset_chip() */
             //PSG.timer_A = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2151_timer_callback_a, false);
-            EmuTimer.timer_alloc_common(ref PSG.timer_A,EmuTimer.TIME_ACT.YM2151_timer_callback_a, false);
+            EmuTimer.timer_alloc_common(ref PSG.timer_A, EmuTimer.TIME_ACT.YM2151_timer_callback_a, false);
             //PSG.timer_B = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.YM2151_timer_callback_b, false);
-            EmuTimer.timer_alloc_common(ref PSG.timer_B,EmuTimer.TIME_ACT.YM2151_timer_callback_b, false);
+            EmuTimer.timer_alloc_common(ref PSG.timer_B, EmuTimer.TIME_ACT.YM2151_timer_callback_b, false);
             ym2151_reset_chip();
             switch (Machine.sBoard)
             {
@@ -1098,8 +1098,84 @@ namespace MAME.Core
 
         //chan_calc高频调用 单次Update 5467次 左右，下级堆栈volume_calc 20000+次 op_calc 10000+次
 
+        //unsafe static void chan_calc(YM2151Operator* PSGoper, int* chanout, int* imem, int chan)
+        //{
+
+        //    //fixed (YM2151Operator* PSGoperPtr = &PSG.oper[0])
+        //    {
+        //        //YM2151Operator* PSGoper = PSGoperPtr;
+        //        uint env;
+        //        uint AM = 0;
+        //        //m2 = c1 = c2 = mem = 0;
+        //        chanout[8] = chanout[9] = chanout[10] = chanout[11] = 0;
+        //        //op = PSGoper[chan * 4];	/* M1 */
+        //        //op.mem_connect = op.mem_value;	/* restore delayed sample (MEM) value to m2 or c2 */
+        //        set_mem(PSGoper, chanout, imem, chan * 4);
+        //        if (PSGoper[chan * 4].ams != 0)
+        //        {
+        //            AM = PSG.lfa << (int)(PSGoper[chan * 4].ams - 1);
+        //        }
+
+        //        env = volume_calc(PSGoper, (chan * 4), AM);
+        //        //env = volume_calc_planB(PSGoper[chan * 4], AM);
+        //        {
+        //            int iout = PSGoper[chan * 4].fb_out_prev + PSGoper[chan * 4].fb_out_curr;
+        //            PSGoper[chan * 4].fb_out_prev = PSGoper[chan * 4].fb_out_curr;
+
+        //            set_value1(chanout, PSGoper, chan * 4);
+
+        //            PSGoper[chan * 4].fb_out_curr = 0;
+        //            if (env < 13 * 64)
+        //            {
+        //                if (PSGoper[chan * 4].fb_shift == 0)
+        //                {
+        //                    iout = 0;
+        //                }
+        //                PSGoper[chan * 4].fb_out_curr = op_calc1(PSGoper, (chan * 4), env, (iout << (int)PSGoper[chan * 4].fb_shift));
+        //            }
+        //        }
+        //        env = volume_calc(PSGoper, (chan * 4 + 1), AM); /* M2 */
+        //        //env = volume_calc_planB(PSGoper[chan * 4 + 1], AM);/* M2 */
+        //        if (env < 13 * 64)
+        //        {
+        //            //PSGoper[chan * 4 + 1].connect += op_calc((int)(chan * 4 + 1), env, m2);
+        //            set_value2(chanout, chan * 4 + 1, op_calc(PSGoper, (chan * 4 + 1), env, chanout[8]));// m2));
+        //        }
+        //        env = volume_calc(PSGoper, (chan * 4 + 2), AM); /* C1 */
+        //        //env = volume_calc_planB(PSGoper[chan * 4 + 2], AM); /* C1 */
+        //        if (env < 13 * 64)
+        //        {
+        //            //PSGoper[chan * 4 + 2].connect += op_calc((int)(chan * 4 + 2), env, c1);
+        //            set_value2(chanout, chan * 4 + 2, op_calc(PSGoper, (chan * 4 + 2), env, chanout[9]));// c1));
+        //        }
+        //        env = volume_calc(PSGoper, (chan * 4 + 3), AM); /* C2 */
+        //        //env = volume_calc_planB(PSGoper[chan * 4 + 3], AM); /* C2 */
+        //        if (env < 13 * 64)
+        //        {
+        //            chanout[chan] += op_calc(PSGoper, (chan * 4 + 3), env, chanout[10]);// c2);
+        //        }
+        //        /* M1 */
+        //        PSGoper[chan * 4].mem_value = chanout[11];//mem;
+        //    }
+
+        //}
+
+        const Int32 const13_x_2_0x100 = 13 * 2 * 0x100;
+        //手动内联  -->//chan_calc高频调用 单次Update 5467次 左右，下级堆栈volume_calc 20000+次 op_calc 10000+次
         unsafe static void chan_calc(YM2151Operator* PSGoper, int* chanout, int* imem, int chan)
         {
+            int chan_x4 = (chan * 4);
+            int chan_x4_add1 = (chan_x4 + 1);
+            int chan_x4_add2 = (chan_x4 + 2);
+            int chan_x4_add3 = (chan_x4 + 3);
+
+            // 预缓存操作符指针
+            YM2151Operator* op0 = &PSGoper[chan_x4];      /* M1 */
+            YM2151Operator* op1 = &PSGoper[chan_x4_add1]; /* M2 */
+            YM2151Operator* op2 = &PSGoper[chan_x4_add2]; /* C1 */
+            YM2151Operator* op3 = &PSGoper[chan_x4_add3]; /* C2 */
+
+            int* imem_chan_x4 = &imem[chan_x4]; /* C2 */
 
             //fixed (YM2151Operator* PSGoperPtr = &PSG.oper[0])
             {
@@ -1110,52 +1186,120 @@ namespace MAME.Core
                 chanout[8] = chanout[9] = chanout[10] = chanout[11] = 0;
                 //op = PSGoper[chan * 4];	/* M1 */
                 //op.mem_connect = op.mem_value;	/* restore delayed sample (MEM) value to m2 or c2 */
-                set_mem(PSGoper, chanout, imem, chan * 4);
-                if (PSGoper[chan * 4].ams != 0)
+
+                //set_mem(PSGoper, chanout, imem, chan_x4); //-->(YM2151Operator* PSGoper, int* chanout, int* imem, int op1)
+                if (*imem_chan_x4 == 8 || *imem_chan_x4 == 10 || *imem_chan_x4 == 11)
                 {
-                    AM = PSG.lfa << (int)(PSGoper[chan * 4].ams - 1);
+                    chanout[*imem_chan_x4] = op0->mem_value;
                 }
 
-                env = volume_calc(PSGoper, (chan * 4), AM);
+                if (op0->ams != 0)
+                {
+                    AM = PSG.lfa << (int)(op0->ams - 1);
+                }
+
+                //env = volume_calc(PSGoper, chan_x4, AM);
+                env = op0->tl + ((uint)op0->volume) + (AM & op0->AMmask);
+
                 //env = volume_calc_planB(PSGoper[chan * 4], AM);
                 {
-                    int iout = PSGoper[chan * 4].fb_out_prev + PSGoper[chan * 4].fb_out_curr;
-                    PSGoper[chan * 4].fb_out_prev = PSGoper[chan * 4].fb_out_curr;
+                    int iout = op0->fb_out_prev + op0->fb_out_curr;
+                    op0->fb_out_prev = op0->fb_out_curr;
 
-                    set_value1(chanout, PSGoper, chan * 4);
+                    //set_value1(chanout, PSGoper, chan_x4); //->(int* chanout, YM2151Operator* PSGoper, int op1)
+                    if (iconnect[chan_x4] == 12)
+                    {
+                        chanout[9] = chanout[10] = chanout[11] = op0->fb_out_prev;
+                    }
+                    else
+                    {
+                        chanout[iconnect[chan_x4]] = op0->fb_out_prev;
+                    }
 
-                    PSGoper[chan * 4].fb_out_curr = 0;
+                    op0->fb_out_curr = 0;
                     if (env < 13 * 64)
                     {
-                        if (PSGoper[chan * 4].fb_shift == 0)
+                        if (op0->fb_shift == 0)
                         {
                             iout = 0;
                         }
-                        PSGoper[chan * 4].fb_out_curr = op_calc1(PSGoper, (chan * 4), env, (iout << (int)PSGoper[chan * 4].fb_shift));
+                        //op0->fb_out_curr = op_calc1(PSGoper, chan_x4, env, (iout << (int)op0->fb_shift));//----->(YM2151Operator* PSGoper, int i1, uint env, int pm)
+                        uint p;
+                        int i;
+                        i = (int)((op0->phase & 0xffff0000) + (iout << (int)op0->fb_shift));
+                        p = (env << 3) + sin_tab[(i >> 16) & 0x3ff];
+                        if (p >= 13 * 2 * 0x100)
+                        {
+                            op0->fb_out_curr = 0;
+                        }
+                        else
+                            op0->fb_out_curr = tl_tab[p];
                     }
                 }
-                env = volume_calc(PSGoper, (chan * 4 + 1), AM); /* M2 */
+                //env = volume_calc(PSGoper, chan_x4_add1, AM); /* M2 */
+                env = op1->tl + ((uint)op1->volume) + (AM & op1->AMmask);
                 //env = volume_calc_planB(PSGoper[chan * 4 + 1], AM);/* M2 */
                 if (env < 13 * 64)
                 {
                     //PSGoper[chan * 4 + 1].connect += op_calc((int)(chan * 4 + 1), env, m2);
-                    set_value2(chanout, chan * 4 + 1, op_calc(PSGoper, (chan * 4 + 1), env, chanout[8]));// m2));
+
+                    //set_value2(chanout, chan_x4_add1, op_calc(PSGoper, chan_x4_add1, env, chanout[8]));// m2));
+                    //--start
+                    //参数op_calc(YM2151Operator* PSGoper, int i1, uint env, int pm)
+                    int InParam;
+                    uint p;
+                    p = (env << 3) + sin_tab[(((int)((op1->phase & 0xffff0000) + (chanout[8] << 15))) >> 16) & 0x3ff];
+                    if (p >= const13_x_2_0x100)
+                        InParam = 0;
+                    else
+                        InParam = tl_tab[p];
+                    //参数set_value2(int* chanout, int op1, int i)
+                    if (iconnect[chan_x4_add1] == 12) { }
+                    else
+                    {
+                        chanout[iconnect[chan_x4_add1]] += InParam;
+                    }
+                    //--end
                 }
-                env = volume_calc(PSGoper, (chan * 4 + 2), AM); /* C1 */
+                //env = volume_calc(PSGoper, chan_x4_add2, AM); /* C1 */
+                env = op2->tl + ((uint)op2->volume) + (AM & op2->AMmask);
                 //env = volume_calc_planB(PSGoper[chan * 4 + 2], AM); /* C1 */
                 if (env < 13 * 64)
                 {
                     //PSGoper[chan * 4 + 2].connect += op_calc((int)(chan * 4 + 2), env, c1);
-                    set_value2(chanout, chan * 4 + 2, op_calc(PSGoper, (chan * 4 + 2), env, chanout[9]));// c1));
+                    //set_value2(chanout, chan_x4_add2, op_calc(PSGoper, chan_x4_add2, env, chanout[9]));// c1));
+                    //--start
+                    int InParam;
+                    uint p;
+                    p = (env << 3) + sin_tab[(((int)((op2->phase & 0xffff0000) + (chanout[9] << 15))) >> 16) & 0x3ff];
+                    if (p >= const13_x_2_0x100)
+                        InParam = 0;
+                    else
+                        InParam = tl_tab[p];
+
+                    if (iconnect[chan_x4_add2] == 12) { }
+                    else
+                    {
+                        chanout[iconnect[chan_x4_add2]] += InParam;
+                    }
+                    //--end
                 }
-                env = volume_calc(PSGoper, (chan * 4 + 3), AM); /* C2 */
+                //env = volume_calc(PSGoper, (chan * 4 + 3), AM); /* C2 */
+                env = op3->tl + ((uint)op3->volume) + (AM & op3->AMmask);
+
                 //env = volume_calc_planB(PSGoper[chan * 4 + 3], AM); /* C2 */
                 if (env < 13 * 64)
                 {
-                    chanout[chan] += op_calc(PSGoper, (chan * 4 + 3), env, chanout[10]);// c2);
+                    //chanout[chan] += op_calc(PSGoper, (chan_x4_add3), env, chanout[10]);// c2); //------->(YM2151Operator* PSGoper, int i1, uint env, int pm)
+                    uint p;
+                    p = (env << 3) + sin_tab[(((int)((op3->phase & 0xffff0000) + (chanout[10] << 15))) >> 16) & 0x3ff];
+                    if (p >= const13_x_2_0x100)
+                        chanout[chan] += 0;
+                    else
+                        chanout[chan] += tl_tab[p];
                 }
                 /* M1 */
-                PSGoper[chan * 4].mem_value = chanout[11];//mem;
+                op0->mem_value = chanout[11];//mem;
             }
 
         }
