@@ -42,8 +42,22 @@
         {
             Mame.mame_schedule_soft_reset();
         }
+        static long LastCheckFrame;
+        static int frame_reset_count;
+        const byte maxLimitReset_everyFrame = 1;
         public static void watchdog_reset()
         {
+            if (LastCheckFrame != Video.screenstate.frame_number)
+            {
+                LastCheckFrame = Video.screenstate.frame_number;
+                //UnityEngine.Debug.Log($"上一帧数跳过watchdog_reset:{frame_reset_count}次");
+                frame_reset_count = 0;
+            }
+
+            frame_reset_count++;
+            if (frame_reset_count > maxLimitReset_everyFrame)
+                return;
+
             if (!watchdog_enabled)
             {
                 EmuTimer.timer_adjust_periodic(watchdog_timer, Attotime.ATTOTIME_NEVER, Attotime.ATTOTIME_NEVER);
@@ -57,5 +71,20 @@
                 EmuTimer.timer_adjust_periodic(watchdog_timer, new Atime(3, 0), Attotime.ATTOTIME_NEVER);
             }
         }
+        //public static void watchdog_reset()
+        //{
+        //    if (!watchdog_enabled)
+        //    {
+        //        EmuTimer.timer_adjust_periodic(watchdog_timer, Attotime.ATTOTIME_NEVER, Attotime.ATTOTIME_NEVER);
+        //    }
+        //    else if (Attotime.attotime_compare(watchdog_time, Attotime.ATTOTIME_ZERO) != 0)
+        //    {
+        //        EmuTimer.timer_adjust_periodic(watchdog_timer, watchdog_time, Attotime.ATTOTIME_NEVER);
+        //    }
+        //    else
+        //    {
+        //        EmuTimer.timer_adjust_periodic(watchdog_timer, new Atime(3, 0), Attotime.ATTOTIME_NEVER);
+        //    }
+        //}
     }
 }

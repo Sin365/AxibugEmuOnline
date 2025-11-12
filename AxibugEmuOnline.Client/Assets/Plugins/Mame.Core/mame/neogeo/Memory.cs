@@ -175,6 +175,49 @@ namespace MAME.Core
             }
             return result;
         }
+        //public static short MReadOpWord(int address)
+        //{
+        //    address &= 0xffffff;
+        //    short result = 0;
+        //    if (address >= 0x000000 && address + 1 <= 0x00007f)
+        //    {
+        //        if (main_cpu_vector_table_source == 0)
+        //        {
+        //            result = (short)(mainbiosrom[address] * 0x100 + mainbiosrom[address + 1]);
+        //        }
+        //        else if (main_cpu_vector_table_source == 1)
+        //        {
+        //            result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //        }
+        //    }
+        //    else if (address >= 0x000080 && address + 1 <= 0x0fffff)
+        //    {
+        //        if (address >= 0x142B9 && address <= 0x142C9)
+        //        {
+        //            //m68000Form.iStatus = 1;
+        //        }
+        //        result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //    }
+        //    else if (address >= 0x100000 && address + 1 <= 0x1fffff)
+        //    {
+        //        result = (short)(Memory.mainram[address & 0xffff] * 0x100 + Memory.mainram[(address & 0xffff) + 1]);
+        //    }
+        //    else if (address >= 0x200000 && address + 1 <= 0x2fffff)
+        //    {
+        //        result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
+        //    }
+        //    else if (address >= 0xc00000 && address + 1 <= 0xcfffff)
+        //    {
+        //        result = (short)(mainbiosrom[address & 0x1ffff] * 0x100 + mainbiosrom[(address & 0x1ffff) + 1]);
+        //    }
+        //    else
+        //    {
+        //        result = 0;
+        //    }
+        //    return result;
+        //}
+
+        //手动优化
         public static short MReadOpWord(int address)
         {
             address &= 0xffffff;
@@ -192,10 +235,10 @@ namespace MAME.Core
             }
             else if (address >= 0x000080 && address + 1 <= 0x0fffff)
             {
-                if (address >= 0x142B9 && address <= 0x142C9)
-                {
-                    //m68000Form.iStatus = 1;
-                }
+                //if (address >= 0x142B9 && address <= 0x142C9)
+                //{
+                //    //m68000Form.iStatus = 1;
+                //}
                 result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
             }
             else if (address >= 0x100000 && address + 1 <= 0x1fffff)
