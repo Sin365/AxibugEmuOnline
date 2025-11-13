@@ -620,11 +620,12 @@ namespace MAME.Core
 
             //手动内联
             //public unsafe void chan_calc(int c, int chnum)
+            //public unsafe void chan_calc(int c, bool chnum_is_2)
             public unsafe void chan_calc(int c, bool chnum_is_2)
             {
                 uint eg_out;
                 //减少寻址
-                int imem_To_c = imem[c];
+                int imem_ToIndex_c = imem[c];
                 fixed (FM_SLOT* CH_c_SLOT = &CH[c].SLOT[0])//因为是引用类型，所以敢这么玩
                 fixed (int* out_fm_ptr = &out_fm[0])
                 {
@@ -637,8 +638,8 @@ namespace MAME.Core
                     out_fm_ptr[8] = out_fm_ptr[9] = out_fm_ptr[10] = out_fm_ptr[11] = 0;
 
                     //set_mem(c);
-                    if (imem_To_c == 8 || imem_To_c == 10 || imem_To_c == 11)
-                        out_fm_ptr[imem_To_c] = CH[c].mem_value;
+                    if (imem_ToIndex_c == 8 || imem_ToIndex_c == 10 || imem_ToIndex_c == 11)
+                        out_fm_ptr[imem_ToIndex_c] = CH[c].mem_value;
 
                     //eg_out = volume_calc(c, 0);
                     eg_out = (uint)(cslot_0->vol_out + ((LFO_AM >> CH[c].ams) & cslot_0->AMmask));

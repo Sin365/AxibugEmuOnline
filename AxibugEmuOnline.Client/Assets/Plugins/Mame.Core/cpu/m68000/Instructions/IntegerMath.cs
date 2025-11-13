@@ -1320,6 +1320,57 @@ namespace cpu.m68000
         }
 
 
+        //void CMPI()
+        //{
+        //    int size = (op >> 6) & 3;
+        //    int mode = (op >> 3) & 7;
+        //    int reg = (op >> 0) & 7;
+
+        //    switch (size)
+        //    {
+        //        case 0: // byte
+        //            {
+        //                sbyte b = (sbyte)ReadOpWord(PC); PC += 2;
+        //                sbyte a = ReadValueB(mode, reg);
+        //                int result = a - b;
+        //                N = (result & 0x80) != 0;
+        //                Z = result == 0;
+        //                V = result > sbyte.MaxValue || result < sbyte.MinValue;
+        //                C = ((a < b) ^ ((a ^ b) >= 0) == false);
+        //                if (mode == 0) pendingCycles -= 8;
+        //                else pendingCycles -= 8 + EACyclesBW[mode, reg];
+        //                return;
+        //            }
+        //        case 1: // word
+        //            {
+        //                short b = ReadOpWord(PC); PC += 2;
+        //                short a = ReadValueW(mode, reg);
+        //                int result = a - b;
+        //                N = (result & 0x8000) != 0;
+        //                Z = result == 0;
+        //                V = result > short.MaxValue || result < short.MinValue;
+        //                C = ((a < b) ^ ((a ^ b) >= 0) == false);
+        //                if (mode == 0) pendingCycles -= 8;
+        //                else pendingCycles -= 8 + EACyclesBW[mode, reg];
+        //                return;
+        //            }
+        //        case 2: // long
+        //            {
+        //                int b = ReadOpLong(PC); PC += 4;
+        //                int a = ReadValueL(mode, reg);
+        //                long result = a - b;
+        //                N = (result & 0x80000000) != 0;
+        //                Z = result == 0;
+        //                V = result > int.MaxValue || result < int.MinValue;
+        //                C = ((a < b) ^ ((a ^ b) >= 0) == false);
+        //                if (mode == 0) pendingCycles -= 14;
+        //                else pendingCycles -= 12 + EACyclesL[mode, reg];
+        //                return;
+        //            }
+        //    }
+        //}
+
+        //手动内联
         void CMPI()
         {
             int size = (op >> 6) & 3;
@@ -1331,7 +1382,57 @@ namespace cpu.m68000
                 case 0: // byte
                     {
                         sbyte b = (sbyte)ReadOpWord(PC); PC += 2;
-                        sbyte a = ReadValueB(mode, reg);
+                        //sbyte a = ReadValueB(mode, reg);
+                        sbyte a = 0;
+                        {
+                            sbyte value;
+                            switch (mode)
+                            {
+                                case 0: // Dn
+                                    a = D[reg].s8; break;
+                                case 1: // An
+                                    a = A[reg].s8; break;
+                                case 2: // (An)
+                                    a = ReadByte(A[reg].s32); break;
+                                case 3: // (An)+
+                                    value = ReadByte(A[reg].s32);
+                                    A[reg].s32 += reg == 7 ? 2 : 1;
+                                    a = value; break;
+                                case 4: // -(An)
+                                    A[reg].s32 -= reg == 7 ? 2 : 1;
+                                    a = ReadByte(A[reg].s32); break;
+                                case 5: // (d16,An)
+                                    value = ReadByte((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+                                    a = value; break;
+                                case 6: // (d8,An,Xn)
+                                    a = ReadByte(A[reg].s32 + GetIndex()); break;
+                                case 7:
+                                    switch (reg)
+                                    {
+                                        case 0: // (imm).W
+                                            value = ReadByte(ReadOpWord(PC)); PC += 2;
+                                            a = value; break;
+                                        case 1: // (imm).L
+                                            value = ReadByte(ReadOpLong(PC)); PC += 4;
+                                            a = value; break;
+                                        case 2: // (d16,PC)
+                                            value = ReadOpByte(PC + ReadOpWord(PC)); PC += 2;
+                                            a = value; break;
+                                        case 3: // (d8,PC,Xn)
+                                            int pc = PC;
+                                            value = ReadOpByte((pc + GetIndex()));
+                                            a = value; break;
+                                        case 4: // immediate
+                                            value = (sbyte)ReadOpWord(PC); PC += 2;
+                                            a = value;break;
+                                        default:
+                                            throw new Exception("Invalid addressing mode!");
+                                    }
+                                    break;
+                                default:
+                                    throw new Exception("Invalid addressing mode!");
+                            }
+                        }
                         int result = a - b;
                         N = (result & 0x80) != 0;
                         Z = result == 0;

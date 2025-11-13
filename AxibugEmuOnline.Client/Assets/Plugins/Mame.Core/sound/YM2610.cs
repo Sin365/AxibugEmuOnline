@@ -1,4 +1,9 @@
 ﻿
+using Sony.Vita.Dialog;
+using System;
+using static MAME.Core.FM;
+using static MAME.Core.YM2151;
+
 namespace MAME.Core
 {
     public unsafe class YM2610
@@ -41,49 +46,102 @@ namespace MAME.Core
         {
             Sound.ym2610stream.stream_update();
         }
+        //public void ADPCMA_calc_chan(int c)
+        //{
+        //    uint step;
+        //    byte data;
+        //    int i;
+        //    adpcm[c].now_step += adpcm[c].step;
+        //    if (adpcm[c].now_step >= (1 << 16))
+        //    {
+        //        step = adpcm[c].now_step >> 16;
+        //        adpcm[c].now_step &= (1 << 16) - 1;
+        //        for (i = 0; i < step; i++)
+        //        {
+        //            if ((adpcm[c].now_addr & ((1 << 21) - 1)) == ((adpcm[c].end << 1) & ((1 << 21) - 1)))
+        //            {
+        //                adpcm[c].flag = 0;
+        //                adpcm_arrivedEndAddress |= adpcm[c].flagMask;
+        //                return;
+        //            }
+        //            if ((adpcm[c].now_addr & 1) != 0)
+        //            {
+        //                data = (byte)(adpcm[c].now_data & 0x0f);
+        //            }
+        //            else
+        //            {
+        //                adpcm[c].now_data = FM.ymsndrom[adpcm[c].now_addr >> 1];
+        //                data = (byte)((adpcm[c].now_data >> 4) & 0x0f);
+        //            }
+        //            adpcm[c].now_addr++;
+        //            adpcm[c].adpcm_acc += FM.jedi_table[adpcm[c].adpcm_step + data];
+        //            if ((adpcm[c].adpcm_acc & ~0x7ff) != 0)
+        //            {
+        //                adpcm[c].adpcm_acc |= ~0xfff;
+        //            }
+        //            else
+        //            {
+        //                adpcm[c].adpcm_acc &= 0xfff;
+        //            }
+        //            adpcm[c].adpcm_step += FM.step_inc[data & 7];
+        //            adpcm[c].adpcm_step = FM.Limit(adpcm[c].adpcm_step, 48 * 16, 0);
+        //        }
+        //        adpcm[c].adpcm_out = ((adpcm[c].adpcm_acc * adpcm[c].vol_mul) >> adpcm[c].vol_shift) & ~3;
+        //    }
+        //    FM.out_adpcm[FM.ipan[c]] += adpcm[c].adpcm_out;
+        //}
+
+        //手动内联
         public void ADPCMA_calc_chan(int c)
         {
             uint step;
             byte data;
             int i;
-            adpcm[c].now_step += adpcm[c].step;
-            if (adpcm[c].now_step >= (1 << 16))
+            fixed (FM.ADPCM_CH* adpcm_c = &adpcm[c])
             {
-                step = adpcm[c].now_step >> 16;
-                adpcm[c].now_step &= (1 << 16) - 1;
-                for (i = 0; i < step; i++)
+                adpcm_c->now_step += adpcm_c->step;
+                if (adpcm_c->now_step >= (1 << 16))
                 {
-                    if ((adpcm[c].now_addr & ((1 << 21) - 1)) == ((adpcm[c].end << 1) & ((1 << 21) - 1)))
+                    step = adpcm_c->now_step >> 16;
+                    adpcm_c->now_step &= (1 << 16) - 1;
+                    for (i = 0; i < step; i++)
                     {
-                        adpcm[c].flag = 0;
-                        adpcm_arrivedEndAddress |= adpcm[c].flagMask;
-                        return;
+                        if ((adpcm_c->now_addr & ((1 << 21) - 1)) == ((adpcm_c->end << 1) & ((1 << 21) - 1)))
+                        {
+                            adpcm_c->flag = 0;
+                            adpcm_arrivedEndAddress |= adpcm_c->flagMask;
+                            return;
+                        }
+                        if ((adpcm_c->now_addr & 1) != 0)
+                        {
+                            data = (byte)(adpcm_c->now_data & 0x0f);
+                        }
+                        else
+                        {
+                            adpcm_c->now_data = FM.ymsndrom[adpcm_c->now_addr >> 1];
+                            data = (byte)((adpcm_c->now_data >> 4) & 0x0f);
+                        }
+                        adpcm_c->now_addr++;
+                        adpcm_c->adpcm_acc += FM.jedi_table[adpcm_c->adpcm_step + data];
+                        if ((adpcm_c->adpcm_acc & ~0x7ff) != 0)
+                        {
+                            adpcm_c->adpcm_acc |= ~0xfff;
+                        }
+                        else
+                        {
+                            adpcm_c->adpcm_acc &= 0xfff;
+                        }
+                        adpcm_c->adpcm_step += FM.step_inc[data & 7];
+                        //adpcm_c->adpcm_step = FM.Limit(adpcm_c->adpcm_step, 48 * 16, 0);//(int val, int max, int min)
+                        int val = adpcm_c->adpcm_step;
+                        const int max = 48 * 16;
+                        adpcm_c->adpcm_step = Math.Min(max, adpcm_c->adpcm_step);
+                        adpcm_c->adpcm_step = Math.Max(0, adpcm_c->adpcm_step);
                     }
-                    if ((adpcm[c].now_addr & 1) != 0)
-                    {
-                        data = (byte)(adpcm[c].now_data & 0x0f);
-                    }
-                    else
-                    {
-                        adpcm[c].now_data = FM.ymsndrom[adpcm[c].now_addr >> 1];
-                        data = (byte)((adpcm[c].now_data >> 4) & 0x0f);
-                    }
-                    adpcm[c].now_addr++;
-                    adpcm[c].adpcm_acc += FM.jedi_table[adpcm[c].adpcm_step + data];
-                    if ((adpcm[c].adpcm_acc & ~0x7ff) != 0)
-                    {
-                        adpcm[c].adpcm_acc |= ~0xfff;
-                    }
-                    else
-                    {
-                        adpcm[c].adpcm_acc &= 0xfff;
-                    }
-                    adpcm[c].adpcm_step += FM.step_inc[data & 7];
-                    adpcm[c].adpcm_step = FM.Limit(adpcm[c].adpcm_step, 48 * 16, 0);
+                    adpcm_c->adpcm_out = ((adpcm_c->adpcm_acc * adpcm_c->vol_mul) >> adpcm_c->vol_shift) & ~3;
                 }
-                adpcm[c].adpcm_out = ((adpcm[c].adpcm_acc * adpcm[c].vol_mul) >> adpcm[c].vol_shift) & ~3;
+                FM.out_adpcm[FM.ipan[c]] += adpcm_c->adpcm_out;
             }
-            FM.out_adpcm[FM.ipan[c]] += adpcm[c].adpcm_out;
         }
 
 
@@ -513,10 +571,10 @@ namespace MAME.Core
                 //OPN.chan_calc(2, 2);
                 //OPN.chan_calc(4, 4);
                 //OPN.chan_calc(5, 5);
-                OPN.chan_calc(1, false);
-                OPN.chan_calc(2, true);
-                OPN.chan_calc(4, false);
-                OPN.chan_calc(5, false);
+                OPN.chan_calc(1,false);
+                OPN.chan_calc(2,true);
+                OPN.chan_calc(4,false);
+                OPN.chan_calc(5,false);
                 if ((YMDeltat.DELTAT.portstate & 0x80) != 0)
                 {
                     YMDeltat.YM_DELTAT_ADPCM_CALC();
@@ -541,8 +599,12 @@ namespace MAME.Core
                 rt += (int)((FM.out_fm[4] >> 1) & OPN.pan[9]);
                 lt += (int)((FM.out_fm[5] >> 1) & OPN.pan[10]);
                 rt += (int)((FM.out_fm[5] >> 1) & OPN.pan[11]);
-                lt = FM.Limit(lt, 32767, -32768);
-                rt = FM.Limit(rt, 32767, -32768);
+                //lt = FM.Limit(lt, 32767, -32768);
+                //rt = FM.Limit(rt, 32767, -32768);
+                lt = Math.Min(lt, 32767);
+                lt = Math.Max(lt, -32768);
+                rt = Math.Min(rt, 32767);
+                rt = Math.Max(rt, -32768);
                 Sound.ym2610stream.streamoutput_Ptrs[0][offset + i] = lt;
                 Sound.ym2610stream.streamoutput_Ptrs[1][offset + i] = rt;
             }
@@ -569,6 +631,7 @@ namespace MAME.Core
             OPN.refresh_fc_eg_chan(F2610.OPN.type, 3);
             OPN.refresh_fc_eg_chan(F2610.OPN.type, 4);
             OPN.refresh_fc_eg_chan(F2610.OPN.type, 5);
+
             for (i = 0; i < length; i++)
             {
                 OPN.advance_lfo();
@@ -632,8 +695,12 @@ namespace MAME.Core
                 rt += (int)((FM.out_fm[4] >> 1) & OPN.pan[9]);
                 lt += (int)((FM.out_fm[5] >> 1) & OPN.pan[10]);
                 rt += (int)((FM.out_fm[5] >> 1) & OPN.pan[11]);
-                lt = FM.Limit(lt, 32767, -32768);
-                rt = FM.Limit(rt, 32767, -32768);
+                //lt = FM.Limit(lt, 32767, -32768);
+                //rt = FM.Limit(rt, 32767, -32768);
+                lt = Math.Min(lt, 32767);
+                lt = Math.Max(lt, -32768);
+                rt = Math.Min(rt, 32767);
+                rt = Math.Max(rt, -32768);
                 Sound.ym2610stream.streamoutput_Ptrs[0][offset + i] = lt;
                 Sound.ym2610stream.streamoutput_Ptrs[1][offset + i] = rt;
             }
