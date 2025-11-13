@@ -1,5 +1,4 @@
-﻿using Mono.Cecil.Cil;
-using System;
+﻿using System;
 
 namespace MAME.Core
 {

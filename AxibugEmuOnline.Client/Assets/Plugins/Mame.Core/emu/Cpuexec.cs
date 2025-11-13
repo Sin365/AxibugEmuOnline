@@ -2350,7 +2350,8 @@ namespace MAME.Core
         }
         public static void cpuexec_timeslice()
         {
-            Atime target = EmuTimer.lt[0].expire;
+            //Atime target = EmuTimer.lt[0].expire;
+            Atime target = EmuTimer.lt._frist_Timer.expire;
             Atime tbase = EmuTimer.global_basetime;
             int ran;
             Atime at;
