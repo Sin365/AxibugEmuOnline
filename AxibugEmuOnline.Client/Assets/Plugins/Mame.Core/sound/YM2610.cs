@@ -1,8 +1,4 @@
-﻿
-using Sony.Vita.Dialog;
-using System;
-using static MAME.Core.FM;
-using static MAME.Core.YM2151;
+﻿using System;
 
 namespace MAME.Core
 {
