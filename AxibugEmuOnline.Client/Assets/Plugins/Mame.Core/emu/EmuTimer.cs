@@ -1,85 +1,252 @@
 ﻿using cpu.m6800;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using static MAME.Core.EmuTimer;
 
 namespace MAME.Core
 {
+    //public class EmuTimerLister
+    //{
+    //    List<emu_timer> timerlist;
+    //    public int Count = 0;
+    //    //缓存首个元素
+    //    public emu_timer _frist_Timer;
+    //    public emu_timer this[int index]
+    //    {
+    //        get { return timerlist[index]; }
+    //        //set { timerlist[index] = value; } //不需要set
+    //    }
+    //    public static void GetNewTimerLister(ref EmuTimerLister tlistObj)
+    //    {
+    //        //如果新旧值替换
+    //        if (tlistObj != null)
+    //        {
+    //            tlistObj.ReleaseLister();
+    //            ObjectPoolAuto.Release(tlistObj);
+    //            tlistObj = null;
+    //        }
+    //        tlistObj = ObjectPoolAuto.Acquire<EmuTimerLister>();
+    //        tlistObj.InitLister();
+    //    }
+    //    void InitLister()
+    //    {
+    //        ReleaseLister();
+    //        //对象池产生list
+    //        timerlist = ObjectPoolAuto.AcquireList<emu_timer>();
+    //        Count = 0;
+    //        _frist_Timer = null;
+    //    }
+    //    void ReleaseLister()
+    //    {
+    //        if (timerlist != null)
+    //        {
+    //            Clear();
+    //            //对象池回收
+    //            ObjectPoolAuto.Release(timerlist);
+    //            timerlist = null;
+    //        }
+    //    }
+    //    public List<emu_timer> GetSnapshotList()
+    //    {
+    //        return timerlist;
+    //    }
+    //    public void Clear()
+    //    {
+    //        //遍历所有timer减少引用计数后Clear
+    //        for (int i = 0; i < Count; i++)
+    //            timerlist[i].ReleaseRef();//timer引用计数-1
+    //        timerlist.Clear();
+    //        Count = 0;
+    //        _frist_Timer = null;
+    //    }
+
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //    public void Add(emu_timer timer)
+    //    {
+    //        timerlist.Add(timer);
+    //        timer.AddRef();//timer引用计数+1
+    //        Count++;
+    //        if (Count == 0)
+    //            _frist_Timer = timer;
+    //    }
+
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //    public void Remove(emu_timer timer)
+    //    {
+    //        timerlist.Remove(timer);
+    //        timer.ReleaseRef();//timer引用计数-1
+    //        Count--;
+    //        if(Count == 0)
+    //            _frist_Timer = null;
+    //        else if(timer == _frist_Timer)
+    //            _frist_Timer = timerlist[0];
+    //    }
+
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //    public void Insert(int index, emu_timer timer)
+    //    {
+    //        timerlist.Insert(index, timer);
+    //        timer.AddRef();//timer引用计数+1
+    //        Count++;
+    //        if (index == 0)
+    //            _frist_Timer = timer;
+    //    }
+
+    //    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //    public void RemoveAt(int index)
+    //    {
+    //        timerlist[index].ReleaseRef();//timer引用计数-1
+    //        timerlist.RemoveAt(index);
+    //        Count--;
+    //        if (index == 0)
+    //        {
+    //            if (Count == 0)
+    //                _frist_Timer = null;
+    //            else
+    //                _frist_Timer = timerlist[0];
+    //        }
+    //    }
+    //    //不考虑且禁止使用 IndexOf这种低效的使用方式
+    //    //public int IndexOf(emu_timer timer)
+    //    //{
+    //    //    return timerlist.IndexOf(timer);
+    //    //}
+    //}
+
     public class EmuTimerLister
     {
-        public emu_timer this[int index]
+        private emu_timer[] timerArray;
+        private int capacity;
+        public int Count;
+        public emu_timer _frist_Timer;
+
+        public EmuTimerLister()
         {
-            get { return timerlist[index]; }
-            set { timerlist[index] = value; } // 如果需要设置的话
+            capacity = 32;
+            timerArray = new emu_timer[capacity];
+            Count = 0;
+            _frist_Timer = null;
         }
+
         public static void GetNewTimerLister(ref EmuTimerLister tlistObj)
         {
-            //如果新旧值替换
             if (tlistObj != null)
             {
                 tlistObj.ReleaseLister();
-                ObjectPoolAuto.Release(tlistObj);
                 tlistObj = null;
             }
-
-            tlistObj = ObjectPoolAuto.Acquire<EmuTimerLister>();
+            tlistObj = new EmuTimerLister();
             tlistObj.InitLister();
         }
 
-        List<emu_timer> timerlist;
-
-        public List<emu_timer> GetSrcList()
-        {
-            return timerlist;
-        }
-        public int Count
-        {
-            get { return timerlist.Count; }
-        }
-
-        void InitLister()
+        public void InitLister()
         {
             ReleaseLister();
-            timerlist = ObjectPoolAuto.AcquireList<emu_timer>();
+            capacity = 16;
+            timerArray = new emu_timer[capacity];
+            Count = 0;
+            _frist_Timer = null;
         }
-        void ReleaseLister()
+
+        public void ReleaseLister()
         {
-            if (timerlist != null)
+            if (timerArray != null)
             {
                 Clear();
-                ObjectPoolAuto.Release(timerlist);
-                timerlist = null;
+                timerArray = null;
             }
+        }
+
+        public List<emu_timer> GetSnapshotList()
+        {
+            var list = new List<emu_timer>(Count);
+            for (int i = 0; i < Count; i++)
+            {
+                list.Add(timerArray[i]);
+            }
+            return list;
         }
 
         public void Clear()
         {
-            emu_timer.ClearList(ref timerlist);
+            for (int i = 0; i < Count; i++)
+            {
+                timerArray[i] = null;
+                timerArray[i].ReleaseRef();
+            }
+            Count = 0;
+            _frist_Timer = null;
         }
+
+        public emu_timer this[int index] => timerArray[index];
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureCapacity()
+        {
+            if (Count >= capacity)
+            {
+                capacity *= 2;
+                Array.Resize(ref timerArray, capacity);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(emu_timer timer)
         {
-            emu_timer.AddList(ref timerlist, ref timer);
+            EnsureCapacity();
+            timerArray[Count] = timer;
+            timer.AddRef();
+            if (Count == 0)
+                _frist_Timer = timer;
+            Count++;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Remove(emu_timer timer)
         {
-            emu_timer.RemoveToList(ref timerlist, ref timer);
+            for (int i = 0; i < Count; i++)
+            {
+                if (timerArray[i] == timer)
+                {
+                    RemoveAt(i);
+                    return;
+                }
+            }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(int index, emu_timer timer)
         {
-            emu_timer.InsertToList(ref timerlist, index, ref timer);
+            EnsureCapacity();
+            if (index < Count)
+            {
+                Array.Copy(timerArray, index, timerArray, index + 1, Count - index);
+            }
+            timerArray[index] = timer;
+            timer.AddRef();
+            Count++;
+            if (index == 0)
+                _frist_Timer = timer;
         }
 
-        public int IndexOf(emu_timer timer)
-        {
-            return timerlist.IndexOf(timer);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
         {
-            emu_timer.RemoveAtToList(ref timerlist, index);
+            emu_timer timer = timerArray[index];
+            timer.ReleaseRef();
+            if (index < Count - 1)
+            {
+                Array.Copy(timerArray, index + 1, timerArray, index, Count - index - 1);
+            }
+            timerArray[Count - 1] = null; 
+            Count--;
+            if (Count == 0)
+                _frist_Timer = null;
+            else if (index == 0)
+                _frist_Timer = timerArray[0];
         }
     }
-
     public class EmuTimer
     {
         public static EmuTimerLister lt;
@@ -181,7 +348,7 @@ namespace MAME.Core
             /// <summary>
             /// 增加引用计数
             /// </summary>
-            void AddRef()
+            public void AddRef()
             {
                 //int newCount = Interlocked.Increment(ref _refCount);
                 _refCount++;
@@ -190,7 +357,7 @@ namespace MAME.Core
             /// <summary>
             /// 减少引用计数，当计数为0时释放对象回池
             /// </summary>
-            void ReleaseRef()
+            public void ReleaseRef()
             {
                 //int newCount = Interlocked.Decrement(ref _refCount);
                 _refCount--;
@@ -245,32 +412,31 @@ namespace MAME.Core
                     timer = null;
                 }
             }
-            public static void AddList(ref List<emu_timer> list, ref emu_timer timer)
-            {
-                list.Add(timer);
-                timer.AddRef();
-            }
-            internal static void InsertToList(ref List<emu_timer> list, int index, ref emu_timer timer)
-            {
-                list.Insert(index, timer);
-                timer.AddRef();
-            }
-            public static void RemoveToList(ref List<emu_timer> list, ref emu_timer timer)
-            {
-                list.Remove(timer);
-                timer.ReleaseRef();
-            }
-            internal static void ClearList(ref List<emu_timer> list)
-            {
-                for (int i = 0; i < list.Count; i++)
-                    list[i].ReleaseRef();
-                list.Clear();
-            }
-
-            internal static void RemoveAtToList(ref List<emu_timer> list, int index)
-            {
-                list.RemoveAt(index);
-            }
+            //public static void AddList(ref List<emu_timer> list, ref emu_timer timer)
+            //{
+            //    list.Add(timer);
+            //    timer.AddRef();
+            //}
+            //internal static void InsertToList(ref List<emu_timer> list, int index, ref emu_timer timer)
+            //{
+            //    list.Insert(index, timer);
+            //    timer.AddRef();
+            //}
+            //public static void RemoveToList(ref List<emu_timer> list, ref emu_timer timer)
+            //{
+            //    list.Remove(timer);
+            //    timer.ReleaseRef();
+            //}
+            //internal static void ClearList(ref List<emu_timer> list)
+            //{
+            //    for (int i = 0; i < list.Count; i++)
+            //        list[i].ReleaseRef();
+            //    list.Clear();
+            //}
+            //internal static void RemoveAtToList(ref List<emu_timer> list, int index)
+            //{
+            //    list.RemoveAt(index);
+            //}
             #endregion
             /*
             static void EnqueueObj(emu_timer obj)
@@ -720,7 +886,8 @@ namespace MAME.Core
             //timer_list_insert(which);
 
             //if (lt.IndexOf(which) == 0)
-            if (lt[0] == which)
+            //if (lt[0] == which)
+            if (lt._frist_Timer == which)
             {
                 if (Cpuexec.activecpu >= 0 && Cpuexec.activecpu < Cpuexec.ncpu)
                 {
@@ -952,9 +1119,9 @@ namespace MAME.Core
         {
             TIME_ACT currAct = timer1.action;
             int i1 = -1;
-            var tlist = lt.GetSrcList();
+            //var tlist = lt.GetSnapshotList();
             int scanCount;
-            int tempMaxIdx = tlist.Count - 1;
+            int tempMaxIdx = lt.Count - 1;
             if (currAct == TIME_ACT.Cpuint_cpunum_empty_event_queue || currAct == TIME_ACT.setvector)
             {
                 //foreach (emu_timer et in lt)
@@ -969,7 +1136,7 @@ namespace MAME.Core
                 scanCount = 0;
                 while (scanCount >= tempMaxIdx)
                 {
-                    emu_timer et = tlist[scanCount];
+                    emu_timer et = lt[scanCount];
                     if (et.action == currAct && Attotime.attotime_compare(et.expire, global_basetime) <= 0)
                     {
                         i1 = scanCount;
@@ -984,7 +1151,7 @@ namespace MAME.Core
                 scanCount = 0;
                 while (scanCount <= tempMaxIdx)
                 {
-                    emu_timer et = tlist[scanCount];
+                    emu_timer et = lt[scanCount];
                     if (Attotime.attotime_compare(et.expire, expire) > 0)
                         break; 
                     scanCount++;
@@ -1052,11 +1219,11 @@ namespace MAME.Core
                 //foreach (emu_timer et1 in timer_list_remove_lt1)
                 //    lt.Remove(et1);
 
-                var tlist = lt.GetSrcList();
-                int tempMaxIdx = tlist.Count - 1;
+                //var tlist = lt.GetSnapshotList();
+                int tempMaxIdx = lt.Count - 1;
                 while (tempMaxIdx >= 0)
                 {
-                    emu_timer et = tlist[tempMaxIdx];
+                    emu_timer et = lt[tempMaxIdx];
                     if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) == 0)
                         lt.Remove(et);
                     tempMaxIdx--;
@@ -1075,12 +1242,12 @@ namespace MAME.Core
                 //    }
                 //}
 
-                var tlist = lt.GetSrcList();
-                int tempMaxIdx = tlist.Count - 1;
+                //var tlist = lt.GetSnapshotList();
+                int tempMaxIdx = lt.Count - 1;
                 int scanCount = 0;
                 while (scanCount <= tempMaxIdx)
                 {
-                    emu_timer et = tlist[scanCount];
+                    emu_timer et = lt[scanCount];
                     if (et.action == timer1.action)
                     {
                         lt.Remove(et);
@@ -1128,10 +1295,13 @@ namespace MAME.Core
         {
             emu_timer timer;
             global_basetime = newbase;
-            while (Attotime.attotime_compare(lt[0].expire, global_basetime) <= 0)
+            //while (Attotime.attotime_compare(lt[0].expire, global_basetime) <= 0)
+            while (Attotime.attotime_compare(lt._frist_Timer.expire, global_basetime) <= 0)
             {
-                bool was_enabled = lt[0].enabled;
-                timer = lt[0];
+                //bool was_enabled = lt[0].enabled;
+                bool was_enabled = lt._frist_Timer.enabled;
+                //timer = lt[0];
+                timer = lt._frist_Timer;
                 if (Attotime.attotime_compare(timer.period, Attotime.ATTOTIME_ZERO) == 0 || Attotime.attotime_compare(timer.period, Attotime.ATTOTIME_NEVER) == 0)
                 {
                     timer.enabled = false;
