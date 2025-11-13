@@ -123,7 +123,7 @@ namespace MAME.Core
 
         public EmuTimerLister()
         {
-            capacity = 32;
+            capacity = 16;
             timerArray = new emu_timer[capacity];
             Count = 0;
             _frist_Timer = null;
@@ -303,7 +303,6 @@ namespace MAME.Core
 
             static Queue<emu_timer> _readyToRelease = new Queue<emu_timer>();
             static Queue<emu_timer> _timerPool = new Queue<emu_timer>();
-
             static int outTimerAllCount = 0;
             static int newTimerCount = 0;
             public static emu_timer GetEmu_timerNoRef()
@@ -321,7 +320,6 @@ namespace MAME.Core
                 outTimerAllCount++;
                 return obj;
             }
-
             public static void CheckReadyRelaseBeforeFrameRun()
             {
                 if (_readyToRelease.Count < 1)
@@ -341,10 +339,7 @@ namespace MAME.Core
                 //UnityEngine.Debug.Log($"CheckReadyRelaseAfterRun 检查数量{checkcount}| 出池数量{outTimerAllCount}，其中new创建的数量{newTimerCount} 回收数量{releaseCount} ,处理前池数量{beforpoolcount}，处理后池数量{_timerPool.Count}");
                 outTimerAllCount = 0;
                 newTimerCount = 0;
-                //_readyToRelease.Clear();
             }
-
-
             /// <summary>
             /// 增加引用计数
             /// </summary>
@@ -353,7 +348,6 @@ namespace MAME.Core
                 //int newCount = Interlocked.Increment(ref _refCount);
                 _refCount++;
             }
-
             /// <summary>
             /// 减少引用计数，当计数为0时释放对象回池
             /// </summary>
@@ -372,7 +366,6 @@ namespace MAME.Core
                     throw new InvalidOperationException("引用计数出现负数");
                 }
             }
-
             void ReadyToRelease()
             {
                 if (this._inReadyQueue) return;
@@ -380,7 +373,6 @@ namespace MAME.Core
                 this._inReadyQueue = true;
                 _readyToRelease.Enqueue(this);
             }
-
             /// <summary>
             /// 释放资源并回池
             /// </summary>
@@ -1119,20 +1111,10 @@ namespace MAME.Core
         {
             TIME_ACT currAct = timer1.action;
             int i1 = -1;
-            //var tlist = lt.GetSnapshotList();
             int scanCount;
             int tempMaxIdx = lt.Count - 1;
             if (currAct == TIME_ACT.Cpuint_cpunum_empty_event_queue || currAct == TIME_ACT.setvector)
             {
-                //foreach (emu_timer et in lt)
-                //foreach (emu_timer et in lt.GetSrcList())
-                //{
-                //    if (et.action == currAct && Attotime.attotime_compare(et.expire, global_basetime) <= 0)
-                //    {
-                //        i1 = lt.IndexOf(et);
-                //        break;
-                //    }
-                //}
                 scanCount = 0;
                 while (scanCount >= tempMaxIdx)
                 {
@@ -1210,39 +1192,19 @@ namespace MAME.Core
         {
             if (timer1.action == TIME_ACT.Cpuint_cpunum_empty_event_queue || timer1.action == TIME_ACT.setvector)
             {
-                //timer_list_remove_lt1.Clear();
-                //foreach (emu_timer et in lt.GetSrcList())
-                //{
-                //    if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) == 0)
-                //        timer_list_remove_lt1.Add(et);
-                //}
-                //foreach (emu_timer et1 in timer_list_remove_lt1)
-                //    lt.Remove(et1);
-
-                //var tlist = lt.GetSnapshotList();
                 int tempMaxIdx = lt.Count - 1;
                 while (tempMaxIdx >= 0)
                 {
                     emu_timer et = lt[tempMaxIdx];
                     if (et.action == timer1.action && Attotime.attotime_compare(et.expire, timer1.expire) == 0)
-                        lt.Remove(et);
+                    {
+                        lt.RemoveAt(tempMaxIdx);
+                    }
                     tempMaxIdx--;
                 }
             }
             else
             {
-                //TODO MAME.NET原来这么foreach写删除是有问题的
-                //foreach (emu_timer et in lt)
-                //foreach (emu_timer et in lt.GetSrcList())
-                //{
-                //    if (et.action == timer1.action)
-                //    {
-                //        lt.Remove(et);
-                //        break;
-                //    }
-                //}
-
-                //var tlist = lt.GetSnapshotList();
                 int tempMaxIdx = lt.Count - 1;
                 int scanCount = 0;
                 while (scanCount <= tempMaxIdx)
@@ -1250,7 +1212,7 @@ namespace MAME.Core
                     emu_timer et = lt[scanCount];
                     if (et.action == timer1.action)
                     {
-                        lt.Remove(et);
+                        lt.RemoveAt(scanCount);
                         break;
                     }
                     scanCount++;
@@ -1334,6 +1296,7 @@ namespace MAME.Core
                 }
             }
         }
+
         //public static emu_timer timer_alloc_common(TIME_ACT action, bool temp)
         //{
         //    Atime time = get_current_time();
@@ -1358,16 +1321,6 @@ namespace MAME.Core
         /// <param name="temp"></param>
         public static void timer_alloc_common(ref emu_timer refattr, TIME_ACT action, bool temp)
         {
-            //Atime time = get_current_time();
-            //emu_timer timer = emu_timer.GetEmu_timerNoRef();
-            //timer.action = action;
-            //timer.enabled = false;
-            //timer.temporary = temp;
-            //timer.period = Attotime.ATTOTIME_ZERO;
-            ////timer.func = func;
-            //timer.start = time;
-            //timer.expire = Attotime.ATTOTIME_NEVER;
-            //timer_list_insert(timer);
             emu_timer timer = timer_alloc_common_NoRef(action, temp);
             emu_timer.SetRefUsed(ref refattr, ref timer);
         }
