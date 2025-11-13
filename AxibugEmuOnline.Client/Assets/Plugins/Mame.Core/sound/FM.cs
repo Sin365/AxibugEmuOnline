@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NUnit;
+using System;
+using static MAME.Core.EmuTimer;
 
 namespace MAME.Core
 {
@@ -617,14 +619,20 @@ namespace MAME.Core
             //}
 
             //手动内联
-            public unsafe void chan_calc(int c, int chnum)
+            //public unsafe void chan_calc(int c, int chnum)
+            public unsafe void chan_calc(int c, bool chnum_is_2)
             {
                 uint eg_out;
                 //减少寻址
-                int imem_To_c = imem[c];//
+                int imem_To_c = imem[c];
                 fixed (FM_SLOT* CH_c_SLOT = &CH[c].SLOT[0])//因为是引用类型，所以敢这么玩
                 fixed (int* out_fm_ptr = &out_fm[0])
                 {
+                    FM_SLOT* cslot_0 = &CH_c_SLOT[0];
+                    FM_SLOT* cslot_1 = &CH_c_SLOT[1];
+                    FM_SLOT* cslot_2 = &CH_c_SLOT[2];
+                    FM_SLOT* cslot_3 = &CH_c_SLOT[3];
+
                     //out_fm[8] = out_fm[9] = out_fm[10] = out_fm[11] = 0;  //本来就是注释->m2 = c1 = c2 = mem = 0;
                     out_fm_ptr[8] = out_fm_ptr[9] = out_fm_ptr[10] = out_fm_ptr[11] = 0;
 
@@ -633,7 +641,7 @@ namespace MAME.Core
                         out_fm_ptr[imem_To_c] = CH[c].mem_value;
 
                     //eg_out = volume_calc(c, 0);
-                    eg_out = (uint)(CH_c_SLOT[0].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[0].AMmask));
+                    eg_out = (uint)(cslot_0->vol_out + ((LFO_AM >> CH[c].ams) & cslot_0->AMmask));
 
                     int out1 = CH[c].op1_out0 + CH[c].op1_out1;
                     CH[c].op1_out0 = CH[c].op1_out1;
@@ -655,30 +663,56 @@ namespace MAME.Core
                         {
                             out1 = 0;
                         }
-                        CH[c].op1_out1 = op_calc1(CH_c_SLOT[0].phase, eg_out, (out1 << CH[c].FB));
+
+                        //CH[c].op1_out1 = op_calc1(cslot_0->phase, eg_out, (out1 << CH[c].FB)); //->(uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_0->phase & 0xffff0000) + (out1 << CH[c].FB))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            CH[c].op1_out1 = 0;
+                        else
+                            CH[c].op1_out1 = tl_tab[p];
                     }
                     //eg_out = volume_calc(c, 1);
-                    eg_out = (uint)(CH_c_SLOT[1].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[1].AMmask));
+                    eg_out = (uint)(cslot_1->vol_out + ((LFO_AM >> CH[c].ams) & cslot_1->AMmask));
                     if (eg_out < 832)
                     {
-                        out_fm_ptr[iconnect3[c]] += op_calc(CH_c_SLOT[1].phase, eg_out, out_fm_ptr[8]);
+                        //out_fm_ptr[iconnect3[c]] += op_calc(cslot_1->phase, eg_out, out_fm_ptr[8]);//--> (uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_1->phase & 0xffff0000) + (out_fm_ptr[8] << 15))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            out_fm_ptr[iconnect3[c]] += 0;
+                        else
+                            out_fm_ptr[iconnect3[c]] += tl_tab[p];
                     }
                     //eg_out = volume_calc(c, 2);
-                    eg_out = (uint)(CH_c_SLOT[2].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[2].AMmask));
+                    eg_out = (uint)(cslot_2->vol_out + ((LFO_AM >> CH[c].ams) & cslot_2->AMmask));
                     if (eg_out < 832)
                     {
-                        out_fm_ptr[iconnect2[c]] += op_calc(CH_c_SLOT[2].phase, eg_out, out_fm_ptr[9]);
+                        //out_fm_ptr[iconnect2[c]] += op_calc(cslot_2->phase, eg_out, out_fm_ptr[9]);//--> (uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_2->phase & 0xffff0000) + (out_fm_ptr[9] << 15))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            out_fm_ptr[iconnect2[c]] += 0;
+                        else
+                            out_fm_ptr[iconnect2[c]] += tl_tab[p];
                     }
                     //eg_out = volume_calc(c, 3);
-                    eg_out = (uint)(CH_c_SLOT[3].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[3].AMmask));
+                    eg_out = (uint)(cslot_3->vol_out + ((LFO_AM >> CH[c].ams) & cslot_3->AMmask));
                     if (eg_out < 832)
                     {
-                        out_fm_ptr[iconnect4[c]] += op_calc(CH_c_SLOT[3].phase, eg_out, out_fm[10]);
+                        //out_fm_ptr[iconnect4[c]] += op_calc(cslot_3->phase, eg_out, out_fm[10]); //-->(uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_3->phase & 0xffff0000) + (out_fm[10] << 15))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            out_fm_ptr[iconnect4[c]] += 0;
+                        else
+                            out_fm_ptr[iconnect4[c]] += tl_tab[p];
                     }
                     CH[c].mem_value = out_fm_ptr[11];//mem;
                     if (CH[c].pms != 0)
                     {
-                        if (((ST.mode & 0xC0) != 0) && (chnum == 2))
+                        //if (((ST.mode & 0xC0) != 0) && (chnum == 2))
+                        if (chnum_is_2 && ((ST.mode & 0xC0) != 0))
                         {
                             update_phase_lfo_slot(0, CH[c].pms, SL3.block_fnum[1]);
                             update_phase_lfo_slot(2, CH[c].pms, SL3.block_fnum[2]);
@@ -692,10 +726,10 @@ namespace MAME.Core
                     }
                     else
                     {
-                        CH_c_SLOT[0].phase += (uint)CH_c_SLOT[0].Incr;
-                        CH_c_SLOT[2].phase += (uint)CH_c_SLOT[2].Incr;
-                        CH_c_SLOT[1].phase += (uint)CH_c_SLOT[1].Incr;
-                        CH_c_SLOT[3].phase += (uint)CH_c_SLOT[3].Incr;
+                        cslot_0->phase += (uint)cslot_0->Incr;
+                        cslot_2->phase += (uint)cslot_2->Incr;
+                        cslot_1->phase += (uint)cslot_1->Incr;
+                        cslot_3->phase += (uint)cslot_3->Incr;
                     }
                 }
             }

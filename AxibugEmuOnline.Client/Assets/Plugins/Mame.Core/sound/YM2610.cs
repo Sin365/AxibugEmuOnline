@@ -509,10 +509,14 @@ namespace MAME.Core
                     OPN.advance_eg_channel(4);
                     OPN.advance_eg_channel(5);
                 }
-                OPN.chan_calc(1, 1);
-                OPN.chan_calc(2, 2);
-                OPN.chan_calc(4, 4);
-                OPN.chan_calc(5, 5);
+                //OPN.chan_calc(1, 1);
+                //OPN.chan_calc(2, 2);
+                //OPN.chan_calc(4, 4);
+                //OPN.chan_calc(5, 5);
+                OPN.chan_calc(1, false);
+                OPN.chan_calc(2, true);
+                OPN.chan_calc(4, false);
+                OPN.chan_calc(5, false);
                 if ((YMDeltat.DELTAT.portstate & 0x80) != 0)
                 {
                     YMDeltat.YM_DELTAT_ADPCM_CALC();
@@ -588,12 +592,18 @@ namespace MAME.Core
                     OPN.advance_eg_channel(4);
                     OPN.advance_eg_channel(5);
                 }
-                OPN.chan_calc(0, 0);
-                OPN.chan_calc(1, 1);
-                OPN.chan_calc(2, 2);
-                OPN.chan_calc(3, 3);
-                OPN.chan_calc(4, 4);
-                OPN.chan_calc(5, 5);
+                //OPN.chan_calc(0, 0);
+                //OPN.chan_calc(1, 1);
+                //OPN.chan_calc(2, 2);
+                //OPN.chan_calc(3, 3);
+                //OPN.chan_calc(4, 4);
+                //OPN.chan_calc(5, 5);
+                OPN.chan_calc(0, false);
+                OPN.chan_calc(1, false);
+                OPN.chan_calc(2, true);
+                OPN.chan_calc(3, false);
+                OPN.chan_calc(4, false);
+                OPN.chan_calc(5, false);
                 if ((YMDeltat.DELTAT.portstate & 0x80) != 0)
                 {
                     YMDeltat.YM_DELTAT_ADPCM_CALC();
