@@ -1,6 +1,4 @@
-﻿using NUnit;
-using System;
-using static MAME.Core.EmuTimer;
+﻿using System;
 
 namespace MAME.Core
 {

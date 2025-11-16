@@ -172,8 +172,8 @@ namespace MAME.Core
         {
             for (int i = 0; i < Count; i++)
             {
-                timerArray[i] = null;
                 timerArray[i].ReleaseRef();
+                timerArray[i] = null;   
             }
             Count = 0;
             _frist_Timer = null;

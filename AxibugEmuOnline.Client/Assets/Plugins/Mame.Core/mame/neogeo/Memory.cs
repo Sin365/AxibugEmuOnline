@@ -1078,6 +1078,7 @@ namespace MAME.Core
                 MWriteLong(address, value);
             }
         }
+        const ushort prot_9a37_r_vale = 0x9a37;
         public static sbyte MReadByte_mslug3(int address)
         {
             address &= 0xffffff;

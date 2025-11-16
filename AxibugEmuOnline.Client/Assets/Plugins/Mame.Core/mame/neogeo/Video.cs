@@ -26,7 +26,25 @@ namespace MAME.Core
         private static double[] rgb_weights_normal_bit15;
         private static double[] rgb_weights_dark;
         private static double[] rgb_weights_dark_bit15;
-        public static int[,] zoom_x_tables;
+        public readonly static int[,] zoom_x_tables = new int[,]
+            {
+                { 0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 },
+                { 0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0 },
+                { 0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 },
+                { 0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0 },
+                { 0,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0 },
+                { 0,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0 },
+                { 0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0 },
+                { 1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0 },
+                { 1,0,1,0,1,0,1,0,1,1,1,0,1,0,1,0 },
+                { 1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0 },
+                { 1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,1 },
+                { 1,0,1,1,1,0,1,1,1,1,1,0,1,0,1,1 },
+                { 1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1 },
+                { 1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1 },
+                { 1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
+            };
         private static int[] transarray, bgarray;
         private static int trans_color;
         private static byte combine_5_weights(double[] tab, int w0, int w1, int w2, int w3, int w4)
@@ -420,7 +438,7 @@ namespace MAME.Core
                         //if (sprite_on_scanline(scanline, y, rows))
                         //手动内联 开始
                         int tempRows = rows;
-                        if ((rows == 0) || (rows > 0x20))
+                        if ((tempRows == 0) || (tempRows > 0x20))
                             tempRows = 0x20;
                         int max_y = (y + (tempRows * 0x10) - 1) & 0x1ff;
                         if (((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
@@ -482,6 +500,7 @@ namespace MAME.Core
                                 x_inc = 1;
                             }
                             int pixel_addr_offsetx, pixel_addr_offsety;
+                            int pixel_addr_offsety_x_384 = scanline * 384;
                             if (x <= 0x01f0)
                             {
                                 int i;
@@ -496,7 +515,7 @@ namespace MAME.Core
                                         if (spriteGfx[gfx_offset] != 0)
                                         {
                                             //Video.bitmapbaseN_Ptrs[iBitmap][pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + sprite_gfx[gfx_offset]];
-                                            bitmapbase[pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                            bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
                                         }
                                         pixel_addr_offsetx++;
                                     }
@@ -521,7 +540,7 @@ namespace MAME.Core
                                             if (spriteGfx[gfx_offset] != 0)
                                             {
                                                 //Video.bitmapbaseN_Ptrs[iBitmap][pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + sprite_gfx[gfx_offset]];
-                                                bitmapbase[pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                                bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
                                             }
                                             pixel_addr_offsetx++;
                                         }
@@ -959,7 +978,7 @@ namespace MAME.Core
             rgb_weights_normal_bit15 = new double[5] { 136.26711031260342, 63.784604843122239, 29.978764292156193, 13.626711058241233, 7.6868626613063098 };
             rgb_weights_dark = new double[5] { 77.012238506947057, 36.048281863327709, 16.942692484743652, 7.7012238659431276, 4.3442801368916566 };
             rgb_weights_dark_bit15 = new double[5] { 76.322306339305158, 35.725334891159271, 16.790907407744047, 7.6322306490423326, 4.3053608862660706 };
-            zoom_x_tables = new int[,]
+            /*zoom_x_tables = new int[,]
             {
                 { 0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 },
                 { 0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0 },
@@ -977,7 +996,7 @@ namespace MAME.Core
                 { 1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1 },
                 { 1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1 },
                 { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
-            };
+            };*/
             Array.Clear(palettes, 0, 0x2000);
             Array.Clear(pens, 0, 0x1000);
             Array.Clear(neogeo_videoram, 0, 0x10000);
