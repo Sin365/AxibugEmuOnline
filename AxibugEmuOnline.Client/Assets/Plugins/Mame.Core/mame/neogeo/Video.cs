@@ -354,7 +354,8 @@ namespace MAME.Core
         /// <param name="scanline"></param>
         unsafe private static void draw_sprites(int iBitmap, int scanline)
         {
-
+            int pixel_addr_offsety = scanline;
+            int pixel_addr_offsety_x_384 = pixel_addr_offsety * 384;
             fixed (ushort* videoramPtr = &neogeo_videoram[0])
             //fixed (int* bitmapbasePtr = &Video.bitmapbaseN_Ptrs[iBitmap][0])
             fixed (byte* spriteGfxPtr = &sprite_gfx[0])
@@ -499,55 +500,70 @@ namespace MAME.Core
                             {
                                 x_inc = 1;
                             }
-                            int pixel_addr_offsetx, pixel_addr_offsety;
-                            int pixel_addr_offsety_x_384 = scanline * 384;
+                            //int pixel_addr_offsetx;
                             if (x <= 0x01f0)
                             {
                                 int i;
-                                pixel_addr_offsetx = x + NEOGEO_HBEND;
-                                pixel_addr_offsety = scanline;
+                                //pixel_addr_offsetx = x + NEOGEO_HBEND;
+                                int* pixel_ptr = &bitmapbase[pixel_addr_offsety_x_384 + x + NEOGEO_HBEND];
+                                int* zoom_x_tablePtr =  &zoom_x_tables[zoom_x_table_offset];
+                                byte* spriteGfx_offset_Ptr = &spriteGfx[gfx_offset];
                                 for (i = 0; i < 0x10; i++)
                                 {
                                     //if (zoom_x_tables[zoom_x, zoom_x_table_offset] != 0)
-                                    if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    //if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    if (*zoom_x_tablePtr != 0)
                                     {
                                         //if (sprite_gfx[gfx_offset] != 0)
-                                        if (spriteGfx[gfx_offset] != 0)
+                                        //if (spriteGfx[gfx_offset] != 0)
+                                        if (*spriteGfx_offset_Ptr != 0)
                                         {
                                             //Video.bitmapbaseN_Ptrs[iBitmap][pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + sprite_gfx[gfx_offset]];
-                                            bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                            //bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                            *pixel_ptr = pens[line_pens_offset + *spriteGfx_offset_Ptr];
                                         }
-                                        pixel_addr_offsetx++;
+                                        //pixel_addr_offsetx++;
+                                        pixel_ptr++;
                                     }
-                                    zoom_x_table_offset++;
-                                    gfx_offset += x_inc;
+                                    //zoom_x_table_offset++;
+                                    zoom_x_tablePtr++;
+                                    //gfx_offset += x_inc;
+                                    spriteGfx_offset_Ptr += x_inc;
                                 }
                             }
                             else
                             {
                                 int i;
                                 int x_save = x;
-                                pixel_addr_offsetx = NEOGEO_HBEND;
-                                pixel_addr_offsety = scanline;
+                                //pixel_addr_offsetx = NEOGEO_HBEND;
+                                int* pixel_ptr = &bitmapbase[pixel_addr_offsety_x_384 + NEOGEO_HBEND];
+                                int* zoom_x_tablePtr = &zoom_x_tables[zoom_x_table_offset];
+                                byte* spriteGfx_offset_Ptr = &spriteGfx[gfx_offset];
                                 for (i = 0; i < 0x10; i++)
                                 {
                                     //if (zoom_x_tables[zoom_x, zoom_x_table_offset] != 0)
-                                    if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    //if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    if (*zoom_x_tablePtr != 0)
                                     {
                                         if (x >= 0x200)
                                         {
                                             //if (sprite_gfx[gfx_offset] != 0)
-                                            if (spriteGfx[gfx_offset] != 0)
+                                            //if (spriteGfx[gfx_offset] != 0)
+                                            if (*spriteGfx_offset_Ptr != 0)
                                             {
                                                 //Video.bitmapbaseN_Ptrs[iBitmap][pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + sprite_gfx[gfx_offset]];
-                                                bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                                //bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                                *pixel_ptr = pens[line_pens_offset + *spriteGfx_offset_Ptr];
                                             }
-                                            pixel_addr_offsetx++;
+                                            //pixel_addr_offsetx++;
+                                            pixel_ptr++;
                                         }
                                         x++;
                                     }
-                                    zoom_x_table_offset++;
-                                    gfx_offset += x_inc;
+                                    //zoom_x_table_offset++;
+                                    zoom_x_tablePtr++;
+                                    //gfx_offset += x_inc;
+                                    spriteGfx_offset_Ptr += x_inc;
                                 }
                                 x = x_save;
                             }
@@ -796,79 +812,91 @@ namespace MAME.Core
         static int[] garouoffsets = new int[32];
         private static void draw_fixed_layer(int iBitmap, int scanline)
         {
-            int i, j, x, y;
-            byte[] gfx_base;
-            //int[] garouoffsets = new int[32], pix_offsets = new int[] { 0x10, 0x18, 0x00, 0x08 };
-            int addr_mask;
-            int gfx_offset, char_pens_offset;
-            byte data;
-            bool banked;
-            int garoubank, k, code;
-            ushort code_and_palette;
-            if (fixed_layer_source != 0)
+
+            fixed (ushort* videoramPtr = &neogeo_videoram[0])
             {
-                gfx_base = fixedrom;
-                addr_mask = fixedrom.Length - 1;
-            }
-            else
-            {
-                gfx_base = fixedbiosrom;
-                addr_mask = fixedbiosrom.Length - 1;
-            }
-            int video_data_offset = 0x7000 | (scanline >> 3);
-            banked = (fixed_layer_source != 0) && (addr_mask > 0x1ffff);
-            if (banked && neogeo_fixed_layer_bank_type == 1)
-            {
-                garoubank = 0;
-                k = 0;
-                y = 0;
-                while (y < 32)
+
+                int* bitmapbase = &Video.bitmapbaseN_Ptrs[iBitmap][0];
+
+                int scanline_x_384 = 384 * scanline;
+                int i, j, x, y;
+                byte[] gfx_base;
+                //int[] garouoffsets = new int[32], pix_offsets = new int[] { 0x10, 0x18, 0x00, 0x08 };
+                int addr_mask;
+                int gfx_offset, char_pens_offset;
+                byte data;
+                bool banked;
+                int garoubank, k, code;
+                ushort code_and_palette;
+                if (fixed_layer_source != 0)
                 {
-                    if (neogeo_videoram[0x7500 + k] == 0x0200 && (neogeo_videoram[0x7580 + k] & 0xff00) == 0xff00)
+                    gfx_base = fixedrom;
+                    addr_mask = fixedrom.Length - 1;
+                }
+                else
+                {
+                    gfx_base = fixedbiosrom;
+                    addr_mask = fixedbiosrom.Length - 1;
+                }
+                int video_data_offset = 0x7000 | (scanline >> 3);
+                banked = (fixed_layer_source != 0) && (addr_mask > 0x1ffff);
+                if (banked && neogeo_fixed_layer_bank_type == 1)
+                {
+                    garoubank = 0;
+                    k = 0;
+                    y = 0;
+                    while (y < 32)
                     {
-                        garoubank = neogeo_videoram[0x7580 + k] & 3;
+                        if (videoramPtr[0x7500 + k] == 0x0200 && (videoramPtr[0x7580 + k] & 0xff00) == 0xff00)
+                        {
+                            garoubank = videoramPtr[0x7580 + k] & 3;
+                            garouoffsets[y++] = garoubank;
+                        }
                         garouoffsets[y++] = garoubank;
+                        k += 2;
                     }
-                    garouoffsets[y++] = garoubank;
-                    k += 2;
                 }
-            }
-            for (x = 0; x < 40; x++)
-            {
-                code_and_palette = neogeo_videoram[video_data_offset];
-                code = code_and_palette & 0x0fff;
-                if (banked)
+                y = scanline >> 3;
+                int temp_yvale = 0x7500 + ((y - 1) & 31);
+                for (x = 0; x < 40; x++)
                 {
-                    y = scanline >> 3;
-                    switch (neogeo_fixed_layer_bank_type)
+                    code_and_palette = videoramPtr[video_data_offset];
+                    code = code_and_palette & 0x0fff;
+                    if (banked)
                     {
-                        case 1:
-                            code += 0x1000 * (garouoffsets[(y - 2) & 31] ^ 3);
-                            break;
-                        case 2:
-                            code += 0x1000 * (((neogeo_videoram[0x7500 + ((y - 1) & 31) + 32 * (x / 6)] >> (5 - (x % 6)) * 2) & 3) ^ 3);
-                            break;
+                        //y = scanline >> 3;
+                        switch (neogeo_fixed_layer_bank_type)
+                        {
+                            case 1:
+                                code += 0x1000 * (garouoffsets[(y - 2) & 31] ^ 3);
+                                break;
+                            case 2:
+                                code += 0x1000 * (((videoramPtr[temp_yvale + 32 * (x / 6)] >> (5 - (x % 6)) * 2) & 3) ^ 3);
+                                break;
+                        }
                     }
+                    data = 0;
+                    gfx_offset = ((code << 5) | (scanline & 0x07)) & addr_mask;
+                    char_pens_offset = code_and_palette >> 12 << 4;
+
+                    int temp_xval = scanline_x_384 + 30 + x * 8;
+                    for (i = 0; i < 8; i++)
+                    {
+                        if ((i & 0x01) != 0)
+                        {
+                            data = (byte)(data >> 4);
+                        }
+                        else
+                        {
+                            data = gfx_base[gfx_offset + pix_offsets[i >> 1]];
+                        }
+                        if ((data & 0x0f) != 0)
+                        {
+                            bitmapbase[/*scanline_x_384 + 30 + x * 8*/temp_xval + i] = pens[char_pens_offset + (data & 0x0f)];
+                        }
+                    }
+                    video_data_offset += 0x20;
                 }
-                data = 0;
-                gfx_offset = ((code << 5) | (scanline & 0x07)) & addr_mask;
-                char_pens_offset = code_and_palette >> 12 << 4;
-                for (i = 0; i < 8; i++)
-                {
-                    if ((i & 0x01) != 0)
-                    {
-                        data = (byte)(data >> 4);
-                    }
-                    else
-                    {
-                        data = gfx_base[gfx_offset + pix_offsets[i >> 1]];
-                    }
-                    if ((data & 0x0f) != 0)
-                    {
-                        Video.bitmapbaseN_Ptrs[iBitmap][384 * scanline + 30 + x * 8 + i] = pens[char_pens_offset + (data & 0x0f)];
-                    }
-                }
-                video_data_offset += 0x20;
             }
         }
         private static void optimize_sprite_data()

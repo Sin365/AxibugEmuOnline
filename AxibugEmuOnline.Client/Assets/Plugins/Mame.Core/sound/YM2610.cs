@@ -544,6 +544,9 @@ namespace MAME.Core
             }
             OPN.refresh_fc_eg_chan(F2610.OPN.type, 4);
             OPN.refresh_fc_eg_chan(F2610.OPN.type, 5);
+
+            int* streamoutput_0_offset_ptr = &Sound.ym2610stream.streamoutput_Ptrs[0][offset];
+            int* streamoutput_1_offset_ptr = &Sound.ym2610stream.streamoutput_Ptrs[1][offset];
             for (i = 0; i < length; i++)
             {
                 OPN.advance_lfo();
@@ -601,8 +604,12 @@ namespace MAME.Core
                 lt = Math.Max(lt, -32768);
                 rt = Math.Min(rt, 32767);
                 rt = Math.Max(rt, -32768);
-                Sound.ym2610stream.streamoutput_Ptrs[0][offset + i] = lt;
-                Sound.ym2610stream.streamoutput_Ptrs[1][offset + i] = rt;
+                //Sound.ym2610stream.streamoutput_Ptrs[0][offset + i] = lt;
+                *streamoutput_0_offset_ptr = lt;
+                streamoutput_0_offset_ptr++;
+                //Sound.ym2610stream.streamoutput_Ptrs[1][offset + i] = rt;
+                *streamoutput_1_offset_ptr = rt;
+                streamoutput_1_offset_ptr++;
             }
         }
         public void ym2610b_update_one(int offset, int length)
