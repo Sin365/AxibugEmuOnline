@@ -9,45 +9,45 @@ namespace cpu.m68000
     {
         public static MC68000 m1;
         // Machine State
-        public Register[] D = new Register[8];
+        //public Register[] D = new Register[8];
 
-        //#region //指针化 D
-        //static Register[] D_src;
-        //static GCHandle D_handle;
-        //public static Register* D;
-        //public static int DLength;
-        //public static bool D_IsNull => D == null;
-        //public static Register[] D_set
-        //{
-        //    set
-        //    {
-        //        D_handle.ReleaseGCHandle();
-        //        D_src = value;
-        //        DLength = value.Length;
-        //        D_src.GetObjectPtr(ref D_handle, ref D);
-        //    }
-        //}
-        //#endregion
+        #region //指针化 D
+        Register[] D_src;
+        GCHandle D_handle;
+        public Register* D;
+        public int DLength;
+        public bool D_IsNull => D == null;
+        public Register[] D_set
+        {
+            set
+            {
+                D_handle.ReleaseGCHandle();
+                D_src = value;
+                DLength = value.Length;
+                D_src.GetObjectPtr(ref D_handle, ref D);
+            }
+        }
+        #endregion
 
-        public Register[] A = new Register[8];
+        //public Register[] A = new Register[8];
 
-        //#region //指针化 A
-        //static Register[] A_src;
-        //static GCHandle A_handle;
-        //public static Register* A;
-        //public static int ALength;
-        //public static bool A_IsNull => A == null;
-        //public static Register[] A_set
-        //{
-        //    set
-        //    {
-        //        A_handle.ReleaseGCHandle();
-        //        A_src = value;
-        //        ALength = value.Length;
-        //        A_src.GetObjectPtr(ref A_handle, ref A);
-        //    }
-        //}
-        //#endregion
+        #region //指针化 A
+        Register[] A_src;
+        GCHandle A_handle;
+        public Register* A;
+        public int ALength;
+        public bool A_IsNull => A == null;
+        public Register[] A_set
+        {
+            set
+            {
+                A_handle.ReleaseGCHandle();
+                A_src = value;
+                ALength = value.Length;
+                A_src.GetObjectPtr(ref A_handle, ref A);
+            }
+        }
+        #endregion
 
         public int PC, PPC;
         private ulong totalExecutedCycles;
@@ -201,6 +201,8 @@ namespace cpu.m68000
 
         public MC68000()
         {
+            A_set = new Register[8];
+            D_set = new Register[8];
             //还是使用Action[]吧
             BuildOpcodeTable();
         }

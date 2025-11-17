@@ -2,7 +2,7 @@ using System;
 
 namespace cpu.m68000
 {
-    partial class MC68000
+    unsafe partial class MC68000
     {
         //void AND0() // AND <ea>, Dn
         //{

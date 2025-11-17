@@ -2,7 +2,7 @@
 
 namespace cpu.m68000
 {
-    partial class MC68000
+    unsafe partial class MC68000
     {
         sbyte ReadValueB(int mode, int reg)
         {
