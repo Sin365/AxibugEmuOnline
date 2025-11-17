@@ -1186,6 +1186,54 @@ namespace cpu.m68000
         }
 
 
+        //void CMP()
+        //{
+        //    int dReg = (op >> 9) & 7;
+        //    int size = (op >> 6) & 3;
+        //    int mode = (op >> 3) & 7;
+        //    int reg = (op >> 0) & 7;
+
+        //    switch (size)
+        //    {
+        //        case 0: // byte
+        //            {
+        //                sbyte a = D[dReg].s8;
+        //                sbyte b = ReadValueB(mode, reg);
+        //                int result = a - b;
+        //                N = (result & 0x80) != 0;
+        //                Z = result == 0;
+        //                V = result > sbyte.MaxValue || result < sbyte.MinValue;
+        //                C = ((a < b) ^ ((a ^ b) >= 0) == false);
+        //                pendingCycles -= 4 + EACyclesBW[mode, reg];
+        //                return;
+        //            }
+        //        case 1: // word
+        //            {
+        //                short a = D[dReg].s16;
+        //                short b = ReadValueW(mode, reg);
+        //                int result = a - b;
+        //                N = (result & 0x8000) != 0;
+        //                Z = result == 0;
+        //                V = result > short.MaxValue || result < short.MinValue;
+        //                C = ((a < b) ^ ((a ^ b) >= 0) == false);
+        //                pendingCycles -= 4 + EACyclesBW[mode, reg];
+        //                return;
+        //            }
+        //        case 2: // long
+        //            {
+        //                int a = D[dReg].s32;
+        //                int b = ReadValueL(mode, reg);
+        //                long result = (long)a - (long)b;
+        //                N = (result & 0x80000000) != 0;
+        //                Z = (uint)result == 0;
+        //                V = result > int.MaxValue || result < int.MinValue;
+        //                C = ((a < b) ^ ((a ^ b) >= 0) == false);
+        //                pendingCycles -= 6 + EACyclesL[mode, reg];
+        //                return;
+        //            }
+        //    }
+        //}
+
         void CMP()
         {
             int dReg = (op >> 9) & 7;
@@ -1197,7 +1245,7 @@ namespace cpu.m68000
             {
                 case 0: // byte
                     {
-                        sbyte a = D[dReg].s8;
+                        sbyte a = (D + dReg)->s8;
                         sbyte b = ReadValueB(mode, reg);
                         int result = a - b;
                         N = (result & 0x80) != 0;
@@ -1209,7 +1257,7 @@ namespace cpu.m68000
                     }
                 case 1: // word
                     {
-                        short a = D[dReg].s16;
+                        short a = (D+ dReg)->s16;
                         short b = ReadValueW(mode, reg);
                         int result = a - b;
                         N = (result & 0x8000) != 0;
@@ -1221,7 +1269,7 @@ namespace cpu.m68000
                     }
                 case 2: // long
                     {
-                        int a = D[dReg].s32;
+                        int a = (D + dReg)->s32;
                         int b = ReadValueL(mode, reg);
                         long result = (long)a - (long)b;
                         N = (result & 0x80000000) != 0;

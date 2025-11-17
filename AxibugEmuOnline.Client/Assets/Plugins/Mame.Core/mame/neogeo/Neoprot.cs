@@ -82,6 +82,8 @@ namespace MAME.Core
         {
             return 0x9a37;
         }
+        //public const sbyte prot_9a37_r_sbyte = 0x37;
+        //public const short prot_9a37_r_short = -25929;
         public static ushort sma_random_r()
         {
             ushort old = neogeo_rng;
