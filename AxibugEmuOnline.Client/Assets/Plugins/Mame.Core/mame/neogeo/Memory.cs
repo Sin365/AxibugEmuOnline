@@ -254,7 +254,7 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address + 1 <= 0x2fffff)
             {
-                byte* ptr_0 = &Memory.mainram[0];
+                byte* ptr_0 = &Memory.mainrom[0];
                 byte* ptr = ptr_0 + (main_cpu_bank_address + (address & 0xfffff));
                 //result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
                 return (short)(*ptr * 0x100 + *(ptr + 1));
