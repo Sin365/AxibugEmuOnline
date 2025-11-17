@@ -24,8 +24,49 @@ namespace MAME.Core
         public static int main_cpu_bank_address;
         public static byte main_cpu_vector_table_source;
         //public static byte audio_result;
-        public static byte[] audio_cpu_banks;
-        public static byte[] mainbiosrom, /*mainram2,*/ audiobiosrom, fixedrom, fixedbiosrom, zoomyrom, /*spritesrom,*/ pvc_cartridge_ram;
+        //public static byte[] audio_cpu_banks;
+
+
+        #region //指针化 audio_cpu_banks
+        static byte[] audio_cpu_banks_src;
+        static GCHandle audio_cpu_banks_handle;
+        public static byte* audio_cpu_banks;
+        public static int audio_cpu_banksLength;
+        public static bool audio_cpu_banks_IsNull => audio_cpu_banks == null;
+        public static byte[] audio_cpu_banks_set
+        {
+            set
+            {
+                audio_cpu_banks_handle.ReleaseGCHandle();
+                audio_cpu_banks_src = value;
+                audio_cpu_banksLength = value.Length;
+                audio_cpu_banks_src.GetObjectPtr(ref audio_cpu_banks_handle, ref audio_cpu_banks);
+            }
+        }
+        #endregion
+
+        public static byte[]/* mainbiosrom, *//*mainram2,*/ audiobiosrom, fixedrom, fixedbiosrom, zoomyrom, /*spritesrom,*/ pvc_cartridge_ram;
+
+
+        #region //指针化 mainbiosrom
+        static byte[] mainbiosrom_src;
+        static GCHandle mainbiosrom_handle;
+        public static byte* mainbiosrom;
+        public static int mainbiosromLength;
+        public static bool mainbiosrom_IsNull => mainbiosrom == null;
+        public static byte[] mainbiosrom_set
+        {
+            set
+            {
+                mainbiosrom_handle.ReleaseGCHandle();
+                mainbiosrom_src = value;
+                mainbiosromLength = value.Length;
+                mainbiosrom_src.GetObjectPtr(ref mainbiosrom_handle, ref mainbiosrom);
+            }
+        }
+        #endregion
+
+
         public static byte[] extra_ram = new byte[0x2000];
         public static uint fatfury2_prot_data;
         public static ushort neogeo_rng;
@@ -73,7 +114,7 @@ namespace MAME.Core
 
         public static void NeogeoInit()
         {
-            audio_cpu_banks = new byte[4];
+            audio_cpu_banks_set = new byte[4];
             pvc_cartridge_ram = new byte[0x2000];
             Memory.Set_mainram(new byte[0x10000]);
             mainram2_set = new byte[0x10000];
@@ -83,7 +124,7 @@ namespace MAME.Core
             fixedbiosrom = MameMainMotion.resource.sfix;
             zoomyrom = MameMainMotion.resource._000_lo;
             audiobiosrom = MameMainMotion.resource.sm1;
-            mainbiosrom = MameMainMotion.resource.mainbios;
+            mainbiosrom_set = MameMainMotion.resource.mainbios;
             Memory.Set_mainrom(Machine.GetRom("maincpu.rom"));
             Memory.Set_audiorom(Machine.GetRom("audiocpu.rom"));
             fixedrom = Machine.GetRom("fixed.rom");
@@ -100,7 +141,7 @@ namespace MAME.Core
                 {
                     case "irrmaze":
                     case "kizuna4p":
-                        mainbiosrom = Machine.GetRom("mainbios.rom");
+                        mainbiosrom_set = Machine.GetRom("mainbios.rom");
                         break;
                     case "kof99":
                     case "kof99h":

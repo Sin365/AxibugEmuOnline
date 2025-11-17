@@ -4,6 +4,44 @@ namespace cpu.m68000
 {
     partial class MC68000
     {
+        //void AND0() // AND <ea>, Dn
+        //{
+        //    int dstReg = (op >> 9) & 0x07;
+        //    int size = (op >> 6) & 0x03;
+        //    int srcMode = (op >> 3) & 0x07;
+        //    int srcReg = op & 0x07;
+
+        //    V = false;
+        //    C = false;
+        //    switch (size)
+        //    {
+        //        case 0: // Byte
+        //            D[dstReg].s8 &= ReadValueB(srcMode, srcReg);
+        //            pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+        //            N = (D[dstReg].s8 & 0x80) != 0;
+        //            Z = (D[dstReg].s8 == 0);
+        //            return;
+        //        case 1: // Word
+        //            D[dstReg].s16 &= ReadValueW(srcMode, srcReg);
+        //            pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+        //            N = (D[dstReg].s16 & 0x8000) != 0;
+        //            Z = (D[dstReg].s16 == 0);
+        //            return;
+        //        case 2: // Long
+        //            D[dstReg].s32 &= ReadValueL(srcMode, srcReg);
+        //            if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
+        //            {
+        //                pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
+        //            }
+        //            else
+        //            {
+        //                pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
+        //            }
+        //            N = (D[dstReg].s32 & 0x80000000) != 0;
+        //            Z = (D[dstReg].s32 == 0);
+        //            return;
+        //    }
+        //}
         void AND0() // AND <ea>, Dn
         {
             int dstReg = (op >> 9) & 0x07;
@@ -13,7 +51,6 @@ namespace cpu.m68000
 
             V = false;
             C = false;
-
             switch (size)
             {
                 case 0: // Byte
@@ -43,7 +80,6 @@ namespace cpu.m68000
                     return;
             }
         }
-
 
         void AND1() // AND Dn, <ea>
         {

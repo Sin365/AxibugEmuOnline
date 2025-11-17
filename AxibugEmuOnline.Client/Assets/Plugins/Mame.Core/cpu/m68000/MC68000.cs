@@ -5,12 +5,50 @@ using System.Runtime.InteropServices;
 
 namespace cpu.m68000
 {
-    public sealed partial class MC68000 : cpuexec_data
+    public unsafe sealed partial class MC68000 : cpuexec_data
     {
         public static MC68000 m1;
         // Machine State
         public Register[] D = new Register[8];
+
+        //#region //指针化 D
+        //static Register[] D_src;
+        //static GCHandle D_handle;
+        //public static Register* D;
+        //public static int DLength;
+        //public static bool D_IsNull => D == null;
+        //public static Register[] D_set
+        //{
+        //    set
+        //    {
+        //        D_handle.ReleaseGCHandle();
+        //        D_src = value;
+        //        DLength = value.Length;
+        //        D_src.GetObjectPtr(ref D_handle, ref D);
+        //    }
+        //}
+        //#endregion
+
         public Register[] A = new Register[8];
+
+        //#region //指针化 A
+        //static Register[] A_src;
+        //static GCHandle A_handle;
+        //public static Register* A;
+        //public static int ALength;
+        //public static bool A_IsNull => A == null;
+        //public static Register[] A_set
+        //{
+        //    set
+        //    {
+        //        A_handle.ReleaseGCHandle();
+        //        A_src = value;
+        //        ALength = value.Length;
+        //        A_src.GetObjectPtr(ref A_handle, ref A);
+        //    }
+        //}
+        //#endregion
+
         public int PC, PPC;
         private ulong totalExecutedCycles;
         private int pendingCycles;
