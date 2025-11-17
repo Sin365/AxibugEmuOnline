@@ -2,7 +2,8 @@
 {
     public partial class CGBAudio
     {
-        public class CGBWave : Wave, IDMGAudioChannel
+        //本身wave就继承了IDMGAudioChannel
+        public class CGBWave : Wave//, IDMGAudioChannel
         {
             public override void Reset()
             {

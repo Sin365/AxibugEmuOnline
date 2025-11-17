@@ -30,16 +30,16 @@ namespace Essgee.Emulation.Audio
             bool isChannelEnabled;
             int lengthCounter;
 
-            public int OutputVolume { get; private set; }
+            //public int OutputVolume { get; private set; }
 
-            public bool IsActive { get { return isDacEnabled; } }   // TODO: correct? lengthCounter check makes Zelda Oracle games hang
+            public override bool IsActive { get { return isDacEnabled; } }   // TODO: correct? lengthCounter check makes Zelda Oracle games hang
 
             public Wave()
             {
                 sampleBuffer = new byte[16];
             }
 
-            public virtual void Reset()
+            public override void Reset()
             {
                 for (var i = 0; i < sampleBuffer.Length; i++) sampleBuffer[i] = (byte)EmuStandInfo.Random.Next(255);
                 frequencyCounter = positionCounter = 0;
@@ -51,7 +51,7 @@ namespace Essgee.Emulation.Audio
                 OutputVolume = volume;
             }
 
-            public void LengthCounterClock()
+            public override void LengthCounterClock()
             {
                 if (lengthCounter > 0 && lengthEnable)
                 {
@@ -61,17 +61,17 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void SweepClock()
+            public override void SweepClock()
             {
                 throw new Exception("Channel type does not support sweep");
             }
 
-            public void VolumeEnvelopeClock()
+            public override void VolumeEnvelopeClock()
             {
                 throw new Exception("Channel type does not support envelope");
             }
 
-            public void Step()
+            public override void Step()
             {
                 if (!isChannelEnabled) return;
 
@@ -105,7 +105,7 @@ namespace Essgee.Emulation.Audio
                 positionCounter = 0;
             }
 
-            public void WritePort(byte port, byte value)
+            public override void WritePort(byte port, byte value)
             {
                 switch (port)
                 {
@@ -137,7 +137,7 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public byte ReadPort(byte port)
+            public override byte ReadPort(byte port)
             {
                 switch (port)
                 {
@@ -166,7 +166,7 @@ namespace Essgee.Emulation.Audio
 
             // TODO: more details on behavior on access w/ channel enabled
 
-            public void WriteWaveRam(byte offset, byte value)
+            public override void WriteWaveRam(byte offset, byte value)
             {
                 if (!isDacEnabled)
                     sampleBuffer[offset & (sampleBuffer.Length - 1)] = value;
@@ -174,7 +174,7 @@ namespace Essgee.Emulation.Audio
                     sampleBuffer[positionCounter & (sampleBuffer.Length - 1)] = value;
             }
 
-            public byte ReadWaveRam(byte offset)
+            public override byte ReadWaveRam(byte offset)
             {
                 if (!isDacEnabled)
                     return sampleBuffer[offset & (sampleBuffer.Length - 1)];

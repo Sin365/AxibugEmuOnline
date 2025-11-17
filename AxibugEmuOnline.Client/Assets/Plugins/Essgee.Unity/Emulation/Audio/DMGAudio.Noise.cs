@@ -39,16 +39,16 @@ namespace Essgee.Emulation.Audio
             bool isChannelEnabled, isDacEnabled;
             int lengthCounter;
 
-            public int OutputVolume { get; private set; }
+            //public int OutputVolume { get; private set; }
 
-            public bool IsActive { get { return lengthCounter != 0; } }
+            public override bool IsActive { get { return lengthCounter != 0; } }
 
             public Noise()
             {
                 //
             }
 
-            public void Reset()
+            public override void Reset()
             {
                 noiseCounter = 0;
                 lfsr = 0;
@@ -63,7 +63,7 @@ namespace Essgee.Emulation.Audio
                 OutputVolume = volume;
             }
 
-            public void LengthCounterClock()
+            public override void LengthCounterClock()
             {
                 if (lengthCounter > 0 && lengthEnable)
                 {
@@ -73,12 +73,12 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void SweepClock()
+            public override void SweepClock()
             {
                 throw new Exception("Channel type does not support sweep");
             }
 
-            public void VolumeEnvelopeClock()
+            public override void VolumeEnvelopeClock()
             {
                 envelopeCounter--;
                 if (envelopeCounter == 0)
@@ -99,7 +99,7 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void Step()
+            public override void Step()
             {
                 if (!isChannelEnabled) return;
 
@@ -132,7 +132,7 @@ namespace Essgee.Emulation.Audio
                 lfsr = 0x7FFF;
             }
 
-            public void WritePort(byte port, byte value)
+            public override void WritePort(byte port, byte value)
             {
                 switch (port)
                 {
@@ -168,7 +168,7 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public byte ReadPort(byte port)
+            public override byte ReadPort(byte port)
             {
                 switch (port)
                 {
@@ -200,12 +200,12 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void WriteWaveRam(byte offset, byte value)
+            public override void WriteWaveRam(byte offset, byte value)
             {
                 throw new Exception("Channel type does have Wave RAM");
             }
 
-            public byte ReadWaveRam(byte offset)
+            public override byte ReadWaveRam(byte offset)
             {
                 throw new Exception("Channel type does have Wave RAM");
             }
