@@ -107,18 +107,20 @@ namespace cpu.m68000
             {
                 if (value == s)
                     return;
+
+                Register* ptrA7 = &A[7];
                 if (value == true) // entering supervisor mode
                 {
                     //EmuLogger.Log("&^&^&^&^& ENTER SUPERVISOR MODE");
-                    usp = A[7].s32;
-                    A[7].s32 = ssp;
+                    usp = ptrA7->s32;
+                    ptrA7->s32 = ssp;
                     s = true;
                 }
                 else
                 { // exiting supervisor mode
                     //EmuLogger.Log("&^&^&^&^& LEAVE SUPERVISOR MODE");
-                    ssp = A[7].s32;
-                    A[7].s32 = usp;
+                    ssp = ptrA7->s32;
+                    ptrA7->s32 = usp;
                     s = false;
                 }
             }
@@ -241,7 +243,7 @@ namespace cpu.m68000
             m = false;
             InterruptMaskLevel = 7;
             Interrupt = 0;
-            A[7].s32 = ReadOpLong(0);
+            (A + 7)->s32 = ReadOpLong(0);
             PC = ReadOpLong(4);
         }
 
@@ -311,10 +313,14 @@ namespace cpu.m68000
                         //int vector = Cpuint.cpu_irq_callback(cpunum, Interrupt);
                         short sr = (short)SR;                  // capture current SR.
                         S = true;                               // switch to supervisor mode, if not already in it.
-                        A[7].s32 -= 4;                          // Push PC on stack
-                        WriteLong(A[7].s32, PC);
-                        A[7].s32 -= 2;                          // Push SR on stack
-                        WriteWord(A[7].s32, sr);
+
+
+                        Register* ptrA7 = &A[7];
+
+                        ptrA7->s32 -= 4;                          // Push PC on stack
+                        WriteLong(ptrA7->s32, PC);
+                        ptrA7->s32 -= 2;                          // Push SR on stack
+                        WriteWord(ptrA7->s32, sr);
                         PC = ReadLong((24 + Interrupt) * 4);    // Jump to interrupt vector
                         InterruptMaskLevel = Interrupt;         // Set interrupt mask to level currently being entered
                         Interrupt = 0;                          // "ack" interrupt. Note: this is wrong.
@@ -342,10 +348,12 @@ namespace cpu.m68000
                 //int vector = Cpuint.cpu_irq_callback(cpunum, Interrupt);
                 short sr = (short)SR;                  // capture current SR.
                 S = true;                               // switch to supervisor mode, if not already in it.
-                A[7].s32 -= 4;                          // Push PC on stack
-                WriteLong(A[7].s32, PC);
-                A[7].s32 -= 2;                          // Push SR on stack
-                WriteWord(A[7].s32, sr);
+
+                Register* ptrA7 = &A[7];
+                ptrA7->s32 -= 4;                          // Push PC on stack
+                WriteLong(ptrA7->s32, PC);
+                ptrA7->s32 -= 2;                          // Push SR on stack
+                WriteWord(ptrA7->s32, sr);
                 PC = ReadLong((24 + Interrupt) * 4);    // Jump to interrupt vector
                 InterruptMaskLevel = Interrupt;         // Set interrupt mask to level currently being entered
                 Interrupt = 0;                          // "ack" interrupt. Note: this is wrong.
@@ -358,7 +366,7 @@ namespace cpu.m68000
         //    string a = Disassemble(PC).ToString().PadRight(64);
         //    //string a = string.Format("{0:X6}: {1:X4}", PC, ReadWord(PC)).PadRight(64);
         //    string b = string.Format("D0:{0:X8} D1:{1:X8} D2:{2:X8} D3:{3:X8} D4:{4:X8} D5:{5:X8} D6:{6:X8} D7:{7:X8} ", D[0].u32, D[1].u32, D[2].u32, D[3].u32, D[4].u32, D[5].u32, D[6].u32, D[7].u32);
-        //    string c = string.Format("A0:{0:X8} A1:{1:X8} A2:{2:X8} A3:{3:X8} A4:{4:X8} A5:{5:X8} A6:{6:X8} A7:{7:X8} ", A[0].u32, A[1].u32, A[2].u32, A[3].u32, A[4].u32, A[5].u32, A[6].u32, A[7].u32);
+        //    string c = string.Format("A0:{0:X8} A1:{1:X8} A2:{2:X8} A3:{3:X8} A4:{4:X8} A5:{5:X8} A6:{6:X8} A7:{7:X8} ", A[0].u32, A[1].u32, A[2].u32, A[3].u32, A[4].u32, A[5].u32, A[6].u32, ptrA7->u32);
         //    string d = string.Format("SR:{0:X4} Pending {1}", SR, pendingCycles);
         //    return a + b + c + d;
         //}

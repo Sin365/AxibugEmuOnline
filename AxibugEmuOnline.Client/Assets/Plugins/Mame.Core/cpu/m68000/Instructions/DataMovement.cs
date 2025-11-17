@@ -530,14 +530,41 @@ namespace cpu.m68000
         }
 
 
+        //void PEA()
+        //{
+        //    int mode = (op >> 3) & 7;
+        //    int reg = (op >> 0) & 7;
+        //    int ea = ReadAddress(mode, reg);
+
+        //    ptrA7->s32 -= 4;
+        //    WriteLong(ptrA7->s32, ea);
+
+        //    switch (mode)
+        //    {
+        //        case 2: pendingCycles -= 12; break;
+        //        case 5: pendingCycles -= 16; break;
+        //        case 6: pendingCycles -= 20; break;
+        //        case 7:
+        //            switch (reg)
+        //            {
+        //                case 0: pendingCycles -= 16; break;
+        //                case 1: pendingCycles -= 20; break;
+        //                case 2: pendingCycles -= 16; break;
+        //                case 3: pendingCycles -= 20; break;
+        //            }
+        //            break;
+        //    }
+        //}
+
         void PEA()
         {
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
             int ea = ReadAddress(mode, reg);
 
-            A[7].s32 -= 4;
-            WriteLong(A[7].s32, ea);
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 -= 4;
+            WriteLong(ptrA7->s32, ea);
 
             switch (mode)
             {

@@ -354,6 +354,120 @@ namespace MAME.Core
             }
             return result;
         }
+
+
+        //public static short MReadWord(int address)
+        //{
+        //    address &= 0xffffff;
+        //    short result = 0;
+        //    if (address >= 0x000000 && address + 1 <= 0x00007f)
+        //    {
+        //        if (main_cpu_vector_table_source == 0)
+        //        {
+        //            byte* ptr_0 = &mainbiosrom[0];
+        //            byte* ptr = ptr_0 + address;
+        //            //result = (short)(mainbiosrom[address] * 0x100 + mainbiosrom[address + 1]);
+        //            result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //        }
+        //        else if (main_cpu_vector_table_source == 1)
+        //        {
+        //            byte* ptr_0 = &Memory.mainrom[0];
+        //            byte* ptr = ptr_0 + address;
+        //            //result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //            result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //        }
+        //    }
+        //    else if (address >= 0x000080 && address + 1 <= 0x0fffff)
+        //    {
+        //        //if (address >= 0x142B9 && address <= 0x142C9)
+        //        //{
+        //        //    //m68000Form.iStatus = 1;
+        //        //}
+
+        //        byte* ptr_0 = &Memory.mainrom[0];
+        //        byte* ptr = ptr_0 + address;
+        //        //result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //        result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //    }
+        //    else if (address >= 0x100000 && address + 1 <= 0x1fffff)
+        //    {
+        //        //if (address == 0x101410)
+        //        //{
+        //        //    int i1 = 1;
+        //        //}
+
+        //        byte* ptr_0 = &Memory.mainrom[0];
+        //        byte* ptr = ptr_0 + (address & 0xffff);
+        //        //result = (short)(Memory.mainram[address & 0xffff] * 0x100 + Memory.mainram[(address & 0xffff) + 1]);
+        //        result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //    }
+        //    else if (address >= 0x200000 && address <= 0x2fffff)
+        //    {
+        //        byte* ptr_0 = &Memory.mainrom[0];
+        //        byte* ptr = ptr_0 + (main_cpu_bank_address + (address & 0xfffff));
+        //        //result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
+        //        result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //    }
+        //    /*else if (address >= 0x300000 && address <= 0x300001)
+        //    {
+        //        result = (short)((ushort)short0 | dsw);
+        //    }
+        //    else if (address >= 0x300080 && address <= 0x300081)
+        //    {
+        //        result = short4;
+        //    }*/
+        //    else if (address >= 0x300000 && address <= 0x31ffff)
+        //    {
+        //        int add = address & 0x81;
+        //        if (add >= 0x00 && add + 1 <= 0x01)
+        //        {
+        //            result = (short)((ushort)short0 | dsw);
+        //        }
+        //        else if (add >= 0x80 && add + 1 <= 0x81)
+        //        {
+        //            result = short4;
+        //        }
+        //    }
+        //    else if (address >= 0x320000 && address <= 0x33ffff)
+        //    {
+        //        result = (short)((ushort)short3 | (ushort)((get_calendar_status() & 0x03) << 6) | (get_audio_result() << 8));
+        //    }
+        //    else if (address >= 0x340000 && address <= 0x35ffff)
+        //    {
+        //        result = short1;
+        //    }
+        //    else if (address >= 0x380000 && address <= 0x39ffff)
+        //    {
+        //        result = short2;
+        //    }
+        //    else if (address >= 0x3c0000 && address + 1 <= 0x3dffff)
+        //    {
+        //        result = (short)neogeo_video_register_r((address & 0x07) >> 1);
+        //    }
+        //    else if (address >= 0x400000 && address + 1 <= 0x7fffff)
+        //    {
+        //        result = (short)palettes[palette_bank, (address & 0x1fff) >> 1];
+        //    }
+        //    else if (address >= 0xc00000 && address + 1 <= 0xcfffff)
+        //    {
+        //        byte* ptr_0 = &Memory.mainrom[0];
+        //        byte* ptr = ptr_0 + (address & 0x1ffff);
+        //        //result = (short)(mainbiosrom[address & 0x1ffff] * 0x100 + mainbiosrom[(address & 0x1ffff) + 1]);
+        //        result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //    }
+        //    else if (address >= 0xd00000 && address + 1 <= 0xdfffff)
+        //    {
+        //        byte* ptr_0 = &Memory.mainrom[0];
+        //        byte* ptr = ptr_0 + (address & 0xffff);
+        //        //result = (short)(mainram2[address & 0xffff] * 0x100 + mainram2[(address & 0xffff) + 1]);
+        //        result = (short)(*ptr * 0x100 + *(ptr + 1));
+        //    }
+        //    //else
+        //    //{
+        //    //    int i1 = 1;
+        //    //}
+        //    return result;
+        //}
         public static int MReadOpLong(int address)
         {
             address &= 0xffffff;
@@ -2152,7 +2266,7 @@ namespace MAME.Core
             }
             else if (address >= 0xe000 && address <= 0xefff)
             {
-               return *(Memory.audiorom + *(audio_cpu_banks + 1) * 0x1000 + address - 0xe000);
+                return *(Memory.audiorom + *(audio_cpu_banks + 1) * 0x1000 + address - 0xe000);
             }
             else if (address >= 0xf000 && address <= 0xf7ff)
             {

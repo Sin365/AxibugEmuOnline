@@ -106,17 +106,18 @@ namespace cpu.m68000
         {
             sbyte displacement8 = (sbyte)op;
 
-            A[7].s32 -= 4;
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 -= 4;
             if (displacement8 != 0)
             {
                 // use embedded displacement
-                WriteLong(A[7].s32, PC);
+                WriteLong(ptrA7->s32, PC);
                 PC += displacement8;
             }
             else
             {
                 // use extension word displacement
-                WriteLong(A[7].s32, PC + 2);
+                WriteLong(ptrA7->s32, PC + 2);
                 PC += ReadOpWord(PC);
             }
             pendingCycles -= 18;
@@ -151,19 +152,21 @@ namespace cpu.m68000
 
         void RTS()
         {
-            PC = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            Register* ptrA7 = &A[7];
+            PC = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             pendingCycles -= 16;
         }
 
 
         void RTR()
         {
-            short value = ReadWord(A[7].s32);
-            A[7].s32 += 2;
+            Register* ptrA7 = &A[7];
+            short value = ReadWord(ptrA7->s32);
+            ptrA7->s32 += 2;
             CCR = value;
-            PC = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            PC = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             pendingCycles -= 20;
         }
 
@@ -181,10 +184,11 @@ namespace cpu.m68000
 
         void RTE()
         {
-            short newSR = ReadWord(A[7].s32);
-            A[7].s32 += 2;
-            PC = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            Register* ptrA7 = &A[7];
+            short newSR = ReadWord(ptrA7->s32);
+            ptrA7->s32 += 2;
+            PC = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             SR = newSR;
             pendingCycles -= 20;
         }
@@ -467,8 +471,9 @@ namespace cpu.m68000
             int reg = (op >> 0) & 7;
             int addr = ReadAddress(mode, reg);
 
-            A[7].s32 -= 4;
-            WriteLong(A[7].s32, PC);
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 -= 4;
+            WriteLong(ptrA7->s32, PC);
             PC = addr;
 
             switch (mode)
@@ -492,11 +497,13 @@ namespace cpu.m68000
         void LINK()
         {
             int reg = op & 7;
-            A[7].s32 -= 4;
+
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 -= 4;
             short offset = ReadOpWord(PC); PC += 2;
-            WriteLong(A[7].s32, A[reg].s32);
-            A[reg].s32 = A[7].s32;
-            A[7].s32 += offset;
+            WriteLong(ptrA7->s32, A[reg].s32);
+            A[reg].s32 = ptrA7->s32;
+            ptrA7->s32 += offset;
             pendingCycles -= 16;
         }
 
@@ -504,9 +511,10 @@ namespace cpu.m68000
         void UNLK()
         {
             int reg = op & 7;
-            A[7].s32 = A[reg].s32;
-            A[reg].s32 = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 = A[reg].s32;
+            A[reg].s32 = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             pendingCycles -= 12;
         }
 

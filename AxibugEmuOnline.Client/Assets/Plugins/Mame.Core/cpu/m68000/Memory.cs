@@ -4,29 +4,83 @@ namespace cpu.m68000
 {
     unsafe partial class MC68000
     {
+        //sbyte ReadValueB(int mode, int reg)
+        //{
+        //    sbyte value;
+        //    switch (mode)
+        //    {
+        //        case 0: // Dn
+        //            return D[reg].s8;
+        //        case 1: // An
+        //            return A[reg].s8;
+        //        case 2: // (An)
+        //            return ReadByte(A[reg].s32);
+        //        case 3: // (An)+
+        //            value = ReadByte(A[reg].s32);
+        //            A[reg].s32 += reg == 7 ? 2 : 1;
+        //            return value;
+        //        case 4: // -(An)
+        //            A[reg].s32 -= reg == 7 ? 2 : 1;
+        //            return ReadByte(A[reg].s32);
+        //        case 5: // (d16,An)
+        //            value = ReadByte((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+        //            return value;
+        //        case 6: // (d8,An,Xn)
+        //            return ReadByte(A[reg].s32 + GetIndex());
+        //        case 7:
+        //            switch (reg)
+        //            {
+        //                case 0: // (imm).W
+        //                    value = ReadByte(ReadOpWord(PC)); PC += 2;
+        //                    return value;
+        //                case 1: // (imm).L
+        //                    value = ReadByte(ReadOpLong(PC)); PC += 4;
+        //                    return value;
+        //                case 2: // (d16,PC)
+        //                    value = ReadOpByte(PC + ReadOpWord(PC)); PC += 2;
+        //                    return value;
+        //                case 3: // (d8,PC,Xn)
+        //                    int pc = PC;
+        //                    value = ReadOpByte((pc + GetIndex()));
+        //                    return value;
+        //                case 4: // immediate
+        //                    value = (sbyte)ReadOpWord(PC); PC += 2;
+        //                    return value;
+        //                default:
+        //                    throw new Exception("Invalid addressing mode!");
+        //            }
+        //    }
+        //    throw new Exception("Invalid addressing mode!");
+        //}
         sbyte ReadValueB(int mode, int reg)
         {
             sbyte value;
             switch (mode)
             {
                 case 0: // Dn
-                    return D[reg].s8;
+                    return (D + reg)->s8;
                 case 1: // An
-                    return A[reg].s8;
+                    return (A + reg)->s8;
                 case 2: // (An)
-                    return ReadByte(A[reg].s32);
+                    return ReadByte((A + reg)->s32);
                 case 3: // (An)+
-                    value = ReadByte(A[reg].s32);
-                    A[reg].s32 += reg == 7 ? 2 : 1;
+                    {
+                        Register* ptr = &A[reg];
+                        value = ReadByte(ptr->s32);
+                        ptr->s32 += reg == 7 ? 2 : 1;
+                    }
                     return value;
                 case 4: // -(An)
-                    A[reg].s32 -= reg == 7 ? 2 : 1;
-                    return ReadByte(A[reg].s32);
+                    {
+                        Register* ptr = &A[reg];
+                        ptr->s32 -= reg == 7 ? 2 : 1;
+                        return ReadByte(ptr->s32);
+                    }
                 case 5: // (d16,An)
-                    value = ReadByte((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+                    value = ReadByte(((A + reg)->s32 + ReadOpWord(PC))); PC += 2;
                     return value;
                 case 6: // (d8,An,Xn)
-                    return ReadByte(A[reg].s32 + GetIndex());
+                    return ReadByte((A + reg)->s32 + GetIndex());
                 case 7:
                     switch (reg)
                     {
@@ -53,29 +107,83 @@ namespace cpu.m68000
             throw new Exception("Invalid addressing mode!");
         }
 
+        //short ReadValueW(int mode, int reg)
+        //{
+        //    short value;
+        //    switch (mode)
+        //    {
+        //        case 0: // Dn
+        //            return D[reg].s16;
+        //        case 1: // An
+        //            return A[reg].s16;
+        //        case 2: // (An)
+        //            return ReadWord(A[reg].s32);
+        //        case 3: // (An)+
+        //            value = ReadWord(A[reg].s32);
+        //            A[reg].s32 += 2;
+        //            return value;
+        //        case 4: // -(An)
+        //            A[reg].s32 -= 2;
+        //            return ReadWord(A[reg].s32);
+        //        case 5: // (d16,An)
+        //            value = ReadWord((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+        //            return value;
+        //        case 6: // (d8,An,Xn)
+        //            return ReadWord(A[reg].s32 + GetIndex());
+        //        case 7:
+        //            switch (reg)
+        //            {
+        //                case 0: // (imm).W
+        //                    value = ReadWord(ReadOpWord(PC)); PC += 2;
+        //                    return value;
+        //                case 1: // (imm).L
+        //                    value = ReadWord(ReadOpLong(PC)); PC += 4;
+        //                    return value;
+        //                case 2: // (d16,PC)
+        //                    value = ReadOpWord(PC + ReadOpWord(PC)); PC += 2;
+        //                    return value;
+        //                case 3: // (d8,PC,Xn)
+        //                    int pc = PC;
+        //                    value = ReadOpWord((pc + GetIndex()));
+        //                    return value;
+        //                case 4: // immediate
+        //                    value = ReadOpWord(PC); PC += 2;
+        //                    return value;
+        //                default:
+        //                    throw new Exception("Invalid addressing mode!");
+        //            }
+        //    }
+        //    throw new Exception("Invalid addressing mode!");
+        //}
         short ReadValueW(int mode, int reg)
         {
             short value;
             switch (mode)
             {
                 case 0: // Dn
-                    return D[reg].s16;
+                    return (D + reg)->s16;
                 case 1: // An
-                    return A[reg].s16;
+                    return (A + reg)->s16;
                 case 2: // (An)
-                    return ReadWord(A[reg].s32);
+                    return ReadWord((A + reg)->s32);
                 case 3: // (An)+
-                    value = ReadWord(A[reg].s32);
-                    A[reg].s32 += 2;
-                    return value;
+                    {
+                        Register* ptr = &A[reg];
+                        value = ReadWord(ptr->s32);
+                        ptr->s32 += 2;
+                        return value;
+                    }
                 case 4: // -(An)
-                    A[reg].s32 -= 2;
-                    return ReadWord(A[reg].s32);
+                    {
+                        Register* ptr = &A[reg];
+                        ptr->s32 -= 2;
+                        return ReadWord(ptr->s32);
+                    }
                 case 5: // (d16,An)
-                    value = ReadWord((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+                    value = ReadWord((A + reg)->s32 + ReadOpWord(PC)); PC += 2;
                     return value;
                 case 6: // (d8,An,Xn)
-                    return ReadWord(A[reg].s32 + GetIndex());
+                    return ReadWord((A + reg)->s32 + GetIndex());
                 case 7:
                     switch (reg)
                     {
@@ -101,6 +209,54 @@ namespace cpu.m68000
             }
             throw new Exception("Invalid addressing mode!");
         }
+        //int ReadValueL(int mode, int reg)
+        //{
+        //    int value;
+        //    switch (mode)
+        //    {
+        //        case 0: // Dn
+        //            return D[reg].s32;
+        //        case 1: // An
+        //            return A[reg].s32;
+        //        case 2: // (An)
+        //            return ReadLong(A[reg].s32);
+        //        case 3: // (An)+
+        //            value = ReadLong(A[reg].s32);
+        //            A[reg].s32 += 4;
+        //            return value;
+        //        case 4: // -(An)
+        //            A[reg].s32 -= 4;
+        //            return ReadLong(A[reg].s32);
+        //        case 5: // (d16,An)
+        //            value = ReadLong((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+        //            return value;
+        //        case 6: // (d8,An,Xn)
+        //            return ReadLong(A[reg].s32 + GetIndex());
+        //        case 7:
+        //            switch (reg)
+        //            {
+        //                case 0: // (imm).W
+        //                    value = ReadLong(ReadOpWord(PC)); PC += 2;
+        //                    return value;
+        //                case 1: // (imm).L
+        //                    value = ReadLong(ReadOpLong(PC)); PC += 4;
+        //                    return value;
+        //                case 2: // (d16,PC)
+        //                    value = ReadOpLong(PC + ReadOpWord(PC)); PC += 2;
+        //                    return value;
+        //                case 3: // (d8,PC,Xn)
+        //                    int pc = PC;
+        //                    value = ReadOpLong((pc + GetIndex()));
+        //                    return value;
+        //                case 4: // immediate
+        //                    value = ReadOpLong(PC); PC += 4;
+        //                    return value;
+        //                default:
+        //                    throw new Exception("Invalid addressing mode!");
+        //            }
+        //    }
+        //    throw new Exception("Invalid addressing mode!");
+        //}
 
         int ReadValueL(int mode, int reg)
         {
@@ -108,23 +264,29 @@ namespace cpu.m68000
             switch (mode)
             {
                 case 0: // Dn
-                    return D[reg].s32;
+                    return (D + reg)->s32;
                 case 1: // An
-                    return A[reg].s32;
+                    return (A + reg)->s32;
                 case 2: // (An)
-                    return ReadLong(A[reg].s32);
+                    return ReadLong((A + reg)->s32);
                 case 3: // (An)+
-                    value = ReadLong(A[reg].s32);
-                    A[reg].s32 += 4;
+                    {
+                        Register* ptr = &A[reg];
+                        value = ReadLong(ptr->s32);
+                        ptr->s32 += 4;
+                    }
                     return value;
                 case 4: // -(An)
-                    A[reg].s32 -= 4;
-                    return ReadLong(A[reg].s32);
+                    {
+                        Register* ptr = &A[reg];
+                        ptr->s32 -= 4;
+                        return ReadLong(ptr->s32);
+                    }
                 case 5: // (d16,An)
-                    value = ReadLong((A[reg].s32 + ReadOpWord(PC))); PC += 2;
+                    value = ReadLong(((A + reg)->s32 + ReadOpWord(PC))); PC += 2;
                     return value;
                 case 6: // (d8,An,Xn)
-                    return ReadLong(A[reg].s32 + GetIndex());
+                    return ReadLong((A + reg)->s32 + GetIndex());
                 case 7:
                     switch (reg)
                     {
@@ -316,32 +478,87 @@ namespace cpu.m68000
         }
 
 
+        //void WriteValueB(int mode, int reg, sbyte value)
+        //{
+        //    switch (mode)
+        //    {
+        //        case 0x00: // Dn
+        //            D[reg].s8 = value;
+        //            return;
+        //        case 0x01: // An
+        //            A[reg].s32 = value;
+        //            return;
+        //        case 0x02: // (An)
+        //            WriteByte(A[reg].s32, value);
+        //            return;
+        //        case 0x03: // (An)+
+        //            WriteByte(A[reg].s32, value);
+        //            A[reg].s32 += reg == 7 ? 2 : 1;
+        //            return;
+        //        case 0x04: // -(An)
+        //            A[reg].s32 -= reg == 7 ? 2 : 1;
+        //            WriteByte(A[reg].s32, value);
+        //            return;
+        //        case 0x05: // (d16,An)
+        //            WriteByte(A[reg].s32 + ReadOpWord(PC), value); PC += 2;
+        //            return;
+        //        case 0x06: // (d8,An,Xn)
+        //            WriteByte(A[reg].s32 + GetIndex(), value);
+        //            return;
+        //        case 0x07:
+        //            switch (reg)
+        //            {
+        //                case 0x00: // (imm).W
+        //                    WriteByte(ReadOpWord(PC), value); PC += 2;
+        //                    return;
+        //                case 0x01: // (imm).L
+        //                    WriteByte(ReadOpLong(PC), value); PC += 4;
+        //                    return;
+        //                case 0x02: // (d16,PC)
+        //                    WriteByte(PC + ReadOpWord(PC), value); PC += 2;
+        //                    return;
+        //                case 0x03: // (d8,PC,Xn)
+        //                    int pc = PC;
+        //                    WriteByte(pc + PeekIndex(), value);
+        //                    PC += 2;
+        //                    return;
+        //                default: throw new Exception("Invalid addressing mode!");
+        //            }
+        //    }
+        //}
+
         void WriteValueB(int mode, int reg, sbyte value)
         {
             switch (mode)
             {
                 case 0x00: // Dn
-                    D[reg].s8 = value;
+                    (D + reg)->s8 = value;
                     return;
                 case 0x01: // An
-                    A[reg].s32 = value;
+                    (A + reg)->s32 = value;
                     return;
                 case 0x02: // (An)
-                    WriteByte(A[reg].s32, value);
+                    WriteByte((A + reg)->s32, value);
                     return;
                 case 0x03: // (An)+
-                    WriteByte(A[reg].s32, value);
-                    A[reg].s32 += reg == 7 ? 2 : 1;
+                    {
+                        Register* ptr = &A[reg];
+                        WriteByte(ptr->s32, value);
+                        ptr->s32 += reg == 7 ? 2 : 1;
+                    }
                     return;
                 case 0x04: // -(An)
-                    A[reg].s32 -= reg == 7 ? 2 : 1;
-                    WriteByte(A[reg].s32, value);
+                    {
+                        Register* ptr = &A[reg];
+                        ptr->s32 -= reg == 7 ? 2 : 1;
+                        WriteByte(ptr->s32, value);
+                    }
                     return;
                 case 0x05: // (d16,An)
-                    WriteByte(A[reg].s32 + ReadOpWord(PC), value); PC += 2;
+                    WriteByte((A + reg)->s32 + ReadOpWord(PC), value); PC += 2;
                     return;
                 case 0x06: // (d8,An,Xn)
-                    WriteByte(A[reg].s32 + GetIndex(), value);
+                    WriteByte((A + reg)->s32 + GetIndex(), value);
                     return;
                 case 0x07:
                     switch (reg)
@@ -365,32 +582,88 @@ namespace cpu.m68000
             }
         }
 
+        //void WriteValueW(int mode, int reg, short value)
+        //{
+        //    switch (mode)
+        //    {
+        //        case 0x00: // Dn
+        //            D[reg].s16 = value;
+        //            return;
+        //        case 0x01: // An
+        //            A[reg].s32 = value;
+        //            return;
+        //        case 0x02: // (An)
+        //            WriteWord(A[reg].s32, value);
+        //            return;
+        //        case 0x03: // (An)+
+        //            WriteWord(A[reg].s32, value);
+        //            A[reg].s32 += 2;
+        //            return;
+        //        case 0x04: // -(An)
+        //            A[reg].s32 -= 2;
+        //            WriteWord(A[reg].s32, value);
+        //            return;
+        //        case 0x05: // (d16,An)
+        //            WriteWord(A[reg].s32 + ReadOpWord(PC), value); PC += 2;
+        //            return;
+        //        case 0x06: // (d8,An,Xn)
+        //            WriteWord(A[reg].s32 + GetIndex(), value);
+        //            return;
+        //        case 0x07:
+        //            switch (reg)
+        //            {
+        //                case 0x00: // (imm).W
+        //                    WriteWord(ReadOpWord(PC), value); PC += 2;
+        //                    return;
+        //                case 0x01: // (imm).L
+        //                    WriteWord(ReadOpLong(PC), value); PC += 4;
+        //                    return;
+        //                case 0x02: // (d16,PC)
+        //                    WriteWord(PC + ReadOpWord(PC), value); PC += 2;
+        //                    return;
+        //                case 0x03: // (d8,PC,Xn)
+        //                    int pc = PC;
+        //                    WriteWord(pc + PeekIndex(), value);
+        //                    PC += 2;
+        //                    return;
+        //                default: throw new Exception("Invalid addressing mode!");
+        //            }
+        //    }
+        //}
+
+
         void WriteValueW(int mode, int reg, short value)
         {
             switch (mode)
             {
                 case 0x00: // Dn
-                    D[reg].s16 = value;
+                    (D + reg)->s16 = value;
                     return;
                 case 0x01: // An
-                    A[reg].s32 = value;
+                    (A + reg)->s32 = value;
                     return;
                 case 0x02: // (An)
-                    WriteWord(A[reg].s32, value);
+                    WriteWord((A + reg)->s32, value);
                     return;
                 case 0x03: // (An)+
-                    WriteWord(A[reg].s32, value);
-                    A[reg].s32 += 2;
+                    {
+                        Register* ptr = &A[reg];
+                        WriteWord(ptr->s32, value);
+                        ptr->s32 += 2;
+                    }
                     return;
                 case 0x04: // -(An)
-                    A[reg].s32 -= 2;
-                    WriteWord(A[reg].s32, value);
+                    {
+                        Register* ptr = &A[reg];
+                        ptr->s32 -= 2;
+                        WriteWord(ptr->s32, value);
+                    }
                     return;
                 case 0x05: // (d16,An)
-                    WriteWord(A[reg].s32 + ReadOpWord(PC), value); PC += 2;
+                    WriteWord((A + reg)->s32 + ReadOpWord(PC), value); PC += 2;
                     return;
                 case 0x06: // (d8,An,Xn)
-                    WriteWord(A[reg].s32 + GetIndex(), value);
+                    WriteWord((A + reg)->s32 + GetIndex(), value);
                     return;
                 case 0x07:
                     switch (reg)
@@ -419,27 +692,33 @@ namespace cpu.m68000
             switch (mode)
             {
                 case 0x00: // Dn
-                    D[reg].s32 = value;
+                    (D + reg)->s32 = value;
                     return;
                 case 0x01: // An
-                    A[reg].s32 = value;
+                    (A + reg)->s32 = value;
                     return;
                 case 0x02: // (An)
-                    WriteLong(A[reg].s32, value);
+                    WriteLong((A + reg)->s32, value);
                     return;
                 case 0x03: // (An)+
-                    WriteLong(A[reg].s32, value);
-                    A[reg].s32 += 4;
+                    {
+                        Register* ptr = &A[reg];
+                        WriteLong(ptr->s32, value);
+                        ptr->s32 += 4;
+                    }
                     return;
                 case 0x04: // -(An)
-                    A[reg].s32 -= 4;
-                    WriteLong(A[reg].s32, value);
+                    {
+                        Register* ptr = &A[reg];
+                        ptr->s32 -= 4;
+                        WriteLong(ptr->s32, value);
+                    }
                     return;
                 case 0x05: // (d16,An)
-                    WriteLong(A[reg].s32 + ReadOpWord(PC), value); PC += 2;
+                    WriteLong((A + reg)->s32 + ReadOpWord(PC), value); PC += 2;
                     return;
                 case 0x06: // (d8,An,Xn)
-                    WriteLong(A[reg].s32 + GetIndex(), value);
+                    WriteLong((A + reg)->s32 + GetIndex(), value);
                     return;
                 case 0x07:
                     switch (reg)

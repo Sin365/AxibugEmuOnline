@@ -125,24 +125,26 @@ namespace cpu.m68000
 
         void TrapVector(int vector)
         {
+            Register* ptrA7 = &A[7];
             short sr = (short)SR;        // capture current SR.
             S = true;                    // switch to supervisor mode, if not already in it.
-            A[7].s32 -= 4;               // Push PC on stack
-            WriteLong(A[7].s32, PC);
-            A[7].s32 -= 2;               // Push SR on stack
-            WriteWord(A[7].s32, sr);
+            ptrA7->s32 -= 4;               // Push PC on stack
+            WriteLong(ptrA7->s32, PC);
+            ptrA7->s32 -= 2;               // Push SR on stack
+            WriteWord(ptrA7->s32, sr);
             PC = ReadLong(vector * 4);   // Jump to vector
             pendingCycles -= CyclesException[vector];
         }
 
-        void TrapVector2(int vector)
+        unsafe void TrapVector2(int vector)
         {
+            Register* ptrA7 = &A[7];
             short sr = (short)SR;        // capture current SR.
             S = true;                    // switch to supervisor mode, if not already in it.
-            A[7].s32 -= 4;               // Push PPC on stack
-            WriteLong(A[7].s32, PPC);
-            A[7].s32 -= 2;               // Push SR on stack
-            WriteWord(A[7].s32, sr);
+            ptrA7->s32 -= 4;               // Push PPC on stack
+            WriteLong(ptrA7->s32, PPC);
+            ptrA7->s32 -= 2;               // Push SR on stack
+            WriteWord(ptrA7->s32, sr);
             PC = ReadLong(vector * 4);   // Jump to vector
             pendingCycles -= CyclesException[vector];
         }
