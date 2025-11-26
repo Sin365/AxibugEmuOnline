@@ -207,6 +207,8 @@ namespace cpu.m68000
             D_set = new Register[8];
             //还是使用Action[]吧
             BuildOpcodeTable();
+
+            InitMC68000Tables();
         }
 
 

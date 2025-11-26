@@ -17,22 +17,38 @@ namespace cpu.m68000
             switch (size)
             {
                 case 1: // Byte
-                    value = ReadValueB(srcMode, srcReg);
-                    WriteValueB(dstMode, dstReg, (sbyte)value);
-                    pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
-                    N = (value & 0x80) != 0;
+                    {
+                        value = ReadValueB(srcMode, srcReg);
+                        WriteValueB(dstMode, dstReg, (sbyte)value);
+                        //pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
+                        int i = srcMode + (srcMode == 7 ? srcReg : 0);
+                        int j = srcMode + dstMode + (dstMode == 7 ? dstReg : 0);
+                        pendingCycles -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
+                        N = (value & 0x80) != 0;
+                    }
                     break;
                 case 3: // Word
-                    value = ReadValueW(srcMode, srcReg);
-                    WriteValueW(dstMode, dstReg, (short)value);
-                    pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
-                    N = (value & 0x8000) != 0;
-                    break;
+                    {
+                        value = ReadValueW(srcMode, srcReg);
+                        WriteValueW(dstMode, dstReg, (short)value);
+                        //pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
+                        int i = srcMode + (srcMode == 7 ? srcReg : 0);
+                        int j = srcMode + dstMode + (dstMode == 7 ? dstReg : 0);
+                        pendingCycles -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
+                        N = (value & 0x8000) != 0;
+                        break;
+                    }
                 case 2: // Long
-                    value = ReadValueL(srcMode, srcReg);
-                    WriteValueL(dstMode, dstReg, value);
-                    pendingCycles -= MoveCyclesL[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
-                    N = (value & 0x80000000) != 0;
+                    {
+
+                        value = ReadValueL(srcMode, srcReg);
+                        WriteValueL(dstMode, dstReg, value);
+                        //pendingCycles -= MoveCyclesL[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
+                        int i = srcMode + (srcMode == 7 ? srcReg : 0);
+                        int j = dstMode + (dstMode == 7 ? dstReg : 0);
+                        pendingCycles -= *(MoveCyclesL + (i * MoveCyclesL_Columns) + j);
+                        N = (value & 0x80000000) != 0;
+                    }
                     break;
             }
 
