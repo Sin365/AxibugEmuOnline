@@ -10,7 +10,7 @@ namespace cpu.m68000
         //    switch (mode)
         //    {
         //        case 0: // Dn
-        //            return D[reg].s8;
+        //            return D_ptr_reg->s8;
         //        case 1: // An
         //            return A_ptr_reg->s8;
         //        case 2: // (An)
@@ -113,7 +113,7 @@ namespace cpu.m68000
         //    switch (mode)
         //    {
         //        case 0: // Dn
-        //            return D[reg].s16;
+        //            return D_ptr_reg->s16;
         //        case 1: // An
         //            return A_ptr_reg->s16;
         //        case 2: // (An)
@@ -215,7 +215,7 @@ namespace cpu.m68000
         //    switch (mode)
         //    {
         //        case 0: // Dn
-        //            return D[reg].s32;
+        //            return D_ptr_reg->s32;
         //        case 1: // An
         //            return A_ptr_reg->s32;
         //        case 2: // (An)
@@ -319,7 +319,7 @@ namespace cpu.m68000
             switch (mode)
             {
                 case 0: // Dn
-                    return D[reg].s8;
+                    return (D + reg)->s8;
                 case 1: // An
                     {
                         Register* A_ptr_reg = A + reg;
@@ -384,7 +384,7 @@ namespace cpu.m68000
             switch (mode)
             {
                 case 0: // Dn
-                    return D[reg].s16;
+                    return (D + reg)->s16;
                 case 1: // An
                     {
 
@@ -450,7 +450,7 @@ namespace cpu.m68000
             switch (mode)
             {
                 case 0: // Dn
-                    return D[reg].s32;
+                    return (D + reg)->s32;
                 case 1: // An
                     {
                         Register* A_ptr_reg = A + reg;
@@ -540,7 +540,7 @@ namespace cpu.m68000
         //    switch (mode)
         //    {
         //        case 0x00: // Dn
-        //            D[reg].s8 = value;
+        //            D_ptr_reg->s8 = value;
         //            return;
         //        case 0x01: // An
         //            A_ptr_reg->s32 = value;
@@ -644,7 +644,7 @@ namespace cpu.m68000
         //    switch (mode)
         //    {
         //        case 0x00: // Dn
-        //            D[reg].s16 = value;
+        //            D_ptr_reg->s16 = value;
         //            return;
         //        case 0x01: // An
         //            A_ptr_reg->s32 = value;
@@ -821,9 +821,15 @@ namespace cpu.m68000
                 default: indexReg = 8; break;
             }
             if (da == 0)
-                indexReg *= size == 0 ? D[reg].s16 : D[reg].s32;
+            {
+                Register* D_ptr_reg = D + reg;
+                indexReg *= size == 0 ? D_ptr_reg->s16 : D_ptr_reg->s32;
+            }
             else
-                indexReg *= size == 0 ? (A + reg)->s16 : (A + reg)->s32;
+            {
+                Register* A_ptr_reg = A + reg;
+                indexReg *= size == 0 ? A_ptr_reg->s16 : A_ptr_reg->s32;
+            }
 
             return displacement + indexReg;
         }
@@ -849,7 +855,10 @@ namespace cpu.m68000
                 default: indexReg = 8; break;
             }
             if (da == 0)
-                indexReg *= size == 0 ? D[reg].s16 : D[reg].s32;
+            {
+                Register* D_ptr_reg = D + reg;
+                indexReg *= size == 0 ? D_ptr_reg->s16 : D_ptr_reg->s32;
+            }
             else
             {
                 Register* A_ptr_reg = A + reg;

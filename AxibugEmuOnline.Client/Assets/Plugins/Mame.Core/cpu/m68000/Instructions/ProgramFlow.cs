@@ -135,9 +135,10 @@ namespace cpu.m68000
             else
             {
                 int reg = op & 7;
-                D[reg].u16--;
+                Register* D_ptr_reg = D + reg;
+                D_ptr_reg->u16--;
 
-                if (D[reg].u16 == 0xFFFF)
+                if (D_ptr_reg->u16 == 0xFFFF)
                 {
                     PC += 2; // counter underflowed, break out of loop
                     pendingCycles -= 14;
@@ -207,7 +208,7 @@ namespace cpu.m68000
             C = false;
             /*if (mode == 0)
             {
-                //D[reg].u8 = (byte)(result | 0x80);
+                //D_ptr_reg->u8 = (byte)(result | 0x80);
             }*/
             WriteValueB(mode, reg, (sbyte)(result | 0x80));
             pendingCycles -= (mode == 0) ? 4 : 14 + EACyclesBW[mode, reg];
@@ -241,7 +242,8 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
                 pendingCycles -= 10;
             }
             else
@@ -258,13 +260,14 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
                 pendingCycles -= 6;
             }
             else
@@ -286,8 +289,9 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 ^= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 ^= mask;
                 pendingCycles -= 12;
             }
             else
@@ -308,14 +312,15 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 ^= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 ^= mask;
                 pendingCycles -= 8;
             }
             else
@@ -340,8 +345,9 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 &= ~mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 &= ~mask;
                 pendingCycles -= 14;
             }
             else
@@ -361,14 +367,15 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 &= ~mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 &= ~mask;
                 pendingCycles -= 10;
             }
             else
@@ -394,8 +401,9 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 |= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 |= mask;
                 pendingCycles -= 12;
             }
             else
@@ -416,14 +424,15 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 |= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 |= mask;
                 pendingCycles -= 8;
             }
             else

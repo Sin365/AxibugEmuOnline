@@ -11,44 +11,45 @@ namespace cpu.m68000
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
 
+            Register* D_ptr_Dreg = D + Dreg;
             switch (size)
             {
                 case 0: // byte
                     {
                         sbyte value = ReadValueB(mode, reg);
-                        int result = D[Dreg].s8 + value;
-                        int uresult = D[Dreg].u8 + (byte)value;
+                        int result = D_ptr_Dreg->s8 + value;
+                        int uresult = D_ptr_Dreg->u8 + (byte)value;
                         X = C = (uresult & 0x100) != 0;
                         V = result > sbyte.MaxValue || result < sbyte.MinValue;
                         N = (result & 0x80) != 0;
                         Z = (result & 0xff) == 0;
-                        D[Dreg].s8 = (sbyte)result;
+                        D_ptr_Dreg->s8 = (sbyte)result;
                         pendingCycles -= 4 + EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
                     {
                         short value = ReadValueW(mode, reg);
-                        int result = D[Dreg].s16 + value;
-                        int uresult = D[Dreg].u16 + (ushort)value;
+                        int result = D_ptr_Dreg->s16 + value;
+                        int uresult = D_ptr_Dreg->u16 + (ushort)value;
                         X = C = (uresult & 0x10000) != 0;
                         V = result > short.MaxValue || result < short.MinValue;
                         N = (result & 0x8000) != 0;
                         Z = (result & 0xffff) == 0;
-                        D[Dreg].s16 = (short)result;
+                        D_ptr_Dreg->s16 = (short)result;
                         pendingCycles -= 4 + EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
                     {
                         int value = ReadValueL(mode, reg);
-                        long result = (long)D[Dreg].s32 + (long)value;
-                        ulong uresult = (ulong)D[Dreg].u32 + ((ulong)(uint)value);
+                        long result = (long)D_ptr_Dreg->s32 + (long)value;
+                        ulong uresult = (ulong)D_ptr_Dreg->u32 + ((ulong)(uint)value);
                         X = C = (uresult & 0x100000000) != 0;
                         V = result > int.MaxValue || result < int.MinValue;
                         N = (result & 0x80000000) != 0;
                         Z = (uint)result == 0;
-                        D[Dreg].s32 = (int)result;
+                        D_ptr_Dreg->s32 = (int)result;
                         if (mode == 0 || mode == 1 || (mode == 7 && reg == 4))
                         {
                             pendingCycles -= 8 + EACyclesL[mode, reg];
@@ -69,13 +70,14 @@ namespace cpu.m68000
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
 
+            Register* D_ptr_Dreg = D + Dreg;
             switch (size)
             {
                 case 0: // byte
                     {
                         sbyte value = PeekValueB(mode, reg);
-                        int result = value + D[Dreg].s8;
-                        int uresult = (byte)value + D[Dreg].u8;
+                        int result = value + D_ptr_Dreg->s8;
+                        int uresult = (byte)value + D_ptr_Dreg->u8;
                         X = C = (uresult & 0x100) != 0;
                         V = result > sbyte.MaxValue || result < sbyte.MinValue;
                         N = (result & 0x80) != 0;
@@ -87,8 +89,8 @@ namespace cpu.m68000
                 case 1: // word
                     {
                         short value = PeekValueW(mode, reg);
-                        int result = value + D[Dreg].s16;
-                        int uresult = (ushort)value + D[Dreg].u16;
+                        int result = value + D_ptr_Dreg->s16;
+                        int uresult = (ushort)value + D_ptr_Dreg->u16;
                         X = C = (uresult & 0x10000) != 0;
                         V = result > short.MaxValue || result < short.MinValue;
                         N = (result & 0x8000) != 0;
@@ -100,8 +102,8 @@ namespace cpu.m68000
                 case 2: // long
                     {
                         int value = PeekValueL(mode, reg);
-                        long result = (long)value + (long)D[Dreg].s32;
-                        ulong uresult = ((ulong)(uint)value) + (ulong)D[Dreg].u32;
+                        long result = (long)value + (long)D_ptr_Dreg->s32;
+                        ulong uresult = ((ulong)(uint)value) + (ulong)D_ptr_Dreg->u32;
                         X = C = (uresult & 0x100000000) != 0;
                         V = result > int.MaxValue || result < int.MinValue;
                         N = (result & 0x80000000) != 0;
@@ -279,44 +281,45 @@ namespace cpu.m68000
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
 
+            Register* D_ptr_dReg = D + dReg;
             switch (size)
             {
                 case 0: // byte
                     {
-                        sbyte a = D[dReg].s8;
+                        sbyte a = D_ptr_dReg->s8;
                         sbyte b = ReadValueB(mode, reg);
                         int result = a - b;
                         X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         V = result > sbyte.MaxValue || result < sbyte.MinValue;
                         N = (result & 0x80) != 0;
                         Z = result == 0;
-                        D[dReg].s8 = (sbyte)result;
+                        D_ptr_dReg->s8 = (sbyte)result;
                         pendingCycles -= 4 + EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
                     {
-                        short a = D[dReg].s16;
+                        short a = D_ptr_dReg->s16;
                         short b = ReadValueW(mode, reg);
                         int result = a - b;
                         X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         V = result > short.MaxValue || result < short.MinValue;
                         N = (result & 0x8000) != 0;
                         Z = result == 0;
-                        D[dReg].s16 = (short)result;
+                        D_ptr_dReg->s16 = (short)result;
                         pendingCycles -= 4 + EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
                     {
-                        int a = D[dReg].s32;
+                        int a = D_ptr_dReg->s32;
                         int b = ReadValueL(mode, reg);
                         long result = (long)a - (long)b;
                         X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         V = result > int.MaxValue || result < int.MinValue;
                         N = (result & 0x80000000) != 0;
                         Z = result == 0;
-                        D[dReg].s32 = (int)result;
+                        D_ptr_dReg->s32 = (int)result;
                         if (mode == 0 || mode == 1 || (mode == 7 && reg == 4))
                         {
                             pendingCycles -= 8 + EACyclesL[mode, reg];
@@ -337,12 +340,13 @@ namespace cpu.m68000
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
 
+            Register* D_ptr_dReg = D + dReg;
             switch (size)
             {
                 case 0: // byte
                     {
                         sbyte a = PeekValueB(mode, reg);
-                        sbyte b = D[dReg].s8;
+                        sbyte b = D_ptr_dReg->s8;
                         int result = a - b;
                         X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         V = result > sbyte.MaxValue || result < sbyte.MinValue;
@@ -355,7 +359,7 @@ namespace cpu.m68000
                 case 1: // word
                     {
                         short a = PeekValueW(mode, reg);
-                        short b = D[dReg].s16;
+                        short b = D_ptr_dReg->s16;
                         int result = a - b;
                         X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         V = result > short.MaxValue || result < short.MinValue;
@@ -368,7 +372,7 @@ namespace cpu.m68000
                 case 2: // long
                     {
                         int a = PeekValueL(mode, reg);
-                        int b = D[dReg].s32;
+                        int b = D_ptr_dReg->s32;
                         long result = (long)a - (long)b;
                         X = C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         V = result > int.MaxValue || result < int.MinValue;
@@ -669,7 +673,7 @@ namespace cpu.m68000
             int boundMode = (op >> 3) & 0x07;
             int boundReg = op & 0x07;
             short src, bound;
-            src = D[dreg].s16;
+            src = (D + dreg)->s16;
             bound = ReadValueW(boundMode, boundReg);
             Z = (src == 0);
             V = false;
@@ -746,8 +750,9 @@ namespace cpu.m68000
         {
             int dstReg = (op >> 9) & 0x07;
             int srcReg = op & 0x07;
-            uint dst = D[dstReg].u32;
-            uint src = D[srcReg].u32;
+            Register* D_ptr_dstReg = D + dstReg;
+            uint dst = D_ptr_dstReg->u32;
+            uint src = (D + srcReg)->u32;
             uint res;
             res = (uint)((dst & 0x0f) - (src & 0x0f) - (X ? 1 : 0));
             V = false;
@@ -768,7 +773,7 @@ namespace cpu.m68000
             }
             res = res & 0xff;
             Z &= (res == 0);
-            D[dstReg].u32 = (D[dstReg].u32 & 0xffffff00) | res;
+            D_ptr_dstReg->u32 = (D_ptr_dstReg->u32 & 0xffffff00) | res;
             pendingCycles -= 6;
         }
 
@@ -790,11 +795,11 @@ namespace cpu.m68000
             }
             if (dstReg == 7)
             {
-               A_dstReg->u32 -= 2;
+                A_dstReg->u32 -= 2;
             }
             else
             {
-               A_dstReg->u32--;
+                A_dstReg->u32--;
             }
             src = (uint)ReadByte(A_srcReg->s32);
             dst = (uint)ReadByte(A_dstReg->s32);
@@ -827,8 +832,10 @@ namespace cpu.m68000
             int dstReg = (op >> 9) & 0x07;
             int srcReg = op & 0x07;
             uint src, dst, res;
-            src = D[srcReg].u32;
-            dst = D[dstReg].u32;
+            Register* D_ptr_srcReg = D + srcReg;
+            Register* D_ptr_dstReg = D + dstReg;
+            src = D_ptr_srcReg->u32;
+            dst = D_ptr_dstReg->u32;
             res = (uint)((src & 0x0f) + (dst & 0x0f) + (X ? 1 : 0));
             V = (((~res) & 0x80) != 0);
             if (res > 9)
@@ -845,7 +852,7 @@ namespace cpu.m68000
             N = ((res & 0x80) != 0);
             res = res & 0xff;
             Z &= (res == 0);
-            D[dstReg].u32 = (((D[dstReg].u32) & 0xffffff00) | res);
+            D_ptr_dstReg->u32 = (((D_ptr_dstReg->u32) & 0xffffff00) | res);
             pendingCycles -= 6;
         }
 
@@ -867,11 +874,11 @@ namespace cpu.m68000
             }
             if (dstReg == 7)
             {
-               A_dstReg->u32 -= 2;
+                A_dstReg->u32 -= 2;
             }
             else
             {
-               A_dstReg->u32--;
+                A_dstReg->u32--;
             }
             src = (uint)ReadByte(A_srcReg->s32);
             dst = (uint)ReadByte(A_dstReg->s32);
@@ -900,10 +907,12 @@ namespace cpu.m68000
         {
             int reg_a = (op >> 9) & 0x07;
             int reg_b = op & 0x07;
+            Register* D_ptr_reg_a = D + reg_a;
+            Register* D_ptr_reg_b = D + reg_b;
             uint tmp;
-            tmp = D[reg_a].u32;
-            D[reg_a].u32 = D[reg_b].u32;
-            D[reg_b].u32 = tmp;
+            tmp = D_ptr_reg_a->u32;
+            D_ptr_reg_a->u32 = D_ptr_reg_b->u32;
+            D_ptr_reg_b->u32 = tmp;
             pendingCycles -= 6;
         }
 
@@ -927,9 +936,10 @@ namespace cpu.m68000
             int reg_a = (op >> 9) & 0x07;
             int reg_b = op & 0x07;
             Register* A_ptr_reg_b = A + reg_b;
+            Register* D_ptr_reg_a = D + reg_a;
             uint tmp;
-            tmp = D[reg_a].u32;
-            D[reg_a].u32 = A_ptr_reg_b->u32;
+            tmp = D_ptr_reg_a->u32;
+            D_ptr_reg_a->u32 = A_ptr_reg_b->u32;
             A_ptr_reg_b->u32 = tmp;
             pendingCycles -= 6;
         }
@@ -940,12 +950,14 @@ namespace cpu.m68000
             int dstReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
             int srcReg = op & 0x07;
+            Register* D_ptr_srcReg = D + srcReg;
+            Register* D_ptr_dstReg = D + dstReg;
             switch (size)
             {
                 case 0:
                     {
-                        uint src = D[srcReg].u32 & 0xff;
-                        uint dst = D[dstReg].u32 & 0xff;
+                        uint src = D_ptr_srcReg->u32 & 0xff;
+                        uint dst = D_ptr_dstReg->u32 & 0xff;
                         uint res;
                         res = (uint)(dst + src + (X ? 1 : 0));
                         N = ((res & 0x80) != 0);
@@ -953,14 +965,14 @@ namespace cpu.m68000
                         X = C = ((res & 0x100) != 0);
                         res = res & 0xff;
                         Z &= (res == 0);
-                        D[dstReg].u32 = (D[dstReg].u32 & 0xffffff00) | res;
+                        D_ptr_dstReg->u32 = (D_ptr_dstReg->u32 & 0xffffff00) | res;
                         pendingCycles -= 4;
                         return;
                     }
                 case 1:
                     {
-                        uint src = D[srcReg].u32 & 0xffff;
-                        uint dst = D[dstReg].u32 & 0xffff;
+                        uint src = D_ptr_srcReg->u32 & 0xffff;
+                        uint dst = D_ptr_dstReg->u32 & 0xffff;
                         uint res;
                         res = (uint)(dst + src + (X ? 1 : 0));
                         N = ((res & 0x8000) != 0);
@@ -968,21 +980,21 @@ namespace cpu.m68000
                         X = C = ((res & 0x10000) != 0);
                         res = res & 0xffff;
                         Z &= (res == 0);
-                        D[dstReg].u32 = (D[dstReg].u32 & 0xffff0000) | res;
+                        D_ptr_dstReg->u32 = (D_ptr_dstReg->u32 & 0xffff0000) | res;
                         pendingCycles -= 4;
                         return;
                     }
                 case 2:
                     {
-                        uint src = D[srcReg].u32;
-                        uint dst = D[dstReg].u32;
+                        uint src = D_ptr_srcReg->u32;
+                        uint dst = D_ptr_dstReg->u32;
                         uint res;
                         res = (uint)(dst + src + (X ? 1 : 0));
                         N = ((res & 0x80000000) != 0);
                         V = ((((src ^ res) & (dst ^ res)) & 0x80000000) != 0);
                         X = C = ((((src & dst) | (~res & (src | dst))) & 0x80000000) != 0);
                         Z &= (res == 0);
-                        D[dstReg].u32 = res;
+                        D_ptr_dstReg->u32 = res;
                         pendingCycles -= 8;
                         return;
                     }
@@ -1011,11 +1023,11 @@ namespace cpu.m68000
                         }
                         if (dstReg == 7)
                         {
-                           A_dstReg->u32 -= 2;
+                            A_dstReg->u32 -= 2;
                         }
                         else
                         {
-                           A_dstReg->u32--;
+                            A_dstReg->u32--;
                         }
                         uint src = (uint)ReadByte(A_srcReg->s32);
                         uint dst = (uint)ReadByte(A_dstReg->s32);
@@ -1034,7 +1046,7 @@ namespace cpu.m68000
                     {
                         A_srcReg->u32 -= 2;
                         uint src = (uint)ReadWord(A_srcReg->s32);
-                       A_dstReg->u32 -= 2;
+                        A_dstReg->u32 -= 2;
                         uint dst = (uint)ReadWord(A_dstReg->s32);
                         uint res;
                         res = (uint)(dst + src + (X ? 1 : 0));
@@ -1051,7 +1063,7 @@ namespace cpu.m68000
                     {
                         A_srcReg->u32 -= 4;
                         uint src = (uint)ReadLong(A_srcReg->s32);
-                       A_dstReg->u32 -= 4;
+                        A_dstReg->u32 -= 4;
                         uint dst = (uint)ReadWord(A_dstReg->s32);
                         uint res;
                         res = (uint)(dst + src + (X ? 1 : 0));
@@ -1072,12 +1084,14 @@ namespace cpu.m68000
             int dstReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
             int srcReg = op & 0x07;
+            Register* D_ptr_srcReg = D + srcReg;
+            Register* D_ptr_dstReg = D + dstReg;
             switch (size)
             {
                 case 0:
                     {
-                        uint src = D[srcReg].u32 & 0xff;
-                        uint dst = D[dstReg].u32 & 0xff;
+                        uint src = D_ptr_srcReg->u32 & 0xff;
+                        uint dst = D_ptr_dstReg->u32 & 0xff;
                         uint res;
                         res = (uint)(dst - src - (X ? 1 : 0));
                         N = ((res & 0x80) != 0);
@@ -1085,14 +1099,14 @@ namespace cpu.m68000
                         V = ((((src ^ dst) & (res ^ dst)) & 0x80) != 0);
                         res = res & 0xff;
                         Z &= (res == 0);
-                        D[dstReg].u32 = (D[dstReg].u32 & 0xffffff00) | res;
+                        D_ptr_dstReg->u32 = (D_ptr_dstReg->u32 & 0xffffff00) | res;
                         pendingCycles -= 4;
                         return;
                     }
                 case 1:
                     {
-                        uint src = D[srcReg].u32 & 0xffff;
-                        uint dst = D[dstReg].u32 & 0xffff;
+                        uint src = D_ptr_srcReg->u32 & 0xffff;
+                        uint dst = D_ptr_dstReg->u32 & 0xffff;
                         uint res;
                         res = (uint)(dst - src - (X ? 1 : 0));
                         N = ((res & 0x8000) != 0);
@@ -1100,21 +1114,21 @@ namespace cpu.m68000
                         V = ((((src ^ dst) & (res ^ dst)) & 0x8000) != 0);
                         res = res & 0xffff;
                         Z &= (res == 0);
-                        D[dstReg].u32 = (D[dstReg].u32 & 0xffff0000) | res;
+                        D_ptr_dstReg->u32 = (D_ptr_dstReg->u32 & 0xffff0000) | res;
                         pendingCycles -= 4;
                         return;
                     }
                 case 2:
                     {
-                        uint src = D[srcReg].u32;
-                        uint dst = D[dstReg].u32;
+                        uint src = D_ptr_srcReg->u32;
+                        uint dst = D_ptr_dstReg->u32;
                         uint res;
                         res = (uint)(dst - src - (X ? 1 : 0));
                         N = ((res & 0x80000000) != 0);
                         X = C = (((((src & res) | (~dst & (src | res))) >> 23) & 0x100) != 0);
                         V = (((((src ^ dst) & (res ^ dst)) >> 24) & 0x80) != 0);
                         Z &= (res == 0);
-                        D[dstReg].u32 = res;
+                        D_ptr_dstReg->u32 = res;
                         pendingCycles -= 8;
                         return;
                     }
@@ -1143,11 +1157,11 @@ namespace cpu.m68000
                         }
                         if (dstReg == 7)
                         {
-                           A_dstReg->u32 -= 2;
+                            A_dstReg->u32 -= 2;
                         }
                         else
                         {
-                           A_dstReg->u32--;
+                            A_dstReg->u32--;
                         }
                         uint src = (uint)ReadByte(A_srcReg->s32);
                         uint dst = (uint)ReadByte(A_dstReg->s32);
@@ -1166,7 +1180,7 @@ namespace cpu.m68000
                     {
                         A_srcReg->u32 -= 2;
                         uint src = (uint)ReadWord(A_srcReg->s32);
-                       A_dstReg->u32 -= 2;
+                        A_dstReg->u32 -= 2;
                         uint dst = (uint)ReadWord(A_dstReg->s32);
                         uint res;
                         res = (uint)(dst - src - (X ? 1 : 0));
@@ -1183,7 +1197,7 @@ namespace cpu.m68000
                     {
                         A_srcReg->u32 -= 4;
                         uint src = (uint)ReadLong(A_srcReg->s32);
-                       A_dstReg->u32 -= 4;
+                        A_dstReg->u32 -= 4;
                         uint dst = (uint)ReadWord(A_dstReg->s32);
                         uint res;
                         res = (uint)(dst - src - (X ? 1 : 0));
@@ -1210,7 +1224,7 @@ namespace cpu.m68000
         //    {
         //        case 0: // byte
         //            {
-        //                sbyte a = D[dReg].s8;
+        //                sbyte a = D_ptr_dReg->s8;
         //                sbyte b = ReadValueB(mode, reg);
         //                int result = a - b;
         //                N = (result & 0x80) != 0;
@@ -1222,7 +1236,7 @@ namespace cpu.m68000
         //            }
         //        case 1: // word
         //            {
-        //                short a = D[dReg].s16;
+        //                short a = D_ptr_dReg->s16;
         //                short b = ReadValueW(mode, reg);
         //                int result = a - b;
         //                N = (result & 0x8000) != 0;
@@ -1234,7 +1248,7 @@ namespace cpu.m68000
         //            }
         //        case 2: // long
         //            {
-        //                int a = D[dReg].s32;
+        //                int a = D_ptr_dReg->s32;
         //                int b = ReadValueL(mode, reg);
         //                long result = (long)a - (long)b;
         //                N = (result & 0x80000000) != 0;
@@ -1270,7 +1284,7 @@ namespace cpu.m68000
                     }
                 case 1: // word
                     {
-                        short a = (D+ dReg)->s16;
+                        short a = (D + dReg)->s16;
                         short b = ReadValueW(mode, reg);
                         int result = a - b;
                         N = (result & 0x8000) != 0;
@@ -1454,7 +1468,7 @@ namespace cpu.m68000
                             switch (mode)
                             {
                                 case 0: // Dn
-                                    a = D[reg].s8; break;
+                                    a = (D + reg)->s8; break;
                                 case 1: // An
                                     a = A_ptr_reg->s8; break;
                                 case 2: // (An)
@@ -1489,7 +1503,7 @@ namespace cpu.m68000
                                             a = value; break;
                                         case 4: // immediate
                                             value = (sbyte)ReadOpWord(PC); PC += 2;
-                                            a = value;break;
+                                            a = value; break;
                                         default:
                                             throw new Exception("Invalid addressing mode!");
                                     }
@@ -1542,9 +1556,9 @@ namespace cpu.m68000
             int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
-
-            uint result = (uint)(D[dreg].u16 * (ushort)ReadValueW(mode, reg));
-            D[dreg].u32 = result;
+            Register* D_ptr_dreg = D + dreg;
+            uint result = (uint)(D_ptr_dreg->u16 * (ushort)ReadValueW(mode, reg));
+            D_ptr_dreg->u32 = result;
 
             V = false;
             C = false;
@@ -1560,9 +1574,9 @@ namespace cpu.m68000
             int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
-
-            int result = D[dreg].s16 * ReadValueW(mode, reg);
-            D[dreg].s32 = result;
+            Register* D_ptr_dreg = D + dreg;
+            int result = D_ptr_dreg->s16 * ReadValueW(mode, reg);
+            D_ptr_dreg->s32 = result;
 
             V = false;
             C = false;
@@ -1580,7 +1594,8 @@ namespace cpu.m68000
             int reg = (op >> 0) & 7;
 
             uint source = (ushort)ReadValueW(mode, reg);
-            uint dest = D[dreg].u32;
+            Register* D_ptr_dreg = D + dreg;
+            uint dest = D_ptr_dreg->u32;
 
             if (source == 0)
             {
@@ -1596,7 +1611,7 @@ namespace cpu.m68000
                     N = (quotient & 0x8000) != 0;
                     V = false;
                     C = false;
-                    D[dreg].u32 = (quotient & 0xFFFF) | (remainder << 16);
+                    D_ptr_dreg->u32 = (quotient & 0xFFFF) | (remainder << 16);
                 }
                 else
                 {
@@ -1614,7 +1629,8 @@ namespace cpu.m68000
             int reg = (op >> 0) & 7;
 
             int source = ReadValueW(mode, reg);
-            int dest = D[dreg].s32;
+            Register* D_ptr_dreg = D + dreg;
+            int dest = D_ptr_dreg->s32;
 
             if (source == 0)
             {
@@ -1630,7 +1646,7 @@ namespace cpu.m68000
                     N = (quotient & 0x8000) != 0;
                     V = false;
                     C = false;
-                    D[dreg].s32 = (quotient & 0xFFFF) | (remainder << 16);
+                    D_ptr_dreg->s32 = (quotient & 0xFFFF) | (remainder << 16);
                 }
                 else
                 {

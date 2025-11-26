@@ -125,18 +125,19 @@ namespace cpu.m68000
             int size = ((op >> 6) & 0x01);
             int aReg = (op & 0x07);
             Register* A_ptr_aReg = A + aReg;
+            Register* D_ptr_dReg = D + dReg;
             if (dir == 0 && size == 0)
             {
                 int ea;
                 ea = A_ptr_aReg->s32 + ReadOpWord(PC); PC += 2;
-                D[dReg].u32 = (D[dReg].u32 & 0xffff0000) | (ushort)(((byte)ReadByte(ea) << 8) + (byte)ReadByte(ea + 2));
+                D_ptr_dReg->u32 = (D_ptr_dReg->u32 & 0xffff0000) | (ushort)(((byte)ReadByte(ea) << 8) + (byte)ReadByte(ea + 2));
                 pendingCycles -= 16;
             }
             else if (dir == 0 && size == 1)
             {
                 int ea;
                 ea = A_ptr_aReg->s32 + ReadOpWord(PC); PC += 2;
-                D[dReg].u32 = (uint)(((byte)ReadByte(ea) << 24) + ((byte)ReadByte(ea + 2) << 16) + ((byte)ReadByte(ea + 4) << 8) + (byte)ReadByte(ea + 6));
+                D_ptr_dReg->u32 = (uint)(((byte)ReadByte(ea) << 24) + ((byte)ReadByte(ea + 2) << 16) + ((byte)ReadByte(ea + 4) << 8) + (byte)ReadByte(ea + 6));
                 pendingCycles -= 24;
             }
             else if (dir == 1 && size == 0)
@@ -144,7 +145,7 @@ namespace cpu.m68000
                 uint src;
                 int ea;
                 ea = A_ptr_aReg->s32 + ReadOpWord(PC); PC += 2;
-                src = D[dReg].u32;
+                src = D_ptr_dReg->u32;
                 WriteByte(ea, (sbyte)((src >> 8) & 0xff));
                 WriteByte(ea + 2, (sbyte)(src & 0xff));
                 pendingCycles -= 16;
@@ -154,7 +155,7 @@ namespace cpu.m68000
                 uint src;
                 int ea;
                 ea = A_ptr_aReg->s32 + ReadOpWord(PC); PC += 2;
-                src = D[dReg].u32;
+                src = D_ptr_dReg->u32;
                 WriteByte(ea, (sbyte)((src >> 24) & 0xff));
                 WriteByte(ea + 2, (sbyte)((src >> 16) & 0xff));
                 WriteByte(ea + 4, (sbyte)((src >> 8) & 0xff));
@@ -262,7 +263,7 @@ namespace cpu.m68000
                         if ((registers & 1) == 1)
                         {
                             address -= 2;
-                            WriteWord(address, D[i].s16);
+                            WriteWord(address, (D + i)->s16);
                             regCount++;
                         }
                         registers >>= 1;
@@ -275,7 +276,7 @@ namespace cpu.m68000
                     {
                         if ((registers & 1) == 1)
                         {
-                            WriteWord(address, D[i].s16);
+                            WriteWord(address, (D + i)->s16);
                             address += 2;
                             regCount++;
                         }
@@ -314,7 +315,7 @@ namespace cpu.m68000
                         if ((registers & 1) == 1)
                         {
                             address -= 4;
-                            WriteLong(address, D[i].s32);
+                            WriteLong(address, (D + i)->s32);
                             regCount++;
                         }
                         registers >>= 1;
@@ -327,7 +328,7 @@ namespace cpu.m68000
                     {
                         if ((registers & 1) == 1)
                         {
-                            WriteLong(address, D[i].s32);
+                            WriteLong(address, (D + i)->s32);
                             address += 4;
                             regCount++;
                         }
@@ -385,11 +386,11 @@ namespace cpu.m68000
                     {
                         if (srcMode == 7 && (srcReg == 2 || srcReg == 3))
                         {
-                            D[i].s32 = ReadPcrelWord(address);
+                            (D + i)->s32 = ReadPcrelWord(address);
                         }
                         else
                         {
-                            D[i].s32 = ReadWord(address);
+                            (D + i)->s32 = ReadWord(address);
                         }
                         address += 2;
                         regCount++;
@@ -426,11 +427,11 @@ namespace cpu.m68000
                     {
                         if (srcMode == 7 && (srcReg == 2 || srcReg == 3))
                         {
-                            D[i].s32 = ReadPcrelLong(address);
+                            (D + i)->s32 = ReadPcrelLong(address);
                         }
                         else
                         {
-                            D[i].s32 = ReadLong(address);
+                            (D + i)->s32 = ReadLong(address);
                         }
                         address += 4;
                         regCount++;
@@ -527,18 +528,18 @@ namespace cpu.m68000
         {
             int size = (op >> 6) & 1;
             int reg = op & 7;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // ext.w
-                    D[reg].s16 = D[reg].s8;
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = (D[reg].s16 == 0);
+                    D_ptr_reg->s16 = D_ptr_reg->s8;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = (D_ptr_reg->s16 == 0);
                     break;
                 case 1: // ext.l
-                    D[reg].s32 = D[reg].s16;
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = (D[reg].s32 == 0);
+                    D_ptr_reg->s32 = D_ptr_reg->s16;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = (D_ptr_reg->s32 == 0);
                     break;
             }
 

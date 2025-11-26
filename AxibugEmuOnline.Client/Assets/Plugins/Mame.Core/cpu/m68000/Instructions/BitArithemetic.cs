@@ -16,19 +16,19 @@ namespace cpu.m68000
         //    switch (size)
         //    {
         //        case 0: // Byte
-        //            D[dstReg].s8 &= ReadValueB(srcMode, srcReg);
+        //            D_ptr_dstReg->s8 &= ReadValueB(srcMode, srcReg);
         //            pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
-        //            N = (D[dstReg].s8 & 0x80) != 0;
-        //            Z = (D[dstReg].s8 == 0);
+        //            N = (D_ptr_dstReg->s8 & 0x80) != 0;
+        //            Z = (D_ptr_dstReg->s8 == 0);
         //            return;
         //        case 1: // Word
-        //            D[dstReg].s16 &= ReadValueW(srcMode, srcReg);
+        //            D_ptr_dstReg->s16 &= ReadValueW(srcMode, srcReg);
         //            pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
-        //            N = (D[dstReg].s16 & 0x8000) != 0;
-        //            Z = (D[dstReg].s16 == 0);
+        //            N = (D_ptr_dstReg->s16 & 0x8000) != 0;
+        //            Z = (D_ptr_dstReg->s16 == 0);
         //            return;
         //        case 2: // Long
-        //            D[dstReg].s32 &= ReadValueL(srcMode, srcReg);
+        //            D_ptr_dstReg->s32 &= ReadValueL(srcMode, srcReg);
         //            if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
         //            {
         //                pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
@@ -37,8 +37,8 @@ namespace cpu.m68000
         //            {
         //                pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
         //            }
-        //            N = (D[dstReg].s32 & 0x80000000) != 0;
-        //            Z = (D[dstReg].s32 == 0);
+        //            N = (D_ptr_dstReg->s32 & 0x80000000) != 0;
+        //            Z = (D_ptr_dstReg->s32 == 0);
         //            return;
         //    }
         //}
@@ -49,24 +49,25 @@ namespace cpu.m68000
             int srcMode = (op >> 3) & 0x07;
             int srcReg = op & 0x07;
 
+            Register* D_ptr_dstReg = D + dstReg;
             V = false;
             C = false;
             switch (size)
             {
                 case 0: // Byte
-                    D[dstReg].s8 &= ReadValueB(srcMode, srcReg);
+                    D_ptr_dstReg->s8 &= ReadValueB(srcMode, srcReg);
                     pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
-                    N = (D[dstReg].s8 & 0x80) != 0;
-                    Z = (D[dstReg].s8 == 0);
+                    N = (D_ptr_dstReg->s8 & 0x80) != 0;
+                    Z = (D_ptr_dstReg->s8 == 0);
                     return;
                 case 1: // Word
-                    D[dstReg].s16 &= ReadValueW(srcMode, srcReg);
+                    D_ptr_dstReg->s16 &= ReadValueW(srcMode, srcReg);
                     pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
-                    N = (D[dstReg].s16 & 0x8000) != 0;
-                    Z = (D[dstReg].s16 == 0);
+                    N = (D_ptr_dstReg->s16 & 0x8000) != 0;
+                    Z = (D_ptr_dstReg->s16 == 0);
                     return;
                 case 2: // Long
-                    D[dstReg].s32 &= ReadValueL(srcMode, srcReg);
+                    D_ptr_dstReg->s32 &= ReadValueL(srcMode, srcReg);
                     if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
                     {
                         pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
@@ -75,8 +76,8 @@ namespace cpu.m68000
                     {
                         pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
                     }
-                    N = (D[dstReg].s32 & 0x80000000) != 0;
-                    Z = (D[dstReg].s32 == 0);
+                    N = (D_ptr_dstReg->s32 & 0x80000000) != 0;
+                    Z = (D_ptr_dstReg->s32 == 0);
                     return;
             }
         }
@@ -91,12 +92,13 @@ namespace cpu.m68000
             V = false;
             C = false;
 
+            Register* D_ptr_srcReg = D + srcReg;
             switch (size)
             {
                 case 0: // Byte
                     {
                         sbyte dest = PeekValueB(dstMode, dstReg);
-                        sbyte value = (sbyte)(dest & D[srcReg].s8);
+                        sbyte value = (sbyte)(dest & D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
@@ -106,7 +108,7 @@ namespace cpu.m68000
                 case 1: // Word
                     {
                         short dest = PeekValueW(dstMode, dstReg);
-                        short value = (short)(dest & D[srcReg].s16);
+                        short value = (short)(dest & D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
@@ -116,7 +118,7 @@ namespace cpu.m68000
                 case 2: // Long
                     {
                         int dest = PeekValueL(dstMode, dstReg);
-                        int value = dest & D[srcReg].s32;
+                        int value = dest & D_ptr_srcReg->s32;
                         WriteValueL(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
                         N = (value & 0x80000000) != 0;
@@ -194,12 +196,13 @@ namespace cpu.m68000
             V = false;
             C = false;
 
+            Register* D_ptr_srcReg = D + srcReg;
             switch (size)
             {
                 case 0: // Byte
                     {
                         sbyte dest = PeekValueB(dstMode, dstReg);
-                        sbyte value = (sbyte)(dest ^ D[srcReg].s8);
+                        sbyte value = (sbyte)(dest ^ D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
@@ -209,7 +212,7 @@ namespace cpu.m68000
                 case 1: // Word
                     {
                         short dest = PeekValueW(dstMode, dstReg);
-                        short value = (short)(dest ^ D[srcReg].s16);
+                        short value = (short)(dest ^ D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
@@ -219,7 +222,7 @@ namespace cpu.m68000
                 case 2: // Long
                     {
                         int dest = PeekValueL(dstMode, dstReg);
-                        int value = dest ^ D[srcReg].s32;
+                        int value = dest ^ D_ptr_srcReg->s32;
                         WriteValueL(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
                         N = (value & 0x80000000) != 0;
@@ -295,22 +298,23 @@ namespace cpu.m68000
             V = false;
             C = false;
 
+            Register* D_ptr_dstReg = D + dstReg;
             switch (size)
             {
                 case 0: // Byte
-                    D[dstReg].s8 |= ReadValueB(srcMode, srcReg);
+                    D_ptr_dstReg->s8 |= ReadValueB(srcMode, srcReg);
                     pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
-                    N = (D[dstReg].s8 & 0x80) != 0;
-                    Z = (D[dstReg].s8 == 0);
+                    N = (D_ptr_dstReg->s8 & 0x80) != 0;
+                    Z = (D_ptr_dstReg->s8 == 0);
                     return;
                 case 1: // Word
-                    D[dstReg].s16 |= ReadValueW(srcMode, srcReg);
+                    D_ptr_dstReg->s16 |= ReadValueW(srcMode, srcReg);
                     pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
-                    N = (D[dstReg].s16 & 0x8000) != 0;
-                    Z = (D[dstReg].s16 == 0);
+                    N = (D_ptr_dstReg->s16 & 0x8000) != 0;
+                    Z = (D_ptr_dstReg->s16 == 0);
                     return;
                 case 2: // Long
-                    D[dstReg].s32 |= ReadValueL(srcMode, srcReg);
+                    D_ptr_dstReg->s32 |= ReadValueL(srcMode, srcReg);
                     if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
                     {
                         pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
@@ -319,8 +323,8 @@ namespace cpu.m68000
                     {
                         pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
                     }
-                    N = (D[dstReg].s32 & 0x80000000) != 0;
-                    Z = (D[dstReg].s32 == 0);
+                    N = (D_ptr_dstReg->s32 & 0x80000000) != 0;
+                    Z = (D_ptr_dstReg->s32 == 0);
                     return;
             }
         }
@@ -336,12 +340,13 @@ namespace cpu.m68000
             V = false;
             C = false;
 
+            Register* D_ptr_srcReg = D + srcReg;
             switch (size)
             {
                 case 0: // Byte
                     {
                         sbyte dest = PeekValueB(dstMode, dstReg);
-                        sbyte value = (sbyte)(dest | D[srcReg].s8);
+                        sbyte value = (sbyte)(dest | D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
@@ -351,7 +356,7 @@ namespace cpu.m68000
                 case 1: // Word
                     {
                         short dest = PeekValueW(dstMode, dstReg);
-                        short value = (short)(dest | D[srcReg].s16);
+                        short value = (short)(dest | D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
@@ -361,7 +366,7 @@ namespace cpu.m68000
                 case 2: // Long
                     {
                         int dest = PeekValueL(dstMode, dstReg);
-                        int value = dest | D[srcReg].s32;
+                        int value = dest | D_ptr_srcReg->s32;
                         WriteValueL(dstMode, dstReg, value);
                         pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
                         N = (value & 0x80000000) != 0;
@@ -478,42 +483,43 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             V = false;
             C = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        C = X = (D[reg].u8 & 0x80) != 0;
-                        D[reg].u8 <<= 1;
+                        C = X = (D_ptr_reg->u8 & 0x80) != 0;
+                        D_ptr_reg->u8 <<= 1;
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].u8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->u8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        C = X = (D[reg].u16 & 0x8000) != 0;
-                        D[reg].u16 <<= 1;
+                        C = X = (D_ptr_reg->u16 & 0x8000) != 0;
+                        D_ptr_reg->u16 <<= 1;
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].u16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->u16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        C = X = (D[reg].u32 & 0x80000000) != 0;
-                        D[reg].u32 <<= 1;
+                        C = X = (D_ptr_reg->u32 & 0x80000000) != 0;
+                        D_ptr_reg->u32 <<= 1;
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].u32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->u32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -551,42 +557,43 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             V = false;
             C = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        C = X = (D[reg].u8 & 1) != 0;
-                        D[reg].u8 >>= 1;
+                        C = X = (D_ptr_reg->u8 & 1) != 0;
+                        D_ptr_reg->u8 >>= 1;
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].u8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->u8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        C = X = (D[reg].u16 & 1) != 0;
-                        D[reg].u16 >>= 1;
+                        C = X = (D_ptr_reg->u16 & 1) != 0;
+                        D_ptr_reg->u16 >>= 1;
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].u16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->u16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        C = X = (D[reg].u32 & 1) != 0;
-                        D[reg].u32 >>= 1;
+                        C = X = (D_ptr_reg->u32 & 1) != 0;
+                        D_ptr_reg->u32 >>= 1;
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].u32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->u32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -625,48 +632,49 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             V = false;
             C = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        bool msb = D[reg].s8 < 0;
-                        C = X = (D[reg].u8 & 0x80) != 0;
-                        D[reg].s8 <<= 1;
-                        V |= (D[reg].s8 < 0) != msb;
+                        bool msb = D_ptr_reg->s8 < 0;
+                        C = X = (D_ptr_reg->u8 & 0x80) != 0;
+                        D_ptr_reg->s8 <<= 1;
+                        V |= (D_ptr_reg->s8 < 0) != msb;
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].u8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->u8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        bool msb = D[reg].s16 < 0;
-                        C = X = (D[reg].u16 & 0x8000) != 0;
-                        D[reg].s16 <<= 1;
-                        V |= (D[reg].s16 < 0) != msb;
+                        bool msb = D_ptr_reg->s16 < 0;
+                        C = X = (D_ptr_reg->u16 & 0x8000) != 0;
+                        D_ptr_reg->s16 <<= 1;
+                        V |= (D_ptr_reg->s16 < 0) != msb;
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].u16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->u16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        bool msb = D[reg].s32 < 0;
-                        C = X = (D[reg].u32 & 0x80000000) != 0;
-                        D[reg].s32 <<= 1;
-                        V |= (D[reg].s32 < 0) != msb;
+                        bool msb = D_ptr_reg->s32 < 0;
+                        C = X = (D_ptr_reg->u32 & 0x80000000) != 0;
+                        D_ptr_reg->s32 <<= 1;
+                        V |= (D_ptr_reg->s32 < 0) != msb;
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].u32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->u32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -705,48 +713,49 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             V = false;
             C = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        bool msb = D[reg].s8 < 0;
-                        C = X = (D[reg].u8 & 1) != 0;
-                        D[reg].s8 >>= 1;
-                        V |= (D[reg].s8 < 0) != msb;
+                        bool msb = D_ptr_reg->s8 < 0;
+                        C = X = (D_ptr_reg->u8 & 1) != 0;
+                        D_ptr_reg->s8 >>= 1;
+                        V |= (D_ptr_reg->s8 < 0) != msb;
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].u8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->u8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        bool msb = D[reg].s16 < 0;
-                        C = X = (D[reg].u16 & 1) != 0;
-                        D[reg].s16 >>= 1;
-                        V |= (D[reg].s16 < 0) != msb;
+                        bool msb = D_ptr_reg->s16 < 0;
+                        C = X = (D_ptr_reg->u16 & 1) != 0;
+                        D_ptr_reg->s16 >>= 1;
+                        V |= (D_ptr_reg->s16 < 0) != msb;
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].u16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->u16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        bool msb = D[reg].s32 < 0;
-                        C = X = (D[reg].u32 & 1) != 0;
-                        D[reg].s32 >>= 1;
-                        V |= (D[reg].s32 < 0) != msb;
+                        bool msb = D_ptr_reg->s32 < 0;
+                        C = X = (D_ptr_reg->u32 & 1) != 0;
+                        D_ptr_reg->s32 >>= 1;
+                        V |= (D_ptr_reg->s32 < 0) != msb;
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].u32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->u32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -788,42 +797,43 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             V = false;
             C = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u8 & 0x80) != 0;
-                        D[reg].u8 = (byte)((D[reg].u8 << 1) | (D[reg].u8 >> 7));
+                        C = (D_ptr_reg->u8 & 0x80) != 0;
+                        D_ptr_reg->u8 = (byte)((D_ptr_reg->u8 << 1) | (D_ptr_reg->u8 >> 7));
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].u8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->u8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u16 & 0x8000) != 0;
-                        D[reg].u16 = (ushort)((D[reg].u16 << 1) | (D[reg].u16 >> 15));
+                        C = (D_ptr_reg->u16 & 0x8000) != 0;
+                        D_ptr_reg->u16 = (ushort)((D_ptr_reg->u16 << 1) | (D_ptr_reg->u16 >> 15));
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].u16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->u16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u32 & 0x80000000) != 0;
-                        D[reg].u32 = ((D[reg].u32 << 1) | (D[reg].u32 >> 31));
+                        C = (D_ptr_reg->u32 & 0x80000000) != 0;
+                        D_ptr_reg->u32 = ((D_ptr_reg->u32 << 1) | (D_ptr_reg->u32 >> 31));
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].u32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->u32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -861,42 +871,43 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             V = false;
             C = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u8 & 1) != 0;
-                        D[reg].u8 = (byte)((D[reg].u8 >> 1) | (D[reg].u8 << 7));
+                        C = (D_ptr_reg->u8 & 1) != 0;
+                        D_ptr_reg->u8 = (byte)((D_ptr_reg->u8 >> 1) | (D_ptr_reg->u8 << 7));
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].u8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->u8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u16 & 1) != 0;
-                        D[reg].u16 = (ushort)((D[reg].u16 >> 1) | (D[reg].u16 << 15));
+                        C = (D_ptr_reg->u16 & 1) != 0;
+                        D_ptr_reg->u16 = (ushort)((D_ptr_reg->u16 >> 1) | (D_ptr_reg->u16 << 15));
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].u16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->u16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u32 & 1) != 0;
-                        D[reg].u32 = ((D[reg].u32 >> 1) | (D[reg].u32 << 31));
+                        C = (D_ptr_reg->u32 & 1) != 0;
+                        D_ptr_reg->u32 = ((D_ptr_reg->u32 >> 1) | (D_ptr_reg->u32 << 31));
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].u32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->u32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -934,45 +945,46 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             C = X;
             V = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u8 & 0x80) != 0;
-                        D[reg].u8 = (byte)((D[reg].u8 << 1) | (X ? 1 : 0));
+                        C = (D_ptr_reg->u8 & 0x80) != 0;
+                        D_ptr_reg->u8 = (byte)((D_ptr_reg->u8 << 1) | (X ? 1 : 0));
                         X = C;
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].s8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->s8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u16 & 0x8000) != 0;
-                        D[reg].u16 = (ushort)((D[reg].u16 << 1) | (X ? 1 : 0));
+                        C = (D_ptr_reg->u16 & 0x8000) != 0;
+                        D_ptr_reg->u16 = (ushort)((D_ptr_reg->u16 << 1) | (X ? 1 : 0));
                         X = C;
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].s16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->s16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].s32 & 0x80000000) != 0;
-                        D[reg].s32 = ((D[reg].s32 << 1) | (X ? 1 : 0));
+                        C = (D_ptr_reg->s32 & 0x80000000) != 0;
+                        D_ptr_reg->s32 = ((D_ptr_reg->s32 << 1) | (X ? 1 : 0));
                         X = C;
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].s32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->s32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -1013,45 +1025,46 @@ namespace cpu.m68000
             int m = (op >> 5) & 1;
             int reg = op & 7;
 
+            Register* D_ptr_rot = D + rot;
             if (m == 0 && rot == 0) rot = 8;
-            else if (m == 1) rot = D[rot].s32 & 63;
+            else if (m == 1) rot = D_ptr_rot->s32 & 63;
 
             C = X;
             V = false;
-
+            Register* D_ptr_reg = D + reg;
             switch (size)
             {
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u8 & 1) != 0;
-                        D[reg].u8 = (byte)((D[reg].u8 >> 1) | (X ? 0x80 : 0));
+                        C = (D_ptr_reg->u8 & 1) != 0;
+                        D_ptr_reg->u8 = (byte)((D_ptr_reg->u8 >> 1) | (X ? 0x80 : 0));
                         X = C;
                     }
-                    N = (D[reg].s8 & 0x80) != 0;
-                    Z = D[reg].s8 == 0;
+                    N = (D_ptr_reg->s8 & 0x80) != 0;
+                    Z = D_ptr_reg->s8 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].u16 & 1) != 0;
-                        D[reg].u16 = (ushort)((D[reg].u16 >> 1) | (X ? 0x8000 : 0));
+                        C = (D_ptr_reg->u16 & 1) != 0;
+                        D_ptr_reg->u16 = (ushort)((D_ptr_reg->u16 >> 1) | (X ? 0x8000 : 0));
                         X = C;
                     }
-                    N = (D[reg].s16 & 0x8000) != 0;
-                    Z = D[reg].s16 == 0;
+                    N = (D_ptr_reg->s16 & 0x8000) != 0;
+                    Z = D_ptr_reg->s16 == 0;
                     pendingCycles -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
-                        C = (D[reg].s32 & 1) != 0;
-                        D[reg].u32 = ((D[reg].u32 >> 1) | (X ? 0x80000000 : 0));
+                        C = (D_ptr_reg->s32 & 1) != 0;
+                        D_ptr_reg->u32 = ((D_ptr_reg->u32 >> 1) | (X ? 0x80000000 : 0));
                         X = C;
                     }
-                    N = (D[reg].s32 & 0x80000000) != 0;
-                    Z = D[reg].s32 == 0;
+                    N = (D_ptr_reg->s32 & 0x80000000) != 0;
+                    Z = D_ptr_reg->s32 == 0;
                     pendingCycles -= 8 + (rot * 2);
                     return;
             }
@@ -1087,10 +1100,11 @@ namespace cpu.m68000
         void SWAP()
         {
             int reg = op & 7;
-            D[reg].u32 = (D[reg].u32 << 16) | (D[reg].u32 >> 16);
+            Register* D_ptr_reg = D + reg;
+            D_ptr_reg->u32 = (D_ptr_reg->u32 << 16) | (D_ptr_reg->u32 >> 16);
             V = C = false;
-            Z = D[reg].u32 == 0;
-            N = (D[reg].s32 & 0x80000000) != 0;
+            Z = D_ptr_reg->u32 == 0;
+            N = (D_ptr_reg->s32 & 0x80000000) != 0;
             pendingCycles -= 4;
         }
 
