@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace cpu.m68000
 {
@@ -499,10 +500,11 @@ namespace cpu.m68000
             int reg = op & 7;
 
             Register* ptrA7 = &A[7];
+            Register* A_ptr_reg = A + reg;
             ptrA7->s32 -= 4;
             short offset = ReadOpWord(PC); PC += 2;
-            WriteLong(ptrA7->s32, A[reg].s32);
-            A[reg].s32 = ptrA7->s32;
+            WriteLong(ptrA7->s32, A_ptr_reg->s32);
+            A_ptr_reg->s32 = ptrA7->s32;
             ptrA7->s32 += offset;
             pendingCycles -= 16;
         }
@@ -512,8 +514,9 @@ namespace cpu.m68000
         {
             int reg = op & 7;
             Register* ptrA7 = &A[7];
-            ptrA7->s32 = A[reg].s32;
-            A[reg].s32 = ReadLong(ptrA7->s32);
+            Register* A_ptr_reg = A + reg;
+            ptrA7->s32 = A_ptr_reg->s32;
+            A_ptr_reg->s32 = ReadLong(ptrA7->s32);
             ptrA7->s32 += 4;
             pendingCycles -= 12;
         }

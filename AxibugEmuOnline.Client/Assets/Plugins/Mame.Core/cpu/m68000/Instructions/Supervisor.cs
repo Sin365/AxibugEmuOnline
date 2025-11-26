@@ -61,13 +61,14 @@ namespace cpu.m68000
             }
             else
             {
+                Register* A_ptr_reg = A + reg;
                 if (dir == 0)
                 {
-                    usp = A[reg].s32;
+                    usp = A_ptr_reg->s32;
                 }
                 else
                 {
-                    A[reg].s32 = usp;
+                    A_ptr_reg->s32 = usp;
                 }
             }
             pendingCycles -= 4;
