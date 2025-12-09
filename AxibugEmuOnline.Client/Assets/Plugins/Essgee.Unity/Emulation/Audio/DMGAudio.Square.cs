@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Essgee.Utilities;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Essgee.Emulation.Audio
 {
     public partial class DMGAudio
     {
-        public class Square : IDMGAudioChannel
+        public unsafe class Square : IDMGAudioChannel
         {
             //static readonly bool[,] dutyCycleTable = new bool[,]
             //  {
@@ -15,45 +17,56 @@ namespace Essgee.Emulation.Audio
             //};
 
             // 1. 初始化 - 假设原始数组是 4行 x 8列
-            private const int Rows = 4;
-            private const int Cols = 8;
-            private readonly bool[] _dutyCycleTable1D = new bool[Rows * Cols]
-            {
-                // 第一行 (索引 0-7)
-                false, false, false, false, false, false, false, true,
-                // 第二行 (索引 8-15)
-                true,  false, false, false, false, false, false, true,
-                // 第三行 (索引 16-23)
-                true,  false, false, false, false, true,  true,  true,
-                // 第四行 (索引 24-31)
-                false, true,  true,  true,  true,  true,  true,  false
-            };
+            public const int Rows = 4;
+            public const int Cols = 8;
+            //private readonly bool[] _dutyCycleTable1D = new bool[Rows * Cols]
+            //{
+            //    // 第一行 (索引 0-7)
+            //    false, false, false, false, false, false, false, true,
+            //    // 第二行 (索引 8-15)
+            //    true,  false, false, false, false, false, false, true,
+            //    // 第三行 (索引 16-23)
+            //    true,  false, false, false, false, true,  true,  true,
+            //    // 第四行 (索引 24-31)
+            //    false, true,  true,  true,  true,  true,  true,  false
+            //};
 
-            // 2. 访问方法 - 替代原来的 dutyCycleTable[row, col]
-            public bool GetValue(int row, int col)
+
+            #region //指针化 _dutyCycleTable1D
+            bool[] _dutyCycleTable1D_src;
+            GCHandle _dutyCycleTable1D_handle;
+            public bool* _dutyCycleTable1D;
+            public int _dutyCycleTable1DLength;
+            public bool _dutyCycleTable1D_IsNull => _dutyCycleTable1D == null;
+            public bool[] _dutyCycleTable1D_set
             {
-                // 重要的边界检查（在稳定后可通过条件编译移除以极致优化）
-                // if (row < 0 || row >= Rows || col < 0 || col >= Cols) return false;
-                return _dutyCycleTable1D[row * Cols + col];
+                set
+                {
+                    _dutyCycleTable1D_handle.ReleaseGCHandle();
+                    _dutyCycleTable1D_src = value;
+                    _dutyCycleTable1DLength = value.Length;
+                    _dutyCycleTable1D_src.GetObjectPtr(ref _dutyCycleTable1D_handle, ref _dutyCycleTable1D);
+                }
             }
+            #endregion
 
             // NR10/20
             byte sweepPeriodReload, sweepShift;
             bool sweepNegate;
 
             // NR11/21
-            byte dutyCycle, lengthLoad;
+            public byte dutyCycle, lengthLoad;
 
             // NR12/22
             byte envelopeStartingVolume, envelopePeriodReload;
             bool envelopeAddMode;
 
             // NR13/23
-            byte frequencyLSB;
+            public byte frequencyLSB;
 
             // NR14/24
-            bool trigger, lengthEnable;
-            byte frequencyMSB;
+            public bool trigger, lengthEnable;
+            public byte frequencyMSB;
 
             //
 
@@ -64,15 +77,15 @@ namespace Essgee.Emulation.Audio
             int sweepCounter, sweepFreqShadow;
 
             // Frequency
-            int frequencyCounter;
+            public int frequencyCounter;
 
             // Envelope
-            int volume, envelopeCounter;
+            public int volume, envelopeCounter;
             bool isEnvelopeUpdateEnabled;
 
             // Misc
-            bool isChannelEnabled, isDacEnabled;
-            int lengthCounter, dutyCounter;
+            public bool isChannelEnabled, isDacEnabled;
+            public int lengthCounter, dutyCounter;
 
             //public int OutputVolume { get; private set; }
 
@@ -81,6 +94,19 @@ namespace Essgee.Emulation.Audio
             public Square(bool hasSweep)
             {
                 channelSupportsSweep = hasSweep;
+
+                //初始化一下
+                _dutyCycleTable1D_set = new bool[Rows * Cols]
+            {
+                // 第一行 (索引 0-7)
+                false, false, false, false, false, false, false, true,
+                // 第二行 (索引 8-15)
+                true,  false, false, false, false, false, false, true,
+                // 第三行 (索引 16-23)
+                true,  false, false, false, false, true,  true,  true,
+                // 第四行 (索引 24-31)
+                false, true,  true,  true,  true,  true,  true,  false
+            };
             }
 
             public override void Reset()
@@ -169,7 +195,8 @@ namespace Essgee.Emulation.Audio
                 //OutputVolume = isDacEnabled && dutyCycleTable[dutyCycle, dutyCounter] ? volume : 0;
 
                 //改为一维数组访问
-                OutputVolume = isDacEnabled && _dutyCycleTable1D[dutyCycle * Cols + dutyCounter] ? volume : 0;
+                //OutputVolume = isDacEnabled && _dutyCycleTable1D[dutyCycle * Cols + dutyCounter] ? volume : 0;
+                OutputVolume = isDacEnabled && *(_dutyCycleTable1D+(dutyCycle * Cols + dutyCounter)) ? volume : 0;
             }
 
             private void Trigger()

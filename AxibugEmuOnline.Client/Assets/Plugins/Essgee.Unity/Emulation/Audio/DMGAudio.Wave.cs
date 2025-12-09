@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Essgee.Utilities;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Essgee.Emulation.Audio
 {
-    public partial class DMGAudio
+    public unsafe partial class DMGAudio
     {
         public class Wave : IDMGAudioChannel
         {
@@ -19,16 +21,35 @@ namespace Essgee.Emulation.Audio
             byte frequencyLSB;
 
             // NR34
-            bool trigger, lengthEnable;
+            public bool trigger, lengthEnable;
             byte frequencyMSB;
 
             // Wave
-            protected byte[] sampleBuffer;
+            //protected byte[] sampleBuffer;
+
+            #region //指针化 sampleBuffer
+            byte[] sampleBuffer_src;
+            GCHandle sampleBuffer_handle;
+            public byte* sampleBuffer;
+            public int sampleBufferLength;
+            public bool sampleBuffer_IsNull => sampleBuffer == null;
+            public byte[] sampleBuffer_set
+            {
+                set
+                {
+                    sampleBuffer_handle.ReleaseGCHandle();
+                    sampleBuffer_src = value;
+                    sampleBufferLength = value.Length;
+                    sampleBuffer_src.GetObjectPtr(ref sampleBuffer_handle, ref sampleBuffer);
+                }
+            }
+            #endregion
+
             int frequencyCounter, positionCounter, volume;
 
             // Misc
-            bool isChannelEnabled;
-            int lengthCounter;
+            public bool isChannelEnabled;
+            public int lengthCounter;
 
             //public int OutputVolume { get; private set; }
 
@@ -36,12 +57,15 @@ namespace Essgee.Emulation.Audio
 
             public Wave()
             {
-                sampleBuffer = new byte[16];
+                //sampleBuffer = new byte[16];
+                sampleBuffer_set = new byte[16];
             }
 
             public override void Reset()
             {
-                for (var i = 0; i < sampleBuffer.Length; i++) sampleBuffer[i] = (byte)EmuStandInfo.Random.Next(255);
+                //for (var i = 0; i < sampleBuffer.Length; i++) sampleBuffer[i] = (byte)EmuStandInfo.Random.Next(255);
+                byte* ptr = sampleBuffer;
+                for (var i = 0; i < sampleBufferLength; i++, ptr++) *ptr = 0;// (byte)EmuStandInfo.Random.Next(255);
                 frequencyCounter = positionCounter = 0;
                 volume = 15;
 
@@ -82,7 +106,8 @@ namespace Essgee.Emulation.Audio
                     positionCounter++;
                     positionCounter %= 32;
 
-                    var value = sampleBuffer[positionCounter / 2];
+                    //var value = sampleBuffer[positionCounter / 2];
+                    var value = *(sampleBuffer + (positionCounter / 2));
                     if ((positionCounter & 0b1) == 0) value >>= 4;
                     value &= 0b1111;
 
@@ -168,16 +193,23 @@ namespace Essgee.Emulation.Audio
 
             public override void WriteWaveRam(byte offset, byte value)
             {
+                //if (!isDacEnabled)
+                //    sampleBuffer[offset & (sampleBuffer.Length - 1)] = value;
+                //else
+                //    sampleBuffer[positionCounter & (sampleBuffer.Length - 1)] = value;
                 if (!isDacEnabled)
-                    sampleBuffer[offset & (sampleBuffer.Length - 1)] = value;
+                    *(sampleBuffer + (offset & (sampleBufferLength - 1))) = value;
                 else
-                    sampleBuffer[positionCounter & (sampleBuffer.Length - 1)] = value;
+                    *(sampleBuffer+(positionCounter & (sampleBufferLength - 1))) = value;
             }
 
             public override byte ReadWaveRam(byte offset)
             {
                 if (!isDacEnabled)
-                    return sampleBuffer[offset & (sampleBuffer.Length - 1)];
+                {
+                    //return sampleBuffer[offset & (sampleBufferLength - 1)];
+                    return *(sampleBuffer + (offset & (sampleBufferLength - 1)));
+                }
                 else
                     return 0xFF;
             }

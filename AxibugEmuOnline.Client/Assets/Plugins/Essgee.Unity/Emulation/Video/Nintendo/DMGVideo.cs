@@ -106,13 +106,33 @@ namespace Essgee.Emulation.Video.Nintendo
         //取值范例 colorValuesBgr[colorIndex * 3 + channelIndex];
         const byte colorValuesBgr_singleLen = 3;
         // 转换后的一维数组
-        readonly byte[] colorValuesBgr = new byte[]
+        //readonly byte[] colorValuesBgr = new byte[]
+        //{
+        ///* White */    0xF8, 0xF8, 0xF8,
+        ///* Light gray */0x9B, 0x9B, 0x9B,
+        ///* Dark gray */ 0x3E, 0x3E, 0x3E,
+        ///* Black */    0x1F, 0x1F, 0x1F
+        //};
+
+
+        #region //指针化 colorValuesBgr
+        byte[] colorValuesBgr_src;
+        GCHandle colorValuesBgr_handle;
+        public byte* colorValuesBgr;
+        public int colorValuesBgrLength;
+        public bool colorValuesBgr_IsNull => colorValuesBgr == null;
+        public byte[] colorValuesBgr_set
         {
-        /* White */    0xF8, 0xF8, 0xF8,
-        /* Light gray */0x9B, 0x9B, 0x9B,
-        /* Dark gray */ 0x3E, 0x3E, 0x3E,
-        /* Black */    0x1F, 0x1F, 0x1F
-        };
+            set
+            {
+                colorValuesBgr_handle.ReleaseGCHandle();
+                colorValuesBgr_src = value;
+                colorValuesBgrLength = value.Length;
+                colorValuesBgr_src.GetObjectPtr(ref colorValuesBgr_handle, ref colorValuesBgr);
+            }
+        }
+        #endregion
+
 
         protected const byte screenUsageEmpty = 0;
         protected const byte screenUsageBackground = 1 << 0;
@@ -304,6 +324,15 @@ namespace Essgee.Emulation.Video.Nintendo
             outputFramebuffer_set = new byte[numDisplayPixels * 4];
 
             outputFramebufferCopy_set = new byte[numDisplayPixels * 4];
+
+            //初始化一下
+            colorValuesBgr_set = new byte[]
+        {
+            /* White */    0xF8, 0xF8, 0xF8,
+            /* Light gray */0x9B, 0x9B, 0x9B,
+            /* Dark gray */ 0x3E, 0x3E, 0x3E,
+            /* Black */    0x1F, 0x1F, 0x1F
+            };
 
             for (var y = 0; y < displayActiveHeight; y++)
                 SetLine(y, 0xFF, 0xFF, 0xFF);
@@ -734,18 +763,24 @@ namespace Essgee.Emulation.Video.Nintendo
             //outputFramebuffer[address + 0] = colorValuesBgr[c & 0x03][0];
             //outputFramebuffer[address + 1] = colorValuesBgr[c & 0x03][1];
             //outputFramebuffer[address + 2] = colorValuesBgr[c & 0x03][2];
-            outputFramebuffer[address + 0] = colorValuesBgr[(c & 0x03) * 3 + 0];
-            outputFramebuffer[address + 1] = colorValuesBgr[(c & 0x03) * 3 + 1];
-            outputFramebuffer[address + 2] = colorValuesBgr[(c & 0x03) * 3 + 2];
-            outputFramebuffer[address + 3] = 0xFF;
+
+            //outputFramebuffer[address + 0] = colorValuesBgr[(c & 0x03) * 3 + 0];
+            //outputFramebuffer[address + 1] = colorValuesBgr[(c & 0x03) * 3 + 1];
+            //outputFramebuffer[address + 2] = colorValuesBgr[(c & 0x03) * 3 + 2];
+            //outputFramebuffer[address + 3] = 0xFF;
+
+            *(outputFramebuffer + address) = colorValuesBgr[(c & 0x03) * 3 + 0];
+            *(outputFramebuffer + address + 1) = colorValuesBgr[(c & 0x03) * 3 + 1];
+            *(outputFramebuffer + address + 2) = colorValuesBgr[(c & 0x03) * 3 + 2];
+            *(outputFramebuffer + address + 3) = 0xFF;
         }
 
         protected virtual void WriteColorToFramebuffer(byte b, byte g, byte r, int address)
         {
-            outputFramebuffer[address + 0] = b;
-            outputFramebuffer[address + 1] = g;
-            outputFramebuffer[address + 2] = r;
-            outputFramebuffer[address + 3] = 0xFF;
+            *(outputFramebuffer + address) = b;
+            *(outputFramebuffer + address + 1) = g;
+            *(outputFramebuffer + address + 2) = r;
+            *(outputFramebuffer + address + 3) = 0xFF;
         }
 
         protected virtual void ClearScreenUsage()
