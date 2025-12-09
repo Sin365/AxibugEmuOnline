@@ -145,12 +145,12 @@ namespace MAME.Core
         }
         public unsafe static byte z80_ram_r(int offset)
         {
-            return Memory.audioram[offset];
+            return *(Memory.audioram+offset);
         }
         public unsafe static void z80_ram_w(int offset, byte data)
         {
             int pc = MC68000.m1.PC;
-            Memory.audioram[offset] = data;
+            *(Memory.audioram+offset) = data;
             if (pc != 0xf12 && pc != 0xde2 && pc != 0x100c50 && pc != 0x100b20)
             {
                 //error

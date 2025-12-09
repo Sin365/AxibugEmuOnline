@@ -25,7 +25,7 @@
             }
             /*else if (address >= 0x800000 && address <= 0x81ffff)
             {
-                result = (sbyte)Memory.mainram[address - 0x800000];
+                result = (sbyte)*(Memory.mainram + (address - 0x800000) );
             }*/
             return result;
         }
@@ -50,7 +50,7 @@
             }
             else if (address >= 0x800000 && address <= 0x81ffff)
             {
-                result = (sbyte)Memory.mainram[address - 0x800000];
+                result = (sbyte)*(Memory.mainram + (address - 0x800000));
             }
             else if (address >= 0x900000 && address <= 0x903fff)
             {
@@ -139,7 +139,7 @@
             }
             else if (address >= 0x800000 && address + 1 <= 0x81ffff)
             {
-                result = (short)(Memory.mainram[address - 0x800000] * 0x100 + Memory.mainram[address - 0x800000 + 1]);
+                result = (short)(*(Memory.mainram + (address - 0x800000)) * 0x100 + *(Memory.mainram + (address - 0x800000 + 1) ));
             }
             return result;
         }
@@ -164,7 +164,7 @@
             }
             else if (address >= 0x800000 && address + 1 <= 0x81ffff)
             {
-                result = (short)(Memory.mainram[address - 0x800000] * 0x100 + Memory.mainram[address - 0x800000 + 1]);
+                result = (short)(*(Memory.mainram + (address - 0x800000)) * 0x100 + *(Memory.mainram + (address - 0x800000 + 1) ));
             }
             else if (address >= 0x900000 && address + 1 <= 0x903fff)
             {
@@ -246,7 +246,7 @@
             }
             else if (address >= 0x800000 && address + 3 <= 0x81ffff)
             {
-                result = Memory.mainram[address - 0x800000] * 0x1000000 + Memory.mainram[address - 0x800000 + 1] * 0x10000 + Memory.mainram[address - 0x800000 + 2] * 0x100 + Memory.mainram[address - 0x800000 + 3];
+                result = *(Memory.mainram + (address - 0x800000)) * 0x1000000 + *(Memory.mainram + (address - 0x800000 + 1) ) * 0x10000 + *(Memory.mainram + (address - 0x800000 + 2) ) * 0x100 + *(Memory.mainram + (address - 0x800000 + 3) );
             }
             return result;
         }
@@ -271,7 +271,7 @@
             }
             else if (address >= 0x800000 && address + 3 <= 0x81ffff)
             {
-                result = Memory.mainram[address - 0x800000] * 0x1000000 + Memory.mainram[address - 0x800000 + 1] * 0x10000 + Memory.mainram[address - 0x800000 + 2] * 0x100 + Memory.mainram[address - 0x800000 + 3];
+                result = *(Memory.mainram + (address - 0x800000)) * 0x1000000 + *(Memory.mainram + (address - 0x800000 + 1) ) * 0x10000 + *(Memory.mainram + (address - 0x800000 + 2) ) * 0x100 + *(Memory.mainram + (address - 0x800000 + 3) );
             }
             else if (address >= 0x900000 && address + 3 <= 0x903fff)
             {
@@ -342,7 +342,7 @@
             else if (address >= 0x800000 && address <= 0x81ffff)
             {
                 int offset = address - 0x800000;
-                Memory.mainram[offset] = (byte)value;
+                *(Memory.mainram + offset) = (byte)value;
             }
             else if (address >= 0x900000 && address <= 0x903fff)
             {
@@ -431,8 +431,8 @@
             else if (address >= 0x800000 && address + 1 <= 0x81ffff)
             {
                 int offset = address - 0x800000;
-                Memory.mainram[offset] = (byte)(value >> 8);
-                Memory.mainram[offset + 1] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 8);
+                *(Memory.mainram + (offset + 1)) = (byte)value;
             }
             else if (address >= 0x900000 && address + 1 <= 0x903fff)
             {
@@ -507,10 +507,10 @@
             else if (address >= 0x800000 && address + 3 <= 0x81ffff)
             {
                 int offset = address - 0x800000;
-                Memory.mainram[offset] = (byte)(value >> 24);
-                Memory.mainram[offset + 1] = (byte)(value >> 16);
-                Memory.mainram[offset + 2] = (byte)(value >> 8);
-                Memory.mainram[offset + 3] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 24);
+                *(Memory.mainram + (offset + 1)) = (byte)(value >> 16);
+                *(Memory.mainram + (offset + 2)) = (byte)(value >> 8);
+                *(Memory.mainram + (offset + 3)) = (byte)value;
             }
             else if (address >= 0x900000 && address + 3 <= 0x903fff)
             {
@@ -587,12 +587,12 @@
         }
         public static byte ZReadMemory(ushort address)
         {
-            byte result = Memory.audioram[address];
+            byte result = *(Memory.audioram + address);
             return result;
         }
         public static void ZWriteMemory(ushort address, byte value)
         {
-            Memory.audioram[address] = value;
+            *(Memory.audioram + address) = value;
         }
         public static byte ZReadHardware(ushort address)
         {

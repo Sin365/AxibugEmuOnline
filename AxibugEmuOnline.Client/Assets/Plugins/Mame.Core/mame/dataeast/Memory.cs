@@ -9,7 +9,7 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.mainram[address];
+                result = *(Memory.mainram + (address));
             }
             else if (address >= 0x4000 && address <= 0x5fff)
             {
@@ -32,7 +32,7 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.mainram[address];
+                result = *(Memory.mainram + (address));
             }
             else if (address >= 0x4000 && address <= 0x5fff)
             {
@@ -55,7 +55,7 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.mainram[address];
+                result = *(Memory.mainram + (address));
             }
             else if (address == 0x1800)
             {
@@ -89,7 +89,7 @@
         {
             if (address <= 0x7ff)
             {
-                Memory.mainram[address] = data;
+                *(Memory.mainram + (address)) = data;
             }
             else if (address >= 0x800 && address <= 0xfff)
             {
@@ -123,7 +123,7 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.audioram[address];
+                result = *(Memory.audioram+address);
             }
             else if (address >= 0x4000 && address <= 0x7fff)
             {
@@ -142,16 +142,16 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.audioram[address];
+                result = *(Memory.audioram+address);
             }
             else if (address >= 0x4000 && address <= 0x7fff)
             {
                 int offset = address - 0x4000;
-                result = Memory.audiorom[basebanksnd + offset];
+                result = *(Memory.audiorom + basebanksnd + offset);
             }
             else if (address >= 0x8000 && address <= 0xffff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             return result;
         }
@@ -160,16 +160,16 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.audioram[address];
+                result = *(Memory.audioram+address);
             }
             else if (address >= 0x4000 && address <= 0x7fff)
             {
                 int offset = address - 0x4000;
-                result = Memory.audiorom[basebanksnd + offset];
+                result = *(Memory.audiorom + basebanksnd + offset);
             }
             else if (address >= 0x8000 && address <= 0xffff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             return result;
         }
@@ -178,7 +178,7 @@
             byte result = 0;
             if (address <= 0x7ff)
             {
-                result = Memory.audioram[address];
+                result = *(Memory.audioram+address);
             }
             else if (address == 0x3000)
             {
@@ -191,11 +191,11 @@
             else if (address >= 0x4000 && address <= 0x7fff)
             {
                 int offset = address - 0x4000;
-                result = Memory.audiorom[basebanksnd + offset];
+                result = *(Memory.audiorom + basebanksnd + offset);
             }
             else if (address >= 0x8000 && address <= 0xffff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             return result;
         }
@@ -203,7 +203,7 @@
         {
             if (address <= 0x7ff)
             {
-                Memory.audioram[address] = data;
+                *(Memory.audioram+address) = data;
             }
             else if (address == 0x0800)
             {
@@ -231,7 +231,7 @@
             }
             else if (address >= 0x4000 && address <= 0xffff)
             {
-                Memory.audiorom[address] = data;
+                *Memory.audiorom = data;
             }
         }
     }

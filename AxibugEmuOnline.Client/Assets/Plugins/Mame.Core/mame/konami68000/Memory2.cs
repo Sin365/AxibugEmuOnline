@@ -20,7 +20,7 @@
             else if (address >= 0x204000 && address <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             return result;
         }
@@ -54,7 +54,7 @@
             else if (address >= 0x204000 && address <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             else if (address >= 0x300000 && address <= 0x303fff)
             {
@@ -182,7 +182,7 @@
             else if (address >= 0x204000 && address + 1 <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             return result;
         }
@@ -209,7 +209,7 @@
             else if (address >= 0x204000 && address + 1 <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             else if (address >= 0x300000 && address + 1 <= 0x303fff)
             {
@@ -276,7 +276,7 @@
             else if (address >= 0x204000 && address + 3 <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             return result;
         }
@@ -304,7 +304,7 @@
             else if (address >= 0x204000 && address + 3 <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             else if (address >= 0x300000 && address + 3 <= 0x303fff)
             {
@@ -356,7 +356,7 @@
             else if (address >= 0x204000 && address <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                Memory.mainram[offset] = (byte)value;
+                *(Memory.mainram + offset) = (byte)value;
             }
             else if (address >= 0x300000 && address <= 0x303fff)
             {
@@ -472,8 +472,8 @@
             else if (address >= 0x204000 && address + 1 <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                Memory.mainram[offset] = (byte)(value >> 8);
-                Memory.mainram[offset + 1] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+1)) = (byte)value;
             }
             else if (address >= 0x300000 && address + 1 <= 0x303fff)
             {
@@ -534,10 +534,10 @@
             else if (address >= 0x204000 && address + 3 <= 0x207fff)
             {
                 int offset = address - 0x204000;
-                Memory.mainram[offset] = (byte)(value >> 24);
-                Memory.mainram[offset + 1] = (byte)(value >> 16);
-                Memory.mainram[offset + 2] = (byte)(value >> 8);
-                Memory.mainram[offset + 3] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 24);
+               *(Memory.mainram + (offset+1)) = (byte)(value >> 16);
+               *(Memory.mainram + (offset+2)) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+3)) = (byte)value;
             }
             else if (address >= 0x300000 && address + 3 <= 0x303fff)
             {
@@ -588,7 +588,7 @@
             else if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             return result;
         }
@@ -610,7 +610,7 @@
             else if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             else if (address >= 0x104000 && address <= 0x107fff)
             {
@@ -772,7 +772,7 @@
             else if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             return result;
         }
@@ -794,7 +794,7 @@
             else if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             else if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
@@ -876,7 +876,7 @@
             else if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             return result;
         }
@@ -899,7 +899,7 @@
             else if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             else if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
@@ -944,7 +944,7 @@
             if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value);
+                *(Memory.mainram + offset) = (byte)(value);
             }
             else if (address >= 0x104000 && address <= 0x107fff)
             {
@@ -1077,8 +1077,8 @@
             if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value >> 8);
-                Memory.mainram[offset + 1] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+1)) = (byte)value;
             }
             else if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
@@ -1141,10 +1141,10 @@
             if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value >> 24);
-                Memory.mainram[offset + 1] = (byte)(value >> 16);
-                Memory.mainram[offset + 2] = (byte)(value >> 8);
-                Memory.mainram[offset + 3] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 24);
+               *(Memory.mainram + (offset+1)) = (byte)(value >> 16);
+               *(Memory.mainram + (offset+2)) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+3)) = (byte)value;
             }
             else if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
@@ -1219,7 +1219,7 @@
             else if (address >= 0x104000 && address <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             return result;
         }
@@ -1241,7 +1241,7 @@
             else if (address >= 0x104000 && address <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             else if (address >= 0x140000 && address <= 0x140fff)
             {
@@ -1398,7 +1398,7 @@
             else if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             return result;
         }
@@ -1420,7 +1420,7 @@
             else if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             else if (address >= 0x140000 && address + 1 <= 0x140fff)
             {
@@ -1506,7 +1506,7 @@
             else if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             return result;
         }
@@ -1529,7 +1529,7 @@
             else if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             else if (address >= 0x140000 && address + 3 <= 0x140fff)
             {
@@ -1569,7 +1569,7 @@
             if (address >= 0x104000 && address <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                Memory.mainram[offset] = (byte)(value);
+                *(Memory.mainram + offset) = (byte)(value);
             }
             else if (address >= 0x140000 && address <= 0x140fff)
             {
@@ -1699,8 +1699,8 @@
             if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                Memory.mainram[offset] = (byte)(value >> 8);
-                Memory.mainram[offset + 1] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+1)) = (byte)value;
             }
             else if (address >= 0x140000 && address + 1 <= 0x140fff)
             {
@@ -1768,10 +1768,10 @@
             if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
                 int offset = address - 0x104000;
-                Memory.mainram[offset] = (byte)(value >> 24);
-                Memory.mainram[offset + 1] = (byte)(value >> 16);
-                Memory.mainram[offset + 2] = (byte)(value >> 8);
-                Memory.mainram[offset + 3] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 24);
+               *(Memory.mainram + (offset+1)) = (byte)(value >> 16);
+               *(Memory.mainram + (offset+2)) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+3)) = (byte)value;
             }
             else if (address >= 0x140000 && address + 3 <= 0x140fff)
             {
@@ -1836,7 +1836,7 @@
             else if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             return result;
         }
@@ -1858,7 +1858,7 @@
             else if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             else if (address >= 0x200000 && address <= 0x200fff)
             {
@@ -1960,7 +1960,7 @@
             else if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             return result;
         }
@@ -1982,7 +1982,7 @@
             else if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             else if (address >= 0x200000 && address + 1 <= 0x200fff)
             {
@@ -2042,7 +2042,7 @@
             else if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             return result;
         }
@@ -2065,7 +2065,7 @@
             else if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             else if (address >= 0x200000 && address + 3 <= 0x200fff)
             {
@@ -2105,7 +2105,7 @@
             if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value);
+                *(Memory.mainram + offset) = (byte)(value);
             }
             else if (address >= 0x200000 && address <= 0x200fff)
             {
@@ -2199,8 +2199,8 @@
             if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value >> 8);
-                Memory.mainram[offset + 1] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+1)) = (byte)value;
             }
             else if (address >= 0x200000 && address + 1 <= 0x200fff)
             {
@@ -2255,10 +2255,10 @@
             if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value >> 24);
-                Memory.mainram[offset + 1] = (byte)(value >> 16);
-                Memory.mainram[offset + 2] = (byte)(value >> 8);
-                Memory.mainram[offset + 3] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 24);
+               *(Memory.mainram + (offset+1)) = (byte)(value >> 16);
+               *(Memory.mainram + (offset+2)) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+3)) = (byte)value;
             }
             else if (address >= 0x200000 && address + 3 <= 0x200fff)
             {
@@ -2319,7 +2319,7 @@
             else if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             return result;
         }
@@ -2341,7 +2341,7 @@
             else if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (sbyte)Memory.mainram[offset];
+                result = (sbyte)*(Memory.mainram + offset);
             }
             else if (address >= 0x104000 && address <= 0x107fff)
             {
@@ -2468,7 +2468,7 @@
             else if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             return result;
         }
@@ -2490,7 +2490,7 @@
             else if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (short)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (short)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             else if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
@@ -2557,7 +2557,7 @@
             else if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             return result;
         }
@@ -2580,7 +2580,7 @@
             else if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                result = (int)(Memory.mainram[offset] * 0x1000000 + Memory.mainram[offset + 1] * 0x10000 + Memory.mainram[offset + 2] * 0x100 + Memory.mainram[offset + 3]);
+                result = (int)(*(Memory.mainram + offset) * 0x1000000 +*(Memory.mainram + (offset+1)) * 0x10000 +*(Memory.mainram + (offset+2)) * 0x100 +*(Memory.mainram + (offset+3)));
             }
             else if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
@@ -2620,7 +2620,7 @@
             if (address >= 0x100000 && address <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value);
+                *(Memory.mainram + offset) = (byte)(value);
             }
             else if (address >= 0x104000 && address <= 0x107fff)
             {
@@ -2756,8 +2756,8 @@
             if (address >= 0x100000 && address + 1 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value >> 8);
-                Memory.mainram[offset + 1] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+1)) = (byte)value;
             }
             else if (address >= 0x104000 && address + 1 <= 0x107fff)
             {
@@ -2823,10 +2823,10 @@
             if (address >= 0x100000 && address + 3 <= 0x103fff)
             {
                 int offset = address - 0x100000;
-                Memory.mainram[offset] = (byte)(value >> 24);
-                Memory.mainram[offset + 1] = (byte)(value >> 16);
-                Memory.mainram[offset + 2] = (byte)(value >> 8);
-                Memory.mainram[offset + 3] = (byte)value;
+                *(Memory.mainram + offset) = (byte)(value >> 24);
+               *(Memory.mainram + (offset+1)) = (byte)(value >> 16);
+               *(Memory.mainram + (offset+2)) = (byte)(value >> 8);
+               *(Memory.mainram + (offset+3)) = (byte)value;
             }
             else if (address >= 0x104000 && address + 3 <= 0x107fff)
             {
@@ -2888,12 +2888,12 @@
             byte result = 0;
             if (address <= 0xefff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0xf000 && address <= 0xf7ff)
             {
                 int offset = address - 0xf000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else
             {
@@ -2906,12 +2906,12 @@
             byte result = 0;
             if (address <= 0xefff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0xf000 && address <= 0xf7ff)
             {
                 int offset = address - 0xf000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else if (address >= 0xf800 && address <= 0xf82f)
             {
@@ -2925,7 +2925,7 @@
             if (address >= 0xf000 && address <= 0xf7ff)
             {
                 int offset = address - 0xf000;
-                Memory.audioram[offset] = value;
+                *(Memory.audioram+offset) = value;
             }
             else if (address >= 0xf800 && address <= 0xf82f)
             {
@@ -2942,12 +2942,12 @@
             byte result = 0;
             if (address <= 0xefff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0xf000 && address <= 0xf7ff)
             {
                 int offset = address - 0xf000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else
             {
@@ -2960,12 +2960,12 @@
             byte result = 0;
             if (address <= 0xefff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0xf000 && address <= 0xf7ff)
             {
                 int offset = address - 0xf000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else if (address == 0xf801 || address == 0xf811)
             {
@@ -2983,7 +2983,7 @@
             if (address >= 0xf000 && address <= 0xf7ff)
             {
                 int offset = address - 0xf000;
-                Memory.audioram[offset] = value;
+                *(Memory.audioram+offset) = value;
             }
             else if (address == 0xf800 || address == 0xf810)
             {
@@ -3008,17 +3008,17 @@
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0x8000 && address <= 0xbfff)
             {
                 int offset = address - 0x8000;
-                result = Memory.audiorom[basebanksnd + offset];
+                result = *(Memory.audiorom + basebanksnd + offset);
             }
             else if (address >= 0xc000 && address <= 0xdfff)
             {
                 int offset = address - 0xc000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else
             {
@@ -3031,17 +3031,17 @@
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0x8000 && address <= 0xbfff)
             {
                 int offset = address - 0x8000;
-                result = Memory.audiorom[basebanksnd + offset];
+                result = *(Memory.audiorom + basebanksnd + offset);
             }
             else if (address >= 0xc000 && address <= 0xdfff)
             {
                 int offset = address - 0xc000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else if (address >= 0xe000 && address <= 0xe0ff)
             {
@@ -3068,12 +3068,12 @@
             if (address >= 0x8000 && address <= 0xbfff)
             {
                 int offset = address - 0x8000;
-                Memory.audiorom[basebanksnd + offset] = value;
+                *(Memory.audiorom + basebanksnd + offset) = value;
             }
             else if (address >= 0xc000 && address <= 0xdfff)
             {
                 int offset = address - 0xc000;
-                Memory.audioram[offset] = value;
+                *(Memory.audioram+offset) = value;
             }
             else if (address >= 0xe000 && address <= 0xe0ff)
             {

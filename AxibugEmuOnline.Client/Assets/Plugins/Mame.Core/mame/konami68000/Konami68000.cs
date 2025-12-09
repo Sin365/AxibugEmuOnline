@@ -1141,7 +1141,7 @@ namespace MAME.Core
             else if (addr >= 0x104000 && addr <= 0x107fff)
             {
                 int offset = addr - 0x104000;
-                result = Memory.mainram[offset];
+                result = *(Memory.mainram + offset);
             }
             else if (addr >= 0x180000 && addr <= 0x183fff)
             {
@@ -1168,7 +1168,7 @@ namespace MAME.Core
             else if (addr >= 0x104000 && addr <= 0x107fff)
             {
                 int offset = addr - 0x104000;
-                result = (ushort)(Memory.mainram[offset] * 0x100 + Memory.mainram[offset + 1]);
+                result = (ushort)(*(Memory.mainram + offset) * 0x100 +*(Memory.mainram + (offset+1)));
             }
             else if (addr >= 0x180000 && addr <= 0x183fff)
             {
@@ -1198,8 +1198,8 @@ namespace MAME.Core
             else if (addr >= 0x104000 && addr <= 0x107fff)
             {
                 int offset = (addr - 0x104000) / 2;
-                Memory.mainram[offset] = (byte)(data >> 8);
-                Memory.mainram[offset + 1] = (byte)data;
+                *(Memory.mainram + offset) = (byte)(data >> 8);
+               *(Memory.mainram + (offset+1)) = (byte)data;
             }
         }
         public static void tmnt2_1c0800_w(int offset, ushort data)

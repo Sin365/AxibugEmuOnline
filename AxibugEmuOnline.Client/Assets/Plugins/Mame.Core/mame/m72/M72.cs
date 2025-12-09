@@ -280,20 +280,21 @@ namespace MAME.Core
         }
         public static byte soundram_r(int offset)
         {
-            return Memory.audioram[offset];
+            return *(Memory.audioram + offset);
         }
         public static ushort soundram_r2(int offset)
         {
-            return (ushort)(Memory.audioram[offset * 2 + 0] | (Memory.audioram[offset * 2 + 1] << 8));
+            return (ushort)(*(Memory.audioram+(offset * 2 + 0)) | (*(Memory.audioram+(offset * 2 + 1)) << 8));
         }
         public static void soundram_w(int offset, byte data)
         {
-            Memory.audioram[offset] = data;
+            *(Memory.audioram + offset) = data;
         }
         public static void soundram_w(int offset, ushort data)
         {
-            Memory.audioram[offset * 2] = (byte)data;
-            Memory.audioram[offset * 2 + 1] = (byte)(data >> 8);
+            //Memory.audioram[offset * 2] = (byte)data;
+            *(Memory.audioram + (offset * 2)) = (byte)data;
+            *(Memory.audioram+(offset * 2 + 1)) = (byte)(data >> 8);
         }
         public static void machine_start_m72()
         {

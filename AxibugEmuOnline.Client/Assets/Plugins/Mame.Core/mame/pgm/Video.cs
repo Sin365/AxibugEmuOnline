@@ -398,7 +398,7 @@ namespace MAME.Core
             int i;
             for (i = 0; i < 0x500; i++)
             {
-                pgm_spritebufferram[i] = (ushort)(Memory.mainram[i * 2] * 0x100 + Memory.mainram[i * 2 + 1]);
+                pgm_spritebufferram[i] = (ushort)(*(Memory.mainram + (i * 2)) * 0x100 + *(Memory.mainram + (i * 2 + 1)));
             }
         }
     }

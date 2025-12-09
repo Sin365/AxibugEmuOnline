@@ -64,7 +64,7 @@ namespace MAME.Core
             else if (address >= 0xc800 && address <= 0xdfff)
             {
                 int offset = address - 0xc800;
-                result = Memory.mainram[offset];
+                result = *(Memory.mainram + offset);
             }
             else if (address >= 0xe000 && address <= 0xffff)
             {
@@ -116,7 +116,7 @@ namespace MAME.Core
             else if (address >= 0xc800 && address <= 0xdfff)
             {
                 int offset = address - 0xc800;
-                Memory.mainram[offset] = value;
+                *(Memory.mainram + offset) = value;
             }
             else if (address >= 0xe000 && address <= 0xffff)
             {
@@ -141,7 +141,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             return result;
         }
@@ -150,12 +150,12 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = Memory.audiorom[address];
+                result = *Memory.audiorom;
             }
             else if (address >= 0xc000 && address <= 0xc7ff)
             {
                 int offset = address - 0xc000;
-                result = Memory.audioram[offset];
+                result = *(Memory.audioram+offset);
             }
             else if (address == 0xc800)
             {
@@ -171,7 +171,7 @@ namespace MAME.Core
         {
             if (address <= 0x7fff)
             {
-                Memory.audiorom[address] = value;
+                *Memory.audiorom = value;
             }
             else if (address >= 0xa000 && address <= 0xa001)
             {
@@ -186,7 +186,7 @@ namespace MAME.Core
             else if (address >= 0xc000 && address <= 0xc7ff)
             {
                 int offset = address - 0xc000;
-                Memory.audioram[offset] = value;
+                *(Memory.audioram+offset) = value;
             }
             else if (address == 0xd000)
             {
