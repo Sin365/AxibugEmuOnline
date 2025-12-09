@@ -19,7 +19,10 @@ namespace Essgee.Emulation.Audio
         protected const string channel3OptionName = "AudioEnableCh3Wave";
         protected const string channel4OptionName = "AudioEnableCh4Noise";
 
-        protected IDMGAudioChannel channel1, channel2, channel3, channel4;
+        //protected IDMGAudioChannel channel1, channel2, channel3, channel4;
+        protected Square channel1, channel2;
+        protected Wave channel3;
+        protected Noise channel4;
 
         // FF24 - NR50
         byte[] volumeRightLeft;
@@ -298,6 +301,161 @@ namespace Essgee.Emulation.Audio
 
         //独立声明，不在函数内部
         private bool[] channelEnableFlags = new bool[4];
+        //public void Step(int clockCyclesInStep)
+        //{
+        //    if (!isSoundHwEnabled) return;
+
+        //    sampleCycleCount += clockCyclesInStep;
+        //    frameCycleCount += clockCyclesInStep;
+
+        //    for (int i = 0; i < clockCyclesInStep; i++)
+        //    {
+        //        frameSequencerCounter--;
+        //        if (frameSequencerCounter == 0)
+        //        {
+        //            frameSequencerCounter = frameSequencerReload;
+
+        //            switch (frameSequencer)
+        //            {
+        //                case 0:
+        //                    channel1.LengthCounterClock();
+        //                    channel2.LengthCounterClock();
+        //                    channel3.LengthCounterClock();
+        //                    channel4.LengthCounterClock();
+        //                    break;
+
+        //                case 1:
+        //                    break;
+
+        //                case 2:
+        //                    channel1.SweepClock();
+        //                    channel1.LengthCounterClock();
+        //                    channel2.LengthCounterClock();
+        //                    channel3.LengthCounterClock();
+        //                    channel4.LengthCounterClock();
+        //                    break;
+
+        //                case 3:
+        //                    break;
+
+        //                case 4:
+        //                    channel1.LengthCounterClock();
+        //                    channel2.LengthCounterClock();
+        //                    channel3.LengthCounterClock();
+        //                    channel4.LengthCounterClock();
+        //                    break;
+
+        //                case 5:
+        //                    break;
+
+        //                case 6:
+        //                    channel1.SweepClock();
+        //                    channel1.LengthCounterClock();
+        //                    channel2.LengthCounterClock();
+        //                    channel3.LengthCounterClock();
+        //                    channel4.LengthCounterClock();
+        //                    break;
+
+        //                case 7:
+        //                    channel1.VolumeEnvelopeClock();
+        //                    channel2.VolumeEnvelopeClock();
+        //                    channel4.VolumeEnvelopeClock();
+        //                    break;
+        //            }
+
+        //            frameSequencer++;
+        //            if (frameSequencer >= 8)
+        //                frameSequencer = 0;
+        //        }
+
+        //        //channel1.Step();
+        //        //channel2.Step();
+        //        //channel3.Step();
+        //        //channel4.Step();
+
+        //        //手动内联
+        //        //channel1.Step();
+        //        if (channel1.isChannelEnabled)
+        //        {
+        //            channel1.frequencyCounter--;
+        //            if (channel1.frequencyCounter == 0)
+        //            {
+        //                channel1.frequencyCounter = (2048 - ((channel1.frequencyMSB << 8) | channel1.frequencyLSB)) * 4;
+        //                channel1.dutyCounter++;
+        //                channel1.dutyCounter %= 8;
+        //            }
+        //            channel1.OutputVolume = channel1.isDacEnabled && *(channel1._dutyCycleTable1D + (channel1.dutyCycle * Square.Cols + channel1.dutyCounter)) ? channel1.volume : 0;
+        //        }
+        //        //channel2.Step();
+        //        if (channel2.isChannelEnabled)
+        //        {
+        //            channel2.frequencyCounter--;
+        //            if (channel2.frequencyCounter == 0)
+        //            {
+        //                channel2.frequencyCounter = (2048 - ((channel2.frequencyMSB << 8) | channel2.frequencyLSB)) * 4;
+        //                channel2.dutyCounter++;
+        //                channel2.dutyCounter %= 8;
+        //            }
+        //            channel2.OutputVolume = channel2.isDacEnabled && *(channel2._dutyCycleTable1D + (channel2.dutyCycle * Square.Cols + channel2.dutyCounter)) ? channel2.volume : 0;
+        //        }
+        //        channel3.Step();
+        //        channel4.Step();
+        //    }
+
+        //    if (sampleCycleCount >= cyclesPerSample)
+        //    {
+        //        GenerateSample();
+
+        //        sampleCycleCount -= cyclesPerSample;
+        //    }
+
+        //    //if (mixedSampleBuffer.Count >= (samplesPerFrame * numOutputChannels))
+        //    if (mixedSampleBuffer_writePos >= (samplesPerFrame * numOutputChannels))
+        //    {
+        //        //EnqueueSamplesEventArgs eventArgs = EnqueueSamplesEventArgs.Create(
+        //        //    numChannels,
+        //        //    channelSampleBuffer.Select(x => x.ToArray()).ToArray(),
+        //        //    new bool[] { !channel1ForceEnable, !channel2ForceEnable, !channel3ForceEnable, !channel4ForceEnable },
+        //        //    mixedSampleBuffer.ToArray());
+
+        //        //有GC
+        //        //EnqueueSamplesEventArgs eventArgs = EnqueueSamplesEventArgs.Create(
+        //        //    numChannels,
+        //        //    channelSampleBuffer,
+        //        //    new bool[] { !channel1ForceEnable, !channel2ForceEnable, !channel3ForceEnable, !channel4ForceEnable },
+        //        //    mixedSampleBuffer,
+        //        //    mixedSampleBuffer_writePos);
+
+
+        //        // 在函数中使用
+        //        channelEnableFlags[0] = !channel1ForceEnable;
+        //        channelEnableFlags[1] = !channel2ForceEnable;
+        //        channelEnableFlags[2] = !channel3ForceEnable;
+        //        channelEnableFlags[3] = !channel4ForceEnable;
+
+        //        EnqueueSamplesEventArgs eventArgs = EnqueueSamplesEventArgs.Create(
+        //            numChannels,
+        //            channelSampleBuffer,
+        //            channelEnableFlags,
+        //            mixedSampleBuffer,
+        //            mixedSampleBuffer_writePos);
+
+        //        OnEnqueueSamples(eventArgs);
+
+        //        FlushSamples();
+
+        //        eventArgs.Release();
+
+        //    }
+
+        //    if (frameCycleCount >= cyclesPerFrame)
+        //    {
+        //        frameCycleCount -= cyclesPerFrame;
+        //        sampleCycleCount = frameCycleCount;
+        //    }
+        //}
+
+        //手动内联
         public void Step(int clockCyclesInStep)
         {
             if (!isSoundHwEnabled) return;
@@ -315,10 +473,34 @@ namespace Essgee.Emulation.Audio
                     switch (frameSequencer)
                     {
                         case 0:
-                            channel1.LengthCounterClock();
-                            channel2.LengthCounterClock();
-                            channel3.LengthCounterClock();
-                            channel4.LengthCounterClock();
+                            //channel1.LengthCounterClock();
+                            if (channel1.lengthCounter > 0 && channel1.lengthEnable)
+                            {
+                                channel1.lengthCounter--;
+                                if (channel1.lengthCounter == 0)
+                                    channel1.isChannelEnabled = false;
+                            }
+                            //channel2.LengthCounterClock();
+                            if (channel2.lengthCounter > 0 && channel2.lengthEnable)
+                            {
+                                channel2.lengthCounter--;
+                                if (channel2.lengthCounter == 0)
+                                    channel2.isChannelEnabled = false;
+                            }
+                            //channel3.LengthCounterClock();
+                            if (channel3.lengthCounter > 0 && channel3.lengthEnable)
+                            {
+                                channel3.lengthCounter--;
+                                if (channel3.lengthCounter == 0)
+                                    channel3.isChannelEnabled = false;
+                            }
+                            //channel4.LengthCounterClock();
+                            if (channel4.lengthCounter > 0 && channel4.lengthEnable)
+                            {
+                                channel4.lengthCounter--;
+                                if (channel4.lengthCounter == 0)
+                                    channel4.isChannelEnabled = false;
+                            }
                             break;
 
                         case 1:
@@ -326,20 +508,68 @@ namespace Essgee.Emulation.Audio
 
                         case 2:
                             channel1.SweepClock();
-                            channel1.LengthCounterClock();
-                            channel2.LengthCounterClock();
-                            channel3.LengthCounterClock();
-                            channel4.LengthCounterClock();
+                            //channel1.LengthCounterClock();
+                            if (channel1.lengthCounter > 0 && channel1.lengthEnable)
+                            {
+                                channel1.lengthCounter--;
+                                if (channel1.lengthCounter == 0)
+                                    channel1.isChannelEnabled = false;
+                            }
+                            //channel2.LengthCounterClock();
+                            if (channel2.lengthCounter > 0 && channel2.lengthEnable)
+                            {
+                                channel2.lengthCounter--;
+                                if (channel2.lengthCounter == 0)
+                                    channel2.isChannelEnabled = false;
+                            }
+                            //channel3.LengthCounterClock();
+                            if (channel3.lengthCounter > 0 && channel3.lengthEnable)
+                            {
+                                channel3.lengthCounter--;
+                                if (channel3.lengthCounter == 0)
+                                    channel3.isChannelEnabled = false;
+                            }
+                            //channel4.LengthCounterClock();
+                            if (channel4.lengthCounter > 0 && channel4.lengthEnable)
+                            {
+                                channel4.lengthCounter--;
+                                if (channel4.lengthCounter == 0)
+                                    channel4.isChannelEnabled = false;
+                            }
                             break;
 
                         case 3:
                             break;
 
                         case 4:
-                            channel1.LengthCounterClock();
-                            channel2.LengthCounterClock();
-                            channel3.LengthCounterClock();
-                            channel4.LengthCounterClock();
+                            //channel1.LengthCounterClock();
+                            if (channel1.lengthCounter > 0 && channel1.lengthEnable)
+                            {
+                                channel1.lengthCounter--;
+                                if (channel1.lengthCounter == 0)
+                                    channel1.isChannelEnabled = false;
+                            }
+                            //channel2.LengthCounterClock();
+                            if (channel2.lengthCounter > 0 && channel2.lengthEnable)
+                            {
+                                channel2.lengthCounter--;
+                                if (channel2.lengthCounter == 0)
+                                    channel2.isChannelEnabled = false;
+                            }
+                            //channel3.LengthCounterClock();
+                            if (channel3.lengthCounter > 0 && channel3.lengthEnable)
+                            {
+                                channel3.lengthCounter--;
+                                if (channel3.lengthCounter == 0)
+                                    channel3.isChannelEnabled = false;
+                            }
+                            //channel4.LengthCounterClock();
+                            if (channel4.lengthCounter > 0 && channel4.lengthEnable)
+                            {
+                                channel4.lengthCounter--;
+                                if (channel4.lengthCounter == 0)
+                                    channel4.isChannelEnabled = false;
+                            }
                             break;
 
                         case 5:
@@ -347,10 +577,34 @@ namespace Essgee.Emulation.Audio
 
                         case 6:
                             channel1.SweepClock();
-                            channel1.LengthCounterClock();
-                            channel2.LengthCounterClock();
-                            channel3.LengthCounterClock();
-                            channel4.LengthCounterClock();
+                            //channel1.LengthCounterClock();
+                            if (channel1.lengthCounter > 0 && channel1.lengthEnable)
+                            {
+                                channel1.lengthCounter--;
+                                if (channel1.lengthCounter == 0)
+                                    channel1.isChannelEnabled = false;
+                            }
+                            //channel2.LengthCounterClock();
+                            if (channel2.lengthCounter > 0 && channel2.lengthEnable)
+                            {
+                                channel2.lengthCounter--;
+                                if (channel2.lengthCounter == 0)
+                                    channel2.isChannelEnabled = false;
+                            }
+                            //channel3.LengthCounterClock();
+                            if (channel3.lengthCounter > 0 && channel3.lengthEnable)
+                            {
+                                channel3.lengthCounter--;
+                                if (channel3.lengthCounter == 0)
+                                    channel3.isChannelEnabled = false;
+                            }
+                            //channel4.LengthCounterClock();
+                            if (channel4.lengthCounter > 0 && channel4.lengthEnable)
+                            {
+                                channel4.lengthCounter--;
+                                if (channel4.lengthCounter == 0)
+                                    channel4.isChannelEnabled = false;
+                            }
                             break;
 
                         case 7:
@@ -365,8 +619,36 @@ namespace Essgee.Emulation.Audio
                         frameSequencer = 0;
                 }
 
-                channel1.Step();
-                channel2.Step();
+                //channel1.Step();
+                //channel2.Step();
+                //channel3.Step();
+                //channel4.Step();
+
+                //手动内联
+                //channel1.Step();
+                if (channel1.isChannelEnabled)
+                {
+                    channel1.frequencyCounter--;
+                    if (channel1.frequencyCounter == 0)
+                    {
+                        channel1.frequencyCounter = (2048 - ((channel1.frequencyMSB << 8) | channel1.frequencyLSB)) * 4;
+                        channel1.dutyCounter++;
+                        channel1.dutyCounter %= 8;
+                    }
+                    channel1.OutputVolume = channel1.isDacEnabled && *(channel1._dutyCycleTable1D + (channel1.dutyCycle * Square.Cols + channel1.dutyCounter)) ? channel1.volume : 0;
+                }
+                //channel2.Step();
+                if (channel2.isChannelEnabled)
+                {
+                    channel2.frequencyCounter--;
+                    if (channel2.frequencyCounter == 0)
+                    {
+                        channel2.frequencyCounter = (2048 - ((channel2.frequencyMSB << 8) | channel2.frequencyLSB)) * 4;
+                        channel2.dutyCounter++;
+                        channel2.dutyCounter %= 8;
+                    }
+                    channel2.OutputVolume = channel2.isDacEnabled && *(channel2._dutyCycleTable1D + (channel2.dutyCycle * Square.Cols + channel2.dutyCounter)) ? channel2.volume : 0;
+                }
                 channel3.Step();
                 channel4.Step();
             }

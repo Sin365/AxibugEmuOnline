@@ -345,22 +345,22 @@ namespace MAME.Core
         }
         public unsafe static void driver_init_opwolf()
         {
-            opwolf_region = Memory.mainrom[0x03ffff];
+            opwolf_region = *(Memory.mainrom + 0x03ffff);
             opwolf_cchip_init();
-            opwolf_gun_xoffs = 0xec - Memory.mainrom[0x03ffb1];
-            opwolf_gun_yoffs = 0x1c - Memory.mainrom[0x03ffaf];
+            opwolf_gun_xoffs = 0xec - *(Memory.mainrom + 0x03ffb1);
+            opwolf_gun_yoffs = 0x1c - *(Memory.mainrom + 0x03ffaf);
             basebanksnd = 0x10000;
         }
         public unsafe static void driver_init_opwolfb()
         {
-            opwolf_region = Memory.mainrom[0x03ffff];
+            opwolf_region = *(Memory.mainrom + 0x03ffff);
             opwolf_gun_xoffs = -2;
             opwolf_gun_yoffs = 17;
             basebanksnd = 0x10000;
         }
         public unsafe static void driver_init_opwolfp()
         {
-            opwolf_region = Memory.mainrom[0x03ffff];
+            opwolf_region = *(Memory.mainrom + 0x03ffff);
             opwolf_gun_xoffs = 5;
             opwolf_gun_yoffs = 30;
             basebanksnd = 0x10000;

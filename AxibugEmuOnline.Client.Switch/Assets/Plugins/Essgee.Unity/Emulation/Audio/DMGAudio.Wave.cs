@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Essgee.Utilities;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Essgee.Emulation.Audio
 {
-    public partial class DMGAudio
+    public unsafe partial class DMGAudio
     {
         public class Wave : IDMGAudioChannel
         {
@@ -19,29 +21,51 @@ namespace Essgee.Emulation.Audio
             byte frequencyLSB;
 
             // NR34
-            bool trigger, lengthEnable;
+            public bool trigger, lengthEnable;
             byte frequencyMSB;
 
             // Wave
-            protected byte[] sampleBuffer;
+            //protected byte[] sampleBuffer;
+
+            #region //指针化 sampleBuffer
+            byte[] sampleBuffer_src;
+            GCHandle sampleBuffer_handle;
+            public byte* sampleBuffer;
+            public int sampleBufferLength;
+            public bool sampleBuffer_IsNull => sampleBuffer == null;
+            public byte[] sampleBuffer_set
+            {
+                set
+                {
+                    sampleBuffer_handle.ReleaseGCHandle();
+                    sampleBuffer_src = value;
+                    sampleBufferLength = value.Length;
+                    sampleBuffer_src.GetObjectPtr(ref sampleBuffer_handle, ref sampleBuffer);
+                }
+            }
+            #endregion
+
             int frequencyCounter, positionCounter, volume;
 
             // Misc
-            bool isChannelEnabled;
-            int lengthCounter;
+            public bool isChannelEnabled;
+            public int lengthCounter;
 
-            public int OutputVolume { get; private set; }
+            //public int OutputVolume { get; private set; }
 
-            public bool IsActive { get { return isDacEnabled; } }   // TODO: correct? lengthCounter check makes Zelda Oracle games hang
+            public override bool IsActive { get { return isDacEnabled; } }   // TODO: correct? lengthCounter check makes Zelda Oracle games hang
 
             public Wave()
             {
-                sampleBuffer = new byte[16];
+                //sampleBuffer = new byte[16];
+                sampleBuffer_set = new byte[16];
             }
 
-            public virtual void Reset()
+            public override void Reset()
             {
-                for (var i = 0; i < sampleBuffer.Length; i++) sampleBuffer[i] = (byte)EmuStandInfo.Random.Next(255);
+                //for (var i = 0; i < sampleBuffer.Length; i++) sampleBuffer[i] = (byte)EmuStandInfo.Random.Next(255);
+                byte* ptr = sampleBuffer;
+                for (var i = 0; i < sampleBufferLength; i++, ptr++) *ptr = 0;// (byte)EmuStandInfo.Random.Next(255);
                 frequencyCounter = positionCounter = 0;
                 volume = 15;
 
@@ -51,7 +75,7 @@ namespace Essgee.Emulation.Audio
                 OutputVolume = volume;
             }
 
-            public void LengthCounterClock()
+            public override void LengthCounterClock()
             {
                 if (lengthCounter > 0 && lengthEnable)
                 {
@@ -61,17 +85,17 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void SweepClock()
+            public override void SweepClock()
             {
                 throw new Exception("Channel type does not support sweep");
             }
 
-            public void VolumeEnvelopeClock()
+            public override void VolumeEnvelopeClock()
             {
                 throw new Exception("Channel type does not support envelope");
             }
 
-            public void Step()
+            public override void Step()
             {
                 if (!isChannelEnabled) return;
 
@@ -82,7 +106,8 @@ namespace Essgee.Emulation.Audio
                     positionCounter++;
                     positionCounter %= 32;
 
-                    var value = sampleBuffer[positionCounter / 2];
+                    //var value = sampleBuffer[positionCounter / 2];
+                    var value = *(sampleBuffer + (positionCounter / 2));
                     if ((positionCounter & 0b1) == 0) value >>= 4;
                     value &= 0b1111;
 
@@ -105,7 +130,7 @@ namespace Essgee.Emulation.Audio
                 positionCounter = 0;
             }
 
-            public void WritePort(byte port, byte value)
+            public override void WritePort(byte port, byte value)
             {
                 switch (port)
                 {
@@ -137,7 +162,7 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public byte ReadPort(byte port)
+            public override byte ReadPort(byte port)
             {
                 switch (port)
                 {
@@ -166,18 +191,25 @@ namespace Essgee.Emulation.Audio
 
             // TODO: more details on behavior on access w/ channel enabled
 
-            public void WriteWaveRam(byte offset, byte value)
+            public override void WriteWaveRam(byte offset, byte value)
             {
+                //if (!isDacEnabled)
+                //    sampleBuffer[offset & (sampleBuffer.Length - 1)] = value;
+                //else
+                //    sampleBuffer[positionCounter & (sampleBuffer.Length - 1)] = value;
                 if (!isDacEnabled)
-                    sampleBuffer[offset & (sampleBuffer.Length - 1)] = value;
+                    *(sampleBuffer + (offset & (sampleBufferLength - 1))) = value;
                 else
-                    sampleBuffer[positionCounter & (sampleBuffer.Length - 1)] = value;
+                    *(sampleBuffer+(positionCounter & (sampleBufferLength - 1))) = value;
             }
 
-            public byte ReadWaveRam(byte offset)
+            public override byte ReadWaveRam(byte offset)
             {
                 if (!isDacEnabled)
-                    return sampleBuffer[offset & (sampleBuffer.Length - 1)];
+                {
+                    //return sampleBuffer[offset & (sampleBufferLength - 1)];
+                    return *(sampleBuffer + (offset & (sampleBufferLength - 1)));
+                }
                 else
                     return 0xFF;
             }

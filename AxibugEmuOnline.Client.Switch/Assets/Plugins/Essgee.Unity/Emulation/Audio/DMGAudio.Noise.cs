@@ -1,15 +1,36 @@
-﻿using System;
+﻿using Essgee.Utilities;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Essgee.Emulation.Audio
 {
     public partial class DMGAudio
     {
-        public class Noise : IDMGAudioChannel
+        public unsafe class Noise : IDMGAudioChannel
         {
-            static readonly int[] divisors = new int[]
+            //static readonly int[] divisors = new int[]
+            //{
+            //    8, 16, 32, 48, 64, 80, 96, 112
+            //};
+
+            #region //指针化 divisors
+            int[] divisors_src;
+            static GCHandle divisors_handle;
+            public int* divisors;
+            public int divisorsLength;
+            public bool divisors_IsNull => divisors == null;
+            public int[] divisors_set
             {
-                8, 16, 32, 48, 64, 80, 96, 112
-            };
+                set
+                {
+                    divisors_handle.ReleaseGCHandle();
+                    divisors_src = value;
+                    divisorsLength = value.Length;
+                    divisors_src.GetObjectPtr(ref divisors_handle, ref divisors);
+                }
+            }
+            #endregion
+
 
             // NR41
             byte lengthLoad;
@@ -23,7 +44,7 @@ namespace Essgee.Emulation.Audio
             bool lfsrWidthMode;
 
             // NR44
-            bool trigger, lengthEnable;
+            public bool trigger, lengthEnable;
 
             //
 
@@ -36,19 +57,25 @@ namespace Essgee.Emulation.Audio
             bool isEnvelopeUpdateEnabled;
 
             // Misc
-            bool isChannelEnabled, isDacEnabled;
-            int lengthCounter;
+            public bool isChannelEnabled, isDacEnabled;
+            public int lengthCounter;
 
-            public int OutputVolume { get; private set; }
+            //public int OutputVolume { get; private set; }
 
-            public bool IsActive { get { return lengthCounter != 0; } }
+            public override bool IsActive { get { return lengthCounter != 0; } }
 
             public Noise()
             {
                 //
+
+                //初始化一下
+                divisors_set = new int[]
+            {
+                8, 16, 32, 48, 64, 80, 96, 112
+            };
             }
 
-            public void Reset()
+            public override void Reset()
             {
                 noiseCounter = 0;
                 lfsr = 0;
@@ -63,7 +90,7 @@ namespace Essgee.Emulation.Audio
                 OutputVolume = volume;
             }
 
-            public void LengthCounterClock()
+            public override void LengthCounterClock()
             {
                 if (lengthCounter > 0 && lengthEnable)
                 {
@@ -73,12 +100,12 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void SweepClock()
+            public override void SweepClock()
             {
                 throw new Exception("Channel type does not support sweep");
             }
 
-            public void VolumeEnvelopeClock()
+            public override void VolumeEnvelopeClock()
             {
                 envelopeCounter--;
                 if (envelopeCounter == 0)
@@ -99,14 +126,15 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void Step()
+            public override void Step()
             {
                 if (!isChannelEnabled) return;
 
                 noiseCounter--;
                 if (noiseCounter == 0)
                 {
-                    noiseCounter = divisors[divisorCode] << clockShift;
+                    //noiseCounter = divisors[divisorCode] << clockShift;
+                    noiseCounter = *(divisors + divisorCode) << clockShift;
 
                     var result = (lfsr & 0b1) ^ ((lfsr >> 1) & 0b1);
                     lfsr = (ushort)((lfsr >> 1) | (result << 14));
@@ -124,7 +152,8 @@ namespace Essgee.Emulation.Audio
 
                 if (lengthCounter == 0) lengthCounter = 64;
 
-                noiseCounter = divisors[divisorCode] << clockShift;
+                //noiseCounter = divisors[divisorCode] << clockShift;
+                noiseCounter = *(divisors + divisorCode) << clockShift;
                 volume = envelopeStartingVolume;
                 envelopeCounter = envelopePeriodReload;
                 isEnvelopeUpdateEnabled = true;
@@ -132,7 +161,7 @@ namespace Essgee.Emulation.Audio
                 lfsr = 0x7FFF;
             }
 
-            public void WritePort(byte port, byte value)
+            public override void WritePort(byte port, byte value)
             {
                 switch (port)
                 {
@@ -168,7 +197,7 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public byte ReadPort(byte port)
+            public override byte ReadPort(byte port)
             {
                 switch (port)
                 {
@@ -200,12 +229,12 @@ namespace Essgee.Emulation.Audio
                 }
             }
 
-            public void WriteWaveRam(byte offset, byte value)
+            public override void WriteWaveRam(byte offset, byte value)
             {
                 throw new Exception("Channel type does have Wave RAM");
             }
 
-            public byte ReadWaveRam(byte offset)
+            public override byte ReadWaveRam(byte offset)
             {
                 throw new Exception("Channel type does have Wave RAM");
             }

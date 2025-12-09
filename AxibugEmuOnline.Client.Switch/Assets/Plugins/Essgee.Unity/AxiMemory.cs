@@ -20,6 +20,12 @@ namespace Essgee.Utilities
             GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (uint*)intptr;
         }
+        public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref bool* ptr)
+        {
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
+            ptr = (bool*)intptr;
+        }
 
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref short* ptr)
         {

@@ -279,7 +279,7 @@
                 return val;
             }
         }
-        private static void YM_DELTAT_synthesis_from_external_memory()
+        private unsafe static void YM_DELTAT_synthesis_from_external_memory()
         {
             int step;
             int data;
@@ -340,9 +340,10 @@
             DELTAT.adpcml = DELTAT.prev_acc * (int)((1 << 16) - DELTAT.now_step);
             DELTAT.adpcml += (DELTAT.acc * (int)DELTAT.now_step);
             DELTAT.adpcml = (DELTAT.adpcml >> 16) * (int)DELTAT.volume;
-            FM.out_delta[DELTAT.pan_offset] += DELTAT.adpcml;
+            //FM.out_delta[DELTAT.pan_offset] += DELTAT.adpcml;
+            *(FM.out_delta + DELTAT.pan_offset) += DELTAT.adpcml;
         }
-        private static void YM_DELTAT_synthesis_from_CPU_memory()
+        private unsafe static void YM_DELTAT_synthesis_from_CPU_memory()
         {
             int step;
             int data;
@@ -376,7 +377,8 @@
             DELTAT.adpcml = DELTAT.prev_acc * (int)((1 << 16) - DELTAT.now_step);
             DELTAT.adpcml += (DELTAT.acc * (int)DELTAT.now_step);
             DELTAT.adpcml = (DELTAT.adpcml >> 16) * (int)DELTAT.volume;
-            FM.out_delta[DELTAT.pan_offset] += DELTAT.adpcml;
+            //FM.out_delta[DELTAT.pan_offset] += DELTAT.adpcml;
+            *(FM.out_delta + DELTAT.pan_offset) += DELTAT.adpcml;
         }
         public static void YM_DELTAT_ADPCM_CALC()
         {

@@ -1,8 +1,9 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace cpu.m68000
 {
-    partial class MC68000
+    unsafe partial class MC68000
     {
         bool TestCondition(int condition)
         {
@@ -106,17 +107,18 @@ namespace cpu.m68000
         {
             sbyte displacement8 = (sbyte)op;
 
-            A[7].s32 -= 4;
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 -= 4;
             if (displacement8 != 0)
             {
                 // use embedded displacement
-                WriteLong(A[7].s32, PC);
+                WriteLong(ptrA7->s32, PC);
                 PC += displacement8;
             }
             else
             {
                 // use extension word displacement
-                WriteLong(A[7].s32, PC + 2);
+                WriteLong(ptrA7->s32, PC + 2);
                 PC += ReadOpWord(PC);
             }
             pendingCycles -= 18;
@@ -133,9 +135,10 @@ namespace cpu.m68000
             else
             {
                 int reg = op & 7;
-                D[reg].u16--;
+                Register* D_ptr_reg = D + reg;
+                D_ptr_reg->u16--;
 
-                if (D[reg].u16 == 0xFFFF)
+                if (D_ptr_reg->u16 == 0xFFFF)
                 {
                     PC += 2; // counter underflowed, break out of loop
                     pendingCycles -= 14;
@@ -151,19 +154,21 @@ namespace cpu.m68000
 
         void RTS()
         {
-            PC = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            Register* ptrA7 = &A[7];
+            PC = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             pendingCycles -= 16;
         }
 
 
         void RTR()
         {
-            short value = ReadWord(A[7].s32);
-            A[7].s32 += 2;
+            Register* ptrA7 = &A[7];
+            short value = ReadWord(ptrA7->s32);
+            ptrA7->s32 += 2;
             CCR = value;
-            PC = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            PC = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             pendingCycles -= 20;
         }
 
@@ -181,10 +186,11 @@ namespace cpu.m68000
 
         void RTE()
         {
-            short newSR = ReadWord(A[7].s32);
-            A[7].s32 += 2;
-            PC = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            Register* ptrA7 = &A[7];
+            short newSR = ReadWord(ptrA7->s32);
+            ptrA7->s32 += 2;
+            PC = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             SR = newSR;
             pendingCycles -= 20;
         }
@@ -202,7 +208,7 @@ namespace cpu.m68000
             C = false;
             /*if (mode == 0)
             {
-                //D[reg].u8 = (byte)(result | 0x80);
+                //D_ptr_reg->u8 = (byte)(result | 0x80);
             }*/
             WriteValueB(mode, reg, (sbyte)(result | 0x80));
             pendingCycles -= (mode == 0) ? 4 : 14 + EACyclesBW[mode, reg];
@@ -236,7 +242,8 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
                 pendingCycles -= 10;
             }
             else
@@ -253,13 +260,14 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
                 pendingCycles -= 6;
             }
             else
@@ -281,8 +289,9 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 ^= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 ^= mask;
                 pendingCycles -= 12;
             }
             else
@@ -303,14 +312,15 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 ^= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 ^= mask;
                 pendingCycles -= 8;
             }
             else
@@ -335,8 +345,9 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 &= ~mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 &= ~mask;
                 pendingCycles -= 14;
             }
             else
@@ -356,14 +367,15 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 &= ~mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 &= ~mask;
                 pendingCycles -= 10;
             }
             else
@@ -389,8 +401,9 @@ namespace cpu.m68000
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 |= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 |= mask;
                 pendingCycles -= 12;
             }
             else
@@ -411,14 +424,15 @@ namespace cpu.m68000
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = op & 7;
-            int bit = D[dReg].s32;
+            int bit = (D + dReg)->s32;
 
             if (mode == 0)
             {
                 bit &= 31;
                 int mask = 1 << bit;
-                Z = (D[reg].s32 & mask) == 0;
-                D[reg].s32 |= mask;
+                Register* D_ptr_reg = D + reg;
+                Z = (D_ptr_reg->s32 & mask) == 0;
+                D_ptr_reg->s32 |= mask;
                 pendingCycles -= 8;
             }
             else
@@ -467,8 +481,9 @@ namespace cpu.m68000
             int reg = (op >> 0) & 7;
             int addr = ReadAddress(mode, reg);
 
-            A[7].s32 -= 4;
-            WriteLong(A[7].s32, PC);
+            Register* ptrA7 = &A[7];
+            ptrA7->s32 -= 4;
+            WriteLong(ptrA7->s32, PC);
             PC = addr;
 
             switch (mode)
@@ -492,11 +507,14 @@ namespace cpu.m68000
         void LINK()
         {
             int reg = op & 7;
-            A[7].s32 -= 4;
+
+            Register* ptrA7 = &A[7];
+            Register* A_ptr_reg = A + reg;
+            ptrA7->s32 -= 4;
             short offset = ReadOpWord(PC); PC += 2;
-            WriteLong(A[7].s32, A[reg].s32);
-            A[reg].s32 = A[7].s32;
-            A[7].s32 += offset;
+            WriteLong(ptrA7->s32, A_ptr_reg->s32);
+            A_ptr_reg->s32 = ptrA7->s32;
+            ptrA7->s32 += offset;
             pendingCycles -= 16;
         }
 
@@ -504,9 +522,11 @@ namespace cpu.m68000
         void UNLK()
         {
             int reg = op & 7;
-            A[7].s32 = A[reg].s32;
-            A[reg].s32 = ReadLong(A[7].s32);
-            A[7].s32 += 4;
+            Register* ptrA7 = &A[7];
+            Register* A_ptr_reg = A + reg;
+            ptrA7->s32 = A_ptr_reg->s32;
+            A_ptr_reg->s32 = ReadLong(ptrA7->s32);
+            ptrA7->s32 += 4;
             pendingCycles -= 12;
         }
 

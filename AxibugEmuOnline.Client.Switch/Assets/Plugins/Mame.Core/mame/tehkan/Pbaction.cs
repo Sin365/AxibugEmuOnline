@@ -187,7 +187,7 @@ namespace MAME.Core
             }
             else
             {
-                result = Memory.mainram[0];
+                result = *Memory.mainram;
             }
             return result;
         }

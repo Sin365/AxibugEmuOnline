@@ -88,7 +88,7 @@ namespace MAME.Core
             controller_select = reader.ReadByte();
             main_cpu_bank_address = reader.ReadInt32();
             main_cpu_vector_table_source = reader.ReadByte();
-            audio_cpu_banks = reader.ReadBytes(4);
+            audio_cpu_banks_set = reader.ReadBytes(4);
             save_ram_unlocked = reader.ReadByte();
             audio_cpu_nmi_enabled = reader.ReadBoolean();
             audio_cpu_nmi_pending = reader.ReadBoolean();

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MAME.Core
 {
-    public class FM
+    public unsafe class FM
     {
         public class FM_OPN
         {
@@ -10,7 +11,26 @@ namespace MAME.Core
             public FM_ST ST;
             public FM_3SLOT SL3;
             public FM_CH[] CH;
-            public uint[] pan;
+            //public uint[] pan;
+
+            #region //指针化 pan
+            uint[] pan_src;
+            GCHandle pan_handle;
+            public uint* pan;
+            public int panLength;
+            public bool pan_IsNull => pan == null;
+            public uint[] pan_set
+            {
+                set
+                {
+                    pan_handle.ReleaseGCHandle();
+                    pan_src = value;
+                    panLength = value.Length;
+                    pan_src.GetObjectPtr(ref pan_handle, ref pan);
+                }
+            }
+            #endregion
+
             public uint eg_cnt;
             public uint eg_timer;
             public uint eg_timer_add;
@@ -36,7 +56,8 @@ namespace MAME.Core
                 SL3.fc = new uint[3];
                 SL3.kcode = new byte[3];
                 SL3.block_fnum = new uint[3];
-                pan = new uint[12];
+                //pan = new uint[12];
+                pan_set = new uint[12];
                 fn_table = new uint[4096];
                 lfo_freq = new int[8];
                 ST.timer_handler = null;
@@ -617,23 +638,31 @@ namespace MAME.Core
             //}
 
             //手动内联
-            public unsafe void chan_calc(int c, int chnum)
+            //public unsafe void chan_calc(int c, int chnum)
+            //public unsafe void chan_calc(int c, bool chnum_is_2)
+            public unsafe void chan_calc(int c, bool chnum_is_2)
             {
                 uint eg_out;
                 //减少寻址
-                int imem_To_c = imem[c];//
+                int imem_ToIndex_c = imem[c];
+                int* out_fm_ptr = out_fm;
                 fixed (FM_SLOT* CH_c_SLOT = &CH[c].SLOT[0])//因为是引用类型，所以敢这么玩
-                fixed (int* out_fm_ptr = &out_fm[0])
+                //fixed (int* out_fm_ptr = &out_fm[0])
                 {
+                    FM_SLOT* cslot_0 = CH_c_SLOT;
+                    FM_SLOT* cslot_1 = CH_c_SLOT + 1;
+                    FM_SLOT* cslot_2 = CH_c_SLOT + 2;
+                    FM_SLOT* cslot_3 = CH_c_SLOT + 3;
+
                     //out_fm[8] = out_fm[9] = out_fm[10] = out_fm[11] = 0;  //本来就是注释->m2 = c1 = c2 = mem = 0;
-                    out_fm_ptr[8] = out_fm_ptr[9] = out_fm_ptr[10] = out_fm_ptr[11] = 0;
+                    *(out_fm_ptr + 8) = *(out_fm_ptr + 9) = *(out_fm_ptr + 10) = *(out_fm_ptr + 11) = 0;
 
                     //set_mem(c);
-                    if (imem_To_c == 8 || imem_To_c == 10 || imem_To_c == 11)
-                        out_fm_ptr[imem_To_c] = CH[c].mem_value;
+                    if (imem_ToIndex_c == 8 || imem_ToIndex_c == 10 || imem_ToIndex_c == 11)
+                        *(out_fm_ptr + imem_ToIndex_c) = CH[c].mem_value;
 
                     //eg_out = volume_calc(c, 0);
-                    eg_out = (uint)(CH_c_SLOT[0].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[0].AMmask));
+                    eg_out = (uint)(cslot_0->vol_out + ((LFO_AM >> CH[c].ams) & cslot_0->AMmask));
 
                     int out1 = CH[c].op1_out0 + CH[c].op1_out1;
                     CH[c].op1_out0 = CH[c].op1_out1;
@@ -641,7 +670,8 @@ namespace MAME.Core
                     //set_value1(c);
                     if (iconnect1[c] == 12)
                     {
-                        out_fm_ptr[11] = out_fm_ptr[9] = out_fm_ptr[10] = CH[c].op1_out0;
+                        //out_fm_ptr[11] = out_fm_ptr[9] = out_fm_ptr[10] = CH[c].op1_out0;
+                        *(out_fm_ptr + 11) = *(out_fm_ptr + 9) = *(out_fm_ptr + 10) = CH[c].op1_out0;
                     }
                     else
                     {
@@ -655,30 +685,56 @@ namespace MAME.Core
                         {
                             out1 = 0;
                         }
-                        CH[c].op1_out1 = op_calc1(CH_c_SLOT[0].phase, eg_out, (out1 << CH[c].FB));
+
+                        //CH[c].op1_out1 = op_calc1(cslot_0->phase, eg_out, (out1 << CH[c].FB)); //->(uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_0->phase & 0xffff0000) + (out1 << CH[c].FB))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            CH[c].op1_out1 = 0;
+                        else
+                            CH[c].op1_out1 = tl_tab[p];
                     }
                     //eg_out = volume_calc(c, 1);
-                    eg_out = (uint)(CH_c_SLOT[1].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[1].AMmask));
+                    eg_out = (uint)(cslot_1->vol_out + ((LFO_AM >> CH[c].ams) & cslot_1->AMmask));
                     if (eg_out < 832)
                     {
-                        out_fm_ptr[iconnect3[c]] += op_calc(CH_c_SLOT[1].phase, eg_out, out_fm_ptr[8]);
+                        //out_fm_ptr[iconnect3[c]] += op_calc(cslot_1->phase, eg_out, out_fm_ptr[8]);//--> (uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_1->phase & 0xffff0000) + (out_fm_ptr[8] << 15))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            out_fm_ptr[iconnect3[c]] += 0;
+                        else
+                            out_fm_ptr[iconnect3[c]] += tl_tab[p];
                     }
                     //eg_out = volume_calc(c, 2);
-                    eg_out = (uint)(CH_c_SLOT[2].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[2].AMmask));
+                    eg_out = (uint)(cslot_2->vol_out + ((LFO_AM >> CH[c].ams) & cslot_2->AMmask));
                     if (eg_out < 832)
                     {
-                        out_fm_ptr[iconnect2[c]] += op_calc(CH_c_SLOT[2].phase, eg_out, out_fm_ptr[9]);
+                        //out_fm_ptr[iconnect2[c]] += op_calc(cslot_2->phase, eg_out, out_fm_ptr[9]);//--> (uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_2->phase & 0xffff0000) + (out_fm_ptr[9] << 15))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            out_fm_ptr[iconnect2[c]] += 0;
+                        else
+                            out_fm_ptr[iconnect2[c]] += tl_tab[p];
                     }
                     //eg_out = volume_calc(c, 3);
-                    eg_out = (uint)(CH_c_SLOT[3].vol_out + ((LFO_AM >> CH[c].ams) & CH_c_SLOT[3].AMmask));
+                    eg_out = (uint)(cslot_3->vol_out + ((LFO_AM >> CH[c].ams) & cslot_3->AMmask));
                     if (eg_out < 832)
                     {
-                        out_fm_ptr[iconnect4[c]] += op_calc(CH_c_SLOT[3].phase, eg_out, out_fm[10]);
+                        //out_fm_ptr[iconnect4[c]] += op_calc(cslot_3->phase, eg_out, out_fm[10]); //-->(uint phase, uint env, int pm)
+                        uint p;
+                        p = (uint)((eg_out << 3) + sin_tab[(((int)((cslot_3->phase & 0xffff0000) + (out_fm[10] << 15))) >> 16) & 0x3ff]);
+                        if (p >= 6656)
+                            out_fm_ptr[iconnect4[c]] += 0;
+                        else
+                            out_fm_ptr[iconnect4[c]] += tl_tab[p];
                     }
                     CH[c].mem_value = out_fm_ptr[11];//mem;
                     if (CH[c].pms != 0)
                     {
-                        if (((ST.mode & 0xC0) != 0) && (chnum == 2))
+                        //if (((ST.mode & 0xC0) != 0) && (chnum == 2))
+                        if (chnum_is_2 && ((ST.mode & 0xC0) != 0))
                         {
                             update_phase_lfo_slot(0, CH[c].pms, SL3.block_fnum[1]);
                             update_phase_lfo_slot(2, CH[c].pms, SL3.block_fnum[2]);
@@ -692,10 +748,10 @@ namespace MAME.Core
                     }
                     else
                     {
-                        CH_c_SLOT[0].phase += (uint)CH_c_SLOT[0].Incr;
-                        CH_c_SLOT[2].phase += (uint)CH_c_SLOT[2].Incr;
-                        CH_c_SLOT[1].phase += (uint)CH_c_SLOT[1].Incr;
-                        CH_c_SLOT[3].phase += (uint)CH_c_SLOT[3].Incr;
+                        cslot_0->phase += (uint)cslot_0->Incr;
+                        cslot_2->phase += (uint)cslot_2->Incr;
+                        cslot_1->phase += (uint)cslot_1->Incr;
+                        cslot_3->phase += (uint)cslot_3->Incr;
                     }
                 }
             }
@@ -1325,15 +1381,76 @@ namespace MAME.Core
         public delegate void reset_handler();
         private static int[] lfo_pm_table = new int[128 * 8 * 32];
         private static int[] iconnect1 = new int[8], iconnect2 = new int[8], iconnect3 = new int[8], iconnect4 = new int[6], imem = new int[13];
-        public static int[] out_fm = new int[13];
-        public static int[] out_adpcm = new int[4];
-        public static int[] out_delta = new int[4];
+        //public static int[] out_fm = new int[13];
+
+        #region //指针化 out_fm
+        static int[] out_fm_src;
+        static GCHandle out_fm_handle;
+        public static int* out_fm;
+        public static int out_fmLength;
+        public static bool out_fm_IsNull => out_fm == null;
+        public static int[] out_fm_set
+        {
+            set
+            {
+                out_fm_handle.ReleaseGCHandle();
+                out_fm_src = value;
+                out_fmLength = value.Length;
+                out_fm_src.GetObjectPtr(ref out_fm_handle, ref out_fm);
+            }
+        }
+        #endregion
+
+        //public static int[] out_adpcm = new int[4];
+
+        #region //指针化 out_adpcm
+        static int[] out_adpcm_src;
+        static GCHandle out_adpcm_handle;
+        public static int* out_adpcm;
+        public static int out_adpcmLength;
+        public static bool out_adpcm_IsNull => out_adpcm == null;
+        public static int[] out_adpcm_set
+        {
+            set
+            {
+                out_adpcm_handle.ReleaseGCHandle();
+                out_adpcm_src = value;
+                out_adpcmLength = value.Length;
+                out_adpcm_src.GetObjectPtr(ref out_adpcm_handle, ref out_adpcm);
+            }
+        }
+        #endregion
+
+        //public static int[] out_delta = new int[4];
+
+        #region //指针化 out_delta
+        static int[] out_delta_src;
+        static GCHandle out_delta_handle;
+        public static int* out_delta;
+        public static int out_deltaLength;
+        public static bool out_delta_IsNull => out_delta == null;
+        public static int[] out_delta_set
+        {
+            set
+            {
+                out_delta_handle.ReleaseGCHandle();
+                out_delta_src = value;
+                out_deltaLength = value.Length;
+                out_delta_src.GetObjectPtr(ref out_delta_handle, ref out_delta);
+            }
+        }
+        #endregion
+
         public static byte[] ymsndrom;
         public static int LFO_AM;
         public static int LFO_PM;
         private static int fn_max;
         public static void FM_init()
         {
+            //初始化一下
+            out_fm_set = new int[13];
+            out_adpcm_set = new int[4];
+            out_delta_set = new int[4];
             init_tables();
         }
         public static int Limit(int val, int max, int min)

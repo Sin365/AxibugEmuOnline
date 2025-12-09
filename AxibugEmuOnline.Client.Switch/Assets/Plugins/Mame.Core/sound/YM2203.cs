@@ -282,9 +282,12 @@ namespace MAME.Core
                     OPN.advance_eg_channel(1);
                     OPN.advance_eg_channel(2);
                 }
-                OPN.chan_calc(0, 0);
-                OPN.chan_calc(1, 1);
-                OPN.chan_calc(2, 2);
+                //OPN.chan_calc(0, 0);
+                //OPN.chan_calc(1, 1);
+                //OPN.chan_calc(2, 2);
+                OPN.chan_calc(0, false);
+                OPN.chan_calc(1, false);
+                OPN.chan_calc(2, true);
                 {
                     int lt;
                     lt = FM.out_fm[0] + FM.out_fm[1] + FM.out_fm[2];

@@ -175,8 +175,8 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EssgeeSingleKey.DOWN, device.Down, 0);
             controller.SetBinding(EssgeeSingleKey.LEFT, device.Left, 0);
             controller.SetBinding(EssgeeSingleKey.RIGHT, device.Right, 0);
-            controller.SetBinding(EssgeeSingleKey.BTN_1, device.A, 0);
-            controller.SetBinding(EssgeeSingleKey.BTN_2, device.B, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_1, device.B, 0);
+            controller.SetBinding(EssgeeSingleKey.BTN_2, device.A, 0);
             controller.SetBinding(EssgeeSingleKey.BTN_3, device.X, 0);
             controller.SetBinding(EssgeeSingleKey.BTN_4, device.Y, 0);
 

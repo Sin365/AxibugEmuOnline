@@ -100,23 +100,27 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
         }
     }
 
-    void OnAudioFilterRead(float[] data, int channels)
+    unsafe void OnAudioFilterRead(float[] data, int channels)
     {
         if (!UMAME.bInGame) return;
         int step = channels;
-        for (int i = 0; i < data.Length; i += step)
+        int length = data.Length;
+        fixed (float* dataptr = &data[0])
         {
-            float rawFloat = lastData;
-            float rawData;
-            if (_buffer.TryRead(out rawData))
+            float* dataptr_index = &dataptr[0];
+            for (int i = 0; i < length; i += step)
             {
-                rawFloat = rawData;
+                float rawFloat = lastData;
+                float rawData;
+                if (_buffer.TryRead(out rawData))
+                    rawFloat = rawData;
+                for (int fill = 0; fill < step; fill++)
+                {
+                    *dataptr_index = rawFloat;
+                    dataptr_index++;
+                }
+                lastData = rawFloat;
             }
-
-            data[i] = rawFloat;
-            for (int fill = 1; fill < step; fill++)
-                data[i + fill] = rawFloat;
-            lastData = rawFloat;
         }
     }
 

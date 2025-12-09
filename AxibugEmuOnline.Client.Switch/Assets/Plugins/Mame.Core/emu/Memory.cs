@@ -418,6 +418,12 @@ namespace MAME.Core
             set_TempBuffer = new byte[0x40000];
         }
 
+        public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref cpu.m68000.Register* ptr)
+        {
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
+            ptr = (cpu.m68000.Register*)intptr;
+        }
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref uint* ptr)
         {
             IntPtr intptr;

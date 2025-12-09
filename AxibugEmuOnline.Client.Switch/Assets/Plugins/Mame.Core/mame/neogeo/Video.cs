@@ -1,12 +1,51 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MAME.Core
 {
     public unsafe partial class Neogeo
     {
-        public static byte[] sprite_gfx;
+        //public static byte[] sprite_gfx;
+
+        #region //指针化 sprite_gfx
+        static byte[] sprite_gfx_src;
+        static GCHandle sprite_gfx_handle;
+        public static byte* sprite_gfx;
+        public static int sprite_gfxLength;
+        public static bool sprite_gfx_IsNull => sprite_gfx == null;
+        public static byte[] sprite_gfx_set
+        {
+            set
+            {
+                sprite_gfx_handle.ReleaseGCHandle();
+                sprite_gfx_src = value;
+                sprite_gfxLength = value.Length;
+                sprite_gfx_src.GetObjectPtr(ref sprite_gfx_handle, ref sprite_gfx);
+            }
+        }
+        #endregion
+
         public static uint sprite_gfx_address_mask;
-        public static ushort[] neogeo_videoram;
+        //public static ushort[] neogeo_videoram;
+
+        #region //指针化 neogeo_videoram
+        static ushort[] neogeo_videoram_src;
+        static GCHandle neogeo_videoram_handle;
+        public static ushort* neogeo_videoram;
+        public static int neogeo_videoramLength;
+        public static bool neogeo_videoram_IsNull => neogeo_videoram == null;
+        public static ushort[] neogeo_videoram_set
+        {
+            set
+            {
+                neogeo_videoram_handle.ReleaseGCHandle();
+                neogeo_videoram_src = value;
+                neogeo_videoramLength = value.Length;
+                neogeo_videoram_src.GetObjectPtr(ref neogeo_videoram_handle, ref neogeo_videoram);
+            }
+        }
+        #endregion
+
         public static ushort[,] palettes;
         public static int[] pens;
         private static int neogeo_scanline_param;
@@ -26,7 +65,25 @@ namespace MAME.Core
         private static double[] rgb_weights_normal_bit15;
         private static double[] rgb_weights_dark;
         private static double[] rgb_weights_dark_bit15;
-        public static int[,] zoom_x_tables;
+        public readonly static int[,] zoom_x_tables = new int[,]
+            {
+                { 0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 },
+                { 0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0 },
+                { 0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0 },
+                { 0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0 },
+                { 0,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0 },
+                { 0,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0 },
+                { 0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0 },
+                { 1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0 },
+                { 1,0,1,0,1,0,1,0,1,1,1,0,1,0,1,0 },
+                { 1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0 },
+                { 1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,1 },
+                { 1,0,1,1,1,0,1,1,1,1,1,0,1,0,1,1 },
+                { 1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1 },
+                { 1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1 },
+                { 1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1 },
+                { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
+            };
         private static int[] transarray, bgarray;
         private static int trans_color;
         private static byte combine_5_weights(double[] tab, int w0, int w1, int w2, int w3, int w4)
@@ -336,14 +393,16 @@ namespace MAME.Core
         /// <param name="scanline"></param>
         unsafe private static void draw_sprites(int iBitmap, int scanline)
         {
-
-            fixed (ushort* videoramPtr = &neogeo_videoram[0])
+            int pixel_addr_offsety = scanline;
+            int pixel_addr_offsety_x_384 = pixel_addr_offsety * 384;
+            //fixed (byte* spriteGfxPtr = &sprite_gfx[0])
+            byte* spriteGfxPtr = sprite_gfx;
+            //fixed (ushort* videoramPtr = &neogeo_videoram[0])
+            ushort* videoramPtr = neogeo_videoram;
             //fixed (int* bitmapbasePtr = &Video.bitmapbaseN_Ptrs[iBitmap][0])
-            fixed (byte* spriteGfxPtr = &sprite_gfx[0])
             fixed (int* pensPtr = &pens[0])
             fixed (byte* zoomyromPtr = &zoomyrom[0])
             {
-                ushort* neogeo_videoram = videoramPtr;
                 //int* bitmapbase = bitmapbasePtr;
                 int* bitmapbase = &Video.bitmapbaseN_Ptrs[iBitmap][0];
                 byte* spriteGfx = spriteGfxPtr;
@@ -370,7 +429,8 @@ namespace MAME.Core
                 }
                 for (max_sprite_index = 95; max_sprite_index >= 0; max_sprite_index--)
                 {
-                    if (neogeo_videoram[sprite_list_offset + max_sprite_index] != 0)
+                    //if (neogeo_videoram[sprite_list_offset + max_sprite_index] != 0)
+                    if (*(videoramPtr + (sprite_list_offset + max_sprite_index)) != 0)
                     {
                         break;
                     }
@@ -381,12 +441,20 @@ namespace MAME.Core
                 }
                 for (sprite_index = 0; sprite_index < max_sprite_index; sprite_index++)
                 {
-                    sprite_number = neogeo_videoram[sprite_list_offset + sprite_index] & 0x1ff;
-                    y_control = neogeo_videoram[0x8200 | sprite_number];
-                    zoom_control = neogeo_videoram[0x8000 | sprite_number];
-                    x_2 = neogeo_videoram[0x8400 | sprite_number];
-                    code_2 = neogeo_videoram[sprite_number << 6];
+                    //sprite_number = neogeo_videoram[sprite_list_offset + sprite_index] & 0x1ff;
+                    //y_control = neogeo_videoram[0x8200 | sprite_number];
+                    //zoom_control = neogeo_videoram[0x8000 | sprite_number];
+                    //x_2 = neogeo_videoram[0x8400 | sprite_number];
+                    //code_2 = neogeo_videoram[sprite_number << 6];
 
+                    sprite_number = (*(videoramPtr + sprite_list_offset + sprite_index) & 0x1ff);
+                    y_control = (ushort)(*(videoramPtr + (0x8200 | sprite_number)));
+                    zoom_control = (ushort)(*(videoramPtr + (0x8000 | sprite_number)));
+                    x_2 = (ushort)(*(videoramPtr + (0x8400 | sprite_number)));
+                    code_2 = *(videoramPtr + (sprite_number << 6));
+
+
+                    //不对👇
                     //sprite_number = (*(videoram + sprite_list_offset + sprite_index) & 0x1ff);
                     //y_control = (ushort)(*(videoram + 0x8200) | sprite_number);
                     //zoom_control = (ushort)(*(videoram + 0x8000) | sprite_number);
@@ -420,7 +488,7 @@ namespace MAME.Core
                         //if (sprite_on_scanline(scanline, y, rows))
                         //手动内联 开始
                         int tempRows = rows;
-                        if ((rows == 0) || (rows > 0x20))
+                        if ((tempRows == 0) || (tempRows > 0x20))
                             tempRows = 0x20;
                         int max_y = (y + (tempRows * 0x10) - 1) & 0x1ff;
                         if (((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
@@ -452,8 +520,10 @@ namespace MAME.Core
                                 tile ^= 0x1f;
                             }
                             attr_and_code_offs = (sprite_number << 6) | (tile << 1);
-                            attr = neogeo_videoram[attr_and_code_offs + 1];
-                            code = ((attr << 12) & 0x70000) | neogeo_videoram[attr_and_code_offs];
+                            //attr = neogeo_videoram[attr_and_code_offs + 1];
+                            attr = *(videoramPtr + attr_and_code_offs + 1);
+                            //code = ((attr << 12) & 0x70000) | neogeo_videoram[attr_and_code_offs];
+                            code = ((attr << 12) & 0x70000) | *(videoramPtr + attr_and_code_offs);
                             if (auto_animation_disabled == 0)
                             {
                                 if ((attr & 0x0008) != 0)
@@ -481,54 +551,78 @@ namespace MAME.Core
                             {
                                 x_inc = 1;
                             }
-                            int pixel_addr_offsetx, pixel_addr_offsety;
+                            //int pixel_addr_offsetx;
                             if (x <= 0x01f0)
                             {
                                 int i;
-                                pixel_addr_offsetx = x + NEOGEO_HBEND;
-                                pixel_addr_offsety = scanline;
+                                //pixel_addr_offsetx = x + NEOGEO_HBEND;
+                                //int* pixel_ptr = &bitmapbase[pixel_addr_offsety_x_384 + x + NEOGEO_HBEND];
+                                int* pixel_ptr = bitmapbase + pixel_addr_offsety_x_384 + x + NEOGEO_HBEND;
+                                //int* zoom_x_tablePtr =  &zoom_x_tables[zoom_x_table_offset];
+                                int* zoom_x_tablePtr = zoom_x_tables + zoom_x_table_offset;
+                                //byte* spriteGfx_offset_Ptr = &spriteGfx[gfx_offset];
+                                byte* spriteGfx_offset_Ptr = spriteGfx + gfx_offset;
                                 for (i = 0; i < 0x10; i++)
                                 {
                                     //if (zoom_x_tables[zoom_x, zoom_x_table_offset] != 0)
-                                    if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    //if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    if (*zoom_x_tablePtr != 0)
                                     {
                                         //if (sprite_gfx[gfx_offset] != 0)
-                                        if (spriteGfx[gfx_offset] != 0)
+                                        //if (spriteGfx[gfx_offset] != 0)
+                                        if (*spriteGfx_offset_Ptr != 0)
                                         {
                                             //Video.bitmapbaseN_Ptrs[iBitmap][pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + sprite_gfx[gfx_offset]];
-                                            bitmapbase[pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                            //bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                            //*pixel_ptr = pens[line_pens_offset + *spriteGfx_offset_Ptr];
+                                            *pixel_ptr = *(pens + line_pens_offset + *spriteGfx_offset_Ptr);
                                         }
-                                        pixel_addr_offsetx++;
+                                        //pixel_addr_offsetx++;
+                                        pixel_ptr++;
                                     }
-                                    zoom_x_table_offset++;
-                                    gfx_offset += x_inc;
+                                    //zoom_x_table_offset++;
+                                    zoom_x_tablePtr++;
+                                    //gfx_offset += x_inc;
+                                    spriteGfx_offset_Ptr += x_inc;
                                 }
                             }
                             else
                             {
                                 int i;
                                 int x_save = x;
-                                pixel_addr_offsetx = NEOGEO_HBEND;
-                                pixel_addr_offsety = scanline;
+                                //pixel_addr_offsetx = NEOGEO_HBEND;
+                                //int* pixel_ptr = &bitmapbase[pixel_addr_offsety_x_384 + NEOGEO_HBEND];
+                                int* pixel_ptr = bitmapbase + pixel_addr_offsety_x_384 + NEOGEO_HBEND;
+                                //int* zoom_x_tablePtr = &zoom_x_tables[zoom_x_table_offset];
+                                int* zoom_x_tablePtr = zoom_x_tables + zoom_x_table_offset;
+                                //byte* spriteGfx_offset_Ptr = &spriteGfx[gfx_offset];
+                                byte* spriteGfx_offset_Ptr = spriteGfx + gfx_offset;
                                 for (i = 0; i < 0x10; i++)
                                 {
                                     //if (zoom_x_tables[zoom_x, zoom_x_table_offset] != 0)
-                                    if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    //if (zoom_x_tables[zoom_x_table_offset] != 0)
+                                    if (*zoom_x_tablePtr != 0)
                                     {
                                         if (x >= 0x200)
                                         {
                                             //if (sprite_gfx[gfx_offset] != 0)
-                                            if (spriteGfx[gfx_offset] != 0)
+                                            //if (spriteGfx[gfx_offset] != 0)
+                                            if (*spriteGfx_offset_Ptr != 0)
                                             {
                                                 //Video.bitmapbaseN_Ptrs[iBitmap][pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + sprite_gfx[gfx_offset]];
-                                                bitmapbase[pixel_addr_offsety * 384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                                //bitmapbase[pixel_addr_offsety_x_384 + pixel_addr_offsetx] = pens[line_pens_offset + spriteGfx[gfx_offset]];
+                                                //*pixel_ptr = pens[line_pens_offset + *spriteGfx_offset_Ptr];
+                                                *pixel_ptr = *(pens + line_pens_offset + *spriteGfx_offset_Ptr);
                                             }
-                                            pixel_addr_offsetx++;
+                                            //pixel_addr_offsetx++;
+                                            pixel_ptr++;
                                         }
                                         x++;
                                     }
-                                    zoom_x_table_offset++;
-                                    gfx_offset += x_inc;
+                                    //zoom_x_table_offset++;
+                                    zoom_x_tablePtr++;
+                                    //gfx_offset += x_inc;
+                                    spriteGfx_offset_Ptr += x_inc;
                                 }
                                 x = x_save;
                             }
@@ -697,6 +791,65 @@ namespace MAME.Core
         //        }
         //    }
         //}
+
+
+        //private static void parse_sprites(int scanline)
+        //{
+        //    ushort sprite_number, y_control;
+        //    int y = 0;
+        //    int rows = 0;
+        //    int sprite_list_offset;
+        //    int active_sprite_count = 0;
+        //    if ((scanline & 0x01) != 0)
+        //    {
+        //        sprite_list_offset = 0x8680;
+        //    }
+        //    else
+        //    {
+        //        sprite_list_offset = 0x8600;
+        //    }
+        //    for (sprite_number = 0; sprite_number < 381; sprite_number++)
+        //    {
+        //        y_control = neogeo_videoram[0x8200 | sprite_number];
+        //        if ((~y_control & 0x40) != 0)
+        //        {
+        //            y = 0x200 - (y_control >> 7);
+        //            rows = y_control & 0x3f;
+        //        }
+        //        if (rows == 0)
+        //        {
+        //            continue;
+        //        }
+
+        //        //if (!sprite_on_scanline(scanline, y, rows))
+
+        //        //手动内联 开始
+        //        int tempRows = rows;
+        //        if ((rows == 0) || (rows > 0x20))
+        //            tempRows = 0x20;
+        //        int max_y = (y + (tempRows * 0x10) - 1) & 0x1ff;
+        //        if (!(((max_y >= y) && (scanline >= y) && (scanline <= max_y)) ||
+        //                ((max_y < y) && ((scanline >= y) || (scanline <= max_y)))))
+        //        //手动内联 结束
+        //        {
+        //            continue;
+        //        }
+        //        neogeo_videoram[sprite_list_offset] = sprite_number;
+        //        sprite_list_offset++;
+        //        active_sprite_count++;
+        //        if (active_sprite_count == 96)
+        //        {
+        //            break;
+        //        }
+        //    }
+        //    for (; active_sprite_count <= 96; active_sprite_count++)
+        //    {
+        //        neogeo_videoram[sprite_list_offset] = 0;
+        //        sprite_list_offset++;
+        //    }
+        //}
+
+        //手动优化进一步
         private static void parse_sprites(int scanline)
         {
             ushort sprite_number, y_control;
@@ -712,9 +865,12 @@ namespace MAME.Core
             {
                 sprite_list_offset = 0x8600;
             }
+
+            ushort* neogeo_videoram_sprite_list_offset = neogeo_videoram + sprite_list_offset;
             for (sprite_number = 0; sprite_number < 381; sprite_number++)
             {
-                y_control = neogeo_videoram[0x8200 | sprite_number];
+                //y_control = neogeo_videoram[0x8200 | sprite_number];
+                y_control = *(neogeo_videoram + (0x8200 | sprite_number));
                 if ((~y_control & 0x40) != 0)
                 {
                     y = 0x200 - (y_control >> 7);
@@ -738,8 +894,11 @@ namespace MAME.Core
                 {
                     continue;
                 }
-                neogeo_videoram[sprite_list_offset] = sprite_number;
-                sprite_list_offset++;
+                //neogeo_videoram[sprite_list_offset] = sprite_number;
+                *neogeo_videoram_sprite_list_offset = sprite_number;
+                //sprite_list_offset++;
+                neogeo_videoram_sprite_list_offset++;
+
                 active_sprite_count++;
                 if (active_sprite_count == 96)
                 {
@@ -748,8 +907,10 @@ namespace MAME.Core
             }
             for (; active_sprite_count <= 96; active_sprite_count++)
             {
-                neogeo_videoram[sprite_list_offset] = 0;
-                sprite_list_offset++;
+                //neogeo_videoram[sprite_list_offset] = 0;
+                *neogeo_videoram_sprite_list_offset = 0;
+                //sprite_list_offset++;
+                neogeo_videoram_sprite_list_offset++;
             }
         }
         public static void sprite_line_timer_callback()
@@ -775,83 +936,200 @@ namespace MAME.Core
         }
         readonly static int[] pix_offsets = new int[] { 0x10, 0x18, 0x00, 0x08 };
         static int[] garouoffsets = new int[32];
+        //private static void draw_fixed_layer(int iBitmap, int scanline)
+        //手动优化
         private static void draw_fixed_layer(int iBitmap, int scanline)
         {
-            int i, j, x, y;
-            byte[] gfx_base;
-            //int[] garouoffsets = new int[32], pix_offsets = new int[] { 0x10, 0x18, 0x00, 0x08 };
-            int addr_mask;
-            int gfx_offset, char_pens_offset;
-            byte data;
-            bool banked;
-            int garoubank, k, code;
-            ushort code_and_palette;
-            if (fixed_layer_source != 0)
+
+            //fixed (ushort* videoramPtr = &neogeo_videoram[0])
+            //ushort* videoramPtr = neogeo_videoram;
             {
-                gfx_base = fixedrom;
-                addr_mask = fixedrom.Length - 1;
-            }
-            else
-            {
-                gfx_base = fixedbiosrom;
-                addr_mask = fixedbiosrom.Length - 1;
-            }
-            int video_data_offset = 0x7000 | (scanline >> 3);
-            banked = (fixed_layer_source != 0) && (addr_mask > 0x1ffff);
-            if (banked && neogeo_fixed_layer_bank_type == 1)
-            {
-                garoubank = 0;
-                k = 0;
-                y = 0;
-                while (y < 32)
+                int* bitmapbase = &Video.bitmapbaseN_Ptrs[iBitmap][0];
+                int scanline_x_384 = 384 * scanline;
+                int i, j, x, y;
+                byte[] gfx_base;
+                //int[] garouoffsets = new int[32], pix_offsets = new int[] { 0x10, 0x18, 0x00, 0x08 };
+                int addr_mask;
+                int gfx_offset, char_pens_offset;
+                byte data;
+                bool banked;
+                int garoubank, k, code;
+                ushort code_and_palette;
+                if (fixed_layer_source != 0)
                 {
-                    if (neogeo_videoram[0x7500 + k] == 0x0200 && (neogeo_videoram[0x7580 + k] & 0xff00) == 0xff00)
+                    gfx_base = fixedrom;
+                    addr_mask = fixedrom.Length - 1;
+                }
+                else
+                {
+                    gfx_base = fixedbiosrom;
+                    addr_mask = fixedbiosrom.Length - 1;
+                }
+                int video_data_offset = 0x7000 | (scanline >> 3);
+                banked = (fixed_layer_source != 0) && (addr_mask > 0x1ffff);
+                if (banked && neogeo_fixed_layer_bank_type == 1)
+                {
+                    garoubank = 0;
+                    //k = 0;
+                    y = 0;
+                    //ushort* videoramPtr = neogeo_videoram;
+                    ushort* videoramPtr_0x7500 = neogeo_videoram + 0x7500;
+                    ushort* videoramPtr_0x7580 = neogeo_videoram + 0x7580;
+
+                    while (y < 32)
                     {
-                        garoubank = neogeo_videoram[0x7580 + k] & 3;
+                        //if (videoramPtr[0x7500 + k] == 0x0200 && (videoramPtr[0x7580 + k] & 0xff00) == 0xff00)
+                        if (*videoramPtr_0x7500 == 0x0200 && (*videoramPtr_0x7580 & 0xff00) == 0xff00)
+                        {
+                            //garoubank = videoramPtr[0x7580 + k] & 3;
+                            garoubank = *videoramPtr_0x7580 & 3;
+                            garouoffsets[y++] = garoubank;
+                        }
                         garouoffsets[y++] = garoubank;
+                        //k += 2;
+                        videoramPtr_0x7500 += 2;
+                        videoramPtr_0x7580 += 2;
                     }
-                    garouoffsets[y++] = garoubank;
-                    k += 2;
                 }
-            }
-            for (x = 0; x < 40; x++)
-            {
-                code_and_palette = neogeo_videoram[video_data_offset];
-                code = code_and_palette & 0x0fff;
-                if (banked)
+                y = scanline >> 3;
+                int temp_yvale = 0x7500 + ((y - 1) & 31);
+                ushort* videoramPtr = neogeo_videoram;
+                ushort* videoramPtr_video_data_offset = neogeo_videoram + video_data_offset;
+                for (x = 0; x < 40; x++)
                 {
-                    y = scanline >> 3;
-                    switch (neogeo_fixed_layer_bank_type)
+                    //code_and_palette = videoramPtr[video_data_offset];
+                    code_and_palette = *videoramPtr_video_data_offset;
+                    code = code_and_palette & 0x0fff;
+                    if (banked)
                     {
-                        case 1:
-                            code += 0x1000 * (garouoffsets[(y - 2) & 31] ^ 3);
-                            break;
-                        case 2:
-                            code += 0x1000 * (((neogeo_videoram[0x7500 + ((y - 1) & 31) + 32 * (x / 6)] >> (5 - (x % 6)) * 2) & 3) ^ 3);
-                            break;
+                        //y = scanline >> 3;
+                        switch (neogeo_fixed_layer_bank_type)
+                        {
+                            case 1:
+                                code += 0x1000 * (garouoffsets[(y - 2) & 31] ^ 3);
+                                break;
+                            case 2:
+                                //code += 0x1000 * (((videoramPtr[temp_yvale + 32 * (x / 6)] >> (5 - (x % 6)) * 2) & 3) ^ 3);
+                                code += 0x1000 * (((*(videoramPtr + (temp_yvale + 32 * (x / 6))) >> (5 - (x % 6)) * 2) & 3) ^ 3);
+                                break;
+                        }
                     }
+                    data = 0;
+                    gfx_offset = ((code << 5) | (scanline & 0x07)) & addr_mask;
+                    char_pens_offset = code_and_palette >> 12 << 4;
+
+                    int temp_xval = scanline_x_384 + 30 + x * 8;
+                    int* bitmapbasePtr_temp_xval = bitmapbase + temp_xval;
+                    for (i = 0; i < 8; i++, bitmapbasePtr_temp_xval++)
+                    {
+                        if ((i & 0x01) != 0)
+                        {
+                            data = (byte)(data >> 4);
+                        }
+                        else
+                        {
+                            data = gfx_base[gfx_offset + pix_offsets[i >> 1]];
+                        }
+                        if ((data & 0x0f) != 0)
+                        {
+                            //bitmapbase[temp_xval + i] = pens[char_pens_offset + (data & 0x0f)];
+                            *bitmapbasePtr_temp_xval = pens[char_pens_offset + (data & 0x0f)];
+                        }
+                    }
+                    //video_data_offset += 0x20;
+                    videoramPtr_video_data_offset += 0x20;
                 }
-                data = 0;
-                gfx_offset = ((code << 5) | (scanline & 0x07)) & addr_mask;
-                char_pens_offset = code_and_palette >> 12 << 4;
-                for (i = 0; i < 8; i++)
-                {
-                    if ((i & 0x01) != 0)
-                    {
-                        data = (byte)(data >> 4);
-                    }
-                    else
-                    {
-                        data = gfx_base[gfx_offset + pix_offsets[i >> 1]];
-                    }
-                    if ((data & 0x0f) != 0)
-                    {
-                        Video.bitmapbaseN_Ptrs[iBitmap][384 * scanline + 30 + x * 8 + i] = pens[char_pens_offset + (data & 0x0f)];
-                    }
-                }
-                video_data_offset += 0x20;
             }
         }
+        //{
+
+        //    //fixed (ushort* videoramPtr = &neogeo_videoram[0])
+        //    ushort* videoramPtr = neogeo_videoram;
+        //    {
+
+        //        int* bitmapbase = &Video.bitmapbaseN_Ptrs[iBitmap][0];
+
+        //        int scanline_x_384 = 384 * scanline;
+        //        int i, j, x, y;
+        //        byte[] gfx_base;
+        //        //int[] garouoffsets = new int[32], pix_offsets = new int[] { 0x10, 0x18, 0x00, 0x08 };
+        //        int addr_mask;
+        //        int gfx_offset, char_pens_offset;
+        //        byte data;
+        //        bool banked;
+        //        int garoubank, k, code;
+        //        ushort code_and_palette;
+        //        if (fixed_layer_source != 0)
+        //        {
+        //            gfx_base = fixedrom;
+        //            addr_mask = fixedrom.Length - 1;
+        //        }
+        //        else
+        //        {
+        //            gfx_base = fixedbiosrom;
+        //            addr_mask = fixedbiosrom.Length - 1;
+        //        }
+        //        int video_data_offset = 0x7000 | (scanline >> 3);
+        //        banked = (fixed_layer_source != 0) && (addr_mask > 0x1ffff);
+        //        if (banked && neogeo_fixed_layer_bank_type == 1)
+        //        {
+        //            garoubank = 0;
+        //            k = 0;
+        //            y = 0;
+        //            while (y < 32)
+        //            {
+        //                if (videoramPtr[0x7500 + k] == 0x0200 && (videoramPtr[0x7580 + k] & 0xff00) == 0xff00)
+        //                {
+        //                    garoubank = videoramPtr[0x7580 + k] & 3;
+        //                    garouoffsets[y++] = garoubank;
+        //                }
+        //                garouoffsets[y++] = garoubank;
+        //                k += 2;
+        //            }
+        //        }
+        //        y = scanline >> 3;
+        //        int temp_yvale = 0x7500 + ((y - 1) & 31);
+        //        for (x = 0; x < 40; x++)
+        //        {
+        //            code_and_palette = videoramPtr[video_data_offset];
+        //            code = code_and_palette & 0x0fff;
+        //            if (banked)
+        //            {
+        //                //y = scanline >> 3;
+        //                switch (neogeo_fixed_layer_bank_type)
+        //                {
+        //                    case 1:
+        //                        code += 0x1000 * (garouoffsets[(y - 2) & 31] ^ 3);
+        //                        break;
+        //                    case 2:
+        //                        code += 0x1000 * (((videoramPtr[temp_yvale + 32 * (x / 6)] >> (5 - (x % 6)) * 2) & 3) ^ 3);
+        //                        break;
+        //                }
+        //            }
+        //            data = 0;
+        //            gfx_offset = ((code << 5) | (scanline & 0x07)) & addr_mask;
+        //            char_pens_offset = code_and_palette >> 12 << 4;
+
+        //            int temp_xval = scanline_x_384 + 30 + x * 8;
+        //            for (i = 0; i < 8; i++)
+        //            {
+        //                if ((i & 0x01) != 0)
+        //                {
+        //                    data = (byte)(data >> 4);
+        //                }
+        //                else
+        //                {
+        //                    data = gfx_base[gfx_offset + pix_offsets[i >> 1]];
+        //                }
+        //                if ((data & 0x0f) != 0)
+        //                {
+        //                    bitmapbase[/*scanline_x_384 + 30 + x * 8*/temp_xval + i] = pens[char_pens_offset + (data & 0x0f)];
+        //                }
+        //            }
+        //            video_data_offset += 0x20;
+        //        }
+        //    }
+        //}
         private static void optimize_sprite_data()
         {
             sprite_gfx_address_mask = (uint)(spritesromLength * 2 - 1);
@@ -948,8 +1226,10 @@ namespace MAME.Core
         }
         public static void video_start_neogeo()
         {
-            sprite_gfx = new byte[spritesromLength * 2];
-            neogeo_videoram = new ushort[0x10000];
+            //sprite_gfx = new byte[spritesromLength * 2];
+            sprite_gfx_set = new byte[spritesromLength * 2];
+            //neogeo_videoram = new ushort[0x10000];
+            neogeo_videoram_set = new ushort[0x10000];
             palettes = new ushort[2, 0x1000];
             pens = new int[0x1000];
             transarray = new int[384 * 264];
@@ -959,7 +1239,7 @@ namespace MAME.Core
             rgb_weights_normal_bit15 = new double[5] { 136.26711031260342, 63.784604843122239, 29.978764292156193, 13.626711058241233, 7.6868626613063098 };
             rgb_weights_dark = new double[5] { 77.012238506947057, 36.048281863327709, 16.942692484743652, 7.7012238659431276, 4.3442801368916566 };
             rgb_weights_dark_bit15 = new double[5] { 76.322306339305158, 35.725334891159271, 16.790907407744047, 7.6322306490423326, 4.3053608862660706 };
-            zoom_x_tables = new int[,]
+            /*zoom_x_tables = new int[,]
             {
                 { 0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0 },
                 { 0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0 },
@@ -977,10 +1257,11 @@ namespace MAME.Core
                 { 1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1 },
                 { 1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1 },
                 { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }
-            };
+            };*/
             Array.Clear(palettes, 0, 0x2000);
             Array.Clear(pens, 0, 0x1000);
-            Array.Clear(neogeo_videoram, 0, 0x10000);
+            //Array.Clear(neogeo_videoram, 0, 0x10000);
+            Array.Clear(neogeo_videoram_src, 0, 0x10000);
             for (int i = 0; i < 384 * 264; i++)
             {
                 transarray[i] = trans_color;
@@ -998,7 +1279,11 @@ namespace MAME.Core
         }
         public static void video_update_neogeo()
         {
-            Array.Copy(bgarray, 0, Video.bitmapbaseN[Video.curbitmap], 384 * Video.new_clip.min_y, 384 * (Video.new_clip.max_y - Video.new_clip.min_y + 1));
+            //Array.Copy(bgarray, 0, Video.bitmapbaseN[Video.curbitmap], 384 * Video.new_clip.min_y, 384 * (Video.new_clip.max_y - Video.new_clip.min_y + 1));
+            Buffer.BlockCopy(bgarray, 0, Video.bitmapbaseN[Video.curbitmap],
+                384 * Video.new_clip.min_y * sizeof(int),
+                384 * (Video.new_clip.max_y - Video.new_clip.min_y + 1) * sizeof(int)
+                );
             draw_sprites(Video.curbitmap, Video.new_clip.min_y);
             draw_fixed_layer(Video.curbitmap, Video.new_clip.min_y);
         }
