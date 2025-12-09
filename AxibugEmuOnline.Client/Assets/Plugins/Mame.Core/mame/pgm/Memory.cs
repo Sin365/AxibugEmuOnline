@@ -16,7 +16,7 @@
             {
                 if (address < 0x100000 + Memory.mainromLength)
                 {
-                    result = (sbyte)(Memory.mainrom[address - 0x100000]);
+                    result = (sbyte)(*(Memory.mainrom + (address - 0x100000)));
                 }
                 else
                 {
@@ -41,7 +41,7 @@
             {
                 if (address < 0x100000 + Memory.mainromLength)
                 {
-                    result = (sbyte)(Memory.mainrom[address - 0x100000]);
+                    result = (sbyte)(*(Memory.mainrom + (address - 0x100000)));
                 }
                 else
                 {
@@ -130,7 +130,7 @@
             {
                 if (address + 1 < 0x100000 + Memory.mainromLength)
                 {
-                    result = (short)(Memory.mainrom[address - 0x100000] * 0x100 + Memory.mainrom[address - 0x100000 + 1]);
+                    result = (short)(*(Memory.mainrom + (address - 0x100000)) * 0x100 + *(Memory.mainrom + (address - 0x100000 + 1)));
                 }
                 else
                 {
@@ -155,7 +155,7 @@
             {
                 if (address + 1 < 0x100000 + Memory.mainromLength)
                 {
-                    result = (short)(Memory.mainrom[address - 0x100000] * 0x100 + Memory.mainrom[address - 0x100000 + 1]);
+                    result = (short)(*(Memory.mainrom + (address - 0x100000)) * 0x100 + *(Memory.mainrom + (address - 0x100000 + 1)));
                 }
                 else
                 {
@@ -237,7 +237,7 @@
             {
                 if (address + 3 < 0x100000 + Memory.mainromLength)
                 {
-                    result = Memory.mainrom[address - 0x100000] * 0x1000000 + Memory.mainrom[address - 0x100000 + 1] * 0x10000 + Memory.mainrom[address - 0x100000 + 2] * 0x100 + Memory.mainrom[address - 0x100000 + 3];
+                    result = *(Memory.mainrom + (address - 0x100000)) * 0x1000000 + *(Memory.mainrom + (address - 0x100000 + 1)) * 0x10000 + *(Memory.mainrom + (address - 0x100000 + 2)) * 0x100 + *(Memory.mainrom + (address - 0x100000 + 3));
                 }
                 else
                 {
@@ -262,7 +262,7 @@
             {
                 if (address + 3 < 0x100000 + Memory.mainromLength)
                 {
-                    result = Memory.mainrom[address - 0x100000] * 0x1000000 + Memory.mainrom[address - 0x100000 + 1] * 0x10000 + Memory.mainrom[address - 0x100000 + 2] * 0x100 + Memory.mainrom[address - 0x100000 + 3];
+                    result = *(Memory.mainrom + (address - 0x100000)) * 0x1000000 + *(Memory.mainrom + (address - 0x100000 + 1)) * 0x10000 + *(Memory.mainrom + (address - 0x100000 + 2)) * 0x100 + *(Memory.mainrom + (address - 0x100000 + 3));
                 }
                 else
                 {

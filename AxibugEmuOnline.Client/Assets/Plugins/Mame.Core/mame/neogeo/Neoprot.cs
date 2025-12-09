@@ -63,16 +63,16 @@ namespace MAME.Core
             switch (value)
             {
                 case 0x0090:
-                    Memory.mainrom[0x100] = 0x00;
-                    Memory.mainrom[0x101] = 0xc2;
-                    Memory.mainrom[0x102] = 0x00;
-                    Memory.mainrom[0x103] = 0xfd;
+                    *(Memory.mainrom + 0x100) = 0x00;
+                    *(Memory.mainrom + 0x101) = 0xc2;
+                    *(Memory.mainrom + 0x102) = 0x00;
+                    *(Memory.mainrom + 0x103) = 0xfd;
                     break;
                 case 0x00f0:
-                    Memory.mainrom[0x100] = 0x4e;
-                    Memory.mainrom[0x101] = 0x45;
-                    Memory.mainrom[0x102] = 0x4f;
-                    Memory.mainrom[0x103] = 0x2d;
+                    *(Memory.mainrom + 0x100) = 0x4e;
+                    *(Memory.mainrom + 0x101) = 0x45;
+                    *(Memory.mainrom + 0x102) = 0x4f;
+                    *(Memory.mainrom + 0x103) = 0x2d;
                     break;
                 default:
                     break;
@@ -113,7 +113,7 @@ namespace MAME.Core
         public static void kof99_bankswitch_w(int data)
         {
             int bankaddress;
-            
+
             data =
                 (((data >> 14) & 1) << 0) +
                 (((data >> 6) & 1) << 1) +
@@ -144,7 +144,7 @@ namespace MAME.Core
         public static void garou_bankswitch_w(int data)
         {
             int bankaddress;
-            
+
             data =
                 (((data >> 5) & 1) << 0) +
                 (((data >> 9) & 1) << 1) +
@@ -311,7 +311,7 @@ namespace MAME.Core
                 extra_ram[0x1ff1] = 0xa0;
                 extra_ram[0x1ff2] &= 0x7f;
                 main_cpu_bank_address = address + 0x100000;
-                Memory.mainrom[0x58197] = prt;
+                *(Memory.mainrom + 0x58197) = prt;
             }
         }
         public static void kof2003p_w(int offset)
@@ -323,12 +323,12 @@ namespace MAME.Core
                 extra_ram[0x1ff1] &= 0xfe;
                 extra_ram[0x1ff2] &= 0x7f;
                 main_cpu_bank_address = address + 0x100000;
-                Memory.mainrom[0x58197] = prt;
+                *(Memory.mainrom + 0x58197) = prt;
             }
         }
         public static byte sbp_protection_r(int offset)
         {
-            byte origdata = Memory.mainrom[offset + 0x200];
+            byte origdata = *(Memory.mainrom + offset + 0x200);
             byte data = (byte)BITSWAP8(origdata, 3, 2, 1, 0, 7, 6, 5, 4);
             int realoffset = 0x200 + offset;
             if (realoffset == 0xd5e || realoffset == 0xd5f)
@@ -354,7 +354,7 @@ namespace MAME.Core
         {
             if (extra_ram[0x1ffc] == 0 && extra_ram[0x1ffd] == 0)
             {
-                Memory.mainrom[0xe0000 + offset] = (byte)data;
+                *(Memory.mainrom + 0xe0000 + offset) = (byte)data;
             }
             else
             {
@@ -365,8 +365,8 @@ namespace MAME.Core
         {
             if (extra_ram[0x1ffc] == 0 && extra_ram[0x1ffd] == 0)
             {
-                Memory.mainrom[0xe0000 + offset] = (byte)(data >> 8);
-                Memory.mainrom[0xe0000 + offset + 1] = (byte)data;
+                *(Memory.mainrom + 0xe0000 + offset) = (byte)(data >> 8);
+                *(Memory.mainrom + 0xe0000 + offset + 1) = (byte)data;
             }
             else
             {

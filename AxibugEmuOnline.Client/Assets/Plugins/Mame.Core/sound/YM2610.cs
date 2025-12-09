@@ -547,15 +547,29 @@ namespace MAME.Core
 
             int* streamoutput_0_offset_ptr = &Sound.ym2610stream.streamoutput_Ptrs[0][offset];
             int* streamoutput_1_offset_ptr = &Sound.ym2610stream.streamoutput_Ptrs[1][offset];
+            int* out_adpcm_ptr_0 = FM.out_adpcm;
+            int* out_adpcm_ptr_1 = FM.out_adpcm + 1;
+            int* out_adpcm_ptr_2 = FM.out_adpcm + 2;
+            int* out_adpcm_ptr_3 = FM.out_adpcm + 3;
+            int* out_delta_ptr_0 = FM.out_delta;
+            int* out_delta_ptr_1 = FM.out_delta + 1;
+            int* out_delta_ptr_2 = FM.out_delta + 2;
+            int* out_delta_ptr_3 = FM.out_delta + 3;
             for (i = 0; i < length; i++)
             {
                 OPN.advance_lfo();
-                FM.out_adpcm[2] = FM.out_adpcm[1] = FM.out_adpcm[3] = 0;
-                FM.out_delta[2] = FM.out_delta[1] = FM.out_delta[3] = 0;
-                FM.out_fm[1] = 0;
-                FM.out_fm[2] = 0;
-                FM.out_fm[4] = 0;
-                FM.out_fm[5] = 0;
+                //FM.out_adpcm[2] = FM.out_adpcm[1] = FM.out_adpcm[3] = 0;
+                *out_adpcm_ptr_2 = *out_adpcm_ptr_1 = *out_adpcm_ptr_3 = 0;
+                //FM.out_delta[2] = FM.out_delta[1] = FM.out_delta[3] = 0;
+                *out_delta_ptr_2 = *out_delta_ptr_1 = *out_delta_ptr_3 = 0;
+                //FM.out_fm[1] = 0;
+                //FM.out_fm[2] = 0;
+                //FM.out_fm[4] = 0;
+                //FM.out_fm[5] = 0;
+                *(FM.out_fm + 1) = 0;
+                *(FM.out_fm + 2) = 0;
+                *(FM.out_fm + 4) = 0;
+                *(FM.out_fm + 5) = 0;
                 OPN.eg_timer += OPN.eg_timer_add;
                 while (OPN.eg_timer >= OPN.eg_timer_overflow)
                 {
@@ -570,10 +584,10 @@ namespace MAME.Core
                 //OPN.chan_calc(2, 2);
                 //OPN.chan_calc(4, 4);
                 //OPN.chan_calc(5, 5);
-                OPN.chan_calc(1,false);
-                OPN.chan_calc(2,true);
-                OPN.chan_calc(4,false);
-                OPN.chan_calc(5,false);
+                OPN.chan_calc(1, false);
+                OPN.chan_calc(2, true);
+                OPN.chan_calc(4, false);
+                OPN.chan_calc(5, false);
                 if ((YMDeltat.DELTAT.portstate & 0x80) != 0)
                 {
                     YMDeltat.YM_DELTAT_ADPCM_CALC();
@@ -586,18 +600,30 @@ namespace MAME.Core
                     }
                 }
                 int lt, rt;
-                lt = FM.out_adpcm[2] + FM.out_adpcm[3];
-                rt = FM.out_adpcm[1] + FM.out_adpcm[3];
-                lt += (FM.out_delta[2] + FM.out_delta[3]) >> 9;
-                rt += (FM.out_delta[1] + FM.out_delta[3]) >> 9;
-                lt += (int)((FM.out_fm[1] >> 1) & OPN.pan[2]);
-                rt += (int)((FM.out_fm[1] >> 1) & OPN.pan[3]);
-                lt += (int)((FM.out_fm[2] >> 1) & OPN.pan[4]);
-                rt += (int)((FM.out_fm[2] >> 1) & OPN.pan[5]);
-                lt += (int)((FM.out_fm[4] >> 1) & OPN.pan[8]);
-                rt += (int)((FM.out_fm[4] >> 1) & OPN.pan[9]);
-                lt += (int)((FM.out_fm[5] >> 1) & OPN.pan[10]);
-                rt += (int)((FM.out_fm[5] >> 1) & OPN.pan[11]);
+                //lt = FM.out_adpcm[2] + FM.out_adpcm[3];
+                lt = *out_adpcm_ptr_2 + *out_adpcm_ptr_3;
+                //rt = FM.out_adpcm[1] + FM.out_adpcm[3];
+                rt = *out_adpcm_ptr_1 + *out_adpcm_ptr_3;
+                //lt += (FM.out_delta[2] + FM.out_delta[3]) >> 9;
+                lt += (*out_delta_ptr_2 + *out_delta_ptr_3) >> 9;
+                //rt += (FM.out_delta[1] + FM.out_delta[3]) >> 9;
+                rt += (*out_delta_ptr_1 + *out_delta_ptr_3) >> 9;
+                //lt += (int)((FM.out_fm[1] >> 1) & OPN.pan[2]);
+                //rt += (int)((FM.out_fm[1] >> 1) & OPN.pan[3]);
+                //lt += (int)((FM.out_fm[2] >> 1) & OPN.pan[4]);
+                //rt += (int)((FM.out_fm[2] >> 1) & OPN.pan[5]);
+                //lt += (int)((FM.out_fm[4] >> 1) & OPN.pan[8]);
+                //rt += (int)((FM.out_fm[4] >> 1) & OPN.pan[9]);
+                //lt += (int)((FM.out_fm[5] >> 1) & OPN.pan[10]);
+                //rt += (int)((FM.out_fm[5] >> 1) & OPN.pan[11]);
+                lt += (int)((*(FM.out_fm + 1) >> 1) & *(OPN.pan + 2));
+                rt += (int)((*(FM.out_fm + 1) >> 1) & *(OPN.pan + 3));
+                lt += (int)((*(FM.out_fm + 2) >> 1) & *(OPN.pan + 4));
+                rt += (int)((*(FM.out_fm + 2) >> 1) & *(OPN.pan + 5));
+                lt += (int)((*(FM.out_fm + 4) >> 1) & *(OPN.pan + 8));
+                rt += (int)((*(FM.out_fm + 4) >> 1) & *(OPN.pan + 9));
+                lt += (int)((*(FM.out_fm + 5) >> 1) & *(OPN.pan + 10));
+                rt += (int)((*(FM.out_fm + 5) >> 1) & *(OPN.pan + 11));
                 //lt = FM.Limit(lt, 32767, -32768);
                 //rt = FM.Limit(rt, 32767, -32768);
                 lt = Math.Min(lt, 32767);

@@ -12,7 +12,7 @@ namespace MAME.Core
             sbyte result = 0;
             if (address <= 0x07ffff)
             {
-                result = (sbyte)(Memory.mainrom[address]);
+                result = (sbyte)(*(Memory.mainrom + (address)));
             }
             else if (address >= 0x800000 && address <= 0x801fff)
             {
@@ -40,7 +40,7 @@ namespace MAME.Core
             {
                 if (address < Memory.mainromLength)
                 {
-                    result = (sbyte)Memory.mainrom[address];
+                    result = (sbyte)*(Memory.mainrom + (address));
                 }
                 else
                 {
@@ -197,7 +197,7 @@ namespace MAME.Core
             {
                 if (address + 1 < Memory.mainromLength)
                 {
-                    result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+                    result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
                 }
                 else
                 {
@@ -223,7 +223,7 @@ namespace MAME.Core
             {
                 if (address + 1 < Memory.mainromLength)
                 {
-                    result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+                    result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
                 }
                 else
                 {
@@ -304,7 +304,7 @@ namespace MAME.Core
             {
                 if (address + 3 < Memory.mainromLength)
                 {
-                    result = (int)(Memory.mainrom[address] * 0x1000000 + Memory.mainrom[address + 1] * 0x10000 + Memory.mainrom[address + 2] * 0x100 + Memory.mainrom[address + 3]);
+                    result = (int)(*(Memory.mainrom + (address)) * 0x1000000 + *(Memory.mainrom + (address + 1)) * 0x10000 + *(Memory.mainrom + (address + 2)) * 0x100 + *(Memory.mainrom + (address + 3)));
                 }
                 else
                 {
@@ -330,7 +330,7 @@ namespace MAME.Core
             {
                 if (address + 3 < Memory.mainromLength)
                 {
-                    result = (int)(Memory.mainrom[address] * 0x1000000 + Memory.mainrom[address + 1] * 0x10000 + Memory.mainrom[address + 2] * 0x100 + Memory.mainrom[address + 3]);
+                    result = (int)(*(Memory.mainrom + (address)) * 0x1000000 + *(Memory.mainrom + (address + 1)) * 0x10000 + *(Memory.mainrom + (address + 2)) * 0x100 + *(Memory.mainrom + (address + 3)));
                 }
                 else
                 {
@@ -390,7 +390,7 @@ namespace MAME.Core
             {
                 if (address < Memory.mainromLength)
                 {
-                    Memory.mainrom[address] = (byte)value;
+                    *(Memory.mainrom + (address)) = (byte)value;
                 }
             }
             else if (address >= 0x400000 && address <= 0x40ffff)
@@ -525,8 +525,8 @@ namespace MAME.Core
             {
                 if (address + 1 < Memory.mainromLength)
                 {
-                    Memory.mainrom[address] = (byte)(value >> 8);
-                    Memory.mainrom[address + 1] = (byte)value;
+                    *(Memory.mainrom + (address)) = (byte)(value >> 8);
+                    *(Memory.mainrom + (address + 1)) = (byte)value;
                 }
             }
             else if (address >= 0x400000 && address + 1 <= 0x40ffff)
@@ -605,10 +605,10 @@ namespace MAME.Core
             {
                 if (address + 3 < Memory.mainromLength)
                 {
-                    Memory.mainrom[address] = (byte)(value >> 24);
-                    Memory.mainrom[address + 1] = (byte)(value >> 16);
-                    Memory.mainrom[address + 2] = (byte)(value >> 8);
-                    Memory.mainrom[address + 3] = (byte)value;
+                    *(Memory.mainrom + (address)) = (byte)(value >> 24);
+                    *(Memory.mainrom + (address + 1)) = (byte)(value >> 16);
+                    *(Memory.mainrom + (address + 2)) = (byte)(value >> 8);
+                    *(Memory.mainrom + (address + 3)) = (byte)value;
                 }
             }
             else if (address >= 0x400000 && address + 3 <= 0x40ffff)

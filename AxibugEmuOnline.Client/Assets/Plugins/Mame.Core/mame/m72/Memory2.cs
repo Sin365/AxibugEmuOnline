@@ -15,7 +15,7 @@ namespace MAME.Core
             }
             else
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }

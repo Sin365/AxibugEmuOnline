@@ -11,11 +11,11 @@ namespace MAME.Core
             byte result = 0;
             if (address >= 0 && address <= 0x7fff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             else if (address >= 0x8000 && address <= 0xbfff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }
@@ -28,7 +28,7 @@ namespace MAME.Core
             }
             else if (address >= 0x8000 && address <= 0xbfff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }
@@ -37,11 +37,11 @@ namespace MAME.Core
             byte result = 0;
             if (address >= 0 && address <= 0x7fff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             else if (address >= 0x8000 && address <= 0xbfff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             else if (address >= 0xc000 && address <= 0xcfff)
             {
@@ -121,11 +121,11 @@ namespace MAME.Core
         {
             if (address >= 0x0000 && address <= 0x7fff)
             {
-                Memory.mainrom[address] = value;
+                *(Memory.mainrom + (address)) = value;
             }
             else if (address >= 0x8000 && address <= 0xbfff)
             {
-                Memory.mainrom[address] = value;
+                *(Memory.mainrom + (address)) = value;
             }
             else if (address >= 0xc000 && address <= 0xcfff)
             {

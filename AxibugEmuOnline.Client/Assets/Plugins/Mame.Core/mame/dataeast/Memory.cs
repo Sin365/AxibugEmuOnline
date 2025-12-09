@@ -14,16 +14,16 @@
             else if (address >= 0x4000 && address <= 0x5fff)
             {
                 int offset = address - 0x4000;
-                result = Memory.mainrom[basebankmain1 + offset];
+                result = *(Memory.mainrom + (basebankmain1 + offset));
             }
             else if (address >= 0x6000 && address <= 0x7fff)
             {
                 int offset = address - 0x6000;
-                result = Memory.mainrom[basebankmain2 + offset];
+                result = *(Memory.mainrom + (basebankmain2 + offset));
             }
             else if (address >= 0x8000 && address <= 0xffff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }
@@ -37,16 +37,16 @@
             else if (address >= 0x4000 && address <= 0x5fff)
             {
                 int offset = address - 0x4000;
-                result = Memory.mainrom[basebankmain1 + offset];
+                result = *(Memory.mainrom + (basebankmain1 + offset));
             }
             else if (address >= 0x6000 && address <= 0x7fff)
             {
                 int offset = address - 0x6000;
-                result = Memory.mainrom[basebankmain2 + offset];
+                result = *(Memory.mainrom + (basebankmain2 + offset));
             }
             else if (address >= 0x8000 && address <= 0xffff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }
@@ -72,16 +72,16 @@
             else if (address >= 0x4000 && address <= 0x5fff)
             {
                 int offset = address - 0x4000;
-                result = Memory.mainrom[basebankmain1 + offset];
+                result = *(Memory.mainrom + (basebankmain1 + offset));
             }
             else if (address >= 0x6000 && address <= 0x7fff)
             {
                 int offset = address - 0x6000;
-                result = Memory.mainrom[basebankmain2 + offset];
+                result = *(Memory.mainrom + (basebankmain2 + offset));
             }
             else if (address >= 0x8000 && address <= 0xffff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }
@@ -115,7 +115,7 @@
             }
             else if (address >= 0x4000 && address <= 0xffff)
             {
-                Memory.mainrom[address] = data;
+                *(Memory.mainrom + (address)) = data;
             }
         }
         public static byte D1ReadOp(ushort address)

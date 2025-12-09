@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MAME.Core
 {
-    public class FM
+    public unsafe class FM
     {
         public class FM_OPN
         {
@@ -10,7 +11,26 @@ namespace MAME.Core
             public FM_ST ST;
             public FM_3SLOT SL3;
             public FM_CH[] CH;
-            public uint[] pan;
+            //public uint[] pan;
+
+            #region //指针化 pan
+            uint[] pan_src;
+            GCHandle pan_handle;
+            public uint* pan;
+            public int panLength;
+            public bool pan_IsNull => pan == null;
+            public uint[] pan_set
+            {
+                set
+                {
+                    pan_handle.ReleaseGCHandle();
+                    pan_src = value;
+                    panLength = value.Length;
+                    pan_src.GetObjectPtr(ref pan_handle, ref pan);
+                }
+            }
+            #endregion
+
             public uint eg_cnt;
             public uint eg_timer;
             public uint eg_timer_add;
@@ -36,7 +56,8 @@ namespace MAME.Core
                 SL3.fc = new uint[3];
                 SL3.kcode = new byte[3];
                 SL3.block_fnum = new uint[3];
-                pan = new uint[12];
+                //pan = new uint[12];
+                pan_set = new uint[12];
                 fn_table = new uint[4096];
                 lfo_freq = new int[8];
                 ST.timer_handler = null;
@@ -624,20 +645,21 @@ namespace MAME.Core
                 uint eg_out;
                 //减少寻址
                 int imem_ToIndex_c = imem[c];
+                int* out_fm_ptr = out_fm;
                 fixed (FM_SLOT* CH_c_SLOT = &CH[c].SLOT[0])//因为是引用类型，所以敢这么玩
-                fixed (int* out_fm_ptr = &out_fm[0])
+                //fixed (int* out_fm_ptr = &out_fm[0])
                 {
-                    FM_SLOT* cslot_0 = &CH_c_SLOT[0];
-                    FM_SLOT* cslot_1 = &CH_c_SLOT[1];
-                    FM_SLOT* cslot_2 = &CH_c_SLOT[2];
-                    FM_SLOT* cslot_3 = &CH_c_SLOT[3];
+                    FM_SLOT* cslot_0 = CH_c_SLOT;
+                    FM_SLOT* cslot_1 = CH_c_SLOT + 1;
+                    FM_SLOT* cslot_2 = CH_c_SLOT + 2;
+                    FM_SLOT* cslot_3 = CH_c_SLOT + 3;
 
                     //out_fm[8] = out_fm[9] = out_fm[10] = out_fm[11] = 0;  //本来就是注释->m2 = c1 = c2 = mem = 0;
-                    out_fm_ptr[8] = out_fm_ptr[9] = out_fm_ptr[10] = out_fm_ptr[11] = 0;
+                    *(out_fm_ptr + 8) = *(out_fm_ptr + 9) = *(out_fm_ptr + 10) = *(out_fm_ptr + 11) = 0;
 
                     //set_mem(c);
                     if (imem_ToIndex_c == 8 || imem_ToIndex_c == 10 || imem_ToIndex_c == 11)
-                        out_fm_ptr[imem_ToIndex_c] = CH[c].mem_value;
+                        *(out_fm_ptr + imem_ToIndex_c) = CH[c].mem_value;
 
                     //eg_out = volume_calc(c, 0);
                     eg_out = (uint)(cslot_0->vol_out + ((LFO_AM >> CH[c].ams) & cslot_0->AMmask));
@@ -648,7 +670,8 @@ namespace MAME.Core
                     //set_value1(c);
                     if (iconnect1[c] == 12)
                     {
-                        out_fm_ptr[11] = out_fm_ptr[9] = out_fm_ptr[10] = CH[c].op1_out0;
+                        //out_fm_ptr[11] = out_fm_ptr[9] = out_fm_ptr[10] = CH[c].op1_out0;
+                        *(out_fm_ptr + 11) = *(out_fm_ptr + 9) = *(out_fm_ptr + 10) = CH[c].op1_out0;
                     }
                     else
                     {
@@ -1358,15 +1381,76 @@ namespace MAME.Core
         public delegate void reset_handler();
         private static int[] lfo_pm_table = new int[128 * 8 * 32];
         private static int[] iconnect1 = new int[8], iconnect2 = new int[8], iconnect3 = new int[8], iconnect4 = new int[6], imem = new int[13];
-        public static int[] out_fm = new int[13];
-        public static int[] out_adpcm = new int[4];
-        public static int[] out_delta = new int[4];
+        //public static int[] out_fm = new int[13];
+
+        #region //指针化 out_fm
+        static int[] out_fm_src;
+        static GCHandle out_fm_handle;
+        public static int* out_fm;
+        public static int out_fmLength;
+        public static bool out_fm_IsNull => out_fm == null;
+        public static int[] out_fm_set
+        {
+            set
+            {
+                out_fm_handle.ReleaseGCHandle();
+                out_fm_src = value;
+                out_fmLength = value.Length;
+                out_fm_src.GetObjectPtr(ref out_fm_handle, ref out_fm);
+            }
+        }
+        #endregion
+
+        //public static int[] out_adpcm = new int[4];
+
+        #region //指针化 out_adpcm
+        static int[] out_adpcm_src;
+        static GCHandle out_adpcm_handle;
+        public static int* out_adpcm;
+        public static int out_adpcmLength;
+        public static bool out_adpcm_IsNull => out_adpcm == null;
+        public static int[] out_adpcm_set
+        {
+            set
+            {
+                out_adpcm_handle.ReleaseGCHandle();
+                out_adpcm_src = value;
+                out_adpcmLength = value.Length;
+                out_adpcm_src.GetObjectPtr(ref out_adpcm_handle, ref out_adpcm);
+            }
+        }
+        #endregion
+
+        //public static int[] out_delta = new int[4];
+
+        #region //指针化 out_delta
+        static int[] out_delta_src;
+        static GCHandle out_delta_handle;
+        public static int* out_delta;
+        public static int out_deltaLength;
+        public static bool out_delta_IsNull => out_delta == null;
+        public static int[] out_delta_set
+        {
+            set
+            {
+                out_delta_handle.ReleaseGCHandle();
+                out_delta_src = value;
+                out_deltaLength = value.Length;
+                out_delta_src.GetObjectPtr(ref out_delta_handle, ref out_delta);
+            }
+        }
+        #endregion
+
         public static byte[] ymsndrom;
         public static int LFO_AM;
         public static int LFO_PM;
         private static int fn_max;
         public static void FM_init()
         {
+            //初始化一下
+            out_fm_set = new int[13];
+            out_adpcm_set = new int[4];
+            out_delta_set = new int[4];
             init_tables();
         }
         public static int Limit(int val, int max, int min)

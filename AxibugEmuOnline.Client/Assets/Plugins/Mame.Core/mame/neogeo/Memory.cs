@@ -18,12 +18,12 @@ namespace MAME.Core
                 }
                 else if (main_cpu_vector_table_source == 1)
                 {
-                    result = (sbyte)Memory.mainrom[address];
+                    result = (sbyte)*(Memory.mainrom + (address));
                 }
             }
             else if (address >= 0x000080 && address <= 0x0fffff)
             {
-                result = (sbyte)Memory.mainrom[address];
+                result = (sbyte)*(Memory.mainrom + (address));
             }
             else if (address >= 0x100000 && address <= 0x1fffff)
             {
@@ -31,7 +31,7 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address <= 0x2fffff)
             {
-                result = (sbyte)Memory.mainrom[main_cpu_bank_address + (address - 0x200000)];
+                result = (sbyte)*(Memory.mainrom + (main_cpu_bank_address + (address - 0x200000)));
             }
             else if (address >= 0xc00000 && address <= 0xcfffff)
             {
@@ -55,12 +55,12 @@ namespace MAME.Core
                 }
                 else if (main_cpu_vector_table_source == 1)
                 {
-                    result = (sbyte)Memory.mainrom[address];
+                    result = (sbyte)*(Memory.mainrom + (address));
                 }
             }
             else if (address >= 0x000080 && address <= 0x0fffff)
             {
-                result = (sbyte)Memory.mainrom[address];
+                result = (sbyte)*(Memory.mainrom + (address));
             }
             else if (address >= 0x100000 && address <= 0x1fffff)
             {
@@ -68,7 +68,7 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address <= 0x2fffff)
             {
-                result = (sbyte)Memory.mainrom[main_cpu_bank_address + (address - 0x200000)];
+                result = (sbyte)*(Memory.mainrom + (main_cpu_bank_address + (address - 0x200000)));
             }
             /*else if (address >= 0x300000 && address <= 0x300001)
             {
@@ -187,7 +187,7 @@ namespace MAME.Core
         //        }
         //        else if (main_cpu_vector_table_source == 1)
         //        {
-        //            result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //            result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
         //        }
         //    }
         //    else if (address >= 0x000080 && address + 1 <= 0x0fffff)
@@ -196,7 +196,7 @@ namespace MAME.Core
         //        {
         //            //m68000Form.iStatus = 1;
         //        }
-        //        result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //        result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
         //    }
         //    else if (address >= 0x100000 && address + 1 <= 0x1fffff)
         //    {
@@ -204,7 +204,7 @@ namespace MAME.Core
         //    }
         //    else if (address >= 0x200000 && address + 1 <= 0x2fffff)
         //    {
-        //        result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
+        //        result = (short)(*(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff))) * 0x100 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 1)));
         //    }
         //    else if (address >= 0xc00000 && address + 1 <= 0xcfffff)
         //    {
@@ -223,7 +223,7 @@ namespace MAME.Core
             address &= 0xffffff;
             if (address >= 0x000000 && address + 1 <= 0x00007f)
             {
-                byte* ptr_0 = &Memory.mainrom[0];
+                byte* ptr_0 = Memory.mainrom;
                 byte* ptr = ptr_0 + (address);
                 if (main_cpu_vector_table_source == 0)
                 {
@@ -237,7 +237,7 @@ namespace MAME.Core
             }
             else if (address >= 0x000080 && address + 1 <= 0x0fffff)
             {
-                byte* ptr_0 = &Memory.mainrom[0];
+                byte* ptr_0 = Memory.mainrom;
                 byte* ptr = ptr_0 + (address);
                 //if (address >= 0x142B9 && address <= 0x142C9)
                 //{
@@ -254,9 +254,9 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address + 1 <= 0x2fffff)
             {
-                byte* ptr_0 = &Memory.mainrom[0];
+                byte* ptr_0 = Memory.mainrom;
                 byte* ptr = ptr_0 + (main_cpu_bank_address + (address & 0xfffff));
-                //result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
+                //result = (short)(*(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff))) * 0x100 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 1)));
                 return (short)(*ptr * 0x100 + *(ptr + 1));
             }
             else if (address >= 0xc00000 && address + 1 <= 0xcfffff)
@@ -282,7 +282,7 @@ namespace MAME.Core
         //        }
         //        else if (main_cpu_vector_table_source == 1)
         //        {
-        //            result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //            result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
         //        }
         //    }
         //    else if (address >= 0x000080 && address + 1 <= 0x0fffff)
@@ -291,7 +291,7 @@ namespace MAME.Core
         //        {
         //            //m68000Form.iStatus = 1;
         //        }
-        //        result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+        //        result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
         //    }
         //    else if (address >= 0x100000 && address + 1 <= 0x1fffff)
         //    {
@@ -303,7 +303,7 @@ namespace MAME.Core
         //    }
         //    else if (address >= 0x200000 && address <= 0x2fffff)
         //    {
-        //        result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
+        //        result = (short)(*(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff))) * 0x100 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 1)));
         //    }
         //    /*else if (address >= 0x300000 && address <= 0x300001)
         //    {
@@ -376,9 +376,9 @@ namespace MAME.Core
                 }
                 else if (main_cpu_vector_table_source == 1)
                 {
-                    byte* ptr_0 = &Memory.mainrom[0];
+                    byte* ptr_0 = Memory.mainrom;
                     byte* ptr = ptr_0 + address;
-                    //result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+                    //result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
                     result = (short)(*ptr * 0x100 + *(ptr + 1));
                 }
             }
@@ -389,9 +389,9 @@ namespace MAME.Core
                 //    //m68000Form.iStatus = 1;
                 //}
 
-                byte* ptr_0 = &Memory.mainrom[0];
+                byte* ptr_0 = Memory.mainrom;
                 byte* ptr = ptr_0 + address;
-                //result = (short)(Memory.mainrom[address] * 0x100 + Memory.mainrom[address + 1]);
+                //result = (short)(*(Memory.mainrom + (address)) * 0x100 + *(Memory.mainrom + (address + 1)));
                 result = (short)(*ptr * 0x100 + *(ptr + 1));
             }
             else if (address >= 0x100000 && address + 1 <= 0x1fffff)
@@ -408,9 +408,9 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address <= 0x2fffff)
             {
-                byte* ptr_0 = &Memory.mainrom[0];
+                byte* ptr_0 = Memory.mainrom;
                 byte* ptr = ptr_0 + (main_cpu_bank_address + (address & 0xfffff));
-                //result = (short)(Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1]);
+                //result = (short)(*(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff))) * 0x100 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 1)));
                 result = (short)(*ptr * 0x100 + *(ptr + 1));
             }
             /*else if (address >= 0x300000 && address <= 0x300001)
@@ -485,7 +485,7 @@ namespace MAME.Core
                 }
                 else if (main_cpu_vector_table_source == 1)
                 {
-                    result = Memory.mainrom[address] * 0x1000000 + Memory.mainrom[address + 1] * 0x10000 + Memory.mainrom[address + 2] * 0x100 + Memory.mainrom[address + 3];
+                    result = *(Memory.mainrom + (address)) * 0x1000000 + *(Memory.mainrom + (address + 1)) * 0x10000 + *(Memory.mainrom + (address + 2)) * 0x100 + *(Memory.mainrom + (address + 3));
                 }
             }
             else if (address >= 0x000080 && address + 3 <= 0x0fffff)
@@ -494,7 +494,7 @@ namespace MAME.Core
                 {
                     //m68000Form.iStatus = 1;
                 }
-                result = Memory.mainrom[address] * 0x1000000 + Memory.mainrom[address + 1] * 0x10000 + Memory.mainrom[address + 2] * 0x100 + Memory.mainrom[address + 3];
+                result = *(Memory.mainrom + (address)) * 0x1000000 + *(Memory.mainrom + (address + 1)) * 0x10000 + *(Memory.mainrom + (address + 2)) * 0x100 + *(Memory.mainrom + (address + 3));
             }
             else if (address >= 0x100000 && address + 3 <= 0x1fffff)
             {
@@ -502,7 +502,7 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address + 3 <= 0x2fffff)
             {
-                result = Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x1000000 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1] * 0x10000 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 2] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 3];
+                result = *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff))) * 0x1000000 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 1)) * 0x10000 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 2)) * 0x100 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 3));
             }
             else if (address >= 0xc00000 && address + 3 <= 0xcfffff)
             {
@@ -526,7 +526,7 @@ namespace MAME.Core
                 }
                 else if (main_cpu_vector_table_source == 1)
                 {
-                    result = Memory.mainrom[address] * 0x1000000 + Memory.mainrom[address + 1] * 0x10000 + Memory.mainrom[address + 2] * 0x100 + Memory.mainrom[address + 3];
+                    result = *(Memory.mainrom + (address)) * 0x1000000 + *(Memory.mainrom + (address + 1)) * 0x10000 + *(Memory.mainrom + (address + 2)) * 0x100 + *(Memory.mainrom + (address + 3));
                 }
             }
             else if (address >= 0x000080 && address + 3 <= 0x0fffff)
@@ -535,7 +535,7 @@ namespace MAME.Core
                 {
                     //m68000Form.iStatus = 1;
                 }
-                result = Memory.mainrom[address] * 0x1000000 + Memory.mainrom[address + 1] * 0x10000 + Memory.mainrom[address + 2] * 0x100 + Memory.mainrom[address + 3];
+                result = *(Memory.mainrom + (address)) * 0x1000000 + *(Memory.mainrom + (address + 1)) * 0x10000 + *(Memory.mainrom + (address + 2)) * 0x100 + *(Memory.mainrom + (address + 3));
             }
             else if (address >= 0x100000 && address + 3 <= 0x1fffff)
             {
@@ -543,7 +543,7 @@ namespace MAME.Core
             }
             else if (address >= 0x200000 && address + 3 <= 0x2fffff)
             {
-                result = Memory.mainrom[main_cpu_bank_address + (address & 0xfffff)] * 0x1000000 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 1] * 0x10000 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 2] * 0x100 + Memory.mainrom[main_cpu_bank_address + (address & 0xfffff) + 3];
+                result = *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff))) * 0x1000000 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 1)) * 0x10000 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 2)) * 0x100 + *(Memory.mainrom + (main_cpu_bank_address + (address & 0xfffff) + 3));
             }
             else if (address >= 0x300000 && address <= 0x31ffff)
             {

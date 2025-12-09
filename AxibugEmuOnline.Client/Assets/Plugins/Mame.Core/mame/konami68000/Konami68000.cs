@@ -1136,7 +1136,7 @@ namespace MAME.Core
             byte result = 0;
             if (addr <= 0x07ffff)
             {
-                result = Memory.mainrom[addr];
+                result = *(Memory.mainrom + (addr));
             }
             else if (addr >= 0x104000 && addr <= 0x107fff)
             {
@@ -1163,7 +1163,7 @@ namespace MAME.Core
             addr *= 2;
             if (addr <= 0x07ffff)
             {
-                result = (ushort)(Memory.mainrom[addr] * 0x100 + Memory.mainrom[addr + 1]);
+                result = (ushort)(*(Memory.mainrom + (addr)) * 0x100 + *(Memory.mainrom + (addr + 1)));
             }
             else if (addr >= 0x104000 && addr <= 0x107fff)
             {

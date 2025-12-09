@@ -8,7 +8,7 @@
             byte result = 0;
             if (address >= 0 && address <= 0x7ffff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             else if (address >= 0x80000 && address <= 0x8ffff)
             {
@@ -39,7 +39,7 @@
             }
             else if (address >= 0xffff0 && address <= 0xfffff)
             {
-                result = Memory.mainrom[address];
+                result = *(Memory.mainrom + (address));
             }
             return result;
         }
@@ -49,7 +49,7 @@
             ushort result = 0;
             if (address >= 0 && address + 1 <= 0x7ffff)
             {
-                result = (ushort)(Memory.mainrom[address] + Memory.mainrom[address + 1] * 0x100);
+                result = (ushort)(*(Memory.mainrom + (address)) + *(Memory.mainrom + (address + 1)) * 0x100);
             }
             else if (address >= 0x80000 && address + 1 <= 0x8ffff)
             {
@@ -73,7 +73,7 @@
             }
             else if (address >= 0xffff0 && address + 1 <= 0xfffff)
             {
-                result = (ushort)(Memory.mainrom[address] + Memory.mainrom[address + 1] * 0x100);
+                result = (ushort)(*(Memory.mainrom + (address)) + *(Memory.mainrom + (address + 1)) * 0x100);
             }
             return result;
         }
