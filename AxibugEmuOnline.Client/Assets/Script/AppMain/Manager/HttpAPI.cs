@@ -186,6 +186,7 @@ namespace AxibugEmuOnline.Client
             }
 
             App.log.Error(request.downloadHandler.errInfo);
+            //TODO callback 下游需要处理请求失败
             callback.Invoke(null);
 
             /*
