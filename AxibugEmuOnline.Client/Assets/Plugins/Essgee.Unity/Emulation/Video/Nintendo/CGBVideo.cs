@@ -50,7 +50,8 @@ namespace Essgee.Emulation.Video.Nintendo
         bool hdmaIsActive;
         byte hdmaBytesLeft;
 
-        public int GDMAWaitCycles { get; set; }
+        //public int GDMAWaitCycles { get; set; }
+        public int GDMAWaitCycles;
 
         protected const byte screenUsageBackgroundHighPriority = (1 << 3);
 

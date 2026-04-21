@@ -170,6 +170,7 @@ namespace Essgee.Emulation.CPU
             }
             else
             {
+                /* 全都不要了吧 log
                 if (AppEnvironment.EnableSuperSlowCPULogger && logEntries != null)
                 {
                     string disasm = string.Format("{0} | {1} | {2} | {3}\n", DisassembleOpcode(this, pc).PadRight(48), PrintRegisters(this), PrintFlags(this), PrintInterrupt(this));
@@ -181,6 +182,7 @@ namespace Essgee.Emulation.CPU
                         numLogEntries = 0;
                     }
                 }
+                */
 
                 /* Do HALT bug */
                 if (doHaltBug)

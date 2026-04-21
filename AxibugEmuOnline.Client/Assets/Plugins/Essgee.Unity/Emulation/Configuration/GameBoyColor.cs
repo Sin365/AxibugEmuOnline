@@ -9,7 +9,8 @@ namespace Essgee.Emulation.Configuration
     public class GameBoyColor : IConfiguration
     {
         //todo Unity [CheckBoxControl("General", "Use Bootstrap ROM")]
-        public bool UseBootstrap { get; set; }
+        //public bool UseBootstrap { get; set; }
+        public bool UseBootstrap;
         [IsBootstrapRomPath]
         //todo Unity [FileBrowserControl("General", "Bootstrap Path", "Game Boy Color Bootstrap ROM (*.gbc;*.bin;*.zip)|*.gbc;*.bin;*.zip")]
         public string BootstrapRom { get; set; }
@@ -25,37 +26,47 @@ namespace Essgee.Emulation.Configuration
 
         //todo Unity [DropDownControl("Infrared", "Infrared Source", typeof(Machines.GameBoyColor.InfraredSources))]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public Machines.GameBoyColor.InfraredSources InfraredSource { get; set; }
+        //public Machines.GameBoyColor.InfraredSources InfraredSource { get; set; }
+        public Machines.GameBoyColor.InfraredSources InfraredSource;
         //todo Unity [FileBrowserControl("Infrared", "Pokemon Pikachu DB", "Database Binary (*.bin)|*.bin")]
         public string InfraredDatabasePikachu { get; set; }
 
         //todo Unity [DropDownControl("Controls", "Up", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsUp { get; set; }
+        //public EssgeeMotionKey ControlsUp { get; set; }
+        public EssgeeMotionKey ControlsUp;
         //todo Unity [DropDownControl("Controls", "Down", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsDown { get; set; }
+        //public EssgeeMotionKey ControlsDown { get; set; }
+        public EssgeeMotionKey ControlsDown;
         //todo Unity [DropDownControl("Controls", "Left", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsLeft { get; set; }
+        //public EssgeeMotionKey ControlsLeft { get; set; }
+        public EssgeeMotionKey ControlsLeft;
         //todo Unity [DropDownControl("Controls", "Right", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsRight { get; set; }
+        //public EssgeeMotionKey ControlsRight { get; set; }
+        public EssgeeMotionKey ControlsRight;
         //todo Unity [DropDownControl("Controls", "A", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsA { get; set; }
+        //public EssgeeMotionKey ControlsA { get; set; }
+        public EssgeeMotionKey ControlsA;
         //todo Unity [DropDownControl("Controls", "B", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsB { get; set; }
+        //public EssgeeMotionKey ControlsB { get; set; }
+        public EssgeeMotionKey ControlsB;
         //todo Unity [DropDownControl("Controls", "Select", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsSelect { get; set; }
+        //public EssgeeMotionKey ControlsSelect { get; set; }
+        public EssgeeMotionKey ControlsSelect;
         //todo Unity [DropDownControl("Controls", "Start", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsStart { get; set; }
+        //public EssgeeMotionKey ControlsStart { get; set; }
+        public EssgeeMotionKey ControlsStart;
         //todo Unity [DropDownControl("Controls", "Send IR Signal", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsSendIR { get; set; }
+        //public EssgeeMotionKey ControlsSendIR { get; set; }
+        public EssgeeMotionKey ControlsSendIR;
 
         public GameBoyColor()
         {

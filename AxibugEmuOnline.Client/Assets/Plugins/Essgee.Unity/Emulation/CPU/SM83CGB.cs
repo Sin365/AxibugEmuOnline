@@ -8,7 +8,8 @@ namespace Essgee.Emulation.CPU
     public class SM83CGB : SM83
     {
         // TODO: better way of implementing this?
-        public bool IsDoubleSpeed { get; private set; }
+        //public bool IsDoubleSpeed { get; private set; }
+        public bool IsDoubleSpeed;
 
         public SM83CGB(MemoryReadDelegate memoryRead, MemoryWriteDelegate memoryWrite) : base(memoryRead, memoryWrite) { }
 
