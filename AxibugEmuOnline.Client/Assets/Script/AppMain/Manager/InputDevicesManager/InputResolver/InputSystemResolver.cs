@@ -34,34 +34,46 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             string log = $"{ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}";
 
 #if UNITY_ANDROID
+            //App.log.Debug($"否真实键盘,方式IsPhysicalKeyboard:{AndroidKeyboardDetector.IsPhysicalKeyboard(ipdev.deviceId)} {ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}");
+            //App.log.Debug($"否真实键盘,方式IsPhysicalKeyboardAdvanced:{AndroidKeyboardDetector.IsPhysicalKeyboardAdvanced(ipdev.deviceId)} {ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}");
+            //App.log.Debug($"否真实键盘,方式IsExternalPhysicalKeyboard:{AndroidKeyboardDetector.IsExternalPhysicalKeyboard(ipdev.deviceId)} {ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}");
+
             if (ipdev is Keyboard)
             {
-                /*
-uinput-goodix：这很可能是指纹识别模块（Goodix 是一家常见的指纹传感器供应商）。
-gpio-keys：这是最典型的例子。​GPIO Keys​ 直接指代通过通用输入输出引脚连接的物理按键，​包括电源键和音量键。
-pmic_pwrkey：​PMIC​ 是电源管理集成电路。这直接就是电源键的虚拟设备。
-pmic_resin：resin 可能指 resin key，在某些平台上这是强制重启的按键。
-pmic_pwrkey_resin_bark：可能与长按电源键+其他组合键实现的功能相关（如强制重启）。
-pineapple-mtp-snd-card Headset Jack：这指的是耳机插孔。插入和拔出耳机的事件，以及耳机上的线控按钮（如播放/暂停）也会被模拟为键盘事件。
-On-Screen Keyboard：这个是真正的屏幕软键盘。
-                 */
-                string deviceName = ipdev.displayName;
-                if (deviceName.Contains("Virtual") ||
-                    deviceName.Contains("gpio-keys") ||//电源键
-                    deviceName.Contains("pmic") ||
-                    deviceName.Contains("goodix") ||
-                    deviceName.Contains("screen") ||
-                    deviceName.Contains("touch") ||
-                    deviceName.Contains("mtp-snd-card") ||
-                    deviceName.Contains("Headset Jack") ||//耳机线控
-                    deviceName.Contains("On-Screen") ||
-                    deviceName.Equals("AndroidInputManager")
-                    )
+                if (!AndroidKeyboardDetector.IsPhysicalKeyboard(ipdev.deviceId))
                 {
                     App.log.Debug($"过滤输入设备：{log}");
                     return;
                 }
             }
+            //            if (ipdev is Keyboard)
+            //            {
+            //                /*
+            //uinput-goodix：这很可能是指纹识别模块（Goodix 是一家常见的指纹传感器供应商）。
+            //gpio-keys：这是最典型的例子。​GPIO Keys​ 直接指代通过通用输入输出引脚连接的物理按键，​包括电源键和音量键。
+            //pmic_pwrkey：​PMIC​ 是电源管理集成电路。这直接就是电源键的虚拟设备。
+            //pmic_resin：resin 可能指 resin key，在某些平台上这是强制重启的按键。
+            //pmic_pwrkey_resin_bark：可能与长按电源键+其他组合键实现的功能相关（如强制重启）。
+            //pineapple-mtp-snd-card Headset Jack：这指的是耳机插孔。插入和拔出耳机的事件，以及耳机上的线控按钮（如播放/暂停）也会被模拟为键盘事件。
+            //On-Screen Keyboard：这个是真正的屏幕软键盘。
+            //                 */
+            //                string deviceName = ipdev.displayName;
+            //                if (deviceName.Contains("Virtual") ||
+            //                    deviceName.Contains("gpio-keys") ||//电源键
+            //                    deviceName.Contains("pmic") ||
+            //                    deviceName.Contains("goodix") ||
+            //                    deviceName.Contains("screen") ||
+            //                    deviceName.Contains("touch") ||
+            //                    deviceName.Contains("mtp-snd-card") ||
+            //                    deviceName.Contains("Headset Jack") ||//耳机线控
+            //                    deviceName.Contains("On-Screen") ||
+            //                    deviceName.Equals("AndroidInputManager")
+            //                    )
+            //                {
+            //                    App.log.Debug($"过滤输入设备：{log}");
+            //                    return;
+            //                }
+            //            }
 #endif
             App.log.Debug($"加入输入设备：{log}");
 
