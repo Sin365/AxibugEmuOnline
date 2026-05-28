@@ -37,7 +37,6 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             //App.log.Debug($"否真实键盘,方式IsPhysicalKeyboard:{AndroidKeyboardDetector.IsPhysicalKeyboard(ipdev.deviceId)} {ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}");
             //App.log.Debug($"否真实键盘,方式IsPhysicalKeyboardAdvanced:{AndroidKeyboardDetector.IsPhysicalKeyboardAdvanced(ipdev.deviceId)} {ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}");
             //App.log.Debug($"否真实键盘,方式IsExternalPhysicalKeyboard:{AndroidKeyboardDetector.IsExternalPhysicalKeyboard(ipdev.deviceId)} {ipdev.deviceId}| {ipdev.name}|{ipdev.displayName}|{ipdev.GetType().FullName}|{ipdev.GetType().BaseType.FullName}");
-
             if (ipdev is Keyboard)
             {
                 if (!AndroidKeyboardDetector.IsPhysicalKeyboard(ipdev.deviceId))
@@ -90,7 +89,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             }
 #endif
 
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE && !UNITY_STANDALONE_LINUX
             //PC Mac 平台的SwitchPro 手柄（其他平台无法编译，包括NS，电脑连NSPro手柄是不一样的）
             //inputsystem 文档说的是SwitchProControllerHID：A Nintendo Switch Pro controller connected to a desktop mac/windows PC using the HID interface.
             else if (ipdev is UnityEngine.InputSystem.Switch.SwitchProControllerHID)
@@ -335,7 +334,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             }
 #endif
 
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE && !UNITY_STANDALONE_LINUX
             //PC Mac 平台的SwitchPro 手柄（其他平台无法编译，包括NS，电脑连NSPro手柄是不一样的）
             //inputsystem 文档说的是SwitchProControllerHID：A Nintendo Switch Pro controller connected to a desktop mac/windows PC using the HID interface.
             else if (device_d is StandaloneSwitchProController_D standaloneswitchpro_d)
