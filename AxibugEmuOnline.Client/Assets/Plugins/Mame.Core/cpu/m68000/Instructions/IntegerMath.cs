@@ -8,8 +8,13 @@ namespace cpu.m68000
         {
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* D_ptr_Dreg = D + Dreg;
             switch (size)
@@ -24,7 +29,7 @@ namespace cpu.m68000
                         N = (result & 0x80) != 0;
                         Z = (result & 0xff) == 0;
                         D_ptr_Dreg->s8 = (sbyte)result;
-                        pendingCycles -= 4 + EACyclesBW[mode, reg];
+                        pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -37,7 +42,7 @@ namespace cpu.m68000
                         N = (result & 0x8000) != 0;
                         Z = (result & 0xffff) == 0;
                         D_ptr_Dreg->s16 = (short)result;
-                        pendingCycles -= 4 + EACyclesBW[mode, reg];
+                        pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -67,8 +72,13 @@ namespace cpu.m68000
         {
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* D_ptr_Dreg = D + Dreg;
             switch (size)
@@ -83,7 +93,7 @@ namespace cpu.m68000
                         N = (result & 0x80) != 0;
                         Z = (result & 0xff) == 0;
                         WriteValueB(mode, reg, (sbyte)result);
-                        pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -96,7 +106,7 @@ namespace cpu.m68000
                         N = (result & 0x8000) != 0;
                         Z = (result & 0xffff) == 0;
                         WriteValueW(mode, reg, (short)result);
-                        pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -119,8 +129,13 @@ namespace cpu.m68000
         void ADDI()
         {
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             switch (size)
             {
@@ -136,7 +151,7 @@ namespace cpu.m68000
                         Z = (result & 0xff) == 0;
                         WriteValueB(mode, reg, (sbyte)result);
                         if (mode == 0) pendingCycles -= 8;
-                        else pendingCycles -= 12 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -151,7 +166,7 @@ namespace cpu.m68000
                         Z = (result & 0xffff) == 0;
                         WriteValueW(mode, reg, (short)result);
                         if (mode == 0) pendingCycles -= 8;
-                        else pendingCycles -= 12 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -179,8 +194,13 @@ namespace cpu.m68000
         {
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
@@ -198,7 +218,7 @@ namespace cpu.m68000
                         C = X = (uresult & 0x100) != 0;
                         WriteValueB(mode, reg, (sbyte)result);
                         if (mode == 0) pendingCycles -= 4;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -222,7 +242,7 @@ namespace cpu.m68000
                         if (mode <= 1)
                             pendingCycles -= 4;
                         else
-                            pendingCycles -= 8 + EACyclesBW[mode, reg];
+                            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 default: // long
@@ -252,15 +272,20 @@ namespace cpu.m68000
         {
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* A_ptr_aReg = A + aReg;
             if (size == 0) // word
             {
                 int value = ReadValueW(mode, reg);
                 A_ptr_aReg->s32 += value;
-                pendingCycles -= 8 + EACyclesBW[mode, reg];
+                pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
             else
             { // long
@@ -278,8 +303,13 @@ namespace cpu.m68000
         {
             int dReg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* D_ptr_dReg = D + dReg;
             switch (size)
@@ -294,7 +324,7 @@ namespace cpu.m68000
                         N = (result & 0x80) != 0;
                         Z = result == 0;
                         D_ptr_dReg->s8 = (sbyte)result;
-                        pendingCycles -= 4 + EACyclesBW[mode, reg];
+                        pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -307,7 +337,7 @@ namespace cpu.m68000
                         N = (result & 0x8000) != 0;
                         Z = result == 0;
                         D_ptr_dReg->s16 = (short)result;
-                        pendingCycles -= 4 + EACyclesBW[mode, reg];
+                        pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -337,8 +367,13 @@ namespace cpu.m68000
         {
             int dReg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* D_ptr_dReg = D + dReg;
             switch (size)
@@ -353,7 +388,7 @@ namespace cpu.m68000
                         N = (result & 0x80) != 0;
                         Z = result == 0;
                         WriteValueB(mode, reg, (sbyte)result);
-                        pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -366,7 +401,7 @@ namespace cpu.m68000
                         N = (result & 0x8000) != 0;
                         Z = result == 0;
                         WriteValueW(mode, reg, (short)result);
-                        pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -389,8 +424,13 @@ namespace cpu.m68000
         void SUBI()
         {
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             switch (size)
             {
@@ -405,7 +445,7 @@ namespace cpu.m68000
                         Z = result == 0;
                         WriteValueB(mode, reg, (sbyte)result);
                         if (mode == 0) pendingCycles -= 8;
-                        else pendingCycles -= 12 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -419,7 +459,7 @@ namespace cpu.m68000
                         Z = result == 0;
                         WriteValueW(mode, reg, (short)result);
                         if (mode == 0) pendingCycles -= 8;
-                        else pendingCycles -= 12 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -446,8 +486,13 @@ namespace cpu.m68000
         {
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
@@ -464,7 +509,7 @@ namespace cpu.m68000
                         C = X = ((value < data) ^ ((value ^ data) >= 0) == false);
                         WriteValueB(mode, reg, (sbyte)result);
                         if (mode == 0) pendingCycles -= 4;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -489,7 +534,7 @@ namespace cpu.m68000
                         else if (mode == 1)
                             pendingCycles -= 8;
                         else
-                            pendingCycles -= 8 + EACyclesBW[mode, reg];
+                            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 default: // long
@@ -516,15 +561,20 @@ namespace cpu.m68000
         {
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* A_ptr_aReg = A + aReg;
             if (size == 0) // word
             {
                 int value = ReadValueW(mode, reg);
                 A_ptr_aReg->s32 -= value;
-                pendingCycles -= 8 + EACyclesBW[mode, reg];
+                pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
             else
             { // long
@@ -558,7 +608,7 @@ namespace cpu.m68000
                         C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
                         WriteValueB(mode, reg, (sbyte)result);
                         if (mode == 0) pendingCycles -= 4;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // Word
@@ -571,7 +621,7 @@ namespace cpu.m68000
                         C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
                         WriteValueW(mode, reg, (short)result);
                         if (mode == 0) pendingCycles -= 4;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // Long
@@ -619,7 +669,7 @@ namespace cpu.m68000
                 X = false;
             }
             N = ((result & 0x80) != 0);
-            pendingCycles -= (mode == 0) ? 6 : 8 + EACyclesBW[mode, reg];
+            pendingCycles -= (mode == 0) ? 6 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -670,8 +720,13 @@ namespace cpu.m68000
         void CHK()
         {
             int dreg = (op >> 9) & 0x07;
-            int boundMode = (op >> 3) & 0x07;
-            int boundReg = op & 0x07;
+            //int boundMode = (op >> 3) & 0x07;
+            //int boundReg = op & 0x07;
+
+            //换成缓存不计算
+            int boundMode = axicache_Insn.eaMode;
+            int boundReg = axicache_Insn.eaReg;
+
             short src, bound;
             src = (D + dreg)->s16;
             bound = ReadValueW(boundMode, boundReg);
@@ -680,13 +735,13 @@ namespace cpu.m68000
             C = false;
             if (src >= 0 && src <= bound)
             {
-                pendingCycles -= 10 + EACyclesBW[boundMode, boundReg];
+                pendingCycles -= 10 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[boundMode, boundReg];
             }
             else
             {
                 N = (src < 0);
                 TrapVector(6);
-                pendingCycles -= 10 + EACyclesBW[boundMode, boundReg];
+                pendingCycles -= 10 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[boundMode, boundReg];
             }
         }
 
@@ -713,7 +768,7 @@ namespace cpu.m68000
                         C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
                         WriteValueB(mode, reg, (sbyte)result);
                         if (mode == 0) pendingCycles -= 4;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // Word
@@ -726,7 +781,7 @@ namespace cpu.m68000
                         C = X = ((0 < value) ^ ((0 ^ value) >= 0) == false);
                         WriteValueW(mode, reg, (short)result);
                         if (mode == 0) pendingCycles -= 4;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // Long
@@ -1265,8 +1320,13 @@ namespace cpu.m68000
         {
             int dReg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             switch (size)
             {
@@ -1279,7 +1339,7 @@ namespace cpu.m68000
                         Z = result == 0;
                         V = result > sbyte.MaxValue || result < sbyte.MinValue;
                         C = ((a < b) ^ ((a ^ b) >= 0) == false);
-                        pendingCycles -= 4 + EACyclesBW[mode, reg];
+                        pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -1291,7 +1351,7 @@ namespace cpu.m68000
                         Z = result == 0;
                         V = result > short.MaxValue || result < short.MinValue;
                         C = ((a < b) ^ ((a ^ b) >= 0) == false);
-                        pendingCycles -= 4 + EACyclesBW[mode, reg];
+                        pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -1314,8 +1374,13 @@ namespace cpu.m68000
         {
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             Register* A_ptr_aReg = A + aReg;
             switch (size)
@@ -1329,7 +1394,7 @@ namespace cpu.m68000
                         Z = result == 0;
                         V = result > int.MaxValue || result < int.MinValue;
                         C = ((a < b) ^ ((a ^ b) >= 0) == false);
-                        pendingCycles -= 6 + EACyclesBW[mode, reg];
+                        pendingCycles -= 6 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // long
@@ -1452,8 +1517,13 @@ namespace cpu.m68000
         void CMPI()
         {
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
             Register* A_ptr_reg = A + reg;
 
             switch (size)
@@ -1518,7 +1588,7 @@ namespace cpu.m68000
                         V = result > sbyte.MaxValue || result < sbyte.MinValue;
                         C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         if (mode == 0) pendingCycles -= 8;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -1531,7 +1601,7 @@ namespace cpu.m68000
                         V = result > short.MaxValue || result < short.MinValue;
                         C = ((a < b) ^ ((a ^ b) >= 0) == false);
                         if (mode == 0) pendingCycles -= 8;
-                        else pendingCycles -= 8 + EACyclesBW[mode, reg];
+                        else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -1554,8 +1624,13 @@ namespace cpu.m68000
         void MULU()
         {
             int dreg = (op >> 9) & 7;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
             Register* D_ptr_dreg = D + dreg;
             uint result = (uint)(D_ptr_dreg->u16 * (ushort)ReadValueW(mode, reg));
             D_ptr_dreg->u32 = result;
@@ -1565,15 +1640,20 @@ namespace cpu.m68000
             N = (result & 0x80000000) != 0;
             Z = result == 0;
 
-            pendingCycles -= 54 + EACyclesBW[mode, reg];
+            pendingCycles -= 54 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
         void MULS()
         {
             int dreg = (op >> 9) & 7;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
             Register* D_ptr_dreg = D + dreg;
             int result = D_ptr_dreg->s16 * ReadValueW(mode, reg);
             D_ptr_dreg->s32 = result;
@@ -1583,15 +1663,20 @@ namespace cpu.m68000
             N = (result & 0x80000000) != 0;
             Z = result == 0;
 
-            pendingCycles -= 54 + EACyclesBW[mode, reg];
+            pendingCycles -= 54 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
         void DIVU()
         {
             int dreg = (op >> 9) & 7;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             uint source = (ushort)ReadValueW(mode, reg);
             Register* D_ptr_dreg = D + dreg;
@@ -1618,15 +1703,20 @@ namespace cpu.m68000
                     V = true;
                 }
             }
-            pendingCycles -= 140 + EACyclesBW[mode, reg];
+            pendingCycles -= 140 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
         void DIVS()
         {
             int dreg = (op >> 9) & 7;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             int source = ReadValueW(mode, reg);
             Register* D_ptr_dreg = D + dreg;
@@ -1653,7 +1743,7 @@ namespace cpu.m68000
                     V = true;
                 }
             }
-            pendingCycles -= 158 + EACyclesBW[mode, reg];
+            pendingCycles -= 158 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
     }
