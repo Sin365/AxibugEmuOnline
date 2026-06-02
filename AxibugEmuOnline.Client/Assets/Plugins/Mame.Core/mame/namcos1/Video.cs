@@ -33,7 +33,8 @@ namespace MAME.Core
             ttmap[5].tilemap_set_scrolldy(0x10, 0x110);
             for (i = 0; i < 0x2000; i++)
             {
-                Palette.palette_entry_set_color1(i, Palette.make_rgb(0, 0, 0));
+                //Palette.palette_entry_set_color1(i, Palette.make_rgb(0, 0, 0));
+                Palette.palette_entry_set_color1(i, Palette.make_rgb_0_0_0);
             }
             copy_sprites = 0;
         }

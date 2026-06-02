@@ -262,6 +262,8 @@ namespace MAME.Core
         /// </summary>
         public void WaitNextFrame()
         {
+            if (!bIsNewThreadMode)
+                return;
             //TODO 等待跳帧时测试
             lock (unlockMoreFrameObj)
             {
@@ -279,8 +281,6 @@ namespace MAME.Core
 
         private void WaitAutoEvent()
         {
-            if (!bIsNewThreadMode)
-                return;
             emuAutoLoopEvent.WaitOne();
         }
 
