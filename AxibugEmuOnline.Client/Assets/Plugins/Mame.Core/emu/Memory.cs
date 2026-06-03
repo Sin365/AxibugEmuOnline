@@ -424,6 +424,12 @@ namespace MAME.Core
             GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (cpu.m68000.Register*)intptr;
         }
+        public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref FM.ADPCM_CH* ptr)
+        {
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
+            ptr = (FM.ADPCM_CH*)intptr;
+        }
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref uint* ptr)
         {
             IntPtr intptr;
