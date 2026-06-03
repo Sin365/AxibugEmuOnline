@@ -12,6 +12,8 @@ namespace AxibugEmuOnline.Client
         public ScreenScaler ScreenScaler { get; private set; }
         /// <summary> 键位设置 </summary>
         public KeyMapperSetting KeyMapper { get; private set; }
+        /// <summary> 开关调试HUB </summary>
+        public DebugHubManager debugHub { get; private set; }
 
         public AppSettings()
         {
@@ -19,6 +21,7 @@ namespace AxibugEmuOnline.Client
             Filter = new FilterManager();
             ScreenScaler = new ScreenScaler();
             KeyMapper = new KeyMapperSetting();
+            debugHub = new DebugHubManager();
         }
     }
 }

@@ -192,6 +192,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         void RecvModifyNickName(Protobuf_Modify_NickName_RESP msg)
         {
+            OverlayManager.PopTip($"成功修改昵称");
         }
 
         private void RecvUpdateSelfUserInfo(Protobuf_Update_UserInfo_RESP msg)
