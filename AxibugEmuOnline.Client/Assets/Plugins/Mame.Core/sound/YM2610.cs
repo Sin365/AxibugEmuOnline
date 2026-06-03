@@ -114,7 +114,7 @@ namespace MAME.Core
             byte data;
             int i;
             //fixed (FM.ADPCM_CH* adpcm_c = &adpcm[c])
-            FM.ADPCM_CH* adpcm_c = adpcm;
+            FM.ADPCM_CH* adpcm_c = adpcm + 3;
             {
                 adpcm_c->now_step += adpcm_c->step;
                 if (adpcm_c->now_step >= (1 << 16))
