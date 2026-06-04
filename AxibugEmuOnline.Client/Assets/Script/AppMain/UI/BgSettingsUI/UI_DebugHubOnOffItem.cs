@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.UI;
+using System;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -11,23 +12,27 @@ namespace AxibugEmuOnline.Client
     public class UI_DebugHubOnOffItem : MenuItem, IVirtualItem
     {
         public int Index { get; set; }
-        public bool IsDebugHubOn { get; private set; }
 
         public void SetData(object data)
         {
-            IsDebugHubOn = (bool)data;
+            App.settings.debugHub.OnDebugHubSettingChanged += Setting_OnDebugHubSettingChanged;
+            UpdateView();
+        }
+
+        private void Setting_OnDebugHubSettingChanged()
+        {
             UpdateView();
         }
 
         private void UpdateView()
         {
-            switch (IsDebugHubOn)
+            switch (App.settings.debugHub.IsDebugHubOn)
             {
                 case true:
-                    SetBaseInfo("打开", "打开调试面板", null);
+                    SetBaseInfo("调试面板", "显示", null);
                     break;
                 default:
-                    SetBaseInfo("隐藏", "隐藏调试面板", null);
+                    SetBaseInfo("调试面板", "隐藏", null);
                     break;
             }
         }
@@ -35,15 +40,12 @@ namespace AxibugEmuOnline.Client
         public void SetDependencyProperty(object data)
         {
             SetSelectState(data is ThirdMenuRoot && ((ThirdMenuRoot)data).SelectIndex == Index);
-
-            if (m_select)
-            {
-                App.settings.debugHub.IsDebugHubOn = IsDebugHubOn;
-                App.settings.debugHub.RefreshForSetting();
-            }
         }
 
-        public void Release() { }
+        public void Release()
+        {
+            App.settings.debugHub.OnDebugHubSettingChanged -= Setting_OnDebugHubSettingChanged;
+        }
 
         public override bool OnEnterItem()
         {

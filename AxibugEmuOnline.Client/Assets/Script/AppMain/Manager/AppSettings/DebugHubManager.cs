@@ -5,6 +5,8 @@ namespace AxibugEmuOnline.Client.Settings
 {
     public class DebugHubManager
     {
+        public delegate void OnDebugHubSettingChangedHandle();
+        public event OnDebugHubSettingChangedHandle OnDebugHubSettingChanged;
         string key_GlobalMode = nameof(DebugHubManager) + ".IsDebugHubOn";
         Dictionary<RomPlatformType, string> cache_PlatMode = new Dictionary<RomPlatformType, string>();
         public DebugHubManager()
@@ -17,7 +19,10 @@ namespace AxibugEmuOnline.Client.Settings
         public bool IsDebugHubOn
         {
             get => AxiPlayerPrefs.GetInt(key_GlobalMode, 0) == 1;
-            set => AxiPlayerPrefs.SetInt(key_GlobalMode, value ? 1 : 0);
+            set { 
+                AxiPlayerPrefs.SetInt(key_GlobalMode, value ? 1 : 0);
+                OnDebugHubSettingChanged?.Invoke();
+            }
         }
 
         public void RefreshForSetting()
