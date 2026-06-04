@@ -375,7 +375,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0x8000 && address <= 0x8fff)
             {
@@ -400,7 +400,7 @@ namespace MAME.Core
             }
             else if (address >= 0xe000 && address <= 0xffff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             return result;
         }
@@ -617,7 +617,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0x8000 && address <= 0x8fff)
             {
@@ -631,7 +631,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0x8000 && address <= 0x8fff)
             {
@@ -656,7 +656,7 @@ namespace MAME.Core
             }
             else if (address >= 0xe000 && address <= 0xffff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             return result;
         }
@@ -2467,7 +2467,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x3fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0x4000 && address <= 0x7fff)
             {
@@ -2481,7 +2481,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x3fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0x4000 && address <= 0x7fff)
             {

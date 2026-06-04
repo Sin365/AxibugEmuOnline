@@ -363,7 +363,7 @@
             byte result = 0;
             if (address >= 0 && address <= 0x1ffff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0xffff0 && address <= 0xfffff)
             {
@@ -379,7 +379,7 @@
             byte result = 0;
             if (address >= 0 && address <= 0x1ffff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0xa0000 && address <= 0xa3fff)
             {
@@ -484,7 +484,7 @@
             {
                 int offset = address - 0xa0000;
                 *(Memory.audioram + offset) = (byte)value;
-                *(Memory.audioram + offset + 1) = (byte)value;
+                *(Memory.audioram + offset + 1) = (byte)(value >> 8);
             }
             else if (address >= 0xa8000 && address + 1 <= 0xa803f)
             {

@@ -2229,7 +2229,7 @@ namespace MAME.Core
         //    byte result = 0;
         //    if (address >= 0x0000 && address <= 0x7fff)
         //    {
-        //        result = *Memory.audiorom;
+        //        result = *(Memory.audiorom + address);
         //    }
         //    else if (address >= 0x8000 && address <= 0xbfff)
         //    {
@@ -2288,7 +2288,7 @@ namespace MAME.Core
         //    byte result = 0;
         //    if (address >= 0x0000 && address <= 0x7fff)
         //    {
-        //        result = *Memory.audiorom;
+        //        result = *(Memory.audiorom + address);
         //    }
         //    else if (address >= 0x8000 && address <= 0xbfff)
         //    {
