@@ -412,7 +412,7 @@
             ushort result = 0;
             if (address >= 0 && address + 1 <= 0x1ffff)
             {
-                result = (ushort)(*Memory.audiorom + *(Memory.audiorom + (address + 1)) * 0x100);
+                result = (ushort)(*(Memory.audiorom + address) + *(Memory.audiorom + (address + 1)) * 0x100);
             }
             else if (address >= 0xa0000 && address + 1 <= 0xa3fff)
             {
