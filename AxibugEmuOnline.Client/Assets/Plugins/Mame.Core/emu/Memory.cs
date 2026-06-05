@@ -509,7 +509,7 @@ namespace MAME.Core
             int singlesize = sizeof(byte);
             int totalBytesToCopy = count * singlesize;
             //Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
-            AxiArray.Copy(bufferPtr, offset, TempBuffer, totalBytesToCopy, totalBytesToCopy);
+            AxiArray.Copy(bufferPtr + offset, 0, TempBuffer, 0, totalBytesToCopy);
             bw.Write(TempBuffer_src, 0, count);
         }
         //public static void Write(this FileStream fs, byte* bufferPtr, int offset, int count)
