@@ -182,7 +182,9 @@ public class UMAME : EmuCore<ulong>
 
     protected override void AfterPushFrame()
     {
-        mFPS.text = ($"fpsv {mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");
+        //App.log.Info($"Mame.opskip->{(100* Mame.opskip / Mame.opcount)}%|{Mame.opskip}/{Mame.opcount}");
+
+        mFPS.text = ($"fpsv |{mUniVideoPlayer.videoFPS.ToString("F2")} fpsa {mUniSoundPlayer.audioFPS.ToString("F2")} ,Idx:{App.roomMgr.netReplay?.mCurrClientFrameIdx},RIdx:{App.roomMgr.netReplay?.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay?.mRemoteForwardCount} ,RD:{App.roomMgr.netReplay?.mRemoteForwardCount} ,D:{App.roomMgr.netReplay?.mDiffFrameCount} ,Q:{App.roomMgr.netReplay?.mNetReplayQueue.Count}");
     }
     public void SaveReplay()
     {

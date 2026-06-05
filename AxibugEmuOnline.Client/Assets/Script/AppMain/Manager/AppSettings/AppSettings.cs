@@ -12,13 +12,19 @@ namespace AxibugEmuOnline.Client
         public ScreenScaler ScreenScaler { get; private set; }
         /// <summary> 键位设置 </summary>
         public KeyMapperSetting KeyMapper { get; private set; }
+        /// <summary> 开关调试HUB </summary>
+        public DebugHubManager debugHub { get; private set; }
 
+        public DisplaySettings displaySettings { get; private set; }
         public AppSettings()
         {
             BgColor = new BgColorSettings();
             Filter = new FilterManager();
             ScreenScaler = new ScreenScaler();
             KeyMapper = new KeyMapperSetting();
+            debugHub = new DebugHubManager();
+            displaySettings = new DisplaySettings();
+            displaySettings.ApplyResolution();//初始化时就设置分辨率
         }
     }
 }

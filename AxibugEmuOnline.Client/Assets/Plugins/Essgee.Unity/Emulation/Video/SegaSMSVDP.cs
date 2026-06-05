@@ -61,15 +61,15 @@ namespace Essgee.Emulation.Video
         bool isVScrollPartiallyDisabled => IsBitSet(registers[0x00], 7);                /* Columns 24-31, i.e. pixels 192-255 */
         bool isHScrollPartiallyDisabled => IsBitSet(registers[0x00], 6);                /* Rows 0-1, i.e. pixels 0-15 */
 
-        bool isBitM4Set => IsBitSet(registers[0x00], 2);
+        bool isBitM4Set => IsBitSet(registers[0x00], 2);//((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/;
 
-        protected override bool isModeGraphics1 => !(isBitM1Set || isBitM2Set || isBitM3Set || isBitM4Set);
-        protected override bool isModeText => (isBitM1Set && !(isBitM2Set || isBitM3Set || isBitM4Set));
-        protected override bool isModeGraphics2 => (isBitM2Set && !(isBitM1Set || isBitM3Set || isBitM4Set));
-        protected override bool isModeMulticolor => (isBitM3Set && !(isBitM1Set || isBitM2Set || isBitM4Set));
+        protected override bool isModeGraphics1 => !(isBitM1Set || isBitM2Set || isBitM3Set || ((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/);
+        protected override bool isModeText => (isBitM1Set && !(isBitM2Set || isBitM3Set || ((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/));
+        protected override bool isModeGraphics2 => (isBitM2Set && !(isBitM1Set || isBitM3Set || ((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/));
+        protected override bool isModeMulticolor => (isBitM3Set && !(isBitM1Set || isBitM2Set || ((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/));
 
-        protected bool isSMS240LineMode => (!isBitM1Set && isBitM2Set && isBitM3Set && isBitM4Set);
-        protected bool isSMS224LineMode => (isBitM1Set && isBitM2Set && !isBitM3Set && isBitM4Set);
+        protected bool isSMS240LineMode => (!isBitM1Set && isBitM2Set && isBitM3Set && ((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/);
+        protected bool isSMS224LineMode => (isBitM1Set && isBitM2Set && !isBitM3Set && ((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/);
 
         bool isSpriteShiftLeft8 => IsBitSet(registers[0x00], 3);
 
@@ -77,7 +77,7 @@ namespace Essgee.Emulation.Video
         {
             get
             {
-                if (isBitM4Set)
+                if (((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
                 {
                     if (isSMS224LineMode || isSMS240LineMode)
                         return (ushort)(((registers[0x02] & 0x0C) << 10) | 0x700);
@@ -88,8 +88,8 @@ namespace Essgee.Emulation.Video
                     return (ushort)((registers[0x02] & 0x0F) << 10);
             }
         }
-        protected override ushort spriteAttribTableBaseAddress => (ushort)((registers[0x05] & (isBitM4Set ? 0x7E : 0x7F)) << 7);
-        protected override ushort spritePatternGenBaseAddress => (ushort)((registers[0x06] & (isBitM4Set ? 0x04 : 0x07)) << 11);
+        protected override ushort spriteAttribTableBaseAddress => (ushort)((registers[0x05] & (((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/ ? 0x7E : 0x7F)) << 7);
+        protected override ushort spritePatternGenBaseAddress => (ushort)((registers[0x06] & (((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/ ? 0x04 : 0x07)) << 11);
 
         /* http://www.smspower.org/Development/Palette */
         // TODO: verify these, SMSPower has some mistakes (RGB approx correct, palette value wrong)
@@ -536,7 +536,7 @@ namespace Essgee.Emulation.Video
             {
                 if (layerBackgroundForceEnable)
                 {
-                    if (isBitM4Set)
+                    if (((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
                         RenderLineMode4Background(y);
                     else if (isModeGraphics1)
                         RenderLineGraphics1Background(y);
@@ -552,9 +552,9 @@ namespace Essgee.Emulation.Video
 
                 if (layerSpritesForceEnable)
                 {
-                    if (isBitM4Set)
+                    if (((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
                         RenderLineMode4Sprites(y);
-                    else if (!isModeText && !isBitM4Set)
+                    else if (!isModeText && !((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
                         RenderLineSprites(y);
                 }
 
@@ -652,7 +652,7 @@ namespace Essgee.Emulation.Video
                 /* Record screen usage, write to framebuffer */
                 if (GetScreenUsageFlag(y, x) == screenUsageEmpty)
                 {
-                    if ((currentIsColumn0MaskEnabled && (activeDisplayX / 8) == 0) || isDisplayBlanked)
+                    if ((currentIsColumn0MaskEnabled && (activeDisplayX / 8) == 0) || (!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/)
                         SetPixel(y, x, 1, backgroundColor);
                     else
                         SetPixel(y, x, palette, c);
@@ -664,7 +664,7 @@ namespace Essgee.Emulation.Video
 
         protected override void CheckSpriteOverflow(int y)
         {
-            if (!isBitM4Set)
+            if (!((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
             {
                 /* Not in Master System video mode */
                 base.CheckSpriteOverflow(y);
@@ -692,7 +692,7 @@ namespace Essgee.Emulation.Video
 
         protected override void ParseSpriteTable(int y)
         {
-            if (!isBitM4Set)
+            if (!((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
             {
                 /* Not in Master System video mode */
                 base.ParseSpriteTable(y);
@@ -770,7 +770,7 @@ namespace Essgee.Emulation.Video
                 int spriteWidth = (8 << zoomShift);
                 if (vdpType == VDPTypes.Mk3SMS1 && s >= NumSpritesPerLine) spriteWidth = 8;
 
-                if (!isDisplayBlanked)
+                if (!(!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/)
                 {
                     int yCoordinate = sprite.Y;
                     int xCoordinate = sprite.X;
@@ -929,7 +929,7 @@ namespace Essgee.Emulation.Video
         protected unsafe override void WriteColorToFramebuffer(ushort colorValue, int address)
         {
             /* If not in Master System video mode, color value is index into legacy colormap */
-            if (!isBitM4Set)
+            if (!((registers[0x00] & (1 << 2)) != 0)/*手动内联*//*isBitM4Set*/)
                 colorValue = (legacyColorMap[colorValue & 0x000F]);
 
             RGB222toBGRA8888(colorValue, ref outputFramebuffer, address);

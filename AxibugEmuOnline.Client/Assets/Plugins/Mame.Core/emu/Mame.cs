@@ -1,4 +1,6 @@
 ﻿
+using static UnityEngine.GraphicsBuffer;
+
 namespace MAME.Core
 {
     public class Mame
@@ -94,6 +96,7 @@ namespace MAME.Core
             mame_pause(false);
         }
 
+        public static long loopTime = 0;
         public static void mame_execute_UpdateMode_NextFrame()
         {
             if (exit_pending)
@@ -101,12 +104,38 @@ namespace MAME.Core
 
             EmuTimer.emu_timer.CheckReadyRelaseBeforeFrameRun();
             long lastframe = Video.screenstate.frame_number;
+
+            loopTime = 0;
+
+            //// 当前时间
+            //Atime start = EmuTimer.global_basetime;
+            //Atime target = new Atime(start.seconds, start.attoseconds);
+            //long framePeriod = Video.screenstate.frame_period;
+
+            //// 加一帧时间
+            //target.attoseconds += framePeriod;
+
+            //// 进位处理
+            //if (target.attoseconds >= 1000000000000000000L)
+            //{
+            //    target.seconds++;
+            //    target.attoseconds -= 1000000000000000000L;
+            //}
+
+            //// 执行到目标时间
+            //while (
+            //    EmuTimer.global_basetime.seconds < target.seconds ||
+            //    (EmuTimer.global_basetime.seconds == target.seconds &&
+            //     EmuTimer.global_basetime.attoseconds < target.attoseconds)
+            //)
+
             //执行CPU命令，直到一次画面更新
             while (lastframe == Video.screenstate.frame_number)
             {
                 if (!paused)
                 {
                     Cpuexec.cpuexec_timeslice();
+                    loopTime++;
                 }
                 else
                 {
@@ -169,7 +198,7 @@ namespace MAME.Core
             Generic.generic_machine_init();
             EmuTimer.timer_init();
             //soft_reset_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Mame_soft_reset, false);
-            EmuTimer.timer_alloc_common(ref soft_reset_timer,EmuTimer.TIME_ACT.Mame_soft_reset, false);
+            EmuTimer.timer_alloc_common(ref soft_reset_timer, EmuTimer.TIME_ACT.Mame_soft_reset, false);
             Window.osd_init();
             Inptport.input_port_init();
             Cpuexec.cpuexec_init();

@@ -1,12 +1,11 @@
-﻿using Essgee.Exceptions;
-using Essgee.Utilities;
+﻿using Essgee.Utilities;
 using System;
 using System.Linq;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.CPU
 {
-    public partial class SM83 : ICPU
+    public partial class SM83 : ICPU, IAxiEssgeeRequestInterrupt
     {
         [Flags]
         enum Flags : byte
@@ -31,15 +30,16 @@ namespace Essgee.Emulation.CPU
             Keypad = 4
         }
 
-        public delegate byte MemoryReadDelegate(ushort address);
-        public delegate void MemoryWriteDelegate(ushort address, byte value);
+        //public delegate byte MemoryReadDelegate(ushort address);
+        //public delegate void MemoryWriteDelegate(ushort address, byte value);
 
-        public delegate void RequestInterruptDelegate(InterruptSource source);
+        //public delegate void RequestInterruptDelegate(InterruptSource source);
 
         delegate void SimpleOpcodeDelegate(SM83 c);
 
-        protected MemoryReadDelegate memoryReadDelegate;
-        protected MemoryWriteDelegate memoryWriteDelegate;
+        //protected MemoryReadDelegate memoryReadDelegate;
+        //protected MemoryWriteDelegate memoryWriteDelegate;
+        protected IAxiEssgeeMemIO axiEMem;
 
         [StateRequired]
         protected Register af, bc, de, hl;
@@ -59,12 +59,28 @@ namespace Essgee.Emulation.CPU
         int numLogEntries;
         string[] logEntries;
 
-        public SM83(MemoryReadDelegate memoryRead, MemoryWriteDelegate memoryWrite)
+        //public SM83(MemoryReadDelegate memoryRead, MemoryWriteDelegate memoryWrite)
+        //{
+        //    af = bc = de = hl = new Register();
+
+        //    memoryReadDelegate = memoryRead;
+        //    memoryWriteDelegate = memoryWrite;
+
+        //    if (AppEnvironment.EnableSuperSlowCPULogger)
+        //    {
+        //        //logFile = @"D:\Temp\Essgee\log-lr35902.txt";
+        //        //numLogEntries = 0;
+        //        //logEntries = new string[2000];
+        //    }
+        //}
+
+        public SM83(IAxiEssgeeMemIO axism38io)
         {
             af = bc = de = hl = new Register();
 
-            memoryReadDelegate = memoryRead;
-            memoryWriteDelegate = memoryWrite;
+            //memoryReadDelegate = memoryRead;
+            //memoryWriteDelegate = memoryWrite;
+            axiEMem = axism38io;
 
             if (AppEnvironment.EnableSuperSlowCPULogger)
             {
@@ -123,8 +139,8 @@ namespace Essgee.Emulation.CPU
         {
             Reset();
 
-            if (memoryReadDelegate == null) throw new EmulationException("SM83: Memory read method is null");
-            if (memoryWriteDelegate == null) throw new EmulationException("SM83: Memory write method is null");
+            //if (memoryReadDelegate == null) throw new EmulationException("SM83: Memory read method is null");
+            //if (memoryWriteDelegate == null) throw new EmulationException("SM83: Memory write method is null");
         }
 
         public virtual void Shutdown()
@@ -170,6 +186,7 @@ namespace Essgee.Emulation.CPU
             }
             else
             {
+                /* 全都不要了吧 log
                 if (AppEnvironment.EnableSuperSlowCPULogger && logEntries != null)
                 {
                     string disasm = string.Format("{0} | {1} | {2} | {3}\n", DisassembleOpcode(this, pc).PadRight(48), PrintRegisters(this), PrintFlags(this), PrintInterrupt(this));
@@ -181,6 +198,7 @@ namespace Essgee.Emulation.CPU
                         numLogEntries = 0;
                     }
                 }
+                */
 
                 /* Do HALT bug */
                 if (doHaltBug)
@@ -190,7 +208,7 @@ namespace Essgee.Emulation.CPU
                 }
 
                 /* Fetch and execute opcode */
-                op = ReadMemory8(pc++);
+                op =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(pc++);
                 switch (op)
                 {
                     case 0xCB: ExecuteOpCB(); break;
@@ -211,7 +229,7 @@ namespace Essgee.Emulation.CPU
 
         private void ExecuteOpCB()
         {
-            byte cbOp = ReadMemory8(pc++);
+            byte cbOp =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(pc++);
             opcodesPrefixCB[cbOp](this);
             currentCycles += CycleCounts.PrefixCB[cbOp];
         }
@@ -279,13 +297,16 @@ namespace Essgee.Emulation.CPU
 
         public void RequestInterrupt(InterruptSource source)
         {
-            memoryWriteDelegate(0xFF0F, (byte)(memoryReadDelegate(0xFF0F) | (byte)(1 << (byte)source)));
+            //memoryWriteDelegate(0xFF0F, (byte)(memoryReadDelegate(0xFF0F) | (byte)(1 << (byte)source)));
+            axiEMem.WriteMemory(0xFF0F, (byte)(axiEMem.ReadMemory(0xFF0F) | (byte)(1 << (byte)source)));
         }
 
         private void HandleInterrupts()
         {
-            var intEnable = memoryReadDelegate(0xFFFF);
-            var intFlags = memoryReadDelegate(0xFF0F);
+            //var intEnable = memoryReadDelegate(0xFFFF);
+            //var intFlags = memoryReadDelegate(0xFF0F);
+            var intEnable = axiEMem.ReadMemory(0xFFFF);
+            var intFlags = axiEMem.ReadMemory(0xFF0F);
 
             if ((intEnable & intFlags) != 0)
             {
@@ -327,7 +348,8 @@ namespace Essgee.Emulation.CPU
             }
             else
             {
-                if ((memoryReadDelegate(0xFF0F) & memoryReadDelegate(0xFFFF) & 0x1F) != 0)
+                //if ((memoryReadDelegate(0xFF0F) & memoryReadDelegate(0xFFFF) & 0x1F) != 0)
+                if ((axiEMem.ReadMemory(0xFF0F) & axiEMem.ReadMemory(0xFFFF) & 0x1F) != 0)
                     doHaltBug = true;
                 else
                     halt = true;
@@ -348,25 +370,33 @@ namespace Essgee.Emulation.CPU
 
         #region Memory Access Functions
 
-        private byte ReadMemory8(ushort address)
+        //被完全内联了
+        private byte  ReadMemory8(ushort address)
         {
-            return memoryReadDelegate(address);
+            //return memoryReadDelegate(address);
+            return axiEMem.ReadMemory(address);
         }
 
+
+        //完全被内联了
         private void WriteMemory8(ushort address, byte value)
         {
-            memoryWriteDelegate(address, value);
+            //memoryWriteDelegate(address, value);
+            axiEMem.WriteMemory(address, value);
         }
 
         private ushort ReadMemory16(ushort address)
         {
-            return (ushort)((memoryReadDelegate((ushort)(address + 1)) << 8) | memoryReadDelegate(address));
+            //return (ushort)((memoryReadDelegate((ushort)(address + 1)) << 8) | memoryReadDelegate(address));
+            return (ushort)((axiEMem.ReadMemory((ushort)(address + 1)) << 8) | axiEMem.ReadMemory(address));
         }
 
         private void WriteMemory16(ushort address, ushort value)
         {
-            memoryWriteDelegate(address, (byte)(value & 0xFF));
-            memoryWriteDelegate((ushort)(address + 1), (byte)(value >> 8));
+            //memoryWriteDelegate(address, (byte)(value & 0xFF));
+            //memoryWriteDelegate((ushort)(address + 1), (byte)(value >> 8));
+            axiEMem.WriteMemory(address, (byte)(value & 0xFF));
+            axiEMem.WriteMemory((ushort)(address + 1), (byte)(value >> 8));
         }
 
         #endregion
@@ -375,12 +405,12 @@ namespace Essgee.Emulation.CPU
 
         protected void LoadRegisterFromMemory8(ref byte register, ushort address, bool specialRegs)
         {
-            LoadRegister8(ref register, ReadMemory8(address), specialRegs);
+            LoadRegister8(ref register,/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address), specialRegs);
         }
 
         protected void LoadRegisterImmediate8(ref byte register, bool specialRegs)
         {
-            LoadRegister8(ref register, ReadMemory8(pc++), specialRegs);
+            LoadRegister8(ref register,/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(pc++), specialRegs);
         }
 
         protected void LoadRegister8(ref byte register, byte value, bool specialRegs)
@@ -390,7 +420,7 @@ namespace Essgee.Emulation.CPU
 
         protected void LoadMemory8(ushort address, byte value)
         {
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
         }
 
         #endregion
@@ -410,14 +440,14 @@ namespace Essgee.Emulation.CPU
 
         protected void Push(Register register)
         {
-            WriteMemory8(--sp, register.High);
-            WriteMemory8(--sp, register.Low);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, register.High);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, register.Low);
         }
 
         protected void Pop(ref Register register)
         {
-            register.Low = ReadMemory8(sp++);
-            register.High = ReadMemory8(sp++);
+            register.Low =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(sp++);
+            register.High =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(sp++);
         }
 
         #endregion
@@ -510,9 +540,9 @@ namespace Essgee.Emulation.CPU
 
         protected void IncrementMemory8(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             Increment8(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
         }
 
         protected void Decrement8(ref byte register)
@@ -529,9 +559,9 @@ namespace Essgee.Emulation.CPU
 
         protected void DecrementMemory8(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             Decrement8(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
         }
 
         #endregion
@@ -625,9 +655,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte RotateLeft(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             RotateLeft(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -646,9 +676,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte RotateLeftCircular(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             RotateLeftCircular(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -666,9 +696,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte RotateRight(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             RotateRight(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -687,9 +717,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte RotateRightCircular(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             RotateRightCircular(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -757,9 +787,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte ShiftLeftArithmetic(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             ShiftLeftArithmetic(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -776,9 +806,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte ShiftRightArithmetic(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             ShiftRightArithmetic(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -797,9 +827,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte ShiftRightLogical(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             ShiftRightLogical(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -820,9 +850,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte SetBit(ushort address, int bit)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             SetBit(ref value, bit);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -833,9 +863,9 @@ namespace Essgee.Emulation.CPU
 
         protected byte ResetBit(ushort address, int bit)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             ResetBit(ref value, bit);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
             return value;
         }
 
@@ -846,7 +876,7 @@ namespace Essgee.Emulation.CPU
 
         protected void TestBit(ushort address, int bit)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
 
             TestBit(value, bit);
         }
@@ -867,7 +897,8 @@ namespace Essgee.Emulation.CPU
 
         protected void Jump8()
         {
-            pc += (ushort)(((sbyte)ReadMemory8(pc)) + 1);
+            //pc += (ushort)(((sbyte)ReadMemory8(pc)) + 1);
+            pc += (ushort)(((sbyte)axiEMem.ReadMemory(pc)) + 1);
         }
 
         protected void JumpConditional8(bool condition)
@@ -895,8 +926,8 @@ namespace Essgee.Emulation.CPU
 
         protected void Call16()
         {
-            WriteMemory8(--sp, (byte)((pc + 2) >> 8));
-            WriteMemory8(--sp, (byte)((pc + 2) & 0xFF));
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, (byte)((pc + 2) >> 8));
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, (byte)((pc + 2) & 0xFF));
             pc = ReadMemory16(pc);
         }
 
@@ -928,8 +959,8 @@ namespace Essgee.Emulation.CPU
 
         protected void Restart(ushort address)
         {
-            WriteMemory8(--sp, (byte)(pc >> 8));
-            WriteMemory8(--sp, (byte)(pc & 0xFF));
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, (byte)(pc >> 8));
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, (byte)(pc & 0xFF));
             pc = address;
         }
 
@@ -940,17 +971,19 @@ namespace Essgee.Emulation.CPU
             var address = (ushort)(0x0040 + (byte)((int)intSource << 3));
             var intSourceBit = (byte)(1 << (byte)intSource);
 
-            WriteMemory8(--sp, (byte)(pc >> 8));
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, (byte)(pc >> 8));
 
-            var newIntEnable = memoryReadDelegate(0xFFFF);
+            //var newIntEnable = memoryReadDelegate(0xFFFF);
+            var newIntEnable = axiEMem.ReadMemory(0xFFFF);
             var continueRestart = (newIntEnable & intSourceBit) != 0;
 
-            WriteMemory8(--sp, (byte)(pc & 0xFF));
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(--sp, (byte)(pc & 0xFF));
 
             if (continueRestart)
             {
                 pc = address;
-                memoryWriteDelegate(0xFF0F, (byte)(memoryReadDelegate(0xFF0F) & (byte)~intSourceBit));
+                //memoryWriteDelegate(0xFF0F, (byte)(memoryReadDelegate(0xFF0F) & (byte)~intSourceBit));
+                axiEMem.WriteMemory(0xFF0F, (byte)(axiEMem.ReadMemory(0xFF0F) & (byte)~intSourceBit));
             }
             else
                 pc = 0x0000;
@@ -964,15 +997,15 @@ namespace Essgee.Emulation.CPU
 
         protected void PopAF()
         {
-            af.Low = (byte)(ReadMemory8(sp++) & 0xF0);
-            af.High = ReadMemory8(sp++);
+            af.Low = (byte)(/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(sp++) & 0xF0);
+            af.High =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(sp++);
         }
 
         protected void Swap(ushort address)
         {
-            byte value = ReadMemory8(address);
+            byte value =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(address);
             Swap(ref value);
-            WriteMemory8(address, value);
+            /*WriteMemory8( 手动内联*/ axiEMem.WriteMemory(address, value);
         }
 
         protected void Swap(ref byte value)
@@ -992,7 +1025,7 @@ namespace Essgee.Emulation.CPU
 
         private void AddSPNN()
         {
-            byte offset = ReadMemory8(pc++);
+            byte offset =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(pc++);
 
             ClearFlag(Flags.Zero);
             ClearFlag(Flags.Subtract);
@@ -1004,7 +1037,7 @@ namespace Essgee.Emulation.CPU
 
         private void LoadHLSPNN()
         {
-            byte offset = ReadMemory8(pc++);
+            byte offset =/* ReadMemory8( 手动内联*/ axiEMem.ReadMemory(pc++);
 
             ClearFlag(Flags.Zero);
             ClearFlag(Flags.Subtract);

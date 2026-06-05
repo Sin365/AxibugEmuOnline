@@ -15,7 +15,7 @@ using System.Linq;
 namespace Essgee.Emulation.Machines
 {
     [MachineIndex(6)]
-    public class GameBoyColor : IMachine
+    public class GameBoyColor : IMachine ,IAxiEssgeeMemIO
     {
         const double masterClock = 4194304;
         const double refreshRate = 59.727500569606;
@@ -291,8 +291,10 @@ namespace Essgee.Emulation.Machines
 
             wram = new byte[8, wramSize];
             hram = new byte[hramSize];
-            cpu = new SM83CGB(ReadMemory, WriteMemory);
-            video = new CGBVideo(ReadMemory, cpu.RequestInterrupt);
+            //cpu = new SM83CGB(ReadMemory, WriteMemory);
+            cpu = new SM83CGB(this);
+            //video = new CGBVideo(ReadMemory, cpu.RequestInterrupt);
+            video = new CGBVideo(this, cpu);
             audio = new CGBAudio();
             serialDevice = null;
 
@@ -736,7 +738,7 @@ namespace Essgee.Emulation.Machines
             //if (eventArgs.ControllerState.IsStartPressed()) inputsPressed |= JoypadInputs.Start;
         }
 
-        private byte ReadMemory(ushort address)
+        public byte ReadMemory(ushort address)
         {
             if (address >= 0x0000 && address <= 0x7FFF)
             {
@@ -870,7 +872,7 @@ namespace Essgee.Emulation.Machines
             }
         }
 
-        private void WriteMemory(ushort address, byte value)
+        public void WriteMemory(ushort address, byte value)
         {
             if (address >= 0x0000 && address <= 0x7FFF)
             {

@@ -1,5 +1,5 @@
-﻿using Essgee.EventArguments;
-using Essgee.Exceptions;
+﻿using Essgee.Emulation.CPU;
+using Essgee.EventArguments;
 using Essgee.Utilities;
 using System;
 using System.Diagnostics;
@@ -28,10 +28,13 @@ namespace Essgee.Emulation.Video.Nintendo
 
         protected virtual int numSkippedFramesLcdOn => 4;
 
-        protected Action[] modeFunctions;
+        //protected Action[] modeFunctions;
 
-        protected readonly MemoryReadDelegate memoryReadDelegate;
-        protected readonly RequestInterruptDelegate requestInterruptDelegate;
+        //protected readonly MemoryReadDelegate memoryReadDelegate;
+
+        protected IAxiEssgeeMemIO axiEMem;
+        //protected readonly RequestInterruptDelegate requestInterruptDelegate;
+        protected IAxiEssgeeRequestInterrupt axiRequitr;
 
         public virtual (int X, int Y, int Width, int Height) Viewport => (0, 0, displayActiveWidth, displayActiveHeight);
 
@@ -186,7 +189,8 @@ namespace Essgee.Emulation.Video.Nintendo
 
         protected int clockCyclesPerLine;
 
-        public bool IsDoubleSpeed { get; set; }
+        //public bool IsDoubleSpeed { get; set; }
+        public bool IsDoubleSpeed;
 
         //
 
@@ -199,19 +203,39 @@ namespace Essgee.Emulation.Video.Nintendo
 
         protected bool layerBackgroundForceEnable, layerWindowForceEnable, layerSpritesForceEnable;
 
-        public DMGVideo(MemoryReadDelegate memoryRead, RequestInterruptDelegate requestInterrupt)
+        //public DMGVideo(MemoryReadDelegate memoryRead, RequestInterruptDelegate requestInterrupt)
+        //{
+        //    vram = new byte[1, 0x2000];
+        //    oam = new byte[0xA0];
+
+        //    //
+
+        //    modeFunctions = new Action[] { StepHBlank, StepVBlank, StepOAMSearch, StepLCDTransfer };
+
+        //    spritesOnLine = new int[maxSpritesPerLine];
+
+        //    memoryReadDelegate = memoryRead;
+        //    requestInterruptDelegate = requestInterrupt;
+
+        //    layerBackgroundForceEnable = true;
+        //    layerWindowForceEnable = true;
+        //    layerSpritesForceEnable = true;
+        //}
+        public DMGVideo(IAxiEssgeeMemIO aximem, IAxiEssgeeRequestInterrupt axirequitr)
         {
             vram = new byte[1, 0x2000];
             oam = new byte[0xA0];
 
             //
 
-            modeFunctions = new Action[] { StepHBlank, StepVBlank, StepOAMSearch, StepLCDTransfer };
+            //modeFunctions = new Action[] { StepHBlank, StepVBlank, StepOAMSearch, StepLCDTransfer };
 
             spritesOnLine = new int[maxSpritesPerLine];
 
-            memoryReadDelegate = memoryRead;
-            requestInterruptDelegate = requestInterrupt;
+            //memoryReadDelegate = memoryRead;
+            axiEMem = aximem;
+            //requestInterruptDelegate = requestInterrupt;
+            axiRequitr = axirequitr;
 
             layerBackgroundForceEnable = true;
             layerWindowForceEnable = true;
@@ -259,8 +283,8 @@ namespace Essgee.Emulation.Video.Nintendo
         {
             Reset();
 
-            if (memoryReadDelegate == null) throw new EmulationException("DMGVideo: Memory read delegate is null");
-            if (requestInterruptDelegate == null) throw new EmulationException("DMGVideo: Request interrupt delegate is null");
+            //if (memoryReadDelegate == null) throw new EmulationException("DMGVideo: Memory read delegate is null");
+            //if (requestInterruptDelegate == null) throw new EmulationException("DMGVideo: Request interrupt delegate is null");
 
             Debug.Assert(clockRate != 0.0, "Clock rate is zero", "{0} clock rate is not configured", GetType().FullName);
             Debug.Assert(refreshRate != 0.0, "Refresh rate is zero", "{0} refresh rate is not configured", GetType().FullName);
@@ -345,7 +369,18 @@ namespace Essgee.Emulation.Video.Nintendo
                 if (lcdEnable)
                 {
                     /* LCD enabled, handle LCD modes */
-                    modeFunctions[modeNumber]();
+
+                    //modeFunctions[modeNumber]();
+
+                    //改为直接调用
+                    // { StepHBlank, StepVBlank, StepOAMSearch, StepLCDTransfer };
+                    switch (modeNumber)
+                    {
+                        case 0: StepHBlank(); break;
+                        case 1: StepVBlank(); break;
+                        case 2: StepOAMSearch(); break;
+                        case 3: StepLCDTransfer(); break;
+                    }
                 }
                 else
                 {
@@ -377,7 +412,8 @@ namespace Essgee.Emulation.Video.Nintendo
             // TODO: *should* be 4, but Altered Space hangs w/ any value lower than 8?
             if (cycleCount == 8 && vBlankReady)
             {
-                requestInterruptDelegate(InterruptSource.VBlank);
+                //requestInterruptDelegate(InterruptSource.VBlank);
+                axiRequitr.RequestInterrupt(InterruptSource.VBlank);
                 vBlankReady = false;
             }
 
@@ -556,7 +592,10 @@ namespace Essgee.Emulation.Video.Nintendo
             if (coincidenceFlag && lycLyInterrupt) statIrqSignal = true;
 
             if (!oldSignal && statIrqSignal)
-                requestInterruptDelegate(InterruptSource.LCDCStatus);
+            {
+                axiRequitr.RequestInterrupt(InterruptSource.LCDCStatus);
+                //requestInterruptDelegate(InterruptSource.LCDCStatus);
+            }
         }
 
         protected virtual void RenderPixel(int y, int x)
@@ -943,7 +982,10 @@ namespace Essgee.Emulation.Video.Nintendo
 
                     // TODO: correct?
                     if (lcdEnable && modeNumber == 1 && currentScanline != 0)
-                        requestInterruptDelegate(InterruptSource.LCDCStatus);
+                    {
+                        //requestInterruptDelegate(InterruptSource.LCDCStatus);
+                        axiRequitr.RequestInterrupt(InterruptSource.LCDCStatus);
+                    }
                     break;
 
                 case 0x42:
@@ -970,7 +1012,10 @@ namespace Essgee.Emulation.Video.Nintendo
                     // DMA
                     oamDmaStart = value;
                     for (int src = 0, dst = oamDmaStart << 8; src < 0xA0; src++, dst++)
-                        oam[src] = memoryReadDelegate((ushort)dst);
+                    {
+                        //oam[src] = memoryReadDelegate((ushort)dst);
+                        oam[src] = axiEMem.ReadMemory((ushort)dst);
+                    }
                     break;
 
                 case 0x47:

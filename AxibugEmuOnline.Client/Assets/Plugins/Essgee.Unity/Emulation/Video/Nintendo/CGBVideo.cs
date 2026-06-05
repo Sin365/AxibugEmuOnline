@@ -1,6 +1,5 @@
-﻿using System;
-
-using static Essgee.Emulation.CPU.SM83;
+﻿using Essgee.Emulation.CPU;
+using System;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.Video.Nintendo
@@ -50,11 +49,13 @@ namespace Essgee.Emulation.Video.Nintendo
         bool hdmaIsActive;
         byte hdmaBytesLeft;
 
-        public int GDMAWaitCycles { get; set; }
+        //public int GDMAWaitCycles { get; set; }
+        public int GDMAWaitCycles;
 
         protected const byte screenUsageBackgroundHighPriority = (1 << 3);
 
-        public CGBVideo(MemoryReadDelegate memoryRead, RequestInterruptDelegate requestInterrupt) : base(memoryRead, requestInterrupt)
+        //public CGBVideo(MemoryReadDelegate memoryRead, RequestInterruptDelegate requestInterrupt) : base(memoryRead, requestInterrupt)
+        public CGBVideo(IAxiEssgeeMemIO aximem, IAxiEssgeeRequestInterrupt axirequitr) : base(aximem, axirequitr)
         {
             vram = new byte[2, 0x2000];
 
@@ -118,7 +119,8 @@ namespace Essgee.Emulation.Video.Nintendo
             {
                 if (hdmaBytesLeft > 0 && (cycleCount % 2) == 0)
                 {
-                    WriteVram(dmaDestinationAddress, memoryReadDelegate(dmaSourceAddress));
+                    //WriteVram(dmaDestinationAddress, memoryReadDelegate(dmaSourceAddress));
+                    WriteVram(dmaDestinationAddress, axiEMem.ReadMemory(dmaSourceAddress));
                     dmaDestinationAddress++;
                     dmaSourceAddress++;
 
@@ -358,7 +360,10 @@ namespace Essgee.Emulation.Video.Nintendo
             while (--dmaTransferByteLength >= 0)
             {
                 if ((dmaSourceAddress >= 0x0000 && dmaSourceAddress <= 0x7FFF) || (dmaSourceAddress >= 0xA000 && dmaSourceAddress <= 0xDFFF))
-                    WriteVram(dmaDestinationAddress, memoryReadDelegate(dmaSourceAddress));
+                { 
+                    //WriteVram(dmaDestinationAddress, memoryReadDelegate(dmaSourceAddress));
+                    WriteVram(dmaDestinationAddress, axiEMem.ReadMemory(dmaSourceAddress));
+                }
 
                 dmaDestinationAddress++;
                 dmaSourceAddress++;

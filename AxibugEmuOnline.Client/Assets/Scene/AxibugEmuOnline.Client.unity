@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!224 &6861280 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 22457152, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
+  m_PrefabInstance: {fileID: 221009212}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &221009212
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -572,7 +577,7 @@ MonoBehaviour:
   - {fileID: 4800000, guid: 5dd9160e7dde4dd4db07347ce4780217, type: 3}
   - {fileID: 4800000, guid: fdf9f1937116ab84c97a58a4cf82fbf8, type: 3}
   IMPORTENT: {fileID: 4747871931704546037, guid: e6f56a07c0ec38946a0257a1e0b8926d, type: 3}
-  debugger: {fileID: 408101312}
+  debugger: {fileID: 6861280}
   bTestSkipWebApiToConServer: 0
   mTestSrvIP: 192.168.0.47
   bUseLocalWebApi: 0

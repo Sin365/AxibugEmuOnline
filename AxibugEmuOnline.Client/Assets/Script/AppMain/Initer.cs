@@ -18,7 +18,11 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         GameObject IMPORTENT;
 
-        public DebuggerByGUI debugger;
+        //public DebuggerByGUI debugger;
+        //public static DebuggerByGUI debugger_instance;
+
+        public Transform debugger;
+        public static Transform debugger_instance;
 
 
 #if UNITY_EDITOR
@@ -33,9 +37,10 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
             GameObject.DontDestroyOnLoad(debugger);
+            debugger_instance = debugger;
             bool UseJoyStack = false;
 
-            if (Application.platform == RuntimePlatform.Android && Application.platform != RuntimePlatform.WindowsEditor)
+            if ((Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) && Application.platform != RuntimePlatform.WindowsEditor)
             {
                 UseJoyStack = true;
             }

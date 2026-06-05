@@ -535,7 +535,7 @@
             byte result = 0;
             if (address >= 0 && address <= 0xffff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             return result;
         }
@@ -553,7 +553,7 @@
             byte result = 0;
             if (address >= 0 && address <= 0xefff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0xf000 && address <= 0xffff)
             {

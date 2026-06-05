@@ -53,7 +53,7 @@ namespace AxibugEmuOnline.Client
         {
             var res = base.OnExitItem();
             if (res) CommandDispatcher.Instance.UnRegistController(this);
-
+            SearchKey = null;
             return false;
         }
 
