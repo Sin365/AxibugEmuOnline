@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Client
         /// <summary> 开关调试HUB </summary>
         public DebugHubManager debugHub { get; private set; }
 
+        public DisplaySettings displaySettings { get; private set; }
         public AppSettings()
         {
             BgColor = new BgColorSettings();
@@ -22,6 +23,8 @@ namespace AxibugEmuOnline.Client
             ScreenScaler = new ScreenScaler();
             KeyMapper = new KeyMapperSetting();
             debugHub = new DebugHubManager();
+            displaySettings = new DisplaySettings();
+            displaySettings.ApplyResolution();//初始化时就设置分辨率
         }
     }
 }
