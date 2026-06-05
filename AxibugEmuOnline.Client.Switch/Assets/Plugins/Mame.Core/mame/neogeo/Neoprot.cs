@@ -387,12 +387,13 @@ namespace MAME.Core
                 else if (offset == 0xbfff8 && (extra_ram[0x1ff8] * 0x100 + extra_ram[0x1ff9] != data))
                 {
                     //Array.Copy(Memory.mainrom, ((data & 1) != 0) ? 0x810000 : 0x710000, Memory.mainrom, 0x10000, 0xcffff);
+                    AxiArray.Copy(Memory.mainrom, ((data & 1) != 0) ? 0x810000 : 0x710000, Memory.mainrom, 0x10000, 0xcffff);
 
-                    //TODO 验证拷贝可靠性
-                    byte* source = Memory.mainrom + ((data & 1) != 0 ? 0x810000 : 0x710000);
-                    byte* destination = Memory.mainrom + 0x10000;
-                    int length = 0xcffff; // 注意：这个长度是否正确取决于你的实际需求
-                    Buffer.MemoryCopy(source, destination, length, length);
+                    ////TODO 验证拷贝可靠性
+                    //byte* source = Memory.mainrom + ((data & 1) != 0 ? 0x810000 : 0x710000);
+                    //byte* destination = Memory.mainrom + 0x10000;
+                    //int length = 0xcffff; // 注意：这个长度是否正确取决于你的实际需求
+                    //Buffer.MemoryCopy(source, destination, length, length);
                 }
                 extra_ram[(offset - 0xbe000) & 0x1fff] = (byte)data;
             }
@@ -411,12 +412,13 @@ namespace MAME.Core
                 else if (offset == 0xbfff8 && (extra_ram[0x1ff8] * 0x100 + extra_ram[0x1ff9] != data))
                 {
                     //Array.Copy(Memory.mainrom, ((data & 1) != 0) ? 0x810000 : 0x710000, Memory.mainrom, 0x10000, 0xcffff);
+                    AxiArray.Copy(Memory.mainrom, ((data & 1) != 0) ? 0x810000 : 0x710000, Memory.mainrom, 0x10000, 0xcffff);
 
-                    //TODO 验证拷贝可靠性
-                    byte* source = Memory.mainrom + ((data & 1) != 0 ? 0x810000 : 0x710000);
-                    byte* destination = Memory.mainrom + 0x10000;
-                    int length = 0xcffff; // 注意：这个长度是否正确取决于你的实际需求
-                    Buffer.MemoryCopy(source, destination, length, length);
+                    ////TODO 验证拷贝可靠性
+                    //byte* source = Memory.mainrom + ((data & 1) != 0 ? 0x810000 : 0x710000);
+                    //byte* destination = Memory.mainrom + 0x10000;
+                    //int length = 0xcffff; // 注意：这个长度是否正确取决于你的实际需求
+                    //Buffer.MemoryCopy(source, destination, length, length);
 
                 }
                 extra_ram[(offset - 0xbe000) & 0x1fff] = (byte)(data >> 8);

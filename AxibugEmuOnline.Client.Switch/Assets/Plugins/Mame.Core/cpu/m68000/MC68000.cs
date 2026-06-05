@@ -251,12 +251,40 @@ namespace cpu.m68000
 
         public Action[] Opcodes = new Action[0x10000];
         public ushort op;
+        public AxiDecodedInsn axicache_Insn;
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct AxiDecodedInsn
+        {
+            public int eaMode;
+            public int eaReg;
+
+            public int EACyclesBW_mode_reg;
+            //public ushort opcode;
+            //public int baseCycles;
+            //public int eaCycles;
+            //public byte size;       // 1/2/4
+            //public byte handlerId; // 函数索引
+        }
 
         public void Step()
         {
             //EmuLogger.Log(Disassemble(PC));
 
-            op = (ushort)ReadOpWord(PC); PC += 2;
+            //op = (ushort)ReadOpWord(PC);
+            //赋值op和预算结果
+            ushort tempop = (ushort)ReadOpWord(PC);
+            if (tempop != op)
+            {
+                op = tempop;
+                axicache_Insn.eaMode = (op >> 3) & 7;
+                axicache_Insn.eaReg = (op >> 0) & 7;
+                //axicache_Insn.EACyclesBW_mode_reg = EACyclesBW[axicache_Insn.eaMode, axicache_Insn.eaReg];
+                axicache_Insn.EACyclesBW_mode_reg = EACyclesBW[(axicache_Insn.eaMode << 3) | axicache_Insn.eaReg];
+            }
+            //赋值op和预算结果 结束
+
+            PC += 2;
             Opcodes[op]();
             //DoOpCode(op);
         }
@@ -291,6 +319,7 @@ namespace cpu.m68000
         //    return cycles;
         //}
 
+
         //手动内联
         public override int ExecuteCycles(int cycles)
         {
@@ -304,7 +333,26 @@ namespace cpu.m68000
                 {
                     int prevCycles = pendingCycles;
                     PPC = PC;
-                    op = (ushort)ReadOpWord(PC); PC += 2;
+                    //op = (ushort)ReadOpWord(PC);
+                    //赋值op和预算结果
+                    ushort tempop = (ushort)ReadOpWord(PC);
+                    if (tempop != op)
+                    {
+                        op = tempop;
+                        axicache_Insn.eaMode = (op >> 3) & 7;
+                        axicache_Insn.eaReg = (op >> 0) & 7;
+                        axicache_Insn.EACyclesBW_mode_reg = EACyclesBW[(axicache_Insn.eaMode << 3) | axicache_Insn.eaReg];
+                    }
+//#if DEBUG
+//                    else
+//                    {
+//                        Mame.opskip++;
+//                    }
+//                    Mame.opcount++;
+//#endif
+                    //赋值op和预算结果 结束
+
+                    PC += 2;
                     Opcodes[op]();
                     //DoOpCode(op);
 

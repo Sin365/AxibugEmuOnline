@@ -141,7 +141,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             return result;
         }
@@ -150,7 +150,7 @@ namespace MAME.Core
             byte result = 0;
             if (address <= 0x7fff)
             {
-                result = *Memory.audiorom;
+                result = *(Memory.audiorom + address);
             }
             else if (address >= 0xc000 && address <= 0xc7ff)
             {

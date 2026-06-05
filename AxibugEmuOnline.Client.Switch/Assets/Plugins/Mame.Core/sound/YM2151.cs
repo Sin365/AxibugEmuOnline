@@ -1162,7 +1162,7 @@ namespace MAME.Core
 
         const Int32 const13_x_2_0x100 = 13 * 2 * 0x100;
         //手动内联  -->//chan_calc高频调用 单次Update 5467次 左右，下级堆栈volume_calc 20000+次 op_calc 10000+次
-        unsafe static void chan_calc(YM2151Operator* PSGoper, int* chanout, int* imem, int chan)
+        unsafe static void chan_calc(YM2151Operator* PSGoper, int[] chanout, int* imem, int chan)
         {
             int chan_x4 = (chan * 4);
             int chan_x4_add1 = (chan_x4 + 1);
@@ -1361,7 +1361,7 @@ namespace MAME.Core
         //    PSG.oper[chan * 4].mem_value = chanout[11];//mem;
         //}
 
-        unsafe static void chan7_calc(YM2151Operator* PSGoper, int* chanout, int* imem)
+        unsafe static void chan7_calc(YM2151Operator* PSGoper, int[] chanout, int* imem)
         {
             uint env;
             uint AM = 0;
@@ -1616,7 +1616,7 @@ namespace MAME.Core
         //        } while (i != 0);
         //    }
         //}
-        unsafe static void advance(YM2151Operator* PSGoper, uint* PSGfreq)
+        unsafe static void advance(YM2151Operator* PSGoper, uint[] PSGfreq)
         {
             uint i;
             int a, p;
@@ -1929,18 +1929,18 @@ namespace MAME.Core
         static int run_update_one_Index;
         public unsafe static void ym2151_update_one(int offset, int length)
         {
-            fixed (uint* PSGpanPtr = &PSG.pan[0])
-            fixed (uint* PSGfreqPtr = &PSG.freq[0])
+            //fixed (uint* PSGpanPtr = &PSG.pan[0])
+            //fixed (uint* PSGfreqPtr = &PSG.freq[0])
             fixed (YM2151Operator* PSGoperPtr = &PSG.oper[0])
-            fixed (int* chanoutPtr = &chanout[0])
+            //fixed (int* chanoutPtr = &chanout[0])
             //fixed (int* streamoutput0Ptr = &Sound.ym2151stream.streamoutput_Ptrs[0][0])
             //fixed (int* streamoutput1Ptr = &Sound.ym2151stream.streamoutput_Ptrs[0][1])
             fixed (int* imemPtr = &imem[0])
             {
                 YM2151Operator* PSGoper = PSGoperPtr;
-                uint* PSGpan = PSGpanPtr;
-                uint* PSGfreq = PSGfreqPtr;
-                int* chanout = chanoutPtr;
+                //uint* PSGpan = PSGpanPtr;
+                //uint* PSGfreq = PSGfreqPtr;
+                //int* chanout = chanoutPtr;
                 //int* streamoutput0 = streamoutput0Ptr;
                 //int* streamoutput1 = streamoutput1Ptr;
                 int* streamoutput0 = &Sound.ym2151stream.streamoutput_Ptrs[0][0];
@@ -2011,22 +2011,22 @@ namespace MAME.Core
                     chan_calc(PSGoper, chanout, imem, 6);
                     chan7_calc(PSGoper, chanout, imem);
 
-                    outl = (int)(chanout[0] & PSGpan[0]);
-                    outr = (int)(chanout[0] & PSGpan[1]);
-                    outl += (int)(chanout[1] & PSGpan[2]);
-                    outr += (int)(chanout[1] & PSGpan[3]);
-                    outl += (int)(chanout[2] & PSGpan[4]);
-                    outr += (int)(chanout[2] & PSGpan[5]);
-                    outl += (int)(chanout[3] & PSGpan[6]);
-                    outr += (int)(chanout[3] & PSGpan[7]);
-                    outl += (int)(chanout[4] & PSGpan[8]);
-                    outr += (int)(chanout[4] & PSGpan[9]);
-                    outl += (int)(chanout[5] & PSGpan[10]);
-                    outr += (int)(chanout[5] & PSGpan[11]);
-                    outl += (int)(chanout[6] & PSGpan[12]);
-                    outr += (int)(chanout[6] & PSGpan[13]);
-                    outl += (int)(chanout[7] & PSGpan[14]);
-                    outr += (int)(chanout[7] & PSGpan[15]);
+                    outl = (int)(chanout[0] & PSG.pan[0]);
+                    outr = (int)(chanout[0] & PSG.pan[1]);
+                    outl += (int)(chanout[1] & PSG.pan[2]);
+                    outr += (int)(chanout[1] & PSG.pan[3]);
+                    outl += (int)(chanout[2] & PSG.pan[4]);
+                    outr += (int)(chanout[2] & PSG.pan[5]);
+                    outl += (int)(chanout[3] & PSG.pan[6]);
+                    outr += (int)(chanout[3] & PSG.pan[7]);
+                    outl += (int)(chanout[4] & PSG.pan[8]);
+                    outr += (int)(chanout[4] & PSG.pan[9]);
+                    outl += (int)(chanout[5] & PSG.pan[10]);
+                    outr += (int)(chanout[5] & PSG.pan[11]);
+                    outl += (int)(chanout[6] & PSG.pan[12]);
+                    outr += (int)(chanout[6] & PSG.pan[13]);
+                    outl += (int)(chanout[7] & PSG.pan[14]);
+                    outr += (int)(chanout[7] & PSG.pan[15]);
                     if (outl > 32767)
                     {
                         outl = 32767;
@@ -2045,7 +2045,7 @@ namespace MAME.Core
                     }
                     streamoutput0[offset + i] = outl;
                     streamoutput1[offset + i] = outr;
-                    advance(PSGoper, PSGfreq);
+                    advance(PSGoper, PSG.freq);
                 }
             }
         }
@@ -2124,7 +2124,7 @@ namespace MAME.Core
             ym2151_write_reg(PSG.lastreg0, data);
         }
 
-        unsafe static void set_value1(int* chanout, YM2151Operator* PSGoper, int op1)
+        unsafe static void set_value1(int[] chanout, YM2151Operator* PSGoper, int op1)
         {
             if (iconnect[op1] == 12)
             {
@@ -2146,7 +2146,7 @@ namespace MAME.Core
         //        chanout[iconnect[op1]] = PSG.oper[op1].fb_out_prev;
         //    }
         //}
-        unsafe static void set_value2(int* chanout, int op1, int i)
+        unsafe static void set_value2(int[] chanout, int op1, int i)
         {
             if (iconnect[op1] == 12)
             {
@@ -2169,7 +2169,7 @@ namespace MAME.Core
         //        chanout[iconnect[op1]] += i;
         //    }
         //}
-        unsafe static void set_mem(YM2151Operator* PSGoper, int* chanout, int* imem, int op1)
+        unsafe static void set_mem(YM2151Operator* PSGoper, int[] chanout, int* imem, int op1)
         {
             if (imem[op1] == 8 || imem[op1] == 10 || imem[op1] == 11)
             {

@@ -1,16 +1,15 @@
-﻿using Essgee.Emulation.Cartridges;
-using Essgee.Emulation.Video;
-using System;
-using UnityEngine.UIElements;
+﻿using System;
 
 namespace Essgee.Emulation.CPU
 {
     public class SM83CGB : SM83
     {
         // TODO: better way of implementing this?
-        public bool IsDoubleSpeed { get; private set; }
+        //public bool IsDoubleSpeed { get; private set; }
+        public bool IsDoubleSpeed;
 
-        public SM83CGB(MemoryReadDelegate memoryRead, MemoryWriteDelegate memoryWrite) : base(memoryRead, memoryWrite) { }
+        //public SM83CGB(MemoryReadDelegate memoryRead, MemoryWriteDelegate memoryWrite) : base(memoryRead, memoryWrite) { }
+        public SM83CGB(IAxiEssgeeMemIO memio) : base(memio) { }
 
         #region AxiState
 
@@ -36,7 +35,8 @@ namespace Essgee.Emulation.CPU
             }
             else
             {
-                if ((memoryReadDelegate(0xFF0F) & memoryReadDelegate(0xFFFF) & 0x1F) != 0)
+                //if ((memoryReadDelegate(0xFF0F) & memoryReadDelegate(0xFFFF) & 0x1F) != 0)
+                if ((axiEMem.ReadMemory(0xFF0F) & axiEMem.ReadMemory(0xFFFF) & 0x1F) != 0)
                     currentCycles += 8;
                 else
                     halt = true;
@@ -48,7 +48,8 @@ namespace Essgee.Emulation.CPU
             pc++;
 
             // Perform speed switch; get IO register value
-            var key1 = memoryReadDelegate(0xFF4D);
+            //var key1 = memoryReadDelegate(0xFF4D);
+            var key1 = axiEMem.ReadMemory(0xFF4D);
 
             // Is speed switch pending?
             if ((key1 & 0b1) != 0)
@@ -70,7 +71,8 @@ namespace Essgee.Emulation.CPU
                 }
 
                 // Write register value
-                memoryWriteDelegate(0xFF4D, key1);
+                //memoryWriteDelegate(0xFF4D, key1);
+                axiEMem.WriteMemory(0xFF4D, key1);
             }
         }
     }

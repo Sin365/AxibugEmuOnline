@@ -220,7 +220,7 @@ namespace Essgee.Emulation.Video
         [StateRequired]
         protected int currentScanline;
 
-        protected bool isDisplayBlanked => !IsBitSet(registers[0x01], 6);
+        protected bool isDisplayBlanked => !IsBitSet(registers[0x01], 6);//(!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/
 
         protected bool is16kVRAMEnabled => IsBitSet(registers[0x01], 7);
 
@@ -663,7 +663,7 @@ namespace Essgee.Emulation.Video
                     /* Fetch color index for current pixel (bit clear means background, bit set means foreground color) */
                     byte c = colorIndicesBackgroundForeground[((pixelLineData >> (7 - pixel)) & 0x01)];
                     /* Color index 0 is transparent, use background color */
-                    if (c == 0 || isDisplayBlanked) c = backgroundColor;
+                    if (c == 0 || (!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/) c = backgroundColor;
 
                     /* Record screen usage, write to framebuffer */
                     int x = pixelActiveDisplay + (column * 8) + pixel;
@@ -711,7 +711,7 @@ namespace Essgee.Emulation.Video
                     /* Fetch color index for current pixel (bit clear means background, bit set means foreground color) */
                     byte c = colorIndicesBackgroundForeground[((pixelLineData >> (7 - pixel)) & 0x01)];
                     /* Color index 0 is transparent, use background color */
-                    if (c == 0 || isDisplayBlanked) c = backgroundColor;
+                    if (c == 0 || (!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/) c = backgroundColor;
 
                     /* Record screen usage, write to framebuffer */
                     int x = pixelActiveDisplay + (column * 8) + pixel;
@@ -751,7 +751,7 @@ namespace Essgee.Emulation.Video
                     byte c = (byte)((patternData >> (4 - block)) & 0x0F);
 
                     /* Color index 0 is transparent, use background color */
-                    if (c == 0 || isDisplayBlanked) c = backgroundColor;
+                    if (c == 0 || (!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/) c = backgroundColor;
 
                     for (int pixel = 0; pixel < 4; pixel++)
                     {
@@ -801,7 +801,7 @@ namespace Essgee.Emulation.Video
                 for (int pixel = 0; pixel < 6; pixel++)
                 {
                     /* Fetch color index for current pixel (bit clear means background, bit set means text color) */
-                    byte c = (isDisplayBlanked ? backgroundColor : colorIndicesBackgroundForeground[((pixelLineData >> (7 - pixel)) & 0x01)]);
+                    byte c = ((!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/ ? backgroundColor : colorIndicesBackgroundForeground[((pixelLineData >> (7 - pixel)) & 0x01)]);
 
                     /* Record screen usage, write to framebuffer */
                     int x = pixelActiveDisplay + 8 + (column * 6) + pixel;
@@ -905,7 +905,7 @@ namespace Essgee.Emulation.Video
             {
                 if (sprite.Number == -1) continue;
 
-                if (!isDisplayBlanked)
+                if (!(!((registers[0x01] & (1 << 6)) != 0))/*手动内联*//*isDisplayBlanked*/)
                 {
                     int yCoordinate = sprite.Y;
                     int xCoordinate = sprite.X;

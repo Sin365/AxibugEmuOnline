@@ -424,6 +424,12 @@ namespace MAME.Core
             GetObjectPtr(srcObj, ref handle, out intptr);
             ptr = (cpu.m68000.Register*)intptr;
         }
+        public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref FM.ADPCM_CH* ptr)
+        {
+            IntPtr intptr;
+            GetObjectPtr(srcObj, ref handle, out intptr);
+            ptr = (FM.ADPCM_CH*)intptr;
+        }
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref uint* ptr)
         {
             IntPtr intptr;
@@ -501,8 +507,9 @@ namespace MAME.Core
         public static void Write(this System.IO.BinaryWriter bw, byte* bufferPtr, int offset, int count)
         {
             int singlesize = sizeof(byte);
-            long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
+            int totalBytesToCopy = count * singlesize;
+            //Buffer.MemoryCopy(&bufferPtr[offset], TempBuffer, totalBytesToCopy, totalBytesToCopy);
+            AxiArray.Copy(bufferPtr + offset, 0, TempBuffer, 0, totalBytesToCopy);
             bw.Write(TempBuffer_src, 0, count);
         }
         //public static void Write(this FileStream fs, byte* bufferPtr, int offset, int count)
@@ -522,38 +529,145 @@ namespace MAME.Core
 
     public unsafe static class AxiArray
     {
+#if UNITY_5_3_OR_NEWER //僅Unity使用
+        #region Copy（泛型・最通用）
 
+        public static void Copy<T>(T* src, T* dst, int count)
+            where T : unmanaged
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(
+                dst,
+                src,
+                count * sizeof(T)
+            );
+        }
+
+        public static void Copy<T>(T* src, int srcIndex, T* dst, int dstIndex, int count)
+            where T : unmanaged
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(
+                dst + dstIndex,
+                src + srcIndex,
+                count * sizeof(T)
+            );
+        }
+
+        #endregion
+
+        #region Copy（byte / ushort 明確版本）
+
+        public static void Copy(byte* src, byte* dst, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(dst, src, count);
+        }
+
+        public static void Copy(byte* src, int srcIndex, byte* dst, int dstIndex, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(
+                dst + dstIndex,
+                src + srcIndex,
+                count
+            );
+        }
+
+        public static void Copy(ushort* src, ushort* dst, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(
+                dst,
+                src,
+                count * sizeof(ushort)
+            );
+        }
+
+        public static void Copy(ushort* src, int srcIndex, ushort* dst, int dstIndex, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemCpy(
+                dst + dstIndex,
+                src + srcIndex,
+                count * sizeof(ushort)
+            );
+        }
+
+        #endregion
+
+        #region Clear（極速・主機安全）
+
+        public static void Clear<T>(T* data, int count)
+            where T : unmanaged
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(data, count * sizeof(T));
+        }
+
+        public static void Clear<T>(T* data, int index, int count)
+            where T : unmanaged
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(
+                data + index,
+                count * sizeof(T)
+            );
+        }
+
+        public static void Clear(byte* data, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(data, count);
+        }
+
+        public static void Clear(byte* data, int index, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(data + index, count);
+        }
+
+        public static void Clear(ushort* data, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(data, count * sizeof(ushort));
+        }
+
+        public static void Clear(ushort* data, int index, int count)
+        {
+            Unity.Collections.LowLevel.Unsafe.UnsafeUtility.MemClear(
+                data + index,
+                count * sizeof(ushort)
+            );
+        }
+
+        #endregion
+#else
         public static void Copy(byte* src, int srcindex, byte* target, int targetindex, int count)
         {
             int singlesize = sizeof(byte);
             long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&src[srcindex], &target[targetindex], totalBytesToCopy, totalBytesToCopy);
+            //Buffer.MemoryCopy(&src[srcindex], &target[targetindex], totalBytesToCopy, totalBytesToCopy);
+            Buffer.MemoryCopy(src + srcindex, target + targetindex, totalBytesToCopy, totalBytesToCopy);
         }
         public static void Copy(short* src, int srcindex, short* target, int targetindex, int count)
         {
             int singlesize = sizeof(short);
             long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&src[srcindex], &target[targetindex], totalBytesToCopy, totalBytesToCopy);
+            //Buffer.MemoryCopy(&src[srcindex], &target[targetindex], totalBytesToCopy, totalBytesToCopy);
+            Buffer.MemoryCopy(src + srcindex, target + targetindex, totalBytesToCopy, totalBytesToCopy);
         }
         public static void Copy(ushort* src, int srcindex, ushort* target, int targetindex, int count)
         {
             int singlesize = sizeof(ushort);
             long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&src[srcindex], &target[targetindex], totalBytesToCopy, totalBytesToCopy);
+            //Buffer.MemoryCopy(&src[srcindex], &target[targetindex], totalBytesToCopy, totalBytesToCopy);
+            Buffer.MemoryCopy(src + srcindex, target + targetindex, totalBytesToCopy, totalBytesToCopy);
         }
 
         public static void Copy(byte* src, byte* target, int index, int count)
         {
             int singlesize = sizeof(byte);
             long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&src[index], &target[index], totalBytesToCopy, totalBytesToCopy);
+            //Buffer.MemoryCopy(&src[index], &target[index], totalBytesToCopy, totalBytesToCopy);
+            Buffer.MemoryCopy(src + index, target + index, totalBytesToCopy, totalBytesToCopy);
         }
 
         public static void Copy(ushort* src, ushort* target, int index, int count)
         {
             int singlesize = sizeof(ushort);
             long totalBytesToCopy = count * singlesize;
-            Buffer.MemoryCopy(&src[index], &target[index], totalBytesToCopy, totalBytesToCopy);
+            //Buffer.MemoryCopy(&src[index], &target[index], totalBytesToCopy, totalBytesToCopy);
+            Buffer.MemoryCopy(src + index, target + index, totalBytesToCopy, totalBytesToCopy);
         }
         public static void Copy(ushort* src, ushort* target, int count)
         {
@@ -577,6 +691,7 @@ namespace MAME.Core
             for (int i = index; i < lenght; i++, index++)
                 data[index] = 0;
         }
+#endif
     }
 
 }

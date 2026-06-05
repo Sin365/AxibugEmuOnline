@@ -235,8 +235,12 @@ namespace cpu.m68000
         {
             // Move register to memory
             int size = (op >> 6) & 1;
-            int dstMode = (op >> 3) & 7;
-            int dstReg = (op >> 0) & 7;
+            //int dstMode = (op >> 3) & 7;
+            //int dstReg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int dstMode = axicache_Insn.eaMode;
+            int dstReg = axicache_Insn.eaReg;
 
             ushort registers = (ushort)ReadOpWord(PC); PC += 2;
             int address = ReadAddress(dstMode, dstReg);
@@ -370,8 +374,13 @@ namespace cpu.m68000
         {
             // Move memory to register
             int size = (op >> 6) & 1;
-            int srcMode = (op >> 3) & 7;
-            int srcReg = (op >> 0) & 7;
+            //int srcMode = (op >> 3) & 7;
+            //int srcReg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int srcMode = axicache_Insn.eaMode;
+            int srcReg = axicache_Insn.eaReg;
+
 
             ushort registers = (ushort)ReadOpWord(PC); PC += 2;
             int address = ReadAddress(srcMode, srcReg);
@@ -481,9 +490,15 @@ namespace cpu.m68000
 
         void LEA()
         {
-            int mode = (op >> 3) & 7;
-            int sReg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int sReg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int sReg = axicache_Insn.eaReg;
+
             int dReg = (op >> 9) & 7;
+
 
             (A + dReg)->u32 = (uint)ReadAddress(mode, sReg);
             switch (mode)
@@ -507,15 +522,20 @@ namespace cpu.m68000
         void CLR()
         {
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             switch (size)
             {
-                case 0: WriteValueB(mode, reg, 0); pendingCycles -= mode == 0 ? 4 : 8 + EACyclesBW[mode, reg]; break;
+                case 0: WriteValueB(mode, reg, 0); pendingCycles -= mode == 0 ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; break;
                 case 1:
                     WriteValueW(mode, reg, 0);
-                    pendingCycles -= mode == 0 ? 4 : 8 + EACyclesBW[mode, reg]; break;
+                    pendingCycles -= mode == 0 ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; break;
                 case 2: WriteValueL(mode, reg, 0); pendingCycles -= mode == 0 ? 6 : 12 + EACyclesL[mode, reg]; break;
             }
 
@@ -577,8 +597,13 @@ namespace cpu.m68000
 
         void PEA()
         {
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
             int ea = ReadAddress(mode, reg);
 
             Register* ptrA7 = &A[7];

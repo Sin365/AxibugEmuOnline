@@ -304,17 +304,20 @@ namespace MAME.Core
         }
         public static void palette_entry_set_color1(int index, uint rgb)
         {
-            if (index >= numcolors || entry_color[index] == rgb)
+            //if (index >= numcolors || entry_color[index] == rgb)
+            if (index >= numcolors || *(entry_color + index) == rgb)
             {
                 return;
             }
             if (index % 0x10 == 0x0f && rgb == 0)
             {
-                entry_color[index] = trans_uint;
+                //entry_color[index] = trans_uint;
+                *(entry_color + index) = trans_uint;
             }
             else
             {
-                entry_color[index] = 0xff000000 | rgb;
+                //entry_color[index] = 0xff000000 | rgb;
+                *(entry_color + index) = 0xff000000 | rgb;
             }
         }
         public static void palette_entry_set_color2(int index, uint rgb)
@@ -346,6 +349,8 @@ namespace MAME.Core
                 //update_adjusted_color(palette, groupnum, index);
             }
         }
+
+        public const uint make_rgb_0_0_0 = 0x00000000;
         public static uint make_rgb(int r, int g, int b)
         {
             //return ((((uint)(r) & 0xff) << 16) | (((uint)(g) & 0xff) << 8) | ((uint)(b) & 0xff));

@@ -6,8 +6,11 @@ namespace cpu.m68000
     {
         unsafe void MOVEtSR()
         {
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
             if (s == false)
             {
                 //throw new Exception("Write to SR when not in supervisor mode. supposed to trap or something...");
@@ -18,10 +21,13 @@ namespace cpu.m68000
                 SR = ReadValueW(mode, reg);
             }
             //pendingCycles -= 12 + EACyclesBW[mode, reg];
-            fixed (int* EACyclesBW_mode = &EACyclesBW[mode,0])
-            {
-                pendingCycles -= 12 + EACyclesBW_mode[reg];
-            }
+
+            //fixed (int* EACyclesBW_mode = &EACyclesBW[mode, 0])
+            //{
+            //    pendingCycles -= 12 + EACyclesBW_mode[reg];
+            //}
+            pendingCycles -= 12 + EACyclesBW[(mode << 3) | 0];
+
         }
 
         //void MOVEtSR()
@@ -43,10 +49,13 @@ namespace cpu.m68000
 
         void MOVEfSR()
         {
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
             WriteValueW(mode, reg, (short)SR);
-            pendingCycles -= (mode == 0) ? 6 : 8 + EACyclesBW[mode, reg];
+            pendingCycles -= (mode == 0) ? 6 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -104,15 +113,18 @@ namespace cpu.m68000
 
         void MOVECCR()
         {
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
 
             /*ushort sr = (ushort)(SR & 0xFF00);
             sr |= (byte)ReadValueB(mode, reg);
             SR = (short)sr;*/
             short value = ReadValueW(mode, reg);
             CCR = value;
-            pendingCycles -= 12 + EACyclesBW[mode, reg];
+            pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;// EACyclesBW[mode, reg];
         }
 
 
