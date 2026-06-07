@@ -46,8 +46,12 @@ namespace cpu.m68000
         {
             int dstReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
-            int srcMode = (op >> 3) & 0x07;
-            int srcReg = op & 0x07;
+            //int srcMode = (op >> 3) & 0x07;
+            //int srcReg = op & 0x07;
+
+            //换成缓存不计算
+            int srcMode = axicache_Insn.eaMode;
+            int srcReg = axicache_Insn.eaReg;
 
             Register* D_ptr_dstReg = D + dstReg;
             V = false;
@@ -56,13 +60,13 @@ namespace cpu.m68000
             {
                 case 0: // Byte
                     D_ptr_dstReg->s8 &= ReadValueB(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s8 & 0x80) != 0;
                     Z = (D_ptr_dstReg->s8 == 0);
                     return;
                 case 1: // Word
                     D_ptr_dstReg->s16 &= ReadValueW(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s16 & 0x8000) != 0;
                     Z = (D_ptr_dstReg->s16 == 0);
                     return;
@@ -86,8 +90,12 @@ namespace cpu.m68000
         {
             int srcReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
-            int dstMode = (op >> 3) & 0x07;
-            int dstReg = op & 0x07;
+            //int dstMode = (op >> 3) & 0x07;
+            //int dstReg = op & 0x07;
+
+            //换成缓存不计算
+            int dstMode = axicache_Insn.eaMode;
+            int dstReg = axicache_Insn.eaReg;
 
             V = false;
             C = false;
@@ -100,7 +108,7 @@ namespace cpu.m68000
                         sbyte dest = PeekValueB(dstMode, dstReg);
                         sbyte value = (sbyte)(dest & D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -110,7 +118,7 @@ namespace cpu.m68000
                         short dest = PeekValueW(dstMode, dstReg);
                         short value = (short)(dest & D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -132,8 +140,13 @@ namespace cpu.m68000
         void ANDI() // ANDI #<data>, <ea>
         {
             int size = (op >> 6) & 0x03;
-            int dstMode = (op >> 3) & 0x07;
-            int dstReg = op & 0x07;
+            //int dstMode = (op >> 3) & 0x07;
+            //int dstReg = op & 0x07;
+
+            //换成缓存不计算
+            int dstMode = axicache_Insn.eaMode;
+            int dstReg = axicache_Insn.eaReg;
+
 
             V = false;
             C = false;
@@ -146,7 +159,7 @@ namespace cpu.m68000
                         sbyte arg = PeekValueB(dstMode, dstReg);
                         sbyte result = (sbyte)(imm & arg);
                         WriteValueB(dstMode, dstReg, result);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (result & 0x80) != 0;
                         Z = (result == 0);
                         return;
@@ -157,7 +170,7 @@ namespace cpu.m68000
                         short arg = PeekValueW(dstMode, dstReg);
                         short result = (short)(imm & arg);
                         WriteValueW(dstMode, dstReg, result);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (result & 0x8000) != 0;
                         Z = (result == 0);
                         return;
@@ -190,8 +203,13 @@ namespace cpu.m68000
         {
             int srcReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
-            int dstMode = (op >> 3) & 0x07;
-            int dstReg = op & 0x07;
+            //int dstMode = (op >> 3) & 0x07;
+            //int dstReg = op & 0x07;
+
+            //换成缓存不计算
+            int dstMode = axicache_Insn.eaMode;
+            int dstReg = axicache_Insn.eaReg;
+
 
             V = false;
             C = false;
@@ -204,7 +222,7 @@ namespace cpu.m68000
                         sbyte dest = PeekValueB(dstMode, dstReg);
                         sbyte value = (sbyte)(dest ^ D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -214,7 +232,7 @@ namespace cpu.m68000
                         short dest = PeekValueW(dstMode, dstReg);
                         short value = (short)(dest ^ D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -236,8 +254,13 @@ namespace cpu.m68000
         void EORI()
         {
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
+
 
             V = false;
             C = false;
@@ -251,7 +274,7 @@ namespace cpu.m68000
                         WriteValueB(mode, reg, value);
                         N = (value & 0x80) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -261,7 +284,7 @@ namespace cpu.m68000
                         WriteValueW(mode, reg, value);
                         N = (value & 0x8000) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -292,8 +315,13 @@ namespace cpu.m68000
         {
             int dstReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
-            int srcMode = (op >> 3) & 0x07;
-            int srcReg = op & 0x07;
+            //int srcMode = (op >> 3) & 0x07;
+            //int srcReg = op & 0x07;
+
+            //换成缓存不计算
+            int srcMode = axicache_Insn.eaMode;
+            int srcReg = axicache_Insn.eaReg;
+
 
             V = false;
             C = false;
@@ -303,13 +331,13 @@ namespace cpu.m68000
             {
                 case 0: // Byte
                     D_ptr_dstReg->s8 |= ReadValueB(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s8 & 0x80) != 0;
                     Z = (D_ptr_dstReg->s8 == 0);
                     return;
                 case 1: // Word
                     D_ptr_dstReg->s16 |= ReadValueW(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s16 & 0x8000) != 0;
                     Z = (D_ptr_dstReg->s16 == 0);
                     return;
@@ -334,8 +362,13 @@ namespace cpu.m68000
         {
             int srcReg = (op >> 9) & 0x07;
             int size = (op >> 6) & 0x03;
-            int dstMode = (op >> 3) & 0x07;
-            int dstReg = op & 0x07;
+            //int dstMode = (op >> 3) & 0x07;
+            //int dstReg = op & 0x07;
+
+            //换成缓存不计算
+            int dstMode = axicache_Insn.eaMode;
+            int dstReg = axicache_Insn.eaReg;
+
 
             V = false;
             C = false;
@@ -348,7 +381,7 @@ namespace cpu.m68000
                         sbyte dest = PeekValueB(dstMode, dstReg);
                         sbyte value = (sbyte)(dest | D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -358,7 +391,7 @@ namespace cpu.m68000
                         short dest = PeekValueW(dstMode, dstReg);
                         short value = (short)(dest | D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + EACyclesBW[dstMode, dstReg];
+                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -380,8 +413,12 @@ namespace cpu.m68000
         void ORI()
         {
             int size = (op >> 6) & 3;
-            int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            //int mode = (op >> 3) & 7;
+            //int reg = (op >> 0) & 7;
+
+            //换成缓存不计算
+            int mode = axicache_Insn.eaMode;
+            int reg = axicache_Insn.eaReg;
 
             V = false;
             C = false;
@@ -395,7 +432,7 @@ namespace cpu.m68000
                         WriteValueB(mode, reg, value);
                         N = (value & 0x80) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -405,7 +442,7 @@ namespace cpu.m68000
                         WriteValueW(mode, reg, value);
                         N = (value & 0x8000) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -447,7 +484,7 @@ namespace cpu.m68000
                         sbyte value = PeekValueB(mode, reg);
                         value = (sbyte)~value;
                         WriteValueB(mode, reg, value);
-                        pendingCycles -= (mode == 0) ? 4 : 8 + EACyclesBW[mode, reg];
+                        pendingCycles -= (mode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -457,7 +494,7 @@ namespace cpu.m68000
                         short value = PeekValueW(mode, reg);
                         value = (short)~value;
                         WriteValueW(mode, reg, value);
-                        pendingCycles -= (mode == 0) ? 4 : 8 + EACyclesBW[mode, reg];
+                        pendingCycles -= (mode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -546,7 +583,7 @@ namespace cpu.m68000
             Z = (res == 0);
             X = C = ((res & 0x8000) != 0);
             V = false;
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -621,7 +658,7 @@ namespace cpu.m68000
             //C = X = ((src & 0x10000) != 0);
             C = X = ((src & 1) != 0);
             V = false;
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -702,7 +739,7 @@ namespace cpu.m68000
             X = C = ((src & 0x8000) != 0);
             src &= 0xc000;
             V = !(src == 0 || src == 0xc000);
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -786,7 +823,7 @@ namespace cpu.m68000
             Z = (res == 0);
             V = false;
             C = X = ((src & 0x01) != 0);
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -860,7 +897,7 @@ namespace cpu.m68000
             Z = (res == 0);
             C = ((res & 0x8000) != 0);
             V = false;
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -934,7 +971,7 @@ namespace cpu.m68000
             Z = (res == 0);
             C = ((res & 0x01) != 0);
             V = false;
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -1013,7 +1050,7 @@ namespace cpu.m68000
             N = ((res & 0x8000) != 0);
             Z = (res == 0);
             V = false;
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -1093,7 +1130,7 @@ namespace cpu.m68000
             N = ((res & 0x8000) != 0);
             Z = (res == 0);
             V = false;
-            pendingCycles -= 8 + EACyclesBW[mode, reg];
+            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 

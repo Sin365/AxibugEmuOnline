@@ -130,8 +130,10 @@ namespace Essgee.Emulation.CPU
 
         public static string PrintInterrupt(SM83 cpu)
         {
-            var intFlags = (InterruptSource)cpu.memoryReadDelegate(0xFF0F);
-            var intEnable = (InterruptSource)cpu.memoryReadDelegate(0xFFFF);
+            //var intFlags = (InterruptSource)cpu.memoryReadDelegate(0xFF0F);
+            //var intEnable = (InterruptSource)cpu.memoryReadDelegate(0xFFFF);
+            var intFlags = (InterruptSource)cpu.axiEMem.ReadMemory(0xFF0F);
+            var intEnable = (InterruptSource)cpu.axiEMem.ReadMemory(0xFFFF);
 
             var intFlagsString =
                 $"{((intFlags & InterruptSource.VBlank) != 0 ? "V" : "-")}" +
@@ -160,7 +162,10 @@ namespace Essgee.Emulation.CPU
         {
             var opcode = new byte[3];
             for (int i = 0; i < opcode.Length; i++)
-                opcode[i] = address + i <= 0xFFFF ? cpu.memoryReadDelegate((ushort)(address + i)) : (byte)0;
+            { 
+                //opcode[i] = address + i <= 0xFFFF ? cpu.memoryReadDelegate((ushort)(address + i)) : (byte)0;
+                opcode[i] = address + i <= 0xFFFF ? cpu.axiEMem.ReadMemory((ushort)(address + i)) : (byte)0;
+            }
             return opcode;
         }
 

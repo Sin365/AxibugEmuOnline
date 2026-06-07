@@ -14,7 +14,7 @@ using System.Linq;
 namespace Essgee.Emulation.Machines
 {
     [MachineIndex(5)]
-    public class GameBoy : IMachine
+    public class GameBoy : IMachine, IAxiEssgeeMemIO
     {
         const double masterClock = 4194304;
         const double refreshRate = 59.727500569606;
@@ -234,8 +234,11 @@ namespace Essgee.Emulation.Machines
 
             wram = new byte[wramSize];
             hram = new byte[hramSize];
-            cpu = new SM83(ReadMemory, WriteMemory);
-            video = new DMGVideo(ReadMemory, cpu.RequestInterrupt);
+            //cpu = new SM83(ReadMemory, WriteMemory);
+            cpu = new SM83(this);
+            //video = new DMGVideo(ReadMemory, cpu.RequestInterrupt);
+            //video = new DMGVideo(this, cpu.RequestInterrupt);
+            video = new DMGVideo(this, cpu);
             audio = new DMGAudio();
 
             video.EndOfScanline += (s, e) =>
@@ -458,7 +461,7 @@ namespace Essgee.Emulation.Machines
 
                 video.Step(4);
                 audio.Step(4);
-                if(hasCartridge)
+                if (hasCartridge)
                     cartridge.Step(4);
 
                 currentMasterClockCyclesInFrame += 4;
@@ -580,7 +583,7 @@ namespace Essgee.Emulation.Machines
             //	inputsPressed |= JoypadInputs.Start;
         }
 
-        private byte ReadMemory(ushort address)
+        public byte ReadMemory(ushort address)
         {
             if (address >= 0x0000 && address <= 0x7FFF)
             {
@@ -688,7 +691,7 @@ namespace Essgee.Emulation.Machines
             }
         }
 
-        private void WriteMemory(ushort address, byte value)
+        public void WriteMemory(ushort address, byte value)
         {
             if (address >= 0x0000 && address <= 0x7FFF)
             {

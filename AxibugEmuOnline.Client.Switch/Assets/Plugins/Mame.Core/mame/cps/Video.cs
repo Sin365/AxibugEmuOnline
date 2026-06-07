@@ -311,7 +311,8 @@ namespace MAME.Core
             cps1_update_transmasks();
             for (i = 0; i < 0xc00; i++)
             {
-                Palette.palette_entry_set_color1(i, Palette.make_rgb(0, 0, 0));
+                //Palette.palette_entry_set_color1(i, Palette.make_rgb(0, 0, 0));
+                Palette.palette_entry_set_color1(i, Palette.make_rgb_0_0_0);
             }
             primasks = new uint[8];
             cps1_stars_enabled = new int[2];

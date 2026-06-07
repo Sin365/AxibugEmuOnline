@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace MAME.Core
 {
@@ -10,7 +11,26 @@ namespace MAME.Core
         public byte[] pcmbuf;
         public int pcm_size;
         public byte adpcmTL;
-        public FM.ADPCM_CH[] adpcm;
+        //public FM.ADPCM_CH[] adpcm;
+
+        #region //指针化 adpcm
+        FM.ADPCM_CH[] adpcm_src;
+        GCHandle adpcm_handle;
+        public FM.ADPCM_CH* adpcm;
+        public int adpcmLength;
+        public bool adpcm_IsNull => adpcm == null;
+        public FM.ADPCM_CH[] adpcm_set
+        {
+            set
+            {
+                adpcm_handle.ReleaseGCHandle();
+                adpcm_src = value;
+                adpcmLength = value.Length;
+                adpcm_src.GetObjectPtr(ref adpcm_handle, ref adpcm);
+            }
+        }
+        #endregion
+
         public byte[] adpcmreg;
         public byte adpcm_arrivedEndAddress;
         public static YM2610 F2610 = new YM2610();
@@ -93,7 +113,8 @@ namespace MAME.Core
             uint step;
             byte data;
             int i;
-            fixed (FM.ADPCM_CH* adpcm_c = &adpcm[c])
+            //fixed (FM.ADPCM_CH* adpcm_c = &adpcm[c])
+            FM.ADPCM_CH* adpcm_c = adpcm + c;
             {
                 adpcm_c->now_step += adpcm_c->step;
                 if (adpcm_c->now_step >= (1 << 16))
@@ -180,7 +201,8 @@ namespace MAME.Core
             FM.FM_init();
             F2610.REGS = new byte[512];
             F2610.adpcmreg = new byte[0x30];
-            F2610.adpcm = new FM.ADPCM_CH[6];
+            //F2610.adpcm = new FM.ADPCM_CH[6];
+            F2610.adpcm_set = new FM.ADPCM_CH[6];
             F2610.OPN = new FM.FM_OPN();
             F2610.OPN.type = FM.TYPE_YM2610;
             F2610.OPN.ST.clock = clock;

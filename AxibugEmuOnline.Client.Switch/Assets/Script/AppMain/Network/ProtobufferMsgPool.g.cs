@@ -20,7 +20,7 @@ namespace AxibugProtobuf
         {
 			NickName = string.Empty;
 			ChatMsg = string.Empty;
-			Date = default;
+			Date = new System.Int64();
         }
     }
 }
@@ -32,7 +32,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			Seed = default;
+			Seed = 0;
         }
     }
 }
@@ -44,7 +44,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			Seed = default;
+			Seed = 0;
         }
     }
 }
@@ -56,8 +56,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			LoginType = default;
-			DeviceType = default;
+			LoginType = (LoginType)0;
+			DeviceType = (DeviceType)0;
 			DeviceStr = string.Empty;
 			Account = string.Empty;
 			Password = string.Empty;
@@ -76,8 +76,8 @@ namespace AxibugProtobuf
 			Token = string.Empty;
 			LastLoginDate = string.Empty;
 			RegDate = string.Empty;
-			Status = default;
-			UID = default;
+			Status = (LoginResultStatus)0;
+			UID = new System.Int64();
         }
     }
 }
@@ -89,9 +89,9 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = default;
-			TokenGenDate = default;
-			Seed = default;
+			UID = new System.Int64();
+			TokenGenDate = new System.Int64();
+			Seed = new System.Int64();
         }
     }
 }
@@ -114,7 +114,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UserCount = default;
+			UserCount = 0;
 			UserList?.Clear();
         }
     }
@@ -139,7 +139,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = default;
+			UID = new System.Int64();
         }
     }
 }
@@ -151,8 +151,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = default;
-			State = default;
+			UID = new System.Int64();
+			State = 0;
         }
     }
 }
@@ -164,9 +164,9 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = default;
+			UID = new System.Int64();
 			NickName = string.Empty;
-			DeviceType = default;
+			DeviceType = (DeviceType)0;
         }
     }
 }
@@ -213,7 +213,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = default;
+			UID = new System.Int64();
 			UserInfo?.Reset();
         }
     }
@@ -249,14 +249,14 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
-			GameRomID = default;
+			RoomID = 0;
+			GameRomID = 0;
 			GameRomHash = string.Empty;
-			GamePlatformType = default;
-			HostPlayerUID = default;
-			GameState = default;
-			ObsUserCount = default;
-			ScreenProviderUID = default;
+			GamePlatformType = (RomPlatformType)0;
+			HostPlayerUID = new System.Int64();
+			GameState = (RoomGameState)0;
+			ObsUserCount = 0;
+			ScreenProviderUID = new System.Int64();
 			GamePlaySlotList?.Clear();
         }
     }
@@ -269,11 +269,11 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			PlayerUID = default;
+			PlayerUID = new System.Int64();
 			PlayerNickName = string.Empty;
-			DeviceType = default;
-			PlayerLocalJoyIdx = default;
-			PlayerLocalGamePadType = default;
+			DeviceType = (DeviceType)0;
+			PlayerLocalJoyIdx = 0;
+			PlayerLocalGamePadType = (GamePadType)0;
         }
     }
 }
@@ -285,7 +285,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UpdateType = default;
+			UpdateType = 0;
 			RoomMiniInfo?.Reset();
         }
     }
@@ -298,8 +298,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
-			FrameID = default;
+			RoomID = 0;
+			FrameID = 0;
 			RawBitmap = Google.Protobuf.ByteString.Empty;
         }
     }
@@ -312,8 +312,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			FrameID = default;
-			InputData = default;
+			FrameID = new System.UInt32();
+			InputData = new System.UInt64();
         }
     }
 }
@@ -325,10 +325,10 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			FrameID = default;
-			InputData = default;
-			ServerFrameID = default;
-			ServerForwardCount = default;
+			FrameID = new System.UInt32();
+			InputData = new System.UInt64();
+			ServerFrameID = new System.UInt32();
+			ServerForwardCount = new System.UInt32();
         }
     }
 }
@@ -340,7 +340,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			GameRomID = default;
+			GameRomID = 0;
 			GameRomHash = string.Empty;
         }
     }
@@ -365,7 +365,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
+			RoomID = 0;
         }
     }
 }
@@ -389,7 +389,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
+			RoomID = 0;
         }
     }
 }
@@ -401,7 +401,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
+			RoomID = 0;
         }
     }
 }
@@ -437,9 +437,9 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			PlayerSlotIdx = default;
-			PlayerLocalJoyIdx = default;
-			PlayerLocalGamePadType = default;
+			PlayerSlotIdx = 0;
+			PlayerLocalJoyIdx = 0;
+			PlayerLocalGamePadType = (GamePadType)0;
         }
     }
 }
@@ -462,7 +462,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			WaitStep = default;
+			WaitStep = 0;
 			LoadStateRaw = Google.Protobuf.ByteString.Empty;
         }
     }
@@ -498,10 +498,10 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			PushFrameNeedTimeUs = default;
-			LoadStateNeedTimeUs = default;
-			VideoFrameShowNeedTimeUs = default;
-			AudioFramePlayNeedTimeUs = default;
+			PushFrameNeedTimeUs = 0f;
+			LoadStateNeedTimeUs = 0f;
+			VideoFrameShowNeedTimeUs = 0f;
+			AudioFramePlayNeedTimeUs = 0f;
         }
     }
 }
@@ -513,7 +513,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
+			RoomID = 0;
         }
     }
 }
@@ -525,8 +525,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RoomID = default;
-			FrameID = default;
+			RoomID = 0;
+			FrameID = 0;
 			RawBitmap = Google.Protobuf.ByteString.Empty;
         }
     }
@@ -539,8 +539,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
-			Motion = default;
+			RomID = 0;
+			Motion = 0;
         }
     }
 }
@@ -552,9 +552,9 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
-			IsStar = default;
-			Stars = default;
+			RomID = 0;
+			IsStar = 0;
+			Stars = 0;
         }
     }
 }
@@ -566,7 +566,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
+			RomID = 0;
         }
     }
 }
@@ -578,7 +578,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
+			RomID = 0;
 			SavDataList?.Clear();
         }
     }
@@ -591,18 +591,18 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			BHadSaveData = default;
-			SavID = default;
-			Uid = default;
-			SavDataIdx = default;
-			RomID = default;
-			GamePlatformType = default;
+			BHadSaveData = false;
+			SavID = new System.Int64();
+			Uid = new System.Int64();
+			SavDataIdx = 0;
+			RomID = 0;
+			GamePlatformType = (RomPlatformType)0;
 			SavDate = string.Empty;
 			SavName = string.Empty;
 			Note = string.Empty;
 			SavImgUrl = string.Empty;
 			SavUrl = string.Empty;
-			Sequence = default;
+			Sequence = 0;
         }
     }
 }
@@ -614,8 +614,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
-			SavDataIdx = default;
+			RomID = 0;
+			SavDataIdx = 0;
         }
     }
 }
@@ -627,8 +627,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
-			SavDataIdx = default;
+			RomID = 0;
+			SavDataIdx = 0;
         }
     }
 }
@@ -640,13 +640,13 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
-			SavDataIdx = default;
+			RomID = 0;
+			SavDataIdx = 0;
 			Name = string.Empty;
 			Note = string.Empty;
 			SavImg = Google.Protobuf.ByteString.Empty;
 			StateRaw = Google.Protobuf.ByteString.Empty;
-			Sequence = default;
+			Sequence = 0;
         }
     }
 }
@@ -658,8 +658,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
-			SavDataIdx = default;
+			RomID = 0;
+			SavDataIdx = 0;
 			UploadSevInfo?.Reset();
         }
     }
@@ -672,7 +672,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			RomID = default;
+			RomID = 0;
 			SavImg = Google.Protobuf.ByteString.Empty;
         }
     }
@@ -724,8 +724,8 @@ namespace AxibugProtobuf
         public void Reset()
         {
 			KeyName = string.Empty;
-			Rows = default;
-			Cols = default;
+			Rows = 0;
+			Cols = 0;
 			Raw = Google.Protobuf.ByteString.Empty;
         }
     }
