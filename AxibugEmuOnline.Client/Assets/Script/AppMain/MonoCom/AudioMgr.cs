@@ -121,11 +121,14 @@ namespace AxibugEmuOnline.Client
         /// <param name="inputSampleRate">该通道的原始采样率</param>
         public void RegisterStream(string channelId, int? inputSampleRate, AxiAudioPull audioPullHandle)
         {
+            int sourceSampleRate = inputSampleRate.HasValue? inputSampleRate.Value: AudioSettings.outputSampleRate;
             _audioStreams = null;
             _audioStreams = new AudioStreamData(channelId,
-                inputSampleRate.HasValue ? inputSampleRate.Value : AudioSettings.outputSampleRate
+                sourceSampleRate
                 , audioPullHandle);
             ResetAudioCfg(inputSampleRate);
+
+            App.log.Info($"采样率初始化{sourceSampleRate}");
         }
 
         private void ResetAudioCfg(int? inputSampleRate)

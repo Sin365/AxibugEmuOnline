@@ -1,10 +1,10 @@
-using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client;
 using MAME.Core;
 using System;
 using UnityEngine;
 
-public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
+public class UniSoundPlayer : MonoBehaviour, ISoundPlayer , AxiAudioPull
 {
     [SerializeField]
     private AudioSource m_as;
@@ -23,6 +23,12 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
         m_as.spatialBlend = 1;
         m_as.Play();
     }
+
+    private void OnEnable()
+    {
+        App.audioMgr.RegisterStream(nameof(NesEmulator), null, this);
+    }
+
     //private void OnEnable()
     //{
     //    App.audioMgr.RegisterStream(nameof(UMAME), AudioSettings.outputSampleRate, this);
@@ -100,7 +106,8 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
         }
     }
 
-    unsafe void OnAudioFilterRead(float[] data, int channels)
+    //unsafe void OnAudioFilterRead(float[] data, int channels)
+    public unsafe void PullAudio(float[] data, int channels)
     {
         if (!UMAME.bInGame) return;
         int step = channels;
@@ -157,4 +164,5 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer /*, AxiAudioPull*/
             return;
         m_as.volume = Vol;
     }
+
 }
