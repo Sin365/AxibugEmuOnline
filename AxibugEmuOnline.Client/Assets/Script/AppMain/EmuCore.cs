@@ -76,7 +76,7 @@ namespace AxibugEmuOnline.Client
             if (IsNetPlay) //skip frame handle
             {
                 var skipFrameCount = App.roomMgr.netReplay.GetSkipFrameCount();
-                //if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
+                if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
                 for (var i = 0; i < skipFrameCount; i++)
                 {
                     if (!TryPushEmulatorFrame()) break;
@@ -125,11 +125,12 @@ namespace AxibugEmuOnline.Client
             {
                 if (App.roomMgr.netReplay.TryGetNextFrame((int)Frame, EnableRollbackNetCode ? true : false, out m_replayData, out m_frameDiff, out m_inputDiff))
                 {
+#if UNITY_EDITOR
                     if (m_inputDiff)
                     {
-                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{m_frameDiff} " +
-                            $"frame=>{m_replayData.FrameStartID} InPut=>{m_replayData.InPut}");
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame localframe:{Frame} InPut=>[{m_replayData.InPut}] remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{m_frameDiff} frame=>{m_replayData.FrameStartID} RemoteForward=>{App.roomMgr.netReplay.mRemoteForwardCount}");
                     }
+#endif
 
                     inputData = ConvertInputDataFromNet(m_replayData);
                     result = true;

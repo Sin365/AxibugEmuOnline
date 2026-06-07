@@ -91,7 +91,7 @@ public class UniKeyboard : MonoBehaviour, IKeyboard
                 {
                     ShowKeyNames += keyname + "   |";
                 }
-                Debug.Log("GetPressedKeys=>" + ShowKeyNames);
+                //Debug.Log("GetPressedKeys=>" + ShowKeyNames);
             }
 #endif
 
