@@ -163,18 +163,18 @@ namespace AxibugProtobuf {
             "EhQKEFN3aXRjaFByb0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxISCg5Y",
             "Qk9YMzYwQ29udHJvbBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNWaXRh",
             "Q29udHJvbBAKEhIKDldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3RlQ29u",
-            "dHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKoMCCg9Sb21QbGF0Zm9y",
+            "dHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKpkCCg9Sb21QbGF0Zm9y",
             "bVR5cGUSCwoHSW52YWxpZBAAEgcKA05lcxABEhEKDU1hc3Rlcl9TeXN0ZW0Q",
             "AhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVfQm95X0Nv",
             "bG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1NDXzMwMDAQBxILCgdTR18x",
             "MDAwEAgSCgoGTkVPR0VPEBQSBwoDSUdTEBUSCAoEQ1BTMRAWEggKBENQUzIQ",
             "FxIOCgpBcmNhZGVfT0xEEB4SDwoLV29uZGVyX1N3YW4QKBIVChFXb25kZXJf",
-            "U3dhbl9Db2xvchApEggKA0FsbBDnBypwCg1Sb29tR2FtZVN0YXRlEhIKDk5v",
-            "bmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1XYWl0UmF3VXBkYXRl",
-            "EAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJbk9ubGluZUdhbWUQ",
-            "BSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJlc3VsdFN0YXR1c19C",
-            "YXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVychACQgJIAWIGcHJv",
-            "dG8z"));
+            "U3dhbl9Db2xvchApEhQKEEdhbWVfQm95X0FkdmFuY2UQMxIICgNBbGwQ5wcq",
+            "cAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVTdGF0ZRAAEgwKCE9ubHlI",
+            "b3N0EAESEQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdhaXRSZWFkeRADEgkKBVBh",
+            "dXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9naW5SZXN1bHRTdGF0dXMS",
+            "IQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1bHQQABIGCgJPSxABEg4K",
+            "CkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -507,6 +507,7 @@ namespace AxibugProtobuf {
     [pbr::OriginalName("Arcade_OLD")] ArcadeOld = 30,
     [pbr::OriginalName("Wonder_Swan")] WonderSwan = 40,
     [pbr::OriginalName("Wonder_Swan_Color")] WonderSwanColor = 41,
+    [pbr::OriginalName("Game_Boy_Advance")] GameBoyAdvance = 51,
     [pbr::OriginalName("All")] All = 999,
   }
 

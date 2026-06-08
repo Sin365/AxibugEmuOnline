@@ -155,6 +155,7 @@ enum RomPlatformType
 	Arcade_OLD = 30;
 	Wonder_Swan = 40;
 	Wonder_Swan_Color = 41;
+	Game_Boy_Advance = 51;
 	All = 999;
 }
 
