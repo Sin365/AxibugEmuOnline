@@ -198,9 +198,6 @@ namespace AxiReplay
                 return 0;
             //本地队列差异高于服务器提前量的值
             int moreNum = mDiffFrameCount - mRemoteForwardCount;
-            //if (mDiffFrameCount < 0 || mDiffFrameCount > 10000)
-            //    return 0;
-
             ////游戏刚开始的一小段时间，直接追满
             //if (mCurrClientFrameIdx < 60)
             //    return moreNum;
@@ -208,32 +205,12 @@ namespace AxiReplay
             int skip = 0;
             if (mDiffFrameCount > short.MaxValue) skip = 0;
             else if (moreNum <= mRemoteForwardCount) skip = 0;
-            else if (moreNum <= mRemoteForwardCount + 2) skip = 0;
-            else if (moreNum <= mRemoteForwardCount + 5) skip = 1;
-            else if (moreNum <= mRemoteForwardCount + 6) skip = 2;
-            else if (moreNum <= mRemoteForwardCount + 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
+            else if (moreNum <= mRemoteForwardCount + 1) skip = 0;
+            else if (moreNum <= mRemoteForwardCount + 2) skip = 1;
+            else if (moreNum <= mRemoteForwardCount + 3) skip = 2;
+            else if (moreNum <= mRemoteForwardCount + 10) skip = moreNum / 2; //10帧以内，平滑跳帧数
             else skip = moreNum;//完全追上
             return skip;
-
-            //int skip = 0;
-            //if (mDiffFrameCount > short.MaxValue) skip = 0;
-            //else if (moreNum <= 1) skip = 0;
-            //else if (moreNum <= 3) skip = 2;
-            //else if (moreNum <= 6) skip = 2;
-            //else if (moreNum <= 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
-            //else skip = moreNum;//完全追上
-            //return skip;
-
-            //var frameGap = mDiffFrameCount;
-            //if (frameGap > 10000) return 0;
-            //if (frameGap <= 2) skip = 0;
-            //if (frameGap > 2 && frameGap < 6) skip = 1 + 1;
-            //else if (frameGap > 7 && frameGap < 12) skip = 2 + 1;
-            //else if (frameGap > 13 && frameGap < 20) skip = 3 + 1;
-            //else skip = frameGap - 2;
-
-
-            //return skip;
         }
     }
 }
