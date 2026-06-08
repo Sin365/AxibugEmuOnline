@@ -24,6 +24,8 @@ namespace AxibugEmuOnline.Client
         public Transform debugger;
         public static Transform debugger_instance;
 
+        public static VerScriptable versionInfo;
+
 
 #if UNITY_EDITOR
         public bool bTestSkipWebApiToConServer = false;
@@ -36,6 +38,7 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
+            versionInfo = Resources.Load<VerScriptable>("Version/VersionInfo");
             GameObject.DontDestroyOnLoad(debugger);
             debugger_instance = debugger;
             bool UseJoyStack = false;

@@ -7,8 +7,10 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-public static class AxiAutoBuild
+public static partial class AxiAutoBuild
 {
+    public static Func<string,string> CustomSetVersionName;
+    public static Func<string> CustomSetbundleVersion;
     [MenuItem("Axibug移植工具/AutoBuild/Build ALL")]
     public static void Build_Build_ALL()
     {
@@ -58,8 +60,6 @@ public static class AxiAutoBuild
     {
         AxibugNSPTools.BuildWithRepackNSP();
     }
-
-
     public static void Build_Global(BuildTarget target)
     {
         if (!EditorUtility.DisplayDialog("打包", $"确认打包{target}?", "继续", "取消"))
@@ -72,13 +72,29 @@ public static class AxiAutoBuild
                 levels.Add(scene.path);
         }
 
+
+        if (CustomSetbundleVersion != null)
+        {
+            UnityEditor.PlayerSettings.bundleVersion = CustomSetbundleVersion.Invoke();
+            Debug.Log($"UnityEditor.PlayerSettings.bundleVersion => {UnityEditor.PlayerSettings.bundleVersion}");
+        }
+
         var buildOpt = EditorUserBuildSettings.development ? BuildOptions.Development : BuildOptions.None;
         if (EditorUserBuildSettings.buildWithDeepProfilingSupport)
             buildOpt |= BuildOptions.EnableDeepProfilingSupport;
         if (EditorUserBuildSettings.allowDebugging)
             buildOpt |= BuildOptions.AllowDebugging;
 
-        string targetName = $"{Application.productName}_{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+        string targetName;
+        if (CustomSetVersionName != null)
+        {
+            targetName = CustomSetVersionName.Invoke(Application.productName);
+        }
+        else
+        {
+            targetName = Application.productName;
+        }
+        targetName = $"{targetName}_{DateTime.Now.ToString("yyyyMMddHHmmss")}";
 
         targetName += target switch
         {
