@@ -94,7 +94,8 @@ public static partial class AxiAutoBuild
         {
             targetName = Application.productName;
         }
-        targetName = $"{targetName}_{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+        //targetName = $"{targetName}_{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+        targetName = $"{targetName}";
 
         targetName += target switch
         {
@@ -113,6 +114,7 @@ public static partial class AxiAutoBuild
             BuildTarget.iOS => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
             BuildTarget.StandaloneLinux64 => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
             BuildTarget.StandaloneWindows => "/"+ DateTime.Now.ToString("yyyyMMddHHmmss"),
+            BuildTarget.Android => "/" + DateTime.Now.ToString("yyyyMMddHHmmss"),
             _ => "",
         };
 
