@@ -216,7 +216,6 @@ public class MameControllerMapper : IControllerSetuper
             case 3: targetController = Controller3; break;
             default:
                 throw new System.Exception($"Not Allowed conIndex Range: {conIndex}");
-                break;
         }
         if (targetController.ConnectSlot.HasValue) return;
 

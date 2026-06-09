@@ -219,7 +219,8 @@ namespace Google.Protobuf
             }
             else
             {
-                if (TryParseSingleValue(field, tokenizer, out var value))
+                object value;
+                if (TryParseSingleValue(field, tokenizer, out value))
                 {
                     field.Accessor.SetValue(message, value);
                 }
