@@ -272,6 +272,7 @@ namespace AxibugEmuOnline.Server.Manager
                 _c.MinNetDelay = tempMin;
                 _c.MaxNetDelay = tempMax;
                 _c.AveNetDelay = _c.NetDelays.Average(w => w);
+                _c.NetworkFluctuation = tempMax - tempMin;
             }
         }
         #endregion

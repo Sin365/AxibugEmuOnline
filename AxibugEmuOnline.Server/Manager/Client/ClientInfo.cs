@@ -19,6 +19,7 @@ namespace AxibugEmuOnline.Server.Manager.Client
         public TimeSpan LastStartPingTime { get; set; }
         public int LastPingSeed { get; set; }
         public double AveNetDelay { get; set; }
+        public double NetworkFluctuation { get; set; }
         public double MinNetDelay { get; set; }
         public double MaxNetDelay { get; set; }
         public List<double> NetDelays { get; set; } = new List<double>();
