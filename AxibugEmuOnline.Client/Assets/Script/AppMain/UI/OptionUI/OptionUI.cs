@@ -6,6 +6,7 @@ using DG.Tweening.Plugins.Options;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace AxibugEmuOnline.Client
 {
@@ -229,6 +230,7 @@ namespace AxibugEmuOnline.Client
             {
 
                 m_bPoped = true;
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(MenuRoot);//强制刷新UGUI布局
                 Vector2 start = new Vector2(0, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                 m_popTween = DOTween.To(
@@ -255,7 +257,12 @@ namespace AxibugEmuOnline.Client
                     end,
                     0.3f
                     ).SetEase(Ease.OutCubic);
-                m_popTween.onComplete = () => m_popTween = null;
+                m_popTween.onComplete = () =>
+                {
+                    if (this.m_parent == null)//最后确保Tween结束时值一定正确
+                        MenuRoot.anchoredPosition = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
+                    m_popTween = null;
+                };
 
                 m_lastCS = CommandDispatcher.Instance.Mode;
                 CommandDispatcher.Instance.Mode = CommandListener.ScheduleType.Normal;
@@ -274,7 +281,7 @@ namespace AxibugEmuOnline.Client
                 {
                     m_child.Hide();
                 }
-
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(MenuRoot);//强制刷新UGUI布局
                 Vector2 start = new Vector2(-MenuRoot.rect.width, MenuRoot.anchoredPosition.y);
                 Vector2 end = new Vector2(0, MenuRoot.anchoredPosition.y);
 
@@ -314,6 +321,8 @@ namespace AxibugEmuOnline.Client
                     ).SetEase(Ease.OutCubic);
                 m_hideTween.onComplete = () =>
                 {
+                    if (this.m_parent == null)//最后确保Tween结束时值一定正确
+                        MenuRoot.anchoredPosition = new Vector2(0, MenuRoot.anchoredPosition.y);//确保最后精确
                     ReleaseRuntimeMenus();
                     m_runtimeMenuItems.Clear();
                     m_hideTween = null;
