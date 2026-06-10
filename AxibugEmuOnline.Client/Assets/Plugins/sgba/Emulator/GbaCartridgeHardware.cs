@@ -1,6 +1,7 @@
+using System;
 using System.IO;
 
-namespace sGBA;
+using sGBA;
 
 public class GbaCartridgeHardware
 {
@@ -22,7 +23,7 @@ public class GbaCartridgeHardware
 	private byte _rtcControl;
 	private byte[] _rtcTime = new byte[7];
 
-	private static readonly int[] RtcBytes = [0, 0, 7, 0, 1, 0, 3, 0];
+	private static readonly int[] RtcBytes = new int[]{0, 0, 7, 0, 1, 0, 3, 0};
 
 	public GbaCartridgeHardware( Gba gba )
 	{

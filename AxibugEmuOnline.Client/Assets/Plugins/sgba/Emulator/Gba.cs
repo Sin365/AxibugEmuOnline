@@ -1,4 +1,5 @@
-namespace sGBA;
+using sGBA;
+using System;
 
 public class Gba
 {

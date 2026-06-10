@@ -1,6 +1,7 @@
+using System;
 using System.IO;
 
-namespace sGBA;
+using sGBA;
 
 public static class GbaSerialize
 {
@@ -144,7 +145,7 @@ public static class GbaSerialize
 		var origR13 = cpu.Gprs[13];
 		var origR14 = cpu.Gprs[14];
 
-		PrivilegeMode[] modes = [PrivilegeMode.User, PrivilegeMode.FIQ, PrivilegeMode.IRQ, PrivilegeMode.Supervisor, PrivilegeMode.Abort, PrivilegeMode.Undefined];
+		PrivilegeMode[] modes = new PrivilegeMode[] { PrivilegeMode.User, PrivilegeMode.FIQ, PrivilegeMode.IRQ, PrivilegeMode.Supervisor, PrivilegeMode.Abort, PrivilegeMode.Undefined };
 
 		foreach ( var mode in modes )
 		{
@@ -185,7 +186,7 @@ public static class GbaSerialize
 
 	private static void ReadBankedRegs( BinaryReader r, ArmCore cpu )
 	{
-		PrivilegeMode[] modes = [PrivilegeMode.User, PrivilegeMode.FIQ, PrivilegeMode.IRQ, PrivilegeMode.Supervisor, PrivilegeMode.Abort, PrivilegeMode.Undefined];
+		PrivilegeMode[] modes = new PrivilegeMode[]{ PrivilegeMode.User, PrivilegeMode.FIQ, PrivilegeMode.IRQ, PrivilegeMode.Supervisor, PrivilegeMode.Abort, PrivilegeMode.Undefined};
 		var targetMode = cpu.PrivilegeMode;
 		var savedR13 = cpu.Gprs[13];
 		var savedR14 = cpu.Gprs[14];

@@ -1,4 +1,5 @@
-namespace sGBA;
+using sGBA;
+using System;
 
 [Flags]
 public enum LogLevel
@@ -35,8 +36,8 @@ public enum LogCategory
 
 public static class GbaLog
 {
-	private static readonly string[] CategoryNames =
-	[
+	private static readonly string[] CategoryNames = new string[]
+	{
 		"GBA",
 		"GBA Debug",
 		"GBA DMA",
@@ -50,10 +51,10 @@ public static class GbaLog
 		"GBA State",
 		"GBA Hardware",
 		"Status"
-	];
+	};
 
-	private static readonly string[] CategoryIds =
-	[
+	private static readonly string[] CategoryIds = new string[]
+	{
 		"gba",
 		"gba.debug",
 		"gba.dma",
@@ -67,7 +68,7 @@ public static class GbaLog
 		"gba.serialize",
 		"gba.hardware",
 		"status"
-	];
+	};
 
 	private static LogLevel _defaultLevels = LogLevel.Fatal | LogLevel.Error | LogLevel.Warn | LogLevel.Debug;
 	private static readonly LogLevel[] _levels = new LogLevel[(int)LogCategory.Max];

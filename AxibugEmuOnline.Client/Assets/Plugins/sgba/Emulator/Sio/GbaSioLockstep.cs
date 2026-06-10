@@ -1,4 +1,6 @@
-namespace sGBA;
+using sGBA;
+using System;
+using System.Collections.Generic;
 
 public interface ILockstepUser
 {
@@ -183,7 +185,7 @@ public sealed class GbaSioLockstepCoordinator
 		{
 			var preferences = new List<uint>[MaxGbas];
 			for ( int i = 0; i < MaxGbas; ++i )
-				preferences[i] = [];
+				preferences[i] = new List<uint>();
 
 			int seen = 0;
 			foreach ( var kv in _players )

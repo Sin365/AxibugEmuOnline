@@ -1,6 +1,6 @@
 using Sandbox.Network;
 
-namespace sGBA;
+using sGBA;
 
 public static class LobbyDataKeys
 {

@@ -1,8 +1,9 @@
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Sandbox.Rendering;
 
-namespace sGBA;
+using sGBA;
 
 public partial class GbaVideo
 {
@@ -677,7 +678,7 @@ public partial class GbaVideo
 		cmd.Attributes.Set( "OldCharBase2", new Vector2( _frameOldCharBase[slot][0], _frameOldCharBaseFirstY[slot][0] ) );
 		cmd.Attributes.Set( "OldCharBase3", new Vector2( _frameOldCharBase[slot][1], _frameOldCharBaseFirstY[slot][1] ) );
 
-		Texture[] bgTex = [_bg0Tex, _bg1Tex, _bg2Tex, _bg3Tex];
+		Texture[] bgTex = new Texture[] { _bg0Tex, _bg1Tex, _bg2Tex, _bg3Tex };
 		for ( int bg = 0; bg < 4; bg++ )
 		{
 			cmd.Attributes.Set( "BgIndex", bg );

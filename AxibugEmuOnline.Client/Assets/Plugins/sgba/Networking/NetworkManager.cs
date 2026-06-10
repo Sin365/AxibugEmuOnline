@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Sandbox.Network;
 
-namespace sGBA;
+using sGBA;
 
 public sealed partial class NetworkManager : Component, IWirelessNetwork, Component.INetworkListener
 {
@@ -53,10 +55,10 @@ public sealed partial class NetworkManager : Component, IWirelessNetwork, Compon
 	}
 	public bool CanStart => IsHost && AllReady && State == SessionState.Hosting;
 
-	private readonly Dictionary<Guid, bool> _ready = [];
+	private readonly Dictionary<Guid, bool> _ready = new Dictionary<Guid, bool>();
 
 	private readonly Connection[] _slotConns = new Connection[MaxWirelessPlayers];
-	private readonly Dictionary<Guid, int> _slotByConn = [];
+	private readonly Dictionary<Guid, int> _slotByConn = new Dictionary<Guid, int>();
 	private readonly List<SessionPlayer> _playerView = new( MaxWirelessPlayers );
 	private int _localSlot = -1;
 

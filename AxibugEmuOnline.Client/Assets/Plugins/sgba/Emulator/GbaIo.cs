@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace sGBA;
+using sGBA;
 
 public class GbaIo
 {

@@ -1,4 +1,4 @@
-namespace sGBA;
+using sGBA;
 
 public class GbaTimerController
 {
@@ -6,7 +6,7 @@ public class GbaTimerController
 	public GbaTimer[] Channels = new GbaTimer[4];
 	public long NextGlobalEvent = long.MaxValue;
 
-	private static readonly int[] PrescaleBits = [0, 6, 8, 10];
+	private static readonly int[] PrescaleBits = new int[] { 0, 6, 8, 10 };
 
 	public GbaTimerController( Gba gba )
 	{

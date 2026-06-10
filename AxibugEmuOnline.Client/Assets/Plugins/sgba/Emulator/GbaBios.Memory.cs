@@ -1,4 +1,4 @@
-namespace sGBA;
+using sGBA;
 
 public partial class GbaBios
 {

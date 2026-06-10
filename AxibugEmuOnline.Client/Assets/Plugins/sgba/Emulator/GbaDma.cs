@@ -1,10 +1,10 @@
-namespace sGBA;
+using sGBA;
 
 public class GbaDmaController
 {
-	private static readonly uint[] SrcMask = [0x07FFFFFEu, 0x0FFFFFFEu, 0x0FFFFFFEu, 0x0FFFFFFEu];
-	private static readonly uint[] DstMask = [0x07FFFFFEu, 0x07FFFFFEu, 0x07FFFFFEu, 0x0FFFFFFEu];
-	private static readonly int[] OffsetDir = [1, -1, 0, 1];
+	private static readonly uint[] SrcMask = new uint[] { 0x07FFFFFEu, 0x0FFFFFFEu, 0x0FFFFFFEu, 0x0FFFFFFEu };
+	private static readonly uint[] DstMask = new uint[]{0x07FFFFFEu, 0x07FFFFFEu, 0x07FFFFFEu, 0x0FFFFFFEu};
+	private static readonly int[] OffsetDir = new int[] { 1, -1, 0, 1 };
 
 	public Gba Gba { get; }
 	public GbaDma[] Channels = new GbaDma[4];

@@ -1,25 +1,25 @@
-using Sandbox.UI;
+//using Sandbox.UI;
 
-namespace sGBA;
+//using sGBA;
 
-public class InputHint : Panel
-{
-	private Texture _lastGlyph;
+//public class InputHint : Panel
+//{
+//	private Texture _lastGlyph;
 
-	[Parameter] public string Action { get; set; }
-	[Parameter] public InputGlyphSize GlyphSize { get; set; } = InputGlyphSize.Small;
+//	[Parameter] public string Action { get; set; }
+//	[Parameter] public InputGlyphSize GlyphSize { get; set; } = InputGlyphSize.Small;
 
-	public override void Tick()
-	{
-		if ( string.IsNullOrEmpty( Action ) )
-			return;
+//	public override void Tick()
+//	{
+//		if ( string.IsNullOrEmpty( Action ) )
+//			return;
 
-		var glyph = Input.GetGlyph( Action, GlyphSize, false );
-		if ( !glyph.IsValid() || glyph == _lastGlyph )
-			return;
+//		var glyph = Input.GetGlyph( Action, GlyphSize, false );
+//		if ( !glyph.IsValid() || glyph == _lastGlyph )
+//			return;
 
-		_lastGlyph = glyph;
-		Style.SetBackgroundImage( glyph );
-		Style.AspectRatio = (float)glyph.Width / glyph.Height;
-	}
-}
+//		_lastGlyph = glyph;
+//		Style.SetBackgroundImage( glyph );
+//		Style.AspectRatio = (float)glyph.Width / glyph.Height;
+//	}
+//}

@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
-namespace sGBA;
+using sGBA;
 
 public class GbaSavedata
 {
@@ -42,7 +43,7 @@ public class GbaSavedata
 	{
 		Gba = gba;
 		Type = SavedataType.None;
-		Data = [];
+		Data = new byte[0];
 		Command = SavedataCommand.EepromNull;
 		FlashState = FlashStateMachine.Raw;
 	}
@@ -98,7 +99,7 @@ public class GbaSavedata
 		else
 		{
 			Type = SavedataType.None;
-			Data = [];
+			Data = new byte[0];
 		}
 	}
 

@@ -1,7 +1,7 @@
 using System.IO;
 using System.IO.Compression;
 
-namespace sGBA;
+using sGBA;
 
 public enum LinkCablePacketType : byte
 {

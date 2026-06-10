@@ -1,6 +1,7 @@
+using System;
 using System.IO;
 
-namespace sGBA;
+using sGBA;
 
 public partial class GbaAudio
 {
@@ -129,13 +130,13 @@ public partial class GbaAudio
 	private int _ch4EnvDead;
 	private int _ch4EnvNextStep;
 
-	private static readonly int[] DutyTable =
-	[
+	private static readonly int[] DutyTable = new int[]
+	{
 		0, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 0, 0, 1,
 		1, 0, 0, 0, 0, 1, 1, 1,
 		0, 1, 1, 1, 1, 1, 1, 0,
-	];
+	};
 
 	public GbaAudio( Gba gba )
 	{

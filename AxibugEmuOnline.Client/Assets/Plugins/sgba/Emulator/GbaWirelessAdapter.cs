@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace sGBA;
+using sGBA;
 
 public interface IWirelessNetwork
 {

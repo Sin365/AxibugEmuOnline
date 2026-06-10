@@ -1,4 +1,5 @@
-namespace sGBA;
+using sGBA;
+using System;
 
 public class GbaMemory
 {
@@ -21,8 +22,8 @@ public class GbaMemory
 	public int[] WaitstatesSeq16 = new int[16];
 	public int[] WaitstatesSeq32 = new int[16];
 
-	private static readonly int[] RomWaitN = [4, 3, 2, 8];
-	private static readonly int[] RomWaitS = [2, 1, 4, 1, 8, 1];
+	private static readonly int[] RomWaitN = new int[]{4, 3, 2, 8};
+	private static readonly int[] RomWaitS = new int[]{ 2, 1, 4, 1, 8, 1};
 
 	public bool Prefetch;
 	public uint LastPrefetchedPc;
@@ -37,7 +38,7 @@ public class GbaMemory
 	public ushort AgbPrintGet;
 	public ushort AgbPrintPut;
 	public byte[] AgbPrintBuffer = new byte[0x10000];
-	private byte[] _agbPrintBufferBackup = [];
+	private byte[] _agbPrintBufferBackup = new byte[0];
 	private bool _agbPrintHasBackup;
 	private ushort _agbPrintProtectBackup;
 	private ushort _agbPrintRequestBackup;
@@ -65,7 +66,7 @@ public class GbaMemory
 		Oam = new byte[GbaConstants.OamSize];
 		Sram = new byte[GbaConstants.SramSize];
 		Io = new ushort[GbaConstants.IoSize / 2];
-		Rom = [];
+		Rom = new byte[0];
 		InitDefaultWaitstates();
 	}
 
@@ -108,7 +109,7 @@ public class GbaMemory
 		_agbPrintFuncBackup = 0;
 		_agbPrintInitialized = false;
 		Array.Clear( AgbPrintBuffer );
-		_agbPrintBufferBackup = [];
+		_agbPrintBufferBackup = new byte[0];
 	}
 
 	public void FlushAgbPrint()
@@ -137,10 +138,10 @@ public class GbaMemory
 
 	private void InitDefaultWaitstates()
 	{
-		int[] n16 = [0, 0, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 0];
-		int[] n32 = [0, 0, 5, 0, 0, 1, 1, 0, 7, 7, 9, 9, 13, 13, 9, 0];
-		int[] s16 = [0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 4, 4, 8, 8, 4, 0];
-		int[] s32 = [0, 0, 5, 0, 0, 1, 1, 0, 5, 5, 9, 9, 17, 17, 9, 0];
+		int[] n16 = new int[]{0, 0, 2, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 0};
+		int[] n32 = new int[]{0, 0, 5, 0, 0, 1, 1, 0, 7, 7, 9, 9, 13, 13, 9, 0};
+		int[] s16 = new int[]{0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 4, 4, 8, 8, 4, 0};
+		int[] s32 = new int[] { 0, 0, 5, 0, 0, 1, 1, 0, 5, 5, 9, 9, 17, 17, 9, 0 };
 		Array.Copy( n16, WaitstatesNonseq16, 16 );
 		Array.Copy( n32, WaitstatesNonseq32, 16 );
 		Array.Copy( s16, WaitstatesSeq16, 16 );

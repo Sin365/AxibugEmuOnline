@@ -1,4 +1,5 @@
-namespace sGBA;
+using sGBA;
+using System;
 
 public partial class GbaVideo
 {
@@ -59,7 +60,7 @@ public partial class GbaVideo
 
 	internal int _firstAffine = -1;
 	internal int _lastDrawnY = -1;
-	internal int[] _enabledAtY = [int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue];
+	internal int[] _enabledAtY = new int[] { int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue };
 	internal bool[] _wasFullyEnabled = new bool[4];
 	internal uint[] _oldCharBase = new uint[2];
 	internal int[] _oldCharBaseFirstY = new int[2];

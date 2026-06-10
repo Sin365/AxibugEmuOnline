@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace sGBA;
+using sGBA;
 
 public sealed class LinkCableSession
 {

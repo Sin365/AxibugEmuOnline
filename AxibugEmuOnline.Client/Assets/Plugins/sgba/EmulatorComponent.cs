@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Threading;
 using Sandbox.Rendering;
 
-namespace sGBA;
+using sGBA;
 
 public sealed partial class EmulatorComponent : Component
 {

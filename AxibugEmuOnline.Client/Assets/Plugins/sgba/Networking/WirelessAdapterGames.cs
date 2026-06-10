@@ -1,14 +1,15 @@
-namespace sGBA;
+using sGBA;
+using System.Collections.Generic;
 
 public static class WirelessAdapterGames
 {
-	private static readonly HashSet<string> GameCodes =
-	[
+	private static readonly HashSet<string> GameCodes = new HashSet<string>
+	{
 		"BPR", // Pokémon FireRed
 		"BPG", // Pokémon LeafGreen
 		"BPE", // Pokémon Emerald
-		// You can add more as needed through a PR, I'm too lazy to research any further
-	];
+			   // You can add more as needed through a PR, I'm too lazy to research any further
+	};
 
 	public static bool UsesWirelessAdapter( string gameCode )
 	{

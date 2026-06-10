@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using System.Threading;
 
-namespace sGBA;
+using sGBA;
 
 public sealed class WakeLatch
 {
@@ -82,7 +83,7 @@ public sealed class LinkCableHost
 {
 	public GbaSioLockstepCoordinator Coordinator { get; } = new();
 
-	private readonly List<LinkCableInstance> _instances = [];
+	private readonly List<LinkCableInstance> _instances = new List<LinkCableInstance>();
 	private readonly object _listLock = new();
 
 	public IReadOnlyList<LinkCableInstance> Instances => _instances;

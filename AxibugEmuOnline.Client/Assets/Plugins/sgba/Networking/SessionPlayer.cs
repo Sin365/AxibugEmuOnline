@@ -1,4 +1,4 @@
-namespace sGBA;
+using sGBA;
 
 public sealed class SessionPlayer
 {
