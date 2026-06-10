@@ -22,7 +22,7 @@ namespace cpu.m68000
                         WriteValueB(dstMode, dstReg, (sbyte)value);
                         //pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
                         int i = srcMode + (srcMode == 7 ? srcReg : 0);
-                        int j = srcMode + dstMode + (dstMode == 7 ? dstReg : 0);
+                        int j = dstMode + (dstMode == 7 ? dstReg : 0);
                         pendingCycles -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
                         N = (value & 0x80) != 0;
                     }
@@ -33,7 +33,7 @@ namespace cpu.m68000
                         WriteValueW(dstMode, dstReg, (short)value);
                         //pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
                         int i = srcMode + (srcMode == 7 ? srcReg : 0);
-                        int j = srcMode + dstMode + (dstMode == 7 ? dstReg : 0);
+                        int j = dstMode + (dstMode == 7 ? dstReg : 0);
                         pendingCycles -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
                         N = (value & 0x8000) != 0;
                         break;

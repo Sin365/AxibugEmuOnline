@@ -1,5 +1,4 @@
 ﻿using AxibugEmuOnline.Client;
-using AxibugEmuOnline.Client.ClientCore;
 using UnityEngine;
 public class SwitchCommon : MonoBehaviour
 {

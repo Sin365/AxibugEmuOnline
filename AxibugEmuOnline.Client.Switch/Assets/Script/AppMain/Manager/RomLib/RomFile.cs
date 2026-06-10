@@ -177,6 +177,10 @@ namespace AxibugEmuOnline.Client
         /// <summary> 在查询结果中的所在页 </summary>
         public int Page { get; private set; }
 
+        /// <summary> 游玩计数 </summary>
+        public int PlayCount => webData.playcount;
+        /// <summary> 收藏计数 </summary>
+        public int StarCount => webData.stars;
         public string Hash => webData != null ? webData.hash : string.Empty;
         /// <summary> 标记是否收藏 </summary>
         public bool Star

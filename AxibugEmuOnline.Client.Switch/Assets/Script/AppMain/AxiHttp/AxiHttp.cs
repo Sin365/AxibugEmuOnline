@@ -14,13 +14,6 @@ using System.Threading;
 
 public static class AxiHttpThread
 {
-
-#if UNITY_PSP2
-	static AutoResetEvent autoEvent = new AutoResetEvent(false);
-	static Queue<Action> qActs = new Queue<Action>();
-	static Queue<Action> qWork = new Queue<Action>();
-#endif
-
     public static void DoTask(Action act)
     {
 #if UNITY_PSP2
@@ -31,6 +24,10 @@ public static class AxiHttpThread
     }
 
 #if UNITY_PSP2
+	static AutoResetEvent autoEvent = new AutoResetEvent(false);
+	static Queue<Action> qActs = new Queue<Action>();
+	static Queue<Action> qWork = new Queue<Action>();
+
 	static Thread psvThread = new Thread(Loop);
 	static bool bSingleInit = false;
 	static void SingleInit()

@@ -371,19 +371,50 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
         rectTransform.GetLocalCorners(corners);
         Vector2 leftUpCorner = corners[1];
 
-        foreach (var proxy in children)
+        //foreach (var proxy in children)
+        //{
+        //    var localPos = leftUpCorner + proxy.AnchoredPosition;
+        //    localPos.x -= proxy.Width * 0.5f;
+        //    localPos.y -= proxy.Height * 0.5f;
+        //    localPos = transform.localToWorldMatrix.MultiplyPoint(localPos);
+        //    localPos = ViewRect.worldToLocalMatrix.MultiplyPoint(localPos);
+
+        //    Rect proxyRect = new Rect(localPos, new Vector2(proxy.Width, proxy.Height));
+
+        //    if (parentRect.Overlaps(proxyRect)) proxy.IsInViewRect = true;
+        //    else proxy.IsInViewRect = false;
+        //}
+
+        if (children.Count > 0)
         {
-            var localPos = leftUpCorner + proxy.AnchoredPosition;
-            localPos.x -= proxy.Width * 0.5f;
-            localPos.y -= proxy.Height * 0.5f;
-            localPos = transform.localToWorldMatrix.MultiplyPoint(localPos);
-            localPos = ViewRect.worldToLocalMatrix.MultiplyPoint(localPos);
+            bool LastIsShow = false;
+            bool SetDotShow = false;
+            foreach (var proxy in children)
+            {
+                if (SetDotShow)//后续的直接标记不显示
+                {
+                    proxy.IsInViewRect = false;
+                    return;
+                }
 
-            Rect proxyRect = new Rect(localPos, new Vector2(proxy.Width, proxy.Height));
+                var localPos = leftUpCorner + proxy.AnchoredPosition;
+                localPos.x -= proxy.Width * 0.5f;
+                localPos.y -= proxy.Height * 0.5f;
+                localPos = transform.localToWorldMatrix.MultiplyPoint(localPos);
+                localPos = ViewRect.worldToLocalMatrix.MultiplyPoint(localPos);
 
-            if (parentRect.Overlaps(proxyRect)) proxy.IsInViewRect = true;
-            else proxy.IsInViewRect = false;
+                Rect proxyRect = new Rect(localPos, new Vector2(proxy.Width, proxy.Height));
+
+                if (parentRect.Overlaps(proxyRect)) proxy.IsInViewRect = true;
+                else proxy.IsInViewRect = false;
+
+                if (proxy.IsInViewRect)//显示的对象
+                    LastIsShow = true;
+                else if (LastIsShow)//初次从显示区域，超出到不显示区域
+                    SetDotShow = true;//显示区域之后，第一个不显示的，从此标记后续的都直接标记不显示
+            }
         }
+
     }
 
     public bool PauseUpdateView;
