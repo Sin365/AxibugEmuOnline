@@ -39,7 +39,9 @@ namespace Essgee.Emulation
                 var fileExtension = System.IO.Path.GetExtension(fileName);
                 if (fileExtension == ".zip")
                 {
+#if UNITY_5_3_OR_NEWER
                     UnityEngine.Debug.Log("使用ZipFile.Open解压Zip:"+fileName);
+#endif
                     using (var zip = ZipFile.Open(fileName, ZipArchiveMode.Read))
                     {
                         foreach (var entry in zip.Entries)

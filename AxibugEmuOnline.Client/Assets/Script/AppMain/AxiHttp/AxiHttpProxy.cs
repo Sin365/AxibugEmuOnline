@@ -42,7 +42,7 @@ public static class AxiHttpProxy
     }
 
 
-    public static void ShowAxiHttpDebugInfo(AxiRespInfo resp)
+    public static void ShowAxiHttpDebugInfo(AxiRespInfo resp,bool bOnlyShowErr = false)
     {
 
 #if UNITY_EDITOR
@@ -75,48 +75,20 @@ public static class AxiHttpProxy
             Debug.LogError($"code->{resp.code} err->{resp.errInfo} url->{resp.url}");
         }
 #else
-		Debug.Log($"==== request url => { resp.url}");
-		Debug.Log($"code =>{resp.code}");
-		Debug.Log($"respInfo.bTimeOut =>{resp.isTimeOut}");
-		Debug.Log($"==== response ====");
+        if (bOnlyShowErr && resp.code == 200)
+            return;
+
+		Debug.Log($"==== request url => {resp.url}");
+		Debug.Log($"code =>{resp.code} bTimeOut =>{resp.isTimeOut}");
 		if (resp.downloadMode == AxiDownLoadMode.NotDownLoad)
 		{
-			Debug.Log($"body_text =>{resp.body}");
-			Debug.Log($"body_text.Length =>{resp.body.Length}");
+			Debug.Log($"= response = body_text =>{resp.body} body_text.Length =>{resp.body.Length}");
 		}
 		else
 		{
-			Debug.Log($"==== download ====");
-			Debug.Log($"respInfo.loadedLenght =>{resp.loadedlenght}");
+			Debug.Log($"= response = = download = respInfo.loadedLenght =>{resp.loadedlenght}");
 		}
 #endif
-
-        //if (resp.downloadMode == AxiDownLoadMode.DownLoadBytes)
-        //{
-        //	if (resp.bTimeOut)
-        //	{
-        //		Debug.Log($"DownLoad Timeout!");
-        //		return;
-        //	}
-        //	string downloadSavePath;
-        //	if (Application.platform == RuntimePlatform.PSP2)
-        //	{
-        //		downloadSavePath = dataAxibugPath + "/" + resp.fileName;
-        //	}
-        //	else
-        //	{
-        //		downloadSavePath = persistentDataPath + "/" + resp.fileName;
-        //	}
-        //	try
-        //	{
-        //		File.WriteAllBytes(downloadSavePath, resp.bodyRaw);
-        //		Debug.Log($"DownLoad OK");
-        //	}
-        //	catch (Exception ex)
-        //	{
-        //		Debug.Log($"DownLoad Err {ex.ToString()}");
-        //	}
-        //}
     }
 
 }

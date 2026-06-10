@@ -16,36 +16,22 @@ public class AxiHttpTest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             //for (int i = 0; i < 1000; i++)
-                StartCoroutine(DownloadFromURL("http://emu.axibug.com/UserSav/12/Nes/190/1/1.sav", "D:/1.bin", null));
+            StartCoroutine(DownloadFromURL("http://emu.axibug.com/UserSav/12/Nes/190/1/1.sav", "D:/1.bin", null));
         }
     }
 
     IEnumerator DownloadFromURL(string url, string path, Action<byte[]> callback)
     {
-
         for (int i = 0; i < 1000; i++)
         {
             AxiHttpProxy.SendDownLoadProxy request = AxiHttpProxy.GetDownLoad(url);
-
             while (!request.downloadHandler.isDone)
             {
                 Debug.Log($"下载进度：{request.downloadHandler.downLoadPr} ->{request.downloadHandler.loadedlenght}/{request.downloadHandler.needdownloadLenght}");
                 yield return null;
             }
-            AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler);
+            AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler, false);
             Debug.Log($"下载进度完毕:data.Length=>" + request.downloadHandler.data.Length);
         }
-            
-
-        //if (!request.downloadHandler.bHadErr)
-        //{
-        //    AxiIO.Directory.CreateDirectory(path);
-        //    AxiIO.File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data, false);
-        //    callback?.Invoke(request.downloadHandler.data);
-        //}
-        //else
-        //{
-        //    callback?.Invoke(null);
-        //}
     }
 }

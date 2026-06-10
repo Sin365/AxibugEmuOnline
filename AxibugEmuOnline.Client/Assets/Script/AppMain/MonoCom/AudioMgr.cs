@@ -65,7 +65,7 @@ namespace AxibugEmuOnline.Client
 
             // 设置初始音量
             SetStaticVolume(0.9f);
-            Debug.Log($"Audio System Initialized. Output Sample Rate: {_targetOutputSampleRate}Hz");
+            App.log.Info($"Audio System Initialized. Output Sample Rate: {_targetOutputSampleRate}Hz");
             LoadAudioClip();
         }
 
@@ -121,7 +121,7 @@ namespace AxibugEmuOnline.Client
         /// <param name="inputSampleRate">该通道的原始采样率</param>
         public void RegisterStream(string channelId, int? inputSampleRate, AxiAudioPull audioPullHandle)
         {
-            int sourceSampleRate = inputSampleRate.HasValue? inputSampleRate.Value: AudioSettings.outputSampleRate;
+            int sourceSampleRate = inputSampleRate.HasValue ? inputSampleRate.Value : AudioSettings.outputSampleRate;
             _audioStreams = null;
             _audioStreams = new AudioStreamData(channelId,
                 sourceSampleRate
@@ -146,9 +146,9 @@ namespace AxibugEmuOnline.Client
             // 应用新的音频配置
             if (AudioSettings.Reset(config))
             {
-                Debug.Log("Audio settings updated successfully.");
-                Debug.Log("Sample Rate: " + config.sampleRate + "Hz");
-                Debug.Log("Speaker Mode: " + config.speakerMode);
+                App.log.Info("Audio settings updated successfully.");
+                App.log.Info("Sample Rate: " + config.sampleRate + "Hz");
+                App.log.Info("Speaker Mode: " + config.speakerMode);
             }
             else
             {

@@ -7,7 +7,6 @@ using Coffee.UIExtensions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Debug = System.Diagnostics.Debug;
 
 namespace AxibugEmuOnline.Client
 {
@@ -128,8 +127,14 @@ namespace AxibugEmuOnline.Client
             });
         }
 
+        int lastCheckTick;
         protected override void Update()
         {
+            //跳个帧吧
+            if (Time.frameCount - lastCheckTick <= 1)
+                return;
+            lastCheckTick = Time.frameCount;
+
             UpdateRomInfoView();
             base.Update();
         }

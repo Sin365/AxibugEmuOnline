@@ -108,11 +108,11 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                SetBaseInfo(m_romfile.Alias, m_romfile.Descript, m_romfile.GameTypeDes);
+                //SetBaseInfo(m_romfile.Alias, m_romfile.Descript, m_romfile.GameTypeDes);
+                SetBaseInfo(m_romfile.Alias, m_romfile.PlayCount + "次游玩 " + m_romfile.StarCount + "个收藏 \r\n" + m_romfile.Descript, m_romfile.GameTypeDes);
                 App.CacheMgr.GetSpriteCache(m_romfile.ImageURL, (img, url) =>
                 {
                     if (!m_romfile.InfoReady || url != m_romfile.ImageURL) return;
-
                     m_romImage.sprite = img;
                     if (m_select) LaunchUI.Instance.SetRomPreview(img);
                 });
@@ -130,14 +130,18 @@ namespace AxibugEmuOnline.Client
             else
             {
                 App.emu.BeginGame(m_romfile);
-
                 return false;
             }
         }
 
-
+        int lastCheckTick;
         protected override void Update()
         {
+            //跳个帧吧
+            if (Time.frameCount - lastCheckTick <= 1)
+                return;
+            lastCheckTick = Time.frameCount;
+
             DownloadingFlag.SetActiveEx(false);
             FileReadyFlag.SetActiveEx(false);
             Star.SetActiveEx(IsStar);
