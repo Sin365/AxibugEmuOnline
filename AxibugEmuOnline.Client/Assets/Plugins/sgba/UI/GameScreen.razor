@@ -1,0 +1,35 @@
+@using Sandbox.UI
+
+@namespace sGBA
+
+@inherits PanelComponent
+
+@{
+	bool homeVisible = HomeScreen.Current?.IsVisible == true;
+	Texture tex = homeVisible ? null : EmulatorComponent.Current?.ScreenTexture;
+	bool showBackdrop = !homeVisible && (EmulatorComponent.Current?.IsReady == true || !string.IsNullOrEmpty( EmulatorComponent.Current?.RomPath ));
+	string rootClass = GamePreferences.DisplayWithSmallScreen ? "small-screen" : string.Empty;
+}
+
+<root class="@rootClass">
+	@if ( showBackdrop )
+	{
+		<div class="screen-backdrop" />
+	}
+	@if (tex != null)
+	{
+		<TextureImage Texture=@tex class="screen" />
+	}
+</root>
+
+@code
+{
+	protected override int BuildHash()
+	{
+		EmulatorComponent emulator = EmulatorComponent.Current;
+		bool homeVisible = HomeScreen.Current?.IsVisible == true;
+		Texture texture = homeVisible ? null : emulator?.ScreenTexture;
+		bool showBackdrop = !homeVisible && (emulator?.IsReady == true || !string.IsNullOrEmpty( emulator?.RomPath ));
+		return HashCode.Combine( texture, showBackdrop, homeVisible, GamePreferences.DisplayWithSmallScreen );
+	}
+}

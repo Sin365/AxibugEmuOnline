@@ -1,0 +1,73 @@
+@using Sandbox.UI
+
+@namespace sGBA
+
+@inherits PanelComponent
+
+<root class="@RootClass">
+	@if (DetailsOpen)
+	{
+		<ControllerHint Action="GBA_B" Label="#prompt.back" />
+	}
+	else if (SettingsOpen)
+	{
+		<ControllerHint Action="GBA_B" Label="#prompt.back" />
+		<ControllerHint Action="GBA_A" Label="#prompt.ok" />
+	}
+	else if (Home?.AllSoftwareOpen == true)
+	{
+		@if (Home?.CanOpenDetails == true)
+		{
+			<ControllerHint Action="GBA_Select" Label="#prompt.details" />
+		}
+		<ControllerHint Action="GBA_B" Label="#prompt.back" />
+		<ControllerHint Action="GBA_A" Label="@(Home?.CanOpenDetails == true ? "#prompt.start" : "#prompt.ok")" />
+	}
+	else if (Home?.NavigationFocused == true)
+	{
+		<ControllerHint Action="GBA_A" Label="#prompt.ok" />
+	}
+	else if (Home?.CanOpenDetails == true || Home?.HasHomeAction == true)
+	{
+		@if (Home?.CanOpenDetails == true)
+		{
+			<ControllerHint Action="GBA_Select" Label="#prompt.details" />
+		}
+		<ControllerHint Action="GBA_A" Label=@Home.PrimaryActionLabel />
+	}
+</root>
+
+@code
+{
+	public static InputHints Current { get; private set; }
+
+	private HomeScreen Home => HomeScreen.Current;
+	private bool DetailsOpen => DetailsModal.Current?.IsVisible == true;
+	private bool SettingsOpen => SettingsModal.Current?.IsVisible == true;
+	private bool AddGamesOpen => AddGamesModal.Current?.IsVisible == true;
+	private bool HomeOpen => Home?.IsVisible == true;
+	private bool AllSoftwareOpen => Home?.AllSoftwareOpen == true;
+	private bool ForegroundDialogOpen => new Game.Overlay().IsOpen;
+
+	private bool IsVisible => DetailsOpen || SettingsOpen || (HomeOpen && !ForegroundDialogOpen && (Home.NavigationFocused || Home.CanOpenDetails || Home.HasHomeAction || Home.AllSoftwareOpen));
+	private string RootClass => (IsVisible ? "visible" : "") + (AllSoftwareOpen && !AddGamesOpen ? " all-software" : "");
+
+	protected override void OnTreeFirstBuilt() => Current = this;
+
+	protected override void OnDestroy()
+	{
+		if (Current == this) Current = null;
+	}
+
+	public void Refresh()
+	{
+		StateHasChanged();
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(
+			HashCode.Combine(IsVisible, DetailsOpen, SettingsOpen, AddGamesOpen, HomeOpen, AllSoftwareOpen, Home?.NavigationFocused, Home?.CanOpenDetails),
+			HashCode.Combine(Home?.HasHomeAction, Home?.AllSoftwareOpen, Home?.PrimaryActionLabel, ForegroundDialogOpen));
+	}
+}

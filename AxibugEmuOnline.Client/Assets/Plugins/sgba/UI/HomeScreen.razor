@@ -1,0 +1,1755 @@
+@using Sandbox.UI
+@using sGBA
+@using System.Threading.Tasks
+
+@namespace sGBA
+
+@inherits PanelComponent
+
+<root class="@RootClass">
+	<div class="home-screen">
+		<div class="home-backdrop-fallback" />
+		@if (_previousBackdrop != null)
+		{
+			<TextureImage @key=@_previousBackdrop Texture=@_previousBackdrop class="home-backdrop-image previous" style=@($"opacity: {PreviousBackdropOpacity};") />
+		}
+		@if (_currentBackdrop != null)
+		{
+			<TextureImage @key=@_currentBackdrop Texture=@_currentBackdrop class="home-backdrop-image current" />
+		}
+		<div class="home-backdrop-soften" />
+		<div class="home-vignette" />
+
+		@if (ToastVisible)
+		{
+			<HomeToast Title=@_toast.Title Message=@_toast.Message Icon=@_toast.Icon ColorClass=@_toast.ColorClass InlineStyle=@ToastStyle />
+		}
+
+		@if (_allSoftwareOpen)
+		{
+			<div class="all-software-screen">
+				<div class="all-software-rule top" />
+				<div class="all-software-rule bottom" />
+
+				<div class="all-software-scroll" @ref=_allSoftwareScrollPanel>
+					<div class="all-software-grid" style="@AllSoftwareGridStyle">
+					@foreach (var gridItem in AllSoftwareGridItems)
+					{
+						var game = gridItem.Game;
+						Texture gridCover = null;
+						if (game != null)
+							_boxArt.TryGetValue(game.Path, out gridCover);
+
+						<div @key="gridItem.Key" class="@AllSoftwareCardClass(gridItem.Index)" style="@AllSoftwareGridItemStyle(gridItem.Row, gridItem.Column)" onclick=@(() => ActivateAllSoftwareItemWithMouse(gridItem.Index))>
+							<SelectionRing Active=@IsAllSoftwareSelected(gridItem.Index) StrokeWidth=@AllSoftwareSelectionRingStrokeWidth CornerRadius=@AllSoftwareCardCornerRadius Gap=@AllSoftwareSelectionRingGap Outset=@true class="all-card-ring" />
+							@if (gridCover != null)
+							{
+								<TextureImage Texture=@gridCover class="all-card-face has-cover" />
+							}
+							else
+							{
+								<div class="all-card-face is-missing">
+									<div class="missing-icon-disc">
+										<div class="missing-icon">question_mark</div>
+									</div>
+								</div>
+							}
+							@if (IsAllSoftwareSelected(gridItem.Index))
+							{
+								<div class="@AllSoftwareTitleClass(game.DisplayTitle, gridItem.Index)" style="@AllSoftwareTitleStyle(game.DisplayTitle, gridItem.Column, gridItem.Index)">
+									<SvgPanel Src="@AllSoftwareTitleArrowSrc(gridItem.Index)" class="all-card-title-arrow" style="@AllSoftwareTitleArrowStyle(game.DisplayTitle, gridItem.Column, gridItem.Index)" />
+									<div class="all-card-title-clip" style="@AllSoftwareTitleClipStyle(game.DisplayTitle)">
+										@if (ShouldMarqueeAllSoftwareTitle(game.DisplayTitle))
+										{
+											<MarqueeText Title=@game.DisplayTitle class="all-card-title-marquee" />
+										}
+										else
+										{
+											<div class="all-card-title-text">@game.DisplayTitle</div>
+										}
+									</div>
+								</div>
+							}
+						</div>
+					}
+
+					<div class="all-add-row" style="@AllSoftwareAddRowStyle">
+						<div class="@AllSoftwareAddButtonClass" onmouseenter=@UseMouseInAllSoftware onclick=@ActivateAllSoftwareAdd>
+							<SelectionRing Active=@IsAllSoftwareAddSelected StrokeWidth=@(8f) CornerRadius=@(10f) Gap=@(0f) class="all-add-button-ring" />
+							<div class="all-add-button-fill" />
+							<div class="all-add-button-label">#addgames.card.label</div>
+						</div>
+					</div>
+					</div>
+				</div>
+
+				@if (AllSoftwareShowsScrollbar)
+				{
+					<div class="all-scrollbar" @ref=_allSoftwareScrollbarPanel onmousedown=@OnAllSoftwareScrollbarMouseDown>
+						<div class="all-scrollbar-thumb" @ref=_allSoftwareScrollbarThumbPanel style="@AllSoftwareScrollbarThumbStyle" />
+					</div>
+				}
+			</div>
+		}
+		else
+		{
+			<div class="profile-avatar" style="background-image: url( avatar:@LocalSteamId )" />
+
+			@if (!IsHomeViewMoreSelected)
+			{
+				<div class="selected-logo">
+				@if (SelectedLogo != null)
+				{
+					<TextureImage Texture=@SelectedLogo class="selected-logo-art" />
+				}
+				else
+				{
+					<div class="selected-logo-text">@SelectedTitle</div>
+				}
+				</div>
+			}
+
+			<div class="carousel-window" @ref=_carouselWindowPanel>
+				<div class="carousel-strip">
+					@foreach (var carouselItem in CarouselItems)
+					{
+						var game = carouselItem.Game;
+						var itemIndex = carouselItem.Index;
+						var offset = carouselItem.Offset;
+						Texture cover = null;
+						if (game != null)
+							_boxArt.TryGetValue(game.Path, out cover);
+
+						<div @key="GetCarouselItemRenderKey(carouselItem.Key)" class="@CarouselItemClass(itemIndex, offset, carouselItem.IsViewMore)" style="left: @(GetCarouselLeft(offset, _navFocused))px;">
+							<SelectionRing Active=@ShouldShowCarouselRing(itemIndex) Circle=@carouselItem.IsViewMore StrokeWidth=@CarouselSelectionRingStrokeWidth CornerRadius=@CarouselSelectionRingCornerRadius Gap=@CarouselSelectionRingGap(carouselItem.IsViewMore) Outset=@true class="carousel-selection-ring" />
+							@if (carouselItem.IsViewMore)
+							{
+								<ViewMoreCard class="view-more-card" onclick=@(() => ActivateCarouselItem(itemIndex)) />
+								<div class="view-more-label">#home.viewmore</div>
+							}
+							else if (cover != null)
+							{
+								<TextureImage Texture=@cover class="carousel-card-face has-cover" onclick=@(() => ActivateCarouselItem(itemIndex)) />
+							}
+							else
+							{
+								<div class="carousel-card-face is-missing" onclick=@(() => ActivateCarouselItem(itemIndex))>
+									<div class="missing-icon-disc">
+										<div class="missing-icon">question_mark</div>
+									</div>
+								</div>
+							}
+							</div>
+						}
+					</div>
+				</div>
+
+			<div class="@(_navFocused ? "nav-pill focused" : "nav-pill")">
+				<div class="nav-button-row">
+					@for (int i = 0; i < NavItems.Length; i++)
+					{
+						var navIndex = i;
+						var navItem = NavItems[navIndex];
+						<HomeNavButton Icon=@navItem.Icon ColorClass=@navItem.ColorClass Label=@navItem.Label Selected=@ShouldShowNavSelection(navIndex) Hovered=@(() => SelectNavItem(navIndex, useGamepad: false)) Clicked=@(() => ActivateNavItem(navIndex, useGamepad: false)) />
+					}
+				</div>
+			</div>
+		}
+
+	</div>
+</root>
+
+@code
+{
+	public static HomeScreen Current { get; private set; }
+
+	private List<GameEntry> _games = new();
+	private List<GameEntry> _allGames = new();
+	private List<GameEntry> _homeItems = new();
+	private HashSet<string> _knownPaths = new();
+	private float _pollTimer;
+	private const float PollInterval = 3f;
+	private Dictionary<string, Texture> _boxArt = new();
+	private Dictionary<string, Texture> _logos = new();
+	private Dictionary<string, Texture> _snaps = new();
+	private Dictionary<string, Texture> _titles = new();
+	private int _artworkVersion;
+	private int _artworkRequestId;
+	private int _selectedIndex;
+	private int _allSoftwareSelection;
+	private bool _homeOrderDirty;
+	private bool _suppressHomeCarouselTransitions;
+	private int _homeCarouselTransitionSuppressionFrames;
+	private int _homeCarouselRenderVersion;
+	private float _homeCarouselSettleRemaining;
+	private GameEntry _queuedHomeLaunchGame;
+	private string _pendingFrozenHomeLaunchPath;
+	private int _pendingFrozenHomeLaunchFrames;
+	private string _pendingHomeSelectionPath;
+	private int _navSelection = 2;
+	private bool _navFocused;
+	private bool _isVisible = true;
+	private bool _allSoftwareOpen;
+	private bool _addGamesModalOpen;
+	private readonly HomeToastState _toast = new();
+	private Panel _carouselWindowPanel;
+	private Panel _allSoftwareScrollPanel;
+	private Panel _allSoftwareScrollbarPanel;
+	private Panel _allSoftwareScrollbarThumbPanel;
+	private float _allSoftwareDesiredScrollY;
+	private float _lastAllSoftwareScrollY = -1f;
+	private int _allSoftwareTitleDirection = 1;
+	private bool _pendingAllSoftwareScrollApply;
+	private bool _allSoftwareSmoothScrollActive;
+	private bool _allSoftwareScrollbarDragging;
+	private float _allSoftwareScrollbarDragOffsetY;
+	private const int HomeGameLimit = 12;
+	private const int AllSoftwareColumns = 6;
+	private const float AllSoftwareCardWidth = 260f;
+	private const float AllSoftwareCardHeight = 260f;
+	private const float AllSoftwareCardCornerRadius = 14f;
+	private const float AllSoftwareColumnGap = 20f;
+	private const float AllSoftwareRowGap = 20f;
+	private const float AllSoftwareGridVerticalPadding = 54f;
+	private const float AllSoftwareAddButtonHeight = 86f;
+	private const float AllSoftwareAddButtonTopGap = 96f;
+	private const float AllSoftwareAddButtonBottomGap = 72f;
+	private const float AllSoftwareScrollViewportHeight = 906f;
+	private const float AllSoftwareSelectionTopMargin = 16f;
+	private const float AllSoftwareSelectionBottomMargin = 58f;
+	private const float AllSoftwareSelectionRingStrokeWidth = 8f;
+	private const float AllSoftwareSelectionRingGap = 4f;
+	private const float AllSoftwareSmoothScrollRate = 18f;
+	private const float AllSoftwareScrollbarHeight = 906f;
+	private const float AllSoftwareTitleHeight = 64f;
+	private const float AllSoftwareTitleVerticalOffset = 92f;
+	private const float AllSoftwareTitleMaxWidth = 520f;
+	private const float AllSoftwareTitlePadding = 34f;
+	private const float AllSoftwareTitleArrowSize = 22f;
+	private const float AllSoftwareViewportWidth = 1920f;
+	private const float AllSoftwareTitleSafezoneInset = 66f;
+	private const float AllSoftwareTitleFontSize = 30f;
+	private const int AllSoftwareTitleFontWeight = 400;
+	private const float AllSoftwareTitleFitSlack = 18f;
+	private const string AllSoftwareTitleFontName = "Poppins";
+	private static readonly Color AllSoftwareTitleColor = new( 0.12f, 0.46f, 0.68f, 1f );
+	private const int CarouselMountedRange = 9;
+	private const float CarouselSelectionRingStrokeWidth = AllSoftwareSelectionRingStrokeWidth;
+	private const float CarouselSelectionRingCornerRadius = 17f;
+	private const float CarouselGameSelectionRingGap = 8f;
+	private const float CarouselViewMoreSelectionRingGap = 0f;
+	private const float BackdropRetainDuration = 0.32f;
+	private Texture _currentBackdrop;
+	private Texture _previousBackdrop;
+	private float _previousBackdropAge;
+	private bool _previousBackdropFading;
+	private int _backdropVersion;
+	private readonly List<PendingTextureDispose> _pendingTextureDisposals = new();
+	private const float CarouselSelectedLeft = 210f;
+	private const float CarouselNormalCardWidth = 300f;
+	private const float CarouselFeaturedCardWidth = 420f;
+	private const float CarouselCardGap = 34f;
+	private const float HomeCarouselSettleDuration = 0.2f;
+
+	private readonly record struct HomeCarouselEntry(GameEntry Game, int Index, int Offset, bool IsViewMore, string Key);
+	private readonly record struct AllSoftwareEntry(GameEntry Game, int Index, int Row, int Column, string Key);
+	private sealed record ArtworkRequest(GameEntry Game, ThumbType Kind, Dictionary<string, Texture> Target);
+	private sealed record ArtworkLoad(ArtworkRequest Request, Texture Texture);
+	private readonly record struct PendingTextureDispose(string Key, Texture Texture, float Age);
+
+	private readonly record struct NavItem(string Icon, string ColorClass, string Label);
+
+	private readonly NavItem[] NavItems =
+	[
+		new("group", "orange", "#nav.netplay"),
+		new("newspaper", "green", "#nav.news"),
+		new("cloud", "blue", "#nav.cloud"),
+		new("settings", "gray", "#nav.settings"),
+		new("power_settings_new", "gray", "#nav.quit")
+	];
+
+	private readonly FocusInput _input = new();
+
+	public bool IsVisible => _isVisible;
+	private string RootClass => (IsVisible ? "visible" : "") + (_suppressHomeCarouselTransitions ? " suppress-home-carousel-transitions" : "");
+	public bool AllSoftwareOpen => _allSoftwareOpen;
+	public bool NavigationFocused => _navFocused;
+	public bool HasSelectedGame => SelectedGame != null;
+	public bool CanOpenDetails => !_navFocused && SelectedGame != null;
+	public bool HasHomeAction => IsHomeViewMoreSelected;
+	public string PrimaryActionLabel => _allSoftwareOpen || IsHomeViewMoreSelected ? "#prompt.ok" : "#prompt.start";
+	private long LocalSteamId => Connection.Local is null ? 0L : Connection.Local.SteamId;
+	private int HomeGameCount => Math.Min(_homeItems.Count, HomeGameLimit);
+	private int HomeEntryCount => HomeGameCount + 1;
+	private int HomeViewMoreIndex => HomeGameCount;
+	private bool IsHomeViewMoreSelected => _selectedIndex == HomeViewMoreIndex;
+	private bool AddGamesModalOpen => _addGamesModalOpen || AddGamesModal.Current?.IsVisible == true;
+	private bool SettingsModalOpen => SettingsModal.Current?.IsVisible == true;
+	private bool ShowHomeSelection => !AddGamesModalOpen && !SettingsModalOpen;
+	private bool ToastBlocked => AddGamesModalOpen || SettingsModalOpen || DetailsModal.Current?.IsVisible == true;
+	private bool ToastVisible => _toast.IsVisible(ToastBlocked);
+	private string ToastStyle => _toast.GetStyle(ToastVisible);
+	private bool ShowAllSoftwareSelection => ShowHomeSelection;
+	private bool IsAllSoftwareAddSelected => ShowAllSoftwareSelection && _allSoftwareOpen && _input.UseGamepad && _allSoftwareSelection == AllSoftwareAddIndex;
+	private int AllSoftwareAddIndex => _allGames.Count;
+	private int AllSoftwareEntryCount => _allGames.Count;
+	private int AllSoftwareGameRows => _allGames.Count == 0 ? 0 : (int)MathF.Ceiling(_allGames.Count / (float)AllSoftwareColumns);
+	private int AllSoftwareAddRow => AllSoftwareGameRows;
+	private float AllSoftwareRowStride => AllSoftwareCardHeight + AllSoftwareRowGap;
+	private float AllSoftwareGridWidth => AllSoftwareColumns * AllSoftwareCardWidth + Math.Max(0, AllSoftwareColumns - 1) * AllSoftwareColumnGap;
+	private float AllSoftwareGameContentHeight => AllSoftwareGameRows == 0 ? 0f : AllSoftwareGameRows * AllSoftwareCardHeight + Math.Max(0, AllSoftwareGameRows - 1) * AllSoftwareRowGap;
+	private float AllSoftwareAddButtonTop => AllSoftwareGridVerticalPadding + AllSoftwareGameContentHeight + AllSoftwareAddButtonTopGap;
+	private float AllSoftwareContentHeight => AllSoftwareAddButtonTop + AllSoftwareAddButtonHeight + AllSoftwareAddButtonBottomGap;
+	private float AllSoftwareMaxScrollY => MathF.Max(0f, AllSoftwareContentHeight - AllSoftwareScrollViewportHeight);
+	private float AllSoftwareScrollScale => MathF.Max(0.001f, _allSoftwareScrollPanel?.ScaleToScreen ?? Panel?.ScaleToScreen ?? 1f);
+	private float AllSoftwareScrollY => _allSoftwareScrollPanel == null
+		? _allSoftwareDesiredScrollY.Clamp(0f, AllSoftwareMaxScrollY)
+		: (_allSoftwareScrollPanel.ScrollOffset.y / AllSoftwareScrollScale).Clamp(0f, AllSoftwareMaxScrollY);
+	private bool AllSoftwareShowsScrollbar => AllSoftwareContentHeight > AllSoftwareScrollViewportHeight;
+	private float AllSoftwareScrollbarThumbHeight => !AllSoftwareShowsScrollbar ? AllSoftwareScrollbarHeight : MathF.Max(72f, AllSoftwareScrollbarHeight * (AllSoftwareScrollViewportHeight / AllSoftwareContentHeight));
+	private float AllSoftwareScrollbarThumbTravel => MathF.Max(0f, AllSoftwareScrollbarHeight - AllSoftwareScrollbarThumbHeight);
+	private float AllSoftwareScrollbarThumbTop => AllSoftwareScrollbarThumbTravel <= 0f ? 0f : AllSoftwareScrollbarThumbTravel * (AllSoftwareScrollY / MathF.Max(1f, AllSoftwareMaxScrollY));
+	private GameEntry SelectedGame => _allSoftwareOpen
+		? _allSoftwareSelection >= 0 && _allSoftwareSelection < _allGames.Count ? _allGames[_allSoftwareSelection] : null
+		: !IsHomeViewMoreSelected && _selectedIndex >= 0 && _selectedIndex < _homeItems.Count ? _homeItems[_selectedIndex] : null;
+	private string SelectedTitle => SelectedGame?.DisplayTitle ?? "sGBA";
+	private Texture SelectedLogo => SelectedGame != null && _logos.TryGetValue(SelectedGame.Path, out var logo) ? logo : null;
+	private Texture SelectedBackdrop => SelectedGame != null && _snaps.TryGetValue(SelectedGame.Path, out var snap) ? snap : SelectedGame != null && _boxArt.TryGetValue(SelectedGame.Path, out var cover) ? cover : null;
+	private float PreviousBackdropOpacity => _previousBackdrop == null ? 0f : _previousBackdropFading ? 0f : 1f;
+	private string AllSoftwareScrollbarThumbStyle
+	{
+		get
+		{
+			if (!AllSoftwareShowsScrollbar)
+				return "";
+
+			return $"top: {AllSoftwareScrollbarThumbTop}px; height: {AllSoftwareScrollbarThumbHeight}px;";
+		}
+	}
+
+	private string AllSoftwareGridStyle => $"width: {AllSoftwareGridWidth}px; height: {AllSoftwareContentHeight}px;";
+
+	private string AllSoftwareGridItemStyle(int row, int column)
+	{
+		float left = column * (AllSoftwareCardWidth + AllSoftwareColumnGap);
+		float top = AllSoftwareGridVerticalPadding + row * AllSoftwareRowStride;
+		return $"left: {left}px; top: {top}px;";
+	}
+
+	private string AllSoftwareAddRowStyle => $"left: 0px; top: {AllSoftwareAddButtonTop}px; width: {AllSoftwareGridWidth}px;";
+
+	private IEnumerable<HomeCarouselEntry> CarouselItems
+	{
+		get
+		{
+			if (HomeEntryCount == 0)
+				yield break;
+
+			int selected = _selectedIndex.Clamp(0, HomeEntryCount - 1);
+			int first = Math.Max(0, selected - CarouselMountedRange);
+			int last = Math.Min(HomeEntryCount - 1, selected + CarouselMountedRange);
+			for (int i = first; i <= last; i++)
+			{
+				bool isViewMore = i == HomeViewMoreIndex;
+				yield return new HomeCarouselEntry(isViewMore ? null : _homeItems[i], i, i - selected, isViewMore, isViewMore ? "view-more" : _homeItems[i].Path);
+			}
+		}
+	}
+
+	private IEnumerable<AllSoftwareEntry> AllSoftwareGridItems
+	{
+		get
+		{
+			for (int index = 0; index < AllSoftwareEntryCount; index++)
+			{
+				int row = index / AllSoftwareColumns;
+				int column = index % AllSoftwareColumns;
+				yield return new AllSoftwareEntry(_allGames[index], index, row, column, _allGames[index].Path);
+			}
+		}
+	}
+
+	private IEnumerable<AllSoftwareEntry> AllSoftwareVisibleItems
+	{
+		get
+		{
+			int firstRow = Math.Max(0, (int)MathF.Floor((AllSoftwareScrollY - AllSoftwareGridVerticalPadding) / AllSoftwareRowStride) - 1);
+			int visibleRows = Math.Max(1, (int)MathF.Ceiling(AllSoftwareScrollViewportHeight / AllSoftwareRowStride) + 2);
+			int first = firstRow * AllSoftwareColumns;
+			int last = Math.Min(AllSoftwareEntryCount, first + AllSoftwareColumns * visibleRows);
+			for (int index = first; index < last; index++)
+			{
+				int row = index / AllSoftwareColumns;
+				int column = index % AllSoftwareColumns;
+				yield return new AllSoftwareEntry(_allGames[index], index, row, column, _allGames[index].Path);
+			}
+		}
+	}
+
+	protected override void OnTreeFirstBuilt()
+	{
+		Current = this;
+		EnsureInputHintsPanel();
+		_games = GameEntry.Discover();
+		_knownPaths = GameEntry.GetInstalledPaths();
+		RebuildGameLists(preserveSelection: false);
+		SyncBackdropTexture();
+		QueueArtworkRefresh();
+	}
+
+	private void QueueArtworkRefresh()
+	{
+		var requestId = ++_artworkRequestId;
+		_ = LoadArtworkAsync(requestId);
+	}
+
+	private async Task LoadArtworkAsync(int requestId)
+	{
+		var visibleTask = LoadVisibleCarouselThumbnailsAsync();
+		var selectedTask = LoadSelectedFeatureArtAsync();
+
+		await visibleTask;
+		await selectedTask;
+
+		if (requestId != _artworkRequestId)
+			return;
+
+		var artworkVersion = _artworkVersion;
+		PruneArtworkTextures();
+		if (_artworkVersion != artworkVersion)
+			StateHasChanged();
+	}
+
+	private Task<bool> LoadSelectedFeatureArtAsync()
+	{
+		var game = SelectedGame;
+		if (game == null)
+			return Task.FromResult(false);
+
+		return LoadArtworkBatchAsync([
+			new ArtworkRequest(game, ThumbType.Snap, _snaps),
+			new ArtworkRequest(game, ThumbType.Logo, _logos),
+			new ArtworkRequest(game, ThumbType.Title, _titles)
+		]);
+	}
+
+	private Task<bool> LoadVisibleCarouselThumbnailsAsync()
+	{
+		var homeRequests = CarouselItems
+			.Where(item => item.Game != null)
+			.Select(item => new ArtworkRequest(item.Game, ThumbType.BoxArt, _boxArt));
+
+		var allSoftwareRequests = _allSoftwareOpen
+			? AllSoftwareVisibleItems.Select(item => new ArtworkRequest(item.Game, ThumbType.BoxArt, _boxArt))
+			: [];
+
+		var requests = homeRequests
+			.Concat(allSoftwareRequests)
+			.ToList();
+
+		return LoadArtworkBatchAsync(requests);
+	}
+
+	private async Task<bool> LoadArtworkBatchAsync(IReadOnlyList<ArtworkRequest> requests)
+	{
+		var pending = requests
+			.Where(request => request.Game != null && !request.Target.ContainsKey(request.Game.Path))
+			.ToList();
+
+		if (pending.Count == 0)
+			return false;
+
+		foreach (var request in pending)
+			CancelPendingTextureDispose(GetArtworkKey(request.Kind, request.Game.Path));
+
+		var changed = false;
+		var loadTasks = pending.Select(LoadArtworkAsync).ToList();
+		while (loadTasks.Count > 0)
+		{
+			var completedTask = await Task.WhenAny(loadTasks);
+			loadTasks.Remove(completedTask);
+
+			if (!ApplyArtworkLoad(await completedTask))
+				continue;
+
+			changed = true;
+			_artworkVersion++;
+			StateHasChanged();
+		}
+
+		return changed;
+	}
+
+	private static async Task<ArtworkLoad> LoadArtworkAsync(ArtworkRequest request)
+	{
+		var texture = await Thumbnails.LoadAsync(request.Game, request.Kind);
+		return new ArtworkLoad(request, texture);
+	}
+
+	private bool ApplyArtworkLoad(ArtworkLoad load)
+	{
+		var game = load.Request.Game;
+		var kind = load.Request.Kind;
+		var target = load.Request.Target;
+		var texture = load.Texture;
+
+		if (texture == null || game == null)
+			return false;
+
+		CancelPendingTextureDispose(GetArtworkKey(kind, game.Path));
+
+		if (target.ContainsKey(game.Path))
+		{
+			return false;
+		}
+
+		if (!ShouldRetainArtwork(game, kind))
+		{
+			ScheduleTextureDispose(GetArtworkKey(kind, game.Path), texture);
+			return false;
+		}
+
+		target[game.Path] = texture;
+		if (game == SelectedGame)
+			SyncBackdropTexture();
+
+		return true;
+	}
+
+	private bool ShouldRetainArtwork(GameEntry game, ThumbType kind)
+	{
+		if (game == null)
+			return false;
+
+		if (game == SelectedGame)
+			return true;
+
+		return kind == ThumbType.BoxArt && RetainedBoxArtPaths().Contains(game.Path);
+	}
+
+	private HashSet<string> RetainedBoxArtPaths()
+	{
+		var retained = CarouselItems
+			.Where(item => IsCarouselOffsetMounted(item.Offset))
+			.Where(item => item.Game != null)
+			.Select(item => item.Game.Path)
+			.ToHashSet();
+
+		if (_allSoftwareOpen)
+		{
+			foreach (var item in AllSoftwareVisibleItems)
+			{
+				if (item.Game != null)
+					retained.Add(item.Game.Path);
+			}
+		}
+
+		return retained;
+	}
+
+	private HashSet<string> RetainedFeatureArtworkPaths()
+	{
+		var retained = new HashSet<string>();
+		if (SelectedGame != null)
+			retained.Add(SelectedGame.Path);
+		return retained;
+	}
+
+	private void PruneArtworkTextures()
+	{
+		PruneArtworkDictionary(_boxArt, ThumbType.BoxArt, RetainedBoxArtPaths());
+		var retainedFeatureArtwork = RetainedFeatureArtworkPaths();
+		PruneArtworkDictionary(_logos, ThumbType.Logo, retainedFeatureArtwork);
+		PruneArtworkDictionary(_snaps, ThumbType.Snap, retainedFeatureArtwork);
+		PruneArtworkDictionary(_titles, ThumbType.Title, retainedFeatureArtwork);
+	}
+
+	private void PruneArtworkDictionary(Dictionary<string, Texture> textures, ThumbType kind, HashSet<string> retainedPaths)
+	{
+		foreach (var (path, texture) in textures.ToList())
+		{
+			if (retainedPaths.Contains(path))
+				continue;
+
+			if (texture == _currentBackdrop || texture == _previousBackdrop)
+				continue;
+
+			textures.Remove(path);
+			ScheduleTextureDispose(GetArtworkKey(kind, path), texture);
+			_artworkVersion++;
+		}
+	}
+
+	private static string GetArtworkKey(ThumbType kind, string path)
+	{
+		return $"{kind}:{path}";
+	}
+
+	private void ScheduleTextureDispose(string key, Texture texture)
+	{
+		if (texture == null)
+			return;
+
+		_pendingTextureDisposals.RemoveAll(item => item.Key == key || item.Texture == texture);
+		_pendingTextureDisposals.Add(new PendingTextureDispose(key, texture, 0f));
+	}
+
+	private void CancelPendingTextureDispose(string key)
+	{
+		_pendingTextureDisposals.RemoveAll(item => item.Key == key);
+	}
+
+	private void UpdatePendingTextureDisposals()
+	{
+		if (_pendingTextureDisposals.Count == 0)
+			return;
+
+		for (int i = _pendingTextureDisposals.Count - 1; i >= 0; i--)
+		{
+			var pending = _pendingTextureDisposals[i];
+			var age = pending.Age + Time.Delta;
+			if (age < 0.5f)
+			{
+				_pendingTextureDisposals[i] = pending with { Age = age };
+				continue;
+			}
+
+			if (!IsArtworkTextureStillReferenced(pending.Texture))
+				Thumbnails.ReleaseTexture(pending.Texture);
+
+			_pendingTextureDisposals.RemoveAt(i);
+		}
+	}
+
+	private bool IsArtworkTextureStillReferenced(Texture texture)
+	{
+		if (texture == null)
+			return false;
+
+		if (texture == _currentBackdrop || texture == _previousBackdrop)
+			return true;
+
+		return _boxArt.ContainsValue(texture) || _logos.ContainsValue(texture) || _snaps.ContainsValue(texture);
+	}
+
+	public void Show()
+	{
+		if (_homeOrderDirty)
+		{
+			RebuildGameLists(preserveSelection: false);
+			SelectPendingHomeGame();
+			_homeOrderDirty = false;
+			_pendingHomeSelectionPath = null;
+			_suppressHomeCarouselTransitions = true;
+			_homeCarouselTransitionSuppressionFrames = 2;
+			Panel?.SkipTransitions();
+			_carouselWindowPanel?.SkipTransitions();
+			SyncBackdropTexture();
+			QueueArtworkRefresh();
+		}
+
+		_isVisible = true;
+		_navFocused = false;
+		_input.Begin(useGamepad: false);
+		Sound.Play("ui.popup.message.open");
+		EmulatorComponent.Current?.Unload();
+		StateHasChanged();
+	}
+
+	public void Hide(bool update = true)
+	{
+		_isVisible = false;
+		Mouse.Visibility = MouseVisibility.Hidden;
+		if (update)
+			StateHasChanged();
+	}
+
+	private void ActivateCarouselItem(int index)
+	{
+		if (IsHomeViewMoreIndex(index))
+		{
+			SelectCarouselItem(index, _input.UseGamepad);
+			OpenAllSoftware();
+			return;
+		}
+
+		bool shouldLaunch = !_navFocused && index == _selectedIndex;
+		SelectCarouselItem(index, _input.UseGamepad);
+
+		if (shouldLaunch && SelectedGame != null)
+		{
+			if (_homeCarouselSettleRemaining > 0f)
+			{
+				_queuedHomeLaunchGame = SelectedGame;
+				return;
+			}
+
+			LaunchGame(SelectedGame);
+		}
+	}
+
+	private void OpenAddGamesModal(bool useGamepad = false)
+	{
+		Sound.Play("ui.button.press");
+		AddGamesModal addGamesPanel = EnsureAddGamesPanel();
+		if (addGamesPanel == null)
+			return;
+
+		_addGamesModalOpen = true;
+		StateHasChanged();
+		addGamesPanel.Open(useGamepad);
+	}
+
+	public void OnAddGamesModalClosed(bool useGamepad)
+	{
+		_addGamesModalOpen = false;
+		if (useGamepad)
+			_input.ForceGamepadMode();
+		else
+			_input.ForceMouseMode();
+
+		EnsureAllSoftwareSelectionVisible();
+		StateHasChanged();
+	}
+
+	private AddGamesModal EnsureAddGamesPanel()
+	{
+		if (AddGamesModal.Current != null && AddGamesModal.Current.IsValid())
+			return AddGamesModal.Current;
+
+		AddGamesModal addGamesPanel = Scene.GetAllComponents<AddGamesModal>().FirstOrDefault(panel => panel.IsValid());
+		if (addGamesPanel != null)
+			return addGamesPanel;
+
+		return AddComponent<AddGamesModal>();
+	}
+
+	private void OpenAllSoftware()
+	{
+		var selectedGame = SelectedGame;
+		_allSoftwareOpen = true;
+		_navFocused = false;
+		int allSoftwareIndex = selectedGame == null ? -1 : _allGames.IndexOf(selectedGame);
+		_allSoftwareSelection = allSoftwareIndex >= 0 ? allSoftwareIndex : _allGames.Count == 0 ? AllSoftwareAddIndex : 0;
+		EnsureAllSoftwareSelectionVisible();
+		Sound.Play("ui.button.press");
+		QueueArtworkRefresh();
+		StateHasChanged();
+	}
+
+	private void CloseAllSoftware()
+	{
+		_allSoftwareOpen = false;
+		_selectedIndex = HomeGameCount > 0 ? 0 : HomeViewMoreIndex;
+		_navFocused = false;
+		_homeCarouselSettleRemaining = 0f;
+		_queuedHomeLaunchGame = null;
+
+		SyncBackdropTexture();
+		QueueArtworkRefresh();
+		Sound.Play("ui.popup.message.close");
+		StateHasChanged();
+	}
+
+	private void ActivateAllSoftwareItem(int index)
+	{
+		SelectAllSoftwareItem(index, _input.UseGamepad);
+		if (index == AllSoftwareAddIndex)
+		{
+			ActivateAllSoftwareAdd();
+			return;
+		}
+
+		var game = index >= 0 && index < _allGames.Count ? _allGames[index] : null;
+		if (game != null)
+			LaunchGame(game);
+	}
+
+	private void ActivateAllSoftwareItemWithMouse(int index)
+	{
+		SetAllSoftwareTitleDirectionForMouse(index);
+
+		if (_allSoftwareSelection != index)
+		{
+			SelectAllSoftwareItem(index, useGamepad: false);
+			return;
+		}
+
+		_input.ForceMouseMode();
+		var game = index >= 0 && index < _allGames.Count ? _allGames[index] : null;
+		if (game != null)
+			LaunchGame(game);
+	}
+
+	private void SetAllSoftwareTitleDirectionForMouse(int index)
+	{
+		if (index < 0 || index >= _allGames.Count)
+			return;
+
+		int row = index / AllSoftwareColumns;
+		float itemCenterY = AllSoftwareGridVerticalPadding + row * AllSoftwareRowStride + AllSoftwareCardHeight * 0.5f - AllSoftwareScrollY;
+		_allSoftwareTitleDirection = itemCenterY >= AllSoftwareScrollViewportHeight * 0.5f ? 1 : -1;
+	}
+
+	private void ActivateAllSoftwareAdd()
+	{
+		if (_input.UseGamepad)
+			SelectAllSoftwareItem(AllSoftwareAddIndex, useGamepad: true);
+		else
+			UseMouseInAllSoftware();
+
+		OpenAddGamesModal(_input.UseGamepad);
+	}
+
+	private void LaunchGame(GameEntry game)
+	{
+		var emulator = EmulatorComponent.Current;
+		if (!emulator.IsValid())
+			return;
+
+		GamePlayHistory.MarkPlayed(game.Path);
+		_homeOrderDirty = true;
+		_suppressHomeCarouselTransitions = true;
+		_pendingHomeSelectionPath = game.Path;
+
+		if (_allSoftwareOpen)
+		{
+			_allSoftwareOpen = false;
+			Sound.Play("ui.button.press");
+			Hide();
+			emulator.Restart(game.Path);
+			return;
+		}
+
+		Sound.Play("ui.button.press");
+		_suppressHomeCarouselTransitions = true;
+		_homeCarouselTransitionSuppressionFrames = 4;
+		Panel?.SkipTransitions();
+		_carouselWindowPanel?.SkipTransitions();
+		_homeCarouselRenderVersion++;
+		_pendingFrozenHomeLaunchPath = game.Path;
+		_pendingFrozenHomeLaunchFrames = 1;
+		StateHasChanged();
+	}
+
+	private void CompleteFrozenHomeLaunch()
+	{
+		if (string.IsNullOrWhiteSpace(_pendingFrozenHomeLaunchPath))
+			return;
+
+		var path = _pendingFrozenHomeLaunchPath;
+		_pendingFrozenHomeLaunchPath = null;
+		_pendingFrozenHomeLaunchFrames = 0;
+
+		var emulator = EmulatorComponent.Current;
+		if (!emulator.IsValid())
+			return;
+
+		Hide(update: false);
+		emulator.Restart(path);
+	}
+
+	private void RebuildGameLists(bool preserveSelection = true)
+	{
+		bool hadHomeGames = _homeItems.Count > 0;
+		var selectedGame = preserveSelection ? SelectedGame : null;
+		bool selectedViewMore = preserveSelection && hadHomeGames && IsHomeViewMoreSelected;
+
+		_allGames = [.._games];
+		_homeItems = [.._games
+			.OrderByDescending(game => GamePlayHistory.LastPlayedAt(game.Path))
+			.ThenBy(game => game.DisplayTitle, StringComparer.OrdinalIgnoreCase)];
+
+		if (!preserveSelection)
+		{
+			_selectedIndex = 0;
+		}
+		else if (selectedGame != null && !selectedViewMore)
+		{
+			int homeIndex = _homeItems.IndexOf(selectedGame);
+			if (homeIndex >= 0)
+				_selectedIndex = homeIndex;
+		}
+		else if (selectedViewMore)
+		{
+			_selectedIndex = HomeViewMoreIndex;
+		}
+
+		ClampSelectedIndex();
+	}
+
+	private void SelectPendingHomeGame()
+	{
+		if (string.IsNullOrWhiteSpace(_pendingHomeSelectionPath))
+			return;
+
+		int homeIndex = _homeItems.FindIndex(game => string.Equals(game.Path, _pendingHomeSelectionPath, StringComparison.OrdinalIgnoreCase));
+		_selectedIndex = homeIndex >= 0 && homeIndex < HomeGameCount ? homeIndex : HomeViewMoreIndex;
+	}
+
+	private void ClampSelectedIndex()
+	{
+		if (HomeEntryCount == 0)
+		{
+			_selectedIndex = 0;
+		}
+		else
+		{
+			_selectedIndex = _selectedIndex.Clamp(0, HomeEntryCount - 1);
+		}
+
+		_allSoftwareSelection = _allSoftwareSelection.Clamp(0, AllSoftwareAddIndex);
+		EnsureAllSoftwareSelectionVisible();
+	}
+
+	private void SetGamepadMode()
+	{
+		_input.ForceGamepadMode();
+	}
+
+	private void SyncVisibilityWithEmulator()
+	{
+		var emu = EmulatorComponent.Current;
+		bool running = emu.IsValid() && emu.IsReady && !string.IsNullOrEmpty(emu.RomPath);
+		if (running && _isVisible) Hide();
+		else if (!running && !_isVisible) Show();
+	}
+
+	private SettingsModal EnsureSettingsPanel()
+	{
+		if (SettingsModal.Current != null && SettingsModal.Current.IsValid())
+			return SettingsModal.Current;
+
+		SettingsModal settingsPanel = Scene.GetAllComponents<SettingsModal>().FirstOrDefault(panel => panel.IsValid());
+		if (settingsPanel != null)
+			return settingsPanel;
+
+		return AddComponent<SettingsModal>();
+	}
+
+	private InputHints EnsureInputHintsPanel()
+	{
+		if (InputHints.Current != null && InputHints.Current.IsValid())
+			return InputHints.Current;
+
+		InputHints inputHintsPanel = Scene.GetAllComponents<InputHints>().FirstOrDefault(panel => panel.IsValid());
+		if (inputHintsPanel != null)
+			return inputHintsPanel;
+
+		return AddComponent<InputHints>();
+	}
+
+	private void OpenSettings(bool useGamepad = false)
+	{
+		if (useGamepad)
+			SetGamepadMode();
+		else
+			_input.End();
+
+		_navFocused = true;
+		_navSelection = 3;
+		Sound.Play("ui.button.press");
+		SettingsModal settingsPanel = EnsureSettingsPanel();
+		settingsPanel?.Show(useGamepad);
+	}
+
+	public void FocusHeaderAction(int headerSelection, bool useGamepad)
+	{
+		_navFocused = true;
+		_navSelection = headerSelection.Clamp(0, NavItems.Length - 1);
+		if (useGamepad) _input.ForceGamepadMode();
+		else _input.End();
+		StateHasChanged();
+	}
+
+	public void RestoreInputMode(bool useGamepad)
+	{
+		if (useGamepad) _input.ForceGamepadMode();
+		else _input.ForceMouseMode();
+		StateHasChanged();
+	}
+
+	public void FocusSettingsAction(bool useGamepad)
+	{
+		FocusHeaderAction(3, useGamepad);
+	}
+
+	protected override void OnUpdate()
+	{
+		SyncVisibilityWithEmulator();
+		if (!string.IsNullOrWhiteSpace(_pendingFrozenHomeLaunchPath))
+		{
+			if (_pendingFrozenHomeLaunchFrames > 0)
+			{
+				_pendingFrozenHomeLaunchFrames--;
+				return;
+			}
+
+			CompleteFrozenHomeLaunch();
+			return;
+		}
+
+		if (_homeCarouselSettleRemaining > 0f)
+		{
+			_homeCarouselSettleRemaining = MathF.Max(0f, _homeCarouselSettleRemaining - Time.Delta);
+			if (_homeCarouselSettleRemaining <= 0f && _queuedHomeLaunchGame != null)
+			{
+				var queuedLaunch = _queuedHomeLaunchGame;
+				_queuedHomeLaunchGame = null;
+				LaunchGame(queuedLaunch);
+				return;
+			}
+		}
+
+		if (_isVisible && _suppressHomeCarouselTransitions)
+		{
+			if (_homeCarouselTransitionSuppressionFrames > 0)
+			{
+				_homeCarouselTransitionSuppressionFrames--;
+			}
+			else
+			{
+				_suppressHomeCarouselTransitions = false;
+				StateHasChanged();
+			}
+		}
+
+		UpdateBackdropTransition();
+		UpdatePendingTextureDisposals();
+		UpdateToast();
+
+		_pollTimer += Time.Delta;
+		if (_pollTimer >= PollInterval)
+		{
+			_pollTimer = 0f;
+			var current = GameEntry.GetInstalledPaths();
+			if (!current.SetEquals(_knownPaths))
+			{
+				_knownPaths = current;
+				_games = GameEntry.Discover();
+				RebuildGameLists();
+				QueueArtworkRefresh();
+				StateHasChanged();
+			}
+		}
+
+		if (!_isVisible) return;
+		if (SettingsModal.Current?.IsVisible == true) return;
+		if (DetailsModal.Current?.IsVisible == true) return;
+		if (AddGamesModal.Current?.IsVisible == true) return;
+		if (new Game.Overlay().IsOpen) return;
+
+		UpdateAllSoftwareScrollState();
+
+		var nav = _input.TickRepeating();
+		if (nav.Up) { SetGamepadMode(); NavigateUp(); }
+		if (nav.Down) { SetGamepadMode(); NavigateDown(); }
+		if (nav.Left) { SetGamepadMode(); NavigateLeft(); }
+		if (nav.Right) { SetGamepadMode(); NavigateRight(); }
+
+		if (Input.Pressed("GBA_A") || Input.Pressed("GBA_Start"))
+		{
+			SetGamepadMode();
+			if (_allSoftwareOpen) ActivateAllSoftwareItem(_allSoftwareSelection);
+			else if (_navFocused) ActivateNavItem(_navSelection, useGamepad: true);
+			else ActivateCarouselItem(_selectedIndex);
+		}
+
+		if (Input.Pressed("GBA_B") && _allSoftwareOpen)
+		{
+			SetGamepadMode();
+			CloseAllSoftware();
+		}
+
+		if (Input.Pressed("GBA_B") && _navFocused)
+		{
+			SetGamepadMode();
+			_navFocused = false;
+			Sound.Play("ui.button.over");
+		}
+
+		if (Input.Pressed("GBA_Select") && CanOpenDetails)
+		{
+			SetGamepadMode();
+			OpenSelectedDetails();
+		}
+	}
+
+	private void NavigateUp()
+	{
+		if (_allSoftwareOpen)
+		{
+			NavigateAllSoftwareVertical(-1);
+			return;
+		}
+
+		if (_navFocused)
+		{
+			_navFocused = false;
+			Sound.Play("ui.button.over");
+		}
+	}
+
+	private void NavigateDown()
+	{
+		if (_allSoftwareOpen)
+		{
+			NavigateAllSoftwareVertical(1);
+			return;
+		}
+
+		if (!_navFocused)
+		{
+			_navFocused = true;
+			Sound.Play("ui.button.over");
+		}
+	}
+
+	private void NavigateLeft()
+	{
+		if (_allSoftwareOpen)
+		{
+			NavigateAllSoftwareHorizontal(-1);
+			return;
+		}
+
+		if (_navFocused)
+		{
+			if (_navSelection > 0)
+			{
+				_navSelection--;
+				Sound.Play("ui.button.over");
+			}
+			return;
+		}
+
+		SelectCarouselItem(_selectedIndex - 1, useGamepad: true);
+	}
+
+	private void NavigateRight()
+	{
+		if (_allSoftwareOpen)
+		{
+			NavigateAllSoftwareHorizontal(1);
+			return;
+		}
+
+		if (_navFocused)
+		{
+			if (_navSelection < NavItems.Length - 1)
+			{
+				_navSelection++;
+				Sound.Play("ui.button.over");
+			}
+			return;
+		}
+
+		SelectCarouselItem(_selectedIndex + 1, useGamepad: true);
+	}
+
+	private void SelectCarouselItem(int index, bool useGamepad)
+	{
+		if (HomeEntryCount == 0)
+			return;
+
+		var next = index.Clamp(0, HomeEntryCount - 1);
+		if (_selectedIndex == next && !_navFocused)
+			return;
+
+		_selectedIndex = next;
+		_navFocused = false;
+		_queuedHomeLaunchGame = null;
+		_homeCarouselSettleRemaining = HomeCarouselSettleDuration;
+		if (useGamepad)
+			SetGamepadMode();
+
+		Sound.Play("ui.button.over");
+		QueueArtworkRefresh();
+		SyncBackdropTexture();
+		StateHasChanged();
+	}
+
+	private void SelectAllSoftwareItem(int index, bool useGamepad)
+	{
+		var next = index.Clamp(0, AllSoftwareAddIndex);
+		if (_allSoftwareSelection == next)
+		{
+			if (!useGamepad)
+				UseMouseInAllSoftware();
+			return;
+		}
+
+		_allSoftwareSelection = next;
+		if (useGamepad)
+			SetGamepadMode();
+		else
+			_input.ForceMouseMode();
+
+		EnsureAllSoftwareSelectionVisible(smooth: true);
+		Sound.Play("ui.button.over");
+		QueueArtworkRefresh();
+		StateHasChanged();
+	}
+
+	private void NavigateAllSoftwareHorizontal(int direction)
+	{
+		if (_allSoftwareSelection < 0)
+		{
+			SelectFirstVisibleAllSoftwareItem(useGamepad: true);
+			return;
+		}
+
+		int next = _allSoftwareSelection + direction;
+		if (next < 0 || next > AllSoftwareAddIndex)
+			return;
+
+		if (_allSoftwareSelection == AllSoftwareAddIndex)
+		{
+			if (direction < 0 && _allGames.Count > 0)
+				SelectAllSoftwareItem(_allGames.Count - 1, useGamepad: true);
+			return;
+		}
+
+		if (next == AllSoftwareAddIndex)
+		{
+			SelectAllSoftwareItem(AllSoftwareAddIndex, useGamepad: true);
+			return;
+		}
+
+		int currentRow = _allSoftwareSelection / AllSoftwareColumns;
+		int nextRow = next / AllSoftwareColumns;
+		if (currentRow != nextRow)
+			return;
+
+		SelectAllSoftwareItem(next, useGamepad: true);
+	}
+
+	private void NavigateAllSoftwareVertical(int direction)
+	{
+		_allSoftwareTitleDirection = Math.Sign(direction);
+
+		if (_allSoftwareSelection < 0)
+		{
+			SelectFirstVisibleAllSoftwareItem(useGamepad: true);
+			return;
+		}
+
+		if (direction > 0 && _allSoftwareSelection >= Math.Max(0, _allGames.Count - AllSoftwareColumns))
+		{
+			SelectAllSoftwareItem(AllSoftwareAddIndex, useGamepad: true);
+			return;
+		}
+
+		if (direction < 0 && _allSoftwareSelection == AllSoftwareAddIndex)
+		{
+			int rowStart = Math.Max(0, (AllSoftwareGameRows - 1) * AllSoftwareColumns);
+			int column = AllSoftwareColumns / 2;
+			SelectAllSoftwareItem(Math.Min(Math.Max(0, _allGames.Count - 1), rowStart + column), useGamepad: true);
+			return;
+		}
+
+		int next = _allSoftwareSelection + direction * AllSoftwareColumns;
+		if (next < 0 || next >= _allGames.Count)
+			return;
+
+		SelectAllSoftwareItem(next, useGamepad: true);
+	}
+
+	private void EnsureAllSoftwareSelectionVisible(bool smooth = false)
+	{
+		if (_allSoftwareSelection < 0)
+		{
+			return;
+		}
+
+		bool isAddSelected = IsAllSoftwareAddSelected;
+		int row = isAddSelected ? AllSoftwareAddRow : _allSoftwareSelection / AllSoftwareColumns;
+		float itemBaseTop = isAddSelected ? AllSoftwareAddButtonTop : AllSoftwareGridVerticalPadding + row * AllSoftwareRowStride;
+		float itemHeight = isAddSelected ? AllSoftwareAddButtonHeight : AllSoftwareCardHeight;
+		float itemTop = !isAddSelected && row == 0 ? 0f : MathF.Max(0f, itemBaseTop - AllSoftwareSelectionTopMargin);
+		float itemBottom = itemBaseTop + itemHeight + AllSoftwareSelectionBottomMargin;
+		float viewTop = AllSoftwareScrollY;
+		float viewBottom = viewTop + AllSoftwareScrollViewportHeight;
+		float nextScroll = viewTop;
+
+		if (isAddSelected)
+			nextScroll = AllSoftwareMaxScrollY;
+		else if (itemTop < viewTop)
+			nextScroll = itemTop;
+		else if (itemBottom > viewBottom)
+			nextScroll = itemBottom - AllSoftwareScrollViewportHeight;
+
+		SetAllSoftwareScrollY(nextScroll, smooth);
+	}
+
+	private void SetAllSoftwareScrollY(float scrollY, bool smooth = false)
+	{
+		_allSoftwareDesiredScrollY = scrollY.Clamp(0f, AllSoftwareMaxScrollY);
+		_allSoftwareSmoothScrollActive = smooth;
+		_pendingAllSoftwareScrollApply = !smooth;
+
+		if (_allSoftwareScrollPanel == null)
+			return;
+
+		if (smooth)
+			return;
+
+		_allSoftwareScrollPanel.ScrollOffset = new Vector2(0f, _allSoftwareDesiredScrollY * AllSoftwareScrollScale);
+		_allSoftwareScrollPanel.ScrollVelocity = Vector2.Zero;
+		_lastAllSoftwareScrollY = _allSoftwareDesiredScrollY;
+		_pendingAllSoftwareScrollApply = false;
+	}
+
+	private void UpdateAllSoftwareScrollState()
+	{
+		if (!_allSoftwareOpen || _allSoftwareScrollPanel == null)
+			return;
+
+		UpdateAllSoftwareScrollbarDrag();
+
+		if (_allSoftwareSmoothScrollActive)
+		{
+			float current = AllSoftwareScrollY;
+			float next = current.LerpTo(_allSoftwareDesiredScrollY, Time.Delta * AllSoftwareSmoothScrollRate);
+			if (MathF.Abs(next - _allSoftwareDesiredScrollY) < 0.5f)
+			{
+				next = _allSoftwareDesiredScrollY;
+				_allSoftwareSmoothScrollActive = false;
+			}
+
+			_allSoftwareScrollPanel.ScrollOffset = new Vector2(0f, next * AllSoftwareScrollScale);
+			_allSoftwareScrollPanel.ScrollVelocity = Vector2.Zero;
+			_lastAllSoftwareScrollY = next;
+			QueueArtworkRefresh();
+			StateHasChanged();
+			return;
+		}
+
+		if (_pendingAllSoftwareScrollApply)
+		{
+			SetAllSoftwareScrollY(_allSoftwareDesiredScrollY);
+			QueueArtworkRefresh();
+			StateHasChanged();
+			return;
+		}
+
+		float scrollY = AllSoftwareScrollY;
+		if (MathF.Abs(scrollY - _lastAllSoftwareScrollY) < 0.5f)
+			return;
+
+		_allSoftwareTitleDirection = Math.Sign(scrollY - _lastAllSoftwareScrollY);
+		_allSoftwareDesiredScrollY = scrollY;
+		_lastAllSoftwareScrollY = scrollY;
+		ClearAllSoftwareSelectionForMouseScroll();
+		QueueArtworkRefresh();
+		StateHasChanged();
+	}
+
+	private void OnAllSoftwareScrollbarMouseDown()
+	{
+		if (!AllSoftwareShowsScrollbar || _allSoftwareScrollbarPanel == null)
+			return;
+
+		UseMouseInAllSoftware();
+		_allSoftwareSmoothScrollActive = false;
+		_allSoftwareScrollbarDragging = true;
+
+		float thumbTop = _allSoftwareScrollbarThumbPanel?.Box.Top ?? 0f;
+		float thumbBottom = _allSoftwareScrollbarThumbPanel?.Box.Bottom ?? 0f;
+		float thumbHeight = MathF.Max(1f, thumbBottom - thumbTop);
+		bool pressedThumb = Mouse.Position.y >= thumbTop && Mouse.Position.y <= thumbBottom;
+		_allSoftwareScrollbarDragOffsetY = pressedThumb ? Mouse.Position.y - thumbTop : thumbHeight * 0.5f;
+
+		UpdateAllSoftwareScrollbarDrag();
+	}
+
+	protected override void OnMouseMove(MousePanelEvent e)
+	{
+		base.OnMouseMove(e);
+
+		if (!_allSoftwareScrollbarDragging)
+			return;
+
+		UpdateAllSoftwareScrollbarDrag();
+		e.StopPropagation();
+	}
+
+	protected override void OnMouseUp(MousePanelEvent e)
+	{
+		base.OnMouseUp(e);
+
+		if (!_allSoftwareScrollbarDragging)
+			return;
+
+		_allSoftwareScrollbarDragging = false;
+		e.StopPropagation();
+	}
+
+	private void UpdateAllSoftwareScrollbarDrag()
+	{
+		if (!_allSoftwareScrollbarDragging || _allSoftwareScrollbarPanel == null || _allSoftwareScrollPanel == null || !AllSoftwareShowsScrollbar)
+			return;
+
+		float trackHeight = MathF.Max(1f, _allSoftwareScrollbarPanel.Box.Rect.Height);
+		float thumbHeight = MathF.Max(1f, AllSoftwareScrollbarThumbHeight * AllSoftwareScrollScale);
+		float travel = MathF.Max(1f, trackHeight - thumbHeight);
+		float thumbTop = (Mouse.Position.y - _allSoftwareScrollbarPanel.Box.Rect.Top - _allSoftwareScrollbarDragOffsetY).Clamp(0f, travel);
+		float scrollY = (thumbTop / travel) * AllSoftwareMaxScrollY;
+
+		SetAllSoftwareScrollY(scrollY);
+		QueueArtworkRefresh();
+		StateHasChanged();
+	}
+
+	private bool IsHomeViewMoreIndex(int index)
+	{
+		return index == HomeViewMoreIndex;
+	}
+
+	private bool IsAllSoftwareSelected(int index)
+	{
+		return ShowAllSoftwareSelection && _allSoftwareOpen && _allSoftwareSelection == index;
+	}
+
+	private string AllSoftwareCardClass(int index)
+	{
+		return "all-card" + (IsAllSoftwareSelected(index) ? " selected" : "");
+	}
+
+	private bool ShouldMarqueeAllSoftwareTitle(string title)
+	{
+		if (string.IsNullOrWhiteSpace(title))
+			return false;
+
+		return MeasureAllSoftwareTitleWidth(title) > AllSoftwareTitleClipMaxWidth;
+	}
+
+	private bool ShouldShowAllSoftwareTitleOnTop(int index)
+	{
+		if (index < 0 || index >= _allGames.Count || AllSoftwareGameRows <= 1)
+			return false;
+
+		int row = index / AllSoftwareColumns;
+		if (row == 0)
+			return false;
+
+		if (row == AllSoftwareGameRows - 1)
+			return true;
+
+		return _allSoftwareTitleDirection > 0;
+	}
+
+	private string AllSoftwareTitleClass(string title, int index)
+	{
+		return "all-card-title" + (ShouldMarqueeAllSoftwareTitle(title) ? " marquee" : "") + (ShouldShowAllSoftwareTitleOnTop(index) ? " top" : " bottom");
+	}
+
+	private string AllSoftwareTitleArrowSrc(int index)
+	{
+		return ShouldShowAllSoftwareTitleOnTop(index) ? "/ui/title-pointer-down.svg" : "/ui/title-pointer.svg";
+	}
+
+	private static float AllSoftwareTitleClipMaxWidth => AllSoftwareTitleMaxWidth - AllSoftwareTitlePadding * 2f;
+
+	private float AllSoftwareTitleBubbleWidth(string title)
+	{
+		if (ShouldMarqueeAllSoftwareTitle(title))
+			return AllSoftwareTitleMaxWidth;
+
+		return MathF.Min(AllSoftwareTitleMaxWidth, MeasureAllSoftwareTitleWidth(title) + AllSoftwareTitleFitSlack + AllSoftwareTitlePadding * 2f);
+	}
+
+	private float AllSoftwareTitleClipWidth(string title)
+	{
+		return MathF.Max(1f, AllSoftwareTitleBubbleWidth(title) - AllSoftwareTitlePadding * 2f);
+	}
+
+	private float AllSoftwareTitleBodyLeft(string title, int column)
+	{
+		float width = AllSoftwareTitleBubbleWidth(title);
+		float cardLeft = column * (AllSoftwareCardWidth + AllSoftwareColumnGap);
+		float desiredLeft = cardLeft + (AllSoftwareCardWidth - width) * 0.5f;
+		float gridLeftInViewport = (AllSoftwareViewportWidth - AllSoftwareGridWidth) * 0.5f;
+		float minLeft = AllSoftwareTitleSafezoneInset - gridLeftInViewport;
+		float maxLeft = AllSoftwareViewportWidth - AllSoftwareTitleSafezoneInset - gridLeftInViewport - width;
+		return desiredLeft.Clamp(minLeft, MathF.Max(minLeft, maxLeft)) - cardLeft;
+	}
+
+	private string AllSoftwareTitleStyle(string title, int column, int index)
+	{
+		float width = AllSoftwareTitleBubbleWidth(title);
+		float left = AllSoftwareTitleBodyLeft(title, column);
+		string vertical = ShouldShowAllSoftwareTitleOnTop(index)
+			? $"top: -{AllSoftwareTitleVerticalOffset}px; bottom: auto;"
+			: $"bottom: -{AllSoftwareTitleVerticalOffset}px; top: auto;";
+		return $"left: {left}px; width: {width}px; {vertical}";
+	}
+
+	private string AllSoftwareTitleArrowStyle(string title, int column, int index)
+	{
+		float bubbleLeft = AllSoftwareTitleBodyLeft(title, column);
+		float arrowLeft = (AllSoftwareCardWidth * 0.5f) - bubbleLeft - (AllSoftwareTitleArrowSize * 0.5f);
+		string vertical = ShouldShowAllSoftwareTitleOnTop(index)
+			? $"top: {AllSoftwareTitleHeight}px;"
+			: "top: -12px;";
+		return $"left: {arrowLeft}px; margin-left: 0px; {vertical}";
+	}
+
+	private string AllSoftwareTitleClipStyle(string title)
+	{
+		return $"width: {AllSoftwareTitleClipWidth(title)}px;";
+	}
+
+	private float MeasureAllSoftwareTitleWidth(string title)
+	{
+		if (string.IsNullOrWhiteSpace(title))
+			return 1f;
+
+		float scale = GetAllSoftwareTitleScale();
+		var scope = new TextRendering.Scope(title, AllSoftwareTitleColor, AllSoftwareTitleFontSize * scale, AllSoftwareTitleFontName, AllSoftwareTitleFontWeight);
+		return MathF.Ceiling(scope.Measure().x / scale);
+	}
+
+	private float GetAllSoftwareTitleScale()
+	{
+		return MathF.Max(0.001f, Panel?.ScaleToScreen ?? 1f);
+	}
+
+	private string AllSoftwareAddButtonClass => "all-add-button" + (IsAllSoftwareAddSelected ? " selected" : "");
+
+	private void UseMouseInAllSoftware()
+	{
+		_input.ForceMouseMode();
+		_allSoftwareSelection = -1;
+		StateHasChanged();
+	}
+
+	private void ClearAllSoftwareSelectionForMouseScroll()
+	{
+		_input.ForceMouseMode();
+		_allSoftwareSelection = -1;
+	}
+
+	private void SelectFirstVisibleAllSoftwareItem(bool useGamepad)
+	{
+		if (_allGames.Count == 0)
+		{
+			SelectAllSoftwareItem(AllSoftwareAddIndex, useGamepad);
+			return;
+		}
+
+		int firstVisibleRow = Math.Max(0, (int)MathF.Floor((AllSoftwareScrollY - AllSoftwareGridVerticalPadding) / AllSoftwareRowStride));
+		int firstVisible = (firstVisibleRow * AllSoftwareColumns).Clamp(0, _allGames.Count - 1);
+		SelectAllSoftwareItem(firstVisible, useGamepad);
+	}
+
+	private void UpdateBackdropTransition()
+	{
+		SyncBackdropTexture();
+
+		if (_previousBackdrop == null)
+			return;
+
+		if (_currentBackdrop == null && !_previousBackdropFading)
+		{
+			_previousBackdropFading = true;
+			_backdropVersion++;
+			StateHasChanged();
+			return;
+		}
+
+		_previousBackdropAge += Time.Delta;
+		if (_previousBackdropAge < BackdropRetainDuration)
+			return;
+
+		_previousBackdrop = null;
+		PruneArtworkTextures();
+		_backdropVersion++;
+		StateHasChanged();
+	}
+
+	private void SyncBackdropTexture()
+	{
+		var next = SelectedBackdrop;
+		if (next == _currentBackdrop)
+			return;
+
+		if (_currentBackdrop != null)
+			_previousBackdrop = _currentBackdrop;
+
+		_currentBackdrop = next;
+		_previousBackdropAge = 0f;
+		_previousBackdropFading = false;
+		_backdropVersion++;
+	}
+
+	private void SelectNavItem(int index, bool useGamepad)
+	{
+		_navSelection = index.Clamp(0, NavItems.Length - 1);
+		_navFocused = true;
+		if (useGamepad)
+			SetGamepadMode();
+		else
+			_input.ForceMouseMode();
+		StateHasChanged();
+	}
+
+	private void ActivateNavItem(int index, bool useGamepad)
+	{
+		SelectNavItem(index, useGamepad);
+
+		switch (index)
+		{
+			case 0:
+				ShowUnavailableToast("#toast.netplay.title", "#toast.netplay.message", "group", NavItems[index].ColorClass);
+				break;
+			case 1:
+				ShowUnavailableToast("#toast.news.title", "#toast.news.message", "newspaper", NavItems[index].ColorClass);
+				break;
+			case 2:
+				ShowUnavailableToast("#toast.cloud.title", "#toast.cloud.message", "cloud", NavItems[index].ColorClass);
+				break;
+			case 3:
+				OpenSettings(useGamepad);
+				break;
+			case 4:
+				Sound.Play("ui.button.press");
+				Game.Close();
+				break;
+		}
+	}
+
+	private void ShowUnavailableToast(string title, string message, string icon, string colorClass)
+	{
+		_toast.Show(title, message, icon, colorClass);
+		Sound.Play("ui.button.press");
+		StateHasChanged();
+	}
+
+	public void ShowToast(string title, string message, string icon = "info", string colorClass = "blue")
+	{
+		_toast.Show(title, message, icon, colorClass);
+		StateHasChanged();
+	}
+
+	private void UpdateToast()
+	{
+		if (!_toast.IsRunning)
+			return;
+
+		_toast.Tick(Time.Delta);
+		StateHasChanged();
+	}
+
+	private void OpenSelectedDetails()
+	{
+		if (!CanOpenDetails)
+			return;
+
+		DetailsModal detailsPanel = EnsureDetailsPanel();
+		detailsPanel?.Open(SelectedGame, _input.UseGamepad);
+		StateHasChanged();
+	}
+
+	public void RefreshControllerHints()
+	{
+		InputHints.Current?.Refresh();
+	}
+
+	private DetailsModal EnsureDetailsPanel()
+	{
+		if (DetailsModal.Current != null && DetailsModal.Current.IsValid())
+			return DetailsModal.Current;
+
+		DetailsModal detailsPanel = Scene.GetAllComponents<DetailsModal>().FirstOrDefault(panel => panel.IsValid());
+		if (detailsPanel != null)
+			return detailsPanel;
+
+		return AddComponent<DetailsModal>();
+	}
+
+	private static float GetCarouselLeft(int offset, bool navFocused)
+	{
+		float anchorLeft = CarouselSelectedLeft;
+		float anchorVisualWidth = navFocused ? CarouselNormalCardWidth : CarouselFeaturedCardWidth;
+
+		if (offset == 0)
+			return anchorLeft;
+
+		if (offset < 0)
+			return CarouselSelectedLeft - ((CarouselNormalCardWidth + CarouselCardGap) * -offset);
+
+		return CarouselSelectedLeft + anchorVisualWidth + CarouselCardGap + ((CarouselNormalCardWidth + CarouselCardGap) * (offset - 1));
+	}
+
+	private static bool IsCarouselOffsetMounted(int offset)
+	{
+		return offset >= -CarouselMountedRange && offset <= CarouselMountedRange;
+	}
+
+	private string CarouselItemClass(int index, int offset, bool isViewMore)
+	{
+		var cls = "carousel-item";
+		if (isViewMore) cls += " view-more";
+		if (index == _selectedIndex && !_navFocused) cls += " featured selected";
+		if (index < _selectedIndex) cls += " before";
+		if (index > _selectedIndex) cls += " after";
+		if (!IsCarouselOffsetMounted(offset)) cls += " offscreen";
+		return cls;
+	}
+
+	private string GetCarouselItemRenderKey(string key)
+	{
+		return $"{key}:{_homeCarouselRenderVersion}";
+	}
+
+	private static float CarouselSelectionRingGap(bool isViewMore)
+	{
+		return isViewMore ? CarouselViewMoreSelectionRingGap : CarouselGameSelectionRingGap;
+	}
+
+	private bool ShouldShowCarouselRing(int index)
+	{
+		return ShowHomeSelection && index == _selectedIndex && !_navFocused;
+	}
+
+	private bool ShouldShowNavSelection(int index)
+	{
+		return ShowHomeSelection && _input.UseGamepad && _navFocused && _navSelection == index;
+	}
+
+	protected override int BuildHash()
+	{
+		if (_isVisible)
+			return HashCode.Combine(
+				HashCode.Combine(_selectedIndex, _allSoftwareSelection, (int)AllSoftwareScrollY, _allSoftwareOpen),
+				HashCode.Combine(AddGamesModalOpen, SettingsModalOpen, _allGames.Count, _homeItems.Count, _suppressHomeCarouselTransitions),
+				HashCode.Combine(_homeCarouselRenderVersion, _input.UseGamepad, _artworkVersion, _backdropVersion),
+				(int)(GetAllSoftwareTitleScale() * 1000f),
+				HashCode.Combine(_navFocused, _navSelection, _toast.RenderHash));
+
+		return HashCode.Combine(_isVisible);
+	}
+
+	protected override void OnDestroy()
+	{
+		if (Current == this)
+			Current = null;
+		DisposeArtworkTextures();
+		_currentBackdrop = null;
+		_previousBackdrop = null;
+	}
+
+	private void DisposeArtworkTextures()
+	{
+		var textures = _boxArt.Values.Concat(_logos.Values).Concat(_snaps.Values).Concat(_titles.Values).Concat(_pendingTextureDisposals.Select(item => item.Texture)).Where(texture => texture != null).ToHashSet();
+		foreach (var texture in textures)
+			Thumbnails.ReleaseTexture(texture);
+
+		_boxArt.Clear();
+		_logos.Clear();
+		_snaps.Clear();
+		_titles.Clear();
+		_pendingTextureDisposals.Clear();
+	}
+}

@@ -1,0 +1,56 @@
+InputHints
+{
+	position: absolute;
+	right: 38px;
+	bottom: 24px;
+	flex-direction: row;
+	align-items: center;
+	gap: 34px;
+	opacity: 0;
+	transition: opacity 0.12s ease;
+	pointer-events: none;
+	z-index: 1000;
+	font-family: Poppins;
+
+	&.visible
+	{
+		opacity: 1;
+	}
+
+	.controller-hint
+	{
+		flex-direction: row;
+		align-items: center;
+		gap: 14px;
+	}
+
+	.hint-label
+	{
+		font-size: 25px;
+		font-weight: 600;
+		color: rgba( 255, 255, 255, 0.94 );
+		text-shadow: 0 3px 10px rgba( 0, 0, 0, 0.6 );
+	}
+
+	&.all-software .hint-label
+	{
+		color: #000000;
+		text-shadow: none;
+	}
+
+	.hint-glyph
+	{
+		height: 48px;
+		background-size: contain;
+		background-position: center;
+		background-repeat: no-repeat;
+		filter: drop-shadow( 0 3px 10px rgba( 0, 0, 0, 0.6 ) );
+	}
+
+	&.all-software .hint-glyph
+	{
+		opacity: 1;
+		filter: brightness( 0 );
+	}
+
+}

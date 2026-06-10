@@ -1,0 +1,27 @@
+@using Sandbox.UI
+
+@namespace sGBA
+
+@inherits Panel
+
+<root class="@RowClass" onmouseenter=@OnHovered onclick=@OnClicked>
+	<SelectionRing Active=@Active StrokeWidth=@(8f) CornerRadius=@(8f) Gap=@(0f) Alpha=@RingAlpha class="toggle-ring" />
+	<div class="toggle-name">@Label</div>
+	<div class="toggle-switch @(On ? "on" : "")">
+		<div class="toggle-knob" />
+	</div>
+</root>
+
+@code
+{
+	[Parameter] public string Label { get; set; }
+	[Parameter] public bool Active { get; set; }
+	[Parameter] public bool On { get; set; }
+	[Parameter] public float RingAlpha { get; set; } = 1f;
+	[Parameter] public Action Hovered { get; set; }
+	[Parameter] public Action Clicked { get; set; }
+
+	private string RowClass => "toggle-row" + (On ? " selected" : "") + (Active ? " focus" : "");
+	private void OnHovered() => Hovered?.Invoke();
+	private void OnClicked() => Clicked?.Invoke();
+}

@@ -1,0 +1,317 @@
+PauseMenu
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	font-family: Poppins;
+	z-index: 2;
+	display: flex;
+
+	&.visible
+	{
+		pointer-events: all;
+
+		.overlay
+		{
+			opacity: 1;
+			backdrop-filter: blur(16px);
+		}
+
+		.menu-left
+		{
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	.overlay
+	{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, 0.75);
+		opacity: 0;
+		backdrop-filter: blur(0px);
+		align-items: center;
+		justify-content: center;
+		transition: opacity 0.25s ease, backdrop-filter 0.3s ease;
+	}
+
+	.menu-container
+	{
+		flex-direction: row;
+		align-items: stretch;
+		justify-content: center;
+		width: 100%;
+		max-width: 1200px;
+		gap: 40px;
+		padding: 40px;
+	}
+
+	.menu-left
+	{
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-width: 350px;
+		flex-shrink: 0;
+		gap: 4px;
+		opacity: 0;
+		transform: translateX(-30px);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+
+	.menu-item
+	{
+		width: 100%;
+		padding: 14px 32px;
+		font-size: 20px;
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.85);
+		background-color: transparent;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 4px;
+		transition: all 0.2s ease;
+
+		&:hover
+		{
+			color: white;
+			sound-in: ui.button.over;
+		}
+
+		&.selected
+		{
+			background-color: rgba(255, 255, 255, 0.95);
+			color: #3472e6;
+			font-weight: 600;
+			sound-in: ui.button.over;
+		}
+	}
+
+	.menu-left.in-slots .menu-item.selected
+	{
+		background-color: rgba(255, 255, 255, 0.25);
+		color: rgba(255, 255, 255, 0.7);
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.menu-divider
+	{
+		width: 1px;
+		align-self: stretch;
+		background-color: rgba(255, 255, 255, 0.35);
+		opacity: 0;
+		transition: opacity 0.2s ease;
+
+		&.visible
+		{
+			opacity: 1;
+		}
+	}
+
+	.menu-right
+	{
+		flex-direction: column;
+		gap: 12px;
+		min-width: 420px;
+		opacity: 0;
+		transform: translateX(30px);
+		pointer-events: none;
+		transition: opacity 0.2s ease, transform 0.2s ease;
+
+		&.visible
+		{
+			opacity: 1;
+			transform: translateX(0);
+			pointer-events: all;
+		}
+	}
+
+	.slot
+	{
+		flex-direction: row;
+		align-items: center;
+		gap: 16px;
+		padding: 8px;
+		border-radius: 4px;
+		cursor: pointer;
+		border: 2px solid transparent;
+		transition: border-color 0.1s ease, background-color 0.1s ease;
+
+		&:hover, &.highlighted
+		{
+			border-color: rgba(255, 255, 255, 0.8);
+			background-color: rgba(255, 255, 255, 0.1);
+			sound-in: ui.button.over;
+		}
+	}
+
+	.slot-preview
+	{
+		width: 216px;
+		height: 144px;
+		background-color: rgba(40, 40, 50, 0.9);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		overflow: hidden;
+		align-items: center;
+		justify-content: center;
+
+		Image
+		{
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			image-rendering: pixelated;
+		}
+
+		span
+		{
+			font-size: 13px;
+			color: rgba(255, 255, 255, 0.4);
+		}
+	}
+
+	.slot-info
+	{
+		flex-direction: column;
+		justify-content: center;
+		gap: 4px;
+	}
+
+	.slot-label
+	{
+		flex-direction: row;
+		font-size: 16px;
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	.slot-timestamp
+	{
+		font-size: 13px;
+		font-weight: 400;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	&.confirm-open .menu-container,
+	&.saving-open .menu-container
+	{
+		opacity: 0.3;
+		pointer-events: none;
+		transition: opacity 0.2s ease;
+	}
+
+	&.networked
+	{
+		.menu-divider,
+		.menu-right
+		{
+			display: none;
+		}
+
+		.menu-container
+		{
+			justify-content: center;
+		}
+
+		.menu-left
+		{
+			align-items: center;
+			justify-content: center;
+		}
+
+		.menu-item
+		{
+			text-align: center;
+			justify-content: center;
+		}
+	}
+
+	.dialog-overlay
+	{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transform: scale(0.95);
+		transition: opacity 0.2s ease, transform 0.2s ease;
+		pointer-events: none;
+	}
+
+	.dialog-overlay.visible
+	{
+		opacity: 1;
+		transform: scale(1);
+		pointer-events: all;
+	}
+
+	.dialog-box
+	{
+		flex-direction: column;
+		background-color: white;
+		border-radius: 8px;
+		padding: 60px 80px;
+		min-width: 500px;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+	}
+
+	.confirm-box
+	{
+		flex-direction: column;
+		background-color: white;
+		border-radius: 8px;
+		padding: 60px 80px 40px 80px;
+		min-width: 500px;
+		align-items: center;
+		gap: 40px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+	}
+
+	.dialog-message
+	{
+		font-size: 22px;
+		font-weight: 500;
+		color: #333;
+		text-align: center;
+	}
+
+	.confirm-buttons
+	{
+		flex-direction: column;
+		width: 100%;
+		gap: 8px;
+	}
+
+	.confirm-btn
+	{
+		width: 100%;
+		padding: 14px 0;
+		font-size: 18px;
+		font-weight: 600;
+		color: #3472e6;
+		justify-content: center;
+		align-items: center;
+		border-radius: 4px;
+		border: 2px solid #3472e6;
+		cursor: pointer;
+		transition: background-color 0.15s ease, color 0.15s ease;
+
+		&.selected
+		{
+			background-color: #3472e6;
+			color: white;
+		}
+	}
+}

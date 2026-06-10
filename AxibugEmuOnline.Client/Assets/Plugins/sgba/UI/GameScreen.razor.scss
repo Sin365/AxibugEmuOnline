@@ -1,0 +1,44 @@
+GameScreen
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 0;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+
+	.screen-backdrop
+	{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #000;
+	}
+
+	.screen
+	{
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		height: 100%;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		image-rendering: pixelated;
+	}
+
+	&.small-screen
+	{
+		.screen
+		{
+			width: 50%;
+			height: 50%;
+		}
+	}
+}

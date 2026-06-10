@@ -1,0 +1,31 @@
+@using Sandbox.UI
+
+@namespace sGBA
+
+@inherits Panel
+
+<root class="@ButtonClass" onmouseenter=@Hovered onclick=@Clicked>
+	<div class="nav-button-circle">
+		@if (Selected)
+		{
+			<SelectionRing Circle=@true StrokeWidth=@(5f) class="nav-selection-ring" />
+		}
+		<IconPanel Text="@Icon" class="nav-icon" />
+	</div>
+	@if (Selected)
+	{
+		<div class="nav-button-label">@Label</div>
+	}
+</root>
+
+@code
+{
+	[Parameter] public string Icon { get; set; }
+	[Parameter] public string ColorClass { get; set; }
+	[Parameter] public string Label { get; set; }
+	[Parameter] public bool Selected { get; set; }
+	[Parameter] public Action Hovered { get; set; }
+	[Parameter] public Action Clicked { get; set; }
+
+	private string ButtonClass => $"nav-button {ColorClass}" + (Selected ? " selected" : "");
+}

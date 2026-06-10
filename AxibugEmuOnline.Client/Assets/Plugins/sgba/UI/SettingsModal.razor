@@ -1,0 +1,185 @@
+@namespace sGBA
+
+@inherits PanelComponent
+
+<root class="@(IsVisible ? "visible" : "")">
+	<div class="modal-backdrop" onclick=@HideWithMouse />
+
+	<div class="settings-modal">
+		<div class="settings-title">#settings.title</div>
+		<div class="settings-subtitle">#settings.sub</div>
+
+		<div class="dialog-body">
+			<div class="toggle-list">
+				<SettingsToggleRow Label="#settings.classicfeel" Active=@IsClassicFeelFocused On=@GamePreferences.ReproduceClassicFeel RingAlpha=@_ringAlpha Hovered=@(() => SelectAction(ClassicFeelAction)) Clicked=@ToggleClassicFeelWithMouse />
+
+				<div class="settings-row-divider" />
+
+				<SettingsToggleRow Label="#settings.smallscreen" Active=@IsSmallScreenFocused On=@GamePreferences.DisplayWithSmallScreen RingAlpha=@_ringAlpha Hovered=@(() => SelectAction(SmallScreenAction)) Clicked=@ToggleSmallScreenWithMouse />
+			</div>
+		</div>
+	</div>
+</root>
+
+@code
+{
+	private const int ClassicFeelAction = 0;
+	private const int SmallScreenAction = 1;
+
+	public static SettingsModal Current { get; private set; }
+	public bool IsVisible { get; private set; }
+
+	private int _selectedIndex = ClassicFeelAction;
+	private readonly FocusInput _input = new();
+	private bool _openedThisFrame;
+	private float _ringAlpha;
+
+	private bool IsClassicFeelFocused => _input.UseGamepad && _selectedIndex == ClassicFeelAction;
+	private bool IsSmallScreenFocused => _input.UseGamepad && _selectedIndex == SmallScreenAction;
+
+	protected override void OnTreeFirstBuilt()
+	{
+		Current = this;
+	}
+
+	protected override void OnDestroy()
+	{
+		if (Current == this)
+			Current = null;
+	}
+
+	public void Show(bool useGamepad = false)
+	{
+		Current = this;
+		IsVisible = true;
+		_openedThisFrame = true;
+		_selectedIndex = ClassicFeelAction;
+		_ringAlpha = 0f;
+		_input.Begin(useGamepad);
+		Sound.Play("ui.popup.message.open");
+		StateHasChanged();
+	}
+
+	public void Hide()
+	{
+		IsVisible = false;
+		_ringAlpha = 0f;
+		var wasGamepad = _input.UseGamepad;
+		_input.End();
+		HomeScreen.Current?.FocusSettingsAction(wasGamepad);
+		Sound.Play("ui.popup.message.close");
+		StateHasChanged();
+	}
+
+	private void SelectAction(int action)
+	{
+		_input.ForceMouseMode();
+		_selectedIndex = action;
+	}
+
+	private void HideWithMouse()
+	{
+		_input.ForceMouseMode();
+		Hide();
+	}
+
+	private void ToggleClassicFeel(bool playSound = true)
+	{
+		if (playSound)
+			Sound.Play("ui.button.press");
+
+		GamePreferences.SetReproduceClassicFeel(!GamePreferences.ReproduceClassicFeel);
+		StateHasChanged();
+	}
+
+	private void ToggleClassicFeelWithMouse()
+	{
+		_input.ForceMouseMode();
+		ToggleClassicFeel();
+	}
+
+	private void ToggleSmallScreen(bool playSound = true)
+	{
+		if (playSound)
+			Sound.Play("ui.button.press");
+
+		GamePreferences.SetDisplayWithSmallScreen(!GamePreferences.DisplayWithSmallScreen);
+		StateHasChanged();
+	}
+
+	private void ToggleSmallScreenWithMouse()
+	{
+		_input.ForceMouseMode();
+		ToggleSmallScreen();
+	}
+
+	private void SetGamepadMode() => _input.ForceGamepadMode();
+
+	protected override void OnUpdate()
+	{
+		if (!IsVisible)
+			return;
+		if (new Game.Overlay().IsOpen)
+			return;
+
+		float nextRingAlpha = MathF.Min(1f, _ringAlpha + Time.Delta / 0.16f);
+		if (MathF.Abs(nextRingAlpha - _ringAlpha) > 0.001f)
+		{
+			_ringAlpha = nextRingAlpha;
+			StateHasChanged();
+		}
+
+		if (_openedThisFrame)
+		{
+			_openedThisFrame = false;
+			return;
+		}
+
+		var nav = _input.TickRepeating();
+		if (nav.Up) NavigateUp();
+		if (nav.Down) NavigateDown();
+
+		if (Input.Pressed("GBA_A"))
+		{
+			SetGamepadMode();
+			Sound.Play("ui.button.press");
+
+			if (_selectedIndex == ClassicFeelAction)
+				ToggleClassicFeel(playSound: false);
+			else
+				ToggleSmallScreen(playSound: false);
+		}
+
+		if (Input.Pressed("GBA_B"))
+		{
+			SetGamepadMode();
+			Sound.Play("ui.button.press");
+			Hide();
+		}
+	}
+
+	private void NavigateUp()
+	{
+		SetGamepadMode();
+		if (_selectedIndex > ClassicFeelAction)
+		{
+			_selectedIndex--;
+			Sound.Play("ui.button.over");
+		}
+	}
+
+	private void NavigateDown()
+	{
+		SetGamepadMode();
+		if (_selectedIndex < SmallScreenAction)
+		{
+			_selectedIndex++;
+			Sound.Play("ui.button.over");
+		}
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(IsVisible, _selectedIndex, _input.UseGamepad, _openedThisFrame, _ringAlpha, GamePreferences.ReproduceClassicFeel, GamePreferences.DisplayWithSmallScreen);
+	}
+}

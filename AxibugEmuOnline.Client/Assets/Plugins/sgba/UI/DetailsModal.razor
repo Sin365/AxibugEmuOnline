@@ -1,0 +1,266 @@
+@using Sandbox.UI
+@using System.Threading.Tasks
+
+@namespace sGBA
+
+@inherits PanelComponent
+
+<root class="@(IsVisible ? "visible" : "")">
+	<div class="modal-backdrop" onclick=@CloseWithMouse />
+
+	<div class="details-card">
+		@if (_game is not null)
+		{
+			<div class="details-sidebar">
+				@if (_titleArt != null)
+				{
+					<TextureImage Texture=@_titleArt class="details-preview" />
+				}
+				else
+				{
+					<div class="details-preview missing">
+						<div class="details-preview-icon-disc">
+							<div class="details-preview-icon">question_mark</div>
+						</div>
+					</div>
+				}
+
+				<div class="details-tabs">
+					<div class="details-tab selected">
+						<TabRing class="details-tab-ring" />
+						<div class="details-tab-fill" />
+						<div class="details-tab-line" />
+						<div class="details-tab-label">#details.information</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="details-main">
+				<div class="details-title">@Title</div>
+				<div class="info-list">
+					@foreach (var row in InfoRows)
+					{
+						<div class="info-row">
+							<div class="info-label">@row.Label</div>
+							<div class="info-value">@row.Value</div>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	</div>
+</root>
+
+@code
+{
+	public static DetailsModal Current { get; private set; }
+
+	private GameEntry _game;
+	private Texture _titleArt;
+	private GameInfo _metadata;
+	private GameHashes _hashes;
+	private readonly FocusInput _input = new();
+	private readonly record struct InfoRow(string Label, string Value);
+
+	public bool IsVisible => _game is not null;
+
+	private string Title => Display( _metadata?.Name, _game?.DisplayTitle );
+
+	private IEnumerable<InfoRow> InfoRows
+	{
+		get
+		{
+			if (_game is null) yield break;
+
+			var developer = FirstValue(_metadata?.Developer);
+			if (developer is not null) yield return new InfoRow("#details.info.developer", developer);
+
+			var publisher = FirstValue(_metadata?.Publisher);
+			if (publisher is not null) yield return new InfoRow("#details.info.publisher", publisher);
+
+			var releaseDate = FirstValue(FormatReleaseDate(_metadata));
+			if (releaseDate is not null) yield return new InfoRow("#details.info.release_date", releaseDate);
+
+			var genre = FirstValue(_metadata?.Genre);
+			if (genre is not null) yield return new InfoRow("#details.info.genre", genre);
+
+			var franchise = FirstValue(_metadata?.Franchise);
+			if (franchise is not null) yield return new InfoRow("#details.info.franchise", franchise);
+
+			var esrb = FirstValue(_metadata?.EsrbRating);
+			if (esrb is not null) yield return new InfoRow("#details.info.esrb", esrb);
+
+			var players = FirstValue(FormatPlayers(_metadata?.MaxUsers));
+			if (players is not null) yield return new InfoRow("#details.info.players", players);
+
+			var region = FirstValue(_metadata?.Region, _game.Region);
+			if (region is not null) yield return new InfoRow("#details.info.region", region);
+
+			var serial = FirstValue(_metadata?.Serial, _game.GameCode);
+			if (serial is not null) yield return new InfoRow("#details.info.serial", serial);
+
+			if (!string.IsNullOrWhiteSpace(_hashes?.Crc)) yield return new InfoRow("#details.info.crc32", FormatHash(_hashes.Crc));
+			if (!string.IsNullOrWhiteSpace(_hashes?.Sha1)) yield return new InfoRow("#details.info.sha1", FormatHash(_hashes.Sha1));
+			if (!string.IsNullOrWhiteSpace(_hashes?.Md5)) yield return new InfoRow("#details.info.md5", FormatHash(_hashes.Md5));
+		}
+	}
+
+	protected override void OnTreeFirstBuilt() => Current = this;
+
+	protected override void OnDestroy()
+	{
+		if (Current == this) Current = null;
+	}
+
+	public void Open(GameEntry game, bool useGamepad = false)
+	{
+		_game = game;
+		_titleArt = null;
+		_metadata = null;
+		_hashes = null;
+		_input.Begin(useGamepad);
+		Sound.Play("ui.popup.message.open");
+		StateHasChanged();
+		HomeScreen.Current?.RefreshControllerHints();
+		_ = LoadAsync(game);
+	}
+
+	public void Close()
+	{
+		if (!IsVisible) return;
+		var wasGamepad = _input.UseGamepad;
+		_game = null;
+		_titleArt = null;
+		_metadata = null;
+		_input.End();
+		HomeScreen.Current?.RestoreInputMode(wasGamepad);
+		Sound.Play("ui.popup.message.close");
+		StateHasChanged();
+		HomeScreen.Current?.RefreshControllerHints();
+	}
+
+	private void CloseWithMouse()
+	{
+		_input.ForceMouseMode();
+		Close();
+	}
+
+	private async Task LoadAsync(GameEntry game)
+	{
+		var titleTask = LoadTitleArtAsync(game);
+		var metadataTask = LoadMetadataAsync(game);
+		var hashTask = LoadHashesAsync(game);
+
+		await titleTask;
+		await metadataTask;
+		await hashTask;
+	}
+
+	private async Task LoadHashesAsync(GameEntry game)
+	{
+		await Task.Yield();
+
+		var hashes = GameHasher.Compute(game);
+		if (_game != game) return;
+
+		_hashes = hashes;
+		StateHasChanged();
+	}
+
+	private async Task LoadTitleArtAsync(GameEntry game)
+	{
+		var titleArt = await Thumbnails.LoadAsync(game, ThumbType.Title);
+		if (_game != game) return;
+
+		_titleArt = titleArt;
+		StateHasChanged();
+	}
+
+	private async Task LoadMetadataAsync(GameEntry game)
+	{
+		try
+		{
+			var metadata = await LibretroDb.FetchAsync(game);
+			if (_game == game)
+			{
+				_metadata = metadata;
+				StateHasChanged();
+			}
+		}
+		catch (Exception ex)
+		{
+			Log.Warning($"[sGBA] Failed to load Libretro metadata for {game.DisplayTitle}: {ex.Message}");
+		}
+	}
+
+	protected override void OnUpdate()
+	{
+		if (!IsVisible) return;
+		if (new Game.Overlay().IsOpen) return;
+
+		var wasGamepad = _input.UseGamepad;
+		_input.Tick();
+		if (wasGamepad != _input.UseGamepad)
+		{
+			HomeScreen.Current?.RestoreInputMode(_input.UseGamepad);
+			StateHasChanged();
+			HomeScreen.Current?.RefreshControllerHints();
+		}
+
+		if (Input.Pressed("GBA_B"))
+		{
+			_input.ForceGamepadMode();
+			Close();
+		}
+	}
+
+	private static string Display(params string[] values)
+	{
+		return FirstValue(values) ?? "-";
+	}
+
+	private static string FirstValue(params string[] values)
+	{
+		foreach (var value in values)
+		{
+			if (!string.IsNullOrWhiteSpace(value)) return value;
+		}
+
+		return null;
+	}
+
+	private static string FormatReleaseDate(GameInfo metadata)
+	{
+		if (metadata is null || string.IsNullOrWhiteSpace(metadata.ReleaseYear)) return string.Empty;
+
+		var value = metadata.ReleaseYear;
+		if (!string.IsNullOrWhiteSpace(metadata.ReleaseMonth))
+			value += "-" + metadata.ReleaseMonth.PadLeft(2, '0');
+
+		return value;
+	}
+
+	private static string FormatHash(string value)
+	{
+		if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+		return value.ToUpperInvariant();
+	}
+
+	private static string FormatPlayers(string users)
+	{
+		if (string.IsNullOrWhiteSpace(users)) return string.Empty;
+		return users == "1" ? Game.Language.GetPhrase("details.players.one") : Game.Language.GetPhrase("details.players.many", new() { { "count", users } });
+	}
+
+	protected override int BuildHash()
+	{
+		var hash = new HashCode();
+		hash.Add(IsVisible);
+		hash.Add(_game?.Path);
+		hash.Add(_titleArt);
+		hash.Add(_metadata);
+		hash.Add(_hashes);
+		hash.Add(_input.UseGamepad);
+		return hash.ToHashCode();
+	}
+}

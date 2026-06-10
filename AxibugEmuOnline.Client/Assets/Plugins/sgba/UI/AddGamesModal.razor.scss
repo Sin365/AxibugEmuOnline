@@ -1,0 +1,216 @@
+AddGamesModal
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	font-family: Poppins;
+	z-index: 20;
+	display: flex;
+	opacity: 0;
+	align-items: center;
+	justify-content: center;
+	transition: opacity 0.16s ease;
+
+	&.visible
+	{
+		opacity: 1;
+		pointer-events: all;
+
+		.add-games-modal
+		{
+			opacity: 1;
+			transform: translateY( 0 ) scale( 1 );
+		}
+	}
+
+	.modal-backdrop
+	{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba( 4, 5, 7, 0.66 );
+		z-index: 0;
+	}
+
+	.add-games-modal
+	{
+		position: relative;
+		width: 760px;
+		height: 472px;
+		background-color: #f2f4f7;
+		border-radius: 3.982vh;
+		box-shadow: 0 12px 32px rgba( 0, 0, 0, 0.28 );
+		overflow: visible;
+		opacity: 0;
+		transform: translateY( 12px ) scale( 0.985 );
+		transition: opacity 0.18s ease, transform 0.18s ease;
+		z-index: 1;
+	}
+
+	.add-games-rule
+	{
+		position: absolute;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background-color: rgba( 35, 39, 46, 0.18 );
+		z-index: 2;
+	}
+
+	.add-games-rule.top
+	{
+		display: none;
+	}
+
+	.add-games-rule.bottom
+	{
+		bottom: 72px;
+	}
+
+	.add-games-title
+	{
+		position: absolute;
+		left: 0;
+		top: 32px;
+		width: 760px;
+		height: 34px;
+		align-items: center;
+		justify-content: center;
+		font-size: 25px;
+		font-weight: 400;
+		line-height: 32px;
+		color: #20242a;
+		text-align: center;
+		white-space: nowrap;
+		z-index: 3;
+	}
+
+	.add-games-subtitle
+	{
+		position: absolute;
+		left: 52px;
+		top: 74px;
+		width: 656px;
+		height: 24px;
+		align-items: center;
+		justify-content: center;
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 22px;
+		color: rgba( 32, 36, 42, 0.64 );
+		text-align: center;
+		white-space: nowrap;
+		z-index: 3;
+	}
+
+	.preview-frame
+	{
+		position: absolute;
+		left: 50%;
+		top: 116px;
+		width: 680px;
+		height: 256px;
+		margin-left: -340px;
+		border-radius: 4px;
+		background-color: #d9dde3;
+		box-shadow: 0 6px 18px rgba( 0, 0, 0, 0.22 );
+		overflow: hidden;
+		z-index: 1;
+	}
+
+	.preview-image
+	{
+		width: 100%;
+		height: 100%;
+		background-size: contain;
+		background-position: center;
+		background-repeat: no-repeat;
+	}
+
+	.dialog-actions
+	{
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 72px;
+		align-items: center;
+		justify-content: center;
+		z-index: 3;
+	}
+
+	.action-btn
+	{
+		position: relative;
+		width: 760px;
+		height: 72px;
+		border-radius: 0;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		overflow: visible;
+	}
+
+	.action-btn-ring
+	{
+		position: absolute;
+		left: -4px;
+		top: -4px;
+		width: 768px;
+		height: 80px;
+		border-radius: 0 0 36px 36px;
+		overflow: visible;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.action-btn-fill
+	{
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 760px;
+		height: 72px;
+		border-radius: 0 0 3.982vh 3.982vh;
+		border: 0;
+		background-color: #f2f4f7;
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	.action-btn-label
+	{
+		position: relative;
+		width: 760px;
+		height: 72px;
+		align-items: center;
+		justify-content: center;
+		font-size: 24px;
+		font-weight: 400;
+		line-height: 30px;
+		color: #1f76ad;
+		text-align: center;
+		z-index: 3;
+	}
+
+	.action-btn.focus .action-btn-fill
+	{
+		left: 0;
+		top: 0;
+		width: 760px;
+		height: 72px;
+		border-radius: 0 0 3.982vh 3.982vh;
+		border: 0;
+		background-color: rgba( 255, 255, 255, 0.35 );
+	}
+
+	.action-btn.focus .action-btn-label
+	{
+		color: #1f76ad;
+	}
+}

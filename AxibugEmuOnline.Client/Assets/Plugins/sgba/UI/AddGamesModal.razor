@@ -1,0 +1,110 @@
+@namespace sGBA
+
+@inherits PanelComponent
+
+<root class="@(IsVisible ? "visible" : "")">
+	<div class="modal-backdrop" onclick=@Hide />
+
+	<div class="add-games-modal">
+		<div class="add-games-rule top" />
+		<div class="add-games-rule bottom" />
+
+		<div class="add-games-title">#addgames.title</div>
+		<div class="add-games-subtitle">#addgames.sub</div>
+
+		<div class="preview-frame">
+			<image src="/ui/add-roms.png" class="preview-image" />
+		</div>
+
+		<div class="dialog-actions">
+			<div class="action-btn @ActionButtonClass" onclick=@Hide>
+				<SelectionRing Active=@IsActionFocused StrokeWidth=@(8f) CornerRadius=@(43f) Gap=@(0f) FlatTop=@true Alpha=@_ringAlpha class="action-btn-ring" />
+				<div class="action-btn-fill" />
+				<div class="action-btn-label">#addgames.dismiss</div>
+			</div>
+		</div>
+
+	</div>
+</root>
+
+@code
+{
+	public static AddGamesModal Current { get; private set; }
+
+	public bool IsVisible { get; private set; }
+
+	private readonly FocusInput _input = new();
+	private bool _openedThisFrame;
+	private float _ringAlpha;
+	private bool IsActionFocused => _input.UseGamepad;
+	private string ActionButtonClass => IsActionFocused ? "focus" : "";
+
+	protected override void OnTreeFirstBuilt()
+	{
+		Current = this;
+	}
+
+	public void Open(bool useGamepad = false)
+	{
+		IsVisible = true;
+		_openedThisFrame = true;
+		_ringAlpha = 0f;
+		_input.Begin(useGamepad);
+		Sound.Play("ui.popup.message.open");
+		StateHasChanged();
+	}
+
+	public void Hide()
+	{
+		bool wasGamepad = _input.UseGamepad;
+		IsVisible = false;
+		_ringAlpha = 0f;
+		_input.End();
+		HomeScreen.Current?.OnAddGamesModalClosed(wasGamepad);
+		Sound.Play("ui.popup.message.close");
+		StateHasChanged();
+	}
+
+	protected override void OnUpdate()
+	{
+		if (!IsVisible)
+			return;
+		if (new Game.Overlay().IsOpen)
+			return;
+
+		float nextRingAlpha = MathF.Min(1f, _ringAlpha + Time.Delta / 0.16f);
+		if (MathF.Abs(nextRingAlpha - _ringAlpha) > 0.001f)
+		{
+			_ringAlpha = nextRingAlpha;
+			StateHasChanged();
+		}
+
+		var wasGamepad = _input.UseGamepad;
+		_input.Tick();
+		if (wasGamepad != _input.UseGamepad)
+			StateHasChanged();
+
+		if (_openedThisFrame)
+		{
+			_openedThisFrame = false;
+			return;
+		}
+
+		if (Input.Pressed("GBA_A") || Input.Pressed("GBA_B"))
+		{
+			_input.ForceGamepadMode();
+			Hide();
+		}
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(IsVisible, _input.UseGamepad, _ringAlpha);
+	}
+
+	protected override void OnDestroy()
+	{
+		if (Current == this)
+			Current = null;
+	}
+}

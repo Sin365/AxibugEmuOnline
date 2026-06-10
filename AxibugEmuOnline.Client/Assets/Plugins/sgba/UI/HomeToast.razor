@@ -1,0 +1,24 @@
+@using Sandbox.UI
+
+@namespace sGBA
+
+@inherits Panel
+
+<root>
+	<div class="toast-pill @ColorClass" style="@InlineStyle">
+		<div class="toast-icon">@Icon</div>
+		<div class="toast-text">
+			<div class="toast-title">@Title</div>
+			<div class="toast-message">@Message</div>
+		</div>
+	</div>
+</root>
+
+@code
+{
+	[Parameter] public string Title { get; set; }
+	[Parameter] public string Message { get; set; }
+	[Parameter] public string Icon { get; set; } = "info";
+	[Parameter] public string ColorClass { get; set; } = "blue";
+	[Parameter] public string InlineStyle { get; set; }
+}

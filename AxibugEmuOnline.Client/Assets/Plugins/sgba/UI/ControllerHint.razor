@@ -1,0 +1,17 @@
+@using Sandbox.UI
+
+@namespace sGBA
+
+@inherits Panel
+
+<root class="controller-hint">
+	<InputHint Action=@Action GlyphSize=@GlyphSize class="hint-glyph" />
+	<div class="hint-label">@Label</div>
+</root>
+
+@code
+{
+	[Parameter] public string Action { get; set; }
+	[Parameter] public string Label { get; set; }
+	[Parameter] public InputGlyphSize GlyphSize { get; set; } = InputGlyphSize.Medium;
+}
