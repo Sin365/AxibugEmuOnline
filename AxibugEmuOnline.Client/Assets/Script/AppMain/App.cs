@@ -118,6 +118,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             }
 
             starRomLib = new RomLib();
+            s_romLibs[RomPlatformType.All] = starRomLib;
             CacheMgr = new CacheManager();
             roomMgr = new AppRoom();
             share = new AppShare();

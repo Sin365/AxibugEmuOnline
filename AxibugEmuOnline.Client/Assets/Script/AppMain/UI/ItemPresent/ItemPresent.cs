@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -549,6 +550,11 @@ public class ItemPresent : GridLayoutGroup, IVirtualLayout
     public RectTransform RectTransform => rectTransform;
     public Vector2 GetItemAnchorePos(int index)
     {
+        if (index < 0 && index >= children.Count)
+        {
+            App.log.Warning("children 下标超出预期:"+children.Count);
+            return new Vector2(0,float.MaxValue);//放置在远处
+        }
         var proxy = children[index];
         return proxy.AnchoredPosition;
     }
