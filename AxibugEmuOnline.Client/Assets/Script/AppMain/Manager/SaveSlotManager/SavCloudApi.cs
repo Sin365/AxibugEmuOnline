@@ -70,6 +70,7 @@ namespace AxibugEmuOnline.Client
 
         void RecvDelGameSavList(Protobuf_Mine_DelGameSav_RESP msg)
         {
+            OverlayManager.PopTip("即时存档,云端同步删除");
             Eventer.Instance.PostEvent(EEvent.OnNetGameSavDeleted, msg.RomID, msg.SavDataIdx);
         }
 
@@ -102,6 +103,7 @@ namespace AxibugEmuOnline.Client
 
         void RecvUpLoadGameSav(Protobuf_Mine_UpLoadGameSav_RESP msg)
         {
+            OverlayManager.PopTip("即时存档,成功同步云端");
             OnUploadedSavData?.Invoke(msg.RomID, msg.SavDataIdx, msg.UploadSevInfo);
         }
 
