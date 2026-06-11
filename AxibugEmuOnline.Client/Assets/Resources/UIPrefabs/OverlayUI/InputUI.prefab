@@ -450,6 +450,7 @@ MonoBehaviour:
   m_root: {fileID: 7458324991124475286}
   m_cg: {fileID: 1811275770296273178}
   m_input: {fileID: 2842545688870835167}
+  txtTips: {fileID: 4384951329512034390}
 --- !u!1 &6723202629744404856
 GameObject:
   m_ObjectHideFlags: 0

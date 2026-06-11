@@ -94,6 +94,8 @@ enum ErrorCode
 	
 	ERROR_ROM_ALREADY_HAD_STAR =403;//已经收藏
 	ERROR_ROM_DONT_HAD_STAR =404;//并没有收藏
+	
+	ERROR_ROLE_ALREADLY_NICKNAME = 501;//用户名重复
 }
 
 enum LoginType

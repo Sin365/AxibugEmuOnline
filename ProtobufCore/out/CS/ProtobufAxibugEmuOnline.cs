@@ -144,7 +144,7 @@ namespace AxibugProtobuf {
             "bnB1dBD/LhIPCgpDTURfU2NyZWVuENk2Eh8KGkNNRF9HQU1FU0FWX0dldEdh",
             "bWVTYXZMaXN0EME+EhsKFkNNRF9HQU1FU0FWX0RlbEdhbWVTYXYQxT4SHgoZ",
             "Q01EX0dBTUVTQVZfVXBsb2FkR2FtZVNhdhDKPhIeChlDTURfR0FNRVNDUkVF",
-            "Tl9JTUdfVXBsb2FkEKlGEhIKDUNNRF9HQU1FX01BUksQ9U4qzwIKCUVycm9y",
+            "Tl9JTUdfVXBsb2FkEKlGEhIKDUNNRF9HQU1FX01BUksQ9U4q8gIKCUVycm9y",
             "Q29kZRIQCgxFUlJPUl9ERUZBVUwQABIMCghFUlJPUl9PSxABEhgKFEVSUk9S",
             "X1JPT01fTk9UX0ZPVU5EEAoSJwojRVJST1JfUk9PTV9TTE9UX0FMUkVBRExZ",
             "X0hBRF9QTEFZRVIQCxIhCh1FUlJPUl9ST09NX0NBTlRfRE9fQ1VSUl9TVEFU",
@@ -152,29 +152,30 @@ namespace AxibugProtobuf {
             "X1JPTV9GQUlMX1NBVkVEQVRBEFESIgoeRVJST1JfUk9NX0FMUkVBRFlfSEFE",
             "X0NPVkVSSU1HEFoSGwoXRVJST1JfUk9NX0ZBSUxfQ09WRVJJTUcQWxIfChpF",
             "UlJPUl9ST01fQUxSRUFEWV9IQURfU1RBUhCTAxIcChdFUlJPUl9ST01fRE9O",
-            "VF9IQURfU1RBUhCUAypACglMb2dpblR5cGUSDQoJVXNlRGV2aWNlEAASDgoK",
-            "VXNlQWNjb3VudBABEhQKEFVzZUhhb1l1ZUFjY291bnQQAiqlAQoKRGV2aWNl",
-            "VHlwZRIWChJEZXZpY2VUeXBlX0RlZmF1bHQQABIGCgJQQxABEgsKB0FuZHJv",
-            "aWQQAhIHCgNJT1MQAxIHCgNQU1YQBBIHCgNQUzMQBRIHCgNQUzQQBhILCgdY",
-            "Qk9YMzYwEAcSCwoHWEJPWE9ORRAIEggKBFdpaVUQCRIPCgtOaW50ZW5kbzNE",
-            "UxAKEhEKDUFuZHJvaWRDYXJBcHAQCyqTAgoLR2FtZVBhZFR5cGUSDAoIS2V5",
-            "Ym9hcmQQABIRCg1HbG9iYWxHYW1lUGFkEAESDgoKVG91Y2hQYW5lbBACEg4K",
-            "CkRTM0NvbnRyb2wQAxIOCgpEUzRDb250cm9sEAQSDgoKRFM1Q29udHJvbBAF",
-            "EhQKEFN3aXRjaFByb0NvbnRyb2wQBhIQCgxTd2l0Y2hKb3lDb24QBxISCg5Y",
-            "Qk9YMzYwQ29udHJvbBAIEhIKDlhCT1hPTkVDb250cm9sEAkSEQoNUFNWaXRh",
-            "Q29udHJvbBAKEhIKDldpaVVQYWRDb250cm9sEAsSFAoQV2lpUmVtb3RlQ29u",
-            "dHJvbBAMEhYKEk5pbnRlbmRvM0RTQ29udHJvbBANKpkCCg9Sb21QbGF0Zm9y",
-            "bVR5cGUSCwoHSW52YWxpZBAAEgcKA05lcxABEhEKDU1hc3Rlcl9TeXN0ZW0Q",
-            "AhINCglHYW1lX0dlYXIQAxIMCghHYW1lX0JveRAEEhIKDkdhbWVfQm95X0Nv",
-            "bG9yEAUSEQoNQ29sZWNvX1Zpc2lvbhAGEgsKB1NDXzMwMDAQBxILCgdTR18x",
-            "MDAwEAgSCgoGTkVPR0VPEBQSBwoDSUdTEBUSCAoEQ1BTMRAWEggKBENQUzIQ",
-            "FxIOCgpBcmNhZGVfT0xEEB4SDwoLV29uZGVyX1N3YW4QKBIVChFXb25kZXJf",
-            "U3dhbl9Db2xvchApEhQKEEdhbWVfQm95X0FkdmFuY2UQMxIICgNBbGwQ5wcq",
-            "cAoNUm9vbUdhbWVTdGF0ZRISCg5Ob25lX0dhbWVTdGF0ZRAAEgwKCE9ubHlI",
-            "b3N0EAESEQoNV2FpdFJhd1VwZGF0ZRACEg0KCVdhaXRSZWFkeRADEgkKBVBh",
-            "dXNlEAQSEAoMSW5PbmxpbmVHYW1lEAUqTgoRTG9naW5SZXN1bHRTdGF0dXMS",
-            "IQodTG9naW5SZXN1bHRTdGF0dXNfQmFzZURlZmF1bHQQABIGCgJPSxABEg4K",
-            "CkFjY291bnRFcnIQAkICSAFiBnByb3RvMw=="));
+            "VF9IQURfU1RBUhCUAxIhChxFUlJPUl9ST0xFX0FMUkVBRExZX05JQ0tOQU1F",
+            "EPUDKkAKCUxvZ2luVHlwZRINCglVc2VEZXZpY2UQABIOCgpVc2VBY2NvdW50",
+            "EAESFAoQVXNlSGFvWXVlQWNjb3VudBACKqUBCgpEZXZpY2VUeXBlEhYKEkRl",
+            "dmljZVR5cGVfRGVmYXVsdBAAEgYKAlBDEAESCwoHQW5kcm9pZBACEgcKA0lP",
+            "UxADEgcKA1BTVhAEEgcKA1BTMxAFEgcKA1BTNBAGEgsKB1hCT1gzNjAQBxIL",
+            "CgdYQk9YT05FEAgSCAoEV2lpVRAJEg8KC05pbnRlbmRvM0RTEAoSEQoNQW5k",
+            "cm9pZENhckFwcBALKpMCCgtHYW1lUGFkVHlwZRIMCghLZXlib2FyZBAAEhEK",
+            "DUdsb2JhbEdhbWVQYWQQARIOCgpUb3VjaFBhbmVsEAISDgoKRFMzQ29udHJv",
+            "bBADEg4KCkRTNENvbnRyb2wQBBIOCgpEUzVDb250cm9sEAUSFAoQU3dpdGNo",
+            "UHJvQ29udHJvbBAGEhAKDFN3aXRjaEpveUNvbhAHEhIKDlhCT1gzNjBDb250",
+            "cm9sEAgSEgoOWEJPWE9ORUNvbnRyb2wQCRIRCg1QU1ZpdGFDb250cm9sEAoS",
+            "EgoOV2lpVVBhZENvbnRyb2wQCxIUChBXaWlSZW1vdGVDb250cm9sEAwSFgoS",
+            "TmludGVuZG8zRFNDb250cm9sEA0qmQIKD1JvbVBsYXRmb3JtVHlwZRILCgdJ",
+            "bnZhbGlkEAASBwoDTmVzEAESEQoNTWFzdGVyX1N5c3RlbRACEg0KCUdhbWVf",
+            "R2VhchADEgwKCEdhbWVfQm95EAQSEgoOR2FtZV9Cb3lfQ29sb3IQBRIRCg1D",
+            "b2xlY29fVmlzaW9uEAYSCwoHU0NfMzAwMBAHEgsKB1NHXzEwMDAQCBIKCgZO",
+            "RU9HRU8QFBIHCgNJR1MQFRIICgRDUFMxEBYSCAoEQ1BTMhAXEg4KCkFyY2Fk",
+            "ZV9PTEQQHhIPCgtXb25kZXJfU3dhbhAoEhUKEVdvbmRlcl9Td2FuX0NvbG9y",
+            "ECkSFAoQR2FtZV9Cb3lfQWR2YW5jZRAzEggKA0FsbBDnBypwCg1Sb29tR2Ft",
+            "ZVN0YXRlEhIKDk5vbmVfR2FtZVN0YXRlEAASDAoIT25seUhvc3QQARIRCg1X",
+            "YWl0UmF3VXBkYXRlEAISDQoJV2FpdFJlYWR5EAMSCQoFUGF1c2UQBBIQCgxJ",
+            "bk9ubGluZUdhbWUQBSpOChFMb2dpblJlc3VsdFN0YXR1cxIhCh1Mb2dpblJl",
+            "c3VsdFN0YXR1c19CYXNlRGVmYXVsdBAAEgYKAk9LEAESDgoKQWNjb3VudEVy",
+            "chACQgJIAWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::AxibugProtobuf.CommandID), typeof(global::AxibugProtobuf.ErrorCode), typeof(global::AxibugProtobuf.LoginType), typeof(global::AxibugProtobuf.DeviceType), typeof(global::AxibugProtobuf.GamePadType), typeof(global::AxibugProtobuf.RomPlatformType), typeof(global::AxibugProtobuf.RoomGameState), typeof(global::AxibugProtobuf.LoginResultStatus), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -426,6 +427,10 @@ namespace AxibugProtobuf {
     ///并没有收藏
     /// </summary>
     [pbr::OriginalName("ERROR_ROM_DONT_HAD_STAR")] ErrorRomDontHadStar = 404,
+    /// <summary>
+    ///用户名重复
+    /// </summary>
+    [pbr::OriginalName("ERROR_ROLE_ALREADLY_NICKNAME")] ErrorRoleAlreadlyNickname = 501,
   }
 
   public enum LoginType {

@@ -80,11 +80,37 @@ namespace AxibugEmuOnline.Server.Manager
             bool bDone = false;
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(socket);
             Protobuf_Modify_NickName msg = ProtoBufHelper.DeSerizlize<Protobuf_Modify_NickName>(reqData);
+
+            Protobuf_Modify_NickName_RESP modifResp = new Protobuf_Modify_NickName_RESP() { };
             using (MySqlConnection conn = SQLRUN.GetConn("ModifyNikeName"))
             {
                 try
                 {
-                    string query = "update users set nikename = ?nikename where uid = ?uid ";
+                    long temp = 0;
+                    string query = "SELECT uid from users where nikename = ?nikename ";
+                    using (var command = new MySqlCommand(query, conn))
+                    {
+                        // 设置参数值  
+                        command.Parameters.AddWithValue("?nikename", msg.NickName);
+                        // 执行查询并处理结果  
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                temp = reader.GetInt64(0);
+                            }
+                        }
+                    }
+
+                    if (temp > 0)
+                    {
+                        AppSrv.g_Log.Info($"昵称重复");
+                        //返回给自己结果
+                        AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdModifyNickName, (int)ErrorCode.ErrorRoleAlreadlyNickname, ProtoBufHelper.Serizlize(modifResp));
+                        return;
+                    }
+
+                    query = "update users set nikename = ?nikename where uid = ?uid ";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值
@@ -117,8 +143,10 @@ namespace AxibugEmuOnline.Server.Manager
                     UserInfo = miniinfo,
                 };
 
-                //回执给自己
+                //更新给自己
                 AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdUpdateSelfUserInfo, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(infodata));
+                //返回给自己结果
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdModifyNickName, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(modifResp));
 
                 Protobuf_Update_OtherUserInfo_RESP otherinfo = new Protobuf_Update_OtherUserInfo_RESP()
                 {
