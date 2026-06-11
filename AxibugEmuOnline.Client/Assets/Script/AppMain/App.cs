@@ -204,7 +204,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             Resp_CheckStandInfo resp = null;
             while (true)
             {
-                AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+                AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Initer.versionInfo.GetBundleVersionStr()}");
                 yield return request.SendWebRequest;
                 if (!request.downloadHandler.isDone)
                 {

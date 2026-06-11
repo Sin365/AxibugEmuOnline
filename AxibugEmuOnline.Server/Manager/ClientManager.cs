@@ -3,6 +3,7 @@ using AxibugEmuOnline.Server.Event;
 using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
+using MySql.Data.MySqlClient;
 using System.Net.Sockets;
 using System.Timers;
 
@@ -42,6 +43,8 @@ namespace AxibugEmuOnline.Server.Manager
             pingTickARE = AppSrv.g_Tick.AddNewARE(TickManager.TickType.Interval_2000MS);
             threadPingTick = new Thread(PingAllLoop);
             threadPingTick.Start();
+
+            UpdateOnlinePlayer();
         }
 
 
@@ -119,6 +122,8 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 ex.ToString();
             }
+
+            UpdateOnlinePlayer();
         }
 
         /// <summary>
@@ -136,7 +141,9 @@ namespace AxibugEmuOnline.Server.Manager
                     mDictSocketClient.Remove(client._socket);
 
                 mClientList.Remove(client);
+                UpdateOnlinePlayer();
             }
+
         }
 
         /// <summary>
@@ -338,6 +345,24 @@ namespace AxibugEmuOnline.Server.Manager
         public int GetOnlineClient()
         {
             return mClientList.Where(w => !w.IsOffline).Count();
+        }
+
+
+        void UpdateOnlinePlayer()
+        {
+            string query = "INSERT INTO `haoyue_emu`.`onlineplayercount` (`allcount`) VALUES (?onlinecount);";
+            using (MySqlConnection conn = SQLRUN.GetConn("RecvUpLoadGameSav"))
+            {
+                using (var command = new MySqlCommand(query, conn))
+                {
+                    // 设置参数值
+                    command.Parameters.AddWithValue("?onlinecount", GetOnlineClient());
+                    if (command.ExecuteNonQuery() < 1)
+                    {
+                        AppSrv.g_Log.Error("执行即时存档保存失败");
+                    }
+                }
+            }
         }
     }
 }
