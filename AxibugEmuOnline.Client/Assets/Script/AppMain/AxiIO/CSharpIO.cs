@@ -63,8 +63,11 @@ namespace AxiIO
 
         public int file_ReadBytesToArr(string filePath, byte[] readToArr, int start, int len)
         {
-            FileStream streaming = System.IO.File.OpenRead(filePath);
-            return streaming.Read(readToArr, 0, 4);
+            using (FileStream streaming = System.IO.File.OpenRead(filePath))
+            {
+                int readlen = streaming.Read(readToArr, 0, len);
+                return readlen;
+            }
         }
 
         public string[] dir_GetDirectories(string path)
