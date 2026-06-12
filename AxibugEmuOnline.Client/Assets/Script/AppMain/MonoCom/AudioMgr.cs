@@ -15,6 +15,9 @@ namespace AxibugEmuOnline.Client
 
     public class AudioMgr : MonoBehaviour
     {
+        private int defaultOutputSampleRate;
+
+        private int lastSetSampleRate;
         public enum E_SFXTYPE
         {
             Cancel,
@@ -27,6 +30,7 @@ namespace AxibugEmuOnline.Client
 
         void Awake()
         {
+            defaultOutputSampleRate = AudioSettings.outputSampleRate;
             DontDestroyOnLoad(gameObject);
             InitializeAudioSystem();
         }
@@ -78,7 +82,10 @@ namespace AxibugEmuOnline.Client
             //函数仅处理设备变化的情况，非设备变化不再本函数处理，避免核心采样率变化和本处循环调用
             if (deviceWasChanged)
             {
-                ResetAudioCfg(AudioSettings.outputSampleRate);
+                //ResetAudioCfg(AudioSettings.outputSampleRate);
+                ResetAudioCfg(lastSetSampleRate);//但是不知道更换音频设备之后，采样率实际是否会变化，所以用上次是否保险
+
+
                 //AudioConfiguration config = AudioSettings.GetConfiguration();
                 //AudioSettings.Reset(config);
                 //TODO 重新播放音效，但是DSP不用，若有UI BGM，后续 这里加重播
@@ -121,7 +128,8 @@ namespace AxibugEmuOnline.Client
         /// <param name="inputSampleRate">该通道的原始采样率</param>
         public void RegisterStream(string channelId, int? inputSampleRate, AxiAudioPull audioPullHandle)
         {
-            int sourceSampleRate = inputSampleRate.HasValue ? inputSampleRate.Value : AudioSettings.outputSampleRate;
+            int sourceSampleRate = inputSampleRate.HasValue ? inputSampleRate.Value : defaultOutputSampleRate;
+            lastSetSampleRate = sourceSampleRate;
             _audioStreams = null;
             _audioStreams = new AudioStreamData(channelId,
                 sourceSampleRate
