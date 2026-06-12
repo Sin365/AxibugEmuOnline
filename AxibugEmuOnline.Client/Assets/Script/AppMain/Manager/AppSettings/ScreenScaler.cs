@@ -12,10 +12,11 @@ namespace AxibugEmuOnline.Client.Settings
     {
         string key_GlobalMode = nameof(ScreenScaler) + ".GlobalMode";
         Dictionary<RomPlatformType, string> cache_PlatMode = new Dictionary<RomPlatformType, string>();
-        string get_key_PlatMode(RomPlatformType platform) {
-            if (cache_PlatMode.ContainsKey(platform)) 
+        string get_key_PlatMode(RomPlatformType platform)
+        {
+            if (cache_PlatMode.ContainsKey(platform))
                 return cache_PlatMode[platform];
-            string val = nameof(ScreenScaler)+".PlatMode." + platform;
+            string val = nameof(ScreenScaler) + ".PlatMode." + platform;
             cache_PlatMode[platform] = val;
             return val;
         }
@@ -118,7 +119,7 @@ namespace AxibugEmuOnline.Client.Settings
         {
             switch (platform)
             {
-                case RomPlatformType.Nes: 
+                case RomPlatformType.Nes:
                     return new Vector2Int(256, 240);
                 case RomPlatformType.Cps1:
                 case RomPlatformType.Cps2:
@@ -134,6 +135,10 @@ namespace AxibugEmuOnline.Client.Settings
                 case RomPlatformType.Sc3000:
                 case RomPlatformType.Sg1000:
                     return UEssgee.instance.graphicsHandler.mScreenSize;
+                case RomPlatformType.WonderSwan:
+                case RomPlatformType.WonderSwanColor:
+                    return new Vector2Int(224, 144);
+                //return UStoicGoose.instance.graphicsHandler.ScreenSize;
                 default: throw new System.NotImplementedException($"未实现的平台:{platform}");
             }
         }

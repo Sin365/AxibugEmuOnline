@@ -27,6 +27,8 @@ public class SGVideoPlayer : MonoBehaviour
     bool bInit = false;
     bool bHadData = false;
 
+    public Vector2Int ScreenSize = Vector2Int.one;
+
     private void Awake()
     {
         bHadData = false;
@@ -109,5 +111,6 @@ public class SGVideoPlayer : MonoBehaviour
     {
         mWidth = screenWidth;
         mHeight = screenHeight;
+        ScreenSize = new Vector2Int(screenWidth, screenHeight);
     }
 }

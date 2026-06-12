@@ -161,12 +161,12 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
 
     internal void Unpause()
     {
-        throw new NotImplementedException();
+        //??
     }
 
     internal void Pause()
     {
-        throw new NotImplementedException();
+        //??
     }
 
 }

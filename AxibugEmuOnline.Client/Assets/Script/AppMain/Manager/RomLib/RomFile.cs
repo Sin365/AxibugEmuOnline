@@ -38,7 +38,11 @@ namespace AxibugEmuOnline.Client
                     case RomPlatformType.Neogeo:
                     case RomPlatformType.ArcadeOld:
                         return true;
-                    default: throw new NotImplementedException($"未实现的平台{Platform}");
+                    case RomPlatformType.WonderSwan:
+                    case RomPlatformType.WonderSwanColor:
+                        return false;
+                    default:
+                        throw new NotImplementedException($"未实现的平台{Platform}");
                 }
             }
         }

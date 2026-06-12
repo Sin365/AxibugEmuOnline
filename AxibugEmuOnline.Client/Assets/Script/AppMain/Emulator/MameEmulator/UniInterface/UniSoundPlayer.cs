@@ -26,7 +26,7 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer , AxiAudioPull
 
     private void OnEnable()
     {
-        App.audioMgr.RegisterStream(nameof(NesEmulator), null, this);
+        App.audioMgr.RegisterStream(nameof(UniSoundPlayer), null, this);
     }
 
     //private void OnEnable()

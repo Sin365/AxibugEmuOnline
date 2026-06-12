@@ -31,7 +31,8 @@ public class UStoicGoose : EmuCore<ulong>
 
     /* Various handlers */
     DatabaseHandler databaseHandler = default;
-    SGVideoPlayer graphicsHandler = default;
+    private Canvas mCanvas;
+    public SGVideoPlayer graphicsHandler = default;
     SGSoundPlayer soundHandler = default;
     SGKeyboard inputHandler = default;
     SGLogger loggerHandler = default;
@@ -48,6 +49,11 @@ public class UStoicGoose : EmuCore<ulong>
     string internalEepromPath = string.Empty;
 
     public string CurrRomName { get; private set; }
+
+    public static bool bLogicUpdatePause { get; private set; }
+    public string EmuDataPath { get { return App.PersistentDataPath(Platform); } }
+    public string RomPath => EmuDataPath + "/RemoteRoms/";
+    public string SavePath => EmuDataPath + "/sav/";
 
     #region 实现IEmuCore
     public override RomPlatformType Platform => mPlatform;
@@ -80,14 +86,23 @@ public class UStoicGoose : EmuCore<ulong>
         throw new NotImplementedException();
     }
 
+    //public override void Pause()
+    //{
+    //    PauseEmulation();
+    //}
+
+    //public override void Resume()
+    //{
+    //    UnpauseEmulation();
+    //}
+
     public override void Pause()
     {
-        PauseEmulation();
+        bLogicUpdatePause = false;
     }
-
     public override void Resume()
     {
-        UnpauseEmulation();
+        bLogicUpdatePause = true;
     }
 
     public override MsgBool StartGame(RomFile romFile)
@@ -103,7 +118,10 @@ public class UStoicGoose : EmuCore<ulong>
         }
 
         if (LoadAndRunCartridge(romFile.LocalFilePath))
+        {
+            bLogicUpdatePause = true;
             return true;
+        }
         else
             return "Rom加载失败";
     }
@@ -130,6 +148,7 @@ public class UStoicGoose : EmuCore<ulong>
     protected override bool OnPushEmulatorFrame(ulong InputData)
     {
         if (!emulatorHandler.IsRunning) return false;
+        if (!bLogicUpdatePause) return false;
         //if (!bLogicUpdatePause) return false;
 
         inputHandler.SetInputData(InputData);
@@ -175,13 +194,16 @@ public class UStoicGoose : EmuCore<ulong>
         //设为60帧
         Application.targetFrameRate = 60;
 
+        mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        mCanvas.worldCamera = Camera.main;
+
         instance = this;
         loggerHandler = new SGLogger();
         graphicsHandler = this.gameObject.GetComponent<SGVideoPlayer>();
         soundHandler = this.gameObject.GetComponent<SGSoundPlayer>();
         inputHandler = this.gameObject.GetComponent<SGKeyboard>();
         Log.Initialize(loggerHandler);
-        Program.InitPath(Application.persistentDataPath);
+        Program.InitPath(EmuDataPath);
         //Init();
         //LoadAndRunCartridge("G:/BaiduNetdiskDownload/Rockman & Forte - Mirai Kara no Chousen Sha (J) [M][!].ws");
     }

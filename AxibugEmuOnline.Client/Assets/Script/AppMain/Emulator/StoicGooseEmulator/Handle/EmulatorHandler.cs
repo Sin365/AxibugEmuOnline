@@ -125,8 +125,8 @@ public class EmulatorHandler
 
     public void Frame_Update()
     {
-        if (!threadRunning || !threadPaused)
-            return;
+        //if (!threadRunning || !threadPaused)
+        //    return;
 
         Machine.RunFrame();
         AxiEmuRunFrame++;
