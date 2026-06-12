@@ -10,28 +10,28 @@
 		ushort counter;
 		byte pointer;
 
-		public byte OutputLeft { get; set; }
-		public byte OutputRight { get; set; }
+		public byte OutputLeft;// { get; set; }
+        public byte OutputRight;// { get; set; }
 
-		readonly WaveTableReadDelegate waveTableReadDelegate;
+        readonly WaveTableReadDelegate waveTableReadDelegate;
 
 		/* REG_SND_CH4_PITCH */
-		public ushort Pitch { get; set; }
-		/* REG_SND_CH4_VOL */
-		public byte VolumeLeft { get; set; }
-		public byte VolumeRight { get; set; }
-		/* REG_SND_CTRL */
-		public bool IsEnabled { get; set; }
-		public bool IsNoiseEnabled { get; set; }
+		public ushort Pitch;// { get; set; }
+        /* REG_SND_CH4_VOL */
+        public byte VolumeLeft;// { get; set; }
+        public byte VolumeRight;// { get; set; }
+        /* REG_SND_CTRL */
+        public bool IsEnabled;// { get; set; }
+        public bool IsNoiseEnabled;// { get; set; }
 
-		/* REG_SND_NOISE */
-		public byte NoiseMode { get; set; }
-		public bool NoiseReset { get; set; }
-		public bool NoiseEnable { get; set; }
-		/* REG_SND_RANDOM */
-		public ushort NoiseLfsr { get; set; }
+        /* REG_SND_NOISE */
+        public byte NoiseMode;// { get; set; }
+        public bool NoiseReset;// { get; set; }
+        public bool NoiseEnable;// { get; set; }
+        /* REG_SND_RANDOM */
+        public ushort NoiseLfsr;// { get; set; }
 
-		public SoundChannel4(WaveTableReadDelegate waveTableRead) => waveTableReadDelegate = waveTableRead;
+        public SoundChannel4(WaveTableReadDelegate waveTableRead) => waveTableReadDelegate = waveTableRead;
 
 		public void Reset()
 		{

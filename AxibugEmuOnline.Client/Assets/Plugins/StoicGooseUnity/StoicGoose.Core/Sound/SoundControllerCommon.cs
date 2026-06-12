@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-using StoicGoose.Common.Attributes;
+﻿using StoicGoose.Common.Attributes;
 using StoicGoose.Core.Interfaces;
 using StoicGoose.Core.Machines;
-
+using System;
+using System.Collections.Generic;
 using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.Sound
 {
-	public delegate byte WaveTableReadDelegate(ushort address);
+    public delegate byte WaveTableReadDelegate(ushort address);
 
 	public abstract partial class SoundControllerCommon : IPortAccessComponent
 	{
@@ -143,21 +141,36 @@ namespace StoicGoose.Core.Sound
 			channel4.Step();
 		}
 
-		public abstract int[] GenerateSample();
+        public struct GenerateSampleResult
+        {
+            public int mixedLeft, mixedRight;
+        }
+        public abstract GenerateSampleResult GenerateSample();
 
-		public virtual void ProcessSample(int[] lrSamples)
+		public virtual void ProcessSample(GenerateSampleResult lrSamples)
 		{
 			if (headphonesConnected && !headphoneEnable && !speakerEnable)
-				/* Headphones connected but neither headphones nor speaker enabled? Don't output sound */
-				lrSamples[0] = lrSamples[1] = 0;
+                /* Headphones connected but neither headphones nor speaker enabled? Don't output sound */
+                lrSamples.mixedLeft = lrSamples.mixedRight = 0;
 			else if (!headphonesConnected)
-				/* Otherwise, no headphones connected? Mix down to mono, perform volume shift */
-				lrSamples[0] = lrSamples[1] = ((lrSamples[0] + lrSamples[1]) / 2) >> speakerVolumeShift;
+                /* Otherwise, no headphones connected? Mix down to mono, perform volume shift */
+                lrSamples.mixedLeft = lrSamples.mixedRight = ((lrSamples.mixedLeft = lrSamples.mixedRight) / 2) >> speakerVolumeShift;
 
-			mixedSampleBuffer.Add((short)(lrSamples[0] * (masterVolume / (double)MaxMasterVolume))); /* Left */
-			mixedSampleBuffer.Add((short)(lrSamples[1] * (masterVolume / (double)MaxMasterVolume))); /* Right */
+			mixedSampleBuffer.Add((short)(lrSamples.mixedLeft * (masterVolume / (double)MaxMasterVolume))); /* Left */
+			mixedSampleBuffer.Add((short)(lrSamples.mixedRight * (masterVolume / (double)MaxMasterVolume))); /* Right */
 		}
+		//public virtual void ProcessSample(int[] lrSamples)
+		//{
+		//	if (headphonesConnected && !headphoneEnable && !speakerEnable)
+		//		/* Headphones connected but neither headphones nor speaker enabled? Don't output sound */
+		//		lrSamples[0] = lrSamples[1] = 0;
+		//	else if (!headphonesConnected)
+		//		/* Otherwise, no headphones connected? Mix down to mono, perform volume shift */
+		//		lrSamples[0] = lrSamples[1] = ((lrSamples[0] + lrSamples[1]) / 2) >> speakerVolumeShift;
 
+		//	mixedSampleBuffer.Add((short)(lrSamples[0] * (masterVolume / (double)MaxMasterVolume))); /* Left */
+		//	mixedSampleBuffer.Add((short)(lrSamples[1] * (masterVolume / (double)MaxMasterVolume))); /* Right */
+		//}
 		public void FlushSamples()
 		{
 			foreach (var buffer in channelSampleBuffers)

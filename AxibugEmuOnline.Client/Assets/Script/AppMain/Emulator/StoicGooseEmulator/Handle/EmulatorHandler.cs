@@ -1,5 +1,6 @@
 ﻿using Essgee.Metadata;
 using StoicGoose.Core.Interfaces;
+using StoicGoose.Core.Machines;
 using StoicGooseUnity;
 using System;
 using System.Diagnostics;
@@ -19,13 +20,13 @@ public class EmulatorHandler
     public bool IsRunning => threadRunning;
     public bool IsPaused => threadPaused;
 
-    public IMachine Machine { get; } = default;
+    public MachineCommon Machine { get; } = default;
     public int AxiEmuRunFrame { get; private set; }
 
     public EmulatorHandler(Type machineType)
     {
         StoicGooseUnityAxiMem.Init();
-        Machine = Activator.CreateInstance(machineType) as IMachine;
+        Machine = Activator.CreateInstance(machineType) as MachineCommon;
         Machine.Initialize();
     }
 

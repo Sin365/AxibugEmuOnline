@@ -31,8 +31,10 @@ namespace StoicGoose.Core.Sound
 			channelHyperVoice.Step();
 		}
 
-		public override int[] GenerateSample()
-		{
+
+        //public override int[] GenerateSample()
+        public override GenerateSampleResult GenerateSample()
+        {
 			channelSampleBuffers[0].Add((short)(channel1.IsEnabled ? (channel1.OutputLeft & 0x07FF) << 5 : 0));
 			channelSampleBuffers[0].Add((short)(channel1.IsEnabled ? (channel1.OutputRight & 0x07FF) << 5 : 0));
 			channelSampleBuffers[1].Add((short)(channel2.IsEnabled ? (channel2.OutputLeft & 0x07FF) << 5 : 0));
@@ -60,8 +62,9 @@ namespace StoicGoose.Core.Sound
 			if (channelHyperVoice.IsEnabled && headphonesConnected) mixedRight += channelHyperVoice.OutputRight;
 			mixedRight = (mixedRight & 0x07FF) << 5;
 
-			return new[] { mixedLeft, mixedRight };
-		}
+            //return new[] { mixedLeft, mixedRight };
+            return new GenerateSampleResult() { mixedLeft = mixedLeft, mixedRight = mixedRight };
+        }
 
 		public override byte ReadPort(ushort port)
 		{

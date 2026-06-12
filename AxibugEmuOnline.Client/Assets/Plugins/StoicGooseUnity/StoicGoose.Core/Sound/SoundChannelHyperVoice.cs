@@ -3,24 +3,24 @@
 	/* HyperVoice channel */
 	public sealed class SoundChannelHyperVoice
 	{
-		public byte OutputLeft { get; set; }
-		public byte OutputRight { get; set; }
+		public byte OutputLeft;// { get; set; }
+        public byte OutputRight;// { get; set; }
 
-		/* REG_HYPER_CTRL */
-		public bool IsEnabled { get; set; }
-		public int ScalingMode { get; set; }
-		public int Volume { get; set; }
-		public byte CtrlUnknown { get; set; }
+        /* REG_HYPER_CTRL */
+        public bool IsEnabled;//{ get; set; }
+        public int ScalingMode;//{ get; set; }
+        public int Volume;//{ get; set; }
+        public byte CtrlUnknown;//{ get; set; }
 
-		/* REG_HYPER_CHAN_CTRL */
-		public bool RightEnable { get; set; }
-		public bool LeftEnable { get; set; }
-		public byte ChanCtrlUnknown { get; set; }
+        /* REG_HYPER_CHAN_CTRL */
+        public bool RightEnable;//{ get; set; }
+        public bool LeftEnable;//{ get; set; }
+        public byte ChanCtrlUnknown;// { get; set; }
 
-		/* REG_SND_HYPERVOICE */
-		public byte Data { get; set; }
+        /* REG_SND_HYPERVOICE */
+        public byte Data;//{ get; set; }
 
-		public SoundChannelHyperVoice() { }
+        public SoundChannelHyperVoice() { }
 
 		public void Reset()
 		{

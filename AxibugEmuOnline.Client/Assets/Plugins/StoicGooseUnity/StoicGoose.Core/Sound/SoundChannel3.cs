@@ -9,27 +9,27 @@
 		ushort counter;
 		byte pointer;
 
-		public byte OutputLeft { get; set; }
-		public byte OutputRight { get; set; }
+		public byte OutputLeft;// { get; set; }
+        public byte OutputRight;// { get; set; }
 
-		int sweepCounter;
+        int sweepCounter;
 		int sweepCycles;
 
 		readonly WaveTableReadDelegate waveTableReadDelegate;
 
 		/* REG_SND_CH3_PITCH */
-		public ushort Pitch { get; set; }
-		/* REG_SND_CH3_VOL */
-		public byte VolumeLeft { get; set; }
-		public byte VolumeRight { get; set; }
-		/* REG_SND_CTRL */
-		public bool IsEnabled { get; set; }
-		public bool IsSweepEnabled { get; set; }
+		public ushort Pitch;// { get; set; }
+        /* REG_SND_CH3_VOL */
+        public byte VolumeLeft;// { get; set; }
+        public byte VolumeRight;// { get; set; }
+        /* REG_SND_CTRL */
+        public bool IsEnabled;// { get; set; }
+        public bool IsSweepEnabled;// { get; set; }
 
-		/* REG_SND_SWEEP_VALUE */
-		public sbyte SweepValue { get; set; }
-		/* REG_SND_SWEEP_TIME */
-		public byte SweepTime { get; set; }
+        /* REG_SND_SWEEP_VALUE */
+        public sbyte SweepValue;// { get; set; }
+        /* REG_SND_SWEEP_TIME */
+        public byte SweepTime;// { get; set; }
 
 		public SoundChannel3(WaveTableReadDelegate waveTableRead) => waveTableReadDelegate = waveTableRead;
 
