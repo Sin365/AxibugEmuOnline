@@ -1,13 +1,12 @@
-﻿using System;
-using System.Reflection;
-using StoicGoose.Core.Interfaces;
-using StoicGoose.Core.Machines;
+﻿using StoicGoose.Core.Interfaces;
+using System;
 
 namespace StoicGoose.Core.Display
 {
-	public static class DisplayUtilities
-	{
-        private static readonly uint[] ColorLut = new uint[512];
+    public static class DisplayUtilities
+    {
+        #region 追加的新的优化部分
+        private static readonly uint[] ColorLut = new uint[4096];
         public const uint Color_Black = 0xFF000000;
         public const uint Color_White = 0xFFFFFFFF;
         /// <summary>
@@ -15,8 +14,19 @@ namespace StoicGoose.Core.Display
         /// </summary>
         static DisplayUtilities()
         {
-            //至于为什么，WonderSwan 某些寄存器里颜色是 9 - bit index
-            for (int i = 0; i < 512; i++)
+            //至于为什么是512，而不是256，WonderSwan 某些寄存器里颜色是 9 - bit index
+            /*
+             * 索引范围：0–511
+
+表大小：512
+
+这是故意留到 9bit 的写法，原因通常是：
+
+WonderSwan 某些寄存器里颜色是 9-bit index
+
+或者是把 paletteIdx + colorIdx 合并成一个 9-bit 值
+             */
+            for (int i = 0; i < 4096; i++)
             {
                 var r = (byte)((i >> 8) & 0xF);
                 var g = (byte)((i >> 4) & 0xF);
@@ -26,65 +36,68 @@ namespace StoicGoose.Core.Display
                 g = (byte)((g << 4) | g);
                 b = (byte)((b << 4) | b);
 
-                // ARGB32 → 内存布局：R G B A（小端）
+                // 内存布局 R G B A（匹配旧代码）
                 ColorLut[i] = 0xFF000000u
-                            | (uint)(r << 24)
-                            | (uint)(g << 16)
-                            | (uint)(b << 8);
+                    | ((uint)b << 16)
+                    | ((uint)g << 8)
+                    | r;
             }
         }
         // TODO: WSC high contrast mode
+        #endregion
 
         private static ushort ReadMemory16(IMachine machine, uint address) => (ushort)(machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
-		private static uint ReadMemory32(IMachine machine, uint address) => (uint)(machine.ReadMemory(address + 3) << 24 | machine.ReadMemory(address + 2) << 16 | machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
+        private static uint ReadMemory32(IMachine machine, uint address) => (uint)(machine.ReadMemory(address + 3) << 24 | machine.ReadMemory(address + 2) << 16 | machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
 
-		public static byte ReadPixel(IMachine machine, ushort tile, int y, int x, bool isPacked, bool is4bpp, bool isColor)
-		{
-			/* http://perfectkiosk.net/stsws.html#color_mode */
+        public static byte ReadPixel(IMachine machine, ushort tile, int y, int x, bool isPacked, bool is4bpp, bool isColor)
+        {
+            /* http://perfectkiosk.net/stsws.html#color_mode */
 
-			/* WonderSwan OR Color/Crystal in 2bpp mode */
-			if (!isColor || (isColor && !is4bpp))
-			{
-				var data = ReadMemory16(machine, (uint)(0x2000 + (tile << 4) + ((y % 8) << 1)));
-				return (byte)((((data >> 15 - (x % 8)) & 0b1) << 1 | ((data >> 7 - (x % 8)) & 0b1)) & 0b11);
-			}
+            /* WonderSwan OR Color/Crystal in 2bpp mode */
+            if (!isColor || (isColor && !is4bpp))
+            {
+                var data = ReadMemory16(machine, (uint)(0x2000 + (tile << 4) + ((y % 8) << 1)));
+                return (byte)((((data >> 15 - (x % 8)) & 0b1) << 1 | ((data >> 7 - (x % 8)) & 0b1)) & 0b11);
+            }
 
-			/* WonderSwan Color/Crystal in 4bpp mode */
-			else if (isColor && is4bpp)
-			{
-				/* 4bpp planar mode */
-				if (!isPacked)
-				{
-					var data = ReadMemory32(machine, (uint)(0x4000 + ((tile & 0x03FF) << 5) + ((y % 8) << 2)));
-					return (byte)((((data >> 31 - (x % 8)) & 0b1) << 3 | ((data >> 23 - (x % 8)) & 0b1) << 2 | ((data >> 15 - (x % 8)) & 0b1) << 1 | ((data >> 7 - (x % 8)) & 0b1)) & 0b1111);
-				}
+            /* WonderSwan Color/Crystal in 4bpp mode */
+            else if (isColor && is4bpp)
+            {
+                /* 4bpp planar mode */
+                if (!isPacked)
+                {
+                    var data = ReadMemory32(machine, (uint)(0x4000 + ((tile & 0x03FF) << 5) + ((y % 8) << 2)));
+                    return (byte)((((data >> 31 - (x % 8)) & 0b1) << 3 | ((data >> 23 - (x % 8)) & 0b1) << 2 | ((data >> 15 - (x % 8)) & 0b1) << 1 | ((data >> 7 - (x % 8)) & 0b1)) & 0b1111);
+                }
 
-				/* 4bpp packed mode */
-				else if (isPacked)
-				{
-					var data = machine.ReadMemory((ushort)(0x4000 + ((tile & 0x03FF) << 5) + ((y % 8) << 2) + ((x % 8) >> 1)));
-					return (byte)((data >> 4 - (((x % 8) & 0b1) << 2)) & 0b1111);
-				}
-			}
+                /* 4bpp packed mode */
+                else if (isPacked)
+                {
+                    var data = machine.ReadMemory((ushort)(0x4000 + ((tile & 0x03FF) << 5) + ((y % 8) << 2) + ((x % 8) >> 1)));
+                    return (byte)((data >> 4 - (((x % 8) & 0b1) << 2)) & 0b1111);
+                }
+            }
 
-			throw new Exception("Invalid display controller configuration");
-		}
+            throw new Exception("Invalid display controller configuration");
+        }
 
-		public static ushort ReadColor(IMachine machine, byte paletteIdx, byte colorIdx)
-		{
-			var address = (uint)(0x0FE00 + (paletteIdx << 5) + (colorIdx << 1));
-			return (ushort)(machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
-		}
+        public static ushort ReadColor(IMachine machine, byte paletteIdx, byte colorIdx)
+        {
+            var address = (uint)(0x0FE00 + (paletteIdx << 5) + (colorIdx << 1));
+            return (ushort)(machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
+        }
 
-		private static byte DuplicateBits(int value) => (byte)((value & 0b1111) | (value & 0b1111) << 4);
+        private static byte DuplicateBits(int value) => (byte)((value & 0b1111) | (value & 0b1111) << 4);
 
+        #region 新的修改，以uint作为颜色值
         public static uint GeneratePixel(ushort data)
         {
-            return ColorLut[data & 0x1FF];
+            return ColorLut[data & 0x0FFF];  // 关键修复：取低12位
         }
-        public static uint GeneratePixel(byte data)
+
+        public static uint GeneratePixel(byte data)  // 2bpp/单色等情况
         {
-            return ColorLut[data & 0x1FF];
+            return ColorLut[data & 0x0FFF];
         }
 
         public static unsafe void CopyPixel(uint color, byte* data, int x, int y, int stride)
@@ -95,19 +108,20 @@ namespace StoicGoose.Core.Display
         {
             *(uint*)(data + address) = color;
         }
+        #endregion
 
+        #region 废弃的正确的函数组 👇，可以做参照。虽然性能低，但是结果上这个是对的
+        //      public static (byte r, byte g, byte b) GeneratePixel(byte data) => (DuplicateBits(data), DuplicateBits(data), DuplicateBits(data));
+        //public static (byte r, byte g, byte b) GeneratePixel(ushort data) => (DuplicateBits(data >> 8), DuplicateBits(data >> 4), DuplicateBits(data >> 0));
 
-  //      public static (byte r, byte g, byte b) GeneratePixel(byte data) => (DuplicateBits(data), DuplicateBits(data), DuplicateBits(data));
-		//public static (byte r, byte g, byte b) GeneratePixel(ushort data) => (DuplicateBits(data >> 8), DuplicateBits(data >> 4), DuplicateBits(data >> 0));
-
-		//public static unsafe void CopyPixel((byte r, byte g, byte b) pixel, byte* data, int x, int y, int stride) => CopyPixel(pixel, data, ((y * stride) + x) * 4);
-  //      public static unsafe void CopyPixel((byte r, byte g, byte b) pixel, byte* data, long address)
-  //      {
-  //          data[address + 0] = pixel.r;
-  //          data[address + 1] = pixel.g;
-  //          data[address + 2] = pixel.b;
-  //          data[address + 3] = 255;
-  //      }
+        //public static unsafe void CopyPixel((byte r, byte g, byte b) pixel, byte* data, int x, int y, int stride) => CopyPixel(pixel, data, ((y * stride) + x) * 4);
+        //      public static unsafe void CopyPixel((byte r, byte g, byte b) pixel, byte* data, long address)
+        //      {
+        //          data[address + 0] = pixel.r;
+        //          data[address + 1] = pixel.g;
+        //          data[address + 2] = pixel.b;
+        //          data[address + 3] = 255;
+        //      }
         //public static void CopyPixel((byte r, byte g, byte b) pixel, byte[] data, int x, int y, int stride) => CopyPixel(pixel, data, ((y * stride) + x) * 4);
         //public static void CopyPixel((byte r, byte g, byte b) pixel, byte[] data, long address)
         //{
@@ -116,5 +130,6 @@ namespace StoicGoose.Core.Display
         //	data[address + 2] = pixel.b;
         //	data[address + 3] = 255;
         //}
+        #endregion
     }
 }
