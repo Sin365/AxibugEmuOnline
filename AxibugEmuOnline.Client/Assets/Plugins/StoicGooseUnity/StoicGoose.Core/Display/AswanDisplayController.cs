@@ -10,8 +10,9 @@ namespace StoicGoose.Core.Display
 
 		protected override void RenderSleep(int y, int x)
 		{
-			DisplayUtilities.CopyPixel((255, 255, 255), outputFramebuffer, x, y, HorizontalDisp);
-		}
+            //DisplayUtilities.CopyPixel((255, 255, 255), outputFramebuffer, x, y, HorizontalDisp);
+            DisplayUtilities.CopyPixel(DisplayUtilities.Color_White, outputFramebuffer, x, y, HorizontalDisp);
+        }
 
 		protected override void RenderBackColor(int y, int x)
 		{
