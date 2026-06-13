@@ -64,7 +64,7 @@ public class UStoicGoose : EmuCore<ulong>
 
     public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
 
-    public override Vector3 DrawLocalScale => DrawCanvas.transform.localScale;
+    public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
 
     public override object GetState()
     {
