@@ -2,7 +2,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +27,7 @@ namespace AxiInputSP.UGUI
         public Transform tfMAME_NEOGEO;
         public Transform tfGAMEBOYCOLOR;
         public Transform tfMASTERSYSTEM;
+        public Transform tfWS_WSC;
         List<Transform> mPlatfromList = new List<Transform>();
 
 
@@ -67,6 +67,7 @@ namespace AxiInputSP.UGUI
             mPlatfromList.Add(tfMAME_NEOGEO);
             mPlatfromList.Add(tfGAMEBOYCOLOR);
             mPlatfromList.Add(tfMASTERSYSTEM);
+            mPlatfromList.Add(tfWS_WSC);
         }
 
         private void OnEnable()
@@ -138,13 +139,14 @@ namespace AxiInputSP.UGUI
                 case RomPlatformType.GameBoy:
                 case RomPlatformType.GameBoyColor:
                     return tfGAMEBOYCOLOR;
+                case RomPlatformType.WonderSwan:
+                case RomPlatformType.WonderSwanColor:
+                    return tfWS_WSC;
                 case RomPlatformType.GameGear:
                 case RomPlatformType.ColecoVision:
                 case RomPlatformType.Sc3000:
                 case RomPlatformType.Sg1000:
                 case RomPlatformType.ArcadeOld:
-                case RomPlatformType.WonderSwan:
-                case RomPlatformType.WonderSwanColor:
                 case RomPlatformType.Invalid:
                 case RomPlatformType.All:
                 default:

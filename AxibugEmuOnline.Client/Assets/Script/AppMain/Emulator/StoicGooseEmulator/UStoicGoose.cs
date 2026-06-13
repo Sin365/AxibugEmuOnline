@@ -178,7 +178,7 @@ public class UStoicGoose : EmuCore<ulong>
 
     public override void GetAudioParams(out int frequency, out int channels)
     {
-        channels = soundHandler.channle;
+        channels = soundHandler.channels;
         frequency = soundHandler.sampleRate;
     }
     #endregion

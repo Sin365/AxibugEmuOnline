@@ -272,7 +272,8 @@ public abstract class EmuCoreBinder<T> : InternalEmuCoreBinder,
             }
 
             int needFixCount = settingSlot - settingList.Count + 1;
-            if (needFixCount > 0) for (int i = 0; i < needFixCount; i++) settingList.Add(null);
+            if (needFixCount > 0) for (int i = 0; i < needFixCount; i++) 
+                    settingList.Add(null);
 
             settingList[settingSlot] = key;
         }

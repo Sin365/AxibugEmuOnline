@@ -198,15 +198,28 @@ public class SGController : IController
 
         StoicGooseBinding essgeeKeys = GetKeyMapper();
 
-        if (essgeeKeys.GetKey(StoicGooseKey.X1, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X1;
-        if (essgeeKeys.GetKey(StoicGooseKey.X2, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X2;
-        if (essgeeKeys.GetKey(StoicGooseKey.X3, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X3;
-        if (essgeeKeys.GetKey(StoicGooseKey.X4, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X4;
-        if (essgeeKeys.GetKey(StoicGooseKey.Y1, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y1;
-        if (essgeeKeys.GetKey(StoicGooseKey.Y2, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y2;
-        if (essgeeKeys.GetKey(StoicGooseKey.Y3, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y3;
-        if (essgeeKeys.GetKey(StoicGooseKey.Y4, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y4;
-        if (essgeeKeys.GetKey(StoicGooseKey.Start, mControllerIndex)) CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Start;
+        if (essgeeKeys.GetKey(StoicGooseKey.X1, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X1;
+        if (essgeeKeys.GetKey(StoicGooseKey.X2, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X2;
+        if (essgeeKeys.GetKey(StoicGooseKey.X3, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X3;
+        if (essgeeKeys.GetKey(StoicGooseKey.X4, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.X4;
+        if (essgeeKeys.GetKey(StoicGooseKey.Y1, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y1;
+        if (essgeeKeys.GetKey(StoicGooseKey.Y2, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y2;
+        if (essgeeKeys.GetKey(StoicGooseKey.Y3, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y3;
+        if (essgeeKeys.GetKey(StoicGooseKey.Y4, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Y4;
+        if (essgeeKeys.GetKey(StoicGooseKey.A, mControllerIndex))
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.A;
+        if (essgeeKeys.GetKey(StoicGooseKey.B, mControllerIndex))
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.B;
+        if (essgeeKeys.GetKey(StoicGooseKey.Start, mControllerIndex)) 
+            CurrLocalSingleAllInput |= (ulong)StoicGooseKey.Start;
 
         return CurrLocalSingleAllInput;
     }
