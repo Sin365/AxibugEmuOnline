@@ -28,19 +28,17 @@ WonderSwan 某些寄存器里颜色是 9-bit index
              */
             for (int i = 0; i < 4096; i++)
             {
-                var r = (byte)((i >> 8) & 0xF);
-                var g = (byte)((i >> 4) & 0xF);
-                var b = (byte)(i & 0xF);
+                int r4 = (i >> 8) & 0xF;
+                int g4 = (i >> 4) & 0xF;
+                int b4 = i & 0xF;
 
-                r = (byte)((r << 4) | r);
-                g = (byte)((g << 4) | g);
-                b = (byte)((b << 4) | b);
+                byte r = (byte)((r4 << 4) | r4);
+                byte g = (byte)((g4 << 4) | g4);
+                byte b = (byte)((b4 << 4) | b4);
 
-                // 内存布局 R G B A（匹配旧代码）
-                ColorLut[i] = 0xFF000000u
-                    | ((uint)b << 16)
-                    | ((uint)g << 8)
-                    | r;
+                // Unity Texture2D RGBA32 的内存布局是：R G B A
+                // 所以 uint 应该组装为： 0xAARRGGBB
+                ColorLut[i] = (0xFFu << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
             }
         }
         // TODO: WSC high contrast mode
