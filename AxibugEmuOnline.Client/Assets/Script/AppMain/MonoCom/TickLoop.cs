@@ -130,7 +130,7 @@ namespace AxibugEmuOnline.Client
 
         internal object GetDateTimeStr()
         {
-            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            return DateTime.Now.ToString("yyyy-MM-dd HHmmss.fff");
         }
 
         internal void SetFrameRate(int rate)

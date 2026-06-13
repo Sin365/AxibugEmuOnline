@@ -70,6 +70,11 @@ namespace AxibugEmuOnline.Client
                         case EnumScalerMode.FullScreen: return "全屏";
                         case EnumScalerMode.Raw: return "原始尺寸";
                         case EnumScalerMode.Fix: return "适应";
+                        case EnumScalerMode.Raw_x2: return "x2";
+                        case EnumScalerMode.Raw_x3: return "x3";
+                        case EnumScalerMode.Raw_x4: return "x4";
+                        case EnumScalerMode.Raw_x5: return "x5";
+                        case EnumScalerMode.Raw_x6: return "x6";
                         default: throw new Exception($"Not Support Mode : {mode.Value}");
                     }
                 }

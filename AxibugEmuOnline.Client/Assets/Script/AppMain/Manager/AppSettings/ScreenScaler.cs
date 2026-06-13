@@ -78,6 +78,51 @@ namespace AxibugEmuOnline.Client.Settings
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
                     }
                     break;
+                case EnumScalerMode.Raw_x2:
+                    {
+                        int pr = 2;
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                    }
+                    break;
+                case EnumScalerMode.Raw_x3:
+                    {
+                        int pr = 3;
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                    }
+                    break;
+                case EnumScalerMode.Raw_x4:
+                    {
+                        int pr = 4;
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                    }
+                    break;
+                case EnumScalerMode.Raw_x5:
+                    {
+                        int pr = 5;
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                    }
+                    break;
+                case EnumScalerMode.Raw_x6:
+                    {
+                        int pr = 6;
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                    }
+                    break;
                 case EnumScalerMode.Fix:
                     {
                         bool stretchWidth = rawImg.canvas.pixelRect.width <= rawImg.canvas.pixelRect.height;
@@ -151,7 +196,12 @@ namespace AxibugEmuOnline.Client.Settings
             /// <summary> 适应 </summary>
             Fix,
             /// <summary> 原始 </summary>
-            Raw
+            Raw,
+            Raw_x2,
+            Raw_x3,
+            Raw_x4,
+            Raw_x5,
+            Raw_x6,
         };
     }
 }
