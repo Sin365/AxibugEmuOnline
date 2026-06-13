@@ -50,30 +50,30 @@ namespace cpu.m68000
         #endregion
 
         public int PC, PPC;
-        private ulong totalExecutedCycles;
-        private int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //private ulong totalExecutedCycles;
+        //private int pendingCycles;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return pendingCycles;
+        //    }
+        //    set
+        //    {
+        //        pendingCycles = value;
+        //    }
+        //}
 
         // Status Registers
         public int int_cycles;
@@ -240,7 +240,7 @@ namespace cpu.m68000
         public void Pulse_Reset()
         {
             stopped = false;
-            pendingCycles = 0;
+            PendingCycles/*pendingCycles*/ = 0;
             S = true;
             m = false;
             InterruptMaskLevel = 7;
@@ -325,13 +325,13 @@ namespace cpu.m68000
         {
             if (!stopped)
             {
-                pendingCycles = cycles;
+                PendingCycles/*pendingCycles*/ = cycles;
                 int ran;
-                pendingCycles -= int_cycles;
+                PendingCycles/*pendingCycles*/ -= int_cycles;
                 int_cycles = 0;
                 do
                 {
-                    int prevCycles = pendingCycles;
+                    int prevCycles = PendingCycles/*pendingCycles*/;
                     PPC = PC;
                     //op = (ushort)ReadOpWord(PC);
                     //赋值op和预算结果
@@ -377,16 +377,16 @@ namespace cpu.m68000
                         int_cycles += 0x2c;
                     }
 
-                    int delta = prevCycles - pendingCycles;
-                    totalExecutedCycles += (ulong)delta;
+                    int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                    TotalExecutedCycles/*totalExecutedCycles*/ += (ulong)delta;
                 }
-                while (pendingCycles > 0);
-                pendingCycles -= int_cycles;
+                while (PendingCycles/*pendingCycles*/ > 0);
+                PendingCycles/*pendingCycles*/ -= int_cycles;
                 int_cycles = 0;
-                ran = cycles - pendingCycles;
+                ran = cycles - PendingCycles/*pendingCycles*/;
                 return ran;
             }
-            pendingCycles = 0;
+            PendingCycles/*pendingCycles*/ = 0;
             int_cycles = 0;
             return cycles;
         }
@@ -510,8 +510,8 @@ namespace cpu.m68000
             writer.WriteLine("M {0}", m);
             writer.WriteLine();
 
-            writer.WriteLine("TotalExecutedCycles {0}", totalExecutedCycles);
-            writer.WriteLine("PendingCycles {0}", pendingCycles);
+            writer.WriteLine("TotalExecutedCycles {0}", TotalExecutedCycles/*totalExecutedCycles*/);
+            writer.WriteLine("PendingCycles {0}", PendingCycles/*pendingCycles*/);
 
             writer.WriteLine("[/{0}]", id);
         }
@@ -548,8 +548,8 @@ namespace cpu.m68000
                 else if (args[0] == "S") s = bool.Parse(args[1]);
                 else if (args[0] == "M") m = bool.Parse(args[1]);
 
-                else if (args[0] == "TotalExecutedCycles") totalExecutedCycles = ulong.Parse(args[1]);
-                else if (args[0] == "PendingCycles") pendingCycles = int.Parse(args[1]);
+                else if (args[0] == "TotalExecutedCycles") TotalExecutedCycles/*totalExecutedCycles*/ = ulong.Parse(args[1]);
+                else if (args[0] == "PendingCycles") PendingCycles/*pendingCycles*/ = int.Parse(args[1]);
 
                 else
                 {

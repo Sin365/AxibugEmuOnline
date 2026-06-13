@@ -71,8 +71,8 @@ namespace StoicGoose.Core.Display
 
 
         //public Action<byte[]> SendFramebuffer { get; set; } = default;
-        public Action<IntPtr, long> SendFramebuffer { get; set; } = default;
-
+        //public Action<IntPtr, long> SendFramebuffer { get; set; } = default;
+        public Action<IntPtr, long> SendFramebuffer = default;
         protected readonly IMachine machine = default;
 
         /* REG_DISP_CTRL */

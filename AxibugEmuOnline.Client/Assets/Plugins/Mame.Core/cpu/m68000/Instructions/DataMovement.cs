@@ -20,10 +20,10 @@ namespace cpu.m68000
                     {
                         value = ReadValueB(srcMode, srcReg);
                         WriteValueB(dstMode, dstReg, (sbyte)value);
-                        //pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
+                        //PendingCycles/*pendingCycles*/ -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
                         int i = srcMode + (srcMode == 7 ? srcReg : 0);
                         int j = dstMode + (dstMode == 7 ? dstReg : 0);
-                        pendingCycles -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
+                        PendingCycles/*pendingCycles*/ -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
                         N = (value & 0x80) != 0;
                     }
                     break;
@@ -31,10 +31,10 @@ namespace cpu.m68000
                     {
                         value = ReadValueW(srcMode, srcReg);
                         WriteValueW(dstMode, dstReg, (short)value);
-                        //pendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
+                        //PendingCycles/*pendingCycles*/ -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
                         int i = srcMode + (srcMode == 7 ? srcReg : 0);
                         int j = dstMode + (dstMode == 7 ? dstReg : 0);
-                        pendingCycles -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
+                        PendingCycles/*pendingCycles*/ -= *(MoveCyclesBW + (i * MoveCyclesBW_Columns) + j);
                         N = (value & 0x8000) != 0;
                         break;
                     }
@@ -43,10 +43,10 @@ namespace cpu.m68000
 
                         value = ReadValueL(srcMode, srcReg);
                         WriteValueL(dstMode, dstReg, value);
-                        //pendingCycles -= MoveCyclesL[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
+                        //PendingCycles/*pendingCycles*/ -= MoveCyclesL[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
                         int i = srcMode + (srcMode == 7 ? srcReg : 0);
                         int j = dstMode + (dstMode == 7 ? dstReg : 0);
-                        pendingCycles -= *(MoveCyclesL + (i * MoveCyclesL_Columns) + j);
+                        PendingCycles/*pendingCycles*/ -= *(MoveCyclesL + (i * MoveCyclesL_Columns) + j);
                         N = (value & 0x80000000) != 0;
                     }
                     break;
@@ -70,21 +70,21 @@ namespace cpu.m68000
                 A_dstReg->s32 = ReadValueW(srcMode, srcReg);
                 switch (srcMode)
                 {
-                    case 0: pendingCycles -= 4; break;
-                    case 1: pendingCycles -= 4; break;
-                    case 2: pendingCycles -= 8; break;
-                    case 3: pendingCycles -= 8; break;
-                    case 4: pendingCycles -= 10; break;
-                    case 5: pendingCycles -= 12; break;
-                    case 6: pendingCycles -= 14; break;
+                    case 0: PendingCycles/*pendingCycles*/ -= 4; break;
+                    case 1: PendingCycles/*pendingCycles*/ -= 4; break;
+                    case 2: PendingCycles/*pendingCycles*/ -= 8; break;
+                    case 3: PendingCycles/*pendingCycles*/ -= 8; break;
+                    case 4: PendingCycles/*pendingCycles*/ -= 10; break;
+                    case 5: PendingCycles/*pendingCycles*/ -= 12; break;
+                    case 6: PendingCycles/*pendingCycles*/ -= 14; break;
                     case 7:
                         switch (srcReg)
                         {
-                            case 0: pendingCycles -= 12; break;
-                            case 1: pendingCycles -= 16; break;
-                            case 2: pendingCycles -= 12; break;
-                            case 3: pendingCycles -= 14; break;
-                            case 4: pendingCycles -= 8; break;
+                            case 0: PendingCycles/*pendingCycles*/ -= 12; break;
+                            case 1: PendingCycles/*pendingCycles*/ -= 16; break;
+                            case 2: PendingCycles/*pendingCycles*/ -= 12; break;
+                            case 3: PendingCycles/*pendingCycles*/ -= 14; break;
+                            case 4: PendingCycles/*pendingCycles*/ -= 8; break;
                             default: throw new InvalidOperationException();
                         }
                         break;
@@ -95,21 +95,21 @@ namespace cpu.m68000
                 A_dstReg->s32 = ReadValueL(srcMode, srcReg);
                 switch (srcMode)
                 {
-                    case 0: pendingCycles -= 4; break;
-                    case 1: pendingCycles -= 4; break;
-                    case 2: pendingCycles -= 12; break;
-                    case 3: pendingCycles -= 12; break;
-                    case 4: pendingCycles -= 14; break;
-                    case 5: pendingCycles -= 16; break;
-                    case 6: pendingCycles -= 18; break;
+                    case 0: PendingCycles/*pendingCycles*/ -= 4; break;
+                    case 1: PendingCycles/*pendingCycles*/ -= 4; break;
+                    case 2: PendingCycles/*pendingCycles*/ -= 12; break;
+                    case 3: PendingCycles/*pendingCycles*/ -= 12; break;
+                    case 4: PendingCycles/*pendingCycles*/ -= 14; break;
+                    case 5: PendingCycles/*pendingCycles*/ -= 16; break;
+                    case 6: PendingCycles/*pendingCycles*/ -= 18; break;
                     case 7:
                         switch (srcReg)
                         {
-                            case 0: pendingCycles -= 16; break;
-                            case 1: pendingCycles -= 20; break;
-                            case 2: pendingCycles -= 16; break;
-                            case 3: pendingCycles -= 18; break;
-                            case 4: pendingCycles -= 12; break;
+                            case 0: PendingCycles/*pendingCycles*/ -= 16; break;
+                            case 1: PendingCycles/*pendingCycles*/ -= 20; break;
+                            case 2: PendingCycles/*pendingCycles*/ -= 16; break;
+                            case 3: PendingCycles/*pendingCycles*/ -= 18; break;
+                            case 4: PendingCycles/*pendingCycles*/ -= 12; break;
                             default: throw new InvalidOperationException();
                         }
                         break;
@@ -131,14 +131,14 @@ namespace cpu.m68000
                 int ea;
                 ea = A_ptr_aReg->s32 + ReadOpWord(PC); PC += 2;
                 D_ptr_dReg->u32 = (D_ptr_dReg->u32 & 0xffff0000) | (ushort)(((byte)ReadByte(ea) << 8) + (byte)ReadByte(ea + 2));
-                pendingCycles -= 16;
+                PendingCycles/*pendingCycles*/ -= 16;
             }
             else if (dir == 0 && size == 1)
             {
                 int ea;
                 ea = A_ptr_aReg->s32 + ReadOpWord(PC); PC += 2;
                 D_ptr_dReg->u32 = (uint)(((byte)ReadByte(ea) << 24) + ((byte)ReadByte(ea + 2) << 16) + ((byte)ReadByte(ea + 4) << 8) + (byte)ReadByte(ea + 6));
-                pendingCycles -= 24;
+                PendingCycles/*pendingCycles*/ -= 24;
             }
             else if (dir == 1 && size == 0)
             {
@@ -148,7 +148,7 @@ namespace cpu.m68000
                 src = D_ptr_dReg->u32;
                 WriteByte(ea, (sbyte)((src >> 8) & 0xff));
                 WriteByte(ea + 2, (sbyte)(src & 0xff));
-                pendingCycles -= 16;
+                PendingCycles/*pendingCycles*/ -= 16;
             }
             else if (dir == 1 && size == 1)
             {
@@ -160,7 +160,7 @@ namespace cpu.m68000
                 WriteByte(ea + 2, (sbyte)((src >> 16) & 0xff));
                 WriteByte(ea + 4, (sbyte)((src >> 8) & 0xff));
                 WriteByte(ea + 6, (sbyte)(src & 0xff));
-                pendingCycles -= 24;
+                PendingCycles/*pendingCycles*/ -= 24;
             }
         }
 
@@ -173,7 +173,7 @@ namespace cpu.m68000
             V = false;
             C = false;
             D[(op >> 9) & 7].s32 = value;
-            pendingCycles -= 4;
+            PendingCycles/*pendingCycles*/ -= 4;
         }
 
 
@@ -297,7 +297,7 @@ namespace cpu.m68000
                         registers >>= 1;
                     }
                 }
-                pendingCycles -= regCount * 4;
+                PendingCycles/*pendingCycles*/ -= regCount * 4;
             }
             else
             {
@@ -349,21 +349,21 @@ namespace cpu.m68000
                         registers >>= 1;
                     }
                 }
-                pendingCycles -= regCount * 8;
+                PendingCycles/*pendingCycles*/ -= regCount * 8;
             }
 
             switch (dstMode)
             {
-                case 2: pendingCycles -= 8; break;
-                case 3: pendingCycles -= 8; break;
-                case 4: pendingCycles -= 8; break;
-                case 5: pendingCycles -= 12; break;
-                case 6: pendingCycles -= 14; break;
+                case 2: PendingCycles/*pendingCycles*/ -= 8; break;
+                case 3: PendingCycles/*pendingCycles*/ -= 8; break;
+                case 4: PendingCycles/*pendingCycles*/ -= 8; break;
+                case 5: PendingCycles/*pendingCycles*/ -= 12; break;
+                case 6: PendingCycles/*pendingCycles*/ -= 14; break;
                 case 7:
                     switch (dstReg)
                     {
-                        case 0: pendingCycles -= 12; break;
-                        case 1: pendingCycles -= 16; break;
+                        case 0: PendingCycles/*pendingCycles*/ -= 12; break;
+                        case 1: PendingCycles/*pendingCycles*/ -= 16; break;
                     }
                     break;
             }
@@ -423,7 +423,7 @@ namespace cpu.m68000
                     }
                     registers >>= 1;
                 }
-                pendingCycles -= regCount * 4;
+                PendingCycles/*pendingCycles*/ -= regCount * 4;
                 if (srcMode == 3)
                     (A + srcReg)->s32 = address;
             }
@@ -464,25 +464,25 @@ namespace cpu.m68000
                     }
                     registers >>= 1;
                 }
-                pendingCycles -= regCount * 8;
+                PendingCycles/*pendingCycles*/ -= regCount * 8;
                 if (srcMode == 3)
                     (A + srcReg)->s32 = address;
             }
 
             switch (srcMode)
             {
-                case 2: pendingCycles -= 12; break;
-                case 3: pendingCycles -= 12; break;
-                case 4: pendingCycles -= 12; break;
-                case 5: pendingCycles -= 16; break;
-                case 6: pendingCycles -= 18; break;
+                case 2: PendingCycles/*pendingCycles*/ -= 12; break;
+                case 3: PendingCycles/*pendingCycles*/ -= 12; break;
+                case 4: PendingCycles/*pendingCycles*/ -= 12; break;
+                case 5: PendingCycles/*pendingCycles*/ -= 16; break;
+                case 6: PendingCycles/*pendingCycles*/ -= 18; break;
                 case 7:
                     switch (srcReg)
                     {
-                        case 0: pendingCycles -= 16; break;
-                        case 1: pendingCycles -= 20; break;
-                        case 2: pendingCycles -= 16; break;
-                        case 3: pendingCycles -= 18; break;
+                        case 0: PendingCycles/*pendingCycles*/ -= 16; break;
+                        case 1: PendingCycles/*pendingCycles*/ -= 20; break;
+                        case 2: PendingCycles/*pendingCycles*/ -= 16; break;
+                        case 3: PendingCycles/*pendingCycles*/ -= 18; break;
                     }
                     break;
             }
@@ -503,16 +503,16 @@ namespace cpu.m68000
             (A + dReg)->u32 = (uint)ReadAddress(mode, sReg);
             switch (mode)
             {
-                case 2: pendingCycles -= 4; break;
-                case 5: pendingCycles -= 8; break;
-                case 6: pendingCycles -= 12; break;
+                case 2: PendingCycles/*pendingCycles*/ -= 4; break;
+                case 5: PendingCycles/*pendingCycles*/ -= 8; break;
+                case 6: PendingCycles/*pendingCycles*/ -= 12; break;
                 case 7:
                     switch (sReg)
                     {
-                        case 0: pendingCycles -= 8; break;
-                        case 1: pendingCycles -= 12; break;
-                        case 2: pendingCycles -= 8; break;
-                        case 3: pendingCycles -= 12; break;
+                        case 0: PendingCycles/*pendingCycles*/ -= 8; break;
+                        case 1: PendingCycles/*pendingCycles*/ -= 12; break;
+                        case 2: PendingCycles/*pendingCycles*/ -= 8; break;
+                        case 3: PendingCycles/*pendingCycles*/ -= 12; break;
                     }
                     break;
             }
@@ -532,11 +532,11 @@ namespace cpu.m68000
 
             switch (size)
             {
-                case 0: WriteValueB(mode, reg, 0); pendingCycles -= mode == 0 ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; break;
+                case 0: WriteValueB(mode, reg, 0); PendingCycles/*pendingCycles*/ -= mode == 0 ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; break;
                 case 1:
                     WriteValueW(mode, reg, 0);
-                    pendingCycles -= mode == 0 ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; break;
-                case 2: WriteValueL(mode, reg, 0); pendingCycles -= mode == 0 ? 6 : 12 + EACyclesL[mode, reg]; break;
+                    PendingCycles/*pendingCycles*/ -= mode == 0 ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; break;
+                case 2: WriteValueL(mode, reg, 0); PendingCycles/*pendingCycles*/ -= mode == 0 ? 6 : 12 + EACyclesL[mode, reg]; break;
             }
 
             N = V = C = false;
@@ -565,7 +565,7 @@ namespace cpu.m68000
 
             V = false;
             C = false;
-            pendingCycles -= 4;
+            PendingCycles/*pendingCycles*/ -= 4;
         }
 
 
@@ -580,16 +580,16 @@ namespace cpu.m68000
 
         //    switch (mode)
         //    {
-        //        case 2: pendingCycles -= 12; break;
-        //        case 5: pendingCycles -= 16; break;
-        //        case 6: pendingCycles -= 20; break;
+        //        case 2: PendingCycles/*pendingCycles*/ -= 12; break;
+        //        case 5: PendingCycles/*pendingCycles*/ -= 16; break;
+        //        case 6: PendingCycles/*pendingCycles*/ -= 20; break;
         //        case 7:
         //            switch (reg)
         //            {
-        //                case 0: pendingCycles -= 16; break;
-        //                case 1: pendingCycles -= 20; break;
-        //                case 2: pendingCycles -= 16; break;
-        //                case 3: pendingCycles -= 20; break;
+        //                case 0: PendingCycles/*pendingCycles*/ -= 16; break;
+        //                case 1: PendingCycles/*pendingCycles*/ -= 20; break;
+        //                case 2: PendingCycles/*pendingCycles*/ -= 16; break;
+        //                case 3: PendingCycles/*pendingCycles*/ -= 20; break;
         //            }
         //            break;
         //    }
@@ -612,16 +612,16 @@ namespace cpu.m68000
 
             switch (mode)
             {
-                case 2: pendingCycles -= 12; break;
-                case 5: pendingCycles -= 16; break;
-                case 6: pendingCycles -= 20; break;
+                case 2: PendingCycles/*pendingCycles*/ -= 12; break;
+                case 5: PendingCycles/*pendingCycles*/ -= 16; break;
+                case 6: PendingCycles/*pendingCycles*/ -= 20; break;
                 case 7:
                     switch (reg)
                     {
-                        case 0: pendingCycles -= 16; break;
-                        case 1: pendingCycles -= 20; break;
-                        case 2: pendingCycles -= 16; break;
-                        case 3: pendingCycles -= 20; break;
+                        case 0: PendingCycles/*pendingCycles*/ -= 16; break;
+                        case 1: PendingCycles/*pendingCycles*/ -= 20; break;
+                        case 2: PendingCycles/*pendingCycles*/ -= 16; break;
+                        case 3: PendingCycles/*pendingCycles*/ -= 20; break;
                     }
                     break;
             }

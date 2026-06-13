@@ -29,7 +29,7 @@ namespace StoicGoose.Core.Sound
 		public short[][] LastEnqueuedChannelSamples { get; private set; } = default;
 		public short[] LastEnqueuedMixedSamples { get; private set; } = Array.Empty<short>();
 
-		public Action<short[]> SendSamples { get; set; } = default;
+		public Action<short[]> SendSamples/* { get; set; }*/ = default;
 
 		readonly double clockRate, refreshRate;
 		readonly int samplesPerFrame, cyclesPerFrame, cyclesPerSample;

@@ -65,23 +65,23 @@ namespace cpu.m68000
                 {
                     // use opcode-embedded displacement
                     PC += displacement8;
-                    pendingCycles -= 10;
+                    PendingCycles/*pendingCycles*/ -= 10;
                 }
                 else
                 {
                     // use extension word displacement
                     PC += ReadOpWord(PC);
-                    pendingCycles -= 10;
+                    PendingCycles/*pendingCycles*/ -= 10;
                 }
             }
             else
             { // false
                 if (displacement8 != 0)
-                    pendingCycles -= 8;
+                    PendingCycles/*pendingCycles*/ -= 8;
                 else
                 {
                     PC += 2;
-                    pendingCycles -= 12;
+                    PendingCycles/*pendingCycles*/ -= 12;
                 }
             }
         }
@@ -97,9 +97,9 @@ namespace cpu.m68000
                 PC += ReadOpWord(PC);
             if (PPC == PC)
             {
-                pendingCycles = 0;
+                PendingCycles/*pendingCycles*/ = 0;
             }
-            pendingCycles -= 10;
+            PendingCycles/*pendingCycles*/ -= 10;
         }
 
 
@@ -121,7 +121,7 @@ namespace cpu.m68000
                 WriteLong(ptrA7->s32, PC + 2);
                 PC += ReadOpWord(PC);
             }
-            pendingCycles -= 18;
+            PendingCycles/*pendingCycles*/ -= 18;
         }
 
 
@@ -130,7 +130,7 @@ namespace cpu.m68000
             if (TestCondition((op >> 8) & 0x0F) == true)
             {
                 PC += 2; // condition met, break out of loop
-                pendingCycles -= 12;
+                PendingCycles/*pendingCycles*/ -= 12;
             }
             else
             {
@@ -141,12 +141,12 @@ namespace cpu.m68000
                 if (D_ptr_reg->u16 == 0xFFFF)
                 {
                     PC += 2; // counter underflowed, break out of loop
-                    pendingCycles -= 14;
+                    PendingCycles/*pendingCycles*/ -= 14;
                 }
                 else
                 {
                     PC += ReadOpWord(PC); // condition false and counter not exhausted, so branch.
-                    pendingCycles -= 10;
+                    PendingCycles/*pendingCycles*/ -= 10;
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace cpu.m68000
             Register* ptrA7 = &A[7];
             PC = ReadLong(ptrA7->s32);
             ptrA7->s32 += 4;
-            pendingCycles -= 16;
+            PendingCycles/*pendingCycles*/ -= 16;
         }
 
 
@@ -169,14 +169,14 @@ namespace cpu.m68000
             CCR = value;
             PC = ReadLong(ptrA7->s32);
             ptrA7->s32 += 4;
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
         void RESET()
         {
             if (s)
             {
-                pendingCycles -= 132;
+                PendingCycles/*pendingCycles*/ -= 132;
             }
             else
             {
@@ -192,7 +192,7 @@ namespace cpu.m68000
             PC = ReadLong(ptrA7->s32);
             ptrA7->s32 += 4;
             SR = newSR;
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
         void TAS()
@@ -211,7 +211,7 @@ namespace cpu.m68000
                 //D_ptr_reg->u8 = (byte)(result | 0x80);
             }*/
             WriteValueB(mode, reg, (sbyte)(result | 0x80));
-            pendingCycles -= (mode == 0) ? 4 : 14 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= (mode == 0) ? 4 : 14 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
         void TST()
@@ -228,9 +228,9 @@ namespace cpu.m68000
             int value;
             switch (size)
             {
-                case 0: value = ReadValueB(mode, reg); pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; N = (value & 0x80) != 0; break;
-                case 1: value = ReadValueW(mode, reg); pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; N = (value & 0x8000) != 0; break;
-                default: value = ReadValueL(mode, reg); pendingCycles -= 4 + EACyclesL[mode, reg]; N = (value & 0x80000000) != 0; break;
+                case 0: value = ReadValueB(mode, reg); PendingCycles/*pendingCycles*/ -= 4 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; N = (value & 0x80) != 0; break;
+                case 1: value = ReadValueW(mode, reg); PendingCycles/*pendingCycles*/ -= 4 + axicache_Insn.EACyclesBW_mode_reg;/*EACyclesBW[mode, reg]*/; N = (value & 0x8000) != 0; break;
+                default: value = ReadValueL(mode, reg); PendingCycles/*pendingCycles*/ -= 4 + EACyclesL[mode, reg]; N = (value & 0x80000000) != 0; break;
             }
             V = false;
             C = false;
@@ -254,14 +254,14 @@ namespace cpu.m68000
                 int mask = 1 << bit;
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
-                pendingCycles -= 10;
+                PendingCycles/*pendingCycles*/ -= 10;
             }
             else
             {
                 bit &= 7;
                 int mask = 1 << bit;
                 Z = (ReadValueB(mode, reg) & mask) == 0;
-                pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -283,14 +283,14 @@ namespace cpu.m68000
                 int mask = 1 << bit;
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
-                pendingCycles -= 6;
+                PendingCycles/*pendingCycles*/ -= 6;
             }
             else
             {
                 bit &= 7;
                 int mask = 1 << bit;
                 Z = (ReadValueB(mode, reg) & mask) == 0;
-                pendingCycles -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -312,7 +312,7 @@ namespace cpu.m68000
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
                 D_ptr_reg->s32 ^= mask;
-                pendingCycles -= 12;
+                PendingCycles/*pendingCycles*/ -= 12;
             }
             else
             {
@@ -322,7 +322,7 @@ namespace cpu.m68000
                 Z = (value & mask) == 0;
                 value ^= (sbyte)mask;
                 WriteValueB(mode, reg, value);
-                pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -346,7 +346,7 @@ namespace cpu.m68000
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
                 D_ptr_reg->s32 ^= mask;
-                pendingCycles -= 8;
+                PendingCycles/*pendingCycles*/ -= 8;
             }
             else
             {
@@ -356,7 +356,7 @@ namespace cpu.m68000
                 Z = (value & mask) == 0;
                 value ^= (sbyte)mask;
                 WriteValueB(mode, reg, value);
-                pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -378,7 +378,7 @@ namespace cpu.m68000
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
                 D_ptr_reg->s32 &= ~mask;
-                pendingCycles -= 14;
+                PendingCycles/*pendingCycles*/ -= 14;
             }
             else
             {
@@ -388,7 +388,7 @@ namespace cpu.m68000
                 Z = (value & mask) == 0;
                 value &= (sbyte)~mask;
                 WriteValueB(mode, reg, value);
-                pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -411,7 +411,7 @@ namespace cpu.m68000
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
                 D_ptr_reg->s32 &= ~mask;
-                pendingCycles -= 10;
+                PendingCycles/*pendingCycles*/ -= 10;
             }
             else
             {
@@ -421,7 +421,7 @@ namespace cpu.m68000
                 Z = (value & mask) == 0;
                 value &= (sbyte)~mask;
                 WriteValueB(mode, reg, value);
-                pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -444,7 +444,7 @@ namespace cpu.m68000
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
                 D_ptr_reg->s32 |= mask;
-                pendingCycles -= 12;
+                PendingCycles/*pendingCycles*/ -= 12;
             }
             else
             {
@@ -454,7 +454,7 @@ namespace cpu.m68000
                 Z = (value & mask) == 0;
                 value |= (sbyte)mask;
                 WriteValueB(mode, reg, value);
-                pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -478,7 +478,7 @@ namespace cpu.m68000
                 Register* D_ptr_reg = D + reg;
                 Z = (D_ptr_reg->s32 & mask) == 0;
                 D_ptr_reg->s32 |= mask;
-                pendingCycles -= 8;
+                PendingCycles/*pendingCycles*/ -= 8;
             }
             else
             {
@@ -488,7 +488,7 @@ namespace cpu.m68000
                 Z = (value & mask) == 0;
                 value |= (sbyte)mask;
                 WriteValueB(mode, reg, value);
-                pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 
@@ -505,20 +505,20 @@ namespace cpu.m68000
             PC = ReadAddress(mode, reg);
             if (PPC == PC)
             {
-                pendingCycles = 0;
+                PendingCycles/*pendingCycles*/ = 0;
             }
             switch (mode)
             {
-                case 2: pendingCycles -= 8; break;
-                case 5: pendingCycles -= 10; break;
-                case 6: pendingCycles -= 14; break;
+                case 2: PendingCycles/*pendingCycles*/ -= 8; break;
+                case 5: PendingCycles/*pendingCycles*/ -= 10; break;
+                case 6: PendingCycles/*pendingCycles*/ -= 14; break;
                 case 7:
                     switch (reg)
                     {
-                        case 0: pendingCycles -= 10; break;
-                        case 1: pendingCycles -= 12; break;
-                        case 2: pendingCycles -= 10; break;
-                        case 3: pendingCycles -= 14; break;
+                        case 0: PendingCycles/*pendingCycles*/ -= 10; break;
+                        case 1: PendingCycles/*pendingCycles*/ -= 12; break;
+                        case 2: PendingCycles/*pendingCycles*/ -= 10; break;
+                        case 3: PendingCycles/*pendingCycles*/ -= 14; break;
                     }
                     break;
             }
@@ -543,16 +543,16 @@ namespace cpu.m68000
 
             switch (mode)
             {
-                case 2: pendingCycles -= 16; break;
-                case 5: pendingCycles -= 18; break;
-                case 6: pendingCycles -= 22; break;
+                case 2: PendingCycles/*pendingCycles*/ -= 16; break;
+                case 5: PendingCycles/*pendingCycles*/ -= 18; break;
+                case 6: PendingCycles/*pendingCycles*/ -= 22; break;
                 case 7:
                     switch (reg)
                     {
-                        case 0: pendingCycles -= 18; break;
-                        case 1: pendingCycles -= 20; break;
-                        case 2: pendingCycles -= 18; break;
-                        case 3: pendingCycles -= 22; break;
+                        case 0: PendingCycles/*pendingCycles*/ -= 18; break;
+                        case 1: PendingCycles/*pendingCycles*/ -= 20; break;
+                        case 2: PendingCycles/*pendingCycles*/ -= 18; break;
+                        case 3: PendingCycles/*pendingCycles*/ -= 22; break;
                     }
                     break;
             }
@@ -570,7 +570,7 @@ namespace cpu.m68000
             WriteLong(ptrA7->s32, A_ptr_reg->s32);
             A_ptr_reg->s32 = ptrA7->s32;
             ptrA7->s32 += offset;
-            pendingCycles -= 16;
+            PendingCycles/*pendingCycles*/ -= 16;
         }
 
 
@@ -582,13 +582,13 @@ namespace cpu.m68000
             ptrA7->s32 = A_ptr_reg->s32;
             A_ptr_reg->s32 = ReadLong(ptrA7->s32);
             ptrA7->s32 += 4;
-            pendingCycles -= 12;
+            PendingCycles/*pendingCycles*/ -= 12;
         }
 
 
         void NOP()
         {
-            pendingCycles -= 4;
+            PendingCycles/*pendingCycles*/ -= 4;
         }
 
 
@@ -605,16 +605,16 @@ namespace cpu.m68000
             if (TestCondition(cond) == true)
             {
                 WriteValueB(mode, reg, -1);
-                if (mode == 0) pendingCycles -= 6;
-                else pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                if (mode == 0) PendingCycles/*pendingCycles*/ -= 6;
+                else PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
             else
             {
                 WriteValueB(mode, reg, 0);
                 if (mode == 0)
-                    pendingCycles -= 4;
+                    PendingCycles/*pendingCycles*/ -= 4;
                 else
-                    pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                    PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
             }
         }
 

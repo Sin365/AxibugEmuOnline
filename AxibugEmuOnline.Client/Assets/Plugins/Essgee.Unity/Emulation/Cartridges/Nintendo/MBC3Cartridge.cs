@@ -10,15 +10,12 @@ namespace Essgee.Emulation.Cartridges.Nintendo
         public class RTC
         {
             public const int NumRegisters = 0x05;
-
-            public byte[] BaseRegisters { get; private set; }
-            public byte[] LatchedRegisters { get; private set; }
-
-            public DateTime BaseTime { get; set; }
-
-            public bool IsSelected { get; set; }
-            public byte SelectedRegister { get; set; }
-            public bool IsLatched { get; set; }
+            public byte[] BaseRegisters;// { get; private set; }
+            public byte[] LatchedRegisters;// { get; private set; }
+            public DateTime BaseTime;// { get; set; }
+            public bool IsSelected;// { get; set; }
+            public byte SelectedRegister;// { get; set; }
+            public bool IsLatched;// { get; set; }
 
             public RTC()
             {

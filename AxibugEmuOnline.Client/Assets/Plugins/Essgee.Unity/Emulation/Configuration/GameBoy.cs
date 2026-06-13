@@ -32,32 +32,32 @@ namespace Essgee.Emulation.Configuration
         //[JsonConverter(typeof(StringEnumConverter))]
         public GBCameraCartridge.ImageSources CameraSource { get; set; }
         //todo Unity [FileBrowserControl("GB Camera", "Camera Image", "Image Files (*.png;*.bmp)|*.png;*.bmp")]
-        public string CameraImageFile { get; set; }
+        public string CameraImageFile;// { get; set; }
 
         //todo Unity [DropDownControl("Controls", "Up", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsUp { get; set; }
+        public EssgeeMotionKey ControlsUp;//{ get; set; }
         //todo Unity [DropDownControl("Controls", "Down", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsDown { get; set; }
+        public EssgeeMotionKey ControlsDown;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Left", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsLeft { get; set; }
+        public EssgeeMotionKey ControlsLeft;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Right", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsRight { get; set; }
+        public EssgeeMotionKey ControlsRight;// { get; set; }
         //todo Unity [DropDownControl("Controls", "A", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsA { get; set; }
+        public EssgeeMotionKey ControlsA;// { get; set; }
         //todo Unity [DropDownControl("Controls", "B", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsB { get; set; }
+        public EssgeeMotionKey ControlsB;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Select", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsSelect { get; set; }
+        public EssgeeMotionKey ControlsSelect;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Start", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsStart { get; set; }
+        public EssgeeMotionKey ControlsStart;// { get; set; }
 
         public GameBoy()
         {

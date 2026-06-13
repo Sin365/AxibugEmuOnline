@@ -5,30 +5,30 @@ namespace cpu.nec
 {
     public partial class Nec : cpuexec_data
     {
-        protected ulong totalExecutedCycles;
-        public int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //protected ulong totalExecutedCycles;
+        //public int pendingCycles;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return pendingCycles;
+        //    }
+        //    set
+        //    {
+        //        pendingCycles = value;
+        //    }
+        //}
         public override void set_irq_line(int irqline, LineState state)
         {
             if (irqline == (int)LineState.INPUT_LINE_NMI)
@@ -380,33 +380,33 @@ namespace cpu.nec
         }
         public void CLK(int all)
         {
-            pendingCycles -= all;
+            PendingCycles/*pendingCycles*/ -= all;
         }
         public void CLKS(int v20, int v30, int v33)
         {
             int ccount = (v20 << 16) | (v30 << 8) | v33;
-            pendingCycles -= (ccount >> chip_type) & 0x7f;
+            PendingCycles/*pendingCycles*/ -= (ccount >> chip_type) & 0x7f;
         }
         public void CLKW(int v20o, int v30o, int v33o, int v20e, int v30e, int v33e, int addr)
         {
             int ocount = (v20o << 16) | (v30o << 8) | v33o, ecount = (v20e << 16) | (v30e << 8) | v33e;
-            pendingCycles -= ((addr & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
+            PendingCycles/*pendingCycles*/ -= ((addr & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
         }
         public void CLKM(int ModRM, int v20, int v30, int v33, int v20m, int v30m, int v33m)
         {
             int ccount = (v20 << 16) | (v30 << 8) | v33, mcount = (v20m << 16) | (v30m << 8) | v33m;
-            pendingCycles -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
+            PendingCycles/*pendingCycles*/ -= (ModRM >= 0xc0) ? ((ccount >> chip_type) & 0x7f) : ((mcount >> chip_type) & 0x7f);
         }
         public void CLKR(int ModRM, int v20o, int v30o, int v33o, int v20e, int v30e, int v33e, int vall, int addr)
         {
             int ocount = (v20o << 16) | (v30o << 8) | v33o, ecount = (v20e << 16) | (v30e << 8) | v33e;
             if (ModRM >= 0xc0)
             {
-                pendingCycles -= vall;
+                PendingCycles/*pendingCycles*/ -= vall;
             }
             else
             {
-                pendingCycles -= ((addr & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
+                PendingCycles/*pendingCycles*/ -= ((addr & 1) != 0) ? ((ocount >> chip_type) & 0x7f) : ((ecount >> chip_type) & 0x7f);
             }
         }
         public ushort CompressFlags()
@@ -474,7 +474,7 @@ namespace cpu.nec
                 //使用外部定义减少GC压力
                 //byte[] table = new byte[] { 3, 10, 10 };
                 I.ip = (ushort)(I.ip + tmp);
-                pendingCycles -= JMP_table[chip_type / 8];
+                PendingCycles/*pendingCycles*/ -= JMP_table[chip_type / 8];
                 //PC = (I.sregs[1] << 4) + I.ip;
                 //return;
             }
@@ -606,7 +606,7 @@ namespace cpu.nec
         }
         public void SHL_BYTE(int c, ref int dst, int ModRM)
         {
-            pendingCycles -= c;
+            PendingCycles/*pendingCycles*/ -= c;
             dst <<= c;
             SetCFB((uint)dst);
             SetSZPF_Byte(dst);
@@ -614,7 +614,7 @@ namespace cpu.nec
         }
         public void SHL_WORD(int c, ref int dst, int ModRM)
         {
-            pendingCycles -= c;
+            PendingCycles/*pendingCycles*/ -= c;
             dst <<= c;
             SetCFW((uint)dst);
             SetSZPF_Word(dst);
@@ -622,7 +622,7 @@ namespace cpu.nec
         }
         public void SHR_BYTE(int c, ref int dst, int ModRM)
         {
-            pendingCycles -= c;
+            PendingCycles/*pendingCycles*/ -= c;
             dst >>= c - 1;
             I.CarryVal = (uint)(dst & 0x1);
             dst >>= 1;
@@ -631,7 +631,7 @@ namespace cpu.nec
         }
         public void SHR_WORD(int c, ref int dst, int ModRM)
         {
-            pendingCycles -= c;
+            PendingCycles/*pendingCycles*/ -= c;
             dst >>= c - 1;
             I.CarryVal = (uint)(dst & 0x1);
             dst >>= 1;
@@ -640,7 +640,7 @@ namespace cpu.nec
         }
         public void SHRA_BYTE(int c, ref int dst, int ModRM)
         {
-            pendingCycles -= c;
+            PendingCycles/*pendingCycles*/ -= c;
             dst = ((sbyte)dst) >> (c - 1);
             I.CarryVal = (uint)(dst & 0x1);
             dst = ((sbyte)((byte)dst)) >> 1;
@@ -649,7 +649,7 @@ namespace cpu.nec
         }
         public void SHRA_WORD(int c, ref int dst, int ModRM)
         {
-            pendingCycles -= c;
+            PendingCycles/*pendingCycles*/ -= c;
             dst = ((short)dst) >> (c - 1);
             I.CarryVal = (uint)(dst & 0x1);
             dst = ((short)((ushort)dst)) >> 1;
@@ -745,7 +745,7 @@ namespace cpu.nec
             I.ZeroVal = I.CarryVal = 0;
             for (i = 0; i < count; i++)
             {
-                pendingCycles -= ADD4S_table[chip_type / 8];
+                PendingCycles/*pendingCycles*/ -= ADD4S_table[chip_type / 8];
                 tmp = GetMemB(3, si);
                 tmp2 = GetMemB(0, di);
                 v1 = (tmp >> 4) * 10 + (tmp & 0xf);
@@ -773,7 +773,7 @@ namespace cpu.nec
             I.ZeroVal = I.CarryVal = 0;
             for (i = 0; i < count; i++)
             {
-                pendingCycles -= table[chip_type / 8];
+                PendingCycles/*pendingCycles*/ -= table[chip_type / 8];
                 tmp = GetMemB(0, di);
                 tmp2 = GetMemB(3, si);
                 v1 = (tmp >> 4) * 10 + (tmp & 0xf);
@@ -809,7 +809,7 @@ namespace cpu.nec
             I.ZeroVal = I.CarryVal = 0;
             for (i = 0; i < count; i++)
             {
-                pendingCycles -= table[chip_type / 8];
+                PendingCycles/*pendingCycles*/ -= table[chip_type / 8];
                 tmp = GetMemB(0, di);
                 tmp2 = GetMemB(3, si);
                 v1 = (tmp >> 4) * 10 + (tmp & 0xf);
@@ -1351,10 +1351,10 @@ namespace cpu.nec
         //手动内联
         public override int ExecuteCycles(int cycles)
         {
-            pendingCycles = cycles;
-            while (pendingCycles > 0)
+            PendingCycles/*pendingCycles*/ = cycles;
+            while (PendingCycles/*pendingCycles*/ > 0)
             {
-                int prevCycles = pendingCycles;
+                int prevCycles = PendingCycles/*pendingCycles*/;
                 if (I.pending_irq != 0 && I.no_interrupt == 0)
                 {
                     if ((I.pending_irq & NMI_IRQ) != 0)
@@ -1454,10 +1454,10 @@ namespace cpu.nec
 
                 nec_instruction[iNOP]();
                 //DoInstructionOpCode(iNOP);
-                int delta = prevCycles - pendingCycles;
-                totalExecutedCycles += (ulong)delta;
+                int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                TotalExecutedCycles/*totalExecutedCycles */+= (ulong)delta;
             }
-            return cycles - pendingCycles;
+            return cycles - PendingCycles/*pendingCycles*/;
         }
     }
     public class V33 : Nec
@@ -1504,10 +1504,10 @@ namespace cpu.nec
         //手动内联
         public override int ExecuteCycles(int cycles)
         {
-            pendingCycles = cycles;
-            while (pendingCycles > 0)
+            PendingCycles/*pendingCycles*/ = cycles;
+            while (PendingCycles/*pendingCycles*/ > 0)
             {
-                int prevCycles = pendingCycles;
+                int prevCycles = PendingCycles/*pendingCycles*/;
                 if (I.pending_irq != 0 && I.no_interrupt == 0)
                 {
                     if ((I.pending_irq & NMI_IRQ) != 0)
@@ -1606,10 +1606,10 @@ namespace cpu.nec
 
                 nec_instruction[iNOP]();
                 //DoInstructionOpCode(iNOP);
-                int delta = prevCycles - pendingCycles;
-                totalExecutedCycles += (ulong)delta;
+                int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                TotalExecutedCycles/*totalExecutedCycles */+= (ulong)delta;
             }
-            return cycles - pendingCycles;
+            return cycles - PendingCycles/*pendingCycles*/;
         }
     }
 }
