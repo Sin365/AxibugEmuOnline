@@ -182,8 +182,13 @@ namespace StoicGoose.Core.Display
                 }
 
                 /* Render pixels */
-                for (var x = 0; x < HorizontalDisp; x++)
-                    RenderPixel(lineCurrent, x);
+                //for (var x = 0; x < HorizontalDisp; x++)
+                //    RenderPixel(lineCurrent, x);
+
+                RenderBackColorLine(lineCurrent);
+                RenderSCR1Line(lineCurrent);
+                RenderSCR2Line(lineCurrent);
+                RenderSpritesLine(lineCurrent);
 
                 /* Line compare interrupt */
                 if (lineCurrent == lineCompare)
@@ -229,29 +234,36 @@ namespace StoicGoose.Core.Display
             return interrupt;
         }
 
-        protected void RenderPixel(int y, int x)
-        {
-            if (y < 0 || y >= VerticalDisp || x < 0 || x >= HorizontalDisp) return;
+        //protected void RenderPixel(int y, int x)
+        //{
+        //    if (y < 0 || y >= VerticalDisp || x < 0 || x >= HorizontalDisp) return;
 
-            if (lcdActive)
-            {
-                RenderBackColor(y, x);
-                RenderSCR1(y, x);
-                RenderSCR2(y, x);
-                RenderSprites(y, x);
-            }
-            else
-            {
-                /* LCD sleeping */
-                RenderSleep(y, x);
-            }
-        }
+        //    if (lcdActive)
+        //    {
+        //        RenderBackColor(y, x);
+        //        RenderSCR1(y, x);
+        //        RenderSCR2(y, x);
+        //        RenderSprites(y, x);
+        //    }
+        //    else
+        //    {
+        //        /* LCD sleeping */
+        //        RenderSleep(y, x);
+        //    }
+        //}
 
         protected abstract void RenderSleep(int y, int x);
         protected abstract void RenderBackColor(int y, int x);
         protected abstract void RenderSCR1(int y, int x);
         protected abstract void RenderSCR2(int y, int x);
         protected abstract void RenderSprites(int y, int x);
+
+
+        protected abstract void RenderSleepLine(int y);
+        protected abstract void RenderBackColorLine(int y);
+        protected abstract void RenderSCR1Line(int y);
+        protected abstract void RenderSCR2Line(int y);
+        protected abstract void RenderSpritesLine(int y);
 
         protected static void ValidateWindowCoordinates(ref int x0, ref int x1, ref int y0, ref int y1)
         {

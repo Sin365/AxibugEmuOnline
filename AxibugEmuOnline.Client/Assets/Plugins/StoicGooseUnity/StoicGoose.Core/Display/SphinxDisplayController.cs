@@ -256,5 +256,181 @@ namespace StoicGoose.Core.Display
 		[Port("REG_DISP_MODE", 0x060)]
 		[BitDescription("Display color mode; is color?", 7)]
 		public bool DisplayColorFlagSet => displayColorFlagSet;
-	}
+
+        #region === 優化後的逐行渲染（已修復越界）===
+
+        protected override void RenderSleepLine(int y)
+        {
+            if (y < 0 || y >= VerticalDisp) return;
+            uint black = DisplayUtilities.Color_Black;
+            for (int x = 0; x < HorizontalDisp; x++)
+                DisplayUtilities.CopyPixel(black, outputFramebuffer, x, y, HorizontalDisp);
+        }
+
+        protected override void RenderBackColorLine(int y)
+        {
+            if (y < 0 || y >= VerticalDisp) return;
+
+            uint color;
+            if (displayColorFlagSet)
+            {
+                var colorData = DisplayUtilities.ReadColor(machine, backColorPalette, backColorIndex);
+                color = DisplayUtilities.GeneratePixel(colorData);
+            }
+            else
+            {
+                color = DisplayUtilities.GeneratePixel((byte)(15 - palMonoPools[backColorIndex & 0b0111]));
+            }
+
+            for (int x = 0; x < HorizontalDisp; x++)
+                DisplayUtilities.CopyPixel(color, outputFramebuffer, x, y, HorizontalDisp);
+        }
+
+        protected override void RenderSCR1Line(int y)
+        {
+            if (!scr1Enable || y < 0 || y >= VerticalDisp) return;
+
+            var scrollY = (y + scr1ScrollY) & 0xFF;
+            var mapBase = (uint)((scr1Base << 11) | ((scrollY >> 3) << 6));
+            var tileY = scrollY & 7;
+
+            for (int x = 0; x < HorizontalDisp; x++)
+            {
+                var scrollX = (x + scr1ScrollX) & 0xFF;
+                var mapOffset = mapBase | (uint)((scrollX >> 3) << 1);
+
+                var attribs = ReadMemory16(mapOffset);
+                var tileNum = (ushort)((attribs & 0x01FF) | (displayColorFlagSet ? (((attribs >> 13) & 0b1) << 9) : 0));
+                var tilePal = (byte)((attribs >> 9) & 0b1111);
+
+                var flipX = ((attribs >> 14) & 0b1) == 1;
+                var flipY = ((attribs >> 15) & 0b1) == 1;
+                var pixelX = (byte)(flipX ? (7 - (scrollX & 7)) : (scrollX & 7));
+                var pixelY = (byte)(flipY ? (7 - tileY) : tileY);
+
+                var pixelColor = DisplayUtilities.ReadPixel(machine, tileNum, pixelY, pixelX,
+                    displayPackedFormatSet, display4bppFlagSet, displayColorFlagSet);
+
+                var isOpaque = (!display4bppFlagSet && !IsBitSet(tilePal, 2)) || pixelColor != 0;
+                if (!isOpaque) continue;
+
+                uint color = GetColor(tilePal, pixelColor);
+                DisplayUtilities.CopyPixel(color, outputFramebuffer, x, y, HorizontalDisp);
+            }
+        }
+
+        protected override void RenderSCR2Line(int y)
+        {
+            if (!scr2Enable || y < 0 || y >= VerticalDisp) return;
+
+            var scrollY = (y + scr2ScrollY) & 0xFF;
+            var mapBase = (uint)((scr2Base << 11) | ((scrollY >> 3) << 6));
+            var tileY = scrollY & 7;
+
+            int fbIndexBase = y * HorizontalDisp;   // 預計算索引
+
+            for (int x = 0; x < HorizontalDisp; x++)
+            {
+                var scrollX = (x + scr2ScrollX) & 0xFF;
+                var mapOffset = mapBase | (uint)((scrollX >> 3) << 1);
+
+                var attribs = ReadMemory16(mapOffset);
+                var tileNum = (ushort)((attribs & 0x01FF) | (displayColorFlagSet ? (((attribs >> 13) & 0b1) << 9) : 0));
+                var tilePal = (byte)((attribs >> 9) & 0b1111);
+
+                var isVisible = !scr2WindowEnable ||
+                                (scr2WindowEnable && ((!scr2WindowDisplayOutside && IsInsideSCR2Window(y, x)) ||
+                                                     (scr2WindowDisplayOutside && IsOutsideSCR2Window(y, x))));
+                if (!isVisible) continue;
+
+                var flipX = ((attribs >> 14) & 0b1) == 1;
+                var flipY = ((attribs >> 15) & 0b1) == 1;
+                var pixelX = (byte)(flipX ? (7 - (scrollX & 7)) : (scrollX & 7));
+                var pixelY = (byte)(flipY ? (7 - tileY) : tileY);
+
+                var pixelColor = DisplayUtilities.ReadPixel(machine, tileNum, pixelY, pixelX,
+                    displayPackedFormatSet, display4bppFlagSet, displayColorFlagSet);
+
+                var isOpaque = (!display4bppFlagSet && !IsBitSet(tilePal, 2)) || pixelColor != 0;
+                if (!isOpaque) continue;
+
+                isUsedBySCR2[fbIndexBase + x] = true;
+
+                uint color = GetColor(tilePal, pixelColor);
+                DisplayUtilities.CopyPixel(color, outputFramebuffer, x, y, HorizontalDisp);
+            }
+        }
+
+        protected override void RenderSpritesLine(int y)
+        {
+            if (!sprEnable || y < 0 || y >= VerticalDisp) return;
+
+            // 每行只收集一次精灵
+            activeSpriteCountOnLine = 0;
+            for (var i = 0; i < spriteCountNextFrame; i++)
+            {
+                var spriteY = (spriteData[i] >> 16) & 0xFF;
+                if ((byte)(y - spriteY) <= 7 && activeSpriteCountOnLine < maxSpritesPerLine)
+                    activeSpritesOnLine[activeSpriteCountOnLine++] = spriteData[i];
+            }
+
+            int fbIndexBase = y * HorizontalDisp;
+
+            for (int x = 0; x < HorizontalDisp; x++)
+            {
+                for (var i = 0; i < activeSpriteCountOnLine; i++)
+                {
+                    var activeSprite = activeSpritesOnLine[i];
+                    var spriteX = (activeSprite >> 24) & 0xFF;
+
+                    if ((byte)(x - spriteX) > 7) continue;
+
+                    var windowDisplayOutside = ((activeSprite >> 12) & 0b1) == 0b1;
+                    if (sprWindowEnable && (windowDisplayOutside != IsInsideSPRWindow(y, x)))
+                        continue;
+
+                    var tileNum = (ushort)(activeSprite & 0x01FF);
+                    var tilePal = (byte)((activeSprite >> 9) & 0b111);
+                    var priorityAboveSCR2 = ((activeSprite >> 13) & 0b1) == 0b1;
+
+                    var isVisible = !isUsedBySCR2[fbIndexBase + x] || priorityAboveSCR2;
+                    if (!isVisible) continue;
+
+                    var spriteY = (activeSprite >> 16) & 0xFF;
+                    var flipX = ((activeSprite >> 14) & 0b1) == 1;
+                    var flipY = ((activeSprite >> 15) & 0b1) == 1;
+
+                    var pixelX = (byte)(flipX ? (7 - (x - spriteX)) : (x - spriteX));
+                    var pixelY = (byte)(flipY ? (7 - (y - spriteY)) : (y - spriteY));
+
+                    var pixelColor = DisplayUtilities.ReadPixel(machine, tileNum, pixelY, pixelX,
+                        displayPackedFormatSet, display4bppFlagSet, displayColorFlagSet);
+
+                    var isOpaque = (!display4bppFlagSet && !IsBitSet(tilePal, 2)) || pixelColor != 0;
+                    if (!isOpaque) continue;
+
+                    uint color = GetColor((byte)(tilePal + 8), pixelColor);
+                    DisplayUtilities.CopyPixel(color, outputFramebuffer, x, y, HorizontalDisp);
+
+                    break; // 已繪製最高優先級精靈，後面的不再處理
+                }
+            }
+        }
+
+        // 輔助函數：統一取色
+        private uint GetColor(byte palette, byte colorIdx)
+        {
+            if (displayColorFlagSet)
+            {
+                var colorData = DisplayUtilities.ReadColor(machine, palette, colorIdx);
+                return DisplayUtilities.GeneratePixel(colorData);
+            }
+            else
+            {
+                return DisplayUtilities.GeneratePixel((byte)(15 - palMonoPools[palMonoData[palette][colorIdx & 0b11]]));
+            }
+        }
+
+        #endregion
+    }
 }
