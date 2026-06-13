@@ -1,6 +1,4 @@
-﻿using Essgee.Metadata;
-using StoicGoose.Core.Interfaces;
-using StoicGoose.Core.Machines;
+﻿using StoicGoose.Core.Machines;
 using StoicGooseUnity;
 using System;
 using System.Diagnostics;
@@ -21,7 +19,7 @@ public class EmulatorHandler
     public bool IsPaused => threadPaused;
 
     public MachineCommon Machine { get; } = default;
-    public int AxiEmuRunFrame { get; private set; }
+    public int AxiEmuRunFrame;
 
     public EmulatorHandler(Type machineType)
     {
@@ -123,13 +121,38 @@ public class EmulatorHandler
                 lastTime = stopWatch.Elapsed.TotalMilliseconds;
         }
     }
+    long accumulatedUs = 0;
+    long unityFrameUs = 16_666; // 60Hz = 16.6667ms
+    public static class WSConstants
+    {
+        // 3.072 MHz
+        public const int MASTER_CLOCK = 3_072_000;
 
+        // 159 lines per frame
+        public const int LINES_PER_FRAME = 159;
+
+        // 256 dots per line
+        public const int DOTS_PER_LINE = 256;
+
+        // Frame time in microseconds (1ms = 1000us)
+        // 13.259ms = 13259us
+        public const long FRAME_TIME_US = 13_259;
+    }
     public void Frame_Update()
     {
-        //if (!threadRunning || !threadPaused)
-        //    return;
+        accumulatedUs += unityFrameUs;
 
-        Machine.RunFrame();
-        AxiEmuRunFrame++;
+        int runStep = 0;
+
+        while (accumulatedUs >= WSConstants.FRAME_TIME_US)
+        {
+            accumulatedUs -= WSConstants.FRAME_TIME_US;
+            runStep++;
+        }
+
+        for (int i = 0; i < runStep; i++)
+        {
+            Machine.RunFrame();
+        }
     }
 }

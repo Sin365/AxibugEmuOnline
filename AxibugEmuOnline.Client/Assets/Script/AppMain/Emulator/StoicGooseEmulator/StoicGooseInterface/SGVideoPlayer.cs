@@ -11,7 +11,7 @@ public class SGVideoPlayer : MonoBehaviour
     private int mHeight;
     [SerializeField]
     private int mDataLenght;
-    [SerializeField]
+    //[SerializeField]
     private Texture2D m_rawBufferWarper;
     [SerializeField]
     private RawImage m_drawCanvas;
@@ -23,25 +23,28 @@ public class SGVideoPlayer : MonoBehaviour
     public RawImage DrawCanvas => m_drawCanvas;
     private TimeSpan lastElapsed;
     public double videoFPS { get; private set; }
-    public ulong mFrame { get; private set; }
     bool bInit = false;
     bool bHadData = false;
 
     public Vector2Int ScreenSize = Vector2Int.one;
 
+    Texture2D defaultTex;
+
     private void Awake()
     {
         bHadData = false;
-        mFrame = 0;
         m_drawCanvas = GameObject.Find("GameRawImage").GetComponent<RawImage>();
         m_drawCanvasrect = m_drawCanvas.GetComponent<RectTransform>();
+        defaultTex = new Texture2D(224, 144, TextureFormat.BGRA32, false);//直接初始化好了。分辨率是固定的呢
+        m_rawBufferWarper = defaultTex;
+        m_rawBufferWarper.filterMode = FilterMode.Point;
     }
 
     public void Initialize()
     {
         m_drawCanvas.color = Color.white;
 
-        if (m_rawBufferWarper == null)
+        //if (m_rawBufferWarper == null)
         {
             mDataLenght = mWidth * mHeight * 4;
             //mFrameData = new byte[mDataLenght];
@@ -105,6 +108,7 @@ public class SGVideoPlayer : MonoBehaviour
         mFrameDataPtr = ptr;
         if (!bHadData)
             bHadData = true;
+        UStoicGoose.instance.emulatorHandler.AxiEmuRunFrame++;
     }
 
     internal void SetSize(int screenWidth, int screenHeight)

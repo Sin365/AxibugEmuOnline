@@ -91,6 +91,15 @@ namespace AxibugEmuOnline.Client
                 //TODO 重新播放音效，但是DSP不用，若有UI BGM，后续 这里加重播
             }
         }
+#if UNITY_EDITOR
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F11))
+                BeginRecordGameAudio();
+            if (Input.GetKeyDown(KeyCode.F12))
+                StopRecordGameAudio();
+        }
+#endif
 
         #region 静态音源
         public void PlaySFX(E_SFXTYPE type, bool isLoop = false)
@@ -184,7 +193,6 @@ namespace AxibugEmuOnline.Client
         {
             if (_audioStreams == null) return;
             _audioStreams.AxiAudioPullHandle.PullAudio(data, channels);
-
             //TODO 如果要处理采样率差异
             if (_audioStreams.NeedsResampling) { }
         }
@@ -213,7 +221,9 @@ namespace AxibugEmuOnline.Client
         public void BeginRecordGameAudio()
         {
             int frequency, channels;
-            App.emu.Core.GetAudioParams(out frequency, out channels);
+            frequency = lastSetSampleRate;
+            channels = 2;
+            //App.emu.Core.GetAudioParams(out frequency, out channels);
             BeginRecording(frequency, channels);
         }
 
@@ -229,7 +239,7 @@ namespace AxibugEmuOnline.Client
             {
                 AxiIO.Directory.CreateDirectory(dir);
             }
-            return $"{dir}/{App.tick.GetDateTimeStr()}";
+            return $"{dir}/{App.tick.GetDateTimeStr()}.wma";
         }
 
         void BeginRecording(int frequency, int channels)
@@ -263,6 +273,7 @@ namespace AxibugEmuOnline.Client
             }
             IsRecording = false;
             OverlayManager.PopTip("录音结束");
+            App.log.Info($"录音接触，存储到{filename}");
         }
 
         public unsafe void WriteToRecord(short* stereoBuffer, int lenght)
