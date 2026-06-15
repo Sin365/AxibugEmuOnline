@@ -501,8 +501,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 7.3001, y: 12.5}
-  m_SizeDelta: {x: 175.4, y: 10}
+  m_AnchoredPosition: {x: 8.0065, y: 12.5}
+  m_SizeDelta: {x: 173.9872, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2502276020167591985
 MonoBehaviour:
@@ -655,7 +655,7 @@ MonoBehaviour:
   UnSelectScale: 0.85
   m_roomPreview: {fileID: 67125096702760250}
   m_downloadProgress: {fileID: 2502276020167591985}
-  m_downloadingFlag: {fileID: 0}
+  m_downloadingFlag: {fileID: 6316945668089981796}
   m_romReadyFlag: {fileID: 6316945668089981796}
   DownloadComplete: {fileID: 8449502431356192113}
 --- !u!114 &5700455559359757662
@@ -1153,7 +1153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1361359478345282377
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1194,7 +1194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.15304625, g: 1, b: 0.20392157, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.9411765, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
