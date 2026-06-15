@@ -9,6 +9,7 @@ namespace AxibugEmuOnline.Client
     {
         [SerializeField]
         InputField m_input;
+        [SerializeField]
         Text txtTips;
 
         Action<string> OnCommit;

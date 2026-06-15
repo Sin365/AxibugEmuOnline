@@ -1,5 +1,4 @@
-﻿using Essgee.Metadata;
-using StoicGoose.Core.Interfaces;
+﻿using StoicGoose.Core.Machines;
 using StoicGooseUnity;
 using System;
 using System.Diagnostics;
@@ -19,13 +18,18 @@ public class EmulatorHandler
     public bool IsRunning => threadRunning;
     public bool IsPaused => threadPaused;
 
-    public IMachine Machine { get; } = default;
-    public int AxiEmuRunFrame { get; private set; }
+    public MachineCommon Machine { get; } = default;
+    public int AxiEmuRunFrame;
+    public int AxiVirtualFrame;
+    /// <summary>
+    /// 当前当前虚拟帧是否快速掠过
+    /// </summary>
+    public bool CurrVirtualFrameIsSkim = false;
 
     public EmulatorHandler(Type machineType)
     {
         StoicGooseUnityAxiMem.Init();
-        Machine = Activator.CreateInstance(machineType) as IMachine;
+        Machine = Activator.CreateInstance(machineType) as MachineCommon;
         Machine.Initialize();
     }
 
@@ -39,6 +43,7 @@ public class EmulatorHandler
         //thread = new Thread(ThreadMainLoop) { Name = threadName, Priority = ThreadPriority.AboveNormal, IsBackground = false };
         //thread.Start();
         AxiEmuRunFrame = 0;
+        AxiVirtualFrame = 0;
     }
 
     public void Reset()
@@ -122,13 +127,41 @@ public class EmulatorHandler
                 lastTime = stopWatch.Elapsed.TotalMilliseconds;
         }
     }
+    long accumulatedUs = 0;
+    long unityFrameUs = 16_666; // 60Hz = 16.6667ms
+    public static class WSConstants
+    {
+        // 3.072 MHz
+        public const int MASTER_CLOCK = 3_072_000;
 
+        // 159 lines per frame
+        public const int LINES_PER_FRAME = 159;
+
+        // 256 dots per line
+        public const int DOTS_PER_LINE = 256;
+
+        // Frame time in microseconds (1ms = 1000us)
+        // 13.259ms = 13259us
+        public const long FRAME_TIME_US = 13_259;
+    }
     public void Frame_Update()
     {
-        if (!threadRunning || !threadPaused)
-            return;
+        accumulatedUs += unityFrameUs;
 
-        Machine.RunFrame();
+        int runStep = 0;
+
+        while (accumulatedUs >= WSConstants.FRAME_TIME_US)
+        {
+            accumulatedUs -= WSConstants.FRAME_TIME_US;
+            runStep++;
+        }
+
+        for (int i = 0; i < runStep; i++)
+        {
+            CurrVirtualFrameIsSkim = i != runStep - 1;
+            Machine.RunFrame();
+            AxiVirtualFrame++;
+        }
         AxiEmuRunFrame++;
     }
 }

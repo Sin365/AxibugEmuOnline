@@ -179,6 +179,9 @@ namespace AxibugEmuOnline.Client.Network
                     case ErrorCode.ErrorRomFailCoverimg:
                         errMsg = "处理游戏截图失败";
                         break;
+                    case ErrorCode.ErrorRoleAlreadlyNickname:
+                        errMsg = "修改失败已被使用";
+                        break;
                     case ErrorCode.ErrorDefaul:
                     case ErrorCode.ErrorOk:
                     default:
@@ -190,7 +193,7 @@ namespace AxibugEmuOnline.Client.Network
 
 #if UNITY_EDITOR
             //if (cmd > (int)CommandID.CmdPong)
-                //App.log.Info("[NET]<color=yellow>" + cmd + "|" + (CommandID)cmd + "| ERRCODE:" + ERRCODE + "| length:" + arg.Length + "</color>");
+            //App.log.Info("[NET]<color=yellow>" + cmd + "|" + (CommandID)cmd + "| ERRCODE:" + ERRCODE + "| length:" + arg.Length + "</color>");
 #endif
             if (err > ErrorCode.ErrorOk)
                 return;

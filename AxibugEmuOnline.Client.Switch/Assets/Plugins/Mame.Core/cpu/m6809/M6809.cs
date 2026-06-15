@@ -23,30 +23,30 @@ namespace cpu.m6809
         public Action<ushort, byte> WriteIO;
         public delegate int irq_delegate(int irqline);
         public irq_delegate irq_callback;
-        private ulong totalExecutedCycles;
-        private int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //private ulong totalExecutedCycles;
+        //private int pendingCycles;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return pendingCycles;
+        //    }
+        //    set
+        //    {
+        //        pendingCycles = value;
+        //    }
+        //}
         public byte[] flags8i = new byte[256]
 {
 0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -480,7 +480,7 @@ namespace cpu.m6809
             Register t = IMMWORD();
             if (f)
             {
-                pendingCycles -= 1;
+                PendingCycles/*pendingCycles*/ -= 1;
                 PC.LowWord += t.LowWord;
             }
         }
@@ -556,30 +556,30 @@ namespace cpu.m6809
         }
         public override int ExecuteCycles(int cycles)
         {
-            pendingCycles = cycles - extra_cycles;
+            PendingCycles/*pendingCycles*/ = cycles - extra_cycles;
             extra_cycles = 0;
             if ((int_state & (M6809_CWAI | M6809_SYNC)) != 0)
             {
-                pendingCycles = 0;
+                PendingCycles/*pendingCycles*/ = 0;
             }
             else
             {
                 do
                 {
-                    int prevCycles = pendingCycles;
+                    int prevCycles = PendingCycles/*pendingCycles*/;
                     PPC = PC;
                     ireg = ReadOp(PC.LowWord);
                     PC.LowWord++;
                     insn[ireg]();
-                    pendingCycles -= cycles_6809[ireg];
-                    int delta = prevCycles - pendingCycles;
-                    totalExecutedCycles += (ulong)delta;
-                } while (pendingCycles > 0);
+                    PendingCycles/*pendingCycles*/ -= cycles_6809[ireg];
+                    int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                    TotalExecutedCycles/*totalExecutedCycles*/ += (ulong)delta;
+                } while (PendingCycles/*pendingCycles*/ > 0);
 
-                pendingCycles -= extra_cycles;
+                PendingCycles/*pendingCycles*/ -= extra_cycles;
                 extra_cycles = 0;
             }
-            return cycles - pendingCycles;
+            return cycles - PendingCycles/*pendingCycles*/;
         }
         private void fetch_effective_address()
         {
@@ -587,277 +587,277 @@ namespace cpu.m6809
             PC.LowWord++;
             switch (postbyte)
             {
-                case 0x00: EA.LowWord = X.LowWord; pendingCycles -= 1; break;
-                case 0x01: EA.LowWord = (ushort)(X.LowWord + 1); pendingCycles -= 1; break;
-                case 0x02: EA.LowWord = (ushort)(X.LowWord + 2); pendingCycles -= 1; break;
-                case 0x03: EA.LowWord = (ushort)(X.LowWord + 3); pendingCycles -= 1; break;
-                case 0x04: EA.LowWord = (ushort)(X.LowWord + 4); pendingCycles -= 1; break;
-                case 0x05: EA.LowWord = (ushort)(X.LowWord + 5); pendingCycles -= 1; break;
-                case 0x06: EA.LowWord = (ushort)(X.LowWord + 6); pendingCycles -= 1; break;
-                case 0x07: EA.LowWord = (ushort)(X.LowWord + 7); pendingCycles -= 1; break;
-                case 0x08: EA.LowWord = (ushort)(X.LowWord + 8); pendingCycles -= 1; break;
-                case 0x09: EA.LowWord = (ushort)(X.LowWord + 9); pendingCycles -= 1; break;
-                case 0x0a: EA.LowWord = (ushort)(X.LowWord + 10); pendingCycles -= 1; break;
-                case 0x0b: EA.LowWord = (ushort)(X.LowWord + 11); pendingCycles -= 1; break;
-                case 0x0c: EA.LowWord = (ushort)(X.LowWord + 12); pendingCycles -= 1; break;
-                case 0x0d: EA.LowWord = (ushort)(X.LowWord + 13); pendingCycles -= 1; break;
-                case 0x0e: EA.LowWord = (ushort)(X.LowWord + 14); pendingCycles -= 1; break;
-                case 0x0f: EA.LowWord = (ushort)(X.LowWord + 15); pendingCycles -= 1; break;
+                case 0x00: EA.LowWord = X.LowWord; PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x01: EA.LowWord = (ushort)(X.LowWord + 1); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x02: EA.LowWord = (ushort)(X.LowWord + 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x03: EA.LowWord = (ushort)(X.LowWord + 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x04: EA.LowWord = (ushort)(X.LowWord + 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x05: EA.LowWord = (ushort)(X.LowWord + 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x06: EA.LowWord = (ushort)(X.LowWord + 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x07: EA.LowWord = (ushort)(X.LowWord + 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x08: EA.LowWord = (ushort)(X.LowWord + 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x09: EA.LowWord = (ushort)(X.LowWord + 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x0a: EA.LowWord = (ushort)(X.LowWord + 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x0b: EA.LowWord = (ushort)(X.LowWord + 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x0c: EA.LowWord = (ushort)(X.LowWord + 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x0d: EA.LowWord = (ushort)(X.LowWord + 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x0e: EA.LowWord = (ushort)(X.LowWord + 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x0f: EA.LowWord = (ushort)(X.LowWord + 15); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x10: EA.LowWord = (ushort)(X.LowWord - 16); pendingCycles -= 1; break;
-                case 0x11: EA.LowWord = (ushort)(X.LowWord - 15); pendingCycles -= 1; break;
-                case 0x12: EA.LowWord = (ushort)(X.LowWord - 14); pendingCycles -= 1; break;
-                case 0x13: EA.LowWord = (ushort)(X.LowWord - 13); pendingCycles -= 1; break;
-                case 0x14: EA.LowWord = (ushort)(X.LowWord - 12); pendingCycles -= 1; break;
-                case 0x15: EA.LowWord = (ushort)(X.LowWord - 11); pendingCycles -= 1; break;
-                case 0x16: EA.LowWord = (ushort)(X.LowWord - 10); pendingCycles -= 1; break;
-                case 0x17: EA.LowWord = (ushort)(X.LowWord - 9); pendingCycles -= 1; break;
-                case 0x18: EA.LowWord = (ushort)(X.LowWord - 8); pendingCycles -= 1; break;
-                case 0x19: EA.LowWord = (ushort)(X.LowWord - 7); pendingCycles -= 1; break;
-                case 0x1a: EA.LowWord = (ushort)(X.LowWord - 6); pendingCycles -= 1; break;
-                case 0x1b: EA.LowWord = (ushort)(X.LowWord - 5); pendingCycles -= 1; break;
-                case 0x1c: EA.LowWord = (ushort)(X.LowWord - 4); pendingCycles -= 1; break;
-                case 0x1d: EA.LowWord = (ushort)(X.LowWord - 3); pendingCycles -= 1; break;
-                case 0x1e: EA.LowWord = (ushort)(X.LowWord - 2); pendingCycles -= 1; break;
-                case 0x1f: EA.LowWord = (ushort)(X.LowWord - 1); pendingCycles -= 1; break;
+                case 0x10: EA.LowWord = (ushort)(X.LowWord - 16); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x11: EA.LowWord = (ushort)(X.LowWord - 15); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x12: EA.LowWord = (ushort)(X.LowWord - 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x13: EA.LowWord = (ushort)(X.LowWord - 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x14: EA.LowWord = (ushort)(X.LowWord - 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x15: EA.LowWord = (ushort)(X.LowWord - 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x16: EA.LowWord = (ushort)(X.LowWord - 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x17: EA.LowWord = (ushort)(X.LowWord - 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x18: EA.LowWord = (ushort)(X.LowWord - 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x19: EA.LowWord = (ushort)(X.LowWord - 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x1a: EA.LowWord = (ushort)(X.LowWord - 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x1b: EA.LowWord = (ushort)(X.LowWord - 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x1c: EA.LowWord = (ushort)(X.LowWord - 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x1d: EA.LowWord = (ushort)(X.LowWord - 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x1e: EA.LowWord = (ushort)(X.LowWord - 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x1f: EA.LowWord = (ushort)(X.LowWord - 1); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x20: EA.LowWord = Y.LowWord; pendingCycles -= 1; break;
-                case 0x21: EA.LowWord = (ushort)(Y.LowWord + 1); pendingCycles -= 1; break;
-                case 0x22: EA.LowWord = (ushort)(Y.LowWord + 2); pendingCycles -= 1; break;
-                case 0x23: EA.LowWord = (ushort)(Y.LowWord + 3); pendingCycles -= 1; break;
-                case 0x24: EA.LowWord = (ushort)(Y.LowWord + 4); pendingCycles -= 1; break;
-                case 0x25: EA.LowWord = (ushort)(Y.LowWord + 5); pendingCycles -= 1; break;
-                case 0x26: EA.LowWord = (ushort)(Y.LowWord + 6); pendingCycles -= 1; break;
-                case 0x27: EA.LowWord = (ushort)(Y.LowWord + 7); pendingCycles -= 1; break;
-                case 0x28: EA.LowWord = (ushort)(Y.LowWord + 8); pendingCycles -= 1; break;
-                case 0x29: EA.LowWord = (ushort)(Y.LowWord + 9); pendingCycles -= 1; break;
-                case 0x2a: EA.LowWord = (ushort)(Y.LowWord + 10); pendingCycles -= 1; break;
-                case 0x2b: EA.LowWord = (ushort)(Y.LowWord + 11); pendingCycles -= 1; break;
-                case 0x2c: EA.LowWord = (ushort)(Y.LowWord + 12); pendingCycles -= 1; break;
-                case 0x2d: EA.LowWord = (ushort)(Y.LowWord + 13); pendingCycles -= 1; break;
-                case 0x2e: EA.LowWord = (ushort)(Y.LowWord + 14); pendingCycles -= 1; break;
-                case 0x2f: EA.LowWord = (ushort)(Y.LowWord + 15); pendingCycles -= 1; break;
+                case 0x20: EA.LowWord = Y.LowWord; PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x21: EA.LowWord = (ushort)(Y.LowWord + 1); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x22: EA.LowWord = (ushort)(Y.LowWord + 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x23: EA.LowWord = (ushort)(Y.LowWord + 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x24: EA.LowWord = (ushort)(Y.LowWord + 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x25: EA.LowWord = (ushort)(Y.LowWord + 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x26: EA.LowWord = (ushort)(Y.LowWord + 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x27: EA.LowWord = (ushort)(Y.LowWord + 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x28: EA.LowWord = (ushort)(Y.LowWord + 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x29: EA.LowWord = (ushort)(Y.LowWord + 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x2a: EA.LowWord = (ushort)(Y.LowWord + 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x2b: EA.LowWord = (ushort)(Y.LowWord + 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x2c: EA.LowWord = (ushort)(Y.LowWord + 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x2d: EA.LowWord = (ushort)(Y.LowWord + 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x2e: EA.LowWord = (ushort)(Y.LowWord + 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x2f: EA.LowWord = (ushort)(Y.LowWord + 15); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x30: EA.LowWord = (ushort)(Y.LowWord - 16); pendingCycles -= 1; break;
-                case 0x31: EA.LowWord = (ushort)(Y.LowWord - 15); pendingCycles -= 1; break;
-                case 0x32: EA.LowWord = (ushort)(Y.LowWord - 14); pendingCycles -= 1; break;
-                case 0x33: EA.LowWord = (ushort)(Y.LowWord - 13); pendingCycles -= 1; break;
-                case 0x34: EA.LowWord = (ushort)(Y.LowWord - 12); pendingCycles -= 1; break;
-                case 0x35: EA.LowWord = (ushort)(Y.LowWord - 11); pendingCycles -= 1; break;
-                case 0x36: EA.LowWord = (ushort)(Y.LowWord - 10); pendingCycles -= 1; break;
-                case 0x37: EA.LowWord = (ushort)(Y.LowWord - 9); pendingCycles -= 1; break;
-                case 0x38: EA.LowWord = (ushort)(Y.LowWord - 8); pendingCycles -= 1; break;
-                case 0x39: EA.LowWord = (ushort)(Y.LowWord - 7); pendingCycles -= 1; break;
-                case 0x3a: EA.LowWord = (ushort)(Y.LowWord - 6); pendingCycles -= 1; break;
-                case 0x3b: EA.LowWord = (ushort)(Y.LowWord - 5); pendingCycles -= 1; break;
-                case 0x3c: EA.LowWord = (ushort)(Y.LowWord - 4); pendingCycles -= 1; break;
-                case 0x3d: EA.LowWord = (ushort)(Y.LowWord - 3); pendingCycles -= 1; break;
-                case 0x3e: EA.LowWord = (ushort)(Y.LowWord - 2); pendingCycles -= 1; break;
-                case 0x3f: EA.LowWord = (ushort)(Y.LowWord - 1); pendingCycles -= 1; break;
+                case 0x30: EA.LowWord = (ushort)(Y.LowWord - 16); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x31: EA.LowWord = (ushort)(Y.LowWord - 15); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x32: EA.LowWord = (ushort)(Y.LowWord - 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x33: EA.LowWord = (ushort)(Y.LowWord - 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x34: EA.LowWord = (ushort)(Y.LowWord - 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x35: EA.LowWord = (ushort)(Y.LowWord - 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x36: EA.LowWord = (ushort)(Y.LowWord - 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x37: EA.LowWord = (ushort)(Y.LowWord - 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x38: EA.LowWord = (ushort)(Y.LowWord - 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x39: EA.LowWord = (ushort)(Y.LowWord - 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x3a: EA.LowWord = (ushort)(Y.LowWord - 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x3b: EA.LowWord = (ushort)(Y.LowWord - 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x3c: EA.LowWord = (ushort)(Y.LowWord - 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x3d: EA.LowWord = (ushort)(Y.LowWord - 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x3e: EA.LowWord = (ushort)(Y.LowWord - 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x3f: EA.LowWord = (ushort)(Y.LowWord - 1); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x40: EA.LowWord = U.LowWord; pendingCycles -= 1; break;
-                case 0x41: EA.LowWord = (ushort)(U.LowWord + 1); pendingCycles -= 1; break;
-                case 0x42: EA.LowWord = (ushort)(U.LowWord + 2); pendingCycles -= 1; break;
-                case 0x43: EA.LowWord = (ushort)(U.LowWord + 3); pendingCycles -= 1; break;
-                case 0x44: EA.LowWord = (ushort)(U.LowWord + 4); pendingCycles -= 1; break;
-                case 0x45: EA.LowWord = (ushort)(U.LowWord + 5); pendingCycles -= 1; break;
-                case 0x46: EA.LowWord = (ushort)(U.LowWord + 6); pendingCycles -= 1; break;
-                case 0x47: EA.LowWord = (ushort)(U.LowWord + 7); pendingCycles -= 1; break;
-                case 0x48: EA.LowWord = (ushort)(U.LowWord + 8); pendingCycles -= 1; break;
-                case 0x49: EA.LowWord = (ushort)(U.LowWord + 9); pendingCycles -= 1; break;
-                case 0x4a: EA.LowWord = (ushort)(U.LowWord + 10); pendingCycles -= 1; break;
-                case 0x4b: EA.LowWord = (ushort)(U.LowWord + 11); pendingCycles -= 1; break;
-                case 0x4c: EA.LowWord = (ushort)(U.LowWord + 12); pendingCycles -= 1; break;
-                case 0x4d: EA.LowWord = (ushort)(U.LowWord + 13); pendingCycles -= 1; break;
-                case 0x4e: EA.LowWord = (ushort)(U.LowWord + 14); pendingCycles -= 1; break;
-                case 0x4f: EA.LowWord = (ushort)(U.LowWord + 15); pendingCycles -= 1; break;
+                case 0x40: EA.LowWord = U.LowWord; PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x41: EA.LowWord = (ushort)(U.LowWord + 1); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x42: EA.LowWord = (ushort)(U.LowWord + 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x43: EA.LowWord = (ushort)(U.LowWord + 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x44: EA.LowWord = (ushort)(U.LowWord + 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x45: EA.LowWord = (ushort)(U.LowWord + 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x46: EA.LowWord = (ushort)(U.LowWord + 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x47: EA.LowWord = (ushort)(U.LowWord + 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x48: EA.LowWord = (ushort)(U.LowWord + 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x49: EA.LowWord = (ushort)(U.LowWord + 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x4a: EA.LowWord = (ushort)(U.LowWord + 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x4b: EA.LowWord = (ushort)(U.LowWord + 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x4c: EA.LowWord = (ushort)(U.LowWord + 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x4d: EA.LowWord = (ushort)(U.LowWord + 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x4e: EA.LowWord = (ushort)(U.LowWord + 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x4f: EA.LowWord = (ushort)(U.LowWord + 15); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x50: EA.LowWord = (ushort)(U.LowWord - 16); pendingCycles -= 1; break;
-                case 0x51: EA.LowWord = (ushort)(U.LowWord - 15); pendingCycles -= 1; break;
-                case 0x52: EA.LowWord = (ushort)(U.LowWord - 14); pendingCycles -= 1; break;
-                case 0x53: EA.LowWord = (ushort)(U.LowWord - 13); pendingCycles -= 1; break;
-                case 0x54: EA.LowWord = (ushort)(U.LowWord - 12); pendingCycles -= 1; break;
-                case 0x55: EA.LowWord = (ushort)(U.LowWord - 11); pendingCycles -= 1; break;
-                case 0x56: EA.LowWord = (ushort)(U.LowWord - 10); pendingCycles -= 1; break;
-                case 0x57: EA.LowWord = (ushort)(U.LowWord - 9); pendingCycles -= 1; break;
-                case 0x58: EA.LowWord = (ushort)(U.LowWord - 8); pendingCycles -= 1; break;
-                case 0x59: EA.LowWord = (ushort)(U.LowWord - 7); pendingCycles -= 1; break;
-                case 0x5a: EA.LowWord = (ushort)(U.LowWord - 6); pendingCycles -= 1; break;
-                case 0x5b: EA.LowWord = (ushort)(U.LowWord - 5); pendingCycles -= 1; break;
-                case 0x5c: EA.LowWord = (ushort)(U.LowWord - 4); pendingCycles -= 1; break;
-                case 0x5d: EA.LowWord = (ushort)(U.LowWord - 3); pendingCycles -= 1; break;
-                case 0x5e: EA.LowWord = (ushort)(U.LowWord - 2); pendingCycles -= 1; break;
-                case 0x5f: EA.LowWord = (ushort)(U.LowWord - 1); pendingCycles -= 1; break;
+                case 0x50: EA.LowWord = (ushort)(U.LowWord - 16); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x51: EA.LowWord = (ushort)(U.LowWord - 15); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x52: EA.LowWord = (ushort)(U.LowWord - 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x53: EA.LowWord = (ushort)(U.LowWord - 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x54: EA.LowWord = (ushort)(U.LowWord - 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x55: EA.LowWord = (ushort)(U.LowWord - 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x56: EA.LowWord = (ushort)(U.LowWord - 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x57: EA.LowWord = (ushort)(U.LowWord - 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x58: EA.LowWord = (ushort)(U.LowWord - 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x59: EA.LowWord = (ushort)(U.LowWord - 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x5a: EA.LowWord = (ushort)(U.LowWord - 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x5b: EA.LowWord = (ushort)(U.LowWord - 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x5c: EA.LowWord = (ushort)(U.LowWord - 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x5d: EA.LowWord = (ushort)(U.LowWord - 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x5e: EA.LowWord = (ushort)(U.LowWord - 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x5f: EA.LowWord = (ushort)(U.LowWord - 1); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x60: EA.LowWord = S.LowWord; pendingCycles -= 1; break;
-                case 0x61: EA.LowWord = (ushort)(S.LowWord + 1); pendingCycles -= 1; break;
-                case 0x62: EA.LowWord = (ushort)(S.LowWord + 2); pendingCycles -= 1; break;
-                case 0x63: EA.LowWord = (ushort)(S.LowWord + 3); pendingCycles -= 1; break;
-                case 0x64: EA.LowWord = (ushort)(S.LowWord + 4); pendingCycles -= 1; break;
-                case 0x65: EA.LowWord = (ushort)(S.LowWord + 5); pendingCycles -= 1; break;
-                case 0x66: EA.LowWord = (ushort)(S.LowWord + 6); pendingCycles -= 1; break;
-                case 0x67: EA.LowWord = (ushort)(S.LowWord + 7); pendingCycles -= 1; break;
-                case 0x68: EA.LowWord = (ushort)(S.LowWord + 8); pendingCycles -= 1; break;
-                case 0x69: EA.LowWord = (ushort)(S.LowWord + 9); pendingCycles -= 1; break;
-                case 0x6a: EA.LowWord = (ushort)(S.LowWord + 10); pendingCycles -= 1; break;
-                case 0x6b: EA.LowWord = (ushort)(S.LowWord + 11); pendingCycles -= 1; break;
-                case 0x6c: EA.LowWord = (ushort)(S.LowWord + 12); pendingCycles -= 1; break;
-                case 0x6d: EA.LowWord = (ushort)(S.LowWord + 13); pendingCycles -= 1; break;
-                case 0x6e: EA.LowWord = (ushort)(S.LowWord + 14); pendingCycles -= 1; break;
-                case 0x6f: EA.LowWord = (ushort)(S.LowWord + 15); pendingCycles -= 1; break;
+                case 0x60: EA.LowWord = S.LowWord; PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x61: EA.LowWord = (ushort)(S.LowWord + 1); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x62: EA.LowWord = (ushort)(S.LowWord + 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x63: EA.LowWord = (ushort)(S.LowWord + 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x64: EA.LowWord = (ushort)(S.LowWord + 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x65: EA.LowWord = (ushort)(S.LowWord + 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x66: EA.LowWord = (ushort)(S.LowWord + 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x67: EA.LowWord = (ushort)(S.LowWord + 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x68: EA.LowWord = (ushort)(S.LowWord + 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x69: EA.LowWord = (ushort)(S.LowWord + 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x6a: EA.LowWord = (ushort)(S.LowWord + 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x6b: EA.LowWord = (ushort)(S.LowWord + 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x6c: EA.LowWord = (ushort)(S.LowWord + 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x6d: EA.LowWord = (ushort)(S.LowWord + 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x6e: EA.LowWord = (ushort)(S.LowWord + 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x6f: EA.LowWord = (ushort)(S.LowWord + 15); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x70: EA.LowWord = (ushort)(S.LowWord - 16); pendingCycles -= 1; break;
-                case 0x71: EA.LowWord = (ushort)(S.LowWord - 15); pendingCycles -= 1; break;
-                case 0x72: EA.LowWord = (ushort)(S.LowWord - 14); pendingCycles -= 1; break;
-                case 0x73: EA.LowWord = (ushort)(S.LowWord - 13); pendingCycles -= 1; break;
-                case 0x74: EA.LowWord = (ushort)(S.LowWord - 12); pendingCycles -= 1; break;
-                case 0x75: EA.LowWord = (ushort)(S.LowWord - 11); pendingCycles -= 1; break;
-                case 0x76: EA.LowWord = (ushort)(S.LowWord - 10); pendingCycles -= 1; break;
-                case 0x77: EA.LowWord = (ushort)(S.LowWord - 9); pendingCycles -= 1; break;
-                case 0x78: EA.LowWord = (ushort)(S.LowWord - 8); pendingCycles -= 1; break;
-                case 0x79: EA.LowWord = (ushort)(S.LowWord - 7); pendingCycles -= 1; break;
-                case 0x7a: EA.LowWord = (ushort)(S.LowWord - 6); pendingCycles -= 1; break;
-                case 0x7b: EA.LowWord = (ushort)(S.LowWord - 5); pendingCycles -= 1; break;
-                case 0x7c: EA.LowWord = (ushort)(S.LowWord - 4); pendingCycles -= 1; break;
-                case 0x7d: EA.LowWord = (ushort)(S.LowWord - 3); pendingCycles -= 1; break;
-                case 0x7e: EA.LowWord = (ushort)(S.LowWord - 2); pendingCycles -= 1; break;
-                case 0x7f: EA.LowWord = (ushort)(S.LowWord - 1); pendingCycles -= 1; break;
+                case 0x70: EA.LowWord = (ushort)(S.LowWord - 16); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x71: EA.LowWord = (ushort)(S.LowWord - 15); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x72: EA.LowWord = (ushort)(S.LowWord - 14); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x73: EA.LowWord = (ushort)(S.LowWord - 13); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x74: EA.LowWord = (ushort)(S.LowWord - 12); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x75: EA.LowWord = (ushort)(S.LowWord - 11); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x76: EA.LowWord = (ushort)(S.LowWord - 10); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x77: EA.LowWord = (ushort)(S.LowWord - 9); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x78: EA.LowWord = (ushort)(S.LowWord - 8); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x79: EA.LowWord = (ushort)(S.LowWord - 7); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x7a: EA.LowWord = (ushort)(S.LowWord - 6); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x7b: EA.LowWord = (ushort)(S.LowWord - 5); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x7c: EA.LowWord = (ushort)(S.LowWord - 4); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x7d: EA.LowWord = (ushort)(S.LowWord - 3); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x7e: EA.LowWord = (ushort)(S.LowWord - 2); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x7f: EA.LowWord = (ushort)(S.LowWord - 1); PendingCycles/*pendingCycles*/ -= 1; break;
 
-                case 0x80: EA.LowWord = X.LowWord; X.LowWord++; pendingCycles -= 2; break;
-                case 0x81: EA.LowWord = X.LowWord; X.LowWord += 2; pendingCycles -= 3; break;
-                case 0x82: X.LowWord--; EA.LowWord = X.LowWord; pendingCycles -= 2; break;
-                case 0x83: X.LowWord -= 2; EA.LowWord = X.LowWord; pendingCycles -= 3; break;
+                case 0x80: EA.LowWord = X.LowWord; X.LowWord++; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0x81: EA.LowWord = X.LowWord; X.LowWord += 2; PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0x82: X.LowWord--; EA.LowWord = X.LowWord; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0x83: X.LowWord -= 2; EA.LowWord = X.LowWord; PendingCycles/*pendingCycles*/ -= 3; break;
                 case 0x84: EA.LowWord = X.LowWord; break;
-                case 0x85: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.LowByte)); pendingCycles -= 1; break;
-                case 0x86: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.HighByte)); pendingCycles -= 1; break;
+                case 0x85: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x86: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.HighByte)); PendingCycles/*pendingCycles*/ -= 1; break;
                 case 0x87: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0x88: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(X.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break; /* this is a hack to make Vectrex work. It should be m6809_ICount-=1. Dunno where the cycle was lost :( */
-                case 0x89: EA = IMMWORD(); EA.LowWord += X.LowWord; pendingCycles -= 4; break;
+                case 0x88: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(X.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break; /* this is a hack to make Vectrex work. It should be m6809_ICount-=1. Dunno where the cycle was lost :( */
+                case 0x89: EA = IMMWORD(); EA.LowWord += X.LowWord; PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0x8a: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0x8b: EA.LowWord = (ushort)(X.LowWord + D.LowWord); pendingCycles -= 4; break;
-                case 0x8c: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0x8d: EA = IMMWORD(); EA.LowWord += PC.LowWord; pendingCycles -= 5; break;
+                case 0x8b: EA.LowWord = (ushort)(X.LowWord + D.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0x8c: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0x8d: EA = IMMWORD(); EA.LowWord += PC.LowWord; PendingCycles/*pendingCycles*/ -= 5; break;
                 case 0x8e: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0x8f: EA = IMMWORD(); pendingCycles -= 5; break;
+                case 0x8f: EA = IMMWORD(); PendingCycles/*pendingCycles*/ -= 5; break;
 
-                case 0x90: EA.LowWord = X.LowWord; X.LowWord++; EA.d = RM16(EA.LowWord); pendingCycles -= 5; break; /* Indirect ,R+ not in my specs */
-                case 0x91: EA.LowWord = X.LowWord; X.LowWord += 2; EA.d = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0x92: X.LowWord--; EA.LowWord = X.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0x93: X.LowWord -= 2; EA.LowWord = X.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0x94: EA.LowWord = X.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 3; break;
-                case 0x95: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0x96: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.HighByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
+                case 0x90: EA.LowWord = X.LowWord; X.LowWord++; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break; /* Indirect ,R+ not in my specs */
+                case 0x91: EA.LowWord = X.LowWord; X.LowWord += 2; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0x92: X.LowWord--; EA.LowWord = X.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x93: X.LowWord -= 2; EA.LowWord = X.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0x94: EA.LowWord = X.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0x95: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0x96: EA.LowWord = (ushort)(X.LowWord + SIGNED(D.HighByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0x97: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0x98: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(X.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0x99: EA = IMMWORD(); EA.LowWord += X.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
+                case 0x98: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(X.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0x99: EA = IMMWORD(); EA.LowWord += X.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
                 case 0x9a: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0x9b: EA.LowWord = (ushort)(X.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
-                case 0x9c: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0x9d: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0x9b: EA.LowWord = (ushort)(X.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0x9c: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0x9d: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
                 case 0x9e: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0x9f: EA = IMMWORD(); EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0x9f: EA = IMMWORD(); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
 
-                case 0xa0: EA.LowWord = Y.LowWord; Y.LowWord++; pendingCycles -= 2; break;
-                case 0xa1: EA.LowWord = Y.LowWord; Y.LowWord += 2; pendingCycles -= 3; break;
-                case 0xa2: Y.LowWord--; EA.LowWord = Y.LowWord; pendingCycles -= 2; break;
-                case 0xa3: Y.LowWord -= 2; EA.LowWord = Y.LowWord; pendingCycles -= 3; break;
+                case 0xa0: EA.LowWord = Y.LowWord; Y.LowWord++; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0xa1: EA.LowWord = Y.LowWord; Y.LowWord += 2; PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0xa2: Y.LowWord--; EA.LowWord = Y.LowWord; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0xa3: Y.LowWord -= 2; EA.LowWord = Y.LowWord; PendingCycles/*pendingCycles*/ -= 3; break;
                 case 0xa4: EA.LowWord = Y.LowWord; break;
-                case 0xa5: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.LowByte)); pendingCycles -= 1; break;
-                case 0xa6: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.HighByte)); pendingCycles -= 1; break;
+                case 0xa5: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xa6: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.HighByte)); PendingCycles/*pendingCycles*/ -= 1; break;
                 case 0xa7: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0xa8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(Y.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0xa9: EA = IMMWORD(); EA.LowWord += Y.LowWord; pendingCycles -= 4; break;
+                case 0xa8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(Y.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xa9: EA = IMMWORD(); EA.LowWord += Y.LowWord; PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0xaa: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0xab: EA.LowWord = (ushort)(Y.LowWord + D.LowWord); pendingCycles -= 4; break;
-                case 0xac: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0xad: EA = IMMWORD(); EA.LowWord += PC.LowWord; pendingCycles -= 5; break;
+                case 0xab: EA.LowWord = (ushort)(Y.LowWord + D.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xac: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xad: EA = IMMWORD(); EA.LowWord += PC.LowWord; PendingCycles/*pendingCycles*/ -= 5; break;
                 case 0xae: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0xaf: EA = IMMWORD(); pendingCycles -= 5; break;
+                case 0xaf: EA = IMMWORD(); PendingCycles/*pendingCycles*/ -= 5; break;
 
-                case 0xb0: EA.LowWord = Y.LowWord; Y.LowWord++; EA.LowWord = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0xb1: EA.LowWord = Y.LowWord; Y.LowWord += 2; EA.LowWord = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0xb2: Y.LowWord--; EA.LowWord = Y.LowWord; EA.LowWord = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0xb3: Y.LowWord -= 2; EA.LowWord = Y.LowWord; EA.LowWord = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0xb4: EA.LowWord = Y.LowWord; EA.LowWord = RM16(EA.LowWord); pendingCycles -= 3; break;
-                case 0xb5: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.LowByte)); EA.LowWord = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xb6: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.HighByte)); EA.LowWord = RM16(EA.LowWord); pendingCycles -= 4; break;
+                case 0xb0: EA.LowWord = Y.LowWord; Y.LowWord++; EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0xb1: EA.LowWord = Y.LowWord; Y.LowWord += 2; EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xb2: Y.LowWord--; EA.LowWord = Y.LowWord; EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0xb3: Y.LowWord -= 2; EA.LowWord = Y.LowWord; EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xb4: EA.LowWord = Y.LowWord; EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0xb5: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.LowByte)); EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xb6: EA.LowWord = (ushort)(Y.LowWord + SIGNED(D.HighByte)); EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0xb7: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0xb8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(Y.LowWord + SIGNED(EA.LowByte)); EA.LowWord = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xb9: EA = IMMWORD(); EA.LowWord += Y.LowWord; EA.LowWord = RM16(EA.LowWord); pendingCycles -= 7; break;
+                case 0xb8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(Y.LowWord + SIGNED(EA.LowByte)); EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xb9: EA = IMMWORD(); EA.LowWord += Y.LowWord; EA.LowWord = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
                 case 0xba: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0xbb: EA.LowWord = (ushort)(Y.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
-                case 0xbc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xbd: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0xbb: EA.LowWord = (ushort)(Y.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xbc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xbd: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
                 case 0xbe: EA.LowWord = 0; break; /*   ILLEGAL*/
-                case 0xbf: EA = IMMWORD(); EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0xbf: EA = IMMWORD(); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
 
-                case 0xc0: EA.LowWord = U.LowWord; U.LowWord++; pendingCycles -= 2; break;
-                case 0xc1: EA.LowWord = U.LowWord; U.LowWord += 2; pendingCycles -= 3; break;
-                case 0xc2: U.LowWord--; EA.LowWord = U.LowWord; pendingCycles -= 2; break;
-                case 0xc3: U.LowWord -= 2; EA.LowWord = U.LowWord; pendingCycles -= 3; break;
+                case 0xc0: EA.LowWord = U.LowWord; U.LowWord++; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0xc1: EA.LowWord = U.LowWord; U.LowWord += 2; PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0xc2: U.LowWord--; EA.LowWord = U.LowWord; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0xc3: U.LowWord -= 2; EA.LowWord = U.LowWord; PendingCycles/*pendingCycles*/ -= 3; break;
                 case 0xc4: EA.LowWord = U.LowWord; break;
-                case 0xc5: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.LowByte)); pendingCycles -= 1; break;
-                case 0xc6: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.HighByte)); pendingCycles -= 1; break;
+                case 0xc5: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xc6: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.HighByte)); PendingCycles/*pendingCycles*/ -= 1; break;
                 case 0xc7: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xc8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(U.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0xc9: EA = IMMWORD(); EA.LowWord += U.LowWord; pendingCycles -= 4; break;
+                case 0xc8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(U.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xc9: EA = IMMWORD(); EA.LowWord += U.LowWord; PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0xca: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xcb: EA.LowWord = (ushort)(U.LowWord + D.LowWord); pendingCycles -= 4; break;
-                case 0xcc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0xcd: EA = IMMWORD(); EA.LowWord += PC.LowWord; pendingCycles -= 5; break;
+                case 0xcb: EA.LowWord = (ushort)(U.LowWord + D.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xcc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xcd: EA = IMMWORD(); EA.LowWord += PC.LowWord; PendingCycles/*pendingCycles*/ -= 5; break;
                 case 0xce: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xcf: EA = IMMWORD(); pendingCycles -= 5; break;
+                case 0xcf: EA = IMMWORD(); PendingCycles/*pendingCycles*/ -= 5; break;
 
-                case 0xd0: EA.LowWord = U.LowWord; U.LowWord++; EA.d = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0xd1: EA.LowWord = U.LowWord; U.LowWord += 2; EA.d = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0xd2: U.LowWord--; EA.LowWord = U.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0xd3: U.LowWord -= 2; EA.LowWord = U.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0xd4: EA.LowWord = U.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 3; break;
-                case 0xd5: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xd6: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.HighByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
+                case 0xd0: EA.LowWord = U.LowWord; U.LowWord++; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0xd1: EA.LowWord = U.LowWord; U.LowWord += 2; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xd2: U.LowWord--; EA.LowWord = U.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0xd3: U.LowWord -= 2; EA.LowWord = U.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xd4: EA.LowWord = U.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0xd5: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xd6: EA.LowWord = (ushort)(U.LowWord + SIGNED(D.HighByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0xd7: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xd8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(U.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xd9: EA = IMMWORD(); EA.LowWord += U.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
+                case 0xd8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(U.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xd9: EA = IMMWORD(); EA.LowWord += U.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
                 case 0xda: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xdb: EA.LowWord = (ushort)(U.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
-                case 0xdc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xdd: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0xdb: EA.LowWord = (ushort)(U.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xdc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xdd: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
                 case 0xde: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xdf: EA = IMMWORD(); EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0xdf: EA = IMMWORD(); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
 
-                case 0xe0: EA.LowWord = S.LowWord; S.LowWord++; pendingCycles -= 2; break;
-                case 0xe1: EA.LowWord = S.LowWord; S.LowWord += 2; pendingCycles -= 3; break;
-                case 0xe2: S.LowWord--; EA.LowWord = S.LowWord; pendingCycles -= 2; break;
-                case 0xe3: S.LowWord -= 2; EA.LowWord = S.LowWord; pendingCycles -= 3; break;
+                case 0xe0: EA.LowWord = S.LowWord; S.LowWord++; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0xe1: EA.LowWord = S.LowWord; S.LowWord += 2; PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0xe2: S.LowWord--; EA.LowWord = S.LowWord; PendingCycles/*pendingCycles*/ -= 2; break;
+                case 0xe3: S.LowWord -= 2; EA.LowWord = S.LowWord; PendingCycles/*pendingCycles*/ -= 3; break;
                 case 0xe4: EA.LowWord = S.LowWord; break;
-                case 0xe5: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.LowByte)); pendingCycles -= 1; break;
-                case 0xe6: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.HighByte)); pendingCycles -= 1; break;
+                case 0xe5: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xe6: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.HighByte)); PendingCycles/*pendingCycles*/ -= 1; break;
                 case 0xe7: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xe8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(S.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0xe9: EA = IMMWORD(); EA.LowWord += S.LowWord; pendingCycles -= 4; break;
+                case 0xe8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(S.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xe9: EA = IMMWORD(); EA.LowWord += S.LowWord; PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0xea: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xeb: EA.LowWord = (ushort)(S.LowWord + D.LowWord); pendingCycles -= 4; break;
-                case 0xec: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); pendingCycles -= 1; break;
-                case 0xed: EA = IMMWORD(); EA.LowWord += PC.LowWord; pendingCycles -= 5; break;
+                case 0xeb: EA.LowWord = (ushort)(S.LowWord + D.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xec: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); PendingCycles/*pendingCycles*/ -= 1; break;
+                case 0xed: EA = IMMWORD(); EA.LowWord += PC.LowWord; PendingCycles/*pendingCycles*/ -= 5; break;
                 case 0xee: EA.LowWord = 0; break;  /*ILLEGAL*/
-                case 0xef: EA = IMMWORD(); pendingCycles -= 5; break;
+                case 0xef: EA = IMMWORD(); PendingCycles/*pendingCycles*/ -= 5; break;
 
-                case 0xf0: EA.LowWord = S.LowWord; S.LowWord++; EA.d = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0xf1: EA.LowWord = S.LowWord; S.LowWord += 2; EA.d = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0xf2: S.LowWord--; EA.LowWord = S.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 5; break;
-                case 0xf3: S.LowWord -= 2; EA.LowWord = S.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 6; break;
-                case 0xf4: EA.LowWord = S.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 3; break;
-                case 0xf5: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xf6: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.HighByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
+                case 0xf0: EA.LowWord = S.LowWord; S.LowWord++; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0xf1: EA.LowWord = S.LowWord; S.LowWord += 2; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xf2: S.LowWord--; EA.LowWord = S.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0xf3: S.LowWord -= 2; EA.LowWord = S.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xf4: EA.LowWord = S.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 3; break;
+                case 0xf5: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xf6: EA.LowWord = (ushort)(S.LowWord + SIGNED(D.HighByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
                 case 0xf7: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xf8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(S.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xf9: EA = IMMWORD(); EA.LowWord += S.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
+                case 0xf8: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(S.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xf9: EA = IMMWORD(); EA.LowWord += S.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
                 case 0xfa: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xfb: EA.LowWord = (ushort)(S.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); pendingCycles -= 7; break;
-                case 0xfc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); pendingCycles -= 4; break;
-                case 0xfd: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0xfb: EA.LowWord = (ushort)(S.LowWord + D.LowWord); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xfc: EA.LowWord = IMMBYTE(); EA.LowWord = (ushort)(PC.LowWord + SIGNED(EA.LowByte)); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xfd: EA = IMMWORD(); EA.LowWord += PC.LowWord; EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
                 case 0xfe: EA.LowWord = 0; break; /*ILLEGAL*/
-                case 0xff: EA = IMMWORD(); EA.d = RM16(EA.LowWord); pendingCycles -= 8; break;
+                case 0xff: EA = IMMWORD(); EA.d = RM16(EA.LowWord); PendingCycles/*pendingCycles*/ -= 8; break;
             }
         }
         public void SaveStateBinary(System.IO.BinaryWriter writer)

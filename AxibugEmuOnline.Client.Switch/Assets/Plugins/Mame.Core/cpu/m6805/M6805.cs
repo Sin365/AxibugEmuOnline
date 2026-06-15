@@ -76,30 +76,30 @@ namespace cpu.m6805
           /*E*/  5, 5, 5, 5, 5, 5, 5, 6, 5, 5, 5, 5, 4, 8, 5, 6,
           /*F*/  4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 3, 7, 4, 5
         };
-        private ulong totalExecutedCycles;
-        private int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //private ulong totalExecutedCycles;
+        //private int PendingCycles/*pendingCycles*/;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return PendingCycles/*pendingCycles*/;
+        //    }
+        //    set
+        //    {
+        //        PendingCycles/*pendingCycles*/ = value;
+        //    }
+        //}
         public Func<ushort, byte> ReadOp, ReadOpArg;
         public Func<ushort, byte> ReadMemory;
         public Action<ushort, byte> WriteMemory;
@@ -327,9 +327,9 @@ namespace cpu.m6805
                 //change_pc(PC);
                 if (t == 0xfe)
                 {
-                    if (pendingCycles > 0)
+                    if (PendingCycles/*pendingCycles*/ > 0)
                     {
-                        pendingCycles = 0;
+                        PendingCycles/*pendingCycles*/ = 0;
                     }
                 }
             }
@@ -398,7 +398,7 @@ namespace cpu.m6805
                         //change_pc(PC);
                     }
                 }
-                pendingCycles -= 11;
+                PendingCycles/*pendingCycles*/ -= 11;
             }
         }
         private void Interrupt()
@@ -417,7 +417,7 @@ namespace cpu.m6805
                 RM16(0x1ffc, ref pc);
                 //change_pc(PC);
                 pending_interrupts &= unchecked((ushort)(~(1 << 0x08)));
-                pendingCycles -= 11;
+                PendingCycles/*pendingCycles*/ -= 11;
             }
             else if ((pending_interrupts & ((1 << 0) | 0x1ff)) != 0)
             {
@@ -493,7 +493,7 @@ namespace cpu.m6805
                     }	// CC & IFLAG
                     pending_interrupts &= unchecked((ushort)~(1 << 0));
                 }
-                pendingCycles -= 11;
+                PendingCycles/*pendingCycles*/ -= 11;
             }
         }
         private void m6805_init(irq_delegate irqcallback)
@@ -548,10 +548,10 @@ namespace cpu.m6805
         public int m6805_execute(int cycles)
         {
             byte ireg;
-            pendingCycles = cycles;
+            PendingCycles/*pendingCycles*/ = cycles;
             do
             {
-                int prevCycles = pendingCycles;
+                int prevCycles = PendingCycles/*pendingCycles*/;
                 if (pending_interrupts != 0)
                 {
                     if (subtype == SUBTYPE_M68705)
@@ -823,12 +823,12 @@ namespace cpu.m6805
                     case 0xfe: ldx_ix(); break;
                     case 0xff: stx_ix(); break;
                 }
-                pendingCycles -= cycles1[ireg];
-                int delta = prevCycles - pendingCycles;
-                totalExecutedCycles += (ulong)delta;
+                PendingCycles/*pendingCycles*/ -= cycles1[ireg];
+                int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                TotalExecutedCycles/*totalExecutedCycles*/ += (ulong)delta;
             }
-            while (pendingCycles > 0);
-            return cycles - pendingCycles;
+            while (PendingCycles/*pendingCycles*/ > 0);
+            return cycles - PendingCycles/*pendingCycles*/;
         }
         public void SaveStateBinary(System.IO.BinaryWriter writer)
         {

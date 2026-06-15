@@ -8,20 +8,20 @@
 		ushort counter;
 		byte pointer;
 
-		public byte OutputLeft { get; set; }
-		public byte OutputRight { get; set; }
+		public byte OutputLeft;// { get; set; }
+        public byte OutputRight;// { get; set; }
 
-		readonly WaveTableReadDelegate waveTableReadDelegate;
+        readonly WaveTableReadDelegate waveTableReadDelegate;
 
 		/* REG_SND_CH1_PITCH */
-		public ushort Pitch { get; set; }
-		/* REG_SND_CH1_VOL */
-		public byte VolumeLeft { get; set; }
-		public byte VolumeRight { get; set; }
-		/* REG_SND_CTRL */
-		public bool IsEnabled { get; set; }
+		public ushort Pitch;// { get; set; }
+        /* REG_SND_CH1_VOL */
+        public byte VolumeLeft;// { get; set; }
+        public byte VolumeRight;// { get; set; }
+        /* REG_SND_CTRL */
+        public bool IsEnabled;// { get; set; }
 
-		public SoundChannel1(WaveTableReadDelegate waveTableRead) => waveTableReadDelegate = waveTableRead;
+        public SoundChannel1(WaveTableReadDelegate waveTableRead) => waveTableReadDelegate = waveTableRead;
 
 		public void Reset()
 		{

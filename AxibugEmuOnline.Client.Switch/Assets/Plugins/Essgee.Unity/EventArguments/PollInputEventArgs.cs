@@ -5,10 +5,10 @@ namespace Essgee.EventArguments
 {
     public class PollInputEventArgs : EventArgs
     {
-        public List<EssgeeMotionKey> Keyboard { get; set; }
+        public List<EssgeeMotionKey> Keyboard;//{ get; set; }
 
-        public MouseButtons MouseButtons { get; set; }
-        public (int X, int Y) MousePosition { get; set; }
+        public MouseButtons MouseButtons;//{ get; set; }
+        public (int X, int Y) MousePosition;//{ get; set; }
 
         //public ControllerState ControllerState { get; set; }
 

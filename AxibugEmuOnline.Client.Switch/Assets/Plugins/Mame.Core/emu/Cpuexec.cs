@@ -26,8 +26,10 @@ namespace MAME.Core
         public int icount;
         public EmuTimer.emu_timer partial_frame_timer;
         public Atime partial_frame_period;
-        public virtual ulong TotalExecutedCycles { get; set; }
-        public virtual int PendingCycles { get; set; }
+        //public virtual ulong TotalExecutedCycles { get; set; }
+        public ulong TotalExecutedCycles;
+        //public virtual int PendingCycles { get; set; }
+        public int PendingCycles;
         public virtual int ExecuteCycles(int cycles) { return 0; }
         public virtual void Reset() { }
         public virtual void set_irq_line(int irqline, LineState state) { }

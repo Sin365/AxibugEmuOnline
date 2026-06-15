@@ -4,14 +4,13 @@ using UnityEngine.UI;
 
 public class SGVideoPlayer : MonoBehaviour
 {
-
     [SerializeField]
     private int mWidth;
     [SerializeField]
     private int mHeight;
     [SerializeField]
     private int mDataLenght;
-    [SerializeField]
+    //[SerializeField]
     private Texture2D m_rawBufferWarper;
     [SerializeField]
     private RawImage m_drawCanvas;
@@ -23,23 +22,28 @@ public class SGVideoPlayer : MonoBehaviour
     public RawImage DrawCanvas => m_drawCanvas;
     private TimeSpan lastElapsed;
     public double videoFPS { get; private set; }
-    public ulong mFrame { get; private set; }
     bool bInit = false;
     bool bHadData = false;
+    [HideInInspector]
+    public Vector2Int ScreenSize = Vector2Int.one;
+
+    Texture2D defaultTex;
 
     private void Awake()
     {
         bHadData = false;
-        mFrame = 0;
         m_drawCanvas = GameObject.Find("GameRawImage").GetComponent<RawImage>();
         m_drawCanvasrect = m_drawCanvas.GetComponent<RectTransform>();
+        defaultTex = new Texture2D(224, 144, TextureFormat.BGRA32, false);//直接初始化好了。分辨率是固定的呢
+        m_rawBufferWarper = defaultTex;
+        m_rawBufferWarper.filterMode = FilterMode.Point;
     }
 
     public void Initialize()
     {
         m_drawCanvas.color = Color.white;
 
-        if (m_rawBufferWarper == null)
+        //if (m_rawBufferWarper == null)
         {
             mDataLenght = mWidth * mHeight * 4;
             //mFrameData = new byte[mDataLenght];
@@ -96,6 +100,8 @@ public class SGVideoPlayer : MonoBehaviour
 
     internal void UpdateScreen(IntPtr ptr, long frame_number)
     {
+        if (UStoicGoose.instance.emulatorHandler.CurrVirtualFrameIsSkim)
+            return;
         var current = UStoicGoose.sw.Elapsed;
         var delta = current - lastElapsed;
         lastElapsed = current;
@@ -109,5 +115,6 @@ public class SGVideoPlayer : MonoBehaviour
     {
         mWidth = screenWidth;
         mHeight = screenHeight;
+        ScreenSize = new Vector2Int(screenWidth, screenHeight);
     }
 }

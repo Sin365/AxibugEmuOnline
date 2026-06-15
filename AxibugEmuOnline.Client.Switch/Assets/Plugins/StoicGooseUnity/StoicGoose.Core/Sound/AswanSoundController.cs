@@ -23,8 +23,9 @@ namespace StoicGoose.Core.Sound
 			unknown9899 = 0;
 		}
 
-		public override int[] GenerateSample()
-		{
+        //public override GenerateSample GenerateSample()
+        public override GenerateSampleResult GenerateSample()
+        {
 			channelSampleBuffers[0].Add((short)(channel1.IsEnabled ? (channel1.OutputLeft & 0x07FF) << 5 : 0));
 			channelSampleBuffers[0].Add((short)(channel1.IsEnabled ? (channel1.OutputRight & 0x07FF) << 5 : 0));
 			channelSampleBuffers[1].Add((short)(channel2.IsEnabled ? (channel2.OutputLeft & 0x07FF) << 5 : 0));
@@ -48,7 +49,8 @@ namespace StoicGoose.Core.Sound
 			if (channel4.IsEnabled) mixedRight += channel4.OutputRight;
 			mixedRight = (mixedRight & 0x07FF) << 5;
 
-			return new[] { mixedLeft, mixedRight };
+			//return new[] { mixedLeft, mixedRight };
+			return new GenerateSampleResult() { mixedLeft = mixedLeft, mixedRight = mixedRight };
 		}
 
 		public override byte ReadPort(ushort port)

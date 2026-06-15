@@ -32,6 +32,21 @@ namespace AxibugEmuOnline.Client
                 case ScreenScaler.EnumScalerMode.Fix:
                     SetBaseInfo("适应", "在保持原始画面比例的情况下适配到全屏", null);
                     break;
+                case ScreenScaler.EnumScalerMode.Raw_x2:
+                    SetBaseInfo("x2", "将保持模拟器输出画面的原始x2倍分辨率", null);
+                    break;
+                case ScreenScaler.EnumScalerMode.Raw_x3:
+                    SetBaseInfo("x3", "将保持模拟器输出画面的原始x3倍分辨率", null);
+                    break;
+                case ScreenScaler.EnumScalerMode.Raw_x4:
+                    SetBaseInfo("x4", "将保持模拟器输出画面的原始x4倍分辨率", null);
+                    break;
+                case ScreenScaler.EnumScalerMode.Raw_x5:
+                    SetBaseInfo("x5", "将保持模拟器输出画面的原始x5倍分辨率", null);
+                    break;
+                case ScreenScaler.EnumScalerMode.Raw_x6:
+                    SetBaseInfo("x6", "将保持模拟器输出画面的原始x6倍分辨率", null);
+                    break;
             }
         }
 
