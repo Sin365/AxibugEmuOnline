@@ -148,6 +148,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PopTipsUI
       objectReference: {fileID: 0}
+    - target: {fileID: 7081568093111909217, guid: 838819c4b387d384c8f75f1919261c58, type: 3}
+      propertyPath: m_Padding.m_Left
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7081568093111909217, guid: 838819c4b387d384c8f75f1919261c58, type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 7161016329433304235, guid: 838819c4b387d384c8f75f1919261c58, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
