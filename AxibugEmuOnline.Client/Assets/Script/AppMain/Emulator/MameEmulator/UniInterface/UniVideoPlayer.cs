@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
 {
-    public Vector2Int mScreenSize { get; private set; }
+    [HideInInspector]
+    public Vector2Int mScreenSize = Vector2Int.one;
     [SerializeField]
     private int mDataLenght;
     [SerializeField]
@@ -26,12 +27,15 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
 
     public Texture2D rawBufferWarper => m_rawBufferWarper;
     public RawImage DrawCanvas => m_drawCanvas;
-
+    Texture2D defaultTex;
     private void Awake()
     {
         mFrame = 0;
         m_drawCanvas = GameObject.Find("GameRawImage").GetComponent<RawImage>();
         m_drawCanvasrect = m_drawCanvas.GetComponent<RectTransform>();
+        defaultTex = new Texture2D(mScreenSize.x, mScreenSize.y, TextureFormat.RGBA32, false);
+        m_rawBufferWarper = defaultTex;
+        m_rawBufferWarper.filterMode = FilterMode.Point;
     }
 
     public void Initialize(int width, int height, IntPtr framePtr)
@@ -42,7 +46,6 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
         {
             mScreenSize = new Vector2Int(width, height);
             mDataLenght = width * height * 4;
-            //mFrameData = new int[mWidth * mHeight];
             //MAME来的是BGRA32，好好好 BGRA->RGBA
             m_rawBufferWarper = new Texture2D(mScreenSize.x, mScreenSize.y, TextureFormat.RGBA32, false);
             m_rawBufferWarper.filterMode = FilterMode.Point;

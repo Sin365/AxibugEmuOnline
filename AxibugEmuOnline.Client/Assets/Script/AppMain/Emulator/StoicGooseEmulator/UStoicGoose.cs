@@ -191,11 +191,6 @@ public class UStoicGoose : EmuCore<ulong>
 
     void Awake()
     {
-        //关闭垂直同步
-        QualitySettings.vSyncCount = 0;
-        //设为60帧
-        Application.targetFrameRate = 60;
-
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         mCanvas.worldCamera = Camera.main;
 

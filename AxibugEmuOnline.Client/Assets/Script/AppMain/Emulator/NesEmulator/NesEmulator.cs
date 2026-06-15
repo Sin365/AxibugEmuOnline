@@ -31,7 +31,7 @@ namespace AxibugEmuOnline.Client
 
         private void Start()
         {
-            App.tick.SetFrameRate(60);
+            App.tick.SetFrameRate();
             VideoProvider.NesEmu = this;
             AudioProvider.NesEmu = this;
         }

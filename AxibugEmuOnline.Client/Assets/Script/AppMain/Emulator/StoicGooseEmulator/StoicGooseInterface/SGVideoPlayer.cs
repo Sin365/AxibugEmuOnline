@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class SGVideoPlayer : MonoBehaviour
 {
-
     [SerializeField]
     private int mWidth;
     [SerializeField]
@@ -25,7 +24,7 @@ public class SGVideoPlayer : MonoBehaviour
     public double videoFPS { get; private set; }
     bool bInit = false;
     bool bHadData = false;
-
+    [HideInInspector]
     public Vector2Int ScreenSize = Vector2Int.one;
 
     Texture2D defaultTex;

@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class UEGVideoPlayer : MonoBehaviour
 {
-    public Vector2Int mScreenSize { get; private set; }
+    [HideInInspector]
+    public Vector2Int mScreenSize = Vector2Int.one;
     [SerializeField]
     private int mWidth;
     [SerializeField]
@@ -21,6 +22,8 @@ public class UEGVideoPlayer : MonoBehaviour
     IntPtr mFrameDataPtr;
     public Texture2D rawBufferWarper => m_rawBufferWarper;
     public RawImage DrawCanvas => m_drawCanvas;
+    Texture2D defaultTex;
+    bool bTexInit = false;
 
     private TimeSpan lastElapsed;
     public double videoFPS { get; private set; }
@@ -33,30 +36,23 @@ public class UEGVideoPlayer : MonoBehaviour
         mFrame = 0;
         m_drawCanvas = GameObject.Find("GameRawImage").GetComponent<RawImage>();
         m_drawCanvasrect = m_drawCanvas.GetComponent<RectTransform>();
+        defaultTex = new Texture2D(1, 1, TextureFormat.BGRA32, false);//直接初始化好了。分辨率是固定的呢
+        m_rawBufferWarper = defaultTex;
+        m_rawBufferWarper.filterMode = FilterMode.Point;
     }
 
     public void Initialize()
     {
         m_drawCanvas.color = Color.white;
 
-        if (m_rawBufferWarper == null)
+        //if (m_rawBufferWarper == null)
+        if(!bTexInit)
         {
             mDataLenght = mWidth * mHeight * 4;
-            //mFrameData = new byte[mDataLenght];
-
-            //// 固定数组，防止垃圾回收器移动它  
-            //var bitmapcolorRect_handle = GCHandle.Alloc(mFrameData, GCHandleType.Pinned);
-            //// 获取数组的指针  
-            //mFrameDataPtr = bitmapcolorRect_handle.AddrOfPinnedObject();
-
-
-            //MAME来的是BGRA32，好好好
             m_rawBufferWarper = new Texture2D(mWidth, mHeight, TextureFormat.BGRA32, false);
-            //m_rawBufferWarper = new Texture2D(mWidth, mHeight, TextureFormat.ARGB32, false);
             m_rawBufferWarper.filterMode = FilterMode.Point;
+            bTexInit = true;
         }
-
-        //mFrameDataPtr = framePtr;
         m_drawCanvas.texture = m_rawBufferWarper;
         bInit = true;
 

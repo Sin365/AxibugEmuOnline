@@ -56,7 +56,7 @@ public class UEssgee : EmuCore<ulong>
 
     void Awake()
     {
-        App.tick.SetFrameRate(60);
+        App.tick.SetFrameRate();
         instance = this;
         uegResources = new UEGResources();
         uegIO = new UEGIO();
