@@ -25,7 +25,8 @@ public class UEssgee : EmuCore<ulong>
 
     public override RomPlatformType Platform => mPlatform;
 
-    public override uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
+    public override uint PushFrame => (uint)emulatorHandler.AxiEmuRunFrame;
+    public override uint PhysicsFrame => PushFrame;
 
     public override Texture OutputPixel => graphicsHandler.rawBufferWarper;
 
@@ -33,6 +34,7 @@ public class UEssgee : EmuCore<ulong>
     public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
 
     public static bool bLogicUpdatePause { get; private set; }
+
     #region
 
     public UEGVideoPlayer graphicsHandler;

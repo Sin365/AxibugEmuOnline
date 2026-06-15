@@ -1,6 +1,5 @@
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
-using System;
 using UnityEngine;
 
 public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
@@ -8,8 +7,13 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
     [SerializeField]
     private AudioSource m_as;
 
+    /// <summary>
+    /// WSC/WS 每幀來的數據
+    /// </summary>
+    const int WscEverTickBufferLenght = 1168;
     // 大幅加大缓冲 + 预留安全余量
-    private RingBuffer<float> _buffer = new RingBuffer<float>(44100 * 2); // 约 270ms 缓冲
+    private RingBuffer<float> _buffer = new RingBuffer<float>(WscEverTickBufferLenght * 4);//4幀音頻數據為最大緩衝
+    private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(WscEverTickBufferLenght);
 
     private float lastSample = 0f;
 
@@ -63,15 +67,25 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
     /// </summary>
     internal unsafe void EnqueueSamples(short[] buffer)
     {
-        for (int i = 0; i < buffer.Length; i++)
-        {
-            _buffer.Write(buffer[i] / 32767.0f);
-        }
-
+#if UNITY_EDITOR
         // 固定 short[]，拿到 short*
         fixed (short* pShort = buffer)
         {
             App.audioMgr.WriteToRecord(pShort, buffer.Length);
+        }
+#endif
+        //if (UStoicGoose.instance.emulatorHandler.CurrVirtualFrameIsSkim)
+        //    return;
+
+        //二級缓冲，尝试跨帧效果
+        while (_buffer_2nd.TryRead(out var frombefordata))
+        {
+            _buffer.Write(frombefordata);
+        }
+
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            _buffer_2nd.Write(buffer[i] / 32767.0f);
         }
     }
 

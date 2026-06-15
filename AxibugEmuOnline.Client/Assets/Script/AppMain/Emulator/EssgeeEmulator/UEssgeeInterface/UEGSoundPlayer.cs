@@ -82,14 +82,14 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
         }
     }
 
-    public unsafe void SubmitSamples(short* buffer, short*[] ChannelSamples, int samples_a)
+    public unsafe void SubmitSamples(short* buffer, short*[] ChannelSamples, int samples_lenght)
     {
         var current = UEssgee.sw.Elapsed;
         var delta = current - lastElapsed;
         lastElapsed = current;
         audioFPS = 1d / delta.TotalSeconds;
 
-        for (int i = 0; i < samples_a; i += 1)
+        for (int i = 0; i < samples_lenght; i += 1)
         {
             _buffer.Write(buffer[i] / 32767.0f);
         }

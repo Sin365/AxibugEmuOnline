@@ -38,6 +38,10 @@ namespace AxibugEmuOnline.Client
 
         private void Awake()
         {
+            //PC关闭事件监听
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
+            Application.wantsToQuit += ChangeByPassClose;
+#endif
             versionInfo = Resources.Load<VerScriptable>("Version/VersionInfo");
             GameObject.DontDestroyOnLoad(debugger);
             debugger_instance = debugger;
@@ -69,6 +73,14 @@ namespace AxibugEmuOnline.Client
         {
             App.settings.Filter.ShutDownFilterPreview();
             App.settings.Filter.ShutDownFilter();
+        }
+
+        private static bool ChangeByPassClose()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+#endif
+            return true;
         }
     }
 }

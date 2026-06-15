@@ -58,13 +58,15 @@ public class UStoicGoose : EmuCore<ulong>
     #region 实现IEmuCore
     public override RomPlatformType Platform => mPlatform;
 
-    public override uint Frame => (uint)emulatorHandler.AxiEmuRunFrame;
+    public override uint PushFrame => (uint)emulatorHandler.AxiEmuRunFrame;
+    public override uint PhysicsFrame => (uint)emulatorHandler.AxiVirtualFrame;
 
     public override Texture OutputPixel => graphicsHandler.rawBufferWarper;
 
     public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
 
     public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
+
 
     public override object GetState()
     {

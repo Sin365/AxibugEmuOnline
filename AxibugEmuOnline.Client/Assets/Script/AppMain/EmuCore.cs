@@ -34,8 +34,20 @@ namespace AxibugEmuOnline.Client
         public abstract IControllerSetuper GetControllerSetuper();
         /// <summary> 核心所属平台 </summary>
         public abstract RomPlatformType Platform { get; }
-        /// <summary> 获取当前模拟器帧序号,在加载快照和Reset后,应当重置为0 </summary>
-        public abstract uint Frame { get; }
+
+        /// <summary>
+        /// 同步推帧步进帧率，获取当前模拟器帧序号,在加载快照和Reset后,应当重置为0 （这个帧数是去所有核心同步的节奏，和不同模拟器时钟频率无关）
+        /// </summary>
+        public abstract uint PushFrame { get; }
+
+        /// <summary>
+        /// 模拟器实际内部循环loop帧数（可作为性能计数，不可作为同步帧率）
+        /// 
+        /// 不过大部分平台核心 和 同步帧数一致，只有非60Hz的核心，比如WSC/WS 会在虚拟帧有差异
+        /// 
+        /// 在每个核心具体实现类中，具体定义。
+        /// </summary>
+        public abstract uint PhysicsFrame { get; }
 
         public abstract void PushEmulatorFrame();
         /// <summary> 模拟器核心推帧结束 </summary>
@@ -103,7 +115,7 @@ namespace AxibugEmuOnline.Client
         {
             var localState = GetLocalInput();
             var rawData = InputDataToNet(localState);
-            App.roomMgr.SendRoomSingelPlayerInput(Frame, rawData);
+            App.roomMgr.SendRoomSingelPlayerInput(PushFrame, rawData);
 
             if (m_lastTestInput != rawData)
             {
@@ -123,12 +135,12 @@ namespace AxibugEmuOnline.Client
 
             if (IsNetPlay)
             {
-                if (App.roomMgr.netReplay.TryGetNextFrame((int)Frame, EnableRollbackNetCode ? true : false, out m_replayData, out m_frameDiff, out m_inputDiff))
+                if (App.roomMgr.netReplay.TryGetNextFrame((int)PushFrame, EnableRollbackNetCode ? true : false, out m_replayData, out m_frameDiff, out m_inputDiff))
                 {
 #if UNITY_EDITOR
                     if (m_inputDiff)
                     {
-                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame localframe:{Frame} InPut=>[{m_replayData.InPut}] remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{m_frameDiff} frame=>{m_replayData.FrameStartID} RemoteForward=>{App.roomMgr.netReplay.mRemoteForwardCount}");
+                        App.log.Debug($"{DateTime.Now.ToString("hh:mm:ss.fff")} TryGetNextFrame localframe:{PushFrame} InPut=>[{m_replayData.InPut}] remoteFrame->{App.roomMgr.netReplay.mRemoteFrameIdx} diff->{m_frameDiff} frame=>{m_replayData.FrameStartID} RemoteForward=>{App.roomMgr.netReplay.mRemoteForwardCount}");
                     }
 #endif
 

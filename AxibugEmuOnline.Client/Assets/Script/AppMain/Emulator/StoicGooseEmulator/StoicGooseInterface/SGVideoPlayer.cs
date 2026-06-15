@@ -101,6 +101,8 @@ public class SGVideoPlayer : MonoBehaviour
 
     internal void UpdateScreen(IntPtr ptr, long frame_number)
     {
+        if (UStoicGoose.instance.emulatorHandler.CurrVirtualFrameIsSkim)
+            return;
         var current = UStoicGoose.sw.Elapsed;
         var delta = current - lastElapsed;
         lastElapsed = current;
@@ -108,7 +110,6 @@ public class SGVideoPlayer : MonoBehaviour
         mFrameDataPtr = ptr;
         if (!bHadData)
             bHadData = true;
-        UStoicGoose.instance.emulatorHandler.AxiEmuRunFrame++;
     }
 
     internal void SetSize(int screenWidth, int screenHeight)

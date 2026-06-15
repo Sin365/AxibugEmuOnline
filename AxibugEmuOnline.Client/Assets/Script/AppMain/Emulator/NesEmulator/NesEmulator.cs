@@ -112,7 +112,9 @@ namespace AxibugEmuOnline.Client
             NesCore.LoadState(st);
         }
 
-        public override uint Frame => NesCore.FrameCount;
+        public override uint PushFrame => NesCore.FrameCount;
+
+        public override uint PhysicsFrame => PushFrame;
 
         /// <summary>
         ///     停止游戏
@@ -168,6 +170,7 @@ namespace AxibugEmuOnline.Client
         public override Texture OutputPixel => VideoProvider.OutputPixel;
         public override RawImage DrawCanvas => VideoProvider.Drawer;
         public override Vector3 DrawLocalScale => DrawCanvas.transform.localScale;
+
         public override void GetAudioParams(out int frequency, out int channels)
         {
             AudioProvider.GetAudioParams(out frequency, out channels);

@@ -20,6 +20,11 @@ public class EmulatorHandler
 
     public MachineCommon Machine { get; } = default;
     public int AxiEmuRunFrame;
+    public int AxiVirtualFrame;
+    /// <summary>
+    /// 当前当前虚拟帧是否快速掠过
+    /// </summary>
+    public bool CurrVirtualFrameIsSkim = false;
 
     public EmulatorHandler(Type machineType)
     {
@@ -38,6 +43,7 @@ public class EmulatorHandler
         //thread = new Thread(ThreadMainLoop) { Name = threadName, Priority = ThreadPriority.AboveNormal, IsBackground = false };
         //thread.Start();
         AxiEmuRunFrame = 0;
+        AxiVirtualFrame = 0;
     }
 
     public void Reset()
@@ -152,7 +158,10 @@ public class EmulatorHandler
 
         for (int i = 0; i < runStep; i++)
         {
+            CurrVirtualFrameIsSkim = i != runStep - 1;
             Machine.RunFrame();
+            AxiVirtualFrame++;
         }
+        AxiEmuRunFrame++;
     }
 }

@@ -55,7 +55,7 @@ public class XMBInfoBar : MonoBehaviour
             FPS.gameObject.SetActiveEx(true);
             //var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
             //var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
-            var gap = App.emu.Core.Frame - m_lastFrameInfo.Item1;
+            var gap = App.emu.Core.PhysicsFrame - m_lastFrameInfo.Item1;
             var time = Time.realtimeSinceStartup - m_lastFrameInfo.Item2;
             var fps = gap / time;
             if (InGameUI.Instance.Core.IsNetPlay)
@@ -69,7 +69,7 @@ public class XMBInfoBar : MonoBehaviour
 
             //m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
             //m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
-            m_lastFrameInfo.Item1 = App.emu.Core.Frame;
+            m_lastFrameInfo.Item1 = App.emu.Core.PhysicsFrame;
             m_lastFrameInfo.Item2 = Time.realtimeSinceStartup;
         }
     }
