@@ -6,6 +6,7 @@ namespace StoicGoose.Core.Display
     public static class DisplayUtilities
     {
         #region 追加的新的优化部分
+        private static readonly uint[] ColorLut_Color = new uint[4096];
         private static readonly uint[] ColorLut = new uint[4096];
         public const uint Color_Black = 0xFF000000;
         public const uint Color_White = 0xFFFFFFFF;
@@ -38,7 +39,14 @@ WonderSwan 某些寄存器里颜色是 9-bit index
 
                 // Unity Texture2D RGBA32 的内存布局是：R G B A
                 // 所以 uint 应该组装为： 0xAARRGGBB
-                ColorLut[i] = (0xFFu << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
+                ColorLut_Color[i] = (0xFFu << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
+            }
+
+            for (int i = 0; i < 4096; i++)
+            {
+                int b4 = i & 0xF;
+                byte b = (byte)((b4 << 4) | b4);
+                ColorLut[i] = (0xFFu << 24) | ((uint)b << 16) | ((uint)b << 8) | b;
             }
         }
         // TODO: WSC high contrast mode
@@ -88,16 +96,23 @@ WonderSwan 某些寄存器里颜色是 9-bit index
         private static byte DuplicateBits(int value) => (byte)((value & 0b1111) | (value & 0b1111) << 4);
 
         #region 新的修改，以uint作为颜色值
+        public static uint GeneratePixel_Color(ushort data)
+        {
+            return ColorLut_Color[data & 0x0FFF];  // 关键修复：取低12位
+        }
+
+        public static uint GeneratePixel_Color(byte data)  // 2bpp/单色等情况
+        {
+            return ColorLut_Color[data & 0x0FFF];
+        }
         public static uint GeneratePixel(ushort data)
         {
             return ColorLut[data & 0x0FFF];  // 关键修复：取低12位
         }
-
         public static uint GeneratePixel(byte data)  // 2bpp/单色等情况
         {
             return ColorLut[data & 0x0FFF];
         }
-
         public static unsafe void CopyPixel(uint color, byte* data, int x, int y, int stride)
         {
             *(uint*)(data + ((y * stride) + x) * 4) = color;

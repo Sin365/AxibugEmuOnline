@@ -36,7 +36,7 @@ namespace StoicGoose.Core.Display
 		protected override void RenderBackColor(int y, int x)
 		{
 			if (displayColorFlagSet)
-				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel(DisplayUtilities.ReadColor(machine, backColorPalette, backColorIndex)), outputFramebuffer, x, y, HorizontalDisp);
+				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel_Color(DisplayUtilities.ReadColor(machine, backColorPalette, backColorIndex)), outputFramebuffer, x, y, HorizontalDisp);
 			else
 				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel((byte)(15 - palMonoPools[backColorIndex & 0b0111])), outputFramebuffer, x, y, HorizontalDisp);
 		}
@@ -59,7 +59,7 @@ namespace StoicGoose.Core.Display
 			if (!isOpaque) return;
 
 			if (displayColorFlagSet)
-				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel(DisplayUtilities.ReadColor(machine, tilePal, pixelColor)), outputFramebuffer, x, y, HorizontalDisp);
+				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel_Color(DisplayUtilities.ReadColor(machine, tilePal, pixelColor)), outputFramebuffer, x, y, HorizontalDisp);
 			else
 				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel((byte)(15 - palMonoPools[palMonoData[tilePal][pixelColor & 0b11]])), outputFramebuffer, x, y, HorizontalDisp);
 		}
@@ -87,7 +87,7 @@ namespace StoicGoose.Core.Display
 			isUsedBySCR2[(y * HorizontalDisp) + x] = true;
 
 			if (displayColorFlagSet)
-				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel(DisplayUtilities.ReadColor(machine, tilePal, pixelColor)), outputFramebuffer, x, y, HorizontalDisp);
+				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel_Color(DisplayUtilities.ReadColor(machine, tilePal, pixelColor)), outputFramebuffer, x, y, HorizontalDisp);
 			else
 				DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel((byte)(15 - palMonoPools[palMonoData[tilePal][pixelColor & 0b11]])), outputFramebuffer, x, y, HorizontalDisp);
 		}
@@ -133,7 +133,7 @@ namespace StoicGoose.Core.Display
 					tilePal += 8;
 
 					if (displayColorFlagSet)
-						DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel(DisplayUtilities.ReadColor(machine, tilePal, pixelColor)), outputFramebuffer, x, y, HorizontalDisp);
+						DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel_Color(DisplayUtilities.ReadColor(machine, tilePal, pixelColor)), outputFramebuffer, x, y, HorizontalDisp);
 					else
 						DisplayUtilities.CopyPixel(DisplayUtilities.GeneratePixel((byte)(15 - palMonoPools[palMonoData[tilePal][pixelColor & 0b11]])), outputFramebuffer, x, y, HorizontalDisp);
 				}
@@ -275,7 +275,7 @@ namespace StoicGoose.Core.Display
             if (displayColorFlagSet)
             {
                 var colorData = DisplayUtilities.ReadColor(machine, backColorPalette, backColorIndex);
-                color = DisplayUtilities.GeneratePixel(colorData);
+                color = DisplayUtilities.GeneratePixel_Color(colorData);
             }
             else
             {
@@ -423,7 +423,7 @@ namespace StoicGoose.Core.Display
             if (displayColorFlagSet)
             {
                 var colorData = DisplayUtilities.ReadColor(machine, palette, colorIdx);
-                return DisplayUtilities.GeneratePixel(colorData);
+                return DisplayUtilities.GeneratePixel_Color(colorData);
             }
             else
             {
