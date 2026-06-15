@@ -24,8 +24,8 @@ namespace cpu.m6805
                 if (t == 0xfd)
                 {
                     /* speed up busy loops */
-                    if (pendingCycles > 0)
-                        pendingCycles = 0;
+                    if (PendingCycles/*pendingCycles*/ > 0)
+                        PendingCycles/*pendingCycles*/ = 0;
                 }
             }
         }
@@ -44,8 +44,8 @@ namespace cpu.m6805
                 if (t == 0xfd)
                 {
                     /* speed up busy loops */
-                    if (pendingCycles > 0)
-                        pendingCycles = 0;
+                    if (PendingCycles/*pendingCycles*/ > 0)
+                        PendingCycles/*pendingCycles*/ = 0;
                 }
             }
         }
@@ -77,8 +77,8 @@ namespace cpu.m6805
             if (t == 0xfe)
             {
                 /* speed up busy loops */
-                if (pendingCycles > 0)
-                    pendingCycles = 0;
+                if (PendingCycles/*pendingCycles*/ > 0)
+                    PendingCycles/*pendingCycles*/ = 0;
             }
         }
 

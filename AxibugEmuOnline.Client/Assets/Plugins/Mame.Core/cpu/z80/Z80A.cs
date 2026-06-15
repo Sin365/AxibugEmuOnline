@@ -15,30 +15,30 @@ namespace cpu.z80
         public static Z80A[] zz1;
         public static int nZ80;
         private bool Interruptable;
-        private ulong totalExecutedCycles;
-        private int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //private ulong totalExecutedCycles;
+        //private int pendingCycles;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return pendingCycles;
+        //    }
+        //    set
+        //    {
+        //        pendingCycles = value;
+        //    }
+        //}
         /// <summary>
         /// Creates an instance of the <see cref="Z80A"/> emulator class.
         /// </summary>
@@ -214,8 +214,8 @@ namespace cpu.z80
             writer.WriteLine("IFF1 {0}", IFF1);
             writer.WriteLine("IFF2 {0}", IFF2);
             writer.WriteLine("Halted {0}", Halted);
-            writer.WriteLine("ExecutedCycles {0}", totalExecutedCycles);
-            writer.WriteLine("PendingCycles {0}", pendingCycles);
+            writer.WriteLine("ExecutedCycles {0}", TotalExecutedCycles/*totalExecutedCycles*/);
+            writer.WriteLine("PendingCycles {0}", PendingCycles/*pendingCycles*/);
             writer.WriteLine("[/Z80]");
             writer.WriteLine();
         }
@@ -270,9 +270,9 @@ namespace cpu.z80
                 else if (args[0] == "Halted")
                     Halted = bool.Parse(args[1]);
                 else if (args[0] == "ExecutedCycles")
-                    totalExecutedCycles = ulong.Parse(args[1]);
+                    TotalExecutedCycles/*totalExecutedCycles*/ = ulong.Parse(args[1]);
                 else if (args[0] == "PendingCycles")
-                    pendingCycles = int.Parse(args[1]);
+                    PendingCycles/*pendingCycles*/ = int.Parse(args[1]);
 
                 else
                     EmuLogger.Log("Skipping unrecognized identifier " + args[0]);

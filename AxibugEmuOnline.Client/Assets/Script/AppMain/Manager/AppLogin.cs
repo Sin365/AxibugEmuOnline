@@ -69,9 +69,8 @@ namespace AxibugEmuOnline.Client.Manager
             if (msg.Status == LoginResultStatus.Ok)
             {
                 App.log.Info("登录成功");
-                App.user.InitMainUserData(App.user.userdata.Account, msg.UID, msg.Token);
+                App.user.InitMainUserData(App.user.userdata.Account, msg.NickName, msg.UID, msg.Token);
                 OverlayManager.PopTip("登录成功");
-
 
                 App.log.Info("获取Room列表");
                 App.roomMgr.SendGetRoomList();

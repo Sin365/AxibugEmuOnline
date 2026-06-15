@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using System;
 using UnityEngine;
 
 public class AxiPlayerPrefsMono : MonoBehaviour
@@ -26,7 +27,7 @@ public class AxiPlayerPrefsMono : MonoBehaviour
 
 	public void OnEnable()
 	{
-		Debug.Log("AxiPlayerPrefsMono Enable");
+		App.log.Info("AxiPlayerPrefsMono Enable");
 	}
 	public void Update()
 	{

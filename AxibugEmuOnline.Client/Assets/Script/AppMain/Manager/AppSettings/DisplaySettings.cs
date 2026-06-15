@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using System;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Settings
@@ -74,6 +75,7 @@ namespace AxibugEmuOnline.Client.Settings
                     FullScreenMode.Windowed
                 );
             }
+            App.tick.SetFrameRate();
         }
         public static Resolution GetResolution(E_ScreenResolutionType type)
         {

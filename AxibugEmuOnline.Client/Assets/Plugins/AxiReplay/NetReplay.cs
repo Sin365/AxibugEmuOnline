@@ -67,9 +67,18 @@ namespace AxiReplay
             frameProfiler.InputHead(inputData.FrameStartID);
         }
 
+        /// <summary>
+        /// 尝试往前推进帧
+        /// </summary>
+        /// <param name="targetFrame"></param>
+        /// <param name="indirectGet"></param>
+        /// <param name="data"></param>
+        /// <param name="frameDiff"></param>
+        /// <param name="inputDiff"></param>
+        /// <returns></returns>
         public bool TryGetNextFrame(int targetFrame, bool indirectGet, out ReplayStep data, out int frameDiff, out bool inputDiff)
         {
-            if (!bNetInit)
+            if (!bNetInit)//单机模式无条件推进
             {
                 data = default(ReplayStep);
                 frameDiff = default(int);
@@ -79,24 +88,12 @@ namespace AxiReplay
             return TakeFrameToTargetFrame(targetFrame, indirectGet, out data, out frameDiff, out inputDiff);
         }
 
-        bool checkCanGetFrame(int targetFrame, bool indirectGet)
-        {
-            if (indirectGet)
-            {
-                return targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx;
-            }
-            else
-            {
-                return targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= frameProfiler.TempFrameCount(mRemoteForwardCount);
-            }
-        }
-
         bool TakeFrameToTargetFrame(int targetFrame, bool indirectGet, out ReplayStep data, out int bFrameDiff, out bool inputDiff)
         {
             bool result;
             inputDiff = false;
 
-            if (checkCanGetFrame(targetFrame, indirectGet))
+            if (CheckCanDoNextFrame(targetFrame, indirectGet))
             {
                 //当前帧追加
                 mCurrClientFrameIdx = targetFrame;
@@ -116,15 +113,91 @@ namespace AxiReplay
             return result;
         }
 
+
+        /// <summary>
+        /// 激进取队列，连续行为计数
+        /// </summary>
+        uint radicalUseCounter;
+        /// <summary>
+        /// 激进取队列，连续行为最大
+        /// </summary>
+        byte radicalMaxCount = 6;
+
+        /// <summary>
+        /// 检查是否可以推进帧
+        /// </summary>
+        /// <param name="targetFrame">目标帧</param>
+        /// <param name="indirectGet">（废弃参数）</param>
+        /// <returns></returns>
+        bool CheckCanDoNextFrame(int targetFrame, bool indirectGet)
+        {
+
+            int queueLeftCount = mNetReplayQueue.Count;
+            //至少还有可用数据的基本判断
+            bool mustblag = targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && queueLeftCount > 0;
+
+            if (!mustblag)
+            {
+#if UNITY_EDITOR
+                Debug.Log("推帧规则怪谈|无");
+#endif
+                radicalUseCounter = 0;
+                return false;
+            }
+
+            //队列还有余量
+            if (queueLeftCount > 1)
+            {
+#if UNITY_EDITOR
+                Debug.Log("推帧规则怪谈|冗余使用");
+#endif
+                radicalUseCounter = 0;
+                return true;
+            }
+            else
+            {
+                //超过连续激进使用的频次
+                if (radicalUseCounter > radicalMaxCount)
+                {
+#if UNITY_EDITOR
+                    Debug.Log("推帧规则怪谈|当前停止激进");
+#endif
+                    radicalUseCounter = 0;
+                    return false;
+                }
+                else//上一帧
+                {
+                    radicalUseCounter++;
+#if UNITY_EDITOR
+                    Debug.Log($"推帧规则怪谈|激进使用{radicalUseCounter}");
+#endif
+                    return true;
+                }
+            }
+
+
+            if (indirectGet)
+            {
+                //指定帧不大于远端帧数
+                return targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= 0;
+            }
+            else
+            {
+                //指定帧不大于远端帧数 且 满足 网络队列数 不小于 最小队列阈值
+                return targetFrame == mNextReplay.FrameStartID && targetFrame <= mRemoteFrameIdx && mNetReplayQueue.Count >= frameProfiler.TempFrameCount(mRemoteForwardCount);
+            }
+        }
+
+        /// <summary>
+        /// //指定帧不大于远端帧数
+        /// </summary>
+        /// <returns></returns>
         public int GetSkipFrameCount()
         {
             if (!bNetInit)
                 return 0;
             //本地队列差异高于服务器提前量的值
             int moreNum = mDiffFrameCount - mRemoteForwardCount;
-            //if (mDiffFrameCount < 0 || mDiffFrameCount > 10000)
-            //    return 0;
-
             ////游戏刚开始的一小段时间，直接追满
             //if (mCurrClientFrameIdx < 60)
             //    return moreNum;
@@ -132,32 +205,12 @@ namespace AxiReplay
             int skip = 0;
             if (mDiffFrameCount > short.MaxValue) skip = 0;
             else if (moreNum <= mRemoteForwardCount) skip = 0;
-            else if (moreNum <= mRemoteForwardCount + 2) skip = 0;
-            else if (moreNum <= mRemoteForwardCount + 5) skip = 1;
-            else if (moreNum <= mRemoteForwardCount + 6) skip = 2;
-            else if (moreNum <= mRemoteForwardCount + 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
+            else if (moreNum <= mRemoteForwardCount + 1) skip = 0;
+            else if (moreNum <= mRemoteForwardCount + 2) skip = 1;
+            else if (moreNum <= mRemoteForwardCount + 3) skip = 2;
+            else if (moreNum <= mRemoteForwardCount + 10) skip = moreNum / 2; //10帧以内，平滑跳帧数
             else skip = moreNum;//完全追上
             return skip;
-
-            //int skip = 0;
-            //if (mDiffFrameCount > short.MaxValue) skip = 0;
-            //else if (moreNum <= 1) skip = 0;
-            //else if (moreNum <= 3) skip = 2;
-            //else if (moreNum <= 6) skip = 2;
-            //else if (moreNum <= 20) skip = moreNum / 2; //20帧以内，平滑跳帧数
-            //else skip = moreNum;//完全追上
-            //return skip;
-
-            //var frameGap = mDiffFrameCount;
-            //if (frameGap > 10000) return 0;
-            //if (frameGap <= 2) skip = 0;
-            //if (frameGap > 2 && frameGap < 6) skip = 1 + 1;
-            //else if (frameGap > 7 && frameGap < 12) skip = 2 + 1;
-            //else if (frameGap > 13 && frameGap < 20) skip = 3 + 1;
-            //else skip = frameGap - 2;
-
-
-            //return skip;
         }
     }
 }

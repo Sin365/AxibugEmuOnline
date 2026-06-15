@@ -19,30 +19,30 @@ namespace cpu.m6502
         private ushort M6502_NMI_VEC = 0xfffa, M6502_RST_VEC = 0xfffc, M6502_IRQ_VEC = 0xfffe;
         private int M6502_SET_OVERFLOW = 1;
         private int m6502_IntOccured;
-        protected ulong totalExecutedCycles;
-        protected int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //protected ulong totalExecutedCycles;
+        //protected int PendingCycles/*pendingCycles*/;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return PendingCycles/*pendingCycles*/;
+        //    }
+        //    set
+        //    {
+        //        PendingCycles/*pendingCycles*/ = value;
+        //    }
+        //}
         public Func<ushort, byte> ReadOp, ReadOpArg;
         public Func<ushort, byte> ReadMemory;
         public Action<ushort, byte> WriteMemory;
@@ -119,7 +119,7 @@ namespace cpu.m6502
             if ((p & F_I) == 0)
             {
                 ea.d = M6502_IRQ_VEC;
-                pendingCycles -= 2;
+                PendingCycles/*pendingCycles*/ -= 2;
                 PUSH(pc.HighByte);
                 PUSH(pc.LowByte);
                 PUSH((byte)(p & ~F_B));
@@ -139,7 +139,7 @@ namespace cpu.m6502
         }
         public int m6502_execute(int cycles)
         {
-            pendingCycles = cycles;
+            PendingCycles/*pendingCycles*/ = cycles;
             do
             {
                 byte op;
@@ -150,7 +150,7 @@ namespace cpu.m6502
                 }
                 op = ReadOp(pc.LowWord);
                 pc.LowWord++;
-                pendingCycles -= 1;
+                PendingCycles/*pendingCycles*/ -= 1;
                 insn[op]();
                 if (after_cli != 0)
                 {
@@ -164,7 +164,7 @@ namespace cpu.m6502
                 {
                     if (pending_irq == 2)
                     {
-                        if (m6502_IntOccured - pendingCycles > 1)
+                        if (m6502_IntOccured - PendingCycles/*pendingCycles*/ > 1)
                         {
                             pending_irq = 1;
                         }
@@ -179,8 +179,8 @@ namespace cpu.m6502
                     }
                 }
             }
-            while (pendingCycles > 0);
-            return cycles - pendingCycles;
+            while (PendingCycles/*pendingCycles*/ > 0);
+            return cycles - PendingCycles/*pendingCycles*/;
         }
         public override void set_irq_line(int irqline, LineState state)
         {
@@ -202,7 +202,7 @@ namespace cpu.m6502
                 if (state != LineState.CLEAR_LINE)
                 {
                     ea.d = M6502_NMI_VEC;
-                    pendingCycles -= 2;
+                    PendingCycles/*pendingCycles*/ -= 2;
                     PUSH(pc.HighByte);
                     PUSH(pc.LowByte);
                     PUSH((byte)(p & ~F_B));
@@ -226,7 +226,7 @@ namespace cpu.m6502
                 if (state != LineState.CLEAR_LINE)
                 {
                     pending_irq = 1;
-                    m6502_IntOccured = pendingCycles;
+                    m6502_IntOccured = PendingCycles/*pendingCycles*/;
                 }
             }
         }

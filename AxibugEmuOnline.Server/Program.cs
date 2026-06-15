@@ -52,6 +52,11 @@ namespace AxibugEmuOnline.Server
                                         AppSrv.g_Log.Info($"    UID->{room.PlayerSlot[i].UID}");
                                         AppSrv.g_Log.Info($"    NickName->{_c.NickName}");
                                         AppSrv.g_Log.Info($"    AveNetDelay->{_c.AveNetDelay}");
+                                        AppSrv.g_Log.Info($"    NetDelays->");
+                                        foreach (var nd in _c.NetDelays)
+                                        { 
+                                            AppSrv.g_Log.Info($"        {nd}");
+                                        }
                                         AppSrv.g_Log.Info($"    LocalJoyIdx->{room.PlayerSlot[i].LocalJoyIdx}");
                                     }
                                     else

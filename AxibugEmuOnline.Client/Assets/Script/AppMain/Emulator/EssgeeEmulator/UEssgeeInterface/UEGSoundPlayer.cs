@@ -20,15 +20,6 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
     void Awake()
     {
         return;
-        //// 获取当前音频配置
-        //AudioConfiguration config = AudioSettings.GetConfiguration();
-        //// 设置目标音频配置
-        //config.sampleRate = sampleRate;       // 采样率为 44100Hz
-        //config.numRealVoices = 32;      // 设置最大音频源数量（可选）
-        //config.numVirtualVoices = 512;   // 设置虚拟音频源数量（可选）
-        //config.dspBufferSize = 1024;     // 设置 DSP 缓冲区大小（可选）
-        //config.speakerMode = AudioSpeakerMode.Stereo; // 设置为立体声（2 声道）
-        //App.audioMgr.SetAudioConfig(config);
     }
 
 
@@ -73,17 +64,6 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
         }*/
     }
 
-    //// Unity 音频线程回调
-    //void OnAudioFilterRead(float[] data, int channels)
-    //{
-    //    for (int i = 0; i < data.Length; i++)
-    //    {
-    //        if (_buffer.TryRead(out float rawData))
-    //            data[i] = rawData;
-    //        else
-    //            data[i] = 0; // 无数据时静音
-    //    }
-    //}
 
 
     public void Initialize()
@@ -102,14 +82,14 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
         }
     }
 
-    public unsafe void SubmitSamples(short* buffer, short*[] ChannelSamples, int samples_a)
+    public unsafe void SubmitSamples(short* buffer, short*[] ChannelSamples, int samples_lenght)
     {
         var current = UEssgee.sw.Elapsed;
         var delta = current - lastElapsed;
         lastElapsed = current;
         audioFPS = 1d / delta.TotalSeconds;
 
-        for (int i = 0; i < samples_a; i += 1)
+        for (int i = 0; i < samples_lenght; i += 1)
         {
             _buffer.Write(buffer[i] / 32767.0f);
         }

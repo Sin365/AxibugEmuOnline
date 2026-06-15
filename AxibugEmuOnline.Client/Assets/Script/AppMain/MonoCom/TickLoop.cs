@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Client
 
             LoopAction_3s += Ping;
 
-            SetFrameRate(60);
+            SetFrameRate();
 
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged += (state) =>
@@ -130,14 +130,49 @@ namespace AxibugEmuOnline.Client
 
         internal object GetDateTimeStr()
         {
-            return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            return DateTime.Now.ToString("yyyy-MM-dd HHmmss.fff");
         }
 
-        internal void SetFrameRate(int rate)
-        {//关闭垂直同步
-            QualitySettings.vSyncCount = 0;
-            //设为60帧
-            Application.targetFrameRate = rate;
+        internal void SetFrameRate(int targetRate = 60)
+        {
+            //非桌面平台的话 还是不要设置垂直同步
+            if (Application.platform != RuntimePlatform.WindowsPlayer
+                ||
+                Application.platform != RuntimePlatform.OSXPlayer
+                ||
+                Application.platform != RuntimePlatform.LinuxPlayer)
+            {
+                QualitySettings.vSyncCount = 0;
+                Application.targetFrameRate = targetRate;
+                return;
+            }
+
+            // 优先获取当前显示器的真实刷新率（推荐使用 refreshRateRatio，新API更准确）
+            RefreshRate refreshRate = Screen.currentResolution.refreshRateRatio;
+            double monitorHz = refreshRate.value;  // double 类型，更精确（如 59.94、120.0 等）
+
+            if (double.IsNaN(monitorHz) || monitorHz <= 0)
+            {
+                monitorHz = 60.0; // 兜底
+            }
+
+            bool isExactly60 = Mathf.Approximately((float)monitorHz, 60f) ||
+                               (monitorHz >= 59.5f && monitorHz <= 60.5f); // 容忍常见 59.94 等
+
+            if (isExactly60)
+            {
+                // 60Hz 显示器：打开垂直同步，避免撕裂
+                QualitySettings.vSyncCount = 1;           // 1 = 跟随显示器刷新率
+                Application.targetFrameRate = -1;         // VSync 开启时通常忽略 targetFrameRate
+                App.log.Info($"[FrameRate] 检测到 ~60Hz 显示器，开启 VSync");
+            }
+            else
+            {
+                // >60Hz 或其他刷新率显示器：关闭 VSync + 硬锁 60
+                QualitySettings.vSyncCount = 0;
+                Application.targetFrameRate = targetRate;
+                App.log.Info($"[FrameRate] 显示器刷新率 ≈ {monitorHz:F1}Hz，使用 targetFrameRate = {targetRate}");
+            }
         }
     }
 }

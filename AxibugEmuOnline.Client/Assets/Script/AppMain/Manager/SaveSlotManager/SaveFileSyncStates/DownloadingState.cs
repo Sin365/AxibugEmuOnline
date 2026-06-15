@@ -65,8 +65,9 @@ namespace AxibugEmuOnline.Client
                     Host.Save(m_sequece, savData, imgData);
                     FSM.ChangeState<SyncedState>();
                 }
-                catch
+                catch(Exception ex)
                 {
+                    App.log.Error(ex.ToString());
                     FSM.GetState<SyncFailedState>().Error = "云存档解压失败";
                     FSM.ChangeState<SyncFailedState>();
                     return;

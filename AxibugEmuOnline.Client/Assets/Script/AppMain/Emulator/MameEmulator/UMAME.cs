@@ -5,7 +5,6 @@ using AxiReplay;
 using MAME.Core;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,7 +39,9 @@ public class UMAME : EmuCore<ulong>
     public string SavePath => EmuDataPath + "/sav/";
     public override RomPlatformType Platform { get { return mPlatform; } }
     RomPlatformType mPlatform = RomPlatformType.Cps1;
-    public override uint Frame => (uint)emu.currEmuFrame;
+    public override uint PushFrame => (uint)emu.currEmuFrame;
+
+    public override uint PhysicsFrame => PushFrame;
     void Awake()
     {
         instance = this;
@@ -235,4 +236,5 @@ public class UMAME : EmuCore<ulong>
     public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
     public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
     public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
+
 }

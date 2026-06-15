@@ -39,30 +39,30 @@ namespace cpu.m6800
             READY
         }
         private byte CLEAR_LINE = 0, INPUT_LINE_NMI = 32;
-        protected ulong totalExecutedCycles;
-        protected int pendingCycles;
-        public override ulong TotalExecutedCycles
-        {
-            get
-            {
-                return totalExecutedCycles;
-            }
-            set
-            {
-                totalExecutedCycles = value;
-            }
-        }
-        public override int PendingCycles
-        {
-            get
-            {
-                return pendingCycles;
-            }
-            set
-            {
-                pendingCycles = value;
-            }
-        }
+        //protected ulong totalExecutedCycles;
+        //protected int PendingCycles/*pendingCycles*/;
+        //public override ulong TotalExecutedCycles
+        //{
+        //    get
+        //    {
+        //        return totalExecutedCycles;
+        //    }
+        //    set
+        //    {
+        //        totalExecutedCycles = value;
+        //    }
+        //}
+        //public override int PendingCycles
+        //{
+        //    get
+        //    {
+        //        return PendingCycles/*pendingCycles*/;
+        //    }
+        //    set
+        //    {
+        //        PendingCycles/*pendingCycles*/ = value;
+        //    }
+        //}
         public uint timer_next;
         public readonly static byte[] flags8i = new byte[256]	 /* increment */
 {
@@ -551,7 +551,7 @@ namespace cpu.m6800
         }
         protected void INCREMENT_COUNTER(int amount)
         {
-            pendingCycles -= amount;
+            PendingCycles/*pendingCycles*/ -= amount;
             counter.d += (uint)amount;
             if (counter.d >= timer_next)
                 check_timer_event();
@@ -560,8 +560,8 @@ namespace cpu.m6800
         {
             int cycles_to_eat;
             cycles_to_eat = (int)(timer_next - counter.d);
-            if (cycles_to_eat > pendingCycles)
-                cycles_to_eat = pendingCycles;
+            if (cycles_to_eat > PendingCycles/*pendingCycles*/)
+                cycles_to_eat = PendingCycles/*pendingCycles*/;
             if (cycles_to_eat > 0)
             {
                 INCREMENT_COUNTER(cycles_to_eat);
@@ -911,13 +911,13 @@ namespace cpu.m6800
         public override int ExecuteCycles(int cycles)
         {
             byte ireg;
-            pendingCycles = cycles;
+            PendingCycles/*pendingCycles*/ = cycles;
             CLEANUP_conters();
             INCREMENT_COUNTER(extra_cycles);
             extra_cycles = 0;
             do
             {
-                int prevCycles = pendingCycles;
+                int prevCycles = PendingCycles/*pendingCycles*/;
                 if ((wai_state & (M6800_WAI | M6800_SLP)) != 0)
                 {
                     EAT_CYCLES();
@@ -930,13 +930,13 @@ namespace cpu.m6800
                     PC.LowWord++;
                     insn[ireg]();
                     INCREMENT_COUNTER(this.cycles[ireg]);
-                    int delta = prevCycles - pendingCycles;
-                    totalExecutedCycles += (ulong)delta;
+                    int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                    TotalExecutedCycles/*totalExecutedCycles*/ += (ulong)delta;
                 }
-            } while (pendingCycles > 0);
+            } while (PendingCycles/*pendingCycles*/ > 0);
             INCREMENT_COUNTER(extra_cycles);
             extra_cycles = 0;
-            return cycles - pendingCycles;
+            return cycles - PendingCycles/*pendingCycles*/;
         }
         public byte hd63701_internal_registers_r(int offset)
         {
@@ -1358,13 +1358,13 @@ namespace cpu.m6800
         public int m6801_execute(int cycles)
         {
             byte ireg;
-            pendingCycles = cycles;
+            PendingCycles/*pendingCycles*/ = cycles;
             CLEANUP_conters();
             INCREMENT_COUNTER(extra_cycles);
             extra_cycles = 0;
             do
             {
-                int prevCycles = pendingCycles;
+                int prevCycles = PendingCycles/*pendingCycles*/;
                 if ((wai_state & M6800_WAI) != 0)
                 {
                     EAT_CYCLES();
@@ -1377,13 +1377,13 @@ namespace cpu.m6800
                     PC.LowWord++;
                     m6803_insn[ireg]();
                     INCREMENT_COUNTER(cycles_6803[ireg]);
-                    int delta = prevCycles - pendingCycles;
-                    totalExecutedCycles += (ulong)delta;
+                    int delta = prevCycles - PendingCycles/*pendingCycles*/;
+                    TotalExecutedCycles/*totalExecutedCycles*/ += (ulong)delta;
                 }
-            } while (pendingCycles > 0);
+            } while (PendingCycles/*pendingCycles*/ > 0);
             INCREMENT_COUNTER(extra_cycles);
             extra_cycles = 0;
-            return cycles - pendingCycles;
+            return cycles - PendingCycles/*pendingCycles*/;
         }
     }
 }

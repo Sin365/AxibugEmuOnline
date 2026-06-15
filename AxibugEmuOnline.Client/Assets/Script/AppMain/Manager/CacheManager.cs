@@ -32,9 +32,7 @@ namespace AxibugEmuOnline.Client
                 yield return null;
                 //Debug.Log($"下载进度：{respInfo.DownLoadPr} ->{respInfo.loadedLenght}/{respInfo.NeedloadedLenght}");
             }
-            AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler);
-
-
+            AxiHttpProxy.ShowAxiHttpDebugInfo(request.downloadHandler, true);
             if (!request.downloadHandler.bHadErr)
             {
                 AxiIO.Directory.CreateDirectory(path);
@@ -45,20 +43,6 @@ namespace AxibugEmuOnline.Client
             {
                 callback.Invoke(null);
             }
-
-            /*
-            var request = UnityWebRequest.Get($"{App.httpAPI.WebHost}/{url}");
-            yield return request.SendWebRequest();
-            
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                Directory.CreateDirectory(path);
-                File.WriteAllBytes($"{path}/{url.GetHashCode()}", request.downloadHandler.data);
-                callback.Invoke(request.downloadHandler.data);
-            }
-            else
-                callback.Invoke(null);
-            */
         }
 
         private Dictionary<string, object> cachesInMemory = new Dictionary<string, object>();

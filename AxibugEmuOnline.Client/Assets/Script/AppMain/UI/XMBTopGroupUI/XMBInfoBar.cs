@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class XMBInfoBar : MonoBehaviour
 {
+    public Text txtVersion;
     public Text txtDateTime;
     public Image imgPowerRoot;
     public Image imgPower1;
@@ -19,6 +20,7 @@ public class XMBInfoBar : MonoBehaviour
     void OnEnable()
     {
         TickLoop.LoopAction_1s += RefreshAll;
+        txtVersion.text = Initer.versionInfo.GetFullVersionStr();
         RefreshAll();
     }
 
@@ -53,14 +55,21 @@ public class XMBInfoBar : MonoBehaviour
             FPS.gameObject.SetActiveEx(true);
             //var gap = App.emu.Core.Frame - m_lastFrameInfo.lastFrame;
             //var time = Time.realtimeSinceStartup - m_lastFrameInfo.lastTime;
-            var gap = App.emu.Core.Frame - m_lastFrameInfo.Item1;
+            var gap = App.emu.Core.PhysicsFrame - m_lastFrameInfo.Item1;
             var time = Time.realtimeSinceStartup - m_lastFrameInfo.Item2;
             var fps = gap / time;
-            FPS.text = $"FPS:{fps:.#}";
+            if (InGameUI.Instance.Core.IsNetPlay)
+            {
+                FPS.text = $"NET:{App.roomMgr.netReplay?.mNetReplayQueue.Count}/{App.roomMgr.netReplay?.mDiffFrameCount} FPS:{fps:.#}";
+            }
+            else
+            {
+                FPS.text = $"FPS:{fps:.#}";
+            }
 
             //m_lastFrameInfo.lastFrame = App.emu.Core.Frame;
             //m_lastFrameInfo.lastTime = Time.realtimeSinceStartup;
-            m_lastFrameInfo.Item1 = App.emu.Core.Frame;
+            m_lastFrameInfo.Item1 = App.emu.Core.PhysicsFrame;
             m_lastFrameInfo.Item2 = Time.realtimeSinceStartup;
         }
     }

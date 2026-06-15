@@ -20,23 +20,23 @@
         protected void m6502_d0() { BNE(); }
         protected void m6502_f0() { BEQ(); }
 
-        protected void m6502_01() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; ORA(tmp); }
-        protected void m6502_21() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; AND(tmp); }
-        protected void m6502_41() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; EOR(tmp); }
-        protected void m6502_61() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; ADC(tmp); }
-        protected void m6502_81() { int tmp = 0; STA(ref tmp); EA_IDX(); wrmem_id((ushort)ea.d, (byte)tmp); pendingCycles -= 1; }
-        protected void m6502_a1() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; LDA(tmp); }
-        protected void m6502_c1() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; CMP(tmp); }
-        protected void m6502_e1() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; SBC(tmp); }
+        protected void m6502_01() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; ORA(tmp); }
+        protected void m6502_21() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; AND(tmp); }
+        protected void m6502_41() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; EOR(tmp); }
+        protected void m6502_61() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; ADC(tmp); }
+        protected void m6502_81() { int tmp = 0; STA(ref tmp); EA_IDX(); wrmem_id((ushort)ea.d, (byte)tmp); PendingCycles/*pendingCycles*/ -= 1; }
+        protected void m6502_a1() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; LDA(tmp); }
+        protected void m6502_c1() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; CMP(tmp); }
+        protected void m6502_e1() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; SBC(tmp); }
 
-        protected void m6502_11() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; ORA(tmp); }
-        protected void m6502_31() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; AND(tmp); }
-        protected void m6502_51() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; EOR(tmp); }
-        protected void m6502_71() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; ADC(tmp); }
-        protected void m6502_91() { int tmp = 0; STA(ref tmp); EA_IDY_NP(); wrmem_id((ushort)ea.d, (byte)tmp); pendingCycles -= 1; }
-        protected void m6502_b1() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; LDA(tmp); }
-        protected void m6502_d1() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; CMP(tmp); }
-        protected void m6502_f1() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; SBC(tmp); }
+        protected void m6502_11() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; ORA(tmp); }
+        protected void m6502_31() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; AND(tmp); }
+        protected void m6502_51() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; EOR(tmp); }
+        protected void m6502_71() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; ADC(tmp); }
+        protected void m6502_91() { int tmp = 0; STA(ref tmp); EA_IDY_NP(); wrmem_id((ushort)ea.d, (byte)tmp); PendingCycles/*pendingCycles*/ -= 1; }
+        protected void m6502_b1() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; LDA(tmp); }
+        protected void m6502_d1() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; CMP(tmp); }
+        protected void m6502_f1() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; SBC(tmp); }
 
         protected void m6502_02() { KIL(); }
         protected void m6502_22() { KIL(); }
@@ -56,23 +56,23 @@
         protected void m6502_d2() { KIL(); }
         protected void m6502_f2() { KIL(); }
 
-        protected void m6502_03() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); SLO(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_23() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); RLA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_43() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); SRE(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_63() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); RRA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_83() { int tmp = 0; SAX(ref tmp); EA_IDX(); wrmem_id((ushort)ea.d, (byte)tmp); pendingCycles -= 1; }
-        protected void m6502_a3() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; LAX(tmp); }
-        protected void m6502_c3() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); DCP(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_e3() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); ISB(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_03() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); SLO(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_23() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); RLA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_43() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); SRE(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_63() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); RRA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_83() { int tmp = 0; SAX(ref tmp); EA_IDX(); wrmem_id((ushort)ea.d, (byte)tmp); PendingCycles/*pendingCycles*/ -= 1; }
+        protected void m6502_a3() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; LAX(tmp); }
+        protected void m6502_c3() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); DCP(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_e3() { int tmp; EA_IDX(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); ISB(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
 
-        protected void m6502_13() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); SLO(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_33() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); RLA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_53() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); SRE(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_73() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); RRA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_13() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); SLO(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_33() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); RLA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_53() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); SRE(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_73() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); RRA(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
         protected void m6502_93() { int tmp = 0; EA_IDY_NP(); SAH(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_b3() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; LAX(tmp); }
-        protected void m6502_d3() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); DCP(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
-        protected void m6502_f3() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); pendingCycles -= 1; WRMEM((ushort)ea.d, (byte)tmp); ISB(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_b3() { int tmp; EA_IDY_P(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; LAX(tmp); }
+        protected void m6502_d3() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); DCP(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
+        protected void m6502_f3() { int tmp; EA_IDY_NP(); tmp = rdmem_id((ushort)ea.d); PendingCycles/*pendingCycles*/ -= 1; WRMEM((ushort)ea.d, (byte)tmp); ISB(ref tmp); WRMEM((ushort)ea.d, (byte)tmp); }
 
         protected void m6502_04() { int tmp; EA_ZPG(); tmp = RDMEM((ushort)ea.d); }
         protected void m6502_24() { int tmp; EA_ZPG(); tmp = RDMEM((ushort)ea.d); BIT(tmp); }

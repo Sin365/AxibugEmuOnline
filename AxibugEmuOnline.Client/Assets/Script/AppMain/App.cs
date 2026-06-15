@@ -97,6 +97,13 @@ namespace AxibugEmuOnline.Client.ClientCore
 #if UNITY_SWITCH
             SwitchInit();
 #endif
+            var go = new GameObject("[AppAxibugEmuOnline]");
+            GameObject.DontDestroyOnLoad(go);
+
+            tick = go.AddComponent<TickLoop>();
+            audioMgr = go.AddComponent<AudioMgr>();
+            coRunner = go.AddComponent<CoroutineRunner>();
+
 
             input = new InputDevicesManager();
             FileDownloader = new FileDownloader();
@@ -107,6 +114,14 @@ namespace AxibugEmuOnline.Client.ClientCore
             user = new UserDataManager();
             emu = new AppEmu();
             httpAPI = new HttpAPI();
+
+            starRomLib = new RomLib();
+            s_romLibs[RomPlatformType.All] = starRomLib;
+            CacheMgr = new CacheManager();
+            roomMgr = new AppRoom();
+            share = new AppShare();
+            SavMgr = new SaveSlotManager();
+
             if (bUseLocalWebApi)
                 httpAPI.WebHost = mLocalWebApi;
 
@@ -117,21 +132,11 @@ namespace AxibugEmuOnline.Client.ClientCore
                 s_romLibs[plat] = new RomLib(plat);
             }
 
-            starRomLib = new RomLib();
-            CacheMgr = new CacheManager();
-            roomMgr = new AppRoom();
-            share = new AppShare();
-            SavMgr = new SaveSlotManager();
 
 
             bTest = isTest;
             bUseGUIButton = isUseGUIButton;
             mTestSrvIP = testSrvIP;
-            var go = new GameObject("[AppAxibugEmuOnline]");
-            GameObject.DontDestroyOnLoad(go);
-            tick = go.AddComponent<TickLoop>();
-            audioMgr = go.AddComponent<AudioMgr>();
-            coRunner = go.AddComponent<CoroutineRunner>();
 
 
             var importNode = GameObject.Find("IMPORTENT");
@@ -139,6 +144,8 @@ namespace AxibugEmuOnline.Client.ClientCore
 
             StartCoroutine(AppTickFlow());
             RePullNetInfo();
+
+
         }
 
 
@@ -203,7 +210,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             Resp_CheckStandInfo resp = null;
             while (true)
             {
-                AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Application.version}");
+                AxiHttpProxy.SendWebRequestProxy request = AxiHttpProxy.Get($"{App.httpAPI.WebSiteApi}/CheckStandInfo?platform={platform}&version={Initer.versionInfo.GetBundleVersionStr()}");
                 yield return request.SendWebRequest;
                 if (!request.downloadHandler.isDone)
                 {

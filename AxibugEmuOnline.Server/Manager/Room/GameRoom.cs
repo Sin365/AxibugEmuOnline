@@ -425,7 +425,8 @@ namespace AxibugEmuOnline.Server.Manager.Room
             for (int i = 0; i < playerlist.Count; i++)
             {
                 ClientInfo player = playerlist[i];
-                maxNetDelay = Math.Max(maxNetDelay, player.AveNetDelay);
+                //maxNetDelay = Math.Max(maxNetDelay, player.AveNetDelay);//房间内最大玩家延迟作为基准，已改为👇
+                maxNetDelay = Math.Max(maxNetDelay, player.NetworkFluctuation / 2);//房间内最大玩家网络波动
             }
             float MustTaskFrame = 1;
             SrvForwardFrames = (uint)((maxNetDelay / 0.016f) + MustTaskFrame);

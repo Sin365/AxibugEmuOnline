@@ -12,7 +12,10 @@ namespace AxibugEmuOnline.Client.Manager
     {
         public long UID { get; set; }
         public string Account { get; set; }
-        public string NickName { get; set; }
+        public string NickName { 
+            get; 
+            set;
+        }
     }
 
     public class MainUserDataBase : UserDataBase
@@ -47,8 +50,9 @@ namespace AxibugEmuOnline.Client.Manager
         static Protobuf_UserList _Protobuf_UserList = new Protobuf_UserList();
         static Protobuf_Modify_NickName _Protobuf_Modify_NickName = new Protobuf_Modify_NickName();
 
-        public void InitMainUserData(string UName, long UID, string token)
+        public void InitMainUserData(string Acc,string UName, long UID, string token)
         {
+            userdata.Account = Acc;
             userdata.NickName = UName;
             userdata.IsLoggedIn = true;
             userdata.UID = UID;
@@ -192,7 +196,8 @@ namespace AxibugEmuOnline.Client.Manager
 
         void RecvModifyNickName(Protobuf_Modify_NickName_RESP msg)
         {
-            OverlayManager.PopTip($"成功修改昵称");
+            OverlayManager.PopTip($"成功修改昵称！");
+            OverlayManager.PopTip($"重新登录后生效！");
         }
 
         private void RecvUpdateSelfUserInfo(Protobuf_Update_UserInfo_RESP msg)

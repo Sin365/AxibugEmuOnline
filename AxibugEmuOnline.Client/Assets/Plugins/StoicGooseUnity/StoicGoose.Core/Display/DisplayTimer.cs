@@ -2,13 +2,13 @@
 {
 	public class DisplayTimer
 	{
-		public bool Enable { get; set; }
-		public bool Repeating { get; set; }
-		public ushort Frequency { get; set; }
+		public bool Enable;//{ get; set; }
+		public bool Repeating;// { get; set; }
+        public ushort Frequency;// { get; set; }
 
-		public ushort Counter { get; set; }
+        public ushort Counter;// { get; set; }
 
-		public DisplayTimer()
+        public DisplayTimer()
 		{
 			Reset();
 		}

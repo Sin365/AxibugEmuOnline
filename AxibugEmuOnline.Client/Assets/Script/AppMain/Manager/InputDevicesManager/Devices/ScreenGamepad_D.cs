@@ -26,6 +26,10 @@ namespace AxibugEmuOnline.Client.InputDevices
         public Button_C OPTION_4;
         public Button_C HOME;
         public Stick_C JOYSTICK;
+        public Button_C SUB_UP;
+        public Button_C SUB_DOWN;
+        public Button_C SUB_LEFT;
+        public Button_C SUB_RIGHT;
 
         AxiScreenGamepad m_linkUnityImpl;
         Dictionary<Button_C, AxiInputUGuiBtnType> m_buttonTypes = new Dictionary<Button_C, AxiInputUGuiBtnType>();
@@ -48,6 +52,10 @@ namespace AxibugEmuOnline.Client.InputDevices
             m_buttonTypes[OPTION_3] = AxiInputUGuiBtnType.OPTION_3;
             m_buttonTypes[OPTION_4] = AxiInputUGuiBtnType.OPTION_4;
             m_buttonTypes[HOME] = AxiInputUGuiBtnType.HOME;
+            m_buttonTypes[SUB_UP] = AxiInputUGuiBtnType.SUB_UP;
+            m_buttonTypes[SUB_DOWN] = AxiInputUGuiBtnType.SUB_DOWN;
+            m_buttonTypes[SUB_LEFT] = AxiInputUGuiBtnType.SUB_LEFT;
+            m_buttonTypes[SUB_RIGHT] = AxiInputUGuiBtnType.SUB_RIGHT;
         }
 
         public bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl_C

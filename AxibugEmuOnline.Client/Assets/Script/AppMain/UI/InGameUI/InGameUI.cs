@@ -37,6 +37,7 @@ namespace AxibugEmuOnline.Client
             menus.Add(new InGameUI_SaveStateMenu(this));
             menus.Add(new InGameUI_OpenOrHideScreenJoyStrick(this));
             menus.Add(new InGameUI_UploadGameCoverImg(this));
+            //menus.Add(new InGameUI_SendChat(this));
             menus.Add(new InGameUI_QuitGame(this));
 
             base.Awake();
@@ -45,9 +46,7 @@ namespace AxibugEmuOnline.Client
         protected override void Update()
         {
             base.Update();
-
             PushCoreFrame();
-
             App.settings.Filter.ExecuteFilterRender(Core.OutputPixel, Core.DrawCanvas);
             App.settings.ScreenScaler.CalcScale(Core.DrawCanvas, Core.Platform);
         }

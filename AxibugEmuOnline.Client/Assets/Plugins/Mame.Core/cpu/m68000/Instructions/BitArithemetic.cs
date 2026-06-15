@@ -17,13 +17,13 @@ namespace cpu.m68000
         //    {
         //        case 0: // Byte
         //            D_ptr_dstReg->s8 &= ReadValueB(srcMode, srcReg);
-        //            pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+        //            PendingCycles/*pendingCycles*/ -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
         //            N = (D_ptr_dstReg->s8 & 0x80) != 0;
         //            Z = (D_ptr_dstReg->s8 == 0);
         //            return;
         //        case 1: // Word
         //            D_ptr_dstReg->s16 &= ReadValueW(srcMode, srcReg);
-        //            pendingCycles -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
+        //            PendingCycles/*pendingCycles*/ -= (srcMode == 0) ? 4 : 4 + EACyclesBW[srcMode, srcReg];
         //            N = (D_ptr_dstReg->s16 & 0x8000) != 0;
         //            Z = (D_ptr_dstReg->s16 == 0);
         //            return;
@@ -31,11 +31,11 @@ namespace cpu.m68000
         //            D_ptr_dstReg->s32 &= ReadValueL(srcMode, srcReg);
         //            if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
         //            {
-        //                pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
+        //                PendingCycles/*pendingCycles*/ -= 8 + EACyclesL[srcMode, srcReg];
         //            }
         //            else
         //            {
-        //                pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
+        //                PendingCycles/*pendingCycles*/ -= 6 + EACyclesL[srcMode, srcReg];
         //            }
         //            N = (D_ptr_dstReg->s32 & 0x80000000) != 0;
         //            Z = (D_ptr_dstReg->s32 == 0);
@@ -60,13 +60,13 @@ namespace cpu.m68000
             {
                 case 0: // Byte
                     D_ptr_dstReg->s8 &= ReadValueB(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
+                    PendingCycles/*pendingCycles*/ -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s8 & 0x80) != 0;
                     Z = (D_ptr_dstReg->s8 == 0);
                     return;
                 case 1: // Word
                     D_ptr_dstReg->s16 &= ReadValueW(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
+                    PendingCycles/*pendingCycles*/ -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s16 & 0x8000) != 0;
                     Z = (D_ptr_dstReg->s16 == 0);
                     return;
@@ -74,11 +74,11 @@ namespace cpu.m68000
                     D_ptr_dstReg->s32 &= ReadValueL(srcMode, srcReg);
                     if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
                     {
-                        pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
+                        PendingCycles/*pendingCycles*/ -= 8 + EACyclesL[srcMode, srcReg];
                     }
                     else
                     {
-                        pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
+                        PendingCycles/*pendingCycles*/ -= 6 + EACyclesL[srcMode, srcReg];
                     }
                     N = (D_ptr_dstReg->s32 & 0x80000000) != 0;
                     Z = (D_ptr_dstReg->s32 == 0);
@@ -108,7 +108,7 @@ namespace cpu.m68000
                         sbyte dest = PeekValueB(dstMode, dstReg);
                         sbyte value = (sbyte)(dest & D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -118,7 +118,7 @@ namespace cpu.m68000
                         short dest = PeekValueW(dstMode, dstReg);
                         short value = (short)(dest & D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -128,7 +128,7 @@ namespace cpu.m68000
                         int dest = PeekValueL(dstMode, dstReg);
                         int value = dest & D_ptr_srcReg->s32;
                         WriteValueL(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
                         N = (value & 0x80000000) != 0;
                         Z = (value == 0);
                         return;
@@ -159,7 +159,7 @@ namespace cpu.m68000
                         sbyte arg = PeekValueB(dstMode, dstReg);
                         sbyte result = (sbyte)(imm & arg);
                         WriteValueB(dstMode, dstReg, result);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (result & 0x80) != 0;
                         Z = (result == 0);
                         return;
@@ -170,7 +170,7 @@ namespace cpu.m68000
                         short arg = PeekValueW(dstMode, dstReg);
                         short result = (short)(imm & arg);
                         WriteValueW(dstMode, dstReg, result);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (result & 0x8000) != 0;
                         Z = (result == 0);
                         return;
@@ -181,7 +181,7 @@ namespace cpu.m68000
                         int arg = PeekValueL(dstMode, dstReg);
                         int result = imm & arg;
                         WriteValueL(dstMode, dstReg, result);
-                        pendingCycles -= (dstMode == 0) ? 14 : 20 + EACyclesL[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 14 : 20 + EACyclesL[dstMode, dstReg];
                         N = (result & 0x80000000) != 0;
                         Z = (result == 0);
                         return;
@@ -195,7 +195,7 @@ namespace cpu.m68000
             short value;
             value = ReadOpWord(PC); PC += 2;
             CCR = (short)(CCR & value);
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
 
@@ -222,7 +222,7 @@ namespace cpu.m68000
                         sbyte dest = PeekValueB(dstMode, dstReg);
                         sbyte value = (sbyte)(dest ^ D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -232,7 +232,7 @@ namespace cpu.m68000
                         short dest = PeekValueW(dstMode, dstReg);
                         short value = (short)(dest ^ D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -242,7 +242,7 @@ namespace cpu.m68000
                         int dest = PeekValueL(dstMode, dstReg);
                         int value = dest ^ D_ptr_srcReg->s32;
                         WriteValueL(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
                         N = (value & 0x80000000) != 0;
                         Z = (value == 0);
                         return;
@@ -274,7 +274,7 @@ namespace cpu.m68000
                         WriteValueB(mode, reg, value);
                         N = (value & 0x80) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -284,7 +284,7 @@ namespace cpu.m68000
                         WriteValueW(mode, reg, value);
                         N = (value & 0x8000) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -294,7 +294,7 @@ namespace cpu.m68000
                         WriteValueL(mode, reg, value);
                         N = (value & 0x80000000) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
                         return;
                     }
             }
@@ -307,7 +307,7 @@ namespace cpu.m68000
             short value;
             value = ReadOpWord(PC); PC += 2;
             CCR = (short)(CCR ^ value);
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
 
@@ -331,13 +331,13 @@ namespace cpu.m68000
             {
                 case 0: // Byte
                     D_ptr_dstReg->s8 |= ReadValueB(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
+                    PendingCycles/*pendingCycles*/ -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s8 & 0x80) != 0;
                     Z = (D_ptr_dstReg->s8 == 0);
                     return;
                 case 1: // Word
                     D_ptr_dstReg->s16 |= ReadValueW(srcMode, srcReg);
-                    pendingCycles -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
+                    PendingCycles/*pendingCycles*/ -= (srcMode == 0) ? 4 : 4 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[srcMode, srcReg];
                     N = (D_ptr_dstReg->s16 & 0x8000) != 0;
                     Z = (D_ptr_dstReg->s16 == 0);
                     return;
@@ -345,11 +345,11 @@ namespace cpu.m68000
                     D_ptr_dstReg->s32 |= ReadValueL(srcMode, srcReg);
                     if (srcMode == 0 || (srcMode == 7 && srcReg == 4))
                     {
-                        pendingCycles -= 8 + EACyclesL[srcMode, srcReg];
+                        PendingCycles/*pendingCycles*/ -= 8 + EACyclesL[srcMode, srcReg];
                     }
                     else
                     {
-                        pendingCycles -= 6 + EACyclesL[srcMode, srcReg];
+                        PendingCycles/*pendingCycles*/ -= 6 + EACyclesL[srcMode, srcReg];
                     }
                     N = (D_ptr_dstReg->s32 & 0x80000000) != 0;
                     Z = (D_ptr_dstReg->s32 == 0);
@@ -381,7 +381,7 @@ namespace cpu.m68000
                         sbyte dest = PeekValueB(dstMode, dstReg);
                         sbyte value = (sbyte)(dest | D_ptr_srcReg->s8);
                         WriteValueB(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -391,7 +391,7 @@ namespace cpu.m68000
                         short dest = PeekValueW(dstMode, dstReg);
                         short value = (short)(dest | D_ptr_srcReg->s16);
                         WriteValueW(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[dstMode, dstReg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -401,7 +401,7 @@ namespace cpu.m68000
                         int dest = PeekValueL(dstMode, dstReg);
                         int value = dest | D_ptr_srcReg->s32;
                         WriteValueL(dstMode, dstReg, value);
-                        pendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
+                        PendingCycles/*pendingCycles*/ -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
                         N = (value & 0x80000000) != 0;
                         Z = (value == 0);
                         return;
@@ -432,7 +432,7 @@ namespace cpu.m68000
                         WriteValueB(mode, reg, value);
                         N = (value & 0x80) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 1: // word
@@ -442,7 +442,7 @@ namespace cpu.m68000
                         WriteValueW(mode, reg, value);
                         N = (value & 0x8000) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= mode == 0 ? 8 : 12 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         return;
                     }
                 case 2: // long
@@ -452,7 +452,7 @@ namespace cpu.m68000
                         WriteValueL(mode, reg, value);
                         N = (value & 0x80000000) != 0;
                         Z = value == 0;
-                        pendingCycles -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
                         return;
                     }
             }
@@ -464,7 +464,7 @@ namespace cpu.m68000
             short value;
             value = ReadOpWord(PC); PC += 2;
             CCR = (short)(CCR | value);
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
 
@@ -484,7 +484,7 @@ namespace cpu.m68000
                         sbyte value = PeekValueB(mode, reg);
                         value = (sbyte)~value;
                         WriteValueB(mode, reg, value);
-                        pendingCycles -= (mode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= (mode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         N = (value & 0x80) != 0;
                         Z = (value == 0);
                         return;
@@ -494,7 +494,7 @@ namespace cpu.m68000
                         short value = PeekValueW(mode, reg);
                         value = (short)~value;
                         WriteValueW(mode, reg, value);
-                        pendingCycles -= (mode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+                        PendingCycles/*pendingCycles*/ -= (mode == 0) ? 4 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
                         N = (value & 0x8000) != 0;
                         Z = (value == 0);
                         return;
@@ -504,7 +504,7 @@ namespace cpu.m68000
                         int value = PeekValueL(mode, reg);
                         value = ~value;
                         WriteValueL(mode, reg, value);
-                        pendingCycles -= (mode == 0) ? 6 : 12 + EACyclesL[mode, reg];//8:12
+                        PendingCycles/*pendingCycles*/ -= (mode == 0) ? 6 : 12 + EACyclesL[mode, reg];//8:12
                         N = (value & 0x80000000) != 0;
                         Z = (value == 0);
                         return;
@@ -537,7 +537,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->u8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -547,7 +547,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->u16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -557,7 +557,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->u32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -583,7 +583,7 @@ namespace cpu.m68000
             Z = (res == 0);
             X = C = ((res & 0x8000) != 0);
             V = false;
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -611,7 +611,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->u8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -621,7 +621,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->u16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -631,7 +631,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->u32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -658,7 +658,7 @@ namespace cpu.m68000
             //C = X = ((src & 0x10000) != 0);
             C = X = ((src & 1) != 0);
             V = false;
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -688,7 +688,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->u8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -700,7 +700,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->u16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -712,7 +712,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->u32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -739,7 +739,7 @@ namespace cpu.m68000
             X = C = ((src & 0x8000) != 0);
             src &= 0xc000;
             V = !(src == 0 || src == 0xc000);
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -769,7 +769,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->u8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -781,7 +781,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->u16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -793,7 +793,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->u32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -823,7 +823,7 @@ namespace cpu.m68000
             Z = (res == 0);
             V = false;
             C = X = ((src & 0x01) != 0);
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -851,7 +851,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->u8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -861,7 +861,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->u16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -871,7 +871,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->u32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -897,7 +897,7 @@ namespace cpu.m68000
             Z = (res == 0);
             C = ((res & 0x8000) != 0);
             V = false;
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -925,7 +925,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->u8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -935,7 +935,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->u16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -945,7 +945,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->u32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -971,7 +971,7 @@ namespace cpu.m68000
             Z = (res == 0);
             C = ((res & 0x01) != 0);
             V = false;
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -1000,7 +1000,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->s8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -1011,7 +1011,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->s16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -1022,7 +1022,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->s32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -1050,7 +1050,7 @@ namespace cpu.m68000
             N = ((res & 0x8000) != 0);
             Z = (res == 0);
             V = false;
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -1080,7 +1080,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s8 & 0x80) != 0;
                     Z = D_ptr_reg->s8 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 1: // word
                     for (int i = 0; i < rot; i++)
@@ -1091,7 +1091,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s16 & 0x8000) != 0;
                     Z = D_ptr_reg->s16 == 0;
-                    pendingCycles -= 6 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 6 + (rot * 2);
                     return;
                 case 2: // long
                     for (int i = 0; i < rot; i++)
@@ -1102,7 +1102,7 @@ namespace cpu.m68000
                     }
                     N = (D_ptr_reg->s32 & 0x80000000) != 0;
                     Z = D_ptr_reg->s32 == 0;
-                    pendingCycles -= 8 + (rot * 2);
+                    PendingCycles/*pendingCycles*/ -= 8 + (rot * 2);
                     return;
             }
         }
@@ -1130,7 +1130,7 @@ namespace cpu.m68000
             N = ((res & 0x8000) != 0);
             Z = (res == 0);
             V = false;
-            pendingCycles -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -1142,7 +1142,7 @@ namespace cpu.m68000
             V = C = false;
             Z = D_ptr_reg->u32 == 0;
             N = (D_ptr_reg->s32 & 0x80000000) != 0;
-            pendingCycles -= 4;
+            PendingCycles/*pendingCycles*/ -= 4;
         }
 
     }
