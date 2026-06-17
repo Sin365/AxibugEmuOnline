@@ -65,7 +65,19 @@ namespace AxiIO
         {
             using (FileStream streaming = System.IO.File.OpenRead(filePath))
             {
-                int readlen = streaming.Read(readToArr, 0, len);
+                if (readToArr == null)
+                    throw new ArgumentNullException(nameof(readToArr));
+                if (start < 0)
+                    throw new ArgumentOutOfRangeException(nameof(start));
+                if (len < 0)
+                    throw new ArgumentOutOfRangeException(nameof(len));
+
+                int available = Math.Max(0, readToArr.Length - start);
+                int toRead = Math.Min(len, available);
+                if (toRead == 0)
+                    return 0;
+
+                int readlen = streaming.Read(readToArr, start, toRead);
                 return readlen;
             }
         }
