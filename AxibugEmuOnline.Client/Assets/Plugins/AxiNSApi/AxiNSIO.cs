@@ -10,9 +10,9 @@ public class AxiNSIO
 {
     string save_name => AxiNS.instance.mount.SaveMountName;
     public string save_path => $"{save_name}:/";
-//#if UNITY_SWITCH
-//    private FileHandle fileHandle = new nn.fs.FileHandle();
-//#endif
+    //#if UNITY_SWITCH
+    //    private FileHandle fileHandle = new nn.fs.FileHandle();
+    //#endif
 
     static object commitLock = new object();
 
@@ -29,12 +29,12 @@ public class AxiNSIO
         LoadFile
     }
     static int m_StepBreakIdx = 0;
-    public static void SetDebugStep(E_AxiNS_dgbBk type,int step)
+    public static void SetDebugStep(E_AxiNS_dgbBk type, int step)
     {
         m_bDebugStepBreak = true;
         m_breakType = type;
         m_StepBreakIdx = Math.Max(0, step);
-        UnityEngine.Debug.Log("[AxiNSIO]设置步进中断数" + step);
+        UnityEngine.Debug.Log("[AxiNSIO]设置" + type.ToString() + "步进中断数" + step);
     }
 
     public static void CheckCanStep(E_AxiNS_dgbBk type, int stepIdx,
@@ -44,13 +44,13 @@ public class AxiNSIO
         if (type != m_breakType) return;
         string temp = $"调用 {method} do->{path}";
 
-        if (m_StepBreakIdx >= stepIdx)
+        if (stepIdx >= m_StepBreakIdx)
         {
-            UnityEngine.Debug.Log("[AxiNSIO]步进中断:" + temp + "");
-            throw new Exception("[AxiNSIO]步进中断:" + temp + "");
+            UnityEngine.Debug.Log("[AxiNSIO]步进中断" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
+            throw new Exception("[AxiNSIO]步进中断" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
             return;
         }
-        UnityEngine.Debug.Log("[AxiNSIO]步进进行Idx" + "[" + m_StepBreakIdx + "]" + ":" + temp + "");
+        UnityEngine.Debug.Log("[AxiNSIO]步进进行" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
         return;
     }
 
@@ -202,7 +202,7 @@ public class AxiNSIO
         UnityEngine.Debug.Log($"FileToSaveWithCreate: {filePath}");
 
 #if !UNITY_SWITCH
-            return false;
+        return false;
 #else
         lock (commitLock)
         {
@@ -578,7 +578,7 @@ public class AxiNSIO
         entrys = temp.ToArray();
         return true;
 #else
-		entrys = null;
+        entrys = null;
         return false;
 #endif
     }

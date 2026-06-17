@@ -22,7 +22,6 @@ namespace AxiIO
         {
             if (!m_bDebugStepBreak) return true;
             string temp = $"调用 {method} do->{path}";
-
             if (m_StepBreakCount < 1)
             {
                 Debug.Log("[AxiIoDbg]步进中断:" + temp + "");
