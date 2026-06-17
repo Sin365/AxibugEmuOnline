@@ -98,8 +98,20 @@ namespace AxiIO
 			//Debug.Log($"file_ReadBytesToArr filePath=>{filePath},readToArr.Length=>{readToArr.Length},start=>{start},len=>{len}");
 			//return default;
 			byte[] bytes = file_ReadAllBytes(filePath);
-			int templen = Math.Min(len, bytes.Length);
-			Array.Copy(readToArr, readToArr, len);
+			if (bytes == null)
+				return 0;
+			if (readToArr == null)
+				throw new ArgumentNullException(nameof(readToArr));
+			if (start < 0)
+				throw new ArgumentOutOfRangeException(nameof(start));
+			if (len < 0)
+				throw new ArgumentOutOfRangeException(nameof(len));
+
+			int availableInBuffer = Math.Max(0, readToArr.Length - start);
+			int templen = Math.Min(len, Math.Min(bytes.Length, availableInBuffer));
+			if (templen <= 0)
+				return 0;
+			Array.Copy(bytes, 0, readToArr, start, templen);
 			return templen;
 		}
 

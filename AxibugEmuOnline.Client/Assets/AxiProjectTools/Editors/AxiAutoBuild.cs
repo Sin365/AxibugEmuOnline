@@ -135,12 +135,16 @@ public static partial class AxiAutoBuild
         try
         {
             BuildReport report = BuildPipeline.BuildPlayer(options);
+
+            System.Diagnostics.Process.Start("explorer", "/select,\"" + _locationPathName.Trim() + "\"");
         }
         catch (Exception ex)
         {
             Debug.LogError($"[AutoBuild] Unity Build {target} 错误:{ex.ToString()}");
             return;
         }
+
+
     }
 
 }
