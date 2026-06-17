@@ -52,8 +52,6 @@ public class UStoicGoose : EmuCore<ulong>
 
     public static bool bLogicUpdatePause { get; private set; }
     public string EmuDataPath { get { return App.PersistentDataPath(Platform); } }
-    public string RomPath => EmuDataPath + "/RemoteRoms/";
-    public string SavePath => EmuDataPath + "/sav/";
 
     #region 实现IEmuCore
     public override RomPlatformType Platform => mPlatform;
@@ -119,7 +117,7 @@ public class UStoicGoose : EmuCore<ulong>
             SaveAllData();
         }
 
-        if (LoadAndRunCartridge(romFile.LocalFilePath))
+        if (LoadAndRunCartridge(romFile.LocalProxyPath))
         {
             bLogicUpdatePause = true;
             return true;
@@ -667,7 +665,7 @@ static class Program
             programConfigPath = System.IO.Path.Combine(programDataDirectory, jsonConfigFileName);
             Configuration = LoadConfiguration(programConfigPath);
             Log.WriteLine(System.IO.Path.Combine(programDataDirectory, logFileName));
-            programApplicationDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            programApplicationDirectory = programDataDirectory;
             programAssetsDirectory = System.IO.Path.Combine(programApplicationDirectory, assetsDirectoryName);
             AxiIO.Directory.CreateDirectory(DataPath = programDataDirectory);
             AxiIO.Directory.CreateDirectory(InternalDataPath = System.IO.Path.Combine(programDataDirectory, internalDataDirectoryName));
@@ -678,8 +676,8 @@ static class Program
             //if (!Directory.Exists(ShaderPath = Path.Combine(programAssetsDirectory, shaderDirectoryName)))
             //    throw new DirectoryNotFoundException("Shader directory missing");
 
-            if (!AxiIO.Directory.Exists(NoIntroDatPath = System.IO.Path.Combine(programAssetsDirectory, noIntroDatDirectoryName)))
-                throw new Exception("No-Intro .dat directory missing");
+            //if (!AxiIO.Directory.Exists(NoIntroDatPath = System.IO.Path.Combine(programAssetsDirectory, noIntroDatDirectoryName)))
+            //    throw new Exception("No-Intro .dat directory missing");
         }
         catch (Exception e)
         {

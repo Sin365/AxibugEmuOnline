@@ -342,6 +342,7 @@ namespace AxibugEmuOnline.Client
 
             public override int GetHashCode()
             {
+                //TODO 貌似这个并不能保证每次运行一样，HashCode.Combine ，待验证
                 return HashCode.Combine(romID, platform, slotIndex);
             }
 
