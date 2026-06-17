@@ -31,20 +31,20 @@ namespace cpu.m6502
         {
             byte b1;
             b1 = ReadOpArg(pc.LowWord++);
-            pendingCycles -= 1;
+            PendingCycles/*pendingCycles*/ -= 1;
             return b1;
         }
         private byte RDMEM(ushort addr)
         {
             byte b1;
             b1 = ReadMemory(addr);
-            pendingCycles -= 1;
+            PendingCycles/*pendingCycles*/ -= 1;
             return b1;
         }
         private void WRMEM(ushort addr, byte data)
         {
             WriteMemory(addr, data);
-            pendingCycles -= 1;
+            PendingCycles/*pendingCycles*/ -= 1;
         }
         private void BRA(bool cond)
         {
@@ -370,9 +370,9 @@ namespace cpu.m6502
         {
             if (ea.d == ppc.d && pending_irq == 0 && after_cli == 0)
             {
-                if (pendingCycles > 0)
+                if (PendingCycles/*pendingCycles*/ > 0)
                 {
-                    pendingCycles = 0;
+                    PendingCycles/*pendingCycles*/ = 0;
                 }
             }
             pc.d = ea.d;

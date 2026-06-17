@@ -9,53 +9,53 @@
 
         //todo Unity [DropDownControl("General", "Reset Button", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey InputReset { get; set; }
+        public EssgeeMotionKey InputReset;//{ get; set; }
 
         //todo Unity [DropDownControl("General", "Change Input Mode", typeof(Keys), Keys.F11, Tooltip = "Selects which PC keyboard key is used to switch between SC-3000 keyboard and controller input.")]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey InputChangeMode { get; set; }
+        public EssgeeMotionKey InputChangeMode;//{ get; set; }
 
         //todo Unity [DropDownControl("General", "Play Tape", typeof(Keys), Keys.F11, Tooltip = "Note that tape emulation is currently non-functional.")]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey InputPlayTape { get; set; }
+        public EssgeeMotionKey InputPlayTape;//{ get; set; }
 
         //todo Unity [DropDownControl("Controller Port 1", "D-Pad Up", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad1Up { get; set; }
+        public EssgeeMotionKey Joypad1Up;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 1", "D-Pad Down", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad1Down { get; set; }
+        public EssgeeMotionKey Joypad1Down;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 1", "D-Pad Left", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad1Left { get; set; }
+        public EssgeeMotionKey Joypad1Left;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 1", "D-Pad Right", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad1Right { get; set; }
+        public EssgeeMotionKey Joypad1Right;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 1", "Button 1", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad1Button1 { get; set; }
+        public EssgeeMotionKey Joypad1Button1;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 1", "Button 2", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad1Button2 { get; set; }
+        public EssgeeMotionKey Joypad1Button2;//{ get; set; }
 
         //todo Unity [DropDownControl("Controller Port 2", "D-Pad Up", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad2Up { get; set; }
+        public EssgeeMotionKey Joypad2Up;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 2", "D-Pad Down", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad2Down { get; set; }
+        public EssgeeMotionKey Joypad2Down;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 2", "D-Pad Left", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad2Left { get; set; }
+        public EssgeeMotionKey Joypad2Left;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 2", "D-Pad Right", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad2Right { get; set; }
+        public EssgeeMotionKey Joypad2Right;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 2", "Button 1", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad2Button1 { get; set; }
+        public EssgeeMotionKey Joypad2Button1;//{ get; set; }
         //todo Unity [DropDownControl("Controller Port 2", "Button 2", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey Joypad2Button2 { get; set; }
+        public EssgeeMotionKey Joypad2Button2;//{ get; set; }
 
         public SC3000()
         {

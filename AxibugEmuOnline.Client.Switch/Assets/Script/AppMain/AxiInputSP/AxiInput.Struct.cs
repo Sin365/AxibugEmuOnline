@@ -51,5 +51,9 @@ namespace AxiInputSP
         OPTION_3,
         OPTION_4,
         HOME,
+        SUB_UP,
+        SUB_DOWN,
+        SUB_LEFT,
+        SUB_RIGHT,
     }
 }

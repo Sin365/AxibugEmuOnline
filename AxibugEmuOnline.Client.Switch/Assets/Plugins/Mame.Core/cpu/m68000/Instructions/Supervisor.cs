@@ -20,13 +20,13 @@ namespace cpu.m68000
             {
                 SR = ReadValueW(mode, reg);
             }
-            //pendingCycles -= 12 + EACyclesBW[mode, reg];
+            //PendingCycles/*pendingCycles*/ -= 12 + EACyclesBW[mode, reg];
 
             //fixed (int* EACyclesBW_mode = &EACyclesBW[mode, 0])
             //{
-            //    pendingCycles -= 12 + EACyclesBW_mode[reg];
+            //    PendingCycles/*pendingCycles*/ -= 12 + EACyclesBW_mode[reg];
             //}
-            pendingCycles -= 12 + EACyclesBW[(mode << 3) | 0];
+            PendingCycles/*pendingCycles*/ -= 12 + EACyclesBW[(mode << 3) | 0];
 
         }
 
@@ -43,7 +43,7 @@ namespace cpu.m68000
         //    {
         //        SR = ReadValueW(mode, reg);
         //    }
-        //    pendingCycles -= 12 + EACyclesBW[mode, reg];
+        //    PendingCycles/*pendingCycles*/ -= 12 + EACyclesBW[mode, reg];
         //}
 
 
@@ -55,7 +55,7 @@ namespace cpu.m68000
             int mode = axicache_Insn.eaMode;
             int reg = axicache_Insn.eaReg;
             WriteValueW(mode, reg, (short)SR);
-            pendingCycles -= (mode == 0) ? 6 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= (mode == 0) ? 6 : 8 + axicache_Insn.EACyclesBW_mode_reg;//EACyclesBW[mode, reg];
         }
 
 
@@ -80,7 +80,7 @@ namespace cpu.m68000
                     A_ptr_reg->s32 = usp;
                 }
             }
-            pendingCycles -= 4;
+            PendingCycles/*pendingCycles*/ -= 4;
         }
 
 
@@ -89,7 +89,7 @@ namespace cpu.m68000
             if (s == false)
                 throw new Exception("trap!");
             SR &= ReadOpWord(PC); PC += 2;
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
 
@@ -98,7 +98,7 @@ namespace cpu.m68000
             if (s == false)
                 throw new Exception("trap!");
             SR ^= ReadOpWord(PC); PC += 2;
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
 
@@ -107,7 +107,7 @@ namespace cpu.m68000
             if (s == false)
                 throw new Exception("trap!");
             SR |= ReadOpWord(PC); PC += 2;
-            pendingCycles -= 20;
+            PendingCycles/*pendingCycles*/ -= 20;
         }
 
 
@@ -124,7 +124,7 @@ namespace cpu.m68000
             SR = (short)sr;*/
             short value = ReadValueW(mode, reg);
             CCR = value;
-            pendingCycles -= 12 + axicache_Insn.EACyclesBW_mode_reg;// EACyclesBW[mode, reg];
+            PendingCycles/*pendingCycles*/ -= 12 + axicache_Insn.EACyclesBW_mode_reg;// EACyclesBW[mode, reg];
         }
 
 
@@ -132,7 +132,7 @@ namespace cpu.m68000
         {
             int vector = 32 + (op & 0x0F);
             TrapVector(vector);
-            pendingCycles -= 4;
+            PendingCycles/*pendingCycles*/ -= 4;
         }
 
 
@@ -146,7 +146,7 @@ namespace cpu.m68000
             ptrA7->s32 -= 2;               // Push SR on stack
             WriteWord(ptrA7->s32, sr);
             PC = ReadLong(vector * 4);   // Jump to vector
-            pendingCycles -= CyclesException[vector];
+            PendingCycles/*pendingCycles*/ -= CyclesException[vector];
         }
 
         unsafe void TrapVector2(int vector)
@@ -159,7 +159,7 @@ namespace cpu.m68000
             ptrA7->s32 -= 2;               // Push SR on stack
             WriteWord(ptrA7->s32, sr);
             PC = ReadLong(vector * 4);   // Jump to vector
-            pendingCycles -= CyclesException[vector];
+            PendingCycles/*pendingCycles*/ -= CyclesException[vector];
         }
     }
 }

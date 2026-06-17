@@ -9,6 +9,8 @@ namespace AxibugEmuOnline.Client
     {
         [SerializeField]
         InputField m_input;
+        [SerializeField]
+        Text txtTips;
 
         Action<string> OnCommit;
 
@@ -20,6 +22,7 @@ namespace AxibugEmuOnline.Client
 
             OnCommit = t.Item1;
             (m_input.placeholder as Text).text = t.Item2;
+            txtTips.text = t.Item2;
             m_input.text = t.Item3;
         }
 

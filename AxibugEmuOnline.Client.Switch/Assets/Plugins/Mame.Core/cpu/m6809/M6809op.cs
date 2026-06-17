@@ -124,7 +124,7 @@ namespace cpu.m6809
             int_state |= M6809_SYNC;
             CHECK_IRQ_LINES();
             if ((int_state & M6809_SYNC) != 0)
-                if (pendingCycles > 0) pendingCycles = 0;
+                if (PendingCycles/*pendingCycles*/ > 0) PendingCycles/*pendingCycles*/ = 0;
         }
         void lbra()
         {
@@ -132,8 +132,8 @@ namespace cpu.m6809
             PC.LowWord += EA.LowWord;
             //CHANGE_PC;
             if (EA.LowWord == 0xfffd)
-                if (pendingCycles > 0)
-                    pendingCycles = 0;
+                if (PendingCycles/*pendingCycles*/ > 0)
+                    PendingCycles/*pendingCycles*/ = 0;
         }
         void lbsr()
         {
@@ -295,8 +295,8 @@ namespace cpu.m6809
             t = IMMBYTE();
             PC.LowWord += SIGNED(t);
             if (t == 0xfe)
-                if (pendingCycles > 0)
-                    pendingCycles = 0;
+                if (PendingCycles/*pendingCycles*/ > 0)
+                    PendingCycles/*pendingCycles*/ = 0;
         }
         void brn()
         {
@@ -448,54 +448,54 @@ namespace cpu.m6809
         {
             byte t;
             t = IMMBYTE();
-            if ((t & 0x80) != 0) { PUSHWORD(PC); pendingCycles -= 2; }
-            if ((t & 0x40) != 0) { PUSHWORD(U); pendingCycles -= 2; }
-            if ((t & 0x20) != 0) { PUSHWORD(Y); pendingCycles -= 2; }
-            if ((t & 0x10) != 0) { PUSHWORD(X); pendingCycles -= 2; }
-            if ((t & 0x08) != 0) { PUSHBYTE(DP.HighByte); pendingCycles -= 1; }
-            if ((t & 0x04) != 0) { PUSHBYTE(D.LowByte); pendingCycles -= 1; }
-            if ((t & 0x02) != 0) { PUSHBYTE(D.HighByte); pendingCycles -= 1; }
-            if ((t & 0x01) != 0) { PUSHBYTE(CC); pendingCycles -= 1; }
+            if ((t & 0x80) != 0) { PUSHWORD(PC); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x40) != 0) { PUSHWORD(U); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x20) != 0) { PUSHWORD(Y); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x10) != 0) { PUSHWORD(X); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x08) != 0) { PUSHBYTE(DP.HighByte); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x04) != 0) { PUSHBYTE(D.LowByte); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x02) != 0) { PUSHBYTE(D.HighByte); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x01) != 0) { PUSHBYTE(CC); PendingCycles/*pendingCycles*/ -= 1; }
         }
         void puls()
         {
             byte t;
             t = IMMBYTE();
-            if ((t & 0x01) != 0) { CC = PULLBYTE(); pendingCycles -= 1; }
-            if ((t & 0x02) != 0) { D.HighByte = PULLBYTE(); pendingCycles -= 1; }
-            if ((t & 0x04) != 0) { D.LowByte = PULLBYTE(); pendingCycles -= 1; }
-            if ((t & 0x08) != 0) { DP.HighByte = PULLBYTE(); pendingCycles -= 1; }
-            if ((t & 0x10) != 0) { X.d = PULLWORD(); pendingCycles -= 2; }
-            if ((t & 0x20) != 0) { Y.d = PULLWORD(); pendingCycles -= 2; }
-            if ((t & 0x40) != 0) { U.d = PULLWORD(); pendingCycles -= 2; }
-            if ((t & 0x80) != 0) { PC.d = PULLWORD(); pendingCycles -= 2; }
+            if ((t & 0x01) != 0) { CC = PULLBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x02) != 0) { D.HighByte = PULLBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x04) != 0) { D.LowByte = PULLBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x08) != 0) { DP.HighByte = PULLBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x10) != 0) { X.d = PULLWORD(); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x20) != 0) { Y.d = PULLWORD(); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x40) != 0) { U.d = PULLWORD(); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x80) != 0) { PC.d = PULLWORD(); PendingCycles/*pendingCycles*/ -= 2; }
             if ((t & 0x01) != 0) { CHECK_IRQ_LINES(); }
         }
         void pshu()
         {
             byte t;
             t = IMMBYTE();
-            if ((t & 0x80) != 0) { PSHUWORD(PC); pendingCycles -= 2; }
-            if ((t & 0x40) != 0) { PSHUWORD(S); pendingCycles -= 2; }
-            if ((t & 0x20) != 0) { PSHUWORD(Y); pendingCycles -= 2; }
-            if ((t & 0x10) != 0) { PSHUWORD(X); pendingCycles -= 2; }
-            if ((t & 0x08) != 0) { PSHUBYTE(DP.HighByte); pendingCycles -= 1; }
-            if ((t & 0x04) != 0) { PSHUBYTE(D.LowByte); pendingCycles -= 1; }
-            if ((t & 0x02) != 0) { PSHUBYTE(D.HighByte); pendingCycles -= 1; }
-            if ((t & 0x01) != 0) { PSHUBYTE(CC); pendingCycles -= 1; }
+            if ((t & 0x80) != 0) { PSHUWORD(PC); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x40) != 0) { PSHUWORD(S); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x20) != 0) { PSHUWORD(Y); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x10) != 0) { PSHUWORD(X); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x08) != 0) { PSHUBYTE(DP.HighByte); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x04) != 0) { PSHUBYTE(D.LowByte); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x02) != 0) { PSHUBYTE(D.HighByte); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x01) != 0) { PSHUBYTE(CC); PendingCycles/*pendingCycles*/ -= 1; }
         }
         void pulu()
         {
             byte t;
             t = IMMBYTE();
-            if ((t & 0x01) != 0) { CC = PULUBYTE(); pendingCycles -= 1; }
-            if ((t & 0x02) != 0) { D.HighByte = PULUBYTE(); pendingCycles -= 1; }
-            if ((t & 0x04) != 0) { D.LowByte = PULUBYTE(); pendingCycles -= 1; }
-            if ((t & 0x08) != 0) { DP.HighByte = PULUBYTE(); pendingCycles -= 1; }
-            if ((t & 0x10) != 0) { X.d = PULUWORD(); pendingCycles -= 2; }
-            if ((t & 0x20) != 0) { Y.d = PULUWORD(); pendingCycles -= 2; }
-            if ((t & 0x40) != 0) { S.d = PULUWORD(); pendingCycles -= 2; }
-            if ((t & 0x80) != 0) { PC.d = PULUWORD(); pendingCycles -= 2; }
+            if ((t & 0x01) != 0) { CC = PULUBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x02) != 0) { D.HighByte = PULUBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x04) != 0) { D.LowByte = PULUBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x08) != 0) { DP.HighByte = PULUBYTE(); PendingCycles/*pendingCycles*/ -= 1; }
+            if ((t & 0x10) != 0) { X.d = PULUWORD(); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x20) != 0) { Y.d = PULUWORD(); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x40) != 0) { S.d = PULUWORD(); PendingCycles/*pendingCycles*/ -= 2; }
+            if ((t & 0x80) != 0) { PC.d = PULUWORD(); PendingCycles/*pendingCycles*/ -= 2; }
             if ((t & 0x01) != 0) { CHECK_IRQ_LINES(); }
         }
         void rts()
@@ -514,7 +514,7 @@ namespace cpu.m6809
             t = (byte)(CC & CC_E);
             if (t != 0)
             {
-                pendingCycles -= 9;
+                PendingCycles/*pendingCycles*/ -= 9;
                 D.HighByte = PULLBYTE();
                 D.LowByte = PULLBYTE();
                 DP.HighByte = PULLBYTE();
@@ -543,8 +543,8 @@ namespace cpu.m6809
             int_state |= M6809_CWAI;
             CHECK_IRQ_LINES();
             if ((int_state & M6809_CWAI) != 0)
-                if (pendingCycles > 0)
-                    pendingCycles = 0;
+                if (PendingCycles/*pendingCycles*/ > 0)
+                    PendingCycles/*pendingCycles*/ = 0;
         }
         void mul()
         {
@@ -2314,55 +2314,55 @@ namespace cpu.m6809
             PC.LowWord++;
             switch (ireg2)
             {
-                case 0x21: lbrn(); pendingCycles -= 5; break;
-                case 0x22: lbhi(); pendingCycles -= 5; break;
-                case 0x23: lbls(); pendingCycles -= 5; break;
-                case 0x24: lbcc(); pendingCycles -= 5; break;
-                case 0x25: lbcs(); pendingCycles -= 5; break;
-                case 0x26: lbne(); pendingCycles -= 5; break;
-                case 0x27: lbeq(); pendingCycles -= 5; break;
-                case 0x28: lbvc(); pendingCycles -= 5; break;
-                case 0x29: lbvs(); pendingCycles -= 5; break;
-                case 0x2a: lbpl(); pendingCycles -= 5; break;
-                case 0x2b: lbmi(); pendingCycles -= 5; break;
-                case 0x2c: lbge(); pendingCycles -= 5; break;
-                case 0x2d: lblt(); pendingCycles -= 5; break;
-                case 0x2e: lbgt(); pendingCycles -= 5; break;
-                case 0x2f: lble(); pendingCycles -= 5; break;
+                case 0x21: lbrn(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x22: lbhi(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x23: lbls(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x24: lbcc(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x25: lbcs(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x26: lbne(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x27: lbeq(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x28: lbvc(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x29: lbvs(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x2a: lbpl(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x2b: lbmi(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x2c: lbge(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x2d: lblt(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x2e: lbgt(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x2f: lble(); PendingCycles/*pendingCycles*/ -= 5; break;
 
-                case 0x3f: swi2(); pendingCycles -= 20; break;
+                case 0x3f: swi2(); PendingCycles/*pendingCycles*/ -= 20; break;
 
-                case 0x83: cmpd_im(); pendingCycles -= 5; break;
-                case 0x8c: cmpy_im(); pendingCycles -= 5; break;
-                case 0x8e: ldy_im(); pendingCycles -= 4; break;
-                case 0x8f: sty_im(); pendingCycles -= 4; break;
+                case 0x83: cmpd_im(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x8c: cmpy_im(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x8e: ldy_im(); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0x8f: sty_im(); PendingCycles/*pendingCycles*/ -= 4; break;
 
-                case 0x93: cmpd_di(); pendingCycles -= 7; break;
-                case 0x9c: cmpy_di(); pendingCycles -= 7; break;
-                case 0x9e: ldy_di(); pendingCycles -= 6; break;
-                case 0x9f: sty_di(); pendingCycles -= 6; break;
+                case 0x93: cmpd_di(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0x9c: cmpy_di(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0x9e: ldy_di(); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0x9f: sty_di(); PendingCycles/*pendingCycles*/ -= 6; break;
 
-                case 0xa3: cmpd_ix(); pendingCycles -= 7; break;
-                case 0xac: cmpy_ix(); pendingCycles -= 7; break;
-                case 0xae: ldy_ix(); pendingCycles -= 6; break;
-                case 0xaf: sty_ix(); pendingCycles -= 6; break;
+                case 0xa3: cmpd_ix(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xac: cmpy_ix(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xae: ldy_ix(); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xaf: sty_ix(); PendingCycles/*pendingCycles*/ -= 6; break; 
 
-                case 0xb3: cmpd_ex(); pendingCycles -= 8; break;
-                case 0xbc: cmpy_ex(); pendingCycles -= 8; break;
-                case 0xbe: ldy_ex(); pendingCycles -= 7; break;
-                case 0xbf: sty_ex(); pendingCycles -= 7; break;
+                case 0xb3: cmpd_ex(); PendingCycles/*pendingCycles*/ -= 8; break;
+                case 0xbc: cmpy_ex(); PendingCycles/*pendingCycles*/ -= 8; break;
+                case 0xbe: ldy_ex(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xbf: sty_ex(); PendingCycles/*pendingCycles*/ -= 7; break;
 
-                case 0xce: lds_im(); pendingCycles -= 4; break;
-                case 0xcf: sts_im(); pendingCycles -= 4; break;
+                case 0xce: lds_im(); PendingCycles/*pendingCycles*/ -= 4; break;
+                case 0xcf: sts_im(); PendingCycles/*pendingCycles*/ -= 4; break;
 
-                case 0xde: lds_di(); pendingCycles -= 6; break;
-                case 0xdf: sts_di(); pendingCycles -= 6; break;
+                case 0xde: lds_di(); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xdf: sts_di(); PendingCycles/*pendingCycles*/ -= 6; break;
 
-                case 0xee: lds_ix(); pendingCycles -= 6; break;
-                case 0xef: sts_ix(); pendingCycles -= 6; break;
+                case 0xee: lds_ix(); PendingCycles/*pendingCycles*/ -= 6; break;
+                case 0xef: sts_ix(); PendingCycles/*pendingCycles*/ -= 6; break;
 
-                case 0xfe: lds_ex(); pendingCycles -= 7; break;
-                case 0xff: sts_ex(); pendingCycles -= 7; break;
+                case 0xfe: lds_ex(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xff: sts_ex(); PendingCycles/*pendingCycles*/ -= 7; break;
 
                 default: illegal(); break;
             }
@@ -2373,19 +2373,19 @@ namespace cpu.m6809
             PC.LowWord++;
             switch (ireg2)
             {
-                case 0x3f: swi3(); pendingCycles -= 20; break;
+                case 0x3f: swi3(); PendingCycles/*pendingCycles*/ -= 20; break;
 
-                case 0x83: cmpu_im(); pendingCycles -= 5; break;
-                case 0x8c: cmps_im(); pendingCycles -= 5; break;
+                case 0x83: cmpu_im(); PendingCycles/*pendingCycles*/ -= 5; break;
+                case 0x8c: cmps_im(); PendingCycles/*pendingCycles*/ -= 5; break;
 
-                case 0x93: cmpu_di(); pendingCycles -= 7; break;
-                case 0x9c: cmps_di(); pendingCycles -= 7; break;
+                case 0x93: cmpu_di(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0x9c: cmps_di(); PendingCycles/*pendingCycles*/ -= 7; break;
 
-                case 0xa3: cmpu_ix(); pendingCycles -= 7; break;
-                case 0xac: cmps_ix(); pendingCycles -= 7; break;
+                case 0xa3: cmpu_ix(); PendingCycles/*pendingCycles*/ -= 7; break;
+                case 0xac: cmps_ix(); PendingCycles/*pendingCycles*/ -= 7; break;
 
-                case 0xb3: cmpu_ex(); pendingCycles -= 8; break;
-                case 0xbc: cmps_ex(); pendingCycles -= 8; break;
+                case 0xb3: cmpu_ex(); PendingCycles/*pendingCycles*/ -= 8; break;
+                case 0xbc: cmps_ex(); PendingCycles/*pendingCycles*/ -= 8; break;
 
                 default: illegal(); break;
             }

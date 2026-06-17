@@ -1,3 +1,4 @@
+using AxibugEmuOnline.Client.ClientCore;
 using StoicGoose.Common.Utilities;
 using System;
 
@@ -5,12 +6,12 @@ public class SGLogger : IStoicGooseLogger
 {
     public void Debug(string message)
     {
-        UnityEngine.Debug.Log(message);
+        App.log.Debug(message);
     }
 
     public void Err(string message)
     {
-        UnityEngine.Debug.LogError(message);
+        App.log.Error(message);
     }
 
     public void Log(StoicGoose.Common.Utilities.LogType logtype, string message)
@@ -31,6 +32,6 @@ public class SGLogger : IStoicGooseLogger
 
     public void Warning(string message)
     {
-        UnityEngine.Debug.LogWarning(message);
+        App.log.Warning(message);
     }
 }

@@ -17,25 +17,25 @@ namespace Essgee.Emulation.Configuration
 
         //todo Unity [DropDownControl("Controls", "D-Pad Up", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsUp { get; set; }
+        public EssgeeMotionKey ControlsUp;// { get; set; }
         //todo Unity [DropDownControl("Controls", "D-Pad Down", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsDown { get; set; }
+        public EssgeeMotionKey ControlsDown;// { get; set; }
         //todo Unity [DropDownControl("Controls", "D-Pad Left", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsLeft { get; set; }
+        public EssgeeMotionKey ControlsLeft;// { get; set; }
         //todo Unity [DropDownControl("Controls", "D-Pad Right", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsRight { get; set; }
+        public EssgeeMotionKey ControlsRight;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Button 1", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsButton1 { get; set; }
+        public EssgeeMotionKey ControlsButton1;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Button 2", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsButton2 { get; set; }
+        public EssgeeMotionKey ControlsButton2;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Start", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsStart { get; set; }
+        public EssgeeMotionKey ControlsStart;// { get; set; }
 
         public bool AllowMemoryControl { get; set; }
 

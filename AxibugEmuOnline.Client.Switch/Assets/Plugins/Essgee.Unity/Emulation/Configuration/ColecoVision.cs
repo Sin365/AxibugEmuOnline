@@ -11,59 +11,59 @@ namespace Essgee.Emulation.Configuration
 
         //todo Unity [DropDownControl("Controls", "Up", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsUp { get; set; }
+        public EssgeeMotionKey ControlsUp;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Down", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsDown { get; set; }
+        public EssgeeMotionKey ControlsDown;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Left", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsLeft { get; set; }
+        public EssgeeMotionKey ControlsLeft;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Right", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsRight { get; set; }
+        public EssgeeMotionKey ControlsRight;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Left Button", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsButtonLeft { get; set; }
+        public EssgeeMotionKey ControlsButtonLeft;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Right Button", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsButtonRight { get; set; }
+        public EssgeeMotionKey ControlsButtonRight;// { get; set; }
 
         //todo Unity [DropDownControl("Controls", "Keypad 1", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad1 { get; set; }
+        public EssgeeMotionKey ControlsKeypad1;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 2", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad2 { get; set; }
+        public EssgeeMotionKey ControlsKeypad2;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 3", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad3 { get; set; }
+        public EssgeeMotionKey ControlsKeypad3;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 4", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad4 { get; set; }
+        public EssgeeMotionKey ControlsKeypad4;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 5", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad5 { get; set; }
+        public EssgeeMotionKey ControlsKeypad5;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 6", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad6 { get; set; }
+        public EssgeeMotionKey ControlsKeypad6;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 7", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad7 { get; set; }
+        public EssgeeMotionKey ControlsKeypad7;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 8", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad8 { get; set; }
+        public EssgeeMotionKey ControlsKeypad8;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 9", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad9 { get; set; }
+        public EssgeeMotionKey ControlsKeypad9;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad 0", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypad0 { get; set; }
+        public EssgeeMotionKey ControlsKeypad0;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad *", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypadStar { get; set; }
+        public EssgeeMotionKey ControlsKeypadStar;// { get; set; }
         //todo Unity [DropDownControl("Controls", "Keypad #", typeof(Keys), Keys.F11)]
         //[JsonConverter(typeof(StringEnumConverter))]
-        public EssgeeMotionKey ControlsKeypadNumberSign { get; set; }
+        public EssgeeMotionKey ControlsKeypadNumberSign;// { get; set; }
 
         public ColecoVision()
         {
