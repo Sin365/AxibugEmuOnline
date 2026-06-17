@@ -75,12 +75,28 @@ namespace AxibugEmuOnline.Client
             App.settings.Filter.ShutDownFilter();
         }
 
-        private static bool ChangeByPassClose()
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN //Unity6 关闭后进程残留的问题,PC版调用Win32API 杀死自己
+        static bool ChangeByPassClose()
         {
-#if UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
-            System.Diagnostics.Process.GetCurrentProcess().Kill();
-#endif
+            try { SelfKill.KillSelf(); } catch { };
+            try { System.Diagnostics.Process.GetCurrentProcess().Kill(); } catch { };
             return true;
         }
+
+        public static class SelfKill
+        {
+            [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+            private static extern System.IntPtr GetCurrentProcess();
+
+            [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true)]
+            private static extern void TerminateProcess(System.IntPtr hProcess, uint uExitCode);
+
+            public static void KillSelf()
+            {
+                IntPtr hProc = GetCurrentProcess();
+                TerminateProcess(hProc, 0);
+            }
+        }
+#endif
     }
 }
