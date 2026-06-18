@@ -116,6 +116,20 @@ public class AxiNSIO
 #if !UNITY_SWITCH
         return false;
 #else
+
+        string mountRoot = null;
+        int colonSlashIndex = filePath.IndexOf(":/");
+        if (colonSlashIndex > 0)
+        {
+            mountRoot = filePath.Substring(0, colonSlashIndex + 1); // 例如 "save:"
+        }
+        // 检查挂载状态
+        if (!IsMountPointAccessible(mountRoot + "/"))
+        {
+            UnityEngine.Debug.LogError($"挂载点 {mountRoot + "/"} 未挂载，无法操作路径 {filePath}");
+            return false;
+        }
+
         nn.fs.EntryType entryType = 0;
         nn.Result result = nn.fs.FileSystem.GetEntryType(ref entryType, filePath);
         //result.abortUnlessSuccess();

@@ -32,7 +32,7 @@ namespace AxibugEmuOnline.Client
             var romFile = App.GetRomLib(RomPlatformType.Nes).GetRomFile(fname);
             UnityEngine.Debug.Assert(romFile != null);
 
-            fullPath = romFile.LocalFilePath;
+            fullPath = romFile.LocalProxyPath;
             directPath = System.IO.Path.GetDirectoryName(fullPath);
         }
 
