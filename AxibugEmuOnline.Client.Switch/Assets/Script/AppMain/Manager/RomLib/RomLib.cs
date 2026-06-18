@@ -68,7 +68,7 @@ namespace AxibugEmuOnline.Client
         public void RemoveOneRomFile(RomFile romFile)
         {
             if (romFile.RomReady)
-                AxiIO.File.Delete(romFile.LocalFilePath);
+                AxiIO.File.Delete(romFile.LocalProxyPath);
         }
 
         /// <summary>
@@ -173,7 +173,8 @@ namespace AxibugEmuOnline.Client
 
                 targetRomFile.SetWebData(webData);
                 RomFileIdMapper[webData.id] = RomFetchList[webData.orderid];
-                RomFileNameMapper[targetRomFile.FileName] = targetRomFile;
+                //RomFileNameMapper[targetRomFile.FileName] = targetRomFile;
+                RomFileNameMapper[targetRomFile.LocalProxyFileName] = targetRomFile;
             }
         }
 
@@ -184,7 +185,8 @@ namespace AxibugEmuOnline.Client
 
         public void AddRomFile(RomFile rom)
         {
-            RomFileNameMapper[rom.FileName] = rom;
+            //RomFileNameMapper[rom.FileName] = rom;
+            RomFileNameMapper[rom.LocalProxyFileName] = rom;
         }
     }
 }

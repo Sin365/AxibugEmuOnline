@@ -53,7 +53,8 @@ namespace AxibugEmuOnline.Client
 
             try
             {
-                NesCore = new NES(rom.FileName);
+                //NesCore = new NES(rom.FileName);
+                NesCore = new NES(rom.LocalProxyFileName);
                 return true;
             }
             catch (Exception ex)
