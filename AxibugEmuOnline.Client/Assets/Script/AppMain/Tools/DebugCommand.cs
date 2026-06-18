@@ -19,37 +19,47 @@ public static class DebugCommand
         }
     }
 
-    [CMD("gm.iostep", "AxiIO步进", "counter")]
+
+    [CMD("dbgall", "開啓所有")]
+    public static void SetAxiIODebugAllOpen(int p1)
+    {
+        SetAxiIODebugStep(99999999);
+        SetAxiNSIODebugStep_dir(99999999);
+        SetAxiNSIODebugStep_loadfile(99999999);
+        SetAxiNSIODebugStep_savefile(99999999);
+    }
+
+    [CMD("iostep", "AxiIO步进", "counter")]
     public static void SetAxiIODebugStep(int p1)
     {
         AxiIO.AxiIO.SetDebugStep(p1);
     }
 
-    [CMD("gm.iocl", "AxiIO步进")]
+    [CMD("iocl", "AxiIO步进")]
     public static void SetAxiIODebugClear()
     {
         AxiIO.AxiIO.ClearDbgStep();
     }
 
-    [CMD("gm.nscl", "AxiNS Dir步进")]
+    [CMD("nscl", "AxiNS Dir步进")]
     public static void SetAxiNSIODebugStep_Clear()
     {
         AxiNSIO.ClearDbgStep();
     }
 
-    [CMD("gm.nsdir", "AxiNS Dir步进", "idx")]
+    [CMD("nsdir", "AxiNS Dir步进", "idx")]
     public static void SetAxiNSIODebugStep_dir(int p1)
     {
         AxiNSIO.SetDebugStep(AxiNSIO.E_AxiNS_dgbBk.Dir, p1);
     }
 
-    [CMD("gm.nsloadf", "AxiNS loadfile步进", "idx")]
+    [CMD("nsloadf", "AxiNS loadfile步进", "idx")]
     public static void SetAxiNSIODebugStep_loadfile(int p1)
     {
         AxiNSIO.SetDebugStep(AxiNSIO.E_AxiNS_dgbBk.LoadFile, p1);
     }
 
-    [CMD("gm.nssavef", "AxiNS savefile步进", "idx")]
+    [CMD("nssavef", "AxiNS savefile步进", "idx")]
     public static void SetAxiNSIODebugStep_savefile(int p1)
     {
         AxiNSIO.SetDebugStep(AxiNSIO.E_AxiNS_dgbBk.SaveFile, p1);
