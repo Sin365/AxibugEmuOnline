@@ -2,11 +2,7 @@
 using StoicGoose.Core.Interfaces;
 using StoicGoose.Core.Machines;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using static StoicGoose.Common.Utilities.BitHandling;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 namespace StoicGoose.Core.Sound
 {
