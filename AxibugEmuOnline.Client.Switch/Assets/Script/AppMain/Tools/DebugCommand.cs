@@ -1,4 +1,5 @@
-﻿using IngameDebugConsole;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using IngameDebugConsole;
 using System.Reflection;
 using CMD = IngameDebugConsole.ConsoleMethodAttribute;
 
@@ -20,8 +21,8 @@ public static class DebugCommand
     }
 
 
-    [CMD("dbgall", "開啓所有")]
-    public static void SetAxiIODebugAllOpen(int p1)
+    [CMD("dbgall", "開啓所有IOdebug")]
+    public static void SetAxiIODebugAllOpen()
     {
         SetAxiIODebugStep(99999999);
         SetAxiNSIODebugStep_dir(99999999);
@@ -34,6 +35,7 @@ public static class DebugCommand
     {
         AxiIO.AxiIO.SetDebugStep(p1);
     }
+
 
     [CMD("iocl", "AxiIO步进")]
     public static void SetAxiIODebugClear()
@@ -63,5 +65,24 @@ public static class DebugCommand
     public static void SetAxiNSIODebugStep_savefile(int p1)
     {
         AxiNSIO.SetDebugStep(AxiNSIO.E_AxiNS_dgbBk.SaveFile, p1);
+    }
+
+    [CMD("sgstep", "USG步进", "counter")]
+    public static void SetUSGDebugStep(int p1)
+    {
+        UStoicGoose.SetDebugStep(p1);
+    }
+
+    [CMD("sgcl", "USG步进清空")]
+    public static void SetUSGDebugStep()
+    {
+        UStoicGoose.ClearDbgStep();
+    }
+    [CMD("hot", "NS预热")]
+    public static void hot()
+    {
+#if UNITY_SWITCH
+        App.coRunner.StartCoroutine(App.SwitchHotstorage());
+#endif
     }
 }

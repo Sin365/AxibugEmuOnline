@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using AxiReplay;
+using ICSharpCode.SharpZipLib.Zip;
 using StoicGoose.Common.Utilities;
 using StoicGoose.Core.Machines;
 using System;
@@ -22,11 +23,12 @@ public class UStoicGoose : EmuCore<ulong>
     readonly static int maxRecentFiles = 15;
     readonly static int statusIconSize = 12;
 
-    readonly static List<(string description, string extension, Func<string, System.IO.Stream> streamReadFunc)> supportedFileInformation = new()
+    //readonly static List<(string description, string extension, Func<string, System.IO.Stream> streamReadFunc)> supportedFileInformation = new()
+    readonly static List<(string description, string extension, Func<string, byte[]> streamReadFunc)> supportedFileInformation = new()
         {
-            ("WonderSwan ROMs", ".ws", GetStreamFromFile),
-            ("WonderSwan Color ROMs", ".wsc", GetStreamFromFile),
-            ("Zip Archives", ".zip", GetStreamFromFirstZippedFile)
+            ("WonderSwan ROMs", ".ws", GetBytesFile),
+            ("WonderSwan Color ROMs", ".wsc", GetBytesFile),
+            ("Zip Archives", ".zip", GetBytesZippedFile)
         };
 
     /* Various handlers */
@@ -109,11 +111,13 @@ public class UStoicGoose : EmuCore<ulong>
     {
         mPlatform = romFile.Platform;
 
+        CheckCanStep(1, System.Reflection.MethodBase.GetCurrentMethod().Name);
         Init();
 
         //保存当前正在进行的游戏存档
         if (emulatorHandler != null && !emulatorHandler.IsRunning)
         {
+            CheckCanStep(100, System.Reflection.MethodBase.GetCurrentMethod().Name);
             SaveAllData();
         }
 
@@ -183,6 +187,39 @@ public class UStoicGoose : EmuCore<ulong>
     }
     #endregion
 
+
+    #region debug用
+    static bool m_bDebugStepBreak = false;
+    static int m_StepBreakIdx = 0;
+    public static void SetDebugStep(int step)
+    {
+        m_bDebugStepBreak = true;
+        m_StepBreakIdx = Math.Max(0, step);
+        UnityEngine.Debug.Log("[USG]设置 步进中断数" + step);
+    }
+
+    public static void CheckCanStep(int stepIdx,string method = "", string note = null)
+    {
+        if (!m_bDebugStepBreak) return;
+        string temp = $"调用 {method} do->{note}";
+
+        if (stepIdx >= m_StepBreakIdx)
+        {
+            UnityEngine.Debug.Log("[USG]步进中断[" + stepIdx + "]" + ":" + temp + "");
+            throw new Exception("[USG]步进中断[" + stepIdx + "]" + ":" + temp + "");
+            return;
+        }
+        UnityEngine.Debug.Log("[USG]步进进行[" + stepIdx + "]" + ":" + temp + "");
+        return;
+    }
+
+    public static void ClearDbgStep()
+    {
+        m_bDebugStepBreak = false;
+    }
+
+    #endregion
+
     //Cheat[] cheats = default;
 
     #region Unity 生命周期
@@ -222,12 +259,13 @@ public class UStoicGoose : EmuCore<ulong>
         Log.WriteEvent(LogSeverity.Information, this, "Initializing emulator and UI...");
 
         machineType = Program.Configuration.General.PreferOriginalWS ? typeof(WonderSwan) : typeof(WonderSwanColor);
-
         InitializeEmulatorHandler();
+        CheckCanStep(3, System.Reflection.MethodBase.GetCurrentMethod().Name);
         VerifyConfiguration();
         InitializeOtherHandlers();
         //InitializeWindows();
 
+        CheckCanStep(4, System.Reflection.MethodBase.GetCurrentMethod().Name);
         //SizeAndPositionWindow();
         SetWindowTitleAndStatus();
         Log.WriteEvent(LogSeverity.Information, this, "Initialization done!");
@@ -300,9 +338,9 @@ public class UStoicGoose : EmuCore<ulong>
 
 
         emulatorHandler.Machine.DisplayController.SendFramebuffer = graphicsHandler.UpdateScreen;
-        emulatorHandler.Machine.SoundController.SendSamples = (s) =>
+        emulatorHandler.Machine.SoundController.SendSamples = (s, len) =>
         {
-            soundHandler.EnqueueSamples(s);
+            soundHandler.EnqueueSamples(s, len);
             //soundRecorderForm.EnqueueSamples(s);
         };
 
@@ -446,50 +484,106 @@ public class UStoicGoose : EmuCore<ulong>
     {
         if (GlobalVariables.EnableSkipBootstrapIfFound) return;
 
+        CheckCanStep(210, System.Reflection.MethodBase.GetCurrentMethod().Name);
         if (!emulatorHandler.IsRunning)
         {
+            CheckCanStep(211, System.Reflection.MethodBase.GetCurrentMethod().Name);
             if (AxiIO.File.Exists(filename))
             {
                 //using var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 //var data = new byte[stream.Length];
                 //stream.Read(data, 0, data.Length);
-
+                CheckCanStep(212, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 var data = AxiIO.File.ReadAllBytes(filename);
-
+                CheckCanStep(213, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 emulatorHandler.Machine.LoadBootstrap(data);
+                CheckCanStep(214, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             emulatorHandler.Machine.UseBootstrap = Program.Configuration.General.UseBootstrap;
         }
+        CheckCanStep(216, System.Reflection.MethodBase.GetCurrentMethod().Name);
     }
 
     private void LoadInternalEeprom()
     {
+        CheckCanStep(221, System.Reflection.MethodBase.GetCurrentMethod().Name);
         if (!emulatorHandler.IsRunning && AxiIO.File.Exists(internalEepromPath))
         {
+            CheckCanStep(222, System.Reflection.MethodBase.GetCurrentMethod().Name);
             //using var stream = new FileStream(internalEepromPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             //var data = new byte[stream.Length];
             //stream.Read(data, 0, data.Length);
 
             var data = AxiIO.File.ReadAllBytes(internalEepromPath);
 
+            CheckCanStep(223, System.Reflection.MethodBase.GetCurrentMethod().Name);
             emulatorHandler.Machine.LoadInternalEeprom(data);
+            CheckCanStep(224, System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
     }
 
-    private static System.IO.Stream GetStreamFromFile(string filename)
+    //private static System.IO.Stream GetStreamFromFile(string filename)
+    //{
+    //    //return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+    //    byte[] data = AxiIO.File.ReadAllBytes(filename);
+    //    return new System.IO.MemoryStream(data);
+    //}
+
+    private static byte[] GetBytesFile(string filename)
     {
         //return new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         byte[] data = AxiIO.File.ReadAllBytes(filename);
-        return new System.IO.MemoryStream(data);
+        return data;
     }
 
-    private static System.IO.Stream GetStreamFromFirstZippedFile(string filename)
+    //private static System.IO.Stream GetStreamFromFirstZippedFile(string filename)
+    //{
+    //    //return new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)).Entries.FirstOrDefault()?.Open();
+    //    byte[] data = AxiIO.File.ReadAllBytes(filename);
+    //    if (data == null)
+    //    {
+    //        throw new Exception("[GetStreamFromFirstZippedFile]中断 data == null");
+    //    }
+    //    return new ZipArchive(new System.IO.MemoryStream(data)).Entries.FirstOrDefault()?.Open();
+    //}
+
+
+    private static byte[] GetBytesZippedFile(string filename)
     {
         //return new ZipArchive(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)).Entries.FirstOrDefault()?.Open();
+        byte[] bytes = AxiIO.File.ReadAllBytes(filename);
+        CheckCanStep(202, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        if (bytes == null)
+        {
+            throw new Exception("[GetBytesZippedFile]中断 data == null");
+        }
+        UnityEngine.Debug.Log("[GetBytesZippedFile] zip大小："+ bytes.Length);
+        var zip = new ZipInputStream(new System.IO.MemoryStream(bytes));
+        while (true)
+        {
+            var currentEntry = zip.GetNextEntry();
+            if (currentEntry == null) break;
 
-        byte[] data = AxiIO.File.ReadAllBytes(filename);
-        return new ZipArchive(new System.IO.MemoryStream(data)).Entries.FirstOrDefault()?.Open();
+            //当前平台单文件rom扩展名判断
+            string entryName = currentEntry.Name.ToLower();
+            if (!entryName.EndsWith(".ws") && !entryName.EndsWith(".wsc")) continue;
+            var buffer = new byte[1024];
+            System.IO.MemoryStream output = new System.IO.MemoryStream();
+            while (true)
+            {
+                var size = zip.Read(buffer, 0, buffer.Length);
+                if (size == 0) break;
+                else output.Write(buffer, 0, size);
+            }
+            CheckCanStep(203, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            output.Flush();
+            byte[] data = output.ToArray();
+            App.log.Info("[GetBytesZippedFile] 解压"+ entryName + " 大小：" + data.Length);
+            return data;
+        }
+        throw new Exception("[GetBytesZippedFile] 没有合法entry");
     }
+
 
     private bool LoadAndRunCartridge(string filename)
     {
@@ -497,43 +591,52 @@ public class UStoicGoose : EmuCore<ulong>
         {
             if (emulatorHandler.IsRunning)
             {
+                CheckCanStep(200, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 SaveAllData();
                 emulatorHandler.Shutdown();
             }
 
-            using var inputStream = supportedFileInformation.FirstOrDefault(x => x.extension == System.IO.Path.GetExtension(filename)).streamReadFunc(filename) ?? GetStreamFromFile(filename);
-            using var stream = new System.IO.MemoryStream();
-            inputStream.CopyTo(stream);
-            stream.Position = 0;
+            CheckCanStep(201, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            byte[] data = supportedFileInformation.FirstOrDefault(x => x.extension == System.IO.Path.GetExtension(filename)).streamReadFunc(filename) ?? GetBytesFile(filename);
+            //CheckCanStep(202, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            //using var stream = new System.IO.MemoryStream();
+            //inputStream.CopyTo(stream);
+            //stream.Position = 0;
+            //CheckCanStep(203, System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            var data = new byte[stream.Length];
-            stream.Read(data, 0, data.Length);
+            //var data = new byte[stream.Length];
+            //stream.Read(data, 0, data.Length);
+            CheckCanStep(204, System.Reflection.MethodBase.GetCurrentMethod().Name);
             emulatorHandler.Machine.LoadRom(data);
-
+            CheckCanStep(205, System.Reflection.MethodBase.GetCurrentMethod().Name);
             graphicsHandler.IsVerticalOrientation = isVerticalOrientation = emulatorHandler.Machine.Cartridge.Metadata.Orientation == CartridgeMetadata.Orientations.Vertical;
             inputHandler.SetVerticalOrientation(isVerticalOrientation);
 
+            CheckCanStep(206, System.Reflection.MethodBase.GetCurrentMethod().Name);
             CurrRomName = System.IO.Path.GetFileName(filename);
-
+            CheckCanStep(207, System.Reflection.MethodBase.GetCurrentMethod().Name);
             LoadRam();
-
+            CheckCanStep(208, System.Reflection.MethodBase.GetCurrentMethod().Name);
             LoadBootstrap(emulatorHandler.Machine is WonderSwan ? Program.Configuration.General.BootstrapFile : Program.Configuration.General.BootstrapFileWSC);
+            CheckCanStep(220, System.Reflection.MethodBase.GetCurrentMethod().Name);
             LoadInternalEeprom();
 
+            CheckCanStep(230, System.Reflection.MethodBase.GetCurrentMethod().Name);
             //初始化音频
             soundHandler.Initialize();
-
+            CheckCanStep(240, System.Reflection.MethodBase.GetCurrentMethod().Name);
             emulatorHandler.Startup();
-
+            CheckCanStep(241, System.Reflection.MethodBase.GetCurrentMethod().Name);
             SizeAndPositionWindow();
             SetWindowTitleAndStatus();
 
             Program.SaveConfiguration();
+            CheckCanStep(242, System.Reflection.MethodBase.GetCurrentMethod().Name);
             return true;
         }
         catch (Exception ex) when (!AppEnvironment.DebugMode)
         {
-            App.log.Error("ex=>"+ex.ToString());
+            App.log.Error("ex=>" + ex.ToString());
             return false;
         }
     }

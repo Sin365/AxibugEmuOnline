@@ -48,7 +48,7 @@ public class XMBInfoBar : MonoBehaviour
     ValueTuple<uint, float> m_lastFrameInfo;
     private void RefreshFps()
     {
-        if (App.emu.Core == null)
+        if (App.emu.Core == null || InGameUI.Instance.Core == null)
             FPS.gameObject.SetActiveEx(false);
         else
         {

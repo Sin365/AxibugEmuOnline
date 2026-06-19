@@ -12,6 +12,8 @@ namespace AxibugEmuOnline.Client.Manager
         /// 但是Equals方法可以,所以,这个接口判断为空请使用Equals
         /// </summary>
         private EmuCore m_emuCore;
+        public int RomID { get; private set; }
+        public RomPlatformType Platform { get; private set; }
 
         private IControllerSetuper m_controllerSetuper;
 
@@ -49,7 +51,6 @@ namespace AxibugEmuOnline.Client.Manager
         public void BeginGame(RomFile romFile)
         {
             if (m_emuCore != null) return;
-
             switch (romFile.Platform)
             {
                 case RomPlatformType.Nes:
@@ -100,6 +101,9 @@ namespace AxibugEmuOnline.Client.Manager
                 OverlayManager.PopTip(result);
             }
             Eventer.Instance.PostEvent(EEvent.OnEmuBeginGame);
+
+            RomID = romFile.ID;
+            Platform = romFile.Platform;
         }
 
         private void OnSlotDataChanged()
@@ -126,6 +130,8 @@ namespace AxibugEmuOnline.Client.Manager
             m_emuCore.Dispose();
             GameObject.Destroy(m_emuCore.gameObject);
             m_emuCore = null;
+            RomID = -1;
+            Platform = RomPlatformType.Invalid;
 
             InGameUI.Instance.Hide();
             LaunchUI.Instance.ShowMainMenu();

@@ -57,6 +57,12 @@ namespace AxibugEmuOnline.Client
             return romFile;
         }
 
+        public RomFile GetRomFile(int romId)
+        {
+            RomFile romFile;
+            RomFileIdMapper.TryGetValue(romId, out romFile);
+            return romFile;
+        }
         /// <summary> 清除所有下载的Rom文件 </summary>
         public void ClearRomFile()
         {
