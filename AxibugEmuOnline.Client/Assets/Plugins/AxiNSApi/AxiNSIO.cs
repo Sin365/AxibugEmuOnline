@@ -64,8 +64,9 @@ public class AxiNSIO
     {
         lock (commitLock)
         {
+            if (!bDirty)
+                return false;
 #if UNITY_SWITCH && !UNITY_EDITOR
-
             using (AxiNSIOKeepingDisposable.Acquire())
             {
                 nn.Result ret = FileSystem.Commit(save_name);
@@ -106,6 +107,14 @@ public class AxiNSIO
         }
     }
 
+    static string SetSafePath(string path)
+    {
+        return path.Replace('\\', '/')
+            .Replace("\\\\", "/")
+            .Replace("//", "/")
+            .Trim();
+    }
+
     /// <summary>
     /// 检查Path是否存在
     /// </summary>
@@ -113,6 +122,7 @@ public class AxiNSIO
     /// <returns></returns>
     public bool CheckPathExists(string filePath)
     {
+        filePath = SetSafePath(filePath);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -145,7 +155,7 @@ public class AxiNSIO
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-    public bool CheckPathNotFound(string filePath)
+    bool CheckPathNotFound(string filePath)
     {
 #if !UNITY_SWITCH
         return false;
@@ -163,6 +173,7 @@ public class AxiNSIO
     /// <returns></returns>
     public bool CreateDir(string dirpath)
     {
+        dirpath = SetSafePath(dirpath);
         UnityEngine.Debug.Log($"CreateDir: {dirpath}");
         lock (commitLock)
         {
@@ -189,6 +200,7 @@ public class AxiNSIO
     /// <returns></returns>
     public bool FileToSaveWithCreate(string filePath, System.IO.MemoryStream ms)
     {
+        filePath = SetSafePath(filePath);
         return FileToSaveWithCreate(filePath, ms.ToArray());
     }
     /// <summary>
@@ -199,6 +211,7 @@ public class AxiNSIO
     /// <returns></returns>
     public AxiNSWait_FileToSaveByMSWithCreate FileToSaveWithCreateAsync(string filePath, System.IO.MemoryStream ms)
     {
+        filePath = SetSafePath(filePath);
         var wait = new AxiNSWait_FileToSaveByMSWithCreate(filePath, ms);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
@@ -213,8 +226,8 @@ public class AxiNSIO
     /// <returns></returns>
     public bool FileToSaveWithCreate(string filePath, byte[] data, bool immediatelyCommit = true)
     {
+        filePath = SetSafePath(filePath);
         UnityEngine.Debug.Log($"FileToSaveWithCreate: {filePath}");
-
 #if !UNITY_SWITCH
         return false;
 #else
@@ -233,7 +246,6 @@ public class AxiNSIO
 
                 //取出父级目录
                 string dirpath = string.Empty;
-                //string filePath = "save:/AxibugEmu/Caches/Texture/516322966";
                 string mountRoot = null;
                 int colonSlashIndex = filePath.IndexOf(":/");
                 if (colonSlashIndex > 0)
@@ -246,8 +258,6 @@ public class AxiNSIO
                     if (mountRoot != null && !parent.Equals(mountRoot, StringComparison.OrdinalIgnoreCase))
                         dirpath = parent;
                 }
-
-
                 if (!string.IsNullOrWhiteSpace(dirpath))
                 {
                     // 使用封装函数检查和创建父目录
@@ -395,12 +405,14 @@ public class AxiNSIO
     /// <returns></returns>
     public AxiNSWait_FileToSaveWithCreate FileToSaveWithCreateAsync(string filePath, byte[] data)
     {
+        filePath = SetSafePath(filePath);
         var wait = new AxiNSWait_FileToSaveWithCreate(filePath, data);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
     public byte[] LoadSwitchDataFile(string filename)
     {
+        filename = SetSafePath(filename);
         byte[] outputData;
         LoadSwitchDataFile(filename, out outputData);
         return outputData;
@@ -408,6 +420,7 @@ public class AxiNSIO
 
     public bool LoadSwitchDataFile(string filename, ref System.IO.MemoryStream ms)
     {
+        filename = SetSafePath(filename);
         byte[] outputData;
         if (LoadSwitchDataFile(filename, out outputData))
         {
@@ -421,6 +434,7 @@ public class AxiNSIO
     }
     public bool LoadSwitchDataFile(string filename, out byte[] outputData)
     {
+        filename = SetSafePath(filename);
 #if !UNITY_SWITCH || UNITY_EDITOR
         outputData = null;
         return false;
@@ -489,6 +503,7 @@ public class AxiNSIO
     }
     public AxiNSWait_LoadSwitchDataFile LoadSwitchDataFileAsync(string filename)
     {
+        filename = SetSafePath(filename);
         var wait = new AxiNSWait_LoadSwitchDataFile(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
@@ -496,6 +511,7 @@ public class AxiNSIO
 
     public bool GetDirectoryFiles(string path, out string[] entrys)
     {
+        path = SetSafePath(path);
 #if !UNITY_SWITCH || UNITY_EDITOR
 
         entrys = null;
@@ -507,6 +523,7 @@ public class AxiNSIO
 
     public bool GetDirectoryDirs(string path, out string[] entrys)
     {
+        path = SetSafePath(path);
 #if !UNITY_SWITCH || UNITY_EDITOR
         entrys = null;
         return false;
@@ -516,7 +533,7 @@ public class AxiNSIO
     }
 
 #if UNITY_SWITCH
-    public bool GetDirectoryEntrys(string path, nn.fs.OpenDirectoryMode type, out string[] entrys)
+    bool GetDirectoryEntrys(string path, nn.fs.OpenDirectoryMode type, out string[] entrys)
     {
         nn.fs.DirectoryHandle eHandle = new nn.fs.DirectoryHandle();
         nn.Result result = nn.fs.Directory.Open(ref eHandle, path, type);
@@ -550,8 +567,7 @@ public class AxiNSIO
     }
 #endif
 
-
-    public bool GetDirectoryEntrysFullRecursion(string path, out string[] entrys)
+    bool GetDirectoryEntrysFullRecursion(string path, out string[] entrys)
     {
 #if UNITY_SWITCH
 
@@ -596,9 +612,9 @@ public class AxiNSIO
         return false;
 #endif
     }
-
     public IEnumerable<string> EnumerateFiles(string path, string searchPattern)
     {
+        path = SetSafePath(path);
 #if !UNITY_SWITCH || UNITY_EDITOR
         yield break;
 #else
@@ -625,9 +641,9 @@ public class AxiNSIO
         }
 #endif
     }
-
     public bool DeletePathFile(string filename)
     {
+        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -648,12 +664,14 @@ public class AxiNSIO
     }
     public AxiNSWait_DeletePathFile DeletePathFileAsync(string filename)
     {
+        filename = SetSafePath(filename);
         var wait = new AxiNSWait_DeletePathFile(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
     public bool DeletePathDir(string filename)
     {
+        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -674,12 +692,14 @@ public class AxiNSIO
     }
     public AxiNSWait_DeletePathDir DeletePathDirAsync(string filename)
     {
+        filename = SetSafePath(filename);
         var wait = new AxiNSWait_DeletePathDir(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
     public bool DeletePathDirRecursively(string filename)
     {
+        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -700,6 +720,7 @@ public class AxiNSIO
     }
     public AxiNSWait_DeletePathDirRecursively DeletePathDirRecursivelyAsync(string filename)
     {
+        filename = SetSafePath(filename);
         var wait = new AxiNSWait_DeletePathDirRecursively(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
@@ -712,6 +733,7 @@ public class AxiNSIO
     /// <returns></returns>
     public bool DeleteRecursivelyPathDir(string filename)
     {
+        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -738,6 +760,7 @@ public class AxiNSIO
     /// <returns></returns>
     public bool CleanRecursivelyPathDir(string filename)
     {
+        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -759,6 +782,7 @@ public class AxiNSIO
 
     public bool RenameDir(string oldpath, string newpath)
     {
+        newpath = SetSafePath(newpath);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -836,7 +860,7 @@ public class AxiNSIO
     /// <param name="resolvedDirectory">输出参数，解析出的最直接目录（文件所在目录或目录自身）</param>
     /// <param name="parentDirectories">输出参数，从直接父目录到挂载点下一级的列表（不包含挂载根节点）</param>
     /// <returns>操作是否成功（路径格式基本有效）</returns>
-    public bool TryGetDirectoryAndParentsExcludingRoot(string inputPath, out string resolvedDirectory, out List<string> parentDirectories)
+    bool TryGetDirectoryAndParentsExcludingRoot(string inputPath, out string resolvedDirectory, out List<string> parentDirectories)
     {
         // 捕获路径中包含非法字符引发的异常
         //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->{inputPath}");
@@ -848,8 +872,7 @@ public class AxiNSIO
             UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->string.IsNullOrWhiteSpace({inputPath})==false");
             return false;
         }
-
-        string normalizedPath = inputPath.Replace('\\', '/').Trim(); // 统一使用正斜杠
+        string normalizedPath = SetSafePath(inputPath);
         //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath=>{normalizedPath}");
         try
         {
@@ -961,40 +984,6 @@ public class AxiNSIO
 #if !UNITY_SWITCH
         return false;
 #else
-        //// 参数校验
-        //if (string.IsNullOrEmpty(filePath))
-        //{
-        //    UnityEngine.Debug.LogError($"无效参数：filePath={filePath}");
-        //    return false;
-        //}
-
-        //// 提取路径前缀（如 save:/、sd:/）
-        //int prefixEndIndex = filePath.IndexOf(":/");
-        //if (prefixEndIndex == -1)
-        //{
-        //    UnityEngine.Debug.LogError($"文件路径 {filePath} 格式无效，未找到 ':/' 前缀");
-        //    return false;
-        //}
-        //string pathPrefix = filePath.Substring(0, prefixEndIndex + 2); // 提取前缀，例如 "save:/"
-        //string relativePath = filePath.Substring(prefixEndIndex + 2); // 移除前缀，得到相对路径
-
-        //// 检查挂载状态
-        //if (!IsMountPointAccessible(pathPrefix))
-        //{
-        //    UnityEngine.Debug.LogError($"挂载点 {pathPrefix} 未挂载，无法操作路径 {filePath}");
-        //    return false;
-        //}
-
-        //// 提取父目录路径
-        //string directoryPath = System.IO.Path.GetDirectoryName(relativePath); // 获取父目录相对路径
-        //UnityEngine.Debug.Log($"提取 {relativePath} 的 父级路径：{directoryPath}");
-        //if (string.IsNullOrEmpty(directoryPath))
-        //{
-        //    UnityEngine.Debug.Log($"文件路径 {filePath} 无需创建父目录（位于根目录）");
-        //    return true; // 根目录无需创建
-        //}
-
-        //string fullDirectoryPath = $"{pathPrefix}{directoryPath}"; // 拼接完整父目录路径
 
         CheckCanStep(E_AxiNS_dgbBk.Dir, 1, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
 
@@ -1013,7 +1002,6 @@ public class AxiNSIO
         nn.Result result = nn.fs.FileSystem.GetEntryType(ref entryType, fullDirectoryPath);
         if (!result.IsSuccess() && nn.fs.FileSystem.ResultPathNotFound.Includes(result))
         {
-
             CheckCanStep(E_AxiNS_dgbBk.Dir, 3, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
             if (bAutoCreateDir)
             {
@@ -1024,7 +1012,6 @@ public class AxiNSIO
                 {
                     UnityEngine.Debug.Log($">>待检查目录: {parentDirectories[i]}");
                 }
-
                 for (int i = parentDirectories.Count - 1; i >= 0; i--)
                 {
                     string dir = parentDirectories[i];
@@ -1032,15 +1019,16 @@ public class AxiNSIO
                     {
                         CheckCanStep(E_AxiNS_dgbBk.Dir, 4, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                         UnityEngine.Debug.Log($"需要创建的目录: {dir}");
-                        result = nn.fs.Directory.Create(dir);
+                        using (AxiNSIOKeepingDisposable.Acquire())
+                        {
+                            result = nn.fs.Directory.Create(dir);
+                        }
                         if (!result.IsSuccess())
                         {
                             UnityEngine.Debug.LogError($"创建父 {dir} 目录失败: {result.GetErrorInfo()}");
                             return false;
                         }
                         UnityEngine.Debug.Log($"父目录 {dir} 创建成功");
-                        //CommitSave();
-
                         CheckCanStep(E_AxiNS_dgbBk.Dir, 4, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     }
                     else
@@ -1048,19 +1036,7 @@ public class AxiNSIO
                         UnityEngine.Debug.Log($"目录已存在，无需创建: {dir}");
                     }
                 }
-
-                //result = nn.fs.Directory.Create(fullDirectoryPath);
-                //if (!result.IsSuccess())
-                //{
-                //    UnityEngine.Debug.LogError($"创建父目录失败: {result.GetErrorInfo()}");
-                //    return false;
-                //}
-
-                //if (!CreateLoopDir(fullDirectoryPath))
-                //    return false;
-
                 CheckCanStep(E_AxiNS_dgbBk.Dir, 6, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
-
                 UnityEngine.Debug.Log($"父目录 {fullDirectoryPath} 创建成功");
                 return true;
             }
