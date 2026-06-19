@@ -42,9 +42,12 @@ public class UMAME : EmuCore<ulong>
     public override uint PushFrame => (uint)emu.currEmuFrame;
 
     public override uint PhysicsFrame => PushFrame;
+
+    public TextAsset MAME_XML;
     void Awake()
     {
         instance = this;
+        MameMainMotion.CheckCanStep(-9000, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mFPS = GameObject.Find("FPS").GetComponent<Text>();
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         mCanvas.worldCamera = Camera.main;
@@ -58,6 +61,7 @@ public class UMAME : EmuCore<ulong>
         mUniIO = new UniIO();
         mChangeRomName = string.Empty;
         mTimeSpan = new UniTimeSpan();
+        MameMainMotion.CheckCanStep(-999, System.Reflection.MethodBase.GetCurrentMethod().Name);
         emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan, mUniIO);
     }
     void OnEnable()

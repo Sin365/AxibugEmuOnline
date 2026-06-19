@@ -9,9 +9,13 @@ namespace MAME.Core
     {
         public static void LoadROMXML(string xmbString)
         {
+            MameMainMotion.CheckCanStep(-719, System.Reflection.MethodBase.GetCurrentMethod().Name);
             XElement xe = XElement.Parse(xmbString);
+            MameMainMotion.CheckCanStep(-718, System.Reflection.MethodBase.GetCurrentMethod().Name);
             IEnumerable<XElement> elements = from ele in xe.Elements("game") select ele;
+            MameMainMotion.CheckCanStep(-717, System.Reflection.MethodBase.GetCurrentMethod().Name);
             showInfoByElements(elements);
+            MameMainMotion.CheckCanStep(-716, System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
         static void showInfoByElements(IEnumerable<XElement> elements)

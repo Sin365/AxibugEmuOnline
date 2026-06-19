@@ -30,6 +30,7 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
     Texture2D defaultTex;
     private void Awake()
     {
+        MameMainMotion.CheckCanStep(-8000, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mFrame = 0;
         m_drawCanvas = GameObject.Find("GameRawImage").GetComponent<RawImage>();
         m_drawCanvasrect = m_drawCanvas.GetComponent<RectTransform>();

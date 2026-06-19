@@ -52,17 +52,18 @@ namespace AxibugEmuOnline.Client.Manager
         public void BeginGame(RomFile romFile)
         {
             if (m_emuCore != null) return;
+            string MameObjPrefab = string.Empty;
             switch (romFile.Platform)
             {
                 case RomPlatformType.Nes:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("NES/NesEmulator")).GetComponent<EmuCore>();
+                    MameObjPrefab = "NES/NesEmulator";
                     break;
                 case RomPlatformType.Cps1:
                 case RomPlatformType.Cps2:
                 case RomPlatformType.Igs:
                 case RomPlatformType.Neogeo:
                 case RomPlatformType.ArcadeOld:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("MAME/UMAME")).GetComponent<EmuCore>();
+                    MameObjPrefab = "MAME/UMAME";
                     break;
                 case RomPlatformType.MasterSystem:
                 case RomPlatformType.GameGear:
@@ -71,23 +72,27 @@ namespace AxibugEmuOnline.Client.Manager
                 case RomPlatformType.ColecoVision:
                 case RomPlatformType.Sc3000:
                 case RomPlatformType.Sg1000:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("EssgeeUnity/EssgeeUnity")).GetComponent<EmuCore>();
+                    MameObjPrefab = "EssgeeUnity/EssgeeUnity";
                     break;
                 case RomPlatformType.WonderSwan:
                 case RomPlatformType.WonderSwanColor:
-                    m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>("StoicGooseUnity/StoicGooseUnity")).GetComponent<EmuCore>();
+                    MameObjPrefab = "StoicGooseUnity/StoicGooseUnity";
                     break;
             }
 
             MsgBool result = null;
             try
             {
+                m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>(MameObjPrefab)).GetComponent<EmuCore>();
                 result = m_emuCore.StartGame(romFile);
             }
             catch (Exception ex)
             {
                 App.log.Error("启动异常中断");
-                GameObject.Destroy(m_emuCore.gameObject);
+                if (m_emuCore != null)
+                {
+                    GameObject.Destroy(m_emuCore.gameObject);
+                }
                 m_emuCore = null;
                 RomID = -1;
                 Platform = RomPlatformType.Invalid;

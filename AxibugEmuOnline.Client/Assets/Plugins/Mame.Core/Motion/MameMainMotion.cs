@@ -79,23 +79,32 @@ namespace MAME.Core
             IMAMEIOSupport io
             )
         {
+            MameMainMotion.CheckCanStep(-799, System.Reflection.MethodBase.GetCurrentMethod().Name);
             AxiMemoryEx.Init();
-
+            MameMainMotion.CheckCanStep(-789, System.Reflection.MethodBase.GetCurrentMethod().Name);
             AxiTimeSpan.Init(itime);
+            MameMainMotion.CheckCanStep(-770, System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             Mame.RomRoot = RomDir;
             EmuLogger.BindFunc(ilog);
+            MameMainMotion.CheckCanStep(-760, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Video.BindFunc(ivp);
+            MameMainMotion.CheckCanStep(-750, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Sound.BindFunc(isp);
+            MameMainMotion.CheckCanStep(-740, System.Reflection.MethodBase.GetCurrentMethod().Name);
             resource = iRes;
             IoSupport = io;
-
+            MameMainMotion.CheckCanStep(-730, System.Reflection.MethodBase.GetCurrentMethod().Name);
             sSelect = string.Empty;
 
             RomInfo.Rom = new RomInfo();
+            MameMainMotion.CheckCanStep(-720, System.Reflection.MethodBase.GetCurrentMethod().Name);
             MAMEDBHelper.LoadROMXML(resource.mame);
+            MameMainMotion.CheckCanStep(-699, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Keyboard.InitializeInput(ikb);
+            MameMainMotion.CheckCanStep(-698, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Mouse.InitialMouse(imou);
+            MameMainMotion.CheckCanStep(-697, System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
         public void ResetRomRoot(string RomDir)

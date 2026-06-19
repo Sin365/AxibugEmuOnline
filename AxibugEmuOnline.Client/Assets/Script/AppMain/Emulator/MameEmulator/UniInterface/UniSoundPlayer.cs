@@ -15,6 +15,7 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer , AxiAudioPull
 
     void Awake()
     {
+        MameMainMotion.CheckCanStep(-7000, System.Reflection.MethodBase.GetCurrentMethod().Name);
         //TODO 采样率需要更准确，而且和clip并没有关系
         var dummy = AudioClip.Create("dummy", 1, 1, AudioSettings.outputSampleRate, false);
         dummy.SetData(new float[] { 1 }, 0);
@@ -26,9 +27,15 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer , AxiAudioPull
 
     private void OnEnable()
     {
+        MameMainMotion.CheckCanStep(-6999, System.Reflection.MethodBase.GetCurrentMethod().Name);
         App.audioMgr.RegisterStream(nameof(UniSoundPlayer), null, this);
     }
 
+    private void OnDisable()
+    {
+        MameMainMotion.CheckCanStep(-6998, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        App.audioMgr.ClearAudioData(nameof(NesEmulator));
+    }
     //private void OnEnable()
     //{
     //    App.audioMgr.RegisterStream(nameof(UMAME), AudioSettings.outputSampleRate, this);

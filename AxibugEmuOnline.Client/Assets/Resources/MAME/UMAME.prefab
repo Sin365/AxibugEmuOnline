@@ -127,6 +127,7 @@ MonoBehaviour:
   mFPS: {fileID: 0}
   bQuickTestRom: 0
   mQuickTestRom: 
+  MAME_XML: {fileID: 4900000, guid: 61b2fc8f46ed4f64da4d5f87cd7362c2, type: 3}
 --- !u!1 &3471319444310732612
 GameObject:
   m_ObjectHideFlags: 0

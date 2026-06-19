@@ -3,32 +3,113 @@ using UnityEngine;
 
 public class UniResources : IResources
 {
-    const string ResourceRoot = "MAME/emu/";
+    public const string ResourceRoot = "MAME/emu/";
 
-    public byte[] mcu => Resources.Load<TextAsset>(ResourceRoot + "cus64-64a1.mcu").bytes;
+    public byte[] mcu
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-311, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "cus64-64a1.mcu").bytes;
+        }
+    }
 
-    public byte[] sfix => Resources.Load<TextAsset>(ResourceRoot + "sfix.sfix").bytes;
+    public byte[] sfix
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-310, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "sfix.sfix").bytes;
+        }
+    }
 
-    public byte[] _000_lo => Resources.Load<TextAsset>(ResourceRoot + "000-lo.lo").bytes;
+    public byte[] _000_lo
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-309, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "000-lo.lo").bytes;
+        }
+    }
 
-    public byte[] sm1 => Resources.Load<TextAsset>(ResourceRoot + "sm1.sm1").bytes;
+    public byte[] sm1
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-308, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "sm1.sm1").bytes;
+        }
+    }
 
-    public byte[] mainbios => Resources.Load<TextAsset>(ResourceRoot + "neogeo_mainbios.rom").bytes;
+    public byte[] mainbios
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-307, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "neogeo_mainbios.rom").bytes;
+        }
+    }
 
-    public byte[] pgmmainbios => Resources.Load<TextAsset>(ResourceRoot + "pgm_mainbios.rom").bytes;
+    public byte[] pgmmainbios
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-306, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "pgm_mainbios.rom").bytes;
+        }
+    }
 
-    public byte[] pgmvideobios => Resources.Load<TextAsset>(ResourceRoot + "pgm_t01s.rom").bytes;
+    public byte[] pgmvideobios
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-305, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "pgm_t01s.rom").bytes;
+        }
+    }
 
-    public byte[] pgmaudiobios => Resources.Load<TextAsset>(ResourceRoot + "pgm_m01s.rom").bytes;
+    public byte[] pgmaudiobios
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-304, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "pgm_m01s.rom").bytes;
+        }
+    }
 
-    public byte[] _1 =>  Resources.Load<TextAsset>(ResourceRoot + "1.png").bytes;
+    public byte[] _1
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-303, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "1.png").bytes;
+        }
+    }
 
-    public byte[] readme => Resources.Load<TextAsset>(ResourceRoot + "readme.txt").bytes;
+    public byte[] readme
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-302, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            return Resources.Load<TextAsset>(ResourceRoot + "readme.txt").bytes;
+        }
+    }
 
-    public string mame => Resources.Load<TextAsset>(ResourceRoot + "mame.xml").text;//ok
+    public string mame
+    {
+        get
+        {
+            MameMainMotion.CheckCanStep(-301, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            //return Resources.Load<TextAsset>(ResourceRoot + "mame.xml").text;//ok
+            //改成了挂预制体上，Switch这个shit，貌似长类型的文本读取有问题？
+            return UMAME.instance.MAME_XML.text;
+        }
+    }
+
 
     public bool getnvram(string sName, out byte[] data)
     {
+        MameMainMotion.CheckCanStep(-300, System.Reflection.MethodBase.GetCurrentMethod().Name);
         TextAsset asset = Resources.Load<TextAsset>(ResourceRoot + "nvram/" + sName + ".nv");
         if (asset == null)
         {
