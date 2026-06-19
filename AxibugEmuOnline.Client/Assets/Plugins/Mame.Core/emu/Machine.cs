@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MAME.Core
 {
@@ -262,7 +263,7 @@ namespace MAME.Core
         public static byte[] GetNeogeoRom(string sFile)
         {
             byte[] bb1;
-            string path = System.IO.Path.Combine(Mame.RomRoot + "/neogeo/", sFile);
+            string path = System.IO.Path.Combine(Mame.RomRoot, "neogeo", sFile);
             //if (File.Exists(path))
             if (MameMainMotion.IoSupport.File_Exists(path))
             {
@@ -284,20 +285,33 @@ namespace MAME.Core
         }
         public static byte[] GetRom(string sFile)
         {
-            foreach (string s1 in lsParents)
+            byte[] result = null;
+            try
             {
-                string path = System.IO.Path.Combine(Mame.RomRoot + "/" + s1 + "/", sFile);
-                if (MameMainMotion.IoSupport.File_Exists(path))
+                foreach (string s1 in lsParents)
                 {
-                    EmuLogger.Log($"Had File => {path}");
-                    return MameMainMotion.IoSupport.File_ReadAllBytes(path);
-                }
-                else
-                {
-                    EmuLogger.Log($"Miss File => {path}");
+                    string path = System.IO.Path.Combine(Mame.RomRoot, s1, sFile);
+                    if (MameMainMotion.IoSupport.File_Exists(path))
+                    {
+                        EmuLogger.Log($"Had File => {path}");
+                        result = MameMainMotion.IoSupport.File_ReadAllBytes(path);
+                    }
+                    else
+                    {
+                        EmuLogger.Log($"Miss File => {path}");
+                    }
                 }
             }
-            return null;
+            catch (System.Exception ex)
+            {
+                EmuLogger.Log($"GetRom 异常{sFile}： => {ex.ToString()}");
+            }
+            //if (result == null)
+            //{
+            //    throw new Exception("[machine]中断 result == null");
+            //}
+
+            return result;
         }
     }
 }
