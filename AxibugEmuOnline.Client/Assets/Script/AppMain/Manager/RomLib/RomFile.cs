@@ -5,6 +5,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client
@@ -59,7 +60,7 @@ namespace AxibugEmuOnline.Client
                     case RomPlatformType.GameGear:
                     case RomPlatformType.GameBoy: //return ".gb";
                     case RomPlatformType.GameBoyColor: //return ".gbc";
-                    case RomPlatformType.ColecoVision: 
+                    case RomPlatformType.ColecoVision:
                     case RomPlatformType.Sc3000:
                     case RomPlatformType.Sg1000:
                         throw new NotImplementedException($"该平台使用核心内zip解压{Platform}");
@@ -85,9 +86,6 @@ namespace AxibugEmuOnline.Client
                 return true;
             }
         }
-
-        /// <summary> 指示该Rom文件的存放路径 </summary>
-        public string LocalFilePath => $"{App.PersistentDataPath(Platform)}/RemoteRoms/{FileName}";
 
         /// <summary> 指示该Rom文件是否已下载完毕 </summary>
         public bool RomReady
@@ -175,7 +173,69 @@ namespace AxibugEmuOnline.Client
         public string ImageURL => webData.imgUrl;
 
         /// <summary> 文件名 </summary>
-        public string FileName { get; private set; }
+        string FileName { set 
+            {
+                m_FileNameFromDataBase = value;
+                m_FileNameFromDataBase_Hash = FastStableHash.String(value);
+            } }//为了做文件名代理，避免误操作，只允许set访问器
+
+        static class FastStableHash
+        {
+            public static int String(string s)
+            {
+                if (string.IsNullOrEmpty(s))
+                    return 0;
+
+                const uint offset = 2166136261u;
+                const uint prime = 16777619u;
+
+                uint hash = offset;
+                for (int i = 0; i < s.Length; i++)
+                {
+                    hash ^= s[i];
+                    hash *= prime;
+                }
+                return unchecked((int)hash);
+            }
+        }
+        /// <summary>
+        /// 对应数据库中的远端真实文件名
+        /// </summary>
+        string m_FileNameFromDataBase;
+        /// <summary>
+        /// 对应数据库中的远端真实文件名作为hash
+        /// </summary>
+        int m_FileNameFromDataBase_Hash;
+
+        /// <summary> 指示该Rom文件的存放文件名 </summary>
+        public string LocalProxyFileName
+        {
+            get
+            {
+                if (webData == null)
+                    new Exception("异常 不应该在没有基础数据的前提下，获取走游戏名逻辑");
+                switch (Platform)//街机平台不使用文件名代理，因为MAME依赖文件名对比数据库，且文件名本身超短
+                {
+                    case RomPlatformType.Neogeo:
+                    case RomPlatformType.Igs:
+                    case RomPlatformType.Cps1:
+                    case RomPlatformType.Cps2:
+                    case RomPlatformType.ArcadeOld:
+                        return m_FileNameFromDataBase;
+                }
+                //主要是服务于fucking任天堂的Switch 文件系统,又保证服务器rom文件变化一定有变化加上Hash
+                string proxyName = "AxiID_" + ID + "_" + m_FileNameFromDataBase_Hash + System.IO.Path.GetExtension(m_FileNameFromDataBase);
+                return proxyName;
+            }
+        }
+        /// <summary> 指示该Rom文件的存放路径 </summary>
+        public string LocalProxyPath
+        {
+            get
+            {
+                return $"{App.PersistentDataPath(Platform)}/RemoteRoms/{LocalProxyFileName}";
+            }
+        }
         /// <summary> 在查询结果中的索引 </summary>
         public int Index { get; private set; }
         /// <summary> 在查询结果中的所在页 </summary>
@@ -215,9 +275,9 @@ namespace AxibugEmuOnline.Client
                 if (App.FileDownloader.GetDownloadProgress(webData.url) == null)
                 {
                     if (MultiFileRom)
-                        m_hasLocalFile = AxiIO.Directory.Exists(LocalFilePath);
+                        m_hasLocalFile = AxiIO.Directory.Exists(LocalProxyPath);
                     else
-                        m_hasLocalFile = AxiIO.File.Exists(LocalFilePath);
+                        m_hasLocalFile = AxiIO.File.Exists(LocalProxyPath);
                 }
             }
 
@@ -268,7 +328,7 @@ namespace AxibugEmuOnline.Client
                         else output.Write(buffer, 0, size);
                     }
                     output.Flush();
-                    unzipFiles[$"{LocalFilePath}/{currentEntry.Name}"] = output.ToArray();
+                    unzipFiles[$"{LocalProxyPath}/{currentEntry.Name}"] = output.ToArray();
                 }
 
                 string rootDirName = null;
@@ -288,10 +348,10 @@ namespace AxibugEmuOnline.Client
             }
             else
             {
-                var directPath = System.IO.Path.GetDirectoryName(LocalFilePath);
+                var directPath = System.IO.Path.GetDirectoryName(LocalProxyPath);
                 AxiIO.Directory.CreateDirectory(directPath);
 
-                AxiIO.File.WriteAllBytes(LocalFilePath, bytes);
+                AxiIO.File.WriteAllBytes(LocalProxyPath, bytes);
             }
             OverlayManager.PopTip($"下载完毕:[{romName}]");
             Eventer.Instance.PostEvent(EEvent.OnRomFileDownloaded, ID);
@@ -305,8 +365,8 @@ namespace AxibugEmuOnline.Client
             if (webData == null) throw new Exception("Not Valid Rom");
             if (!RomReady) throw new Exception("Rom File Not Downloaded");
 
-            var bytes = AxiIO.File.ReadAllBytes(LocalFilePath);
-            if (System.IO.Path.GetExtension(LocalFilePath).ToLower() == ".zip")
+            var bytes = AxiIO.File.ReadAllBytes(LocalProxyPath);
+            if (System.IO.Path.GetExtension(LocalProxyPath).ToLower() == ".zip")
             {
                 var zip = new ZipInputStream(new System.IO.MemoryStream(bytes));
                 while (true)
@@ -340,8 +400,8 @@ namespace AxibugEmuOnline.Client
         public void SetWebData(HttpAPI.Resp_RomInfo resp_RomInfo)
         {
             webData = resp_RomInfo;
-            FileName = MultiFileRom ? System.IO.Path.GetFileNameWithoutExtension(webData.url) : System.IO.Path.GetFileName(webData.url);
-            FileName = System.Net.WebUtility.UrlDecode(FileName);
+            string temp = MultiFileRom ? System.IO.Path.GetFileNameWithoutExtension(webData.url) : System.IO.Path.GetFileName(webData.url);
+            FileName = System.Net.WebUtility.UrlDecode(temp);
 
             //收集依赖Rom
             if (webData.parentRomIdsList != null)

@@ -3,6 +3,7 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
+using nn.friends;
 using System;
 
 namespace AxibugEmuOnline.Client.Manager
@@ -62,6 +63,18 @@ namespace AxibugEmuOnline.Client.Manager
         private void RecvGamescreenImgUpload(Protobuf_GameScreen_Img_Upload_RESP msg)
         {
             OverlayManager.PopTip("封面图上传成功");
+            if (App.emu.Core == null || App.emu.RomID <= 0 || App.emu.Platform <= RomPlatformType.Invalid)
+                return;
+
+            RomLib lib = App.GetRomLib(App.emu.Platform);
+            if (lib == null) return;
+            RomFile file = lib.GetRomFile(App.emu.RomID);
+            if (file == null) return;
+
+            App.StartCoroutine(App.httpAPI.GetRomInfo(file.ID, (romInfo) =>
+            {
+                file.SetWebData(romInfo);
+            }));
         }
     }
 }

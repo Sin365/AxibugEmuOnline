@@ -96,7 +96,7 @@ public class UMAME : EmuCore<ulong>
     {
         mPlatform = romFile.Platform;
         mTimeSpan.InitStandTime();
-        if (LoadGame(romFile.FileName))
+        if (LoadGame(romFile.LocalProxyFileName))
             return true;
         else
             return "Rom加载失败";

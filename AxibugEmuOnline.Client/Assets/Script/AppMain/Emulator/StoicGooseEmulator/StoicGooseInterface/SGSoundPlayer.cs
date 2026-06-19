@@ -65,13 +65,13 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
     /// <summary>
     /// 模拟器核心推送音频（关键优化）
     /// </summary>
-    internal unsafe void EnqueueSamples(short[] buffer)
+    internal unsafe void EnqueueSamples(short[] buffer,int len)
     {
 #if UNITY_EDITOR
         // 固定 short[]，拿到 short*
         fixed (short* pShort = buffer)
         {
-            App.audioMgr.WriteToRecord(pShort, buffer.Length);
+            App.audioMgr.WriteToRecord(pShort, len);
         }
 #endif
         //if (UStoicGoose.instance.emulatorHandler.CurrVirtualFrameIsSkim)
@@ -83,7 +83,7 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
             _buffer.Write(frombefordata);
         }
 
-        for (int i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < len; i++)
         {
             _buffer_2nd.Write(buffer[i] / 32767.0f);
         }

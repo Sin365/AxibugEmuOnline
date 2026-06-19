@@ -119,7 +119,7 @@ public class UEssgee : EmuCore<ulong>
             emulatorHandler.SaveCartridge();
         }
 
-        if (LoadAndRunCartridge(romFile.LocalFilePath))
+        if (LoadAndRunCartridge(romFile.LocalProxyPath))
             return true;
         else
             return "Rom加载失败";
