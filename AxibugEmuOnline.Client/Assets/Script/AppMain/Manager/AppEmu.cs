@@ -1,6 +1,7 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
+using System;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.Manager
@@ -78,8 +79,26 @@ namespace AxibugEmuOnline.Client.Manager
                     break;
             }
 
+            MsgBool result = null;
+            try
+            {
+                result = m_emuCore.StartGame(romFile);
+            }
+            catch (Exception ex)
+            {
+                App.log.Error("启动异常中断");
+                GameObject.Destroy(m_emuCore.gameObject);
+                m_emuCore = null;
+                RomID = -1;
+                Platform = RomPlatformType.Invalid;
 
-            var result = m_emuCore.StartGame(romFile);
+                InGameUI.Instance.Hide();
+                LaunchUI.Instance.ShowMainMenu();
+                m_controllerSetuper = null;
+                Eventer.Instance.UnregisterEvent(EEvent.OnRoomSlotDataChanged, OnSlotDataChanged);
+                Eventer.Instance.PostEvent(EEvent.OnScreenGamepadPlatformTypeChanged);
+                return;
+            }
             if (result)
             {
                 LaunchUI.Instance.HideMainMenu();

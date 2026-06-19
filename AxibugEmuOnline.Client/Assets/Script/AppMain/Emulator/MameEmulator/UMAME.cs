@@ -94,8 +94,11 @@ public class UMAME : EmuCore<ulong>
     }
     public override MsgBool StartGame(RomFile romFile)
     {
+        MameMainMotion.CheckCanStep(-30, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mPlatform = romFile.Platform;
+        MameMainMotion.CheckCanStep(-20, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mTimeSpan.InitStandTime();
+        MameMainMotion.CheckCanStep(-19, System.Reflection.MethodBase.GetCurrentMethod().Name);
         if (LoadGame(romFile.LocalProxyFileName))
             return true;
         else
@@ -124,11 +127,15 @@ public class UMAME : EmuCore<ulong>
     #endregion
     bool LoadGame(string loadRom)
     {
+        MameMainMotion.CheckCanStep(-10, System.Reflection.MethodBase.GetCurrentMethod().Name);
         emu.ResetRomRoot(RomPath);
+        MameMainMotion.CheckCanStep(-9, System.Reflection.MethodBase.GetCurrentMethod().Name);
         //Application.targetFrameRate = 60;
         //mReplayWriter = new ReplayWriter(mChangeRomName, "fuck", ReplayData.ReplayFormat.FM32IP64, Encoding.UTF8);
         mChangeRomName = loadRom;
+        MameMainMotion.CheckCanStep(-8, System.Reflection.MethodBase.GetCurrentMethod().Name);
         StopGame();
+        MameMainMotion.CheckCanStep(-7, System.Reflection.MethodBase.GetCurrentMethod().Name);
         //读取ROM
         emu.LoadRom(mChangeRomName);
         //读取成功

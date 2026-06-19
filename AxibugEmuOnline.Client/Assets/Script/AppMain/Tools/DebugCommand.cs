@@ -78,6 +78,20 @@ public static class DebugCommand
     {
         UStoicGoose.ClearDbgStep();
     }
+    [CMD("mamestep", "MAME步进", "counter")]
+    public static void SetMAMEDebugStep(int p1)
+    {
+        MAME.Core.MameMainMotion.SetDebugStep(p1);
+        App.log.Debug("mame步进" + p1);
+    }
+
+    [CMD("mamecl", "MAME步进清空")]
+    public static void SetMAMEDebugStep()
+    {
+        MAME.Core.MameMainMotion.ClearDbgStep();
+        App.log.Debug("mame步进清空");
+    }
+
     [CMD("hot", "NS预热")]
     public static void hot()
     {
