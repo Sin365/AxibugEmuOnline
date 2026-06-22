@@ -84,6 +84,13 @@ namespace AxibugEmuOnline.Client.Manager
             try
             {
                 m_emuCore = GameObject.Instantiate(Resources.Load<GameObject>(MameObjPrefab)).GetComponent<EmuCore>();
+                if (m_emuCore is UMAME)
+                {
+                    if (!((UMAME)m_emuCore).bAwakeDone)
+                    {
+                        throw new Exception("模拟器核心未准备好");
+                    }
+                }
                 result = m_emuCore.StartGame(romFile);
             }
             catch (Exception ex)

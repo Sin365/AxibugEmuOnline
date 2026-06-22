@@ -1,4 +1,5 @@
 using MAME.Core;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UniResources : IResources
@@ -99,9 +100,8 @@ public class UniResources : IResources
     {
         get
         {
-            MameMainMotion.CheckCanStep(-301, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            MameMainMotion.CheckCanStep(-719, System.Reflection.MethodBase.GetCurrentMethod().Name);
             //return Resources.Load<TextAsset>(ResourceRoot + "mame.xml").text;//ok
-            //改成了挂预制体上，Switch这个shit，貌似长类型的文本读取有问题？
             return UMAME.instance.MAME_XML.text;
         }
     }
@@ -118,5 +118,10 @@ public class UniResources : IResources
         }
         data = asset.bytes;
         return true;
+    }
+    public List<RomInfo> GetGameDB()
+    {
+        MameMainMotion.CheckCanStep(-719, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        return MAMEScriptable.GetLoadToMAMECore();
     }
 }

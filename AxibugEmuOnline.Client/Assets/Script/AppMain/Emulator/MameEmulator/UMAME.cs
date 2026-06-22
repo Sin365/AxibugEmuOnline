@@ -20,7 +20,8 @@ public class UMAME : EmuCore<ulong>
     UniKeyboard mUniKeyboard;
     UniResources mUniResources;
     UniIO mUniIO;
-
+    [HideInInspector]
+    public bool bAwakeDone;
     public Text mFPS;
     private Canvas mCanvas;
     public List<RomInfo> HadGameList = new List<RomInfo>();
@@ -42,8 +43,6 @@ public class UMAME : EmuCore<ulong>
     public override uint PushFrame => (uint)emu.currEmuFrame;
 
     public override uint PhysicsFrame => PushFrame;
-
-    public TextAsset MAME_XML;
     void Awake()
     {
         instance = this;
@@ -63,6 +62,7 @@ public class UMAME : EmuCore<ulong>
         mTimeSpan = new UniTimeSpan();
         MameMainMotion.CheckCanStep(-999, System.Reflection.MethodBase.GetCurrentMethod().Name);
         emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan, mUniIO);
+        bAwakeDone = true;
     }
     void OnEnable()
     {

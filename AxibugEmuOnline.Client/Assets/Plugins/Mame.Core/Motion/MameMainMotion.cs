@@ -99,7 +99,8 @@ namespace MAME.Core
 
             RomInfo.Rom = new RomInfo();
             MameMainMotion.CheckCanStep(-720, System.Reflection.MethodBase.GetCurrentMethod().Name);
-            MAMEDBHelper.LoadROMXML(resource.mame);
+            //MAMEDBHelper.LoadROMXML(resource.mame);
+            MAMEDBHelper.LoadROMXML(iRes);
             MameMainMotion.CheckCanStep(-699, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Keyboard.InitializeInput(ikb);
             MameMainMotion.CheckCanStep(-698, System.Reflection.MethodBase.GetCurrentMethod().Name);
