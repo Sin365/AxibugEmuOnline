@@ -63,7 +63,7 @@ namespace AxibugEmuOnline.Client.Settings
         /// </summary>
         /// <param name="m_rawImg"></param>
         /// <param name="platform">不指定模拟器平台时,使用全局设置的缩放模式</param>
-        public void CalcScale(RawImage rawImg, RomPlatformType? platform = null)
+        public void CalcScale(RawImage rawImg, Vector3 srcEulerAngles, RomPlatformType? platform = null)
         {
             var targetMode = platform == null ? GlobalMode : GetMode(platform.Value);
             var resolution = GetRawResolution(platform == null ? RomPlatformType.Nes : platform.Value);
@@ -76,6 +76,7 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.Raw_x2:
@@ -85,6 +86,7 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.Raw_x3:
@@ -94,6 +96,7 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.Raw_x4:
@@ -103,6 +106,7 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.Raw_x5:
@@ -112,6 +116,7 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.Raw_x6:
@@ -121,6 +126,7 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width * pr);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height * pr);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.Fix:
@@ -146,6 +152,8 @@ namespace AxibugEmuOnline.Client.Settings
                         float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
                         rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
                     }
                     break;
                 case EnumScalerMode.FullScreen:
@@ -155,6 +163,72 @@ namespace AxibugEmuOnline.Client.Settings
                         rawImg.rectTransform.anchorMax = new Vector2(1, 1);
                         rawImg.rectTransform.sizeDelta = new Vector2(0, 0);
                         rawImg.rectTransform.anchoredPosition = new Vector2(0, 0);
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles;
+                    }
+                    break;
+                case EnumScalerMode.Rotate_90:
+                    {
+
+                        bool stretchWidth = rawImg.canvas.pixelRect.width <= rawImg.canvas.pixelRect.height;
+                        //bool stretchWidth = Mathf.Abs(resolution.x - rawImg.canvas.pixelRect.width) <= Mathf.Abs(resolution.y - rawImg.canvas.pixelRect.height);
+                        if (stretchWidth)
+                        {
+                            var needWidth = rawImg.canvas.pixelRect.width;
+                            var factor = needWidth / resolution.x;
+                            resolution.x = (int)needWidth;
+                            resolution.y = (int)(resolution.y * factor);
+                        }
+                        else
+                        {
+                            var needHeight = rawImg.canvas.pixelRect.height;
+                            var factor = needHeight / resolution.y;
+                            resolution.y = (int)needHeight;
+                            resolution.x = (int)(resolution.x * factor);
+                        }
+
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+
+                        float newwidth = height;
+                        float newheight = height * (height / width);
+
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newwidth);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newheight);
+
+                        //旋转 90°
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles + new Vector3(0, 0, 90);
+                    }
+                    break;
+                case EnumScalerMode.Rotate_270:
+                    {
+                        bool stretchWidth = rawImg.canvas.pixelRect.width <= rawImg.canvas.pixelRect.height;
+                        //bool stretchWidth = Mathf.Abs(resolution.x - rawImg.canvas.pixelRect.width) <= Mathf.Abs(resolution.y - rawImg.canvas.pixelRect.height);
+                        if (stretchWidth)
+                        {
+                            var needWidth = rawImg.canvas.pixelRect.width;
+                            var factor = needWidth / resolution.x;
+                            resolution.x = (int)needWidth;
+                            resolution.y = (int)(resolution.y * factor);
+                        }
+                        else
+                        {
+                            var needHeight = rawImg.canvas.pixelRect.height;
+                            var factor = needHeight / resolution.y;
+                            resolution.y = (int)needHeight;
+                            resolution.x = (int)(resolution.x * factor);
+                        }
+
+                        float width = resolution.x / rawImg.canvas.pixelRect.width * canvasRect.width;
+                        float height = resolution.y / rawImg.canvas.pixelRect.height * canvasRect.height;
+
+                        float newwidth = height;
+                        float newheight = height * (height / width);
+
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newwidth);
+                        rawImg.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newheight);
+
+                        //旋转 270°
+                        rawImg.rectTransform.localEulerAngles = srcEulerAngles + new Vector3(0, 0, 270);
                     }
                     break;
             }
@@ -202,6 +276,8 @@ namespace AxibugEmuOnline.Client.Settings
             Raw_x4,
             Raw_x5,
             Raw_x6,
+            Rotate_270,
+            Rotate_90,
         };
     }
 }

@@ -43,6 +43,11 @@ public class UMAME : EmuCore<ulong>
     public override uint PushFrame => (uint)emu.currEmuFrame;
 
     public override uint PhysicsFrame => PushFrame;
+
+    public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
+    public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
+    public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
+    public override Vector3 DrawCanvas_SrcRot => mUniVideoPlayer.srcCanvasLocalEulerAngles;
     void Awake()
     {
         instance = this;
@@ -244,8 +249,4 @@ public class UMAME : EmuCore<ulong>
         br.Close();
         fs.Close();
     }
-    public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
-    public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
-    public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
-
 }

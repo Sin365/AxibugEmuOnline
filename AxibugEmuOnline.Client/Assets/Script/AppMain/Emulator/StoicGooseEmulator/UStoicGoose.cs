@@ -7,6 +7,7 @@ using StoicGoose.Common.Utilities;
 using StoicGoose.Core.Machines;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Compression;
 using System.Linq;
 using UnityEngine;
@@ -66,6 +67,8 @@ public class UStoicGoose : EmuCore<ulong>
     public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
 
     public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
+
+    public override Vector3 DrawCanvas_SrcRot => graphicsHandler.srcCanvasLocalEulerAngles;
 
 
     public override object GetState()
@@ -198,6 +201,8 @@ public class UStoicGoose : EmuCore<ulong>
         UnityEngine.Debug.Log("[USG]设置 步进中断数" + step);
     }
 
+    [Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_SWITCH")]
     public static void CheckCanStep(int stepIdx,string method = "", string note = null)
     {
         if (!m_bDebugStepBreak) return;

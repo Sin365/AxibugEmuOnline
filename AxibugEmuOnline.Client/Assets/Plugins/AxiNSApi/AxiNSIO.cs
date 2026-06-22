@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 public class AxiNSIO
 {
@@ -37,6 +38,8 @@ public class AxiNSIO
         UnityEngine.Debug.Log("[AxiNSIO]设置" + type.ToString() + "步进中断数" + step);
     }
 
+    [Conditional("UNITY_EDITOR")]
+    [Conditional("UNITY_SWITCH")]
     public static void CheckCanStep(E_AxiNS_dgbBk type, int stepIdx,
         string path, string method = "")
     {

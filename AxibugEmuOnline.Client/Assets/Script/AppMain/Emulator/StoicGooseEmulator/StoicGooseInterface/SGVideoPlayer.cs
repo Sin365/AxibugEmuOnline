@@ -28,6 +28,7 @@ public class SGVideoPlayer : MonoBehaviour
     public Vector2Int ScreenSize = Vector2Int.one;
 
     Texture2D defaultTex;
+    internal Vector3 srcCanvasLocalEulerAngles;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class SGVideoPlayer : MonoBehaviour
         defaultTex = new Texture2D(224, 144, TextureFormat.BGRA32, false);//直接初始化好了。分辨率是固定的呢
         m_rawBufferWarper = defaultTex;
         m_rawBufferWarper.filterMode = FilterMode.Point;
+        srcCanvasLocalEulerAngles = m_drawCanvas.transform.localEulerAngles;
     }
 
     public void Initialize()

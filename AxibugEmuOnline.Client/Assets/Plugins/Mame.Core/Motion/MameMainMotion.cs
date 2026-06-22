@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace MAME.Core
@@ -34,6 +35,8 @@ namespace MAME.Core
             EmuLogger.Log("[MAME]设置 步进中断数" + step);
         }
 
+        [Conditional("UNITY_EDITOR")]
+        [Conditional("UNITY_SWITCH")]
         public static void CheckCanStep(int stepIdx, string method = "", string note = null)
         {
             if (!m_bDebugStepBreak) return;

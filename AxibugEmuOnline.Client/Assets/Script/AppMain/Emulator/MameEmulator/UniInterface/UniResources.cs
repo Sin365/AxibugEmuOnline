@@ -101,8 +101,8 @@ public class UniResources : IResources
         get
         {
             MameMainMotion.CheckCanStep(-719, System.Reflection.MethodBase.GetCurrentMethod().Name);
-            //return Resources.Load<TextAsset>(ResourceRoot + "mame.xml").text;//ok
-            return UMAME.instance.MAME_XML.text;
+            return Resources.Load<TextAsset>(ResourceRoot + "mame.xml").text;//ok
+            //return UMAME.instance.MAME_XML.text;
         }
     }
 

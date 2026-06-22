@@ -19,6 +19,9 @@ namespace AxibugEmuOnline.Client
         public RawImage Image;
         #endregion
 
+        [HideInInspector]
+        public Vector3 srcCanvasLocalEulerAngles;
+
         #region GPU_TURBO
         //图像数据字节数
         private int TexBufferSize_gpu;
@@ -48,6 +51,7 @@ namespace AxibugEmuOnline.Client
         private void Awake()
         {
             DrawCanvas.worldCamera = Camera.main;
+            srcCanvasLocalEulerAngles = Image.transform.localEulerAngles;
         }
 
         private void OnDestroy()
@@ -84,11 +88,6 @@ namespace AxibugEmuOnline.Client
         public void ApplyFilterEffect()
         {
             App.settings.Filter.ExecuteFilterRender(rt_gpu, Image);
-        }
-
-        public void ApplyScreenScaler()
-        {
-            App.settings.ScreenScaler.CalcScale(Image, RomPlatformType.Nes);
         }
 
         private unsafe void PrepareUI(uint* screenData)

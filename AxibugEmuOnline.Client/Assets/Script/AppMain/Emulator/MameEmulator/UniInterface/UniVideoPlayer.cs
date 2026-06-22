@@ -27,6 +27,10 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
 
     public Texture2D rawBufferWarper => m_rawBufferWarper;
     public RawImage DrawCanvas => m_drawCanvas;
+
+    [HideInInspector]
+    public Vector3 srcCanvasLocalEulerAngles;
+
     Texture2D defaultTex;
     private void Awake()
     {
@@ -37,6 +41,7 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
         defaultTex = new Texture2D(mScreenSize.x, mScreenSize.y, TextureFormat.RGBA32, false);
         m_rawBufferWarper = defaultTex;
         m_rawBufferWarper.filterMode = FilterMode.Point;
+        srcCanvasLocalEulerAngles = m_drawCanvas.transform.localEulerAngles;
     }
 
     public void Initialize(int width, int height, IntPtr framePtr)
@@ -98,10 +103,5 @@ public class UniVideoPlayer : MonoBehaviour, IVideoPlayer
     public void ApplyFilterEffect()
     {
         App.settings.Filter.ExecuteFilterRender(m_rawBufferWarper, m_drawCanvas);
-    }
-
-    public void ApplyScreenScaler()
-    {
-        App.settings.ScreenScaler.CalcScale(m_drawCanvas, UMAME.instance.Platform);
     }
 }
