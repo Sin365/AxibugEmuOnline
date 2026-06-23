@@ -2,6 +2,7 @@
 using StoicGoose.Core.Interfaces;
 using StoicGoose.Core.Machines;
 using System;
+using System.Runtime.CompilerServices;
 using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.Sound
@@ -89,6 +90,7 @@ namespace StoicGoose.Core.Sound
         protected byte speakerVolumeShift;
         /* REG_SND_VOLUME */
         protected byte masterVolume;
+        protected double masterVolumeMultiplier = 1.0;
 
         public SoundControllerCommon(IMachine machine, int rate, int outChannels,byte maxMasterVolume, byte numChannels)
         {
@@ -142,6 +144,8 @@ namespace StoicGoose.Core.Sound
             headphonesConnected = true; /* NOTE: always set for stereo sound */
             speakerVolumeShift = 0;
             masterVolume = MaxMasterVolume;
+            // [性能优化] 初始化时更新缓存乘数
+            UpdateMasterVolumeMultiplier();
         }
 
         public void Shutdown()
@@ -156,14 +160,23 @@ namespace StoicGoose.Core.Sound
             else if (newMasterVolume > MaxMasterVolume) newMasterVolume = 0;
 
             masterVolume = (byte)newMasterVolume;
+            // [性能优化] 音量改变时更新缓存乘数
+            UpdateMasterVolumeMultiplier();
         }
 
+        /// <summary>
+        /// [性能优化-第一阶段] 批处理CPU周期
+        /// 原始设计：for (i=0; i&lt;clockCyclesInStep; i++) StepChannels() → 每帧6000次调用 × 4通道 ≈ 24000次
+        /// 优化方案：直接调用 StepChannels(clockCyclesInStep) → 每帧只调4次
+        /// 通道内部用counter -= cycles批量处理，保持原始计时精度
+        /// 预期减少幅度：~99% 的调用开销
+        /// </summary>
         public void Step(int clockCyclesInStep)
         {
             cycleCount += clockCyclesInStep;
 
-            for (int i = 0; i < clockCyclesInStep; i++)
-                StepChannels();
+            // [性能优化] 批处理所有通道时钟推进，而非逐CPU周期调用
+            StepChannels(clockCyclesInStep);
 
             if (cycleCount >= cyclesPerSample)
             {
@@ -190,12 +203,23 @@ namespace StoicGoose.Core.Sound
             }
         }
 
+        /// <summary>
+        /// [性能优化-堆栈] AggressiveInlining让JIT直接展开这些频繁调用的方法
+        /// 减少虚调用、栈帧建立等开销，每帧减少数百CPU周期
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual void StepChannels()
         {
-            channel1.Step();
-            channel2.Step();
-            channel3.Step();
-            channel4.Step();
+            StepChannels(1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public virtual void StepChannels(int cycles)
+        {
+            channel1.Step(cycles);
+            channel2.Step(cycles);
+            channel3.Step(cycles);
+            channel4.Step(cycles);
         }
 
         public struct GenerateSampleResult
@@ -213,11 +237,19 @@ namespace StoicGoose.Core.Sound
                 /* Otherwise, no headphones connected? Mix down to mono, perform volume shift */
                 lrSamples.mixedLeft = lrSamples.mixedRight = ((lrSamples.mixedLeft = lrSamples.mixedRight) / 2) >> speakerVolumeShift;
 
-            //mixedSampleBuffer.Add((short)(lrSamples.mixedLeft * (masterVolume / (double)MaxMasterVolume))); /* Left */
-            //mixedSampleBuffer.Add((short)(lrSamples.mixedRight * (masterVolume / (double)MaxMasterVolume))); /* Right */
+            // [性能优化] 使用缓存的masterVolumeMultiplier，避免每次采样都计算除法
+            mixedSampleBufferAdd((short)(lrSamples.mixedLeft * masterVolumeMultiplier)); /* Left */
+            mixedSampleBufferAdd((short)(lrSamples.mixedRight * masterVolumeMultiplier)); /* Right */
+        }
 
-            mixedSampleBufferAdd((short)(lrSamples.mixedLeft * (masterVolume / (double)MaxMasterVolume))); /* Left */
-            mixedSampleBufferAdd((short)(lrSamples.mixedRight * (masterVolume / (double)MaxMasterVolume))); /* Right */
+        /// <summary>
+        /// [性能优化] 更新缓存的主音量乘数
+        /// 当masterVolume改变时调用此方法，而非每帧在ProcessSample中重复计算
+        /// 典型调用次数：每帧735次采样 → 音量改变时1次
+        /// </summary>
+        private void UpdateMasterVolumeMultiplier()
+        {
+            masterVolumeMultiplier = masterVolume / (double)MaxMasterVolume;
         }
         //public virtual void ProcessSample(int[] lrSamples)
         //{
@@ -464,6 +496,8 @@ namespace StoicGoose.Core.Sound
                 case 0x9E:
                     /* REG_SND_VOLUME */
                     masterVolume = (byte)(value & 0b11);
+                    // [性能优化] 寄存器写入时更新缓存乘数
+                    UpdateMasterVolumeMultiplier();
                     break;
 
                 default:

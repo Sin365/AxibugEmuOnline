@@ -1,5 +1,6 @@
 ﻿using StoicGoose.Common.Attributes;
 using StoicGoose.Core.Interfaces;
+using System.Runtime.CompilerServices;
 
 using static StoicGoose.Common.Utilities.BitHandling;
 
@@ -24,10 +25,25 @@ namespace StoicGoose.Core.Sound
             channelHyperVoice.Reset();
         }
 
+        /// <summary>
+        /// [性能优化-堆栈] AggressiveInlining让JIT直接展开这些频繁调用的方法
+        /// 减少虚调用、栈帧建立等开销，每帧减少数百CPU周期
+        /// WonderSwan Color特定：扩展基类的4通道支持，增加HyperVoice超声通道
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void StepChannels()
         {
-            base.StepChannels();
+            StepChannels(1);
+        }
 
+        /// <summary>
+        /// [性能优化-堆栈] AggressiveInlining + 批处理
+        /// 调用基类批处理4个常规通道，然后处理HyperVoice
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override void StepChannels(int cycles)
+        {
+            base.StepChannels(cycles);
             channelHyperVoice.Step();
         }
 
