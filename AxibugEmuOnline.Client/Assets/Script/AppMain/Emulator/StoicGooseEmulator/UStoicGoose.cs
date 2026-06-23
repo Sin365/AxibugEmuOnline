@@ -73,22 +73,24 @@ public class UStoicGoose : EmuCore<ulong>
 
     public override object GetState()
     {
+        OverlayManager.PopTip(Platform + "当前版本不支持即时存档");
         throw new NotImplementedException();
     }
 
     public override byte[] GetStateBytes()
     {
+        OverlayManager.PopTip(Platform + "当前版本不支持即时存档");
         throw new NotImplementedException();
     }
 
     public override void LoadState(object state)
     {
-        throw new NotImplementedException();
+        OverlayManager.PopTip(Platform + "当前版本不支持即时存档");
     }
 
     public override void LoadStateFromBytes(byte[] data)
     {
-        throw new NotImplementedException();
+        OverlayManager.PopTip(Platform + "当前版本不支持即时存档");
     }
 
     //public override void Pause()

@@ -52,7 +52,7 @@ public class UMAME : EmuCore<ulong>
     {
         instance = this;
         MameMainMotion.CheckCanStep(-9000, System.Reflection.MethodBase.GetCurrentMethod().Name);
-        mFPS = GameObject.Find("FPS").GetComponent<Text>();
+        //mFPS = GameObject.Find("FPS").GetComponent<Text>();
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         mCanvas.worldCamera = Camera.main;
         emu = new MAMEEmu();

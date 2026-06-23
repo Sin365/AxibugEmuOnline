@@ -125,10 +125,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mUniVideoPlayer: {fileID: 0}
   bAwakeDone: 0
-  mFPS: {fileID: 0}
+  mFPS: {fileID: 3471319444327146581}
   bQuickTestRom: 0
   mQuickTestRom: 
-  MAME_XML: {fileID: 0}
 --- !u!1 &3471319444310732612
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ namespace AxibugEmuOnline.Client.Settings
     /// </summary>
     public class ScreenScaler
     {
-        #region 给每个游戏单独存储ID
+        #region 给每个RomID单独存储缩放配置
         string RomID2ScalerSettingPath => App.PersistentDataRootPath() + "/RomDispSet";
         Dictionary<int, EnumScalerMode?> dictSettingCache = new Dictionary<int, EnumScalerMode?>();
 

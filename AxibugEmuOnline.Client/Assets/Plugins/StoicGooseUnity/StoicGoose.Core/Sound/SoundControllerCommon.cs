@@ -192,13 +192,7 @@ namespace StoicGoose.Core.Sound
 
         public virtual void StepChannels()
         {
-            //channel1.Step();
-            //channel2.Step();
-            //channel3.Step();
-            //channel4.Step();
-
-            ref var c1 = ref channel1;
-            (c1).Step();
+            channel1.Step();
             channel2.Step();
             channel3.Step();
             channel4.Step();
