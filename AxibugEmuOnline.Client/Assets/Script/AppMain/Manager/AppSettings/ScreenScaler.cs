@@ -79,7 +79,7 @@ namespace AxibugEmuOnline.Client.Settings
         {
             //get => (EnumScalerMode)AxiPlayerPrefs.GetInt($"{nameof(ScreenScaler)}.GlobalMode", 0);
             //set => AxiPlayerPrefs.SetInt($"{nameof(ScreenScaler)}.GlobalMode", (int)value);
-            get => (EnumScalerMode)AxiPlayerPrefs.GetInt(key_GlobalMode, 0);
+            get => (EnumScalerMode)AxiPlayerPrefs.GetInt(key_GlobalMode, (int)EnumScalerMode.Fix);
             set => AxiPlayerPrefs.SetInt(key_GlobalMode, (int)value);
         }
 
