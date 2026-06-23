@@ -1,4 +1,6 @@
-﻿using AxibugProtobuf;
+﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugProtobuf;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,16 +12,65 @@ namespace AxibugEmuOnline.Client.Settings
     /// </summary>
     public class ScreenScaler
     {
-        string key_GlobalMode = nameof(ScreenScaler) + ".GlobalMode";
-        Dictionary<RomPlatformType, string> cache_PlatMode = new Dictionary<RomPlatformType, string>();
-        string get_key_PlatMode(RomPlatformType platform)
+        #region 给每个游戏单独存储ID
+        string RomID2ScalerSettingPath => App.PersistentDataRootPath() + "/RomDispSet";
+        Dictionary<int, EnumScalerMode?> dictSettingCache = new Dictionary<int, EnumScalerMode?>();
+
+        string GetRomID2ScalerSettingFileName(int romID)
         {
-            if (cache_PlatMode.ContainsKey(platform))
-                return cache_PlatMode[platform];
-            string val = nameof(ScreenScaler) + ".PlatMode." + platform;
-            cache_PlatMode[platform] = val;
-            return val;
+            return romID + ".sclr";
         }
+
+        string GetRomID2ScalerSettingPath(int romID)
+        {
+            return RomID2ScalerSettingPath + "/" + GetRomID2ScalerSettingFileName(romID);
+        }
+        public EnumScalerMode GetRomIDScalerMode(int romID)
+        {
+            if (!dictSettingCache.ContainsKey(romID))
+                dictSettingCache[romID] = LoadScalerModeFromFile(romID);
+            EnumScalerMode? val = dictSettingCache[romID];
+            return val.HasValue ?  val.Value : GlobalMode;
+        }
+
+        public void SetScalerMode(int romID, EnumScalerMode mode)
+        {
+            if (dictSettingCache.ContainsKey(romID) && dictSettingCache[romID] == mode)
+                return;
+            dictSettingCache[romID] = mode;
+            SaveScalerModeToFile(romID, mode);
+        }
+
+
+        EnumScalerMode? LoadScalerModeFromFile(int romID)
+        {
+            string path = GetRomID2ScalerSettingPath(romID);
+            if (!AxiIO.File.Exists(path))
+                return null;
+            else
+                return (EnumScalerMode)BitConverter.ToInt32(AxiIO.File.ReadAllBytes(path));
+        }
+
+        void SaveScalerModeToFile(int romID, EnumScalerMode mode)
+        {
+            if(!AxiIO.Directory.Exists(RomID2ScalerSettingPath))
+                AxiIO.Directory.CreateDirectory(RomID2ScalerSettingPath);
+
+            string path = GetRomID2ScalerSettingPath(romID);
+            AxiIO.File.WriteAllBytes(path, BitConverter.GetBytes((int)mode));
+        }
+        #endregion
+
+        string key_GlobalMode = nameof(ScreenScaler) + ".GlobalMode";
+        ////Dictionary<RomPlatformType, string> cache_PlatMode = new Dictionary<RomPlatformType, string>();
+        //string get_key_PlatMode(RomPlatformType platform)
+        //{
+        //    if (cache_PlatMode.ContainsKey(platform))
+        //        return cache_PlatMode[platform];
+        //    string val = nameof(ScreenScaler) + ".PlatMode." + platform;
+        //    cache_PlatMode[platform] = val;
+        //    return val;
+        //}
 
         /// <summary>
         /// 全局设置的缩放模式
@@ -32,6 +83,7 @@ namespace AxibugEmuOnline.Client.Settings
             set => AxiPlayerPrefs.SetInt(key_GlobalMode, (int)value);
         }
 
+        /*
         /// <summary>
         /// 获得指定平台设置的缩放模式
         /// </summary>
@@ -44,8 +96,9 @@ namespace AxibugEmuOnline.Client.Settings
                 return GlobalMode;
             else
                 return (EnumScalerMode)setVal;
-        }
+        }*/
 
+        /*
         public bool IsSetMode(RomPlatformType platform)
         {
             int setVal = AxiPlayerPrefs.GetInt(get_key_PlatMode(platform), -1);
@@ -56,16 +109,16 @@ namespace AxibugEmuOnline.Client.Settings
         {
             int setVal = mode == null ? -1 : (int)mode;
             AxiPlayerPrefs.SetInt(get_key_PlatMode(platform), setVal);
-        }
+        }*/
 
         /// <summary>
         /// 根据缩放模式设置UI的缩放
         /// </summary>
         /// <param name="m_rawImg"></param>
         /// <param name="platform">不指定模拟器平台时,使用全局设置的缩放模式</param>
-        public void CalcScale(RawImage rawImg, Vector3 srcEulerAngles, RomPlatformType? platform = null)
+        public void CalcScale(RawImage rawImg, Vector3 srcEulerAngles, RomPlatformType? platform = null, int? RomID = null)
         {
-            var targetMode = platform == null ? GlobalMode : GetMode(platform.Value);
+            var targetMode = RomID == null ? GlobalMode : GetRomIDScalerMode(RomID.Value);
             var resolution = GetRawResolution(platform == null ? RomPlatformType.Nes : platform.Value);
             var canvasRect = (rawImg.canvas.transform as RectTransform).rect;
             switch (targetMode)
