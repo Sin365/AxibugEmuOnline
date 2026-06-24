@@ -63,6 +63,12 @@ public class AxiNSIO
     }
 
     #endregion
+    bool MustCommitSave()
+    {
+        SetCommitDirty();
+        return CommitSave();
+    }
+
     bool CommitSave()
     {
         lock (commitLock)
@@ -98,16 +104,7 @@ public class AxiNSIO
 
     public void ApplyAutoCommit()
     {
-        bool temp;
-        lock (commitLock)
-        {
-            temp = bDirty;
-        }
-
-        if (temp)
-        {
-            CommitSave();
-        }
+        CommitSave();
     }
 
     static string SetSafePath(string path)
@@ -388,7 +385,7 @@ public class AxiNSIO
                 {
                     CheckCanStep(E_AxiNS_dgbBk.SaveFile, 16, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     //必须得提交，否则没有真实写入
-                    return CommitSave();
+                    return MustCommitSave();
                 }
                 else
                 {
@@ -661,7 +658,9 @@ public class AxiNSIO
                 UnityEngine.Debug.LogError($"nn.fs.File.Delete 失败 {filename} : result=>{result.GetErrorInfo()}");
                 return false;
             }
-            return CommitSave();
+            //return CommitSave();
+            SetCommitDirty();
+            return true;
         }
 #endif
     }
@@ -689,7 +688,9 @@ public class AxiNSIO
                 UnityEngine.Debug.LogError($"nn.fs.File.Delete 失败 {filename} : result=>{result.GetErrorInfo()}");
                 return false;
             }
-            return CommitSave();
+            //return CommitSave();
+            SetCommitDirty();
+            return true;
         }
 #endif
     }
@@ -717,7 +718,9 @@ public class AxiNSIO
                 UnityEngine.Debug.LogError($"nn.fs.File.Recursively 失败 {filename} : result=>{result.GetErrorInfo()}");
                 return false;
             }
-            return CommitSave();
+            //return CommitSave();
+            SetCommitDirty();
+            return true;
         }
 #endif
     }
@@ -751,7 +754,9 @@ public class AxiNSIO
                 UnityEngine.Debug.LogError($"nn.fs.File.DeleteRecursively 失败 {filename} : result=>{result.GetErrorInfo()}");
                 return false;
             }
-            return CommitSave();
+            //return CommitSave();
+            SetCommitDirty();
+            return true;
         }
 #endif
     }
@@ -778,7 +783,9 @@ public class AxiNSIO
                 UnityEngine.Debug.LogError($"nn.fs.File.DeleteRecursively 失败 {filename} : result=>{result.GetErrorInfo()}");
                 return false;
             }
-            return CommitSave();
+            //return CommitSave();
+            SetCommitDirty();
+            return true;
         }
 #endif
     }
@@ -800,7 +807,9 @@ public class AxiNSIO
                 UnityEngine.Debug.LogError($"nn.fs.File.Rename 失败 {oldpath} to {newpath} : result=>{result.GetErrorInfo()}");
                 return false;
             }
-            return CommitSave();
+            //return CommitSave();
+            SetCommitDirty();
+            return true;
         }
 #endif
     }
