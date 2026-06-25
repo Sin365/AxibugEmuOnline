@@ -1,3 +1,5 @@
+//#define UNITY_SWITCH
+
 #if UNITY_SWITCH
 using nn.fs;
 using System.Text.RegularExpressions;
@@ -43,9 +45,13 @@ public class AxiNSIO
     public static void CheckCanStep(E_AxiNS_dgbBk type, int stepIdx,
         string path, string method = "")
     {
-        if (!m_bDebugStepBreak) return;
-        if (type != m_breakType) return;
         string temp = $"调用 {method} do->{path}";
+
+        if (!m_bDebugStepBreak || type != m_breakType)
+        {
+            UnityEngine.Debug.Log("[AxiNSIO]正常步进推进" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
+            return;
+        }
 
         if (stepIdx >= m_StepBreakIdx)
         {
@@ -53,7 +59,7 @@ public class AxiNSIO
             throw new Exception("[AxiNSIO]步进中断" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
             return;
         }
-        UnityEngine.Debug.Log("[AxiNSIO]步进进行" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
+        UnityEngine.Debug.Log("[AxiNSIO]允许步进进行" + type.ToString() + "[" + stepIdx + "]" + ":" + temp + "");
         return;
     }
 
@@ -115,12 +121,34 @@ public class AxiNSIO
             .Trim();
     }
 
+
+    /// <summary>
+    /// 检查File是否存在
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
+    public bool CheckFilePathExists(string filePath)
+    {
+        string ametaPath = GetFileLengthMetaPath(filePath);
+        return (DoCheckPathExists(ametaPath) && DoCheckPathExists(filePath));
+    }
+
+    /// <summary>
+    /// 检查Dir是否存在
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
+    public bool CheckDirPathExists(string dirPath)
+    {
+        return DoCheckPathExists(dirPath);
+    }
+
     /// <summary>
     /// 检查Path是否存在
     /// </summary>
     /// <param name="filePath"></param>
     /// <returns></returns>
-    public bool CheckPathExists(string filePath)
+    bool DoCheckPathExists(string filePath)
     {
         filePath = SetSafePath(filePath);
 #if !UNITY_SWITCH
@@ -201,7 +229,7 @@ public class AxiNSIO
     public bool FileToSaveWithCreate(string filePath, System.IO.MemoryStream ms)
     {
         filePath = SetSafePath(filePath);
-        return FileToSaveWithCreate(filePath, ms.ToArray());
+        return FileToSaveWithCreate(filePath, ms.ToArray(), false);
     }
     /// <summary>
     /// 保存并创建文件（如果目录不存在回先自动创建目录）
@@ -218,13 +246,50 @@ public class AxiNSIO
     }
 
     /// <summary>
+    /// 获取amate文件路径，即描述文件大小的文件
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns></returns>
+    string GetFileLengthMetaPath(string filePath)
+    {
+        string lengthFilePath = filePath + ".ameta";
+        return lengthFilePath;
+    }
+
+    /// <summary>
     /// 保存并创建文件（如果目录不存在回先自动创建目录）
     /// </summary>
     /// <param name="filePath"></param>
     /// <param name="data"></param>
     /// <param name="immediatelyCommit">是否立即Commit到物理存储</param>
     /// <returns></returns>
-    public bool FileToSaveWithCreate(string filePath, byte[] data, bool immediatelyCommit = true)
+    public bool FileToSaveWithCreate(string filePath, byte[] data, bool immediatelyCommit)
+    {
+        CheckCanStep(E_AxiNS_dgbBk.SaveFile, -1000, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        if (DoFileToSaveWithCreate(filePath, data, immediatelyCommit))
+        {
+            CheckCanStep(E_AxiNS_dgbBk.SaveFile, -999, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            string fileLengthMetaPath = GetFileLengthMetaPath(filePath);
+            CheckCanStep(E_AxiNS_dgbBk.SaveFile, -998, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            byte[] lengthData = BitConverter.GetBytes(data.Length);
+            CheckCanStep(E_AxiNS_dgbBk.SaveFile, -997, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            if (DoFileToSaveWithCreate(fileLengthMetaPath, lengthData, immediatelyCommit))
+            {
+                CheckCanStep(E_AxiNS_dgbBk.SaveFile, -996, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                UnityEngine.Debug.Log($"写入AMate文件 {fileLengthMetaPath}：标记长度{data.Length}");
+                return true;
+            }
+            else
+            {
+                CheckCanStep(E_AxiNS_dgbBk.SaveFile, -995, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                UnityEngine.Debug.Log($"写入AMate文件 失败 {fileLengthMetaPath}：标记长度{data.Length}");
+                return false;
+            }
+        }
+        return false;
+    }
+
+    bool DoFileToSaveWithCreate(string filePath, byte[] data, bool immediatelyCommit)
     {
         filePath = SetSafePath(filePath);
         UnityEngine.Debug.Log($"FileToSaveWithCreate: {filePath}");
@@ -368,28 +433,88 @@ public class AxiNSIO
                 CheckCanStep(E_AxiNS_dgbBk.SaveFile, 14, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 //nn.fs.WriteOption.Flush 应该就是覆盖写入
                 result = nn.fs.File.Write(fileHandle, 0, data, data.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
-                                                                                                      //result.abortUnlessSuccess();
+
+                //result.abortUnlessSuccess();
                 if (!result.IsSuccess())
                 {
-                    UnityEngine.Debug.LogError("写入文件失败: " + result.GetErrorInfo());
-                    //到达这里文件一定都open了 需要Close
+                    UnityEngine.Debug.LogError($"写入失败 {filePath} : {result.GetErrorInfo()}");
                     nn.fs.File.Close(fileHandle);
                     return false;
                 }
+                nn.fs.File.Close(fileHandle);
+                UnityEngine.Debug.Log($"写入成功: {filePath} (原始大小: {data.Length} 字节)");
 
-                CheckCanStep(E_AxiNS_dgbBk.SaveFile, 15, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                UnityEngine.Debug.Log("写入文件成功: " + filePath);
+                /*
+                // ====================== 4K 对齐分块写入 ======================
+                const long Alignment = 4096;
+                const long MaxChunkSize = 2 * 1024 * 1024;  // 2MB
+
+                long offset = 0;
+
+                nn.Result resultLoop;
+                bool bHadWrite = false;
+                while (offset < data.Length)
+                {
+                    long remaining = data.Length - offset;
+                    long chunkSize = System.Math.Min(MaxChunkSize, remaining);
+
+                    //// 最后一块需要 padding 到 4K
+                    //long writeSize = (remaining <= MaxChunkSize)
+                    //    ? ((chunkSize + 4095) / Alignment) * Alignment
+                    //    : chunkSize;
+
+                    // 最后一块需要 padding 到 4K
+                    long writeSize = (remaining <= MaxChunkSize)
+                        ? ((chunkSize + 4095) / Alignment) * Alignment
+                        : chunkSize;
+
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 15, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    byte[] writeBuffer = new byte[writeSize];
+
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 16, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    // 拷贝真实数据
+                    int copyLen = (int)System.Math.Min(chunkSize, writeBuffer.Length);
+                    Buffer.BlockCopy(data, (int)offset, writeBuffer, 0, copyLen);
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 17, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+                    // 显式清零 padding
+                    Array.Clear(writeBuffer, (int)chunkSize, (int)(writeSize - chunkSize));
+
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 18, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    // 执行写入
+                    resultLoop = nn.fs.File.Write(fileHandle, offset, writeBuffer, writeSize, nn.fs.WriteOption.Flush);
+
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 19, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    if (!resultLoop.IsSuccess())
+                    {
+                        UnityEngine.Debug.LogError($"写入失败 {filePath} offset={offset}: {resultLoop.GetErrorInfo()}");
+                        nn.fs.File.Close(fileHandle);
+                        return false;
+                    }
+
+                    offset += chunkSize;   // 按原始数据长度前进
+                    bHadWrite = true;
+                }
 
                 nn.fs.File.Close(fileHandle);
+                UnityEngine.Debug.Log($"写入成功: {filePath} (原始大小: {data.Length} 字节)");
+                //====================== End ：4K 对齐分块写入 ======================
+
+                if (!bHadWrite)
+                    UnityEngine.Debug.Log($"是空文件");//不过也允许，允许创建空文件
+                */
+
+                CheckCanStep(E_AxiNS_dgbBk.SaveFile, 50, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                UnityEngine.Debug.Log("写入文件成功: " + filePath);
                 if (immediatelyCommit)
                 {
-                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 16, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 51, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     //必须得提交，否则没有真实写入
                     return MustCommitSave();
                 }
                 else
                 {
-                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 17, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 52, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     SetCommitDirty();
                     return true;
                 }
@@ -432,7 +557,25 @@ public class AxiNSIO
         }
         return false;
     }
+
     public bool LoadSwitchDataFile(string filename, out byte[] outputData)
+    {
+        CheckCanStep(E_AxiNS_dgbBk.LoadFile, -500, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        string ametaPath = GetFileLengthMetaPath(filename);
+        CheckCanStep(E_AxiNS_dgbBk.LoadFile, -499, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        if (!DoLoadSwitchDataFile(ametaPath, null, out byte[] ametedata))
+        {
+            CheckCanStep(E_AxiNS_dgbBk.LoadFile, -498, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            outputData = null;
+            return false;
+        }
+        CheckCanStep(E_AxiNS_dgbBk.LoadFile, -497, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        int realLength = BitConverter.ToInt32(ametedata);
+        CheckCanStep(E_AxiNS_dgbBk.LoadFile, -496, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        return DoLoadSwitchDataFile(filename, realLength, out outputData);
+    }
+
+    bool DoLoadSwitchDataFile(string filename, int? realLength, out byte[] outputData)
     {
         filename = SetSafePath(filename);
 #if !UNITY_SWITCH || UNITY_EDITOR
@@ -443,40 +586,40 @@ public class AxiNSIO
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 1, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
 
         outputData = null;
-		if (!AxiNS.instance.mount.SaveIsMount)
-		{
-			UnityEngine.Debug.LogError($"Save 尚未挂载，无法读取 {filename}");
-			return false;
+        if (!AxiNS.instance.mount.SaveIsMount)
+        {
+            UnityEngine.Debug.LogError($"Save 尚未挂载，无法读取 {filename}");
+            return false;
         }
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 2, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         if (CheckPathNotFound(filename))
-			return false;
+            return false;
 
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 3, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         FileHandle fileHandle = new nn.fs.FileHandle();
         nn.Result result;
-		result = nn.fs.File.Open(ref fileHandle, filename, nn.fs.OpenFileMode.Read);
-		if (result.IsSuccess() == false)
-		{
-			UnityEngine.Debug.LogError($"nn.fs.File.Open 失败 {filename} : result=>{result.GetErrorInfo()}");
-			return false;   // Could not open file. This can be used to detect if this is the first time a user has launched your game. 
-							// (However, be sure you are not getting this error due to your file being locked by another process, etc.)
-		}
-		UnityEngine.Debug.Log($"nn.fs.File.Open 成功 {filename}");
+        result = nn.fs.File.Open(ref fileHandle, filename, nn.fs.OpenFileMode.Read);
+        if (result.IsSuccess() == false)
+        {
+            UnityEngine.Debug.LogError($"nn.fs.File.Open 失败 {filename} : result=>{result.GetErrorInfo()}");
+            return false;   // Could not open file. This can be used to detect if this is the first time a user has launched your game. 
+                            // (However, be sure you are not getting this error due to your file being locked by another process, etc.)
+        }
+        UnityEngine.Debug.Log($"nn.fs.File.Open 成功 {filename}");
 
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 4, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         long iFileSize = 0;
-		result = nn.fs.File.GetSize(ref iFileSize, fileHandle);
-		if (result.IsSuccess() == false)
-		{
-			UnityEngine.Debug.LogError($"nn.fs.File.GetSize 失败 {filename} : result=>{result.GetErrorInfo()}");
-			return false;
-		}
+        result = nn.fs.File.GetSize(ref iFileSize, fileHandle);
+        if (result.IsSuccess() == false)
+        {
+            UnityEngine.Debug.LogError($"nn.fs.File.GetSize 失败 {filename} : result=>{result.GetErrorInfo()}");
+            return false;
+        }
 
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 5, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         UnityEngine.Debug.Log($"nn.fs.File.GetSize 成功 {filename},size=>{iFileSize}");
 
-		byte[] loadedData = new byte[iFileSize];
+        /*byte[] loadedData = new byte[iFileSize];
 		result = nn.fs.File.Read(fileHandle, 0, loadedData, iFileSize);
 		if (result.IsSuccess() == false)
 		{
@@ -485,18 +628,42 @@ public class AxiNSIO
             nn.fs.File.Close(fileHandle);
             return false;
 		}
+        
+		nn.fs.File.Close(fileHandle);
+		outputData = loadedData;
+        */
+
+        // ==================== 安全版核心 ====================
+        if (realLength != null)
+            iFileSize = realLength.Value;
+
+        outputData = new byte[iFileSize];
+        long offset = 0;
+        const long MaxChunk = 1 * 1024 * 1024L;   // 1MB 分块，更保守
+
+        byte[] buffer = new byte[MaxChunk];
+
+        while (offset < (long)iFileSize)
+        {
+            long toRead = System.Math.Min(MaxChunk, iFileSize - offset);
+
+            result = nn.fs.File.Read(fileHandle, offset, buffer, toRead);
+            if (!result.IsSuccess())
+            {
+                UnityEngine.Debug.LogError($"Read 失败 {filename} offset={offset}: {result.GetErrorInfo()}");
+                nn.fs.File.Close(fileHandle);
+                outputData = null;
+                return false;
+            }
+
+            Buffer.BlockCopy(buffer, 0, outputData, (int)offset, (int)toRead);
+            offset += toRead;
+        }
 
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 6, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         UnityEngine.Debug.Log($"nn.fs.File.Read 成功 {filename}");
+        nn.fs.File.Close(fileHandle);
 
-		nn.fs.File.Close(fileHandle);
-
-		//for (int i = 0; i < loadedData.Length; i++)
-		//{
-		//	UnityEngine.Debug.Log($"data[{i}]:{loadedData[i]}");
-		//}
-
-		outputData = loadedData;
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, 7, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         return true;
 #endif
@@ -641,7 +808,15 @@ public class AxiNSIO
         }
 #endif
     }
+
     public bool DeletePathFile(string filename)
+    {
+        string ametapath = GetFileLengthMetaPath(filename);
+        DoDeletePathFile(ametapath);
+        return DoDeletePathFile(filename);
+    }
+
+    bool DoDeletePathFile(string filename)
     {
         filename = SetSafePath(filename);
 #if !UNITY_SWITCH

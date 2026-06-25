@@ -34,7 +34,7 @@ namespace AxiIO
         {
             if (string.IsNullOrWhiteSpace(dirpath))
                 return false;
-            return AxiNS.instance.io.CheckPathExists(dirpath);
+            return AxiNS.instance.io.CheckDirPathExists(dirpath);
         }
         public string[] dir_GetDirectories(string path)
         {
@@ -60,7 +60,7 @@ namespace AxiIO
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 return false;
-            bool result = AxiNS.instance.io.CheckPathExists(filePath);
+            bool result = AxiNS.instance.io.CheckFilePathExists(filePath);
             return result;
         }
         public byte[] file_ReadAllBytes(string filePath)
