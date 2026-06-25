@@ -113,14 +113,6 @@ public class AxiNSIO
         CommitSave();
     }
 
-    static string SetSafePath(string path)
-    {
-        return path.Replace('\\', '/')
-            .Replace("\\\\", "/")
-            .Replace("//", "/")
-            .Trim();
-    }
-
 
     /// <summary>
     /// 检查File是否存在
@@ -150,7 +142,6 @@ public class AxiNSIO
     /// <returns></returns>
     bool DoCheckPathExists(string filePath)
     {
-        filePath = SetSafePath(filePath);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -201,7 +192,6 @@ public class AxiNSIO
     /// <returns></returns>
     public bool CreateDir(string dirpath)
     {
-        dirpath = SetSafePath(dirpath);
         UnityEngine.Debug.Log($"CreateDir: {dirpath}");
         lock (commitLock)
         {
@@ -228,7 +218,6 @@ public class AxiNSIO
     /// <returns></returns>
     public bool FileToSaveWithCreate(string filePath, System.IO.MemoryStream ms)
     {
-        filePath = SetSafePath(filePath);
         return FileToSaveWithCreate(filePath, ms.ToArray(), false);
     }
     /// <summary>
@@ -239,7 +228,6 @@ public class AxiNSIO
     /// <returns></returns>
     public AxiNSWait_FileToSaveByMSWithCreate FileToSaveWithCreateAsync(string filePath, System.IO.MemoryStream ms)
     {
-        filePath = SetSafePath(filePath);
         var wait = new AxiNSWait_FileToSaveByMSWithCreate(filePath, ms);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
@@ -289,9 +277,12 @@ public class AxiNSIO
         return false;
     }
 
+    private const int AlignmentSize = 4096; // 4K
     bool DoFileToSaveWithCreate(string filePath, byte[] data, bool immediatelyCommit)
     {
-        filePath = SetSafePath(filePath);
+        // 计算需要对齐后的总长度
+        long alignedLength = ((data.Length + AlignmentSize - 1) / AlignmentSize) * AlignmentSize;
+
         UnityEngine.Debug.Log($"FileToSaveWithCreate: {filePath}");
 #if !UNITY_SWITCH
         return false;
@@ -340,8 +331,8 @@ public class AxiNSIO
                 {
                     CheckCanStep(E_AxiNS_dgbBk.SaveFile, 3, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     UnityEngine.Debug.Log($"文件({filePath})不存在需要创建");
-                    result = nn.fs.File.Create(filePath, data.Length); //this makes a file the size of your save journal. You may want to make a file smaller than this.
-                                                                       //result.abortUnlessSuccess();
+                    result = nn.fs.File.Create(filePath, alignedLength); //this makes a file the size of your save journal. You may want to make a file smaller than this.
+                                                                         //result.abortUnlessSuccess();
                     if (!result.IsSuccess())
                     {
                         UnityEngine.Debug.LogError($"创建文件失败 {filePath} : " + result.GetErrorInfo());
@@ -381,7 +372,7 @@ public class AxiNSIO
                         return false;
                     }
                     CheckCanStep(E_AxiNS_dgbBk.SaveFile, 8, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                    if (currsize == data.Length)
+                    if (currsize == alignedLength)
                     {
                         UnityEngine.Debug.Log($"文件({filePath})存在,长度一致，不用重新创建");
                         CheckCanStep(E_AxiNS_dgbBk.SaveFile, 9, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
@@ -400,7 +391,7 @@ public class AxiNSIO
                         }
                         CheckCanStep(E_AxiNS_dgbBk.SaveFile, 11, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                         //重新创建
-                        result = nn.fs.File.Create(filePath, data.Length);
+                        result = nn.fs.File.Create(filePath, alignedLength);
                         if (!result.IsSuccess())
                         {
                             UnityEngine.Debug.LogError($"创建文件失败 {filePath} : " + result.GetErrorInfo());
@@ -431,9 +422,10 @@ public class AxiNSIO
                 UnityEngine.Debug.Log($"成功 File.Open(ref filehandle, {filePath}, OpenFileMode.Write)");
 
                 CheckCanStep(E_AxiNS_dgbBk.SaveFile, 14, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+                /* 不padding
                 //nn.fs.WriteOption.Flush 应该就是覆盖写入
                 result = nn.fs.File.Write(fileHandle, 0, data, data.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
-
                 //result.abortUnlessSuccess();
                 if (!result.IsSuccess())
                 {
@@ -442,8 +434,43 @@ public class AxiNSIO
                     return false;
                 }
                 nn.fs.File.Close(fileHandle);
-                UnityEngine.Debug.Log($"写入成功: {filePath} (原始大小: {data.Length} 字节)");
+                UnityEngine.Debug.Log($"写入成功: {filePath} (原始大小: {alignedLength} 字节)");
+                */
 
+                #region padding 2次写入（一次真实数据，一次padding）
+                CheckCanStep(E_AxiNS_dgbBk.SaveFile, 15, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                result = nn.fs.File.Write(fileHandle, 0, data, data.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
+                if (!result.IsSuccess())
+                {
+                    UnityEngine.Debug.LogError($"写入真实数据失败 {filePath} : {result.GetErrorInfo()}");
+                    nn.fs.File.Close(fileHandle);
+                    return false;
+                }
+                UnityEngine.Debug.Log($"写入真实数据成功: {filePath} (原始大小: {data.Length} 字节)");
+                // 计算需要补齐的字节数
+                long padding = alignedLength - data.Length;
+                if (padding > 0)
+                {
+                    byte[] zeroBytes = new byte[padding];
+                    UnityEngine.Debug.LogError($"需要padding，长度{padding}");
+                    CheckCanStep(E_AxiNS_dgbBk.SaveFile, 16, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    result = nn.fs.File.Write(fileHandle, data.Length, zeroBytes, zeroBytes.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
+                    if (!result.IsSuccess())
+                    {
+                        UnityEngine.Debug.LogError($"写入padding失败 长度{padding} {filePath} : {result.GetErrorInfo()}");
+                        nn.fs.File.Close(fileHandle);
+                        return false;
+                    }
+                    UnityEngine.Debug.Log($"写入padding成功 长度{padding}: {filePath} (总大小: {alignedLength} 字节)");
+                }
+                else
+                {
+                    UnityEngine.Debug.LogError($"不需要padding");
+                }
+                nn.fs.File.Close(fileHandle);
+                #endregion
+
+                #region 4K 对齐分块写入 
                 /*
                 // ====================== 4K 对齐分块写入 ======================
                 const long Alignment = 4096;
@@ -503,6 +530,7 @@ public class AxiNSIO
                 if (!bHadWrite)
                     UnityEngine.Debug.Log($"是空文件");//不过也允许，允许创建空文件
                 */
+                #endregion
 
                 CheckCanStep(E_AxiNS_dgbBk.SaveFile, 50, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 UnityEngine.Debug.Log("写入文件成功: " + filePath);
@@ -530,14 +558,12 @@ public class AxiNSIO
     /// <returns></returns>
     public AxiNSWait_FileToSaveWithCreate FileToSaveWithCreateAsync(string filePath, byte[] data)
     {
-        filePath = SetSafePath(filePath);
         var wait = new AxiNSWait_FileToSaveWithCreate(filePath, data);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
     public byte[] LoadSwitchDataFile(string filename)
     {
-        filename = SetSafePath(filename);
         byte[] outputData;
         LoadSwitchDataFile(filename, out outputData);
         return outputData;
@@ -545,7 +571,6 @@ public class AxiNSIO
 
     public bool LoadSwitchDataFile(string filename, ref System.IO.MemoryStream ms)
     {
-        filename = SetSafePath(filename);
         byte[] outputData;
         if (LoadSwitchDataFile(filename, out outputData))
         {
@@ -562,23 +587,25 @@ public class AxiNSIO
     {
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, -500, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         string ametaPath = GetFileLengthMetaPath(filename);
+        UnityEngine.Debug.Log($"准备进行amete文件读取:{ametaPath}");
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, -499, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         if (!DoLoadSwitchDataFile(ametaPath, null, out byte[] ametedata))
         {
+            UnityEngine.Debug.Log($"amete文件读取失败:{ametaPath}");
             CheckCanStep(E_AxiNS_dgbBk.LoadFile, -498, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
             outputData = null;
             return false;
         }
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, -497, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         int realLength = BitConverter.ToInt32(ametedata);
+        UnityEngine.Debug.Log($"amete得到真实大小:{realLength}");
         CheckCanStep(E_AxiNS_dgbBk.LoadFile, -496, filename, System.Reflection.MethodBase.GetCurrentMethod().Name);
         return DoLoadSwitchDataFile(filename, realLength, out outputData);
     }
 
     bool DoLoadSwitchDataFile(string filename, int? realLength, out byte[] outputData)
     {
-        filename = SetSafePath(filename);
-#if !UNITY_SWITCH || UNITY_EDITOR
+#if !UNITY_SWITCH //|| UNITY_EDITOR
         outputData = null;
         return false;
 #else
@@ -670,7 +697,6 @@ public class AxiNSIO
     }
     public AxiNSWait_LoadSwitchDataFile LoadSwitchDataFileAsync(string filename)
     {
-        filename = SetSafePath(filename);
         var wait = new AxiNSWait_LoadSwitchDataFile(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
@@ -678,7 +704,6 @@ public class AxiNSIO
 
     public bool GetDirectoryFiles(string path, out string[] entrys)
     {
-        path = SetSafePath(path);
 #if !UNITY_SWITCH || UNITY_EDITOR
 
         entrys = null;
@@ -690,7 +715,6 @@ public class AxiNSIO
 
     public bool GetDirectoryDirs(string path, out string[] entrys)
     {
-        path = SetSafePath(path);
 #if !UNITY_SWITCH || UNITY_EDITOR
         entrys = null;
         return false;
@@ -781,7 +805,6 @@ public class AxiNSIO
     }
     public IEnumerable<string> EnumerateFiles(string path, string searchPattern)
     {
-        path = SetSafePath(path);
 #if !UNITY_SWITCH || UNITY_EDITOR
         yield break;
 #else
@@ -818,7 +841,6 @@ public class AxiNSIO
 
     bool DoDeletePathFile(string filename)
     {
-        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -841,14 +863,12 @@ public class AxiNSIO
     }
     public AxiNSWait_DeletePathFile DeletePathFileAsync(string filename)
     {
-        filename = SetSafePath(filename);
         var wait = new AxiNSWait_DeletePathFile(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
     public bool DeletePathDir(string filename)
     {
-        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -871,14 +891,12 @@ public class AxiNSIO
     }
     public AxiNSWait_DeletePathDir DeletePathDirAsync(string filename)
     {
-        filename = SetSafePath(filename);
         var wait = new AxiNSWait_DeletePathDir(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
     }
     public bool DeletePathDirRecursively(string filename)
     {
-        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -901,7 +919,6 @@ public class AxiNSIO
     }
     public AxiNSWait_DeletePathDirRecursively DeletePathDirRecursivelyAsync(string filename)
     {
-        filename = SetSafePath(filename);
         var wait = new AxiNSWait_DeletePathDirRecursively(filename);
         AxiNS.instance.wait.AddWait(wait);
         return wait;
@@ -914,7 +931,6 @@ public class AxiNSIO
     /// <returns></returns>
     public bool DeleteRecursivelyPathDir(string filename)
     {
-        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -943,7 +959,6 @@ public class AxiNSIO
     /// <returns></returns>
     public bool CleanRecursivelyPathDir(string filename)
     {
-        filename = SetSafePath(filename);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -967,7 +982,6 @@ public class AxiNSIO
 
     public bool RenameDir(string oldpath, string newpath)
     {
-        newpath = SetSafePath(newpath);
 #if !UNITY_SWITCH
         return false;
 #else
@@ -1059,7 +1073,8 @@ public class AxiNSIO
             UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->string.IsNullOrWhiteSpace({inputPath})==false");
             return false;
         }
-        string normalizedPath = SetSafePath(inputPath);
+        //string normalizedPath = SetSafePath(inputPath);
+        string normalizedPath = inputPath;
         //UnityEngine.Debug.Log($"TryGetDirectoryAndParentsExcludingRoot->normalizedPath=>{normalizedPath}");
         try
         {
