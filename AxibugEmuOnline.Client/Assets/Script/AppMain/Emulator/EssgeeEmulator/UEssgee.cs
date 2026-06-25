@@ -33,6 +33,8 @@ public class UEssgee : EmuCore<ulong>
     public override RawImage DrawCanvas => graphicsHandler.DrawCanvas;
     public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
 
+    public override Vector3 DrawCanvas_SrcRot => graphicsHandler.srcCanvasLocalEulerAngles;
+
     public static bool bLogicUpdatePause { get; private set; }
 
     #region

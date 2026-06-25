@@ -414,8 +414,11 @@ namespace MAME.Core
 
         public static void Init()
         {
+            MameMainMotion.CheckCanStep(-798, System.Reflection.MethodBase.GetCurrentMethod().Name);
             FreeAllGCHandle();
+            MameMainMotion.CheckCanStep(-797, System.Reflection.MethodBase.GetCurrentMethod().Name);
             set_TempBuffer = new byte[0x40000];
+            MameMainMotion.CheckCanStep(-796, System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
         public static void GetObjectPtr(this object srcObj, ref GCHandle handle, ref cpu.m68000.Register* ptr)

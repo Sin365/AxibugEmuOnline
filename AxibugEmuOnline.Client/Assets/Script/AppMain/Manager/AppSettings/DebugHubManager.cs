@@ -1,5 +1,6 @@
 ﻿using AxibugProtobuf;
 using System.Collections.Generic;
+using IngameDebugConsole;
 
 namespace AxibugEmuOnline.Client.Settings
 {
@@ -28,6 +29,13 @@ namespace AxibugEmuOnline.Client.Settings
         public void RefreshForSetting()
         {
             Initer.debugger_instance.gameObject.SetActive(IsDebugHubOn);
+#if UNITY_SWITCH
+            if (UMAME.bMAMEReadyLoadState)
+            {
+                Initer.debugger_instance.gameObject.SetActive(true);
+                DebugLogManager.Instance.ShowLogWindow();
+            }
+#endif
         }
     }
 }

@@ -48,7 +48,7 @@ namespace AxibugEmuOnline.Client
             base.Update();
             PushCoreFrame();
             App.settings.Filter.ExecuteFilterRender(Core.OutputPixel, Core.DrawCanvas);
-            App.settings.ScreenScaler.CalcScale(Core.DrawCanvas, Core.Platform);
+            App.settings.ScreenScaler.CalcScale(Core.DrawCanvas,Core.DrawCanvas_SrcRot, Core.Platform, App.emu.RomID);
         }
 
         void PushCoreFrame()

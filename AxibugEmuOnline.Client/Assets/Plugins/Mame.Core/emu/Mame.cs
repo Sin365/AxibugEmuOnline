@@ -193,9 +193,11 @@ namespace MAME.Core
         }
         public static void init_machine()
         {
+            MameMainMotion.CheckCanStep(2002, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Inptport.input_init();
             Palette.palette_init();
             Generic.generic_machine_init();
+            MameMainMotion.CheckCanStep(2003, System.Reflection.MethodBase.GetCurrentMethod().Name);
             EmuTimer.timer_init();
             //soft_reset_timer = EmuTimer.timer_alloc_common(EmuTimer.TIME_ACT.Mame_soft_reset, false);
             EmuTimer.timer_alloc_common(ref soft_reset_timer, EmuTimer.TIME_ACT.Mame_soft_reset, false);
@@ -204,13 +206,16 @@ namespace MAME.Core
             Cpuexec.cpuexec_init();
             Watchdog.watchdog_init();
             Cpuint.cpuint_init();
+            MameMainMotion.CheckCanStep(2004, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Machine.driver_init();
             Video.video_init();
             Tilemap.tilemap_init();
+            MameMainMotion.CheckCanStep(2005, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Crosshair.crosshair_init();
             Sound.sound_init();
             State.state_init();
             Machine.machine_start();
+            MameMainMotion.CheckCanStep(2006, System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
         public static void mame_pause(bool pause)
         {
