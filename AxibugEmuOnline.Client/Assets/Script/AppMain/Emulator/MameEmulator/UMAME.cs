@@ -48,6 +48,8 @@ public class UMAME : EmuCore<ulong>
     public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
     public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
     public override Vector3 DrawCanvas_SrcRot => mUniVideoPlayer.srcCanvasLocalEulerAngles;
+
+    static public bool bMAMEReadyLoadState = false;
     void Awake()
     {
         instance = this;
@@ -71,11 +73,17 @@ public class UMAME : EmuCore<ulong>
     }
     void OnEnable()
     {
+        bMAMEReadyLoadState = true;
+        App.settings.debugHub.RefreshForSetting();
     }
     void OnDisable()
     {
+        bMAMEReadyLoadState = false;
+        App.settings.debugHub.RefreshForSetting();
+
         StopGame();
     }
+
     #region 实现接口
     public override object GetState()
     {
@@ -108,7 +116,11 @@ public class UMAME : EmuCore<ulong>
         MameMainMotion.CheckCanStep(-20, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mTimeSpan.InitStandTime();
         MameMainMotion.CheckCanStep(-19, System.Reflection.MethodBase.GetCurrentMethod().Name);
-        if (LoadGame(romFile.LocalProxyFileName))
+
+        bool ret = LoadGame(romFile.LocalProxyFileName);
+        bMAMEReadyLoadState = false;
+        App.settings.debugHub.RefreshForSetting();
+        if (ret)
             return true;
         else
             return "Rom加载失败";
