@@ -30,6 +30,8 @@ public class UEGVideoPlayer : MonoBehaviour
     public ulong mFrame { get; private set; }
     bool bInit = false;
     bool bHadData = false;
+    [HideInInspector]
+    public Vector3 srcCanvasLocalEulerAngles;
 
     private void Awake()
     {
@@ -39,6 +41,7 @@ public class UEGVideoPlayer : MonoBehaviour
         defaultTex = new Texture2D(1, 1, TextureFormat.BGRA32, false);//直接初始化好了。分辨率是固定的呢
         m_rawBufferWarper = defaultTex;
         m_rawBufferWarper.filterMode = FilterMode.Point;
+        srcCanvasLocalEulerAngles = m_drawCanvas.transform.localEulerAngles;
     }
 
     public void Initialize()

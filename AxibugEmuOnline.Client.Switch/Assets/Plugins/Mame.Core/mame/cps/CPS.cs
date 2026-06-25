@@ -346,11 +346,16 @@ namespace MAME.Core
             cps_a_regs_set = new ushort[0x20];
             cps_b_regs_set = new ushort[0x20];
             gfxram_set = new byte[0x30000];
+            MameMainMotion.CheckCanStep(111, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Memory.Set_mainram(new byte[0x10000]);
             Memory.Set_audioram(new byte[0x800]);
+            MameMainMotion.CheckCanStep(112, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Machine.bRom = true;
+            MameMainMotion.CheckCanStep(113, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Memory.Set_mainrom(Machine.GetRom("maincpu.rom"));
+            MameMainMotion.CheckCanStep(114, System.Reflection.MethodBase.GetCurrentMethod().Name);
             gfxrom_set = Machine.GetRom("gfx.rom");
+            MameMainMotion.CheckCanStep(115, System.Reflection.MethodBase.GetCurrentMethod().Name);
             n = gfxromLength;
             gfx1rom_set = new byte[n * 2];
             for (i = 0; i < n; i++)
@@ -361,11 +366,14 @@ namespace MAME.Core
             total_elements = n / 0x80;
             //Memory.Set_audiorom(Machine.GetRom("audiocpu.rom"));
             Memory.Set_audiorom(Machine.GetRom("audiocpu.rom"));
+            MameMainMotion.CheckCanStep(116, System.Reflection.MethodBase.GetCurrentMethod().Name);
             switch (Machine.sBoard)
             {
                 case "CPS-1":
                     cps_version = 1;
+                    MameMainMotion.CheckCanStep(121, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     starsrom_set = Machine.GetRom("stars.rom");
+                    MameMainMotion.CheckCanStep(122, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     OKI6295.okirom = Machine.GetRom("oki.rom");
                     if (Memory.mainrom_IsNull || gfxrom == null || Memory.audiorom_IsNull || OKI6295.okirom == null)
                     {
@@ -376,9 +384,13 @@ namespace MAME.Core
                     cps_version = 1;
                     qsound_sharedram1_set = new byte[0x1000];
                     qsound_sharedram2_set = new byte[0x1000];
+                    MameMainMotion.CheckCanStep(131, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     audioromop_set = Machine.GetRom("audiocpuop.rom");
+                    MameMainMotion.CheckCanStep(132, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     user1rom_set = Machine.GetRom("user1.rom");
+                    MameMainMotion.CheckCanStep(133, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     QSound.qsoundrom = ByteToSbyte(Machine.GetRom("qsound.rom"));
+                    MameMainMotion.CheckCanStep(134, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     if (Memory.mainrom_IsNull || audioromop == null || gfxrom == null || Memory.audiorom_IsNull || QSound.qsoundrom == null)
                     {
                         Machine.bRom = false;
@@ -386,6 +398,7 @@ namespace MAME.Core
                     break;
                 case "CPS2":
                     cps_version = 2;
+                    MameMainMotion.CheckCanStep(141, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     cps2_objram1_set = new ushort[0x1000];
                     cps2_objram2_set = new ushort[0x1000];
                     cps2_output_set = new ushort[0x06];
@@ -397,14 +410,20 @@ namespace MAME.Core
                     cps1_scancalls = 0;
                     qsound_sharedram1_set = new byte[0x1000];
                     qsound_sharedram2_set = new byte[0x1000];
+                    MameMainMotion.CheckCanStep(142, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     if (Machine.sManufacturer != "bootleg")
                     {
+                        MameMainMotion.CheckCanStep(143, System.Reflection.MethodBase.GetCurrentMethod().Name);
                         mainromop_set = Machine.GetRom("maincpuop.rom");
                     }
+                    MameMainMotion.CheckCanStep(144, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     audioromop_set = Machine.GetRom("audiocpu.rom");
+                    MameMainMotion.CheckCanStep(145, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     QSound.qsoundrom = ByteToSbyte(Machine.GetRom("qsound.rom"));
+                    MameMainMotion.CheckCanStep(146, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     if (Memory.mainrom_IsNull || (Machine.sManufacturer != "bootleg" && mainromop == null) || audioromop == null || gfxrom == null || Memory.audiorom_IsNull || QSound.qsoundrom == null)
                     {
+                        MameMainMotion.CheckCanStep(146, System.Reflection.MethodBase.GetCurrentMethod().Name);
                         Machine.bRom = false;
                     }
                     break;

@@ -93,7 +93,7 @@ namespace AxibugEmuOnline.Client
 
             public static void KillSelf()
             {
-                IntPtr hProc = GetCurrentProcess();
+                System.IntPtr hProc = GetCurrentProcess();
                 TerminateProcess(hProc, 0);
             }
         }

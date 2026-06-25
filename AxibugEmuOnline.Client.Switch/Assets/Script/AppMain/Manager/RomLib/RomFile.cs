@@ -2,6 +2,7 @@
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using ICSharpCode.SharpZipLib.Zip;
+using MAME.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -275,7 +276,29 @@ namespace AxibugEmuOnline.Client
                 if (App.FileDownloader.GetDownloadProgress(webData.url) == null)
                 {
                     if (MultiFileRom)
-                        m_hasLocalFile = AxiIO.Directory.Exists(LocalProxyPath);
+                    { 
+                        //m_hasLocalFile = AxiIO.Directory.Exists(LocalProxyPath);
+                        switch (Platform)
+                        {
+                            case RomPlatformType.Igs:
+                            case RomPlatformType.Cps1:
+                            case RomPlatformType.Cps2:
+                            case RomPlatformType.Neogeo:
+                            case RomPlatformType.ArcadeOld:
+                                {
+                                    m_hasLocalFile =
+                                        AxiIO.Directory.Exists(LocalProxyPath)
+                                        &&
+                                        AxiIO.File.Exists(System.IO.Path.Combine(LocalProxyPath, "maincpu.rom"));
+                                }
+                                break;
+                            default:
+                                {
+                                    m_hasLocalFile = AxiIO.Directory.Exists(LocalProxyPath);
+                                }
+                                break;
+                        }
+                    }
                     else
                         m_hasLocalFile = AxiIO.File.Exists(LocalProxyPath);
                 }

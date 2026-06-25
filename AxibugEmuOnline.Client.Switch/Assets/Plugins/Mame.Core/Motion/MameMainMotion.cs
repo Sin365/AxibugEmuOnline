@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace MAME.Core
@@ -24,6 +25,40 @@ namespace MAME.Core
         public static IMAMEIOSupport IoSupport;
         public bool bRom => Machine.bRom;
 
+        #region debug用
+        static bool m_bDebugStepBreak = false;
+        static int m_StepBreakIdx = 0;
+        public static void SetDebugStep(int step)
+        {
+            m_bDebugStepBreak = true;
+            m_StepBreakIdx = step;
+            EmuLogger.Log("[MAME]设置 步进中断数" + step);
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        [Conditional("UNITY_SWITCH")]
+        public static void CheckCanStep(int stepIdx, string method = "", string note = null)
+        {
+            if (!m_bDebugStepBreak) return;
+            string temp = $"调用 {method} do->{note}";
+            if (stepIdx >= m_StepBreakIdx)
+            {
+                EmuLogger.Log("[MAME]步进中断[" + stepIdx + "]" + ":" + temp + "");
+                Machine.bRom = false;
+                throw new Exception("[MAME]步进中断[" + stepIdx + "]" + ":" + temp + "");
+                return;
+            }
+            EmuLogger.Log("[MAME]步进进行[" + stepIdx + "]" + ":" + temp + "");
+            return;
+        }
+
+        public static void ClearDbgStep()
+        {
+            m_bDebugStepBreak = false;
+            EmuLogger.Log("[MAME]步进清理所有");
+        }
+
+        #endregion
         public MameMainMotion()
         {
             neogeomotion = new NeogeoMotion();
@@ -47,23 +82,33 @@ namespace MAME.Core
             IMAMEIOSupport io
             )
         {
+            MameMainMotion.CheckCanStep(-799, System.Reflection.MethodBase.GetCurrentMethod().Name);
             AxiMemoryEx.Init();
-
+            MameMainMotion.CheckCanStep(-789, System.Reflection.MethodBase.GetCurrentMethod().Name);
             AxiTimeSpan.Init(itime);
+            MameMainMotion.CheckCanStep(-770, System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             Mame.RomRoot = RomDir;
             EmuLogger.BindFunc(ilog);
+            MameMainMotion.CheckCanStep(-760, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Video.BindFunc(ivp);
+            MameMainMotion.CheckCanStep(-750, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Sound.BindFunc(isp);
+            MameMainMotion.CheckCanStep(-740, System.Reflection.MethodBase.GetCurrentMethod().Name);
             resource = iRes;
             IoSupport = io;
-
+            MameMainMotion.CheckCanStep(-730, System.Reflection.MethodBase.GetCurrentMethod().Name);
             sSelect = string.Empty;
 
             RomInfo.Rom = new RomInfo();
-            MAMEDBHelper.LoadROMXML(resource.mame);
+            MameMainMotion.CheckCanStep(-720, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            //MAMEDBHelper.LoadROMXML(resource.mame);
+            MAMEDBHelper.LoadROMXML(iRes);
+            MameMainMotion.CheckCanStep(-699, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Keyboard.InitializeInput(ikb);
+            MameMainMotion.CheckCanStep(-698, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Mouse.InitialMouse(imou);
+            MameMainMotion.CheckCanStep(-697, System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
         public void ResetRomRoot(string RomDir)
@@ -90,15 +135,17 @@ namespace MAME.Core
 
         public void LoadRom(string Name)
         {
+            MameMainMotion.CheckCanStep(2, System.Reflection.MethodBase.GetCurrentMethod().Name);
             RomInfo.Rom = RomInfo.GetRomByName(Name);
+            MameMainMotion.CheckCanStep(3, System.Reflection.MethodBase.GetCurrentMethod().Name);
             if (RomInfo.Rom == null)
             {
                 EmuLogger.Log("Not Found");
                 return;
             }
-
             //EmuTimer.lt = new List<EmuTimer.emu_timer>();
             EmuTimer.instancingTimerList();
+            MameMainMotion.CheckCanStep(4, System.Reflection.MethodBase.GetCurrentMethod().Name);
             sSelect = RomInfo.Rom.Name;
             Machine.mainMotion = this;
             Machine.rom = RomInfo.Rom;
@@ -108,7 +155,9 @@ namespace MAME.Core
             Machine.sDirection = Machine.rom.Direction;
             Machine.sDescription = Machine.rom.Description;
             Machine.sManufacturer = Machine.rom.Manufacturer;
+            MameMainMotion.CheckCanStep(5, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Machine.lsParents = RomInfo.GetParents(Machine.sName);
+            MameMainMotion.CheckCanStep(6, System.Reflection.MethodBase.GetCurrentMethod().Name);
             int i;
             switch (Machine.sBoard)
             {
@@ -116,11 +165,14 @@ namespace MAME.Core
                 case "CPS-1(QSound)":
                 case "CPS2":
 
+                    MameMainMotion.CheckCanStep(100, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     Video.nMode = 1;
                     Video.iMode = 2;
                     //Video.nMode = 3;
                     itemSelect();
+                    MameMainMotion.CheckCanStep(101, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     CPS.CPSInit();
+                    MameMainMotion.CheckCanStep(199, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     break;
                 case "Data East":
                     Video.nMode = 1;
@@ -201,14 +253,20 @@ namespace MAME.Core
                     Capcom.CapcomInit();
                     break;
             }
+
+            MameMainMotion.CheckCanStep(1000, System.Reflection.MethodBase.GetCurrentMethod().Name);
             if (Machine.bRom)
             {
+                MameMainMotion.CheckCanStep(2001, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 EmuLogger.Log("MAME.NET: " + Machine.sDescription + " [" + Machine.sName + "]");
                 Mame.init_machine();
+                MameMainMotion.CheckCanStep(2100, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 Generic.nvram_load();
+                MameMainMotion.CheckCanStep(2200, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
             else
             {
+                MameMainMotion.CheckCanStep(3000, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 EmuLogger.Log("error rom");
             }
         }

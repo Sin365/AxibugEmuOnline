@@ -18,9 +18,12 @@ namespace AxiIO
         }
 
         public static bool CheckCanStep(
-            string path,string method = "")
+            string path, string method = "")
         {
-            if (!m_bDebugStepBreak) return true;
+            if (!m_bDebugStepBreak)
+            {
+                return true;
+            }
             string temp = $"调用 {method} do->{path}";
             if (m_StepBreakCount < 1)
             {
@@ -49,6 +52,19 @@ namespace AxiIO
                     m_io = new CSharpIO();
 #endif
                 }
+
+
+#if UNITY_SWITCH
+                //WTF 至今不明，很诡异，在NS上如果每次IO行为有打印，则“完美”不会崩溃。如果没有打印，则IO时可能会崩溃。
+                // 这明明是单线程程序，亦或者NS文件系统内部是不同线程某种线程安全？亦或者是 需要等待某种结束，或者访问频率？
+                // 总之，保留在每一个IO行为都有打印，就可以确保，不触发2168-0002
+                var stack = new System.Diagnostics.StackTrace(1, false);
+                var caller = stack.GetFrame(0)?.GetMethod()?.Name ?? "Unknown";
+                var callerParent = stack.GetFrame(1)?.GetMethod()?.Name ?? "Unknown";
+                Debug.Log(
+                    $"[NS专有打印] 步进中断: 来自{callerParent}>{caller}"
+                );
+#endif
                 return m_io;
             }
         }

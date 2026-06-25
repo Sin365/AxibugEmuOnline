@@ -55,7 +55,7 @@ namespace AxibugEmuOnline.Client
         public abstract void GetAudioParams(out int frequency, out int channels);
         public abstract Texture OutputPixel { get; }
         public abstract RawImage DrawCanvas { get; }
-
+        public abstract Vector3 DrawCanvas_SrcRot { get; }
         /// <summary>
         /// 渲染朝向，用于截图
         /// </summary>
