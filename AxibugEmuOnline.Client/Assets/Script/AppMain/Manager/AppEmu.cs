@@ -129,7 +129,7 @@ namespace AxibugEmuOnline.Client.Manager
                 }
                 catch (Exception ex)
                 {
-                    App.log.Error("启动异常中断");
+                    App.log.Error("启动异常中断 " + ex.ToString());
                     if (m_emuCore != null)
                     {
                         GameObject.Destroy(m_emuCore.gameObject);

@@ -56,7 +56,8 @@ public class MAMEScriptable : ScriptableObject
     [UnityEditor.MenuItem("模拟器Tools/写入mame.xml到Scriptable")]
     public static void LoadROMXMLToScriptable()//这些xml读取规则和字段赋值是从mame.core核心搬出来的 保持一致
     {
-        string tmp = UnityEngine.Resources.Load<UnityEngine.TextAsset>(UniResources.ResourceRoot + "mame.xml").text;
+        string path = System.IO.Path.Combine(Application.dataPath, "Plugins/Mame.Core/mame_20260609.xml.bytes");
+        string tmp = System.IO.File.ReadAllText(path);
         XElement xe = XElement.Parse(tmp);
         IEnumerable<XElement> elements = from ele in xe.Elements("game") select ele;
         CotrGameListByElements(elements);
