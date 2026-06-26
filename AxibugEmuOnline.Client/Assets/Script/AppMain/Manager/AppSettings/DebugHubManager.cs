@@ -1,6 +1,7 @@
 ﻿using AxibugProtobuf;
 using System.Collections.Generic;
 using IngameDebugConsole;
+using AxibugEmuOnline.Client.ClientCore;
 
 namespace AxibugEmuOnline.Client.Settings
 {
@@ -20,7 +21,8 @@ namespace AxibugEmuOnline.Client.Settings
         public bool IsDebugHubOn
         {
             get => AxiPlayerPrefs.GetInt(key_GlobalMode, 0) == 1;
-            set { 
+            set
+            {
                 AxiPlayerPrefs.SetInt(key_GlobalMode, value ? 1 : 0);
                 OnDebugHubSettingChanged?.Invoke();
             }
@@ -29,13 +31,35 @@ namespace AxibugEmuOnline.Client.Settings
         public void RefreshForSetting()
         {
             Initer.debugger_instance.gameObject.SetActive(IsDebugHubOn);
-#if UNITY_SWITCH
-            if (UMAME.bMAMEReadyLoadState)
+
+            if (App.emu != null)
             {
-                Initer.debugger_instance.gameObject.SetActive(true);
-                DebugLogManager.Instance.ShowLogWindow();
+                switch (App.emu.LoadStep)
+                {
+                    case Manager.AppEmu.E_RUN_ROM_STEP.READY_JOIN_ROOM:
+                    case Manager.AppEmu.E_RUN_ROM_STEP.RECV_JOIN_ROOM:
+                    case Manager.AppEmu.E_RUN_ROM_STEP.READY_START_GAME:
+                    case Manager.AppEmu.E_RUN_ROM_STEP.LOADING:
+                        if (!Initer.debugger_instance.gameObject.activeSelf)
+                            Initer.debugger_instance.gameObject.SetActive(true);
+                        if (!DebugLogManager.Instance.IsLogWindowVisible)
+                            DebugLogManager.Instance.ShowLogWindow();
+                        break;
+                    case Manager.AppEmu.E_RUN_ROM_STEP.NONE:
+                    case Manager.AppEmu.E_RUN_ROM_STEP.FINISH:
+                        if (DebugLogManager.Instance.IsLogWindowVisible)
+                            DebugLogManager.Instance.HideLogWindow();
+                        break;
+                }
             }
-#endif
+
+            //#if UNITY_SWITCH
+            //            if (UMAME.bMAMEReadyLoadState)
+            //            {
+            //                Initer.debugger_instance.gameObject.SetActive(true);
+            //                DebugLogManager.Instance.ShowLogWindow();
+            //            }
+            //#endif
         }
     }
 }

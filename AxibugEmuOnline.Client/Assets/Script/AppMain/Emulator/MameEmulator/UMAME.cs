@@ -74,12 +74,12 @@ public class UMAME : EmuCore<ulong>
     void OnEnable()
     {
         bMAMEReadyLoadState = true;
-        App.settings.debugHub.RefreshForSetting();
+        //App.settings.debugHub.RefreshForSetting();
     }
     void OnDisable()
     {
         bMAMEReadyLoadState = false;
-        App.settings.debugHub.RefreshForSetting();
+        //App.settings.debugHub.RefreshForSetting();
 
         StopGame();
     }
@@ -119,7 +119,7 @@ public class UMAME : EmuCore<ulong>
 
         bool ret = LoadGame(romFile.LocalProxyFileName);
         bMAMEReadyLoadState = false;
-        App.settings.debugHub.RefreshForSetting();
+        //App.settings.debugHub.RefreshForSetting();
         if (ret)
             return true;
         else
