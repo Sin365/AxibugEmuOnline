@@ -20,7 +20,8 @@ public class UMAME : EmuCore<ulong>
     UniKeyboard mUniKeyboard;
     UniResources mUniResources;
     UniIO mUniIO;
-
+    [HideInInspector]
+    public bool bAwakeDone;
     public Text mFPS;
     private Canvas mCanvas;
     public List<RomInfo> HadGameList = new List<RomInfo>();
@@ -42,10 +43,18 @@ public class UMAME : EmuCore<ulong>
     public override uint PushFrame => (uint)emu.currEmuFrame;
 
     public override uint PhysicsFrame => PushFrame;
+
+    public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
+    public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
+    public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
+    public override Vector3 DrawCanvas_SrcRot => mUniVideoPlayer.srcCanvasLocalEulerAngles;
+
+    static public bool bMAMEReadyLoadState = false;
     void Awake()
     {
         instance = this;
-        mFPS = GameObject.Find("FPS").GetComponent<Text>();
+        MameMainMotion.CheckCanStep(-9000, System.Reflection.MethodBase.GetCurrentMethod().Name);
+        //mFPS = GameObject.Find("FPS").GetComponent<Text>();
         mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         mCanvas.worldCamera = Camera.main;
         emu = new MAMEEmu();
@@ -58,15 +67,23 @@ public class UMAME : EmuCore<ulong>
         mUniIO = new UniIO();
         mChangeRomName = string.Empty;
         mTimeSpan = new UniTimeSpan();
+        MameMainMotion.CheckCanStep(-999, System.Reflection.MethodBase.GetCurrentMethod().Name);
         emu.Init(RomPath, mUniLog, mUniResources, mUniVideoPlayer, mUniSoundPlayer, mUniKeyboard, mUniMouse, mTimeSpan, mUniIO);
+        bAwakeDone = true;
     }
     void OnEnable()
     {
+        bMAMEReadyLoadState = true;
+        App.settings.debugHub.RefreshForSetting();
     }
     void OnDisable()
     {
+        bMAMEReadyLoadState = false;
+        App.settings.debugHub.RefreshForSetting();
+
         StopGame();
     }
+
     #region 实现接口
     public override object GetState()
     {
@@ -94,9 +111,16 @@ public class UMAME : EmuCore<ulong>
     }
     public override MsgBool StartGame(RomFile romFile)
     {
+        MameMainMotion.CheckCanStep(-30, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mPlatform = romFile.Platform;
+        MameMainMotion.CheckCanStep(-20, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mTimeSpan.InitStandTime();
-        if (LoadGame(romFile.LocalProxyFileName))
+        MameMainMotion.CheckCanStep(-19, System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+        bool ret = LoadGame(romFile.LocalProxyFileName);
+        bMAMEReadyLoadState = false;
+        App.settings.debugHub.RefreshForSetting();
+        if (ret)
             return true;
         else
             return "Rom加载失败";
@@ -124,11 +148,15 @@ public class UMAME : EmuCore<ulong>
     #endregion
     bool LoadGame(string loadRom)
     {
+        MameMainMotion.CheckCanStep(-10, System.Reflection.MethodBase.GetCurrentMethod().Name);
         emu.ResetRomRoot(RomPath);
+        MameMainMotion.CheckCanStep(-9, System.Reflection.MethodBase.GetCurrentMethod().Name);
         //Application.targetFrameRate = 60;
         //mReplayWriter = new ReplayWriter(mChangeRomName, "fuck", ReplayData.ReplayFormat.FM32IP64, Encoding.UTF8);
         mChangeRomName = loadRom;
+        MameMainMotion.CheckCanStep(-8, System.Reflection.MethodBase.GetCurrentMethod().Name);
         StopGame();
+        MameMainMotion.CheckCanStep(-7, System.Reflection.MethodBase.GetCurrentMethod().Name);
         //读取ROM
         emu.LoadRom(mChangeRomName);
         //读取成功
@@ -233,8 +261,4 @@ public class UMAME : EmuCore<ulong>
         br.Close();
         fs.Close();
     }
-    public override Texture OutputPixel => mUniVideoPlayer.rawBufferWarper;
-    public override RawImage DrawCanvas => mUniVideoPlayer.DrawCanvas;
-    public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
-
 }

@@ -46,6 +46,7 @@ namespace MAME.Core
         public void LoadRom(string Name)
         {
             historyUpdateCount = 0;
+            MameMainMotion.CheckCanStep(1, System.Reflection.MethodBase.GetCurrentMethod().Name);
             mameMainMotion.LoadRom(Name);
         }
 
