@@ -32,20 +32,21 @@ namespace AxibugEmuOnline.Client
             {
                 get
                 {
-                    if (m_gameUI.Core == null) return false;
+                    if (m_gameUI.Core == null && App.emu.RomID <= 0) return false;
+                    if (m_mode == null) return false;
+                    return m_mode.Value == App.settings.ScreenScaler.GetRomIDScalerMode(App.emu.RomID);
+                    //var isSetMode = App.settings.ScreenScaler.IsSetMode(m_gameUI.Core.Platform);
 
-                    var isSetMode = App.settings.ScreenScaler.IsSetMode(m_gameUI.Core.Platform);
-
-                    if (m_mode == null && !isSetMode)
-                    {
-                        return true;
-                    }
-                    else if (isSetMode && m_mode.HasValue)
-                    {
-                        var mode = App.settings.ScreenScaler.GetMode(m_gameUI.Core.Platform);
-                        return mode == m_mode.Value;
-                    }
-                    else return false;
+                    //if (m_mode == null && !isSetMode)
+                    //{
+                    //    return true;
+                    //}
+                    //else if (isSetMode && m_mode.HasValue)
+                    //{
+                    //    var mode = App.settings.ScreenScaler.GetMode(m_gameUI.Core.Platform);
+                    //    return mode == m_mode.Value;
+                    //}
+                    //else return false;
                 }
             }
             public override string Name => ModeToName(m_mode);
@@ -57,7 +58,9 @@ namespace AxibugEmuOnline.Client
 
             public override void OnExcute(OptionUI optionUI, ref bool cancelHide)
             {
-                App.settings.ScreenScaler.SetMode(m_gameUI.Core.Platform, m_mode);
+                if (m_gameUI.Core == null || App.emu.RomID <= 0 || m_mode == null) return;
+                App.settings.ScreenScaler.SetScalerMode(App.emu.RomID, m_mode.Value);
+                //App.settings.ScreenScaler.SetMode(m_gameUI.Core.Platform, m_mode);
             }
 
             static string ModeToName(EnumScalerMode? mode)
@@ -75,6 +78,8 @@ namespace AxibugEmuOnline.Client
                         case EnumScalerMode.Raw_x4: return "x4";
                         case EnumScalerMode.Raw_x5: return "x5";
                         case EnumScalerMode.Raw_x6: return "x6";
+                        case EnumScalerMode.Rotate_90: return "旋转90°(逆时针)";
+                        case EnumScalerMode.Rotate_270: return "旋转90°(顺时针)";
                         default: throw new Exception($"Not Support Mode : {mode.Value}");
                     }
                 }

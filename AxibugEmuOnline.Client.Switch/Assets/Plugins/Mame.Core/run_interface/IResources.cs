@@ -1,4 +1,6 @@
-﻿namespace MAME.Core
+﻿using System.Collections.Generic;
+
+namespace MAME.Core
 {
     public interface IResources
     {
@@ -14,5 +16,6 @@
         byte[] readme { get; }
         string mame { get; }
         bool getnvram(string sName,out byte[] data);
+        List<MAME.Core.RomInfo> GetGameDB();
     }
 }
