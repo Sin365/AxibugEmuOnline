@@ -42,7 +42,7 @@ public class AxiNSWait_FileToSaveWithCreate : AxiNSWaitBase
 
 	public override void Invoke()
 	{
-		result = AxiNS.instance.io.FileToSaveWithCreate(req.filePath, req.data);
+		result = AxiNS.instance.io.FileToSaveWithCreate(req.filePath, req.data,false);
 	}
 }
 
