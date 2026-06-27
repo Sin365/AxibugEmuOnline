@@ -31,7 +31,7 @@ namespace AxibugEmuOnline.Client.Settings
         public void RefreshForSetting()
         {
             Initer.debugger_instance.gameObject.SetActive(IsDebugHubOn);
-
+#if UNITY_SWITCH
             if (App.emu != null)
             {
                 switch (App.emu.LoadStep)
@@ -42,24 +42,16 @@ namespace AxibugEmuOnline.Client.Settings
                     case Manager.AppEmu.E_RUN_ROM_STEP.LOADING:
                         if (!Initer.debugger_instance.gameObject.activeSelf)
                             Initer.debugger_instance.gameObject.SetActive(true);
-                        if (!DebugLogManager.Instance.IsLogWindowVisible)
-                            DebugLogManager.Instance.ShowLogWindow();
+                        DebugLogManager.Instance.ShowLogWindow();
                         break;
                     case Manager.AppEmu.E_RUN_ROM_STEP.NONE:
                     case Manager.AppEmu.E_RUN_ROM_STEP.FINISH:
-                        if (DebugLogManager.Instance.IsLogWindowVisible)
+                        if(!IsDebugHubOn)
                             DebugLogManager.Instance.HideLogWindow();
                         break;
                 }
             }
-
-            //#if UNITY_SWITCH
-            //            if (UMAME.bMAMEReadyLoadState)
-            //            {
-            //                Initer.debugger_instance.gameObject.SetActive(true);
-            //                DebugLogManager.Instance.ShowLogWindow();
-            //            }
-            //#endif
+#endif
         }
     }
 }

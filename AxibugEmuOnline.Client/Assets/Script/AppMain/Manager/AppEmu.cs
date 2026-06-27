@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using IngameDebugConsole;
@@ -141,10 +142,21 @@ namespace AxibugEmuOnline.Client.Manager
                 yield return null;
                 App.emu.LoadStep = E_RUN_ROM_STEP.READY_START_GAME;
                 App.settings.debugHub.RefreshForSetting();
+                yield return null;
+
+#if UNITY_SWITCH
+                App.log.Debug("waiting...");
+                if (romFile.Platform.IsMamePlatform())
+                {
+                    yield return App.SwitchHotstorage();//被动式触发NS初始化
+                }
+                yield return null;
                 yield return new WaitForSeconds(0.2f);
+#endif
                 App.emu.BeginGame(romFile);
             }
         }
+
         IEnumerator BeforeJoinGame(int RoomID)
         {
             using (BeforeJoinGameCorout.Acquire())
@@ -152,7 +164,13 @@ namespace AxibugEmuOnline.Client.Manager
                 yield return null;
                 App.emu.LoadStep = E_RUN_ROM_STEP.READY_JOIN_ROOM;
                 App.settings.debugHub.RefreshForSetting();
+                yield return null;
+#if UNITY_SWITCH
+                App.log.Debug("waiting...");
+                yield return App.SwitchHotstorage();//被动式触发NS初始化
+                yield return null;
                 yield return new WaitForSeconds(0.2f);
+#endif
                 App.roomMgr.SendJoinRoom(RoomID);
                 yield return new WaitForSeconds(3f);
                 if (App.emu.LoadStep == E_RUN_ROM_STEP.READY_JOIN_ROOM)//如果超过3秒还没收到消息，标记

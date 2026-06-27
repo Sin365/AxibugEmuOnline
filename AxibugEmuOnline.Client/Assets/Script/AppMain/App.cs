@@ -177,16 +177,25 @@ namespace AxibugEmuOnline.Client.ClientCore
             GameObject.DontDestroyOnLoad(switchCommon);
 #endif
         }
+
+#if UNITY_SWITCH
+        static bool bInitSwitch;
         public static IEnumerator SwitchHotstorage()
         {
+            if (bInitSwitch) yield break;
+            bInitSwitch = true;
             yield return new WaitForSeconds(0.1f);
             App.log.Info("NS 文件系统开始预热");
             byte[] dummyData = new byte[50 * 1024 * 1024]; // 50MB
             string path = App.PersistentDataRootPath() + "/_init_dummy.bin";
-            yield return new WaitForSeconds(10f);
-            AxiIO.File.WriteAllBytes(path, dummyData, true);
-            App.log.Info("NS 文件系统预热成功");
+            yield return new WaitForSeconds(0.1f);
+            AxiIO.File.WriteAllBytes(path, dummyData);
+            yield return new WaitForSeconds(0.1f);
+            AxiIO.File.Delete(path);
+            yield return new WaitForSeconds(0.1f);
+            App.log.Info("NS 文件系统预热成功");//但是不提交
         }
+#endif
 
         private static IEnumerator AppTickFlow()
         {
