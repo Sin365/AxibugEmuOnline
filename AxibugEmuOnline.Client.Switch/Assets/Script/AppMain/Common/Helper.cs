@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AxibugProtobuf;
+using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -109,6 +110,15 @@ namespace AxibugEmuOnline.Client.Common
 
             //这里用Ascll
             return FileMD5Hash(Encoding.ASCII.GetBytes(sb.ToString()));
+        }
+
+        public static bool IsMamePlatform(this RomPlatformType type)
+        {
+            return type == RomPlatformType.Cps1 
+                || type == RomPlatformType.Cps2 
+                || type == RomPlatformType.Neogeo 
+                || type == RomPlatformType.Igs 
+                || type == RomPlatformType.ArcadeOld;
         }
     }
 }

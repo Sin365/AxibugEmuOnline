@@ -109,7 +109,8 @@ namespace AxibugEmuOnline.Client
                     return false;
                 }
 
-                App.roomMgr.SendJoinRoom(RoomID);
+                //App.roomMgr.SendJoinRoom(RoomID);
+                App.emu.ReadyToJoinGame(RoomID);
                 return true;
             }
         }

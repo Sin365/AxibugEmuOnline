@@ -781,6 +781,702 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: plumppop
+    Board: Taito
+    Parent: 
+    Direction: 
+    Description: Plump Pop (Japan)
+    Year: 1987
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: jpopnics
+    Board: Taito
+    Parent: 
+    Direction: 
+    Description: Jumping Pop (Nics, Korean hack of Plump Pop)
+    Year: 1992
+    Manufacturer: Nics
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: extrmatn
+    Board: Taito
+    Parent: 
+    Direction: 270
+    Description: Extermination (World)
+    Year: 1987
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: extrmatnu
+    Board: Taito
+    Parent: extrmatn
+    Direction: 270
+    Description: Extermination (US, World Games)
+    Year: 1987
+    Manufacturer: Taito (World Games license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: extrmatnur
+    Board: Taito
+    Parent: extrmatn
+    Direction: 270
+    Description: Extermination (US, Romstar)
+    Year: 1987
+    Manufacturer: Taito America Corporation (Romstar license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: extrmatnj
+    Board: Taito
+    Parent: extrmatn
+    Direction: 270
+    Description: Extermination (Japan)
+    Year: 1987
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: arknoid2
+    Board: Taito
+    Parent: 
+    Direction: 270
+    Description: Arkanoid - Revenge of DOH (World)
+    Year: 1987
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: arknoid2u
+    Board: Taito
+    Parent: arknoid2
+    Direction: 270
+    Description: Arkanoid - Revenge of DOH (US)
+    Year: 1987
+    Manufacturer: Taito America Corporation (Romstar license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: arknoid2j
+    Board: Taito
+    Parent: arknoid2
+    Direction: 270
+    Description: Arkanoid - Revenge of DOH (Japan)
+    Year: 1987
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: arknoid2b
+    Board: Taito
+    Parent: arknoid2
+    Direction: 270
+    Description: Arkanoid - Revenge of DOH (Japan bootleg)
+    Year: 1987
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drtoppel
+    Board: Taito
+    Parent: 
+    Direction: 90
+    Description: Dr. Toppel's Adventure (World)
+    Year: 1987
+    Manufacturer: Kaneko / Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drtoppelu
+    Board: Taito
+    Parent: drtoppel
+    Direction: 90
+    Description: Dr. Toppel's Adventure (US)
+    Year: 1987
+    Manufacturer: Kaneko / Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drtoppelj
+    Board: Taito
+    Parent: drtoppel
+    Direction: 90
+    Description: Dr. Toppel's Tankentai (Japan)
+    Year: 1987
+    Manufacturer: Kaneko / Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kageki
+    Board: Taito
+    Parent: 
+    Direction: 90
+    Description: Kageki (World)
+    Year: 1988
+    Manufacturer: Kaneko / Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kagekiu
+    Board: Taito
+    Parent: kageki
+    Direction: 90
+    Description: Kageki (US)
+    Year: 1988
+    Manufacturer: Kaneko / Taito America Corporation (Romstar license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kagekij
+    Board: Taito
+    Parent: kageki
+    Direction: 90
+    Description: Kageki (Japan)
+    Year: 1988
+    Manufacturer: Kaneko / Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kagekih
+    Board: Taito
+    Parent: kageki
+    Direction: 90
+    Description: Kageki (hack)
+    Year: 1992
+    Manufacturer: hack
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: chukatai
+    Board: Taito
+    Parent: 
+    Direction: 
+    Description: Chuka Taisen (World) (P0-028-A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: chukataiu
+    Board: Taito
+    Parent: chukatai
+    Direction: 
+    Description: Chuka Taisen (US) (P0-028-A PCB)
+    Year: 1988
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: chukataij
+    Board: Taito
+    Parent: chukatai
+    Direction: 
+    Description: Chuka Taisen (Japan) (P0-028-A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: chukataija
+    Board: Taito
+    Parent: chukatai
+    Direction: 
+    Description: Chuka Taisen (Japan) (P0-025-A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzs
+    Board: Taito
+    Parent: 
+    Direction: 
+    Description: The NewZealand Story (World, new version) (P0-043A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzsj
+    Board: Taito
+    Parent: tnzs
+    Direction: 
+    Description: The NewZealand Story (Japan, new version) (P0-043A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzso
+    Board: Taito
+    Parent: tnzs
+    Direction: 
+    Description: The NewZealand Story (World, old version) (P0-041A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzsjo
+    Board: Taito
+    Parent: tnzs
+    Direction: 
+    Description: The NewZealand Story (Japan, old version) (P0-041A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzsuo
+    Board: Taito
+    Parent: tnzs
+    Direction: 
+    Description: The NewZealand Story (US, old version) (P0-041A PCB)
+    Year: 1988
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzsoa
+    Board: Taito
+    Parent: tnzs
+    Direction: 
+    Description: The NewZealand Story (World, unknown version) (P0-041A PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tnzsop
+    Board: Taito
+    Parent: tnzs
+    Direction: 
+    Description: The NewZealand Story (World, prototype) (P0-041-1 PCB)
+    Year: 1988
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kabukiz
+    Board: Taito
+    Parent: 
+    Direction: 
+    Description: Kabuki-Z (World)
+    Year: 1988
+    Manufacturer: Kaneko / Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kabukizj
+    Board: Taito
+    Parent: kabukiz
+    Direction: 
+    Description: Kabuki-Z (Japan)
+    Year: 1988
+    Manufacturer: Kaneko / Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: insectx
+    Board: Taito
+    Parent: 
+    Direction: 
+    Description: Insector X (World)
+    Year: 1989
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: insectxj
+    Board: Taito
+    Parent: insectx
+    Direction: 
+    Description: Insector X (Japan)
+    Year: 1989
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: insectxbl
+    Board: Taito
+    Parent: insectx
+    Direction: 
+    Description: Insector X (bootleg)
+    Year: 1990
+    Manufacturer: bootleg (Nagoya Kaihatsu)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: masterw
+    Board: Taito B
+    Parent: 
+    Direction: 270
+    Description: Master of Weapon (World)
+    Year: 1989
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: masterwu
+    Board: Taito B
+    Parent: masterw
+    Direction: 270
+    Description: Master of Weapon (US)
+    Year: 1989
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: masterwj
+    Board: Taito B
+    Parent: masterw
+    Direction: 270
+    Description: Master of Weapon (Japan)
+    Year: 1989
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: yukiwo
+    Board: Taito B
+    Parent: masterw
+    Direction: 270
+    Description: Yukiwo (World, prototype)
+    Year: 1989
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: nastar
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Nastar (World)
+    Year: 1988
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: nastarw
+    Board: Taito B
+    Parent: nastar
+    Direction: 
+    Description: Nastar Warrior (US)
+    Year: 1988
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rastsag2
+    Board: Taito B
+    Parent: nastar
+    Direction: 
+    Description: Rastan Saga 2 (Japan)
+    Year: 1988
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rambo3
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Rambo III (Europe)
+    Year: 1989
+    Manufacturer: Taito Europe Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rambo3u
+    Board: Taito B
+    Parent: rambo3
+    Direction: 
+    Description: Rambo III (US)
+    Year: 1989
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rambo3p
+    Board: Taito B
+    Parent: rambo3
+    Direction: 
+    Description: Rambo III (Europe, Proto?)
+    Year: 1989
+    Manufacturer: Taito Europe Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: crimec
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Crime City (World)
+    Year: 1989
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: crimecu
+    Board: Taito B
+    Parent: crimec
+    Direction: 
+    Description: Crime City (US)
+    Year: 1989
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: crimecj
+    Board: Taito B
+    Parent: crimec
+    Direction: 
+    Description: Crime City (Japan)
+    Year: 1989
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tetrist
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Tetris (Japan, Taito B-System, Nastar Conversion Kit)
+    Year: 1988
+    Manufacturer: Sega
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tetrista
+    Board: Taito B
+    Parent: tetrist
+    Direction: 
+    Description: Tetris (Japan, Taito B-System, Master of Weapon Conversion Kit)
+    Year: 1988
+    Manufacturer: Sega
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: viofight
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Violence Fight (World)
+    Year: 1989
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: viofightu
+    Board: Taito B
+    Parent: viofight
+    Direction: 
+    Description: Violence Fight (US)
+    Year: 1989
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: viofightj
+    Board: Taito B
+    Parent: viofight
+    Direction: 
+    Description: Violence Fight (Japan)
+    Year: 1989
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ashura
+    Board: Taito B
+    Parent: 
+    Direction: 270
+    Description: Ashura Blaster (World)
+    Year: 1990
+    Manufacturer: Taito Corporation Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ashuraj
+    Board: Taito B
+    Parent: ashura
+    Direction: 270
+    Description: Ashura Blaster (Japan)
+    Year: 1990
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ashurau
+    Board: Taito B
+    Parent: ashura
+    Direction: 270
+    Description: Ashura Blaster (US)
+    Year: 1990
+    Manufacturer: Taito America Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: hitice
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Hit the Ice (US)
+    Year: 1990
+    Manufacturer: Taito Corporation (Williams license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: hiticerb
+    Board: Taito B
+    Parent: hitice
+    Direction: 
+    Description: Hit the Ice (US, with riser board)
+    Year: 1990
+    Manufacturer: Taito Corporation (Williams license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: hiticej
+    Board: Taito B
+    Parent: hitice
+    Direction: 
+    Description: Hit the Ice (Japan)
+    Year: 1990
+    Manufacturer: Taito Corporation (licensed from Midway)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: selfeena
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Sel Feena
+    Year: 1991
+    Manufacturer: East Technology
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: silentd
     Board: Taito B
     Parent: 
@@ -817,6 +1513,30 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: ryujin
+    Board: Taito B
+    Parent: 
+    Direction: 270
+    Description: Ryu Jin (Japan)
+    Year: 1993
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: qzshowby
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Quiz Sekai wa SHOW by shobai (Japan)
+    Year: 1993
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: pbobble
     Board: Taito B
     Parent: 
@@ -824,6 +1544,66 @@ MonoBehaviour:
     Description: Puzzle Bobble (Japan, B-System)
     Year: 1994
     Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: spacedx
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Space Invaders DX (US, v2.1)
+    Year: 1994
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: spacedxj
+    Board: Taito B
+    Parent: spacedx
+    Direction: 
+    Description: Space Invaders DX (Japan, v2.1)
+    Year: 1994
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: spacedxo
+    Board: Taito B
+    Parent: spacedx
+    Direction: 
+    Description: Space Invaders DX (Japan, v2.0)
+    Year: 1994
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sbm
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Sonic Blast Man (Japan)
+    Year: 1990
+    Manufacturer: Taito Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: realpunc
+    Board: Taito B
+    Parent: 
+    Direction: 
+    Description: Real Puncher
+    Year: 1994
+    Manufacturer: Taito Corporation Japan
     M1Default: 
     M1Stop: 
     M1Min: 
@@ -2704,6 +3484,90 @@ MonoBehaviour:
       bootleg)'
     Year: 1992
     Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix
+    Board: CPS-1
+    Parent: 
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 1.3, bootleg)'
+    Year: 2023
+    Manufacturer: Capcom
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix120
+    Board: CPS-1
+    Parent: sf2mix
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 1.2, bootleg)'
+    Year: 2022
+    Manufacturer: Capcom
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix110
+    Board: CPS-1
+    Parent: sf2mix
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 1.1, bootleg)'
+    Year: 2022
+    Manufacturer: Capcom
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix100
+    Board: CPS-1
+    Parent: sf2mix
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 1.0, bootleg)'
+    Year: 2021
+    Manufacturer: Capcom
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix99a
+    Board: CPS-1
+    Parent: sf2mix
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 0.99a, bootleg)'
+    Year: 2020
+    Manufacturer: Capcom
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix98c
+    Board: CPS-1
+    Parent: sf2mix
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 0.98c, bootleg)'
+    Year: 2020
+    Manufacturer: Capcom
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sf2mix97
+    Board: CPS-1
+    Parent: sf2mix
+    Direction: 
+    Description: 'Street Fighter II'': Champion Edition (MIX Ver. 0.97, bootleg)'
+    Year: 2020
+    Manufacturer: Capcom
     M1Default: 
     M1Stop: 
     M1Min: 
@@ -6013,6 +6877,138 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: sfz3mix13
+    Board: CPS2
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 MIX (Ver. 0.13) (bootleg)
+    Year: 2022
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix22
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.22) (bootleg)
+    Year: 2023
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix23
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.23) (bootleg)
+    Year: 2023
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix24
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.24) (bootleg)
+    Year: 2023
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix25
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.25) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix26
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.26) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix27
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.27) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix28
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.28) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix29
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.29) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix30
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.30) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: sfz3mix
+    Board: CPS2turbo
+    Parent: sfa3
+    Direction: 
+    Description: Street Fighter Zero 3 Turbo MIX (Ver. 0.31) (bootleg)
+    Year: 2024
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: jyangoku
     Board: CPS2
     Parent: 
@@ -6892,6 +7888,18 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: sf2prime
+    Board: CPS2
+    Parent: hsf2
+    Direction: 
+    Description: 'Street Fighter II'': Prime (v0.75)'
+    Year: 2026
+    Manufacturer: Zero800
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: pcktgal
     Board: Data East
     Parent: 
@@ -7024,8 +8032,128 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: scontra
+    Board: Konami
+    Parent: 
+    Direction: 90
+    Description: Super Contra (set 1)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: scontraa
+    Board: Konami
+    Parent: scontra
+    Direction: 90
+    Description: Super Contra (set 2)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: scontraj
+    Board: Konami
+    Parent: scontra
+    Direction: 90
+    Description: 'Super Contra: Alien no Gyakushuu (Japan)'
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: thunderx
+    Board: Konami
+    Parent: 
+    Direction: 
+    Description: Thunder Cross (set 1)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: thunderxa
+    Board: Konami
+    Parent: thunderx
+    Direction: 
+    Description: Thunder Cross (set 2)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: thunderxb
+    Board: Konami
+    Parent: thunderx
+    Direction: 
+    Description: Thunder Cross (set 3)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: thunderxj
+    Board: Konami
+    Parent: thunderx
+    Direction: 
+    Description: Thunder Cross (Japan)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: gbusters
+    Board: Konami
+    Parent: 
+    Direction: 90
+    Description: Gang Busters (set 1)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: gbustersa
+    Board: Konami
+    Parent: gbusters
+    Direction: 90
+    Description: Gang Busters (set 2)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: crazycop
+    Board: Konami
+    Parent: gbusters
+    Direction: 90
+    Description: Crazy Cop (Japan)
+    Year: 1988
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: cuebrick
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Cue Brick (World, version D)
@@ -7037,7 +8165,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: mia
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: M.I.A. - Missing in Action (version T)
@@ -7049,7 +8177,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: mia2
-    Board: Konami 68000
+    Board: Konami
     Parent: mia
     Direction: 
     Description: M.I.A. - Missing in Action (version S)
@@ -7061,7 +8189,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnt
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Teenage Mutant Ninja Turtles (World 4 Players, version X)
@@ -7073,7 +8201,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmntu
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (US 4 Players, version R)
@@ -7085,7 +8213,19 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmntua
-    Board: Konami 68000
+    Board: Konami
+    Parent: tmnt
+    Direction: 
+    Description: Teenage Mutant Ninja Turtles (US 4 Players, version N)
+    Year: 1989
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tmntub
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (US 4 Players, version J)
@@ -7096,8 +8236,8 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
-  - Name: tmntub
-    Board: Konami 68000
+  - Name: tmntuc
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (US 4 Players, version H)
@@ -7109,7 +8249,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmht
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Hero Turtles (UK 4 Players, version F)
@@ -7121,7 +8261,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmhta
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Hero Turtles (UK 4 Players, version S)
@@ -7133,7 +8273,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmhtb
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Hero Turtles (UK 4 Players, version ?)
@@ -7145,7 +8285,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmntj
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (Japan 4 Players, version 2)
@@ -7157,7 +8297,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnta
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (Asia 4 Players, version ?)
@@ -7169,7 +8309,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmht2p
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Hero Turtles (UK 2 Players, version U)
@@ -7181,7 +8321,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmht2pa
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Hero Turtles (UK 2 Players, version ?)
@@ -7193,7 +8333,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnt2pj
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (Japan 2 Players, version 1)
@@ -7205,7 +8345,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnt2po
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt
     Direction: 
     Description: Teenage Mutant Ninja Turtles (Oceania 2 Players, version ?)
@@ -7217,7 +8357,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: punkshot
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Punk Shot (US 4 Players)
@@ -7229,7 +8369,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: punkshot2
-    Board: Konami 68000
+    Board: Konami
     Parent: punkshot
     Direction: 
     Description: Punk Shot (US 2 Players)
@@ -7240,8 +8380,20 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: punkshot2e
+    Board: Konami
+    Parent: punkshot
+    Direction: 
+    Description: Punk Shot (World 2 Players)
+    Year: 1990
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: punkshotj
-    Board: Konami 68000
+    Board: Konami
     Parent: punkshot
     Direction: 
     Description: Punk Shot (Japan 2 Players)
@@ -7252,8 +8404,20 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: punkshot2a
+    Board: Konami
+    Parent: punkshot
+    Direction: 
+    Description: Punk Shot (Asia 2 Players, hacked?)
+    Year: 1990
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: lgtnfght
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 90
     Description: Lightning Fighters (World)
@@ -7265,7 +8429,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: lgtnfghta
-    Board: Konami 68000
+    Board: Konami
     Parent: lgtnfght
     Direction: 90
     Description: Lightning Fighters (Asia)
@@ -7277,7 +8441,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: lgtnfghtu
-    Board: Konami 68000
+    Board: Konami
     Parent: lgtnfght
     Direction: 90
     Description: Lightning Fighters (US)
@@ -7289,7 +8453,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: trigon
-    Board: Konami 68000
+    Board: Konami
     Parent: lgtnfght
     Direction: 90
     Description: Trigon (Japan)
@@ -7301,7 +8465,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: blswhstl
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 90
     Description: Bells & Whistles (World, version L)
@@ -7313,7 +8477,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: blswhstla
-    Board: Konami 68000
+    Board: Konami
     Parent: blswhstl
     Direction: 90
     Description: Bells & Whistles (Asia, version M)
@@ -7325,7 +8489,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: detatwin
-    Board: Konami 68000
+    Board: Konami
     Parent: blswhstl
     Direction: 90
     Description: Detana!! Twin Bee (Japan, version J)
@@ -7337,7 +8501,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: glfgreat
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Golfing Greats
@@ -7349,7 +8513,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: glfgreatj
-    Board: Konami 68000
+    Board: Konami
     Parent: glfgreat
     Direction: 
     Description: Golfing Greats (Japan)
@@ -7361,10 +8525,10 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnt2
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
-    Description: Teenage Mutant Ninja Turtles - Turtles in Time (4 Players ver UAA)
+    Description: 'Teenage Mutant Ninja Turtles: Turtles in Time (4 Players ver UAA)'
     Year: 1991
     Manufacturer: Konami
     M1Default: 
@@ -7373,10 +8537,22 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnt2a
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt2
     Direction: 
-    Description: Teenage Mutant Ninja Turtles - Turtles in Time (4 Players ver ADA)
+    Description: 'Teenage Mutant Ninja Turtles: Turtles in Time (4 Players ver ADA)'
+    Year: 1991
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tmnt2o
+    Board: Konami
+    Parent: tmnt2
+    Direction: 
+    Description: 'Teenage Mutant Ninja Turtles: Turtles in Time (4 Players ver OAA)'
     Year: 1991
     Manufacturer: Konami
     M1Default: 
@@ -7385,10 +8561,10 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmht22pe
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt2
     Direction: 
-    Description: Teenage Mutant Hero Turtles - Turtles in Time (2 Players ver EBA)
+    Description: 'Teenage Mutant Hero Turtles: Turtles in Time (2 Players ver EBA)'
     Year: 1991
     Manufacturer: Konami
     M1Default: 
@@ -7397,10 +8573,10 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmht24pe
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt2
     Direction: 
-    Description: Teenage Mutant Hero Turtles - Turtles in Time (4 Players ver EAA)
+    Description: 'Teenage Mutant Hero Turtles: Turtles in Time (4 Players ver EAA)'
     Year: 1991
     Manufacturer: Konami
     M1Default: 
@@ -7409,10 +8585,22 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: tmnt22pu
-    Board: Konami 68000
+    Board: Konami
     Parent: tmnt2
     Direction: 
-    Description: Teenage Mutant Ninja Turtles - Turtles in Time (2 Players ver UDA)
+    Description: 'Teenage Mutant Ninja Turtles: Turtles in Time (2 Players ver UDA)'
+    Year: 1991
+    Manufacturer: Konami
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tmnt24pu
+    Board: Konami
+    Parent: tmnt2
+    Direction: 
+    Description: 'Teenage Mutant Ninja Turtles: Turtles in Time (4 Players ver UEA)'
     Year: 1991
     Manufacturer: Konami
     M1Default: 
@@ -7421,7 +8609,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: qgakumon
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Quiz Gakumon no Susume (Japan ver. JA2 Type L)
@@ -7433,7 +8621,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssriders
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Sunset Riders (4 Players ver EAC)
@@ -7445,7 +8633,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssriderseaa
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver EAA)
@@ -7457,7 +8645,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersebd
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (2 Players ver EBD)
@@ -7469,7 +8657,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersebc
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (2 Players ver EBC)
@@ -7481,7 +8669,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersuda
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver UDA)
@@ -7493,7 +8681,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersuac
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver UAC)
@@ -7505,7 +8693,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersuab
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver UAB)
@@ -7517,7 +8705,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersubc
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (2 Players ver UBC)
@@ -7529,7 +8717,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersadd
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver ADD)
@@ -7541,7 +8729,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersabd
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (2 Players ver ABD)
@@ -7553,7 +8741,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersjad
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver JAD)
@@ -7565,7 +8753,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersjac
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (4 Players ver JAC)
@@ -7577,7 +8765,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: ssridersjbd
-    Board: Konami 68000
+    Board: Konami
     Parent: ssriders
     Direction: 
     Description: Sunset Riders (2 Players ver JBD)
@@ -7589,7 +8777,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: thndrx2
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Thunder Cross II (World)
@@ -7601,7 +8789,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: thndrx2a
-    Board: Konami 68000
+    Board: Konami
     Parent: thndrx2
     Direction: 
     Description: Thunder Cross II (Asia)
@@ -7613,7 +8801,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: thndrx2j
-    Board: Konami 68000
+    Board: Konami
     Parent: thndrx2
     Direction: 
     Description: Thunder Cross II (Japan)
@@ -7625,7 +8813,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: prmrsocr
-    Board: Konami 68000
+    Board: Konami
     Parent: 
     Direction: 
     Description: Premier Soccer (ver EAB)
@@ -7637,7 +8825,7 @@ MonoBehaviour:
     M1Max: 
     M1Subtype: 
   - Name: prmrsocrj
-    Board: Konami 68000
+    Board: Konami
     Parent: prmrsocr
     Direction: 
     Description: Premier Soccer (ver JAB)
@@ -8889,6 +10077,66 @@ MonoBehaviour:
     Description: Neo-Geo Cup '98 - The Road to the Victory
     Year: 1998
     Manufacturer: SNK
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: neoshinobi
+    Board: Neo Geo
+    Parent: 
+    Direction: 
+    Description: Shinobi (Neo Geo unofficial port)
+    Year: 2024
+    Manufacturer: TTE
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: neoshinobi11
+    Board: Neo Geo
+    Parent: neoshinobi
+    Direction: 
+    Description: Shinobi (Neo Geo unofficial port, Ver. 1.1)
+    Year: 2025
+    Manufacturer: TTE
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: neogoldenaxe
+    Board: Neo Geo
+    Parent: 
+    Direction: 
+    Description: Golden Axe (Neo Geo unofficial port)
+    Year: 2025
+    Manufacturer: TTE
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: neoamazon
+    Board: Neo Geo
+    Parent: 
+    Direction: 270
+    Description: Soldier Girl Amazon (Neo Geo unofficial port)
+    Year: 2021
+    Manufacturer: IQ_132
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: neocabal
+    Board: Neo Geo
+    Parent: 
+    Direction: 
+    Description: Cabal (Neo Geo unofficial port)
+    Year: 2021
+    Manufacturer: IQ_132
     M1Default: 
     M1Stop: 
     M1Min: 
@@ -10717,6 +11965,966 @@ MonoBehaviour:
     M1Min: 
     M1Max: 
     M1Subtype: 
+  - Name: ddragon
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Double Dragon (Japan)
+    Year: 1987
+    Manufacturer: Technos Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonw
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (World Set 1)
+    Year: 1987
+    Manufacturer: Technos Japan (Taito license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonw1
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (World Set 2)
+    Year: 1987
+    Manufacturer: Technos Japan (Taito license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonu
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (US Set 1)
+    Year: 1987
+    Manufacturer: Technos Japan (Taito America license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonua
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (US Set 2)
+    Year: 1987
+    Manufacturer: Technos Japan (Taito America license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonub
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (US Set 3)
+    Year: 1987
+    Manufacturer: Technos Japan (Taito America license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonb2
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (bootleg)
+    Year: 1987
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonb
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (bootleg with HD6309)
+    Year: 1987
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragonba
+    Board: Technos
+    Parent: ddragon
+    Direction: 
+    Description: Double Dragon (bootleg with M6803)
+    Year: 1987
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragon2
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Double Dragon II - The Revenge (World)
+    Year: 1988
+    Manufacturer: Technos Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragon2u
+    Board: Technos
+    Parent: ddragon2
+    Direction: 
+    Description: Double Dragon II - The Revenge (US)
+    Year: 1988
+    Manufacturer: Technos Japan
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddragon2b
+    Board: Technos
+    Parent: ddragon2
+    Direction: 
+    Description: Double Dragon II - The Revenge (US, bootleg)
+    Year: 1988
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tstrike
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Thunder Strike (set 1)
+    Year: 1991
+    Manufacturer: East Coast Coin Company
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tstrikea
+    Board: Technos
+    Parent: tstrike
+    Direction: 
+    Description: Thunder Strike (set 2, older)
+    Year: 1991
+    Manufacturer: The Game Room
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddungeon
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Dangerous Dungeons (set 1)
+    Year: 1992
+    Manufacturer: The Game Room
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: ddungeone
+    Board: Technos
+    Parent: ddungeon
+    Direction: 
+    Description: Dangerous Dungeons (set 2)
+    Year: 1992
+    Manufacturer: East Coast Coin Company
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: darktowr
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Dark Tower
+    Year: 1992
+    Manufacturer: Game Room
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: toffy
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Toffy
+    Year: 1993
+    Manufacturer: Midas
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: stoffy
+    Board: Technos
+    Parent: 
+    Direction: 
+    Description: Super Toffy
+    Year: 1994
+    Manufacturer: Midas
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: stoffyu
+    Board: Technos
+    Parent: stoffy
+    Direction: 
+    Description: Super Toffy (Unico license)
+    Year: 1994
+    Manufacturer: Midas (Unico license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kncljoe
+    Board: Seibu
+    Parent: 
+    Direction: 
+    Description: Knuckle Joe (set 1)
+    Year: 1985
+    Manufacturer: Seibu Kaihatsu (Taito license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kncljoea
+    Board: Seibu
+    Parent: kncljoe
+    Direction: 
+    Description: Knuckle Joe (set 2)
+    Year: 1985
+    Manufacturer: Seibu Kaihatsu (Taito license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: bcrusher
+    Board: Seibu
+    Parent: kncljoe
+    Direction: 
+    Description: Bone Crusher
+    Year: 1985
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: toki
+    Board: Tad
+    Parent: 
+    Direction: 
+    Description: Toki (World, set 1)
+    Year: 1989
+    Manufacturer: TAD Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tokiu
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: Toki (US, set 1)
+    Year: 1989
+    Manufacturer: TAD Corporation (Fabtek license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tokip
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: Toki (US, prototype?)
+    Year: 1989
+    Manufacturer: TAD Corporation (Fabtek license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tokia
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: Toki (World set 2)
+    Year: 1989
+    Manufacturer: TAD Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tokiua
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: Toki (US, set 2)
+    Year: 1989
+    Manufacturer: TAD Corporation (Fabtek license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: juju
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: JuJu Densetsu (Japan)
+    Year: 1989
+    Manufacturer: TAD Corporation
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tokib
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: Toki (Datsu bootleg)
+    Year: 1989
+    Manufacturer: bootleg (Datsu)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: jujub
+    Board: Tad
+    Parent: toki
+    Direction: 
+    Description: JuJu Densetsu (Playmark bootleg)
+    Year: 1989
+    Manufacturer: bootleg (Playmark)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: jujuba
+    Board: Tad
+    Parent: toki
+    Direction: 180
+    Description: JuJu Densetsu (Japan, bootleg)
+    Year: 1989
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: lomakai
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Legend of Makai (World)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: makaiden
+    Board: Megasys1
+    Parent: lomakai
+    Direction: 
+    Description: Makai Densetsu (Japan)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: p47
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: P-47 - The Phantom Fighter (World)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: p47j
+    Board: Megasys1
+    Parent: p47
+    Direction: 
+    Description: P-47 - The Freedom Fighter (Japan)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: p47je
+    Board: Megasys1
+    Parent: p47
+    Direction: 
+    Description: P-47 - The Freedom Fighter (Japan, Export)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kickoff
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Kick Off (Japan)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tshingen
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Shingen Samurai-Fighter (Japan, English)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: tshingena
+    Board: Megasys1
+    Parent: tshingen
+    Direction: 
+    Description: Takeda Shingen (Japan, Japanese)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: kazan
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Ninja Kazan (World)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: iganinju
+    Board: Megasys1
+    Parent: kazan
+    Direction: 
+    Description: Iga Ninjyutsuden (Japan)
+    Year: 1988
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: astyanax
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: The Astyanax
+    Year: 1989
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: lordofk
+    Board: Megasys1
+    Parent: astyanax
+    Direction: 
+    Description: The Lord of King (Japan)
+    Year: 1989
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: hachoo
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Hachoo!
+    Year: 1989
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: jitsupro
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Jitsuryoku!! Pro Yakyuu (Japan)
+    Year: 1989
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: plusalph
+    Board: Megasys1
+    Parent: 
+    Direction: 270
+    Description: Plus Alpha
+    Year: 1989
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: stdragon
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Saint Dragon (set 1)
+    Year: 1989
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: stdragonb
+    Board: Megasys1
+    Parent: stdragon
+    Direction: 
+    Description: Saint Dragon (bootleg)
+    Year: 1989
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rodland
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Rod-Land (World)
+    Year: 1990
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rodlandj
+    Board: Megasys1
+    Parent: rodland
+    Direction: 
+    Description: Rod-Land (Japan)
+    Year: 1990
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rittam
+    Board: Megasys1
+    Parent: rodland
+    Direction: 
+    Description: R&T (Rod-Land prototype?)
+    Year: 1990
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: rodlandjb
+    Board: Megasys1
+    Parent: rodland
+    Direction: 
+    Description: Rod-Land (Japan bootleg)
+    Year: 1990
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: phantasm
+    Board: Megasys1
+    Parent: avspirit
+    Direction: 
+    Description: Phantasm (Japan)
+    Year: 1990
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: edfp
+    Board: Megasys1
+    Parent: edf
+    Direction: 
+    Description: 'E.D.F. : Earth Defense Force (Japan, prototype)'
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: soldam
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Soldam
+    Year: 1992
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: soldamj
+    Board: Megasys1
+    Parent: soldam
+    Direction: 
+    Description: Soldam (Japan)
+    Year: 1992
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: avspirit
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Avenging Spirit
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: edf
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: 'E.D.F. : Earth Defense Force (set 1)'
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: edfa
+    Board: Megasys1
+    Parent: edf
+    Direction: 
+    Description: 'E.D.F. : Earth Defense Force (set 2)'
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: edfu
+    Board: Megasys1
+    Parent: edf
+    Direction: 
+    Description: 'E.D.F. : Earth Defense Force (North America)'
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: hayaosi1
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Hayaoshi Quiz Ouza Ketteisen - The King Of Quiz
+    Year: 1993
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: 64street
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: 64th. Street - A Detective Story (World)
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: 64streetj
+    Board: Megasys1
+    Parent: 64street
+    Direction: 
+    Description: 64th. Street - A Detective Story (Japan, set 1)
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: 64streetja
+    Board: Megasys1
+    Parent: 64street
+    Direction: 
+    Description: 64th. Street - A Detective Story (Japan, set 2)
+    Year: 1991
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: bigstrik
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Big Striker
+    Year: 1992
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: chimerab
+    Board: Megasys1
+    Parent: 
+    Direction: 
+    Description: Chimera Beast (prototype)
+    Year: 1993
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: cybattlr
+    Board: Megasys1
+    Parent: 
+    Direction: 90
+    Description: Cybattler
+    Year: 1993
+    Manufacturer: Jaleco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: bigkarnk
+    Board: Gaelco
+    Parent: 
+    Direction: 
+    Description: Big Karnak (ver. 1.0)
+    Year: 1991
+    Manufacturer: Gaelco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: biomtoy
+    Board: Gaelco
+    Parent: 
+    Direction: 
+    Description: Biomechanical Toy (ver. 1.0.1885)
+    Year: 1995
+    Manufacturer: Gaelco / Zeus
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: biomtoya
+    Board: Gaelco
+    Parent: biomtoy
+    Direction: 
+    Description: Biomechanical Toy (ver. 1.0.1884)
+    Year: 1995
+    Manufacturer: Gaelco / Zeus
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: biomtoyb
+    Board: Gaelco
+    Parent: biomtoy
+    Direction: 
+    Description: Biomechanical Toy (ver. 1.0.1878)
+    Year: 1995
+    Manufacturer: Gaelco / Zeus
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: biomtoyc
+    Board: Gaelco
+    Parent: biomtoy
+    Direction: 
+    Description: Biomechanical Toy (ver. 1.0.1870)
+    Year: 1994
+    Manufacturer: Gaelco / Zeus
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: bioplayc
+    Board: Gaelco
+    Parent: biomtoy
+    Direction: 
+    Description: Bioplaything Cop (ver. 1.0.1823)
+    Year: 1994
+    Manufacturer: Gaelco / Zeus
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: maniacsp
+    Board: Gaelco
+    Parent: 
+    Direction: 
+    Description: Maniac Square (prototype)
+    Year: 1996
+    Manufacturer: Gaelco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: squash
+    Board: Gaelco
+    Parent: 
+    Direction: 
+    Description: Squash (Ver. 1.0)
+    Year: 1992
+    Manufacturer: Gaelco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: thoop
+    Board: Gaelco
+    Parent: 
+    Direction: 
+    Description: Thunder Hoop (Ver. 1)
+    Year: 1992
+    Manufacturer: Gaelco
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: airbustr
+    Board: Kaneko
+    Parent: 
+    Direction: 
+    Description: 'Air Buster: Trouble Specialty Raid Unit (World)'
+    Year: 1990
+    Manufacturer: Kaneko (Namco license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: airbustrj
+    Board: Kaneko
+    Parent: airbustr
+    Direction: 
+    Description: 'Air Buster: Trouble Specialty Raid Unit (Japan)'
+    Year: 1990
+    Manufacturer: Kaneko (Namco license)
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: airbustrb
+    Board: Kaneko
+    Parent: airbustr
+    Direction: 
+    Description: 'Air Buster: Trouble Specialty Raid Unit (bootleg)'
+    Year: 1990
+    Manufacturer: bootleg
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
   - Name: shadowld
     Board: Namco System 1
     Parent: 
@@ -11346,6 +13554,66 @@ MonoBehaviour:
     Parent: orlegend
     Direction: 
     Description: Oriental Legend / Xi You Shi E Zhuan (ver. 105, Korean Board)
+    Year: 1997
+    Manufacturer: IGS
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drgw2
+    Board: PGM
+    Parent: 
+    Direction: 
+    Description: Dragon World II (ver. 110X, Export)
+    Year: 1997
+    Manufacturer: IGS
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: dw2v100x
+    Board: PGM
+    Parent: drgw2
+    Direction: 
+    Description: Dragon World II (ver. 100X, Export)
+    Year: 1997
+    Manufacturer: IGS
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drgw2j
+    Board: PGM
+    Parent: drgw2
+    Direction: 
+    Description: Chuugokuryuu II (ver. 100J, Japan)
+    Year: 1997
+    Manufacturer: IGS
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drgw2c
+    Board: PGM
+    Parent: drgw2
+    Direction: 
+    Description: Zhong Guo Long II (ver. 100C, China)
+    Year: 1997
+    Manufacturer: IGS
+    M1Default: 
+    M1Stop: 
+    M1Min: 
+    M1Max: 
+    M1Subtype: 
+  - Name: drgw2hk
+    Board: PGM
+    Parent: drgw2
+    Direction: 
+    Description: Dragon World II (ver. 100H, Hong Kong)
     Year: 1997
     Manufacturer: IGS
     M1Default: 
