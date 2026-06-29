@@ -31,6 +31,7 @@ namespace AxibugEmuOnline.Client.Settings
         public void RefreshForSetting()
         {
             Initer.debugger_instance.gameObject.SetActive(IsDebugHubOn);
+
 #if UNITY_SWITCH
             if (App.emu != null)
             {

@@ -452,7 +452,7 @@ public class AxiNSIO
                 if (padding > 0)
                 {
                     byte[] zeroBytes = new byte[padding];
-                    UnityEngine.Debug.LogError($"需要padding，长度{padding}");
+                    UnityEngine.Debug.Log($"需要padding，长度{padding}");
                     CheckCanStep(E_AxiNS_dgbBk.SaveFile, 16, filePath, System.Reflection.MethodBase.GetCurrentMethod().Name);
                     result = nn.fs.File.Write(fileHandle, data.Length, zeroBytes, zeroBytes.Length, nn.fs.WriteOption.Flush); // Writes and flushes the write at the same time
                     if (!result.IsSuccess())
@@ -465,7 +465,7 @@ public class AxiNSIO
                 }
                 else
                 {
-                    UnityEngine.Debug.LogError($"不需要padding");
+                    UnityEngine.Debug.Log($"不需要padding");
                 }
                 nn.fs.File.Close(fileHandle);
                 #endregion

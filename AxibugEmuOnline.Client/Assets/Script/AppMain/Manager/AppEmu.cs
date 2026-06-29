@@ -145,6 +145,10 @@ namespace AxibugEmuOnline.Client.Manager
                 yield return null;
 
 #if UNITY_SWITCH
+                Initer.debugger_instance.gameObject.SetActive(false);
+                yield return null;
+                App.settings.debugHub.RefreshForSetting();//进行一个重复刷新
+                yield return null;
                 App.log.Debug("waiting...");
                 if (romFile.Platform.IsMamePlatform())
                 {
@@ -166,6 +170,11 @@ namespace AxibugEmuOnline.Client.Manager
                 App.settings.debugHub.RefreshForSetting();
                 yield return null;
 #if UNITY_SWITCH
+                yield return null;
+                Initer.debugger_instance.gameObject.SetActive(false);
+                yield return null;
+                App.settings.debugHub.RefreshForSetting();//进行一个重复刷新
+                yield return null;
                 App.log.Debug("waiting...");
                 yield return App.SwitchHotstorage();//被动式触发NS初始化
                 yield return null;
