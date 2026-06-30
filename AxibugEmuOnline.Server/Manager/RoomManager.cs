@@ -47,7 +47,7 @@ namespace AxibugEmuOnline.Server
 
         int GetNewRoomID()
         {
-            return RoomIDSeed++;
+            return Interlocked.Increment(ref RoomIDSeed) - 1; //等效于线程安全的return RoomIDSeed++;
         }
 
         void AddRoom(GameRoom data)
@@ -87,10 +87,7 @@ namespace AxibugEmuOnline.Server
         {
             lock (mDictRoom)
             {
-                foreach (var room in mDictRoom)
-                {
-                    roomList.AddRange(mDictRoom.Values);
-                }
+                roomList.AddRange(mDictRoom.Values);
             }
         }
 
@@ -190,10 +187,10 @@ namespace AxibugEmuOnline.Server
 
             GameRoom room = GetRoomData(_c.RoomState.RoomID);
             bool bHadRoomStateChange = false;
-            ErrorCode Errcode = ErrorCode.ErrorOk;
+            ErrorCode errcode = ErrorCode.ErrorOk;
             Protobuf_Room_Get_Screen_RESP resp = new Protobuf_Room_Get_Screen_RESP();
             if (room == null)
-                Errcode = ErrorCode.ErrorRoomNotFound;
+                errcode = ErrorCode.ErrorRoomNotFound;
             else
             {
                 resp.FrameID = (int)room.mCurrServerFrameId;
@@ -201,7 +198,7 @@ namespace AxibugEmuOnline.Server
                 resp.RawBitmap = room.ScreenRaw;
             }
 
-            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomGetScreen, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomGetScreen, (int)errcode, ProtoBufHelper.Serizlize(resp));
         }
 
         /// <summary>
@@ -268,10 +265,11 @@ namespace AxibugEmuOnline.Server
                 return;
             }
 
-
+            int RoomID = room.RoomID;
+            int RomID = room.GameRomID;
+            long UID = _c.UID;
             lock (room)
             {
-
                 if (!room.GetFreeSlot(out uint SlotIdx))
                 {
                     joinErrcode = ErrorCode.ErrorRoomSlotAlreadlyHadPlayer;
@@ -297,7 +295,7 @@ namespace AxibugEmuOnline.Server
                     SendRoomUpdateToAll(room, 0);
                 }
             }
-            RoomLog(_c.UID, 1, room.RoomID, room.GameRomID, RoomLogType.Join);
+            RoomLog(UID, 1, RoomID, RomID, RoomLogType.Join);
         }
         public void OnCmdRoomLeave(Socket sk, byte[] reqData)
         {
@@ -335,7 +333,7 @@ namespace AxibugEmuOnline.Server
                 return;
             Protobuf_Room_Leave_RESP resp = new Protobuf_Room_Leave_RESP();
             ErrorCode errcode;
-            GameRoom room = GetRoomData(_c.RoomState.RoomID);
+            GameRoom room = GetRoomData(RoomID);
             bool bHadRoomStateChange = false;
             if (room == null)
             {
@@ -593,17 +591,20 @@ namespace AxibugEmuOnline.Server
         }
         void UpdateAllRoomLogic()
         {
-            if (mKeyRoomList.Count < 1)
-                return;
-            for (int i = 0; i < mKeyRoomList.Count; i++)
+            lock (mDictRoom)
             {
-                int roomid = mKeyRoomList[i];
-                if (!mDictRoom.TryGetValue(roomid, out GameRoom room) || room.GameState < RoomGameState.InOnlineGame)
-                    continue;
-                //更新帧（服务器主动跑时用）
-                room.TakeFrame();
-                //广播
-                room.SynInputData();
+                if (mKeyRoomList.Count < 1)
+                    return;
+                for (int i = 0; i < mKeyRoomList.Count; i++)
+                {
+                    int roomid = mKeyRoomList[i];
+                    if (!mDictRoom.TryGetValue(roomid, out GameRoom room) || room.GameState < RoomGameState.InOnlineGame)
+                        continue;
+                    //更新帧（服务器主动跑时用）
+                    room.TakeFrame();
+                    //广播
+                    room.SynInputData();
+                }
             }
         }
         #endregion

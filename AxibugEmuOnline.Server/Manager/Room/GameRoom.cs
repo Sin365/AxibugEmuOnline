@@ -229,7 +229,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
                             case 0: mCurrInputData.p1_byte = 0; break;
                             case 1: mCurrInputData.p2_byte = 0; break;
                             case 2: mCurrInputData.p3_byte = 0; break;
-                            case 4: mCurrInputData.p3_byte = 0; break;
+                            case 4: mCurrInputData.p4_byte = 0; break;
                         }
                     }
                     break;
@@ -584,7 +584,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
                 case RoomGameState.WaitRawUpdate:
                     if (bMorePlayer)//加入更多玩家
                     {
-                        this.GameState = RoomGameState.WaitRawUpdate;
+                        this.GameState = RoomGameState.WaitRawUpdate;//应该是如果在等待上传即时存档时，若有新玩家加入，重走WaitRawUpdate
                         bChanged = true;
                         break;
                     }
@@ -736,7 +736,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
         }
         public void InputScreenData(Google.Protobuf.ByteString screenRaw)
         {
-            this.ScreenRaw = NextStateRaw;
+            this.ScreenRaw = screenRaw;
         }
 
 

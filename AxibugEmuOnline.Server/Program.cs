@@ -75,7 +75,7 @@ namespace AxibugEmuOnline.Server
                             for (int i = 0; i < onlinelist.Count; i++)
                             {
                                 ClientInfo cinfo = onlinelist[i];
-                                AppSrv.g_Log.Info($"UID->{cinfo.UID}   Name->{cinfo.NickName}  Ping->{cinfo.AveNetDelay}");
+                                AppSrv.g_Log.Info($"UID->{cinfo.UID}   Name->{cinfo.NickName} RoomID:{cinfo.RoomState?.RoomID}  Ping->{cinfo.AveNetDelay}");
                             }
                         }
                         break;
