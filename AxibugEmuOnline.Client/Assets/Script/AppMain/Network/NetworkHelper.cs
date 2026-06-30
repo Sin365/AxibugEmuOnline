@@ -111,9 +111,10 @@ namespace AxibugEmuOnline.Client.Network
         void OnConnectClose_Delegate()
         {
             NetworkDeBugLog("OnConnectClose");
+            App.user.LoginOutData();
+            App.roomMgr.ClearNetRoomInfo();
             Eventer.Instance.PostEvent(EEvent.OnLossLoginState);
 
-            App.user.LoginOutData();
 
             //自动重连开关
             if (bAutoReConnect)
