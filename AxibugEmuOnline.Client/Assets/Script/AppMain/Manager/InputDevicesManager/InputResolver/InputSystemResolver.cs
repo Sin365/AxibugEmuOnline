@@ -386,6 +386,12 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             else if (device_d is SwitchJoyCon_D joycon_d)
             {
                 var ipdevice_joycon = ipdevice as UnityEngine.InputSystem.Switch.NPad;
+                App.log.Info($"JoyConState isConnected{ipdevice_joycon.isConnected}" +
+                    $" isWired{ipdevice_joycon.isWired} " +
+                    $" isLeftConnected{ipdevice_joycon.isLeftConnected} " +
+                    $" isRightConnected{ipdevice_joycon.isRightConnected} "+
+                    $" isLeftWired{ipdevice_joycon.isLeftWired} " +
+                    $" isRightConnected{ipdevice_joycon.isRightWired} ");
                 mapper[joycon_d.LeftSL] = ipdevice_joycon.leftSL;
                 mapper[joycon_d.LeftSR] = ipdevice_joycon.leftSR;
                 mapper[joycon_d.RightSL] = ipdevice_joycon.rightSL;

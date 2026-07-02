@@ -269,6 +269,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3531919739338806919}
     m_Modifications:
+    - target: {fileID: 1041409322641615, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 1041409322641615, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 278706555072840209, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -307,6 +315,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 368344292915322445, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 625482330037984562, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 625482330037984562, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 816049057894123782, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
@@ -775,6 +791,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100013163502236362, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6242848023853370498, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 6242848023853370498, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
+      propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6503369113137645357, guid: d3c2508a55398a24db5d68f68d2702ea, type: 3}
