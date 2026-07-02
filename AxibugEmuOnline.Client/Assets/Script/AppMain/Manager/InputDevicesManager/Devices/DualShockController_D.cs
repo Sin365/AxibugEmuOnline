@@ -8,9 +8,21 @@ namespace AxibugEmuOnline.Client.InputDevices
         GamePadType m_gamePadType;
         public override GamePadType PadType => m_gamePadType;
 
+        /// <summary>
+        /// ​◯
+        /// </summary>
         public Button_C Circle;
+        /// <summary>
+        /// △
+        /// </summary>
         public Button_C Triangle;
+        /// <summary>
+        /// X
+        /// </summary>
         public Button_C Cross;
+        /// <summary>
+        /// 方块
+        /// </summary>
         public Button_C Square;
         public Button_C Up;
         public Button_C Down;
