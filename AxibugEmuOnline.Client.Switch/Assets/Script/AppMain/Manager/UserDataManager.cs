@@ -3,6 +3,7 @@ using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,6 +41,7 @@ namespace AxibugEmuOnline.Client.Manager
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Update_UserInfo_RESP>((int)CommandID.CmdUpdateSelfUserInfo, RecvUpdateSelfUserInfo);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Update_OtherUserInfo_RESP>((int)CommandID.CmdUpdateOtherUserInfo, RecvUpdateOtherUserInfo);
         }
+
 
         public MainUserDataBase userdata { get; private set; } = new MainUserDataBase();
         public bool IsLoggedIn => userdata.IsLoggedIn;
