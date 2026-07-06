@@ -1,4 +1,5 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugProtobuf;
 using ICSharpCode.SharpZipLib.Zip;
@@ -177,28 +178,9 @@ namespace AxibugEmuOnline.Client
         string FileName { set 
             {
                 m_FileNameFromDataBase = value;
-                m_FileNameFromDataBase_Hash = FastStableHash.String(value);
+                m_FileNameFromDataBase_Hash = Helper.FastStableHash.String(value);
             } }//为了做文件名代理，避免误操作，只允许set访问器
 
-        static class FastStableHash
-        {
-            public static int String(string s)
-            {
-                if (string.IsNullOrEmpty(s))
-                    return 0;
-
-                const uint offset = 2166136261u;
-                const uint prime = 16777619u;
-
-                uint hash = offset;
-                for (int i = 0; i < s.Length; i++)
-                {
-                    hash ^= s[i];
-                    hash *= prime;
-                }
-                return unchecked((int)hash);
-            }
-        }
         /// <summary>
         /// 对应数据库中的远端真实文件名
         /// </summary>
@@ -215,18 +197,14 @@ namespace AxibugEmuOnline.Client
             {
                 if (webData == null)
                     new Exception("异常 不应该在没有基础数据的前提下，获取走游戏名逻辑");
-                switch (Platform)//街机平台不使用文件名代理，因为MAME依赖文件名对比数据库，且文件名本身超短
-                {
-                    case RomPlatformType.Neogeo:
-                    case RomPlatformType.Igs:
-                    case RomPlatformType.Cps1:
-                    case RomPlatformType.Cps2:
-                    case RomPlatformType.ArcadeOld:
-                        return m_FileNameFromDataBase;
-                }
+#if UNITY_SWITCH
+                if(Platform.IsMamePlatform())//街机平台不使用文件名代理，因为MAME依赖文件名对比数据库，且文件名本身超短
+                    return m_FileNameFromDataBase;
                 //主要是服务于fucking任天堂的Switch 文件系统,又保证服务器rom文件变化一定有变化加上Hash
                 string proxyName = "AxiID_" + ID + "_" + m_FileNameFromDataBase_Hash + System.IO.Path.GetExtension(m_FileNameFromDataBase);
                 return proxyName;
+#endif
+                return m_FileNameFromDataBase;
             }
         }
         /// <summary> 指示该Rom文件的存放路径 </summary>

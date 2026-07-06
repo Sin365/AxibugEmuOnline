@@ -13,11 +13,12 @@ namespace AxibugEmuOnline.Client.Manager
 {
     public class AppRoom
     {
-        public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; } = null;
-        public bool InRoom => App.user.IsLoggedIn && mineRoomMiniInfo != null;
-        public bool IsHost => mineRoomMiniInfo?.HostPlayerUID == App.user.userdata.UID;
-        public bool IsScreenProviderUID => mineRoomMiniInfo?.ScreenProviderUID == App.user.userdata.UID;
-        public RoomGameState RoomState => mineRoomMiniInfo.GameState;
+        public bool bHadNetRoomInfo = false;
+        public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; }
+        public bool InRoom => App.user.IsLoggedIn && bHadNetRoomInfo;
+        public bool IsHost => bHadNetRoomInfo ? mineRoomMiniInfo.HostPlayerUID == App.user.userdata.UID : false;
+        public bool IsScreenProviderUID => bHadNetRoomInfo ? mineRoomMiniInfo.ScreenProviderUID == App.user.userdata.UID : false;
+        public RoomGameState RoomState => bHadNetRoomInfo ? mineRoomMiniInfo.GameState : RoomGameState.OnlyHost;
         public int WaitStep { get; private set; } = -1;
         public byte[] RawData { get; private set; } = null;
         public NetReplay netReplay { get; private set; }
@@ -42,6 +43,9 @@ namespace AxibugEmuOnline.Client.Manager
         Protobuf_Room_HostPlayer_UpdateStateRaw _Protobuf_Room_HostPlayer_UpdateStateRaw = new Protobuf_Room_HostPlayer_UpdateStateRaw();
         public AppRoom()
         {
+            mineRoomMiniInfo = new Protobuf_Room_MiniInfo();
+            ClearNetRoomInfo();
+
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_List_RESP>((int)CommandID.CmdRoomList, RecvGetRoomList);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Update_RESP>((int)CommandID.CmdRoomListUpdate, RecvGetRoomListUpdate);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Get_Screen_RESP>((int)CommandID.CmdRoomGetScreen, RecvRoomGetScreen);
@@ -53,6 +57,25 @@ namespace AxibugEmuOnline.Client.Manager
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP>((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, RecvHostPlayer_UpdateStateRaw);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Syn_RoomFrameAllInputData>((int)CommandID.CmdRoomSynPlayerInput, RecvHostSyn_RoomFrameAllInputData);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Screnn_Frame>((int)CommandID.CmdScreen, OnScreen);
+        }
+        internal void SetNetRoomInfo(Protobuf_Room_MiniInfo room, bool bReInitRePlay = true)
+        {
+            mineRoomMiniInfo.Reset();
+            mineRoomMiniInfo.MergeFrom(room);
+            if (bReInitRePlay)
+            {
+                InitRePlay();
+            }
+            bHadNetRoomInfo = true;
+        }
+        internal void ClearNetRoomInfo()
+        {
+            if (bHadNetRoomInfo)
+            {
+                ReleaseRePlay();
+            }
+            bHadNetRoomInfo = false;
+            mineRoomMiniInfo.Reset();
         }
 
         #region 房间列表管理
@@ -113,14 +136,14 @@ namespace AxibugEmuOnline.Client.Manager
         #region 房间管理
         List<Protobuf_Room_GamePlaySlot> GetMinePlayerSlotInfo()
         {
-            if (mineRoomMiniInfo == null)
+            if (!bHadNetRoomInfo)
                 return null;
             return mineRoomMiniInfo.GamePlaySlotList.Where(w => w.PlayerUID == App.user.userdata.UID).ToList();
         }
 
         long[] GetRoom4PlayerUIDs()
         {
-            if (mineRoomMiniInfo == null)
+            if (!bHadNetRoomInfo)
                 return null;
             long[] result = new long[mineRoomMiniInfo.GamePlaySlotList.Count];
             for (int i = 0; i < mineRoomMiniInfo.GamePlaySlotList.Count; i++)
@@ -133,7 +156,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         Protobuf_Room_GamePlaySlot[] GetRoom4GameSlotMiniInfos()
         {
-            if (mineRoomMiniInfo == null)
+            if (!bHadNetRoomInfo)
                 return null;
             return mineRoomMiniInfo.GamePlaySlotList.ToArray();
         }
@@ -231,8 +254,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvCreateRoom(Protobuf_Room_Create_RESP msg)
         {
             App.log.Debug("创建房间成功");
-            mineRoomMiniInfo = msg.RoomMiniInfo;
-            InitRePlay();
+            SetNetRoomInfo(msg.RoomMiniInfo);
             Eventer.Instance.PostEvent(EEvent.OnMineRoomCreated);
             OverlayManager.PopTip($"房间创建成功");
 
@@ -258,8 +280,7 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvJoinRoom(Protobuf_Room_Join_RESP msg)
         {
             App.log.Debug("加入房间成功");
-            mineRoomMiniInfo = msg.RoomMiniInfo;
-            InitRePlay();
+            SetNetRoomInfo(msg.RoomMiniInfo);
             {
                 Eventer.Instance.PostEvent(EEvent.OnMineJoinRoom);
                 OverlayManager.PopTip($"已进入[{msg.RoomMiniInfo.GetHostNickName()}]的房间");
@@ -286,22 +307,21 @@ namespace AxibugEmuOnline.Client.Manager
         void RecvLeavnRoom(Protobuf_Room_Leave_RESP msg)
         {
             App.log.Debug("离开房间成功");
-            ReleaseRePlay();
-            mineRoomMiniInfo = null;
+            ClearNetRoomInfo();
             Eventer.Instance.PostEvent(EEvent.OnMineLeavnRoom);
             OverlayManager.PopTip($"你已经离开房间");
         }
 
         void RecvRoomMyRoomStateChange(Protobuf_Room_MyRoom_State_Change msg)
         {
-            if (mineRoomMiniInfo == null)
+            if (!bHadNetRoomInfo)
             {
                 App.log.Error("RecvRoomMyRoomStateChange 时 mineRoomMiniInfo 为空");
                 return;
             }
             long[] oldRoomPlayer = GetRoom4PlayerUIDs();
             Protobuf_Room_GamePlaySlot[] oldslotArr = GetRoom4GameSlotMiniInfos();
-            mineRoomMiniInfo = msg.RoomMiniInfo;
+            SetNetRoomInfo(msg.RoomMiniInfo, false);
             long[] newRoomPlayer = GetRoom4PlayerUIDs();
             Protobuf_Room_GamePlaySlot[] newslotArr = GetRoom4GameSlotMiniInfos();
 
@@ -536,7 +556,7 @@ namespace AxibugEmuOnline.Client.Manager
             if (userdata == null)
                 return;
 
-            if (mineRoomMiniInfo == null)
+            if (bHadNetRoomInfo)
             {
                 foreach (var gameslot in mineRoomMiniInfo.GamePlaySlotList)
                 {
@@ -545,6 +565,7 @@ namespace AxibugEmuOnline.Client.Manager
                 }
             }
         }
+
     }
 
     public static class RoomEX

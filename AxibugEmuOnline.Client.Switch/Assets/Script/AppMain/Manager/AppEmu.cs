@@ -132,19 +132,20 @@ namespace AxibugEmuOnline.Client.Manager
             void IDisposable.Dispose()
             {
                 App.emu.LoadStep = E_RUN_ROM_STEP.FINISH;
-                App.settings.debugHub.RefreshForSetting();
+#if UNITY_SWITCH
+                    App.settings.debugHub.RefreshForSetting();
+#endif
             }
         }
         IEnumerator BeforeBeginGame(RomFile romFile)
         {
             using (BeforeBeginGameCorout.Acquire())
             {
-                yield return null;
                 App.emu.LoadStep = E_RUN_ROM_STEP.READY_START_GAME;
+                yield return null;
+#if UNITY_SWITCH
                 App.settings.debugHub.RefreshForSetting();
                 yield return null;
-
-#if UNITY_SWITCH
                 Initer.debugger_instance.gameObject.SetActive(false);
                 yield return null;
                 App.settings.debugHub.RefreshForSetting();//进行一个重复刷新
@@ -165,11 +166,11 @@ namespace AxibugEmuOnline.Client.Manager
         {
             using (BeforeJoinGameCorout.Acquire())
             {
-                yield return null;
                 App.emu.LoadStep = E_RUN_ROM_STEP.READY_JOIN_ROOM;
-                App.settings.debugHub.RefreshForSetting();
                 yield return null;
 #if UNITY_SWITCH
+                App.settings.debugHub.RefreshForSetting();
+                yield return null;
                 yield return null;
                 Initer.debugger_instance.gameObject.SetActive(false);
                 yield return null;
@@ -185,7 +186,9 @@ namespace AxibugEmuOnline.Client.Manager
                 if (App.emu.LoadStep == E_RUN_ROM_STEP.READY_JOIN_ROOM)//如果超过3秒还没收到消息，标记
                 {
                     App.emu.LoadStep = E_RUN_ROM_STEP.NONE;
+#if UNITY_SWITCH
                     App.settings.debugHub.RefreshForSetting();
+#endif
                 }
             }
         }

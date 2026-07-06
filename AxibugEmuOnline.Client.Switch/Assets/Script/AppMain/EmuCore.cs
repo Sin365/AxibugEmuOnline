@@ -67,10 +67,8 @@ namespace AxibugEmuOnline.Client
         {
             get
             {
-                if (!App.user.IsLoggedIn) return false;
-                if (App.roomMgr.mineRoomMiniInfo == null) return false;
+                if (!App.roomMgr.InRoom) return false;
                 if (App.roomMgr.RoomState <= RoomGameState.OnlyHost) return false;
-
                 return true;
             }
         }

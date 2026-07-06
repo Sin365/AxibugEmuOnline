@@ -112,6 +112,27 @@ namespace AxibugEmuOnline.Client.Common
             return FileMD5Hash(Encoding.ASCII.GetBytes(sb.ToString()));
         }
 
+
+        public static class FastStableHash
+        {
+            public static int String(string s)
+            {
+                if (string.IsNullOrEmpty(s))
+                    return 0;
+
+                const uint offset = 2166136261u;
+                const uint prime = 16777619u;
+
+                uint hash = offset;
+                for (int i = 0; i < s.Length; i++)
+                {
+                    hash ^= s[i];
+                    hash *= prime;
+                }
+                return unchecked((int)hash);
+            }
+        }
+
         public static bool IsMamePlatform(this RomPlatformType type)
         {
             return type == RomPlatformType.Cps1 

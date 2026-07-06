@@ -29,8 +29,8 @@ namespace AxibugEmuOnline.Client.Settings
             switch (controller.ControllerIndex)
             {
                 case 0:
-                    controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.Q, 0);
-                    controller.SetBinding(UMAMEKSingleKey.GAMESTART, device.E, 0);
+                    controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.Alpha5, 0);
+                    controller.SetBinding(UMAMEKSingleKey.GAMESTART, device.Alpha1, 0);
                     controller.SetBinding(UMAMEKSingleKey.UP, device.W, 0);
                     controller.SetBinding(UMAMEKSingleKey.DOWN, device.S, 0);
                     controller.SetBinding(UMAMEKSingleKey.LEFT, device.A, 0);
@@ -158,7 +158,6 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.JOYSTICK.Left, 1);
             controller.SetBinding(UMAMEKSingleKey.RIGHT, device.JOYSTICK.Right, 1);
         }
-
         public override void Bind(StandaloneSwitchProController_D device, ControllerBinder controller)
         {
             controller.SetBinding(UMAMEKSingleKey.INSERT_COIN, device.Minus, 0);
@@ -167,10 +166,10 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(UMAMEKSingleKey.DOWN, device.Down, 0);
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.Left, 0);
             controller.SetBinding(UMAMEKSingleKey.RIGHT, device.Right, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.B, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.A, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_C, device.X, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_D, device.Y, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.Y, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.B, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_C, device.A, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_D, device.X, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_E, device.LeftSL, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_F, device.RightSL, 0);
 
@@ -187,10 +186,10 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(UMAMEKSingleKey.DOWN, device.Down, 0);
             controller.SetBinding(UMAMEKSingleKey.LEFT, device.Left, 0);
             controller.SetBinding(UMAMEKSingleKey.RIGHT, device.Right, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.B, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.A, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_C, device.X, 0);
-            controller.SetBinding(UMAMEKSingleKey.BTN_D, device.Y, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_A, device.Y, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_B, device.B, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_C, device.A, 0);
+            controller.SetBinding(UMAMEKSingleKey.BTN_D, device.X, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_E, device.LeftSL, 0);
             controller.SetBinding(UMAMEKSingleKey.BTN_F, device.RightSL, 0);
 
