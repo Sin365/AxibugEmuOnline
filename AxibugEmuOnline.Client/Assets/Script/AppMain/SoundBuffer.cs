@@ -8,4 +8,9 @@ public class SoundBuffer : RingBuffer<byte>, ISoundDataBuffer
     {
         Write(value);
     }
+
+    public void WriteByte(byte[] input, int offset, int requested)
+    {
+        Write(input, offset, requested);
+    }
 }

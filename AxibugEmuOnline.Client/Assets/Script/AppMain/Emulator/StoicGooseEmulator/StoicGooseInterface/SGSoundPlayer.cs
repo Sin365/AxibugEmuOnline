@@ -1,5 +1,8 @@
 using AxibugEmuOnline.Client;
 using AxibugEmuOnline.Client.ClientCore;
+using AxibugEmuOnline.Client.Common;
+using System;
+using System.Buffers;
 using UnityEngine;
 
 public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
@@ -44,8 +47,8 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
         {
             float* outputPtr = pData;
 
+            /*
             float lastSample = 0;
-            //for (int i = 0; i < data.Length; i += channels)
             for (int i = 0; i < data.Length; i++)
             {
                 float sample;
@@ -56,8 +59,30 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
                     lastSample = sample;
 
                 outputPtr[i] = lastSample;
-                //for (int ch = 0; ch < channels; ch++)
-                //    outputPtr[i + ch] = sample; // 单声道复制到所有通道
+            }*/
+
+            // 一次性批量读取
+            int readCount = _buffer.Read(data, 0, data.Length);
+            // 2. 如果已经读满，就不用做任何事
+            if (readCount == data.Length)
+                return;
+            // 需要补零/保持最后样本的数量
+            int needPadding = data.Length - readCount;
+            if (needPadding > 0)
+            {
+                float lastSample = 0f;
+                // 优先使用最后写入的有效样本进行填充（避免爆音）
+                if (_buffer.TryGetLast(out float last))
+                    lastSample = last;
+                // 否则保持 0f（缓冲区完全为空）
+                // 填充剩余部分 但是0不用填充
+                if (lastSample > 0)
+                {
+                    for (int i = readCount; i < data.Length; i++)
+                    {
+                        outputPtr[i] = lastSample;
+                    }
+                }
             }
         }
     }
@@ -65,7 +90,7 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
     /// <summary>
     /// 模拟器核心推送音频（关键优化）
     /// </summary>
-    internal unsafe void EnqueueSamples(short[] buffer,int len)
+    internal unsafe void EnqueueSamples(short[] buffer, int len)
     {
 #if UNITY_EDITOR
         // 固定 short[]，拿到 short*
@@ -78,15 +103,18 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
         //    return;
 
         //二級缓冲，尝试跨帧效果
-        while (_buffer_2nd.TryRead(out var frombefordata))
-        {
-            _buffer.Write(frombefordata);
-        }
+        //while (_buffer_2nd.TryRead(out var frombefordata))
+        //{
+        //    _buffer.Write(frombefordata);
+        //}
 
+        //二級缓冲，尝试跨帧效果
+        _buffer_2nd.CopyTo(_buffer);
+        float[] temp = AxiArrayPool.RentBuffer<float>(len);
         for (int i = 0; i < len; i++)
-        {
-            _buffer_2nd.Write(buffer[i] / 32767.0f);
-        }
+            temp[i] = buffer[i] / 32767.0f;
+        _buffer_2nd.Write(temp, 0, len);
+        AxiArrayPool.ReturnBuffer(temp);
     }
 
     public void Initialize()

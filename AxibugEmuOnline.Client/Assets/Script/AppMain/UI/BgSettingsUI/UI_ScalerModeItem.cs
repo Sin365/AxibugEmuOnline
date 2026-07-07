@@ -48,10 +48,10 @@ namespace AxibugEmuOnline.Client
                     SetBaseInfo("x6", "将保持模拟器输出画面的原始x6倍分辨率", null);
                     break;
                 case ScreenScaler.EnumScalerMode.Rotate_270:
-                    SetBaseInfo("旋转90°(顺时针)", "顺时针旋转90°并保持适应，适合竖屏飞行等游戏", null);
+                    SetBaseInfo("旋转90°(逆时针)", "顺时针旋转90°并保持适应，适合竖屏飞行等游戏", null);
                     break;
                 case ScreenScaler.EnumScalerMode.Rotate_90:
-                    SetBaseInfo("旋转90°(逆时针)", "逆时针旋转90°并保持适应，适合竖屏飞行等游戏", null);
+                    SetBaseInfo("旋转90°(顺时针)", "逆时针旋转90°并保持适应，适合竖屏飞行等游戏", null);
                     break;
             }
         }
