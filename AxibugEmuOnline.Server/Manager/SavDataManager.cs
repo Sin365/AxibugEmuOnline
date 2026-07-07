@@ -3,7 +3,6 @@ using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
-using System.Data;
 using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Server.Manager
@@ -16,8 +15,7 @@ namespace AxibugEmuOnline.Server.Manager
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavDelGameSav, RecvDelGameSav);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdGamesavUploadGameSav, RecvUpLoadGameSav);
         }
-
-        public void RecvGetGameSavList(Socket _socket, byte[] reqData)
+        void RecvGetGameSavList(Socket _socket, byte[] reqData)
         {
             Protobuf_Mine_GetGameSavList msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_GetGameSavList>(reqData);
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
@@ -37,7 +35,7 @@ namespace AxibugEmuOnline.Server.Manager
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值
-                    command.Parameters.AddWithValue("?uid", _c.UID);
+                    command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                     command.Parameters.AddWithValue("?romid", msg.RomID);
                     using (var reader = command.ExecuteReader())
                     {
@@ -64,8 +62,7 @@ namespace AxibugEmuOnline.Server.Manager
 
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavGetGameSavList, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(respData));
         }
-
-        public void RecvDelGameSav(Socket _socket, byte[] reqData)
+        void RecvDelGameSav(Socket _socket, byte[] reqData)
         {
             Protobuf_Mine_DelGameSav msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_DelGameSav>(reqData);
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
@@ -80,7 +77,7 @@ namespace AxibugEmuOnline.Server.Manager
                 using (var command = new MySqlCommand(query, conn))
                 {
                     // 设置参数值
-                    command.Parameters.AddWithValue("?uid", _c.UID);
+                    command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                     command.Parameters.AddWithValue("?romid", msg.RomID);
                     using (var reader = command.ExecuteReader())
                     {
@@ -113,7 +110,7 @@ namespace AxibugEmuOnline.Server.Manager
                             using (var command = new MySqlCommand(query, conn))
                             {
                                 // 设置参数值
-                                command.Parameters.AddWithValue("?uid", _c.UID);
+                                command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                                 command.Parameters.AddWithValue("?romid", msg.RomID);
                                 if (command.ExecuteNonQuery() < 1)
                                 {
@@ -135,8 +132,7 @@ namespace AxibugEmuOnline.Server.Manager
 
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavGetGameSavList, (int)errCode, ProtoBufHelper.Serizlize(respData));
         }
-
-        public void RecvUpLoadGameSav(Socket _socket, byte[] reqData)
+        void RecvUpLoadGameSav(Socket _socket, byte[] reqData)
         {
             Protobuf_Mine_UpLoadGameSav msg = ProtoBufHelper.DeSerizlize<Protobuf_Mine_UpLoadGameSav>(reqData);
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(_socket);
@@ -146,7 +142,7 @@ namespace AxibugEmuOnline.Server.Manager
 
             RomPlatformType ptype = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.RomID);
 
-            if (GetProtobufMineGameSavInfo(_c.UID, msg.RomID, msg.SavDataIdx, out Protobuf_Mine_GameSavInfo oldSavInfo))
+            if (GetProtobufMineGameSavInfo(_c.DBTargetUID, msg.RomID, msg.SavDataIdx, out Protobuf_Mine_GameSavInfo oldSavInfo))
             {
                 bool bDelSav = Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, oldSavInfo.SavUrl));
                 bool bDelImg = Helper.FileDelete(Path.Combine(Config.cfg.wwwRootPath, oldSavInfo.SavImgUrl));
@@ -155,7 +151,7 @@ namespace AxibugEmuOnline.Server.Manager
                     errCode = ErrorCode.ErrorRomDontHadSavedata;
                 }
 
-                if (!DeleteProtobufMineGameSavInfo(_c.UID, msg.RomID, msg.SavDataIdx))
+                if (!DeleteProtobufMineGameSavInfo(_c.DBTargetUID, msg.RomID, msg.SavDataIdx))
                 {
                     //删除失败
                     errCode = ErrorCode.ErrorRomDontHadSavedata;
@@ -166,8 +162,8 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 byte[] StateRawData = msg.StateRaw.ToArray();
                 byte[] ImgData = msg.SavImg.ToArray();
-                GetNewUserSavPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.sav", out string rompath);
-                GetNewUserSavPath(_c.UID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.jpg", out string imgpath);
+                GetNewUserSavPath(_c.DBTargetUID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.sav", out string rompath);
+                GetNewUserSavPath(_c.DBTargetUID, ptype, msg.RomID, msg.SavDataIdx, $"{msg.SavDataIdx}.jpg", out string imgpath);
 
                 ImgData = Helper.DecompressByteArray(ImgData);
 
@@ -187,7 +183,7 @@ namespace AxibugEmuOnline.Server.Manager
                         using (var command = new MySqlCommand(query, conn))
                         {
                             // 设置参数值
-                            command.Parameters.AddWithValue("?uid", _c.UID);
+                            command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                             command.Parameters.AddWithValue("?romid", msg.RomID);
                             command.Parameters.AddWithValue("?savidx", msg.SavDataIdx);
                             command.Parameters.AddWithValue("?savName", msg.Name);
@@ -212,7 +208,7 @@ namespace AxibugEmuOnline.Server.Manager
 
             if (errCode == ErrorCode.ErrorOk)
             {
-                if (!GetProtobufMineGameSavInfo(_c.UID, msg.RomID, msg.SavDataIdx, out Protobuf_Mine_GameSavInfo protoData))
+                if (!GetProtobufMineGameSavInfo(_c.ParentUID, msg.RomID, msg.SavDataIdx, out Protobuf_Mine_GameSavInfo protoData))
                 {
                     //不存在
                     errCode = ErrorCode.ErrorRomDontHadSavedata;
@@ -227,14 +223,11 @@ namespace AxibugEmuOnline.Server.Manager
 
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdGamesavUploadGameSav, (int)errCode, ProtoBufHelper.Serizlize(respData));
         }
-        public void GetNewUserSavPath(long uid, RomPlatformType ptype, int romid, int stateIdx, string filename, out string path)
+        void GetNewUserSavPath(long uid, RomPlatformType ptype, int romid, int stateIdx, string filename, out string path)
         {
             path = Path.Combine("UserSav", uid.ToString(), ptype.ToString(), romid.ToString(), stateIdx.ToString(), filename);
         }
-
-        
-
-        public bool GetProtobufMineGameSavInfo(long uid, int romid, int savIdx, out Protobuf_Mine_GameSavInfo protoData)
+        bool GetProtobufMineGameSavInfo(long uid, int romid, int savIdx, out Protobuf_Mine_GameSavInfo protoData)
         {
             bool bhad = false;
             protoData = default;
@@ -281,8 +274,7 @@ namespace AxibugEmuOnline.Server.Manager
             }
             return bhad;
         }
-
-        public bool DeleteProtobufMineGameSavInfo(long uid, int romid, int savIdx)
+        bool DeleteProtobufMineGameSavInfo(long uid, int romid, int savIdx)
         {
             bool bDone = false;
             RomPlatformType ptype = AppSrv.g_GameShareMgr.GetRomPlatformType(romid);

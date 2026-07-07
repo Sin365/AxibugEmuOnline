@@ -34,7 +34,7 @@ namespace AxibugEmuOnline.Server.Manager
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值
-                        command.Parameters.AddWithValue("?uid", _c.UID);
+                        command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                         command.Parameters.AddWithValue("?romid", msg.RomID);
                         using (var reader = command.ExecuteReader())
                         {
@@ -60,7 +60,7 @@ namespace AxibugEmuOnline.Server.Manager
                             using (var command = new MySqlCommand(query, conn))
                             {
                                 // 设置参数值
-                                command.Parameters.AddWithValue("?uid", _c.UID);
+                                command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                                 command.Parameters.AddWithValue("?romid", msg.RomID);
                                 command.ExecuteNonQuery();
                             }
@@ -74,7 +74,7 @@ namespace AxibugEmuOnline.Server.Manager
                             using (var command = new MySqlCommand(query, conn))
                             {
                                 // 设置参数值
-                                command.Parameters.AddWithValue("?uid", _c.UID);
+                                command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                                 command.Parameters.AddWithValue("?romid", msg.RomID);
                                 command.ExecuteNonQuery();
                             }

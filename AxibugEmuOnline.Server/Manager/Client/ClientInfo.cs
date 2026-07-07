@@ -6,6 +6,7 @@ namespace AxibugEmuOnline.Server.Manager.Client
     public class ClientInfo
     {
         public long UID { get; set; }
+        public long ParentUID { get; set; }
         public string NickName { get; set; } = string.Empty;
         public string Account { get; set; } = string.Empty;
         internal DeviceType deviceType { get; set; } = DeviceType.Default;
@@ -24,6 +25,7 @@ namespace AxibugEmuOnline.Server.Manager.Client
         public double MaxNetDelay { get; set; }
         public List<double> NetDelays { get; set; } = new List<double>();
         public const int NetAveDelayCount = 3;
+        public long DBTargetUID => ParentUID >= 0 ? ParentUID : UID;
     }
 
     public class UserRoomState

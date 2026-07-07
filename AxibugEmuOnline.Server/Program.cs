@@ -1,5 +1,4 @@
 ﻿using AxibugEmuOnline.Server.Common;
-using AxibugEmuOnline.Server.Manager;
 using AxibugEmuOnline.Server.Manager.Client;
 using AxibugEmuOnline.Server.Manager.Room;
 using MySql.Data.MySqlClient;

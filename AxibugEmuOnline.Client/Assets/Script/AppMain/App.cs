@@ -31,6 +31,7 @@ namespace AxibugEmuOnline.Client.ClientCore
         public static AppShare share;
         public static SaveSlotManager SavMgr;
         public static FileDownloader FileDownloader;
+        public static AppAccBind accbind;
         static bool bTest;
         static string mTestSrvIP;
         public static bool bUseGUIButton;
@@ -104,7 +105,6 @@ namespace AxibugEmuOnline.Client.ClientCore
             audioMgr = go.AddComponent<AudioMgr>();
             coRunner = go.AddComponent<CoroutineRunner>();
 
-
             input = new InputDevicesManager();
             FileDownloader = new FileDownloader();
             settings = new AppSettings();
@@ -121,6 +121,7 @@ namespace AxibugEmuOnline.Client.ClientCore
             roomMgr = new AppRoom();
             share = new AppShare();
             SavMgr = new SaveSlotManager();
+            accbind = new AppAccBind();
 
             if (bUseLocalWebApi)
                 httpAPI.WebHost = mLocalWebApi;
@@ -132,20 +133,15 @@ namespace AxibugEmuOnline.Client.ClientCore
                 s_romLibs[plat] = new RomLib(plat);
             }
 
-
-
             bTest = isTest;
             bUseGUIButton = isUseGUIButton;
             mTestSrvIP = testSrvIP;
-
 
             var importNode = GameObject.Find("IMPORTENT");
             if (importNode != null) GameObject.DontDestroyOnLoad(importNode);
 
             StartCoroutine(AppTickFlow());
             RePullNetInfo();
-
-
         }
 
 
@@ -334,6 +330,5 @@ namespace AxibugEmuOnline.Client.ClientCore
                     break;
             }
         }
-
     }
 }

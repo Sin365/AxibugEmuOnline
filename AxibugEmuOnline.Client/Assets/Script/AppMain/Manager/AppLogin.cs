@@ -1,5 +1,4 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
-using AxibugEmuOnline.Client.Common;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Network;
 using AxibugProtobuf;

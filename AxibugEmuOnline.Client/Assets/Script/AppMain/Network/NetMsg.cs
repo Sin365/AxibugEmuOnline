@@ -182,6 +182,24 @@ namespace AxibugEmuOnline.Client.Network
                     case ErrorCode.ErrorRoleAlreadlyNickname:
                         errMsg = "修改失败已被使用";
                         break;
+                    case ErrorCode.ErrorBindCodeNotExist:
+                        errMsg = "绑定码不存在";
+                        break;
+                    case ErrorCode.ErrorBindCodeTimeOut:
+                        errMsg = "绑定码超时";
+                        break;
+                    case ErrorCode.ErrorBindCodeAccCant:
+                        errMsg = "目标账户无法绑定";
+                        break;
+                    case ErrorCode.ErrorBindCodeException:
+                        errMsg = "绑定处理异常";
+                        break;
+                    case ErrorCode.ErrorBindCodeAlreadyInUse:
+                        errMsg = "绑定码已经被使用";
+                        break;
+                    case ErrorCode.ErrorBindCodeAccountAlreadyBindThisDev:
+                        errMsg = "该设备已经绑定该账号,请勿重复绑定";
+                        break;
                     case ErrorCode.ErrorDefaul:
                     case ErrorCode.ErrorOk:
                     default:

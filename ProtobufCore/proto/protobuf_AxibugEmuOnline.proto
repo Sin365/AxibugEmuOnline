@@ -12,6 +12,8 @@ enum CommandID
 	
 	CMD_LOGIN = 2001;  //自动登录上行 | 下行 对应 Protobuf_Login | Protobuf_Login_RESP
 	
+	CMD_BIND_ACC = 2301;  //设备到绑定账户 | 下行 对应 Protobuf_Bind | Protobuf_Bind_RESP
+	
 	CMD_USER_ONLINELIST = 3000;  //获取在线用户列表 上行 | 下行 对应 Protobuf_UserList | Protobuf_UserList_RESP
 	CMD_USER_JOIN = 3031;  //用户上线 下行 对应 Protobuf_UserOnline_RESP
 	CMD_USER_LEAVE = 3032;  //用户下线 下行 对应 Protobuf_UserOffline_RESP
@@ -74,6 +76,7 @@ enum CommandID
 	CMD_GAMESCREEN_IMG_Upload = 9001;//玩家上传即时存档 上行 | 下行 对应 Protobuf_GameScreen_Img_Upload | Protobuf_GameScreen_Img_Upload_RESP
 	
 	CMD_GAME_MARK = 10101;  //获取即时存档列表 上行 | 下行 对应 Protobuf_Game_Mark | Protobuf_Game_Mark_RESP
+	
 }
 
 enum ErrorCode
@@ -96,6 +99,14 @@ enum ErrorCode
 	ERROR_ROM_DONT_HAD_STAR =404;//并没有收藏
 	
 	ERROR_ROLE_ALREADLY_NICKNAME = 501;//用户名重复
+	ERROR_ROLE_INVALID_NICKNAME = 502;//不规范用户名
+	
+	ERROR_BIND_CODE_NOT_EXIST = 601;//绑定码不存在
+	ERROR_BIND_CODE_TIME_OUT = 602;//绑定码超时
+	ERROR_BIND_CODE_ACC_CANT = 603;//目标账户无法绑定
+	ERROR_BIND_CODE_EXCEPTION = 604;//绑定处理异常
+	ERROR_BIND_CODE_ALREADY_IN_USE = 605;//绑定码已经被使用
+	ERROR_BIND_CODE_ACCOUNT_ALREADY_BIND_THIS_DEV = 606;//该设备已经绑定该账号
 }
 
 enum LoginType
@@ -232,6 +243,18 @@ message Protobuf_Login_RESP
 	int64 UID = 6;
 }
 
+message Protobuf_Bind
+{
+	string BindCode = 1;//绑定码
+}
+
+message Protobuf_Bind_RESP
+{
+	int32 MoveStarCount = 1;//迁移收藏数量
+	int32 MoveSavCount = 2;//迁移存档数量
+	string MoveToNickName = 3;//迁移后的用户名
+}
+
 
 //Token结构，但用于逻辑里配置加密密钥，放置于服务端加密后，发放token
 message Protobuf_Token_Struct
@@ -239,6 +262,7 @@ message Protobuf_Token_Struct
 	int64 UID = 1;
 	int64 TokenGenDate = 2;
 	int64 Seed = 3;
+	int64 ParentUID = 4;//父级账户ID 如果没有则为-1 即小于0
 }
 
 //获取在线用户列表 上行

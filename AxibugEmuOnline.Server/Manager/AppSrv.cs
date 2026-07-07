@@ -18,6 +18,7 @@ namespace AxibugEmuOnline.Server
         public static RoomManager g_Room;
         public static GameShareManager g_GameShareMgr;
         private static SavDataManager g_GameSavMgr;
+        private static BindManager g_BindMgr;
 
         public static void InitServer(int port)
         {
@@ -35,6 +36,7 @@ namespace AxibugEmuOnline.Server
             g_Room = new RoomManager();
             g_GameShareMgr = new GameShareManager();
             g_GameSavMgr = new SavDataManager();
+            g_BindMgr = new BindManager();
 
             g_SocketMgr.Init();
             g_SocketMgr.Start(new IPEndPoint(IPAddress.Any.Address, port));

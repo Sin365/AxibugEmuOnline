@@ -38,7 +38,7 @@ namespace AxibugEmuOnline.Web.Controllers
             long UID = 0;
             if (Helper.TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
             {
-                UID = tokenData.UID;
+                UID = tokenData.GetDBUseUID();
             }
 
             bool bHadSearchKey = !string.IsNullOrEmpty(SearchKey);
@@ -174,7 +174,7 @@ namespace AxibugEmuOnline.Web.Controllers
             long UID = 0;
             if (Helper.TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
             {
-                UID = tokenData.UID;
+                UID = tokenData.GetDBUseUID();
             }
 
             string searchPattern = $"%{SearchKey}%";
@@ -288,7 +288,7 @@ LIMIT ?offset, ?pageSize;";
             long UID = 0;
             if (Helper.TryDecrypToken(Token, out Protobuf_Token_Struct tokenData))
             {
-                UID = tokenData.UID;
+                UID = tokenData.GetDBUseUID();
             }
 
             string searchPattern = $"%{RomInfo}%";
@@ -364,6 +364,8 @@ LIMIT ?offset, ?pageSize;";
 
         public bool CheckIsRomStar(int RomId, long uid)
         {
+            if (uid < 0)
+                return false;
             bool bhad = false;
             using (MySqlConnection conn = SQLRUN.GetConn("CheckIsRomStart"))
             {

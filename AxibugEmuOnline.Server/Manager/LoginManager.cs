@@ -32,6 +32,7 @@ namespace AxibugEmuOnline.Server.Manager
             AppSrv.g_Log.Info($"LoginType -> {msg.LoginType.ToString()}");
             if (msg.LoginType == LoginType.UseDevice)
             {
+                //判断登录失败
                 if (!GetUidByDevice(msg.DeviceStr, msg.DeviceType, out _uid))
                 {
                     byte[] ErrRespData = ProtoBufHelper.Serizlize(new Protobuf_Login_RESP()
@@ -44,6 +45,7 @@ namespace AxibugEmuOnline.Server.Manager
             }
             else
             {
+                //尚未支持
                 byte[] ErrRespData = ProtoBufHelper.Serizlize(new Protobuf_Login_RESP()
                 {
                     Status = LoginResultStatus.AccountErr,
@@ -86,6 +88,13 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 try
                 {
+                    if (string.IsNullOrEmpty(msg.NickName))
+                    {
+                        AppSrv.g_Log.Info($"昵称不合法");
+                        //返回给自己结果
+                        AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdModifyNickName, (int)ErrorCode.ErrorRoleInvalidNickname, ProtoBufHelper.Serizlize(modifResp));
+                        return;
+                    }
                     long temp = 0;
                     string query = "SELECT uid from users where nikename = ?nikename ";
                     using (var command = new MySqlCommand(query, conn))
@@ -114,7 +123,7 @@ namespace AxibugEmuOnline.Server.Manager
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值
-                        command.Parameters.AddWithValue("?uid", _c.UID);
+                        command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
                         command.Parameters.AddWithValue("?nikename", msg.NickName);
                         if (command.ExecuteNonQuery() > 0)
                         {
@@ -246,7 +255,7 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 try
                 {
-                    string query = "SELECT account,nikename,regdate,lastlogindate from users where uid = ?uid ";
+                    string query = "SELECT account,nikename,regdate,lastlogindate,parentuid from users where uid = ?uid ";
                     using (var command = new MySqlCommand(query, conn))
                     {
                         // 设置参数值
@@ -263,9 +272,29 @@ namespace AxibugEmuOnline.Server.Manager
                                 _c.RegisterDT = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2);
                                 _c.LastLogInDT = reader.IsDBNull(3) ? DateTime.Now : reader.GetDateTime(3);
                                 _c.deviceType = deviceType;
+                                _c.ParentUID = reader.GetInt64(4);
                             }
                         }
                     }
+
+                    if (_c.DBTargetUID != _c.UID)
+                    {
+                        AppSrv.g_Log.Debug("有父级账户");
+                        query = "SELECT nikename where uid = ?uid ";
+                        using (var command = new MySqlCommand(query, conn))
+                        {
+                            command.Parameters.AddWithValue("?uid", _c.DBTargetUID);
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    _c.NickName = reader.IsDBNull(0) ? string.Empty : reader.GetString(0);
+                                    AppSrv.g_Log.Debug($"使用父级昵称：{_c.NickName}");
+                                }
+                            }
+                        }
+                    }
+
                     query = "update users set lastlogindate = now() where uid = ?uid ";
                     using (var command = new MySqlCommand(query, conn))
                     {
@@ -287,7 +316,8 @@ namespace AxibugEmuOnline.Server.Manager
             {
                 UID = _c.UID,
                 TokenGenDate = timestamp,
-                Seed = GetNextTokenSeed()
+                Seed = GetNextTokenSeed(),
+                ParentUID = _c.ParentUID,
             };
             byte[] protobufData = ProtoBufHelper.Serizlize(_resp);
             ProtoBufHelper.DeSerizlize<Protobuf_Token_Struct>(protobufData);
