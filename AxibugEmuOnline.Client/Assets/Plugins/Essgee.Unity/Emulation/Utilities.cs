@@ -42,11 +42,11 @@ namespace Essgee.Emulation
         }
 
         // RGB444
-        private static readonly uint[] RGB444toBGRA8888Cache = new uint[32768];
+        private static readonly uint[] RGB444toBGRA8888Cache = new uint[65536];
 
         static void InitRGB444toBGRA8888Cache()
         {
-            for (int i = 0; i < 32768; i++)
+            for (int i = 0; i < 65536; i++)
             {
                 byte r = (byte)((i >> 0) & 0xF);
                 byte g = (byte)((i >> 4) & 0xF);
@@ -63,6 +63,8 @@ namespace Essgee.Emulation
 
         public static void RGB444toBGRA8888(int color, ref byte* buffer, int address)
         {
+            if (color >= RGB444toBGRA8888Cache.Length)
+                throw new Exception($"CRAM out of range: {color:X4}");
             *(uint*)(buffer + address) = RGB444toBGRA8888Cache[color];
         }
 
