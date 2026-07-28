@@ -285,7 +285,6 @@ namespace MAME.Core
         }
         public static byte[] GetRom(string sFile)
         {
-            byte[] result = null;
             try
             {
                 foreach (string s1 in lsParents)
@@ -294,7 +293,7 @@ namespace MAME.Core
                     if (MameMainMotion.IoSupport.File_Exists(path))
                     {
                         EmuLogger.Log($"Had File => {path}");
-                        result = MameMainMotion.IoSupport.File_ReadAllBytes(path);
+                        return MameMainMotion.IoSupport.File_ReadAllBytes(path);
                     }
                     else
                     {
@@ -311,7 +310,7 @@ namespace MAME.Core
             //    throw new Exception("[machine]中断 result == null");
             //}
 
-            return result;
+            return null;
         }
     }
 }
