@@ -74,6 +74,27 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
             //                }
             //            }
 #endif
+
+#if UNITY_IPHONE
+            if (ipdev is Keyboard)
+            {
+                string deviceName = ipdev.displayName;
+                if (deviceName.Contains("Virtual") ||
+                    deviceName.Contains("gpio-keys") ||//电源键
+                    deviceName.Contains("pmic") ||
+                    deviceName.Contains("goodix") ||
+                    deviceName.Contains("screen") ||
+                    deviceName.Contains("touch") ||
+                    deviceName.Contains("mtp-snd-card") ||
+                    deviceName.Contains("Headset Jack") ||//耳机线控
+                    deviceName.Contains("On-Screen")
+                    )
+                {
+                    App.log.Debug($"过滤输入设备：{log}");
+                    return;
+                }
+            }
+#endif
             App.log.Debug($"加入输入设备：{log}");
 
             InputDevice_D newDevice = null;
