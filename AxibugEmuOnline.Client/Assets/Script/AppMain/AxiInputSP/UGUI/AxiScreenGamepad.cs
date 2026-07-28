@@ -26,6 +26,7 @@ namespace AxiInputSP.UGUI
         public Transform tfMAME;
         public Transform tfMAME_NEOGEO;
         public Transform tfGAMEBOYCOLOR;
+        public Transform tfGAME_GEAR;
         public Transform tfMASTERSYSTEM;
         public Transform tfWS_WSC;
         List<Transform> mPlatfromList = new List<Transform>();
@@ -66,6 +67,7 @@ namespace AxiInputSP.UGUI
             mPlatfromList.Add(tfMAME);
             mPlatfromList.Add(tfMAME_NEOGEO);
             mPlatfromList.Add(tfGAMEBOYCOLOR);
+            mPlatfromList.Add(tfGAME_GEAR);
             mPlatfromList.Add(tfMASTERSYSTEM);
             mPlatfromList.Add(tfWS_WSC);
         }
@@ -133,8 +135,11 @@ namespace AxiInputSP.UGUI
                 case RomPlatformType.Igs:
                 case RomPlatformType.Cps1:
                 case RomPlatformType.Cps2:
+                case RomPlatformType.ArcadeOld:
                     return tfMAME;
                 case RomPlatformType.MasterSystem:
+                case RomPlatformType.Sc3000:
+                case RomPlatformType.Sg1000:
                     return tfMASTERSYSTEM;
                 case RomPlatformType.GameBoy:
                 case RomPlatformType.GameBoyColor:
@@ -143,10 +148,8 @@ namespace AxiInputSP.UGUI
                 case RomPlatformType.WonderSwanColor:
                     return tfWS_WSC;
                 case RomPlatformType.GameGear:
+                    return tfGAME_GEAR;
                 case RomPlatformType.ColecoVision:
-                case RomPlatformType.Sc3000:
-                case RomPlatformType.Sg1000:
-                case RomPlatformType.ArcadeOld:
                 case RomPlatformType.Invalid:
                 case RomPlatformType.All:
                 default:

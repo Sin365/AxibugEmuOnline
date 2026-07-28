@@ -34,6 +34,8 @@ namespace AxibugEmuOnline.Client
                     case RomPlatformType.ColecoVision:
                     case RomPlatformType.Sc3000:
                     case RomPlatformType.Sg1000:
+                    case RomPlatformType.WonderSwan:
+                    case RomPlatformType.WonderSwanColor:
                         return false;
                     case RomPlatformType.Igs:
                     case RomPlatformType.Cps1:
@@ -41,9 +43,6 @@ namespace AxibugEmuOnline.Client
                     case RomPlatformType.Neogeo:
                     case RomPlatformType.ArcadeOld:
                         return true;
-                    case RomPlatformType.WonderSwan:
-                    case RomPlatformType.WonderSwanColor:
-                        return false;
                     default:
                         throw new NotImplementedException($"未实现的平台{Platform}");
                 }

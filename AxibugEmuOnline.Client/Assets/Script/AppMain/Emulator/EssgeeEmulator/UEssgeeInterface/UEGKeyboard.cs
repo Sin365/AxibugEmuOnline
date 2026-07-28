@@ -180,8 +180,8 @@ public class UEGKeyboard : MonoBehaviour
             dictKey2Motion.Add(EssgeeUnityKey.P1_DOWN, machine.configuration.ControlsDown);
             dictKey2Motion.Add(EssgeeUnityKey.P1_LEFT, machine.configuration.ControlsLeft);
             dictKey2Motion.Add(EssgeeUnityKey.P1_RIGHT, machine.configuration.ControlsRight);
-            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_1, machine.configuration.ControlsButton2);
-            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_2, machine.configuration.ControlsButton1);
+            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_1, machine.configuration.ControlsButton1);
+            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_2, machine.configuration.ControlsButton2);
             dictKey2Motion.Add(EssgeeUnityKey.P1_POTION_1, machine.configuration.ControlsStart);
         }
         else if (Machine is Essgee.Emulation.Machines.SC3000)
