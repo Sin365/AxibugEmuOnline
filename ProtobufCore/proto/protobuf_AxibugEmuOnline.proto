@@ -107,6 +107,7 @@ enum ErrorCode
 	ERROR_BIND_CODE_EXCEPTION = 604;//绑定处理异常
 	ERROR_BIND_CODE_ALREADY_IN_USE = 605;//绑定码已经被使用
 	ERROR_BIND_CODE_ACCOUNT_ALREADY_BIND_THIS_DEV = 606;//该设备已经绑定该账号
+	ERROR_BIND_CODE_ACCOUNT_ALREADY_HAS_PARENT = 607;//该设备已有绑定账户
 }
 
 enum LoginType
@@ -253,6 +254,7 @@ message Protobuf_Bind_RESP
 	int32 MoveStarCount = 1;//迁移收藏数量
 	int32 MoveSavCount = 2;//迁移存档数量
 	string MoveToNickName = 3;//迁移后的用户名
+	int64 ParentUID = 4;//父级账户ID
 }
 
 

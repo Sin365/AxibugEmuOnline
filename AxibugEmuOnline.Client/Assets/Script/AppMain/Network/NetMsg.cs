@@ -200,6 +200,12 @@ namespace AxibugEmuOnline.Client.Network
                     case ErrorCode.ErrorBindCodeAccountAlreadyBindThisDev:
                         errMsg = "该设备已经绑定该账号,请勿重复绑定";
                         break;
+                    case ErrorCode.ErrorRoleInvalidNickname:
+                        errMsg = "不规范的用户名";
+                        break;
+                    case ErrorCode.ErrorBindCodeAccountAlreadyHasParent:
+                        errMsg = "该设备已有绑定账户";
+                        break;
                     case ErrorCode.ErrorDefaul:
                     case ErrorCode.ErrorOk:
                     default:
