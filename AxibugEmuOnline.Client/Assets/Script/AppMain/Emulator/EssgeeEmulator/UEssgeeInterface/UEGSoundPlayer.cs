@@ -9,6 +9,7 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
     [SerializeField]
     private AudioSource m_as;
     private RingBuffer<float> _buffer = new RingBuffer<float>(44100 * 2);
+    private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(44100 * 2);
     private TimeSpan lastElapsed;
     public double audioFPS { get; private set; }
     public bool IsRecording { get; private set; }
@@ -89,10 +90,15 @@ public class UEGSoundPlayer : MonoBehaviour, AxiAudioPull
         lastElapsed = current;
         audioFPS = 1d / delta.TotalSeconds;
 
+        _buffer_2nd.CopyTo(_buffer);
         for (int i = 0; i < samples_lenght; i += 1)
-        {
-            _buffer.Write(buffer[i] / 32767.0f);
-        }
+            _buffer_2nd.Write(buffer[i] / 32767.0f);
+
+        //for (int i = 0; i < samples_lenght; i += 1)
+        //{ 
+        //    _buffer.Write(buffer[i] / 32767.0f);
+        //}
+
         //App.audioMgr.WriteToRecord(buffer, samples_a);
     }
     public void BufferWirte(int Off, byte[] Data)

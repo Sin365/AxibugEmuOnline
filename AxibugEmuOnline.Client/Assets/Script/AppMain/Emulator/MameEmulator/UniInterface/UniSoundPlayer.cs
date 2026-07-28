@@ -8,7 +8,8 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer , AxiAudioPull
 {
     [SerializeField]
     private AudioSource m_as;
-    private RingBuffer<float> _buffer = new RingBuffer<float>(4096);
+    private RingBuffer<float> _buffer = new RingBuffer<float>(44100 * 2);
+    private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(4096);
     private TimeSpan lastElapsed;
     public double audioFPS { get; private set; }
     float lastData = 0;
@@ -145,14 +146,20 @@ public class UniSoundPlayer : MonoBehaviour, ISoundPlayer , AxiAudioPull
         lastElapsed = current;
         audioFPS = 1d / delta.TotalSeconds;
 
-
+        _buffer_2nd.CopyTo(_buffer);
         for (int i = 0; i < samples_a; i++)
         {
             short left = BitConverter.ToInt16(buffer, i * 2 * 2);
-            //short right = BitConverter.ToInt16(buffer, i * 2 * 2 + 2);
-            _buffer.Write(left / 32767.0f);
-            //_buffer.Write(right / 32767.0f);
+            _buffer_2nd.Write(left / 32767.0f);
         }
+
+        //for (int i = 0; i < samples_a; i++)
+        //{
+        //    short left = BitConverter.ToInt16(buffer, i * 2 * 2);
+        //    //short right = BitConverter.ToInt16(buffer, i * 2 * 2 + 2);
+        //    _buffer.Write(left / 32767.0f);
+        //    //_buffer.Write(right / 32767.0f);
+        //}
     }
 
     public void BufferWirte(int Off, byte[] Data)

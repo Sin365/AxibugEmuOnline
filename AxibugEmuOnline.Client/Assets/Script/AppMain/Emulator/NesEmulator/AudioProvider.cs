@@ -11,7 +11,8 @@ namespace AxibugEmuOnline.Client
         [SerializeField]
         private AudioSource m_as;
 
-        private SoundBuffer _buffer = new SoundBuffer(4096);
+        private SoundBuffer _buffer = new SoundBuffer(4096 * 2 * 4);
+        private SoundBuffer _buffer_2nd = new SoundBuffer(4096 * 2);
         public void Start()
         {
             return;
@@ -120,7 +121,10 @@ namespace AxibugEmuOnline.Client
 
         void ProcessSound(NES nes, uint feedCount)
         {
-            nes.apu.Process(_buffer, feedCount);
+            //nes.apu.Process(_buffer, feedCount);
+            //二級缓冲，尝试跨帧效果
+            _buffer_2nd.CopyTo(_buffer);
+            nes.apu.Process(_buffer_2nd, feedCount);
         }
 
     }

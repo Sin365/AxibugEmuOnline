@@ -15,8 +15,8 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
     /// </summary>
     const int WscEverTickBufferLenght = 1168;
     // 大幅加大缓冲 + 预留安全余量
-    private RingBuffer<float> _buffer = new RingBuffer<float>(WscEverTickBufferLenght * 4);//4幀音頻數據為最大緩衝
-    private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(WscEverTickBufferLenght);
+    private RingBuffer<short> _buffer = new RingBuffer<short>(WscEverTickBufferLenght * 4);//4幀音頻數據為最大緩衝
+    private RingBuffer<short> _buffer_2nd = new RingBuffer<short>(WscEverTickBufferLenght);
 
     private float lastSample = 0f;
 
@@ -61,8 +61,12 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
                 outputPtr[i] = lastSample;
             }*/
 
+            short[] temp = AxiArrayPool.RentBuffer<short>(data.Length);
             // 一次性批量读取
-            int readCount = _buffer.Read(data, 0, data.Length);
+            int readCount = _buffer.Read(temp, 0, data.Length);
+            for (int i = 0; i < readCount; i++)
+                data[i] = temp[i] / 32767.0f;
+            AxiArrayPool.ReturnBuffer(temp);
             // 2. 如果已经读满，就不用做任何事
             if (readCount == data.Length)
                 return;
@@ -72,8 +76,8 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
             {
                 float lastSample = 0f;
                 // 优先使用最后写入的有效样本进行填充（避免爆音）
-                if (_buffer.TryGetLast(out float last))
-                    lastSample = last;
+                if (_buffer.TryGetLast(out short last))
+                    lastSample = last / 32767.0f;
                 // 否则保持 0f（缓冲区完全为空）
                 // 填充剩余部分 但是0不用填充
                 if (lastSample > 0)
@@ -90,11 +94,11 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
     /// <summary>
     /// 模拟器核心推送音频（关键优化）
     /// </summary>
-    internal unsafe void EnqueueSamples(short[] buffer, int len)
+    internal unsafe void EnqueueSamples(short[] data, int len)
     {
 #if UNITY_EDITOR
         // 固定 short[]，拿到 short*
-        fixed (short* pShort = buffer)
+        fixed (short* pShort = data)
         {
             App.audioMgr.WriteToRecord(pShort, len);
         }
@@ -109,12 +113,16 @@ public class SGSoundPlayer : MonoBehaviour, AxiAudioPull
         //}
 
         //二級缓冲，尝试跨帧效果
+        //_buffer_2nd.CopyTo(_buffer);
+        //float[] temp = AxiArrayPool.RentBuffer<float>(len);
+        //for (int i = 0; i < len; i++)
+        //    temp[i] = data[i] / 32767.0f;
+        //_buffer_2nd.Write(buffer, 0, len);
+        //AxiArrayPool.ReturnBuffer(temp);
+
+        //二級缓冲，尝试跨帧效果
         _buffer_2nd.CopyTo(_buffer);
-        float[] temp = AxiArrayPool.RentBuffer<float>(len);
-        for (int i = 0; i < len; i++)
-            temp[i] = buffer[i] / 32767.0f;
-        _buffer_2nd.Write(temp, 0, len);
-        AxiArrayPool.ReturnBuffer(temp);
+        _buffer_2nd.Write(data, 0, len);
     }
 
     public void Initialize()
