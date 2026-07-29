@@ -1,3 +1,5 @@
+#define UNSAFE
+
 using static OptimeGBA.CoreUtil;
 using static OptimeGBA.Bits;
 using System.Runtime.CompilerServices;
@@ -35,6 +37,8 @@ namespace OptimeGBA
             WinMasks = MemoryUtil.AllocateUnmanagedArray(Width + 16);
             BgLo = MemoryUtil.AllocateUnmanagedArray32(width + 16);
             BgHi = MemoryUtil.AllocateUnmanagedArray32(width + 16);
+
+            bNeedReleaseMem = true;
 #else 
             ScreenFront = new ushort[ScreenBufferSize];
             ScreenBack = new ushort[ScreenBufferSize];
@@ -109,14 +113,23 @@ namespace OptimeGBA
         public uint* BgLo;
         public uint* BgHi;
 
-        ~PpuRenderer()
+        bool bNeedReleaseMem = false;
+
+        void releaseMem()
         {
+            if (!bNeedReleaseMem)
+                return;
             MemoryUtil.FreeUnmanagedArray(ScreenFront);
             MemoryUtil.FreeUnmanagedArray(ScreenBack);
-            
             MemoryUtil.FreeUnmanagedArray(WinMasks);
             MemoryUtil.FreeUnmanagedArray(BgLo);
             MemoryUtil.FreeUnmanagedArray(BgHi);
+            bNeedReleaseMem = false;
+        }
+
+        ~PpuRenderer()
+        {
+            releaseMem();
         }
 #else
         public ushort[] ScreenFront;
@@ -512,7 +525,7 @@ namespace OptimeGBA
 
         public readonly static uint[] CharWidthTable = { 256, 512, 256, 512 };
         public readonly static uint[] CharHeightTable = { 256, 256, 512, 512 };
-
+        #region AVX burst的 RenderCharBackground
         public void RenderCharBackground(uint vcount, byte* vram, Background bg)
         {
             bool enableMosaicX = bg.EnableMosaic && BgMosaicX != 0;
@@ -694,7 +707,148 @@ namespace OptimeGBA
                 lineIndex += 8;
             }
         }
+        #endregion
 
+        #region 不使用AVX burst的 RenderCharBackground
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RenderCharBackgroundNoBurst(uint vcount, byte* vram, Background bg)
+        {
+            bool enableMosaicX = bg.EnableMosaic && BgMosaicX != 0;
+            fixed (byte* palettes = Palettes)
+            {
+                if (enableMosaicX)
+                {
+                    _RenderCharBackgroundNoBurst(vcount, vram, palettes, WinMasks, BgHi, BgLo, bg, true);
+                }
+                else
+                {
+                    _RenderCharBackgroundNoBurst(vcount, vram, palettes, WinMasks, BgHi, BgLo, bg, false);
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        unsafe private void _RenderCharBackgroundNoBurst(
+                uint vcount, byte* vram,
+                byte* palettes,
+                byte* winMasks,
+                uint* hi, uint* lo,
+                Background bg, bool mosaicX
+            )
+        {
+            uint charBase = bg.CharBaseBlock * CharBlockSize + CharBaseBlockCoarse * CoarseBlockSize;
+            uint mapBase = bg.MapBaseBlock * MapBlockSize + MapBaseBlockCoarse * CoarseBlockSize;
+
+            uint pixelY = bg.VerticalOffset + vcount;
+            if (bg.EnableMosaic)
+            {
+                pixelY -= BgMosaicYCounter;
+            }
+            uint pixelYWrapped = pixelY & 255;
+
+            uint screenSizeBase = bg.ScreenSize * 2;
+            uint verticalOffsetBlocks = CharBlockHeightTable[screenSizeBase + ((pixelY & 511) >> 8)];
+            uint mapVertOffset = MapBlockSize * verticalOffsetBlocks;
+
+            uint tileY = pixelYWrapped >> 3;
+            uint intraTileY = pixelYWrapped & 7;
+
+            uint pixelX = bg.HorizontalOffset;
+            uint intraTileX = bg.HorizontalOffset & 7;
+            uint lineIndex = 8 - intraTileX;
+
+            uint tilesToRender = (uint)(Width / 8);
+            if (lineIndex < 8) tilesToRender++;
+
+            for (uint tile = 0; tile < tilesToRender; tile++)
+            {
+                uint pixelXWrapped = pixelX & 255;
+                uint tileX = pixelXWrapped >> 3;
+                uint horizontalOffsetBlocks = CharBlockWidthTable[screenSizeBase + ((pixelX & 511) >> 8)];
+                uint mapHoriOffset = MapBlockSize * horizontalOffsetBlocks;
+                uint mapEntryIndex = mapBase + mapVertOffset + mapHoriOffset + tileY * 64 + tileX * 2;
+                uint mapEntry = GetUshort(vram, mapEntryIndex);
+
+                uint tileNumber = mapEntry & 1023;
+                bool xFlip = BitTest(mapEntry, 10);
+                bool yFlip = BitTest(mapEntry, 11);
+
+                uint effectiveIntraTileY = intraTileY;
+                if (yFlip)
+                {
+                    effectiveIntraTileY ^= 7;
+                }
+
+                uint paletteRow = 0;
+                if (bg.Use8BitColor)
+                {
+                    uint vramTileAddr = charBase + tileNumber * 64 + effectiveIntraTileY * 8;
+                    byte* tileRow = vram + vramTileAddr;
+
+                    for (int p = 0; p < 8; p++)
+                    {
+                        int srcIndex = xFlip ? (7 - p) : p;
+                        byte index = tileRow[srcIndex];
+                        if (index == 0)
+                        {
+                            continue;
+                        }
+
+                        uint writeIndex = lineIndex + (uint)p;
+                        byte windowMask = winMasks[writeIndex];
+                        if ((windowMask & (1 << bg.Id)) == 0)
+                        {
+                            continue;
+                        }
+
+                        ushort* paletteRowBase = (ushort*)(palettes + paletteRow * 32);
+                        ushort paletteColor = paletteRowBase[index];
+                        uint meta = (uint)((((uint)bg.Priority << 8) | (1U << bg.Id)) << 16);
+                        uint color = (uint)paletteColor | meta;
+
+                        lo[writeIndex] = hi[writeIndex];
+                        hi[writeIndex] = color;
+                    }
+                }
+                else
+                {
+                    paletteRow = (mapEntry >> 12) & 0xF;
+                    uint vramTileAddr = charBase + tileNumber * 32 + effectiveIntraTileY * 4;
+                    uint tileData = GetUint(vram, vramTileAddr);
+
+                    for (int p = 0; p < 8; p++)
+                    {
+                        int srcIndex = xFlip ? (7 - p) : p;
+                        int nibbleIndex = srcIndex >> 1;
+                        int shift = (srcIndex & 1) == 0 ? 0 : 4;
+                        byte index = (byte)((tileData >> (nibbleIndex * 8 + shift)) & 0xF);
+                        if (index == 0)
+                        {
+                            continue;
+                        }
+
+                        uint writeIndex = lineIndex + (uint)p;
+                        byte windowMask = winMasks[writeIndex];
+                        if ((windowMask & (1 << bg.Id)) == 0)
+                        {
+                            continue;
+                        }
+
+                        ushort* paletteRowBase = (ushort*)(palettes + paletteRow * 32);
+                        ushort paletteColor = paletteRowBase[index];
+                        uint meta = (uint)((((uint)bg.Priority << 8) | (1U << bg.Id)) << 16);
+                        uint color = (uint)paletteColor | meta;
+
+                        lo[writeIndex] = hi[writeIndex];
+                        hi[writeIndex] = color;
+                    }
+                }
+
+                pixelX += 8;
+                lineIndex += 8;
+            }
+        }
+        #endregion
         public readonly static int[] AffineSizeShiftTable = { 7, 8, 9, 10 };
         public readonly static uint[] AffineSizeTable = { 128, 256, 512, 1024 };
         public readonly static uint[] AffineTileSizeTable = { 16, 32, 64, 128 };
@@ -1167,7 +1321,8 @@ namespace OptimeGBA
                 switch (bg.Mode)
                 {
                     case BackgroundMode.Char:
-                        RenderCharBackground(vcount, vram, bg);
+                        //RenderCharBackground(vcount, vram, bg);
+                        RenderCharBackgroundNoBurst(vcount, vram, bg);
                         break;
                     case BackgroundMode.Affine:
                         RenderAffineBackground(vcount, vram, bg);

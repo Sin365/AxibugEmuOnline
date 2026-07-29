@@ -343,6 +343,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             if (gba.Mem.SaveProvider.Dirty)
             {
                 DumpSav();
+                //清理脏标记，否则一直保存
+                gba.Mem.SaveProvider.Dirty = false;
             }
         }
 

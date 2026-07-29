@@ -43,7 +43,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
         }
 
-        public void OnRenderFrame()
+        public unsafe void OnRenderFrame()
         {
             var buf = Emulator.instance.ShowBackBuf ? Emulator.instance.gba.Ppu.Renderer.ScreenBack : Emulator.instance.gba.Ppu.Renderer.ScreenFront;
             unsafe
