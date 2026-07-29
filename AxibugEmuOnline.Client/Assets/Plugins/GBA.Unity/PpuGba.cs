@@ -14,8 +14,13 @@ namespace OptimeGBA
             Gba = gba;
             Scheduler = scheduler;
             Renderer = new PpuRenderer(240, 160);
+            actCache_EndDrawingToHblank = EndDrawingToHblank;
+            actCache_DisablePrideMode = DisablePrideMode;
+            actCache_EnablePrideModeLayer2 = EnablePrideModeLayer2;
+            actCache_EndHblank = EndHblank;
+            actCache_EndVblankToHblank = EndVblankToHblank;
 
-            Scheduler.AddEventRelative(SchedulerId.Ppu, 960, EndDrawingToHblank);
+            Scheduler.AddEventRelative(SchedulerId.Ppu, 960, actCache_EndDrawingToHblank);
 
             /*
             ⠀⠀⠀⡯⡯⡾⠝⠘⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢊⠘⡮⣣⠪⠢⡑⡌
@@ -44,11 +49,17 @@ namespace OptimeGBA
             {
                 PrideMode = true;
                 // 250 frames
-                Scheduler.AddEventRelative(SchedulerId.None, 70224000, DisablePrideMode);
+                Scheduler.AddEventRelative(SchedulerId.None, 70224000, actCache_DisablePrideMode);
                 // 120 frames
-                Scheduler.AddEventRelative(SchedulerId.None, 33707520, EnablePrideModeLayer2);
+                Scheduler.AddEventRelative(SchedulerId.None, 33707520, actCache_EnablePrideModeLayer2);
             }
         }
+
+        private readonly SchedulerCallback actCache_EndDrawingToHblank;
+        private readonly SchedulerCallback actCache_EnablePrideModeLayer2;
+        private readonly SchedulerCallback actCache_DisablePrideMode;
+        private readonly SchedulerCallback actCache_EndHblank;
+        private readonly SchedulerCallback actCache_EndVblankToHblank;
 
         public byte[] Vram = new byte[98304];
 
@@ -173,7 +184,7 @@ namespace OptimeGBA
 
         public void EndDrawingToHblank(long cyclesLate)
         {
-            Scheduler.AddEventRelative(SchedulerId.Ppu, 272 - cyclesLate, EndHblank);
+            Scheduler.AddEventRelative(SchedulerId.Ppu, 272 - cyclesLate, actCache_EndHblank);
 
             if (HBlankIrqEnable)
             {
@@ -191,7 +202,7 @@ namespace OptimeGBA
 
         public void EndVblankToHblank(long cyclesLate)
         {
-            Scheduler.AddEventRelative(SchedulerId.Ppu, 272 - cyclesLate, EndHblank);
+            Scheduler.AddEventRelative(SchedulerId.Ppu, 272 - cyclesLate, actCache_EndHblank);
 
             if (HBlankIrqEnable)
             {
@@ -209,7 +220,7 @@ namespace OptimeGBA
 
                 if (VCount > 159)
                 {
-                    Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, EndVblankToHblank);
+                    Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, actCache_EndVblankToHblank);
 
                     if (VCount == 160)
                     {
@@ -239,7 +250,7 @@ namespace OptimeGBA
                 }
                 else
                 {
-                    Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, EndDrawingToHblank);
+                    Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, actCache_EndDrawingToHblank);
                 }
             }
             else
@@ -273,7 +284,7 @@ namespace OptimeGBA
                 {
                     Gba.HwControl.FlagInterrupt((uint)InterruptGba.VCounterMatch);
                 }
-                Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, EndDrawingToHblank);
+                Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, actCache_EndDrawingToHblank);
 
                 // Pre-render sprites for line zero
                 fixed (byte* vram = Vram)

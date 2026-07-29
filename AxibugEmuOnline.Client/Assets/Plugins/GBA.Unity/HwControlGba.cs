@@ -28,7 +28,10 @@ namespace OptimeGBA
         public HwControlGba(Gba gba)
         {
             Gba = gba;
+
+            actCahce_Gba_HaltSkip = Gba.HaltSkip;
         }
+        private readonly SchedulerCallback actCahce_Gba_HaltSkip;
 
         public byte ReadHwio8(uint addr)
         {
@@ -88,7 +91,7 @@ namespace OptimeGBA
                     }
                     else
                     {
-                        Gba.Scheduler.AddEventRelative(SchedulerId.HaltSkip, 0, Gba.HaltSkip);
+                        Gba.Scheduler.AddEventRelative(SchedulerId.HaltSkip, 0, actCahce_Gba_HaltSkip);
                     }
                     break;
             }

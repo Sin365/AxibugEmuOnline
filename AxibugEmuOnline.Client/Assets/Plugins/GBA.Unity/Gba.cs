@@ -132,7 +132,10 @@ namespace OptimeGBA
             Mem.InitPageTables();
             Cpu.InitFlushPipeline();
 
+            actCahce_DoNothing = DoNothing;
         }
+
+        private readonly SchedulerCallback actCahce_DoNothing;
 
         public uint Step()
         {
@@ -160,7 +163,7 @@ namespace OptimeGBA
 
         public void StateChange()
         {
-            Scheduler.AddEventRelative(SchedulerId.None, 0, DoNothing);
+            Scheduler.AddEventRelative(SchedulerId.None, 0, actCahce_DoNothing);
         }
 
         public uint StateStep()

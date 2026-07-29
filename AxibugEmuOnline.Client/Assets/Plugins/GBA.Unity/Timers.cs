@@ -30,7 +30,11 @@ namespace OptimeGBA
         {
             Id = id;
             Timers = timers;
+
+            actCahce_TimerOverflow = TimerOverflow;
         }
+
+        private readonly SchedulerCallback actCahce_TimerOverflow;
 
         public byte ReadHwio8(uint addr)
         {
@@ -102,7 +106,7 @@ namespace OptimeGBA
             if (!Enabled)
             {
                 Reload();
-                Timers.Scheduler.AddEventRelative(GetSchedulerId(), CalculateOverflowCycles(), TimerOverflow);
+                Timers.Scheduler.AddEventRelative(GetSchedulerId(), CalculateOverflowCycles(), actCahce_TimerOverflow);
                 EnableCycles = CalculateAlignedCurrentTicks();
                 // Debug.Log($"[Timer] {Id} Enable");
             }
@@ -133,7 +137,7 @@ namespace OptimeGBA
                 EnableCycles = CalculateAlignedCurrentTicks();
 
                 Timers.Scheduler.CancelEventsById(GetSchedulerId());
-                Timers.Scheduler.AddEventRelative(GetSchedulerId(), CalculateOverflowCycles(), TimerOverflow);
+                Timers.Scheduler.AddEventRelative(GetSchedulerId(), CalculateOverflowCycles(), actCahce_TimerOverflow);
             }
         }
 
@@ -209,7 +213,7 @@ namespace OptimeGBA
 
             if (!CountUpTiming)
             {
-                Timers.Scheduler.AddEventRelative(GetSchedulerId(), CalculateOverflowCycles() - cyclesLate, TimerOverflow);
+                Timers.Scheduler.AddEventRelative(GetSchedulerId(), CalculateOverflowCycles() - cyclesLate, actCahce_TimerOverflow);
             }
 
             EnableCycles = CalculateAlignedCurrentTicks() - cyclesLate;

@@ -151,8 +151,11 @@ namespace OptimeGBA
             Gba = gba;
             Scheduler = scheduler;
 
-            Scheduler.AddEventRelative(SchedulerId.ApuSample, CyclesPerSample, Sample);
+            actCahce_Sample = Sample;
+
+            Scheduler.AddEventRelative(SchedulerId.ApuSample, CyclesPerSample, actCahce_Sample);
         }
+        private readonly SchedulerCallback actCahce_Sample;
 
         public GbAudio GbAudio = new GbAudio();
 
@@ -419,7 +422,7 @@ namespace OptimeGBA
                 Gba.AudioCallback(SampleBuffer);
             }
 
-            Scheduler.AddEventRelative(SchedulerId.ApuSample, CyclesPerSample - cyclesLate, Sample);
+            Scheduler.AddEventRelative(SchedulerId.ApuSample, CyclesPerSample - cyclesLate, actCahce_Sample);
         }
 
         public void TimerOverflowFifoA(long cyclesLate, uint timerId)
