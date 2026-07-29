@@ -606,11 +606,11 @@ namespace OptimeGBA
                 uint horizontalOffsetBlocks = CharBlockWidthTable[screenSizeBase + ((pixelX & 511) >> 8)];
                 uint mapHoriOffset = MapBlockSize * horizontalOffsetBlocks;
                 uint mapEntryIndex = mapBase + mapVertOffset + mapHoriOffset + tileY * 64 + tileX * 2;
-                uint mapEntry = GetUshort(vram, mapEntryIndex);
+                uint mapEntry = (uint)(*(ushort*)(vram + mapEntryIndex));
 
-                uint tileNumber = mapEntry & 1023; // 10 bits
-                bool xFlip = BitTest(mapEntry, 10);
-                bool yFlip = BitTest(mapEntry, 11);
+                uint tileNumber = mapEntry & 1023u; // 10 bits
+                bool xFlip = ((mapEntry >> 10) & 1u) != 0u;
+                bool yFlip = ((mapEntry >> 11) & 1u) != 0u;
 
                 uint effectiveIntraTileY = intraTileY;
                 if (yFlip)
@@ -627,7 +627,7 @@ namespace OptimeGBA
                     clearMaskVec = new v256(0xFFU);
 
                     uint vramTileAddr = charBase + tileNumber * 64 + effectiveIntraTileY * 8;
-                    ulong data = GetUlong(vram, vramTileAddr);
+                    ulong data = *(ulong*)(vram + vramTileAddr);
 
                     if (data != 0)
                     {
@@ -655,7 +655,7 @@ namespace OptimeGBA
                     paletteRow = (mapEntry >> 12) & 0xF;
                     uint vramTileAddr = charBase + tileNumber * 32 + effectiveIntraTileY * 4;
 
-                    uint data = GetUint(vram, vramTileAddr);
+                    uint data = *(uint*)(vram + vramTileAddr);
 
                     if (data != 0)
                     {
@@ -767,11 +767,11 @@ namespace OptimeGBA
                 uint horizontalOffsetBlocks = CharBlockWidthTable[screenSizeBase + ((pixelX & 511) >> 8)];
                 uint mapHoriOffset = MapBlockSize * horizontalOffsetBlocks;
                 uint mapEntryIndex = mapBase + mapVertOffset + mapHoriOffset + tileY * 64 + tileX * 2;
-                uint mapEntry = GetUshort(vram, mapEntryIndex);
+                uint mapEntry = (uint)(*(ushort*)(vram + mapEntryIndex));
 
-                uint tileNumber = mapEntry & 1023;
-                bool xFlip = BitTest(mapEntry, 10);
-                bool yFlip = BitTest(mapEntry, 11);
+                uint tileNumber = mapEntry & 1023u;
+                bool xFlip = ((mapEntry >> 10) & 1u) != 0u;
+                bool yFlip = ((mapEntry >> 11) & 1u) != 0u;
 
                 uint effectiveIntraTileY = intraTileY;
                 if (yFlip)
@@ -780,68 +780,73 @@ namespace OptimeGBA
                 }
 
                 uint paletteRow = 0;
+                uint bgMask = 1U << bg.Id;
+                byte bgMaskByte = (byte)bgMask;
+                uint meta = (uint)((((uint)bg.Priority << 8) | bgMask) << 16);
+
                 if (bg.Use8BitColor)
                 {
                     uint vramTileAddr = charBase + tileNumber * 64 + effectiveIntraTileY * 8;
                     byte* tileRow = vram + vramTileAddr;
+                    ushort* paletteRowBase = (ushort*)(palettes + paletteRow * 32);
+                    byte* winMaskRow = winMasks + lineIndex;
+                    uint* hiRow = hi + lineIndex;
+                    uint* loRow = lo + lineIndex;
 
-                    for (int p = 0; p < 8; p++)
-                    {
-                        int srcIndex = xFlip ? (7 - p) : p;
-                        byte index = tileRow[srcIndex];
-                        if (index == 0)
-                        {
-                            continue;
-                        }
+                    byte index0 = tileRow[xFlip ? 7 : 0];
+                    byte index1 = tileRow[xFlip ? 6 : 1];
+                    byte index2 = tileRow[xFlip ? 5 : 2];
+                    byte index3 = tileRow[xFlip ? 4 : 3];
+                    byte index4 = tileRow[xFlip ? 3 : 4];
+                    byte index5 = tileRow[xFlip ? 2 : 5];
+                    byte index6 = tileRow[xFlip ? 1 : 6];
+                    byte index7 = tileRow[xFlip ? 0 : 7];
 
-                        uint writeIndex = lineIndex + (uint)p;
-                        byte windowMask = winMasks[writeIndex];
-                        if ((windowMask & (1 << bg.Id)) == 0)
-                        {
-                            continue;
-                        }
-
-                        ushort* paletteRowBase = (ushort*)(palettes + paletteRow * 32);
-                        ushort paletteColor = paletteRowBase[index];
-                        uint meta = (uint)((((uint)bg.Priority << 8) | (1U << bg.Id)) << 16);
-                        uint color = (uint)paletteColor | meta;
-
-                        lo[writeIndex] = hi[writeIndex];
-                        hi[writeIndex] = color;
-                    }
+                    if (index0 != 0 && (winMaskRow[0] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index0]; uint color = (uint)paletteColor | meta; loRow[0] = hiRow[0]; hiRow[0] = color; }
+                    if (index1 != 0 && (winMaskRow[1] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index1]; uint color = (uint)paletteColor | meta; loRow[1] = hiRow[1]; hiRow[1] = color; }
+                    if (index2 != 0 && (winMaskRow[2] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index2]; uint color = (uint)paletteColor | meta; loRow[2] = hiRow[2]; hiRow[2] = color; }
+                    if (index3 != 0 && (winMaskRow[3] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index3]; uint color = (uint)paletteColor | meta; loRow[3] = hiRow[3]; hiRow[3] = color; }
+                    if (index4 != 0 && (winMaskRow[4] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index4]; uint color = (uint)paletteColor | meta; loRow[4] = hiRow[4]; hiRow[4] = color; }
+                    if (index5 != 0 && (winMaskRow[5] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index5]; uint color = (uint)paletteColor | meta; loRow[5] = hiRow[5]; hiRow[5] = color; }
+                    if (index6 != 0 && (winMaskRow[6] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index6]; uint color = (uint)paletteColor | meta; loRow[6] = hiRow[6]; hiRow[6] = color; }
+                    if (index7 != 0 && (winMaskRow[7] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index7]; uint color = (uint)paletteColor | meta; loRow[7] = hiRow[7]; hiRow[7] = color; }
                 }
                 else
                 {
                     paletteRow = (mapEntry >> 12) & 0xF;
                     uint vramTileAddr = charBase + tileNumber * 32 + effectiveIntraTileY * 4;
-                    uint tileData = GetUint(vram, vramTileAddr);
+                    uint tileData = *(uint*)(vram + vramTileAddr);
+                    ushort* paletteRowBase = (ushort*)(palettes + paletteRow * 32);
+                    byte* winMaskRow = winMasks + lineIndex;
+                    uint* hiRow = hi + lineIndex;
+                    uint* loRow = lo + lineIndex;
 
-                    for (int p = 0; p < 8; p++)
-                    {
-                        int srcIndex = xFlip ? (7 - p) : p;
-                        int nibbleIndex = srcIndex >> 1;
-                        int shift = (srcIndex & 1) == 0 ? 0 : 4;
-                        byte index = (byte)((tileData >> (nibbleIndex * 8 + shift)) & 0xF);
-                        if (index == 0)
-                        {
-                            continue;
-                        }
+                    int srcIndex0 = xFlip ? 7 : 0;
+                    int srcIndex1 = xFlip ? 6 : 1;
+                    int srcIndex2 = xFlip ? 5 : 2;
+                    int srcIndex3 = xFlip ? 4 : 3;
+                    int srcIndex4 = xFlip ? 3 : 4;
+                    int srcIndex5 = xFlip ? 2 : 5;
+                    int srcIndex6 = xFlip ? 1 : 6;
+                    int srcIndex7 = xFlip ? 0 : 7;
 
-                        uint writeIndex = lineIndex + (uint)p;
-                        byte windowMask = winMasks[writeIndex];
-                        if ((windowMask & (1 << bg.Id)) == 0)
-                        {
-                            continue;
-                        }
+                    byte index0 = (byte)((tileData >> ((srcIndex0 >> 1) * 8 + ((srcIndex0 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index1 = (byte)((tileData >> ((srcIndex1 >> 1) * 8 + ((srcIndex1 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index2 = (byte)((tileData >> ((srcIndex2 >> 1) * 8 + ((srcIndex2 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index3 = (byte)((tileData >> ((srcIndex3 >> 1) * 8 + ((srcIndex3 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index4 = (byte)((tileData >> ((srcIndex4 >> 1) * 8 + ((srcIndex4 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index5 = (byte)((tileData >> ((srcIndex5 >> 1) * 8 + ((srcIndex5 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index6 = (byte)((tileData >> ((srcIndex6 >> 1) * 8 + ((srcIndex6 & 1) == 0 ? 0 : 4))) & 0xF);
+                    byte index7 = (byte)((tileData >> ((srcIndex7 >> 1) * 8 + ((srcIndex7 & 1) == 0 ? 0 : 4))) & 0xF);
 
-                        ushort* paletteRowBase = (ushort*)(palettes + paletteRow * 32);
-                        ushort paletteColor = paletteRowBase[index];
-                        uint meta = (uint)((((uint)bg.Priority << 8) | (1U << bg.Id)) << 16);
-                        uint color = (uint)paletteColor | meta;
-
-                        lo[writeIndex] = hi[writeIndex];
-                        hi[writeIndex] = color;
-                    }
+                    if (index0 != 0 && (winMaskRow[0] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index0]; uint color = (uint)paletteColor | meta; loRow[0] = hiRow[0]; hiRow[0] = color; }
+                    if (index1 != 0 && (winMaskRow[1] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index1]; uint color = (uint)paletteColor | meta; loRow[1] = hiRow[1]; hiRow[1] = color; }
+                    if (index2 != 0 && (winMaskRow[2] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index2]; uint color = (uint)paletteColor | meta; loRow[2] = hiRow[2]; hiRow[2] = color; }
+                    if (index3 != 0 && (winMaskRow[3] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index3]; uint color = (uint)paletteColor | meta; loRow[3] = hiRow[3]; hiRow[3] = color; }
+                    if (index4 != 0 && (winMaskRow[4] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index4]; uint color = (uint)paletteColor | meta; loRow[4] = hiRow[4]; hiRow[4] = color; }
+                    if (index5 != 0 && (winMaskRow[5] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index5]; uint color = (uint)paletteColor | meta; loRow[5] = hiRow[5]; hiRow[5] = color; }
+                    if (index6 != 0 && (winMaskRow[6] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index6]; uint color = (uint)paletteColor | meta; loRow[6] = hiRow[6]; hiRow[6] = color; }
+                    if (index7 != 0 && (winMaskRow[7] & bgMaskByte) != 0) { ushort paletteColor = paletteRowBase[index7]; uint color = (uint)paletteColor | meta; loRow[7] = hiRow[7]; hiRow[7] = color; }
                 }
 
                 pixelX += 8;
@@ -941,163 +946,165 @@ namespace OptimeGBA
         {
             // OAM address for the last sprite
             uint oamBase = 0;
-            for (int s = 0; s < 128; s++, oamBase += 8)
+            fixed (byte* oamPtr = Oam)
             {
-                uint attr0 = (uint)(Oam[oamBase + 1] << 8 | Oam[oamBase + 0]);
-                uint attr1 = (uint)(Oam[oamBase + 3] << 8 | Oam[oamBase + 2]);
-                uint attr2 = (uint)(Oam[oamBase + 5] << 8 | Oam[oamBase + 4]);
-
-                uint yPos = attr0 & 255;
-                bool affine = BitTest(attr0, 8);
-                ObjMode mode = (ObjMode)((attr0 >> 10) & 0b11);
-                bool mosaic = BitTest(attr0, 12);
-                bool use8BitColor = BitTest(attr0, 13);
-                ObjShape shape = (ObjShape)((attr0 >> 14) & 0b11);
-
-                uint xPos = attr1 & 511;
-                bool xFlip = BitTest(attr1, 12) && !affine;
-                bool yFlip = BitTest(attr1, 13) && !affine;
-
-                uint objSize = (attr1 >> 14) & 0b11;
-
-                uint tileNumber = attr2 & 1023;
-                uint palette = (attr2 >> 12) & 15;
-
-                uint xSize = ObjSizeTable[((int)shape * 8) + 0 + objSize];
-                uint ySize = ObjSizeTable[((int)shape * 8) + 4 + objSize];
-
-                int yEnd = ((int)yPos + (int)ySize) & 255;
-                uint screenLineBase = xPos;
-
-                bool disabled = BitTest(attr0, 9);
-
-                byte priority = (byte)((attr2 >> 10) & 0b11);
-
-                bool render = false;
-                if (!disabled && !affine)
+                for (int s = 0; s < 128; s++, oamBase += 8)
                 {
-                    if ((vcount >= yPos && vcount < yEnd) || (yEnd < yPos && vcount < yEnd))
+                    uint attr0 = (uint)(oamPtr[oamBase + 1] << 8 | oamPtr[oamBase + 0]);
+                    uint attr1 = (uint)(oamPtr[oamBase + 3] << 8 | oamPtr[oamBase + 2]);
+                    uint attr2 = (uint)(oamPtr[oamBase + 5] << 8 | oamPtr[oamBase + 4]);
+
+                    uint yPos = attr0 & 255;
+                    bool affine = ((attr0 >> 8) & 1u) != 0u;
+                    ObjMode mode = (ObjMode)((attr0 >> 10) & 0b11);
+                    bool mosaic = ((attr0 >> 12) & 1u) != 0u;
+                    bool use8BitColor = ((attr0 >> 13) & 1u) != 0u;
+                    ObjShape shape = (ObjShape)((attr0 >> 14) & 0b11);
+
+                    uint xPos = attr1 & 511;
+                    bool xFlip = (((attr1 >> 12) & 1u) != 0u) && !affine;
+                    bool yFlip = (((attr1 >> 13) & 1u) != 0u) && !affine;
+
+                    uint objSize = (attr1 >> 14) & 0b11;
+
+                    uint tileNumber = attr2 & 1023;
+                    uint palette = (attr2 >> 12) & 15;
+
+                    uint xSize = ObjSizeTable[((int)shape * 8) + 0 + objSize];
+                    uint ySize = ObjSizeTable[((int)shape * 8) + 4 + objSize];
+
+                    int yEnd = ((int)yPos + (int)ySize) & 255;
+                    uint screenLineBase = xPos;
+
+                    bool disabled = ((attr0 >> 9) & 1u) != 0u;
+
+                    byte priority = (byte)((attr2 >> 10) & 0b11);
+
+                    bool render = false;
+                    if (!disabled && !affine)
                     {
-                        render = true;
-                    }
-                }
-                else if (affine)
-                {
-                    if (disabled)
-                    {
-                        yEnd += (int)ySize;
-                    }
-
-                    if ((vcount >= yPos && vcount < yEnd) || (yEnd < yPos && vcount < yEnd))
-                    {
-                        render = true;
-                    }
-                }
-
-                if ((byte)mode == 3 || (byte)shape == 3) render = false;
-
-                if (!render) continue;
-
-                // y relative to the object itself
-                int objPixelY = (int)(vcount - yPos) & 255;
-
-                if (yFlip)
-                {
-                    objPixelY = (int)ySize - objPixelY - 1;
-                }
-
-
-                // Tile numbers are halved in 256-color mode
-                if (use8BitColor) tileNumber >>= 1;
-
-                if (!affine)
-                {
-                    for (uint x = 0; x < xSize; x++)
-                    {
-                        if (screenLineBase < Width)
+                        if ((vcount >= yPos && vcount < yEnd) || (yEnd < yPos && vcount < yEnd))
                         {
-                            int objPixelX = (int)x;
-
-                            if (xFlip)
-                            {
-                                objPixelX = (int)(xSize - objPixelX - 1);
-                            }
-
-                            RenderObjPixel(vram, objPixelX, objPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                            render = true;
                         }
-                        screenLineBase = (screenLineBase + 1) % 512;
                     }
-                }
-                else
-                {
-                    uint renderXSize = xSize;
-
-                    bool doubleSize = BitTest(attr0, 9);
-                    if (doubleSize)
+                    else if (affine)
                     {
-                        renderXSize *= 2;
+                        if (disabled)
+                        {
+                            yEnd += (int)ySize;
+                        }
+
+                        if ((vcount >= yPos && vcount < yEnd) || (yEnd < yPos && vcount < yEnd))
+                        {
+                            render = true;
+                        }
                     }
 
-                    uint parameterId = (attr1 >> 9) & 0b11111;
-                    uint pBase = parameterId * 32;
+                    if ((byte)mode == 3 || (byte)shape == 3) render = false;
 
-                    short pA = (short)GetUshort(Oam, pBase + 6);
-                    short pB = (short)GetUshort(Oam, pBase + 14);
-                    short pC = (short)GetUshort(Oam, pBase + 22);
-                    short pD = (short)GetUshort(Oam, pBase + 30);
+                    if (!render) continue;
 
-                    uint xofs;
-                    uint yofs;
+                    // y relative to the object itself
+                    int objPixelY = (int)(vcount - yPos) & 255;
 
-                    int xfofs;
-                    int yfofs;
-
-                    if (!doubleSize)
+                    if (yFlip)
                     {
-                        xofs = xSize / 2;
-                        yofs = ySize / 2;
+                        objPixelY = (int)ySize - objPixelY - 1;
+                    }
 
-                        xfofs = 0;
-                        yfofs = 0;
+                    // Tile numbers are halved in 256-color mode
+                    if (use8BitColor) tileNumber >>= 1;
+
+                    if (!affine)
+                    {
+                        for (uint x = 0; x < xSize; x++)
+                        {
+                            if (screenLineBase < Width)
+                            {
+                                int objPixelX = (int)x;
+
+                                if (xFlip)
+                                {
+                                    objPixelX = (int)(xSize - objPixelX - 1);
+                                }
+
+                                RenderObjPixel(vram, objPixelX, objPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                            }
+                            screenLineBase = (screenLineBase + 1) % 512;
+                        }
                     }
                     else
                     {
-                        xofs = xSize;
-                        yofs = ySize;
+                        uint renderXSize = xSize;
 
-                        xfofs = -(int)xofs / 2;
-                        yfofs = -(int)yofs / 2;
-                    }
-
-                    // Left edge
-                    int origXEdge0 = (int)(0 - xofs);
-                    int origY = (int)(objPixelY - yofs);
-
-                    // Calculate starting parameters for matrix multiplications
-                    int shiftedXOfs = (int)(xofs + xfofs << 8);
-                    int shiftedYOfs = (int)(yofs + yfofs << 8);
-                    int pBYOffset = pB * origY + shiftedXOfs;
-                    int pDYOffset = pD * origY + shiftedYOfs;
-
-                    int objPixelXEdge0 = (int)(pA * origXEdge0 + pBYOffset);
-                    int objPixelYEdge0 = (int)(pC * origXEdge0 + pDYOffset);
-
-                    for (int x = 0; x < renderXSize; x++)
-                    {
-                        if (screenLineBase < Width)
+                        bool doubleSize = ((attr0 >> 9) & 1u) != 0u;
+                        if (doubleSize)
                         {
-                            uint lerpedObjPixelX = (uint)(objPixelXEdge0 >> 8);
-                            uint lerpedObjPixelY = (uint)(objPixelYEdge0 >> 8);
-
-                            if (lerpedObjPixelX < xSize && lerpedObjPixelY < ySize)
-                            {
-                                RenderObjPixel(vram, (int)lerpedObjPixelX, (int)lerpedObjPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
-                            }
+                            renderXSize *= 2;
                         }
-                        objPixelXEdge0 += pA;
-                        objPixelYEdge0 += pC;
 
-                        screenLineBase = (screenLineBase + 1) % 512;
+                        uint parameterId = (attr1 >> 9) & 0b11111;
+                        uint pBase = parameterId * 32;
+
+                        short pA = (short)*(short*)(oamPtr + pBase + 6);
+                        short pB = (short)*(short*)(oamPtr + pBase + 14);
+                        short pC = (short)*(short*)(oamPtr + pBase + 22);
+                        short pD = (short)*(short*)(oamPtr + pBase + 30);
+
+                        uint xofs;
+                        uint yofs;
+
+                        int xfofs;
+                        int yfofs;
+
+                        if (!doubleSize)
+                        {
+                            xofs = xSize / 2;
+                            yofs = ySize / 2;
+
+                            xfofs = 0;
+                            yfofs = 0;
+                        }
+                        else
+                        {
+                            xofs = xSize;
+                            yofs = ySize;
+
+                            xfofs = -(int)xofs / 2;
+                            yfofs = -(int)yofs / 2;
+                        }
+
+                        // Left edge
+                        int origXEdge0 = (int)(0 - xofs);
+                        int origY = (int)(objPixelY - yofs);
+
+                        // Calculate starting parameters for matrix multiplications
+                        int shiftedXOfs = (int)(xofs + xfofs << 8);
+                        int shiftedYOfs = (int)(yofs + yfofs << 8);
+                        int pBYOffset = pB * origY + shiftedXOfs;
+                        int pDYOffset = pD * origY + shiftedYOfs;
+
+                        int objPixelXEdge0 = (int)(pA * origXEdge0 + pBYOffset);
+                        int objPixelYEdge0 = (int)(pC * origXEdge0 + pDYOffset);
+
+                        for (int x = 0; x < renderXSize; x++)
+                        {
+                            if (screenLineBase < Width)
+                            {
+                                uint lerpedObjPixelX = (uint)(objPixelXEdge0 >> 8);
+                                uint lerpedObjPixelY = (uint)(objPixelYEdge0 >> 8);
+
+                                if (lerpedObjPixelX < xSize && lerpedObjPixelY < ySize)
+                                {
+                                    RenderObjPixel(vram, (int)lerpedObjPixelX, (int)lerpedObjPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                                }
+                            }
+                            objPixelXEdge0 += pA;
+                            objPixelYEdge0 += pC;
+
+                            screenLineBase = (screenLineBase + 1) % 512;
+                        }
                     }
                 }
             }
