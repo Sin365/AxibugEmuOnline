@@ -55,5 +55,7 @@ namespace AxiInputSP
         SUB_DOWN,
         SUB_LEFT,
         SUB_RIGHT,
+        BTN_L,
+        BTN_R,
     }
 }

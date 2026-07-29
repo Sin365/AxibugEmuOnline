@@ -20,6 +20,8 @@ namespace AxibugEmuOnline.Client.InputDevices
         public Button_C BTN_D;
         public Button_C BTN_E;
         public Button_C BTN_F;
+        public Button_C BTN_L;
+        public Button_C BTN_R;
         public Button_C OPTION_1;
         public Button_C OPTION_2;
         public Button_C OPTION_3;
@@ -56,6 +58,8 @@ namespace AxibugEmuOnline.Client.InputDevices
             m_buttonTypes[SUB_DOWN] = AxiInputUGuiBtnType.SUB_DOWN;
             m_buttonTypes[SUB_LEFT] = AxiInputUGuiBtnType.SUB_LEFT;
             m_buttonTypes[SUB_RIGHT] = AxiInputUGuiBtnType.SUB_RIGHT;
+            m_buttonTypes[BTN_L] = AxiInputUGuiBtnType.BTN_L;
+            m_buttonTypes[BTN_R] = AxiInputUGuiBtnType.BTN_R;
         }
 
         public bool CheckPerforming<CONTROLLER>(CONTROLLER control) where CONTROLLER : InputControl_C

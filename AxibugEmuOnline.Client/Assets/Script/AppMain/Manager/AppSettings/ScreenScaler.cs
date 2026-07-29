@@ -310,6 +310,8 @@ namespace AxibugEmuOnline.Client.Settings
                 case RomPlatformType.WonderSwan:
                 case RomPlatformType.WonderSwanColor:
                     return new Vector2Int(224, 144);
+                case RomPlatformType.GameBoyAdvance:
+                    return new Vector2Int(240, 160);
                 //return UStoicGoose.instance.graphicsHandler.ScreenSize;
                 default: throw new System.NotImplementedException($"未实现的平台:{platform}");
             }

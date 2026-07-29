@@ -224,6 +224,9 @@ namespace AxibugEmuOnline.Client.Manager
                     case RomPlatformType.WonderSwanColor:
                         MameObjPrefab = "StoicGooseUnity/StoicGooseUnity";
                         break;
+                    case RomPlatformType.GameBoyAdvance:
+                        MameObjPrefab = "GBA.Unity/GBA.Unity";
+                        break;
                 }
 
                 MsgBool result = null;

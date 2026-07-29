@@ -12,7 +12,8 @@
         "AxiNSApi",
         "Unity.InputSystem.Switch",
         "Google.Protobuf",
-        "IngameDebugConsole.Runtime"
+        "IngameDebugConsole.Runtime",
+        "GBA.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

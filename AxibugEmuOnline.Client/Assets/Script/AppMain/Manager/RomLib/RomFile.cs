@@ -36,6 +36,7 @@ namespace AxibugEmuOnline.Client
                     case RomPlatformType.Sg1000:
                     case RomPlatformType.WonderSwan:
                     case RomPlatformType.WonderSwanColor:
+                    case RomPlatformType.GameBoyAdvance:
                         return false;
                     case RomPlatformType.Igs:
                     case RomPlatformType.Cps1:
