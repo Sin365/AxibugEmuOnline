@@ -108,6 +108,11 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(GBAKeyCode.B, device.BTN_B, 0);
             controller.SetBinding(GBAKeyCode.L, device.BTN_L, 0);
             controller.SetBinding(GBAKeyCode.R, device.BTN_R, 0);
+
+            controller.SetBinding(GBAKeyCode.Up, device.JOYSTICK.Up, 1);
+            controller.SetBinding(GBAKeyCode.Down, device.JOYSTICK.Down, 1);
+            controller.SetBinding(GBAKeyCode.Left, device.JOYSTICK.Left, 1);
+            controller.SetBinding(GBAKeyCode.Right, device.JOYSTICK.Right, 1);
         }
         public override void Bind(StandaloneSwitchProController_D device, ControllerBinder controller)
         {
@@ -117,8 +122,8 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(GBAKeyCode.Down, device.Down, 0);
             controller.SetBinding(GBAKeyCode.Left, device.Left, 0);
             controller.SetBinding(GBAKeyCode.Right, device.Right, 0);
-            controller.SetBinding(GBAKeyCode.B, device.A, 0);
-            controller.SetBinding(GBAKeyCode.A, device.B, 0);
+            controller.SetBinding(GBAKeyCode.B, device.B, 0);
+            controller.SetBinding(GBAKeyCode.A, device.A, 0);
             controller.SetBinding(GBAKeyCode.L, device.LeftSL, 0);
             controller.SetBinding(GBAKeyCode.R, device.RightSL, 0);
             controller.SetBinding(GBAKeyCode.Up, device.LeftStick.Up, 1);
@@ -134,10 +139,12 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(GBAKeyCode.Down, device.Down, 0);
             controller.SetBinding(GBAKeyCode.Left, device.Left, 0);
             controller.SetBinding(GBAKeyCode.Right, device.Right, 0);
-            controller.SetBinding(GBAKeyCode.B, device.A, 0);
-            controller.SetBinding(GBAKeyCode.A, device.B, 0);
+            controller.SetBinding(GBAKeyCode.B, device.B, 0);
+            controller.SetBinding(GBAKeyCode.A, device.A, 0);
             controller.SetBinding(GBAKeyCode.L, device.LeftSL, 0);
             controller.SetBinding(GBAKeyCode.R, device.RightSL, 0);
+            controller.SetBinding(GBAKeyCode.L, device.LeftSR, 0);
+            controller.SetBinding(GBAKeyCode.R, device.RightSR, 0);
             controller.SetBinding(GBAKeyCode.Up, device.LeftStick.Up, 1);
             controller.SetBinding(GBAKeyCode.Down, device.LeftStick.Down, 1);
             controller.SetBinding(GBAKeyCode.Left, device.LeftStick.Left, 1);

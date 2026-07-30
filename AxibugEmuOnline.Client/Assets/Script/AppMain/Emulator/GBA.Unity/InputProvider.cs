@@ -1,8 +1,6 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Settings;
-using NUnit.Framework.Internal;
-using OptimeGBA;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

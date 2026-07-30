@@ -40,9 +40,10 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override RomPlatformType Platform => RomPlatformType.GameBoyAdvance;
 
-        public override uint PushFrame => gba.Ppu.VCount;//???
+        uint mCurrFrame;
+        public override uint PushFrame => mCurrFrame;//???
 
-        public override uint PhysicsFrame => PushFrame;
+        public override uint PhysicsFrame => mCurrFrame;
 
         public override Texture OutputPixel => videoProvider.wrapTex;
 
@@ -159,7 +160,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             var mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
             mCanvas.worldCamera = Camera.main;
             // must set it to 60 or it won't sync with audio or run too fast.
-            Application.targetFrameRate = (int)FrameRate;
+            App.tick.SetFrameRate();
             // Get Unity Buffer size
             //AudioSettings.GetDSPBufferSize(out int bufferLength, out _);
             //_samplesAvailable = bufferLength;
@@ -346,6 +347,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 //清理脏标记，否则一直保存
                 gba.Mem.SaveProvider.Dirty = false;
             }
+            mCurrFrame++;
         }
 
         public void DumpSav()

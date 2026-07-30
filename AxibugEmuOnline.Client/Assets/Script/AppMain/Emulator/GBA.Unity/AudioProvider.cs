@@ -15,7 +15,11 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(sampleRate);
         private TimeSpan lastElapsed;
 
+#if UNITY_SWITCH //????? 虽然我也说清楚为啥
+        const int sampleRate => AudioSettings.outputSampleRate;
+#else
         const int sampleRate = 32768;
+#endif
         const int channels = 2;
         public int SampleRate => sampleRate;
         public int Channels => channels;
