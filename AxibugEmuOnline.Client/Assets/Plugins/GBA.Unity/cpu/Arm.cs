@@ -1304,7 +1304,8 @@ namespace OptimeGBA
                 uint rotateBits = ((ins >> 8) & 0xF) * 2;
                 uint constant = ins & 0xFF;
 
-                shifterOperand = RotateRight32(constant, (byte)rotateBits);
+                //shifterOperand = RotateRight32(constant, (byte)rotateBits);
+                shifterOperand = (constant >> (byte)rotateBits) | (constant << -(byte)rotateBits);
                 if (rotateBits == 0)
                 {
                     shifterCarryOut = arm7.Carry;
@@ -1354,7 +1355,9 @@ namespace OptimeGBA
                             }
                             else
                             {
-                                shifterOperand = LogicalShiftLeft32(rmVal, shiftBits);
+                                //shifterOperand = LogicalShiftLeft32(rmVal, shiftBits);
+                                shifterOperand = rmVal << shiftBits;
+
                                 //shifterCarryOut = BitTest(rmVal, (byte)(32 - shiftBits));
                                 shifterCarryOut = (rmVal & (1 << (32 - shiftBits))) != 0;
                             }
@@ -1363,11 +1366,14 @@ namespace OptimeGBA
                             if (shiftBits == 0)
                             {
                                 shifterOperand = 0;
-                                shifterCarryOut = BitTest(rmVal, 31);
+                                //shifterCarryOut = BitTest(rmVal, 31);
+                                shifterCarryOut = (rmVal & (1 << 31)) != 0;
                             }
                             else
                             {
-                                shifterOperand = LogicalShiftRight32(rmVal, shiftBits);
+                                //shifterOperand = LogicalShiftRight32(rmVal, shiftBits);
+                                shifterOperand = rmVal >> shiftBits;
+
                                 //shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
                                 shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
                             }
@@ -1381,7 +1387,10 @@ namespace OptimeGBA
                             }
                             else
                             {
-                                shifterOperand = ArithmeticShiftRight32(rmVal, shiftBits);
+                                //shifterOperand = ArithmeticShiftRight32(rmVal, shiftBits);
+                                shifterOperand = (uint)((int)rmVal >> shiftBits);
+
+
                                 //shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
                                 shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
                             }
@@ -1389,13 +1398,17 @@ namespace OptimeGBA
                         case 0b11: // ROR
                             if (shiftBits == 0)
                             {
-                                shifterOperand = LogicalShiftLeft32(arm7.Carry ? 1U : 0, 31) | LogicalShiftRight32(rmVal, 1);
+                                //shifterOperand = LogicalShiftLeft32(arm7.Carry ? 1U : 0, 31) | LogicalShiftRight32(rmVal, 1);
+                                shifterOperand = (arm7.Carry ? 1U : 0) << (31) | rmVal >> 1;
+
                                 //shifterCarryOut = BitTest(rmVal, 0);
                                 shifterCarryOut = (rmVal & (1 << 0)) != 0;
                             }
                             else
                             {
-                                shifterOperand = RotateRight32(rmVal, shiftBits);
+                                //shifterOperand = RotateRight32(rmVal, shiftBits);
+                                shifterOperand = (rmVal >> shiftBits) | (rmVal << -shiftBits);
+
                                 //shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
                                 shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
                             }
@@ -1420,7 +1433,8 @@ namespace OptimeGBA
                     uint rm = ins & 0xF;
                     arm7.LineDebug("RS: " + rs);
 
-                    arm7.ICycle();
+                    //arm7.ICycle();
+                    arm7.InstructionCycles += 1;
 
                     arm7.R[15] += 4;
                     uint rnVal = arm7.R[rn];
@@ -1448,14 +1462,16 @@ namespace OptimeGBA
                                 }
                                 else
                                 {
-                                    shifterCarryOut = BitTest(rmVal, 0);
+                                    //shifterCarryOut = BitTest(rmVal, 0);
+                                    shifterCarryOut = (rmVal & (1 << 0)) != 0;
                                 }
                                 shifterOperand = 0;
                                 break;
                             }
 
                             shifterOperand = rmVal << shiftBits;
-                            shifterCarryOut = BitTest(rmVal, (byte)(32 - shiftBits));
+                            //shifterCarryOut = BitTest(rmVal, (byte)(32 - shiftBits));
+                            shifterCarryOut = (rmVal & (1 << (byte)(32 - shiftBits))) != 0;
                             break;
                         case 0b01:
                             if (shiftBits == 0)
@@ -1465,13 +1481,16 @@ namespace OptimeGBA
                             }
                             else if (shiftBits < 32)
                             {
-                                shifterOperand = LogicalShiftRight32(rmVal, shiftBits);
-                                shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
+                                //shifterOperand = LogicalShiftRight32(rmVal, shiftBits);
+                                shifterOperand = rmVal >> shiftBits;
+                                //shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
+                                shifterCarryOut = (rmVal & (1 << (byte)(shiftBits - 1))) != 0;
                             }
                             else if (shiftBits == 32)
                             {
                                 shifterOperand = 0;
-                                shifterCarryOut = BitTest(rmVal, 31);
+                                //shifterCarryOut = BitTest(rmVal, 31);
+                                shifterCarryOut = (rmVal & (1 << 31)) != 0; ;
                             }
                             else
                             {
@@ -1487,13 +1506,16 @@ namespace OptimeGBA
                             }
                             else if (shiftBits < 32)
                             {
-                                shifterOperand = ArithmeticShiftRight32(rmVal, shiftBits);
-                                shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
+                                //shifterOperand = ArithmeticShiftRight32(rmVal, shiftBits);
+                                shifterOperand = (uint)((int)rmVal >> shiftBits);
+                                //shifterCarryOut = BitTest(rmVal, (byte)(shiftBits - 1));
+                                shifterCarryOut = (rmVal & (1 << (byte)(shiftBits - 1))) != 0;
                             }
                             else if (shiftBits >= 32)
                             {
                                 shifterOperand = (uint)((int)rmVal >> 31);
-                                shifterCarryOut = BitTest(rmVal, 31);
+                                //shifterCarryOut = BitTest(rmVal, 31);
+                                shifterCarryOut = (rmVal & (1 << 31)) != 0;
                             }
                             break;
                         case 0b11:
@@ -1504,8 +1526,10 @@ namespace OptimeGBA
                             }
                             else
                             {
-                                shifterOperand = RotateRight32(rmVal, (byte)(shiftBits & 0b11111));
-                                shifterCarryOut = BitTest(rmVal, (byte)((shiftBits & 0b11111) - 1));
+                                //shifterOperand = RotateRight32(rmVal, (byte)(shiftBits & 0b11111));
+                                shifterOperand = (rmVal >> (byte)(shiftBits & 0b11111)) | (rmVal << -(byte)(shiftBits & 0b11111));
+                                //shifterCarryOut = BitTest(rmVal, (byte)((shiftBits & 0b11111) - 1));
+                                shifterCarryOut = (rmVal & (1 << (byte)((shiftBits & 0b11111) - 1))) != 0; ;
                             }
                             break;
                     }

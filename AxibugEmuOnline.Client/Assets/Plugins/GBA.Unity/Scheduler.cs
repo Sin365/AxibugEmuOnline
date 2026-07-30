@@ -100,6 +100,41 @@ namespace OptimeGBA
             }
         }
 
+        //public void AddEventRelative(SchedulerId id, long ticks, SchedulerCallback callback)
+        //{
+        //    var origTicks = ticks;
+        //    ticks += CurrentTicks;
+
+        //    var newEvt = PopStack();
+        //    newEvt.Id = id;
+        //    newEvt.Ticks = ticks;
+        //    newEvt.Callback = callback;
+
+        //    var prevEvt = RootEvent;
+        //    // Traverse linked list and splice at correct location
+        //    while (prevEvt.NextEvent != null)
+        //    {
+        //        if (ticks >= prevEvt.Ticks && ticks <= prevEvt.NextEvent?.Ticks)
+        //        {
+        //            break;
+        //        }
+        //        prevEvt = prevEvt.NextEvent;
+        //    }
+
+        //    var nextEvt = prevEvt.NextEvent;
+        //    if (nextEvt != null)
+        //    {
+        //        nextEvt.PrevEvent = newEvt;
+        //    }
+        //    prevEvt.NextEvent = newEvt;
+        //    newEvt.NextEvent = nextEvt;
+        //    newEvt.PrevEvent = prevEvt;
+
+        //    EventsQueued++;
+        //    UpdateNextEvent();
+        //}
+
+        //避免装箱
         public void AddEventRelative(SchedulerId id, long ticks, SchedulerCallback callback)
         {
             var origTicks = ticks;
@@ -114,7 +149,8 @@ namespace OptimeGBA
             // Traverse linked list and splice at correct location
             while (prevEvt.NextEvent != null)
             {
-                if (ticks >= prevEvt.Ticks && ticks <= prevEvt.NextEvent?.Ticks)
+                //if (ticks >= prevEvt.Ticks && ticks <= prevEvt.NextEvent?.Ticks)  既然上面已经判断了 这里就不需要问号来浪费一次判断的开销
+                if (ticks >= prevEvt.Ticks && ticks <= prevEvt.NextEvent.Ticks)
                 {
                     break;
                 }

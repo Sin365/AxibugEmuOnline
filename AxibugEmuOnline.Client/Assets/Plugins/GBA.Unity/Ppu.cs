@@ -208,13 +208,13 @@ namespace OptimeGBA
         public byte Priority;
         public ObjMode Mode;
 
-        public ObjPixel(ushort color, byte paletteIndex, byte priority, ObjMode transparent)
-        {
-            Color = color;
-            PaletteIndex = paletteIndex;
-            Priority = priority;
-            Mode = transparent;
-        }
+        //public ObjPixel(ushort color, byte paletteIndex, byte priority, ObjMode transparent)
+        //{
+        //    Color = color;
+        //    PaletteIndex = paletteIndex;
+        //    Priority = priority;
+        //    Mode = transparent;
+        //}
     }
 
     public enum ObjShape

@@ -1,9 +1,8 @@
 #define UNSAFE
 
-using static OptimeGBA.CoreUtil;
-using static OptimeGBA.Bits;
-using System.Runtime.CompilerServices;
 using System;
+using System.Runtime.CompilerServices;
+using static OptimeGBA.CoreUtil;
 using static OptimeGBA.MemoryUtil;
 //using Unity.Burst.Intrinsics;
 //using static Unity.Burst.Intrinsics.X86;
@@ -1086,6 +1085,175 @@ namespace OptimeGBA
             0,  0,  0,  0,
         };
 
+        //public void RenderObjs(uint vcount, byte* vram)
+        //{
+        //    // OAM address for the last sprite
+        //    uint oamBase = 0;
+        //    fixed (byte* oamPtr = Oam)
+        //    {
+        //        for (int s = 0; s < 128; s++, oamBase += 8)
+        //        {
+        //            uint attr0 = (uint)(oamPtr[oamBase + 1] << 8 | oamPtr[oamBase + 0]);
+        //            uint attr1 = (uint)(oamPtr[oamBase + 3] << 8 | oamPtr[oamBase + 2]);
+        //            uint attr2 = (uint)(oamPtr[oamBase + 5] << 8 | oamPtr[oamBase + 4]);
+
+        //            uint yPos = attr0 & 255;
+        //            bool affine = ((attr0 >> 8) & 1u) != 0u;
+        //            ObjMode mode = (ObjMode)((attr0 >> 10) & 0b11);
+        //            bool mosaic = ((attr0 >> 12) & 1u) != 0u;
+        //            bool use8BitColor = ((attr0 >> 13) & 1u) != 0u;
+        //            ObjShape shape = (ObjShape)((attr0 >> 14) & 0b11);
+
+        //            uint xPos = attr1 & 511;
+        //            bool xFlip = (((attr1 >> 12) & 1u) != 0u) && !affine;
+        //            bool yFlip = (((attr1 >> 13) & 1u) != 0u) && !affine;
+
+        //            uint objSize = (attr1 >> 14) & 0b11;
+
+        //            uint tileNumber = attr2 & 1023;
+        //            uint palette = (attr2 >> 12) & 15;
+
+        //            uint xSize = ObjSizeTable[((int)shape * 8) + 0 + objSize];
+        //            uint ySize = ObjSizeTable[((int)shape * 8) + 4 + objSize];
+
+        //            int yEnd = ((int)yPos + (int)ySize) & 255;
+        //            uint screenLineBase = xPos;
+
+        //            bool disabled = ((attr0 >> 9) & 1u) != 0u;
+
+        //            byte priority = (byte)((attr2 >> 10) & 0b11);
+
+        //            bool render = false;
+        //            if (!disabled && !affine)
+        //            {
+        //                if ((vcount >= yPos && vcount < yEnd) || (yEnd < yPos && vcount < yEnd))
+        //                {
+        //                    render = true;
+        //                }
+        //            }
+        //            else if (affine)
+        //            {
+        //                if (disabled)
+        //                {
+        //                    yEnd += (int)ySize;
+        //                }
+
+        //                if ((vcount >= yPos && vcount < yEnd) || (yEnd < yPos && vcount < yEnd))
+        //                {
+        //                    render = true;
+        //                }
+        //            }
+
+        //            if ((byte)mode == 3 || (byte)shape == 3) render = false;
+
+        //            if (!render) continue;
+
+        //            // y relative to the object itself
+        //            int objPixelY = (int)(vcount - yPos) & 255;
+
+        //            if (yFlip)
+        //            {
+        //                objPixelY = (int)ySize - objPixelY - 1;
+        //            }
+
+        //            // Tile numbers are halved in 256-color mode
+        //            if (use8BitColor) tileNumber >>= 1;
+
+        //            if (!affine)
+        //            {
+        //                for (uint x = 0; x < xSize; x++)
+        //                {
+        //                    if (screenLineBase < Width)
+        //                    {
+        //                        int objPixelX = (int)x;
+
+        //                        if (xFlip)
+        //                        {
+        //                            objPixelX = (int)(xSize - objPixelX - 1);
+        //                        }
+
+        //                        RenderObjPixel(vram, objPixelX, objPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+        //                    }
+        //                    screenLineBase = (screenLineBase + 1) % 512;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                uint renderXSize = xSize;
+
+        //                bool doubleSize = ((attr0 >> 9) & 1u) != 0u;
+        //                if (doubleSize)
+        //                {
+        //                    renderXSize *= 2;
+        //                }
+
+        //                uint parameterId = (attr1 >> 9) & 0b11111;
+        //                uint pBase = parameterId * 32;
+
+        //                short pA = (short)*(short*)(oamPtr + pBase + 6);
+        //                short pB = (short)*(short*)(oamPtr + pBase + 14);
+        //                short pC = (short)*(short*)(oamPtr + pBase + 22);
+        //                short pD = (short)*(short*)(oamPtr + pBase + 30);
+
+        //                uint xofs;
+        //                uint yofs;
+
+        //                int xfofs;
+        //                int yfofs;
+
+        //                if (!doubleSize)
+        //                {
+        //                    xofs = xSize / 2;
+        //                    yofs = ySize / 2;
+
+        //                    xfofs = 0;
+        //                    yfofs = 0;
+        //                }
+        //                else
+        //                {
+        //                    xofs = xSize;
+        //                    yofs = ySize;
+
+        //                    xfofs = -(int)xofs / 2;
+        //                    yfofs = -(int)yofs / 2;
+        //                }
+
+        //                // Left edge
+        //                int origXEdge0 = (int)(0 - xofs);
+        //                int origY = (int)(objPixelY - yofs);
+
+        //                // Calculate starting parameters for matrix multiplications
+        //                int shiftedXOfs = (int)(xofs + xfofs << 8);
+        //                int shiftedYOfs = (int)(yofs + yfofs << 8);
+        //                int pBYOffset = pB * origY + shiftedXOfs;
+        //                int pDYOffset = pD * origY + shiftedYOfs;
+
+        //                int objPixelXEdge0 = (int)(pA * origXEdge0 + pBYOffset);
+        //                int objPixelYEdge0 = (int)(pC * origXEdge0 + pDYOffset);
+
+        //                for (int x = 0; x < renderXSize; x++)
+        //                {
+        //                    if (screenLineBase < Width)
+        //                    {
+        //                        uint lerpedObjPixelX = (uint)(objPixelXEdge0 >> 8);
+        //                        uint lerpedObjPixelY = (uint)(objPixelYEdge0 >> 8);
+
+        //                        if (lerpedObjPixelX < xSize && lerpedObjPixelY < ySize)
+        //                        {
+        //                            RenderObjPixel(vram, (int)lerpedObjPixelX, (int)lerpedObjPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+        //                        }
+        //                    }
+        //                    objPixelXEdge0 += pA;
+        //                    objPixelYEdge0 += pC;
+
+        //                    screenLineBase = (screenLineBase + 1) % 512;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //手动内联
         public void RenderObjs(uint vcount, byte* vram)
         {
             // OAM address for the last sprite
@@ -1173,7 +1341,148 @@ namespace OptimeGBA
                                     objPixelX = (int)(xSize - objPixelX - 1);
                                 }
 
-                                RenderObjPixel(vram, objPixelX, objPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                                //RenderObjPixel(vram, objPixelX, objPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                                #region 内联RenderObjPixel
+                                int objX = objPixelX;
+                                int objY = objPixelY;
+                                uint tile = tileNumber;
+                                uint width = xSize;
+                                {
+                                    uint intraTileX = (uint)(objX & 7);
+                                    uint intraTileY = (uint)(objY & 7);
+
+                                    uint tileX = (uint)(objX / 8);
+                                    uint tileY = (uint)(objY / 8);
+
+                                    uint charBase = false ? 0U : 0x10000U;
+
+                                    tile <<= (int)TileObj1DBoundary;
+                                    uint effectiveTileNumber = (uint)(tile + tileX);
+
+
+                                    if (ObjCharOneDimensional)
+                                    {
+                                        effectiveTileNumber += tileY * (width / 8);
+                                    }
+                                    else
+                                    {
+                                        if (use8BitColor)
+                                        {
+                                            effectiveTileNumber += 16 * tileY;
+                                        }
+                                        else
+                                        {
+                                            effectiveTileNumber += 32 * tileY;
+                                        }
+                                    }
+
+                                    if (use8BitColor)
+                                    {
+                                        // 256 color, 64 bytes per tile, 8 bytes per row
+                                        uint vramAddr = charBase + (effectiveTileNumber * 64) + (intraTileY * 8) + (intraTileX / 1);
+                                        uint vramValue = vram[vramAddr];
+
+                                        byte finalColor = (byte)vramValue;
+
+                                        if (finalColor != 0)
+                                        {
+                                            //PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                                            int idx_x_2 = finalColor * 2;
+                                            ushort tmpColor = (ushort)(
+                                                    (Palettes[idx_x_2] << 0) |
+                                                    (Palettes[idx_x_2 + 1] << 8)
+                                                );
+
+                                            //PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                                            switch (mode)
+                                            {
+                                                case ObjMode.Normal:
+                                                    if (priority < ObjBuffer[screenLineBase].Priority)
+                                                    {
+                                                        //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                        ref var p = ref ObjBuffer[screenLineBase];
+                                                        p.Color = tmpColor;
+                                                        p.PaletteIndex = finalColor;
+                                                        p.Priority = priority;
+                                                        p.Mode = mode;
+                                                    }
+                                                    break;
+                                                case ObjMode.Translucent:
+                                                    if (priority < ObjBuffer[screenLineBase].Priority)
+                                                    {
+                                                        //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                        ref var p = ref ObjBuffer[screenLineBase];
+                                                        p.Color = tmpColor;
+                                                        p.PaletteIndex = finalColor;
+                                                        p.Priority = priority;
+                                                        p.Mode = mode;
+                                                    }
+                                                    ObjBuffer[screenLineBase].Priority = priority;
+                                                    break;
+                                                default:
+                                                    if (ObjWindowDisplayFlag)
+                                                    {
+                                                        ObjWindowBuffer[screenLineBase] = 1;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // 16 color, 32 bytes per tile, 4 bytes per row
+                                        uint vramAddr = charBase + (effectiveTileNumber * 32) + (intraTileY * 4) + (intraTileX / 2);
+                                        uint vramValue = vram[vramAddr];
+                                        // Lower 4 bits is left pixel, upper 4 bits is right pixel
+                                        uint color = (vramValue >> (int)((intraTileX & 1) * 4)) & 0xF;
+                                        byte finalColor = (byte)(palette * 16 + color);
+
+                                        if (color != 0)
+                                        {
+                                            //PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                                            int idx_x_2 = finalColor * 2;
+                                            ushort tmpColor = (ushort)(
+                                                    (Palettes[idx_x_2] << 0) |
+                                                    (Palettes[idx_x_2 + 1] << 8)
+                                                );
+                                            //PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                                            switch (mode)
+                                            {
+                                                case ObjMode.Normal:
+                                                    if (priority < ObjBuffer[screenLineBase].Priority)
+                                                    {
+                                                        //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                        ref var p = ref ObjBuffer[screenLineBase];
+                                                        p.Color = tmpColor;
+                                                        p.PaletteIndex = finalColor;
+                                                        p.Priority = priority;
+                                                        p.Mode = mode;
+                                                    }
+                                                    break;
+                                                case ObjMode.Translucent:
+                                                    if (priority < ObjBuffer[screenLineBase].Priority)
+                                                    {
+                                                        //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                        ref var p = ref ObjBuffer[screenLineBase];
+                                                        p.Color = tmpColor;
+                                                        p.PaletteIndex = finalColor;
+                                                        p.Priority = priority;
+                                                        p.Mode = mode;
+                                                    }
+                                                    ObjBuffer[screenLineBase].Priority = priority;
+                                                    break;
+                                                default:
+                                                    if (ObjWindowDisplayFlag)
+                                                    {
+                                                        ObjWindowBuffer[screenLineBase] = 1;
+                                                    }
+                                                    break;
+                                            }
+                                        }
+
+                                    }
+                                }
+                                #endregion
                             }
                             screenLineBase = (screenLineBase + 1) % 512;
                         }
@@ -1241,7 +1550,148 @@ namespace OptimeGBA
 
                                 if (lerpedObjPixelX < xSize && lerpedObjPixelY < ySize)
                                 {
-                                    RenderObjPixel(vram, (int)lerpedObjPixelX, (int)lerpedObjPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                                    //RenderObjPixel(vram, (int)lerpedObjPixelX, (int)lerpedObjPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
+                                    #region 内联RenderObjPixel
+                                    int objX = (int)lerpedObjPixelX;
+                                    int objY = (int)lerpedObjPixelY;
+                                    uint tile = tileNumber;
+                                    uint width = xSize;
+                                    {
+                                        uint intraTileX = (uint)(objX & 7);
+                                        uint intraTileY = (uint)(objY & 7);
+
+                                        uint tileX = (uint)(objX / 8);
+                                        uint tileY = (uint)(objY / 8);
+
+                                        uint charBase = false ? 0U : 0x10000U;
+
+                                        tile <<= (int)TileObj1DBoundary;
+                                        uint effectiveTileNumber = (uint)(tile + tileX);
+
+
+                                        if (ObjCharOneDimensional)
+                                        {
+                                            effectiveTileNumber += tileY * (width / 8);
+                                        }
+                                        else
+                                        {
+                                            if (use8BitColor)
+                                            {
+                                                effectiveTileNumber += 16 * tileY;
+                                            }
+                                            else
+                                            {
+                                                effectiveTileNumber += 32 * tileY;
+                                            }
+                                        }
+
+                                        if (use8BitColor)
+                                        {
+                                            // 256 color, 64 bytes per tile, 8 bytes per row
+                                            uint vramAddr = charBase + (effectiveTileNumber * 64) + (intraTileY * 8) + (intraTileX / 1);
+                                            uint vramValue = vram[vramAddr];
+
+                                            byte finalColor = (byte)vramValue;
+
+                                            if (finalColor != 0)
+                                            {
+                                                //PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                                                int idx_x_2 = finalColor * 2;
+                                                ushort tmpColor = (ushort)(
+                                                        (Palettes[idx_x_2] << 0) |
+                                                        (Palettes[idx_x_2 + 1] << 8)
+                                                    );
+
+                                                //PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                                                switch (mode)
+                                                {
+                                                    case ObjMode.Normal:
+                                                        if (priority < ObjBuffer[screenLineBase].Priority)
+                                                        {
+                                                            //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                            ref var p = ref ObjBuffer[screenLineBase];
+                                                            p.Color = tmpColor;
+                                                            p.PaletteIndex = finalColor;
+                                                            p.Priority = priority;
+                                                            p.Mode = mode;
+                                                        }
+                                                        break;
+                                                    case ObjMode.Translucent:
+                                                        if (priority < ObjBuffer[screenLineBase].Priority)
+                                                        {
+                                                            //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                            ref var p = ref ObjBuffer[screenLineBase];
+                                                            p.Color = tmpColor;
+                                                            p.PaletteIndex = finalColor;
+                                                            p.Priority = priority;
+                                                            p.Mode = mode;
+                                                        }
+                                                        ObjBuffer[screenLineBase].Priority = priority;
+                                                        break;
+                                                    default:
+                                                        if (ObjWindowDisplayFlag)
+                                                        {
+                                                            ObjWindowBuffer[screenLineBase] = 1;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // 16 color, 32 bytes per tile, 4 bytes per row
+                                            uint vramAddr = charBase + (effectiveTileNumber * 32) + (intraTileY * 4) + (intraTileX / 2);
+                                            uint vramValue = vram[vramAddr];
+                                            // Lower 4 bits is left pixel, upper 4 bits is right pixel
+                                            uint color = (vramValue >> (int)((intraTileX & 1) * 4)) & 0xF;
+                                            byte finalColor = (byte)(palette * 16 + color);
+
+                                            if (color != 0)
+                                            {
+                                                //PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                                                int idx_x_2 = finalColor * 2;
+                                                ushort tmpColor = (ushort)(
+                                                        (Palettes[idx_x_2] << 0) |
+                                                        (Palettes[idx_x_2 + 1] << 8)
+                                                    );
+                                                //PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                                                switch (mode)
+                                                {
+                                                    case ObjMode.Normal:
+                                                        if (priority < ObjBuffer[screenLineBase].Priority)
+                                                        {
+                                                            //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                            ref var p = ref ObjBuffer[screenLineBase];
+                                                            p.Color = tmpColor;
+                                                            p.PaletteIndex = finalColor;
+                                                            p.Priority = priority;
+                                                            p.Mode = mode;
+                                                        }
+                                                        break;
+                                                    case ObjMode.Translucent:
+                                                        if (priority < ObjBuffer[screenLineBase].Priority)
+                                                        {
+                                                            //ObjBuffer[screenLineBase] = new ObjPixel(color, paletteIndex, priority, mode);
+                                                            ref var p = ref ObjBuffer[screenLineBase];
+                                                            p.Color = tmpColor;
+                                                            p.PaletteIndex = finalColor;
+                                                            p.Priority = priority;
+                                                            p.Mode = mode;
+                                                        }
+                                                        ObjBuffer[screenLineBase].Priority = priority;
+                                                        break;
+                                                    default:
+                                                        if (ObjWindowDisplayFlag)
+                                                        {
+                                                            ObjWindowBuffer[screenLineBase] = 1;
+                                                        }
+                                                        break;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    #endregion
                                 }
                             }
                             objPixelXEdge0 += pA;
@@ -1368,7 +1818,39 @@ namespace OptimeGBA
                             (Palettes[idx_x_2 + 1] << 8)
                         );
 
-                    PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                    //PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                    switch (mode)
+                    {
+                        case ObjMode.Normal:
+                            if (priority < ObjBuffer[x].Priority)
+                            {
+                                //ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                                ref var p = ref ObjBuffer[x];
+                                p.Color = tmpColor;
+                                p.PaletteIndex = finalColor;
+                                p.Priority = priority;
+                                p.Mode = mode;
+                            }
+                            break;
+                        case ObjMode.Translucent:
+                            if (priority < ObjBuffer[x].Priority)
+                            {
+                                //ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                                ref var p = ref ObjBuffer[x];
+                                p.Color = tmpColor;
+                                p.PaletteIndex = finalColor;
+                                p.Priority = priority;
+                                p.Mode = mode;
+                            }
+                            ObjBuffer[x].Priority = priority;
+                            break;
+                        default:
+                            if (ObjWindowDisplayFlag)
+                            {
+                                ObjWindowBuffer[x] = 1;
+                            }
+                            break;
+                    }
                 }
             }
             else
@@ -1388,12 +1870,72 @@ namespace OptimeGBA
                             (Palettes[idx_x_2] << 0) |
                             (Palettes[idx_x_2 + 1] << 8)
                         );
-                    PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                    //PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
+                    switch (mode)
+                    {
+                        case ObjMode.Normal:
+                            if (priority < ObjBuffer[x].Priority)
+                            {
+                                //ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                                ref var p = ref ObjBuffer[x];
+                                p.Color = tmpColor;
+                                p.PaletteIndex = finalColor;
+                                p.Priority = priority;
+                                p.Mode = mode;
+                            }
+                            break;
+                        case ObjMode.Translucent:
+                            if (priority < ObjBuffer[x].Priority)
+                            {
+                                //ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                                ref var p = ref ObjBuffer[x];
+                                p.Color = tmpColor;
+                                p.PaletteIndex = finalColor;
+                                p.Priority = priority;
+                                p.Mode = mode;
+                            }
+                            ObjBuffer[x].Priority = priority;
+                            break;
+                        default:
+                            if (ObjWindowDisplayFlag)
+                            {
+                                ObjWindowBuffer[x] = 1;
+                            }
+                            break;
+                    }
                 }
 
             }
         }
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public void PlaceObjPixel(uint x, ushort color, byte paletteIndex, byte priority, ObjMode mode)
+        //{
+        //    switch (mode)
+        //    {
+        //        case ObjMode.Normal:
+        //            if (priority < ObjBuffer[x].Priority)
+        //            {
+        //                ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+        //            }
+        //            break;
+        //        case ObjMode.Translucent:
+        //            if (priority < ObjBuffer[x].Priority)
+        //            {
+        //                ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+        //            }
+        //            ObjBuffer[x].Priority = priority;
+        //            break;
+        //        default:
+        //            if (ObjWindowDisplayFlag)
+        //            {
+        //                ObjWindowBuffer[x] = 1;
+        //            }
+        //            break;
+        //    }
+        //}
+
+        //干掉结构体构造函数
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void PlaceObjPixel(uint x, ushort color, byte paletteIndex, byte priority, ObjMode mode)
         {
@@ -1402,13 +1944,23 @@ namespace OptimeGBA
                 case ObjMode.Normal:
                     if (priority < ObjBuffer[x].Priority)
                     {
-                        ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                        //ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                        ref var p = ref ObjBuffer[x];
+                        p.Color = color;
+                        p.PaletteIndex = paletteIndex;
+                        p.Priority = priority;
+                        p.Mode = mode;
                     }
                     break;
                 case ObjMode.Translucent:
                     if (priority < ObjBuffer[x].Priority)
                     {
-                        ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                        //ObjBuffer[x] = new ObjPixel(color, paletteIndex, priority, mode);
+                        ref var p = ref ObjBuffer[x];
+                        p.Color = color;
+                        p.PaletteIndex = paletteIndex;
+                        p.Priority = priority;
+                        p.Mode = mode;
                     }
                     ObjBuffer[x].Priority = priority;
                     break;
