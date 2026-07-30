@@ -257,7 +257,7 @@ namespace OptimeGBA
 #endif
 
             LineDebug($"Ins: ${Util.HexN(ins, 8)} InsBin:{Util.Binary(ins, 32)}");
-            LineDebug($"Cond: ${ins >> 28:X}");
+            LineDebug($"Cond: ${ins >> 28:X}"); 
 
             uint condition = (ins >> 28) & 0xF;
 
@@ -1209,11 +1209,27 @@ namespace OptimeGBA
             return Mem.Read16(addr);
         }
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public uint Read32InstrFetch(uint addr)
+        //{
+        //    InstructionCycles += Timing32InstrFetch[(addr >> 24) & 0xF];
+        //    return Mem.Read32(addr);
+        //}
+
+        //手动内联
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Read32InstrFetch(uint addr)
         {
-            InstructionCycles += Timing32InstrFetch[(addr >> 24) & 0xF];
-            return Mem.Read32(addr);
+            uint addr_12 = addr >> 12;
+            uint addr_24 = addr >> 24;
+            InstructionCycles += Timing32InstrFetch[(addr_24) & 0xF];
+
+            //return Mem.Read32(addr);
+            var page = Mem.PageTableRead[addr_12];
+            if (page != null)
+                return *(uint*)(page + (addr & Mem.MemoryRegionMasks[addr_12]));
+
+            return Mem.Read32Unregistered(false, addr);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -93,7 +93,7 @@ namespace OptimeGBA
 #if DEBUG
             if ((addr & 1) != 0)
             {
-                Console.Error.WriteLine("Misaligned Read16! " + Util.HexN(addr, 8));
+                UnityEngine.Debug.LogError("Misaligned Read16! " + Util.HexN(addr, 8));
             }
 #endif
 
@@ -118,20 +118,42 @@ namespace OptimeGBA
             return Read16Unregistered(true, addr);
         }
 
+        //        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //        public uint Read32(uint addr)
+        //        {
+        //#if DEBUG
+        //            if ((addr & 3) != 0)
+        //            {
+        //                Console.Error.WriteLine("Misaligned Read32! " + Util.HexN(addr, 8));
+        //            }
+        //#endif
+
+        //            var page = ResolvePageRead(addr);
+        //            if (page != null)
+        //            {
+        //                return GetUint(page, MaskAddress(addr));
+        //            }
+
+        //            return Read32Unregistered(false, addr);
+        //        }
+
+        //手动内联
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Read32(uint addr)
         {
 #if DEBUG
             if ((addr & 3) != 0)
             {
-                Console.Error.WriteLine("Misaligned Read32! " + Util.HexN(addr, 8));
+                UnityEngine.Debug.LogError("Misaligned Read32! " + Util.HexN(addr, 8));
             }
 #endif
 
-            var page = ResolvePageRead(addr);
+            //var page = ResolvePageRead(addr);
+            var page = PageTableRead[addr >> 12];
             if (page != null)
             {
-                return GetUint(page, MaskAddress(addr));
+                //return GetUint(page, MaskAddress(addr));
+                return *(uint*)(page + (addr & MemoryRegionMasks[addr >> 12]));
             }
 
             return Read32Unregistered(false, addr);
@@ -168,7 +190,7 @@ namespace OptimeGBA
 #if DEBUG
             if ((addr & 1) != 0)
             {
-                Console.Error.WriteLine("Misaligned Write16! " + Util.HexN(addr, 8));
+                UnityEngine.Debug.LogError("Misaligned Write16! " + Util.HexN(addr, 8));
             }
 #endif
 
@@ -188,7 +210,7 @@ namespace OptimeGBA
 #if DEBUG
             if ((addr & 3) != 0)
             {
-                Console.Error.WriteLine("Misaligned Write32! " + Util.HexN(addr, 8));
+                UnityEngine.Debug.LogError("Misaligned Write32! " + Util.HexN(addr, 8));
             }
 #endif
 

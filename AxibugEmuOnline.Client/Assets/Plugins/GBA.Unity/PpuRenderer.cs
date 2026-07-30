@@ -5,8 +5,8 @@ using static OptimeGBA.Bits;
 using System.Runtime.CompilerServices;
 using System;
 using static OptimeGBA.MemoryUtil;
-using Unity.Burst.Intrinsics;
-using static Unity.Burst.Intrinsics.X86;
+//using Unity.Burst.Intrinsics;
+//using static Unity.Burst.Intrinsics.X86;
 
 namespace OptimeGBA
 {
@@ -365,6 +365,67 @@ namespace OptimeGBA
         public uint BgCount = 0;
         public bool BackgroundSettingsDirty = true;
 
+        //public void PrepareBackgroundAndWindow(uint vcount)
+        //{
+        //    if (BackgroundSettingsDirty)
+        //    {
+        //        PrepareBackground();
+        //    }
+
+        //    bool win0InsideY = (byte)(vcount - Win0VTop) < (byte)(Win0VBottom - Win0VTop) && Window0DisplayFlag;
+        //    bool win1InsideY = (byte)(vcount - Win1VTop) < (byte)(Win1VBottom - Win1VTop) && Window1DisplayFlag;
+
+        //    byte win0ThresholdX = (byte)(Win0HRight - Win0HLeft);
+        //    byte win1ThresholdX = (byte)(Win1HRight - Win1HLeft);
+
+        //    if (!win0InsideY) win0ThresholdX = 0;
+        //    if (!win1InsideY) win1ThresholdX = 0;
+
+        //    byte win0HPos = (byte)(-Win0HLeft);
+        //    byte win1HPos = (byte)(-Win1HLeft);
+
+        //    // Erase with priority 4, backdrop flag, and color 0;
+        //    uint eraseColor = (uint)((4 << 24) | ((byte)BlendFlag.Backdrop << 16) | LookupPalette(0));
+        //    if (AnyWindowEnabled)
+        //    {
+        //        for (uint i = 0; i < Width; i++)
+        //        {
+        //            byte val = WinOutEnable;
+
+        //            if (win0HPos < win0ThresholdX)
+        //            {
+        //                val = Win0InEnable;
+        //            }
+        //            else if (win1HPos < win1ThresholdX)
+        //            {
+        //                val = Win1InEnable;
+        //            }
+        //            else if (ObjWindowBuffer[i] != 0)
+        //            {
+        //                val = WinObjEnable;
+        //            }
+
+        //            win0HPos++;
+        //            win1HPos++;
+
+        //            WinMasks[i + 8] = val;
+
+        //            // Also prepare backgrounds arrays in this loop
+        //            BgHi[i + 8] = eraseColor;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (uint i = 0; i < Width; i++)
+        //        {
+        //            WinMasks[i + 8] = 0b111111;
+
+        //            BgHi[i + 8] = eraseColor;
+        //        }
+        //    }
+        //}
+
+        //手动内联
         public void PrepareBackgroundAndWindow(uint vcount)
         {
             if (BackgroundSettingsDirty)
@@ -385,7 +446,14 @@ namespace OptimeGBA
             byte win1HPos = (byte)(-Win1HLeft);
 
             // Erase with priority 4, backdrop flag, and color 0;
-            uint eraseColor = (uint)((4 << 24) | ((byte)BlendFlag.Backdrop << 16) | LookupPalette(0));
+            //uint eraseColor = (uint)((4 << 24) | ((byte)BlendFlag.Backdrop << 16) | LookupPalette(0));
+
+            uint idx_x_2 = 0;
+            var tmp_val_0 = (ushort)(
+                    (Palettes[0] << 0) |
+                    (Palettes[1] << 8)
+                );
+            uint eraseColor = (uint)((4 << 24) | ((byte)BlendFlag.Backdrop << 16) | tmp_val_0);
             if (AnyWindowEnabled)
             {
                 for (uint i = 0; i < Width; i++)
@@ -504,10 +572,22 @@ namespace OptimeGBA
             }
         }
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public ushort LookupPalette(uint index)
+        //{
+        //    return GetUshort(Palettes, index * 2);
+        //}
+
+        //手动内联
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort LookupPalette(uint index)
         {
-            return GetUshort(Palettes, index * 2);
+            //return GetUshort(Palettes, index * 2);
+            uint idx_x_2 =index * 2;
+            return (ushort)(
+                    (Palettes[idx_x_2] << 0) |
+                    (Palettes[idx_x_2 + 1] << 8)
+                );
         }
 
         public readonly static uint[] CharBlockHeightTable = {
@@ -526,187 +606,187 @@ namespace OptimeGBA
         public readonly static uint[] CharWidthTable = { 256, 512, 256, 512 };
         public readonly static uint[] CharHeightTable = { 256, 256, 512, 512 };
         #region AVX burst的 RenderCharBackground
-        public void RenderCharBackground(uint vcount, byte* vram, Background bg)
-        {
-            bool enableMosaicX = bg.EnableMosaic && BgMosaicX != 0;
-            fixed (byte* palettes = Palettes)
-            {
-#if UNSAFE
-                if (enableMosaicX)
-                {
-                    _RenderCharBackground(vcount, vram, palettes, WinMasks, BgHi, BgLo, bg, true);
-                }
-                else
-                {
-                    _RenderCharBackground(vcount, vram, palettes, WinMasks, BgHi, BgLo, bg, false);
-                }
-#else
-                fixed (byte* winMasks = WinMasks)
-                {
-                    fixed (uint* hi = BgHi, lo = BgLo)
-                    {
-                        if (enableMosaicX)
-                        {
-                            _RenderCharBackground(vcount, vram, palettes, winMasks, hi, lo, bg, true);
-                        }
-                        else
-                        {
-                            _RenderCharBackground(vcount, vram, palettes, winMasks, hi, lo, bg, false);
-                        }
-                    }
-                }
-#endif
-            }
-        }
+//        public void RenderCharBackground(uint vcount, byte* vram, Background bg)
+//        {
+//            bool enableMosaicX = bg.EnableMosaic && BgMosaicX != 0;
+//            fixed (byte* palettes = Palettes)
+//            {
+//#if UNSAFE
+//                if (enableMosaicX)
+//                {
+//                    _RenderCharBackground(vcount, vram, palettes, WinMasks, BgHi, BgLo, bg, true);
+//                }
+//                else
+//                {
+//                    _RenderCharBackground(vcount, vram, palettes, WinMasks, BgHi, BgLo, bg, false);
+//                }
+//#else
+//                fixed (byte* winMasks = WinMasks)
+//                {
+//                    fixed (uint* hi = BgHi, lo = BgLo)
+//                    {
+//                        if (enableMosaicX)
+//                        {
+//                            _RenderCharBackground(vcount, vram, palettes, winMasks, hi, lo, bg, true);
+//                        }
+//                        else
+//                        {
+//                            _RenderCharBackground(vcount, vram, palettes, winMasks, hi, lo, bg, false);
+//                        }
+//                    }
+//                }
+//#endif
+//            }
+//        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        unsafe private void _RenderCharBackground(
-                uint vcount, byte* vram,
-                byte* palettes,
-                byte* winMasks,
-                uint* hi, uint* lo,
-                Background bg, bool mosaicX
-            )
-        {
-            uint charBase = bg.CharBaseBlock * CharBlockSize + CharBaseBlockCoarse * CoarseBlockSize;
-            uint mapBase = bg.MapBaseBlock * MapBlockSize + MapBaseBlockCoarse * CoarseBlockSize;
+//        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//        unsafe private void _RenderCharBackground(
+//                uint vcount, byte* vram,
+//                byte* palettes,
+//                byte* winMasks,
+//                uint* hi, uint* lo,
+//                Background bg, bool mosaicX
+//            )
+//        {
+//            uint charBase = bg.CharBaseBlock * CharBlockSize + CharBaseBlockCoarse * CoarseBlockSize;
+//            uint mapBase = bg.MapBaseBlock * MapBlockSize + MapBaseBlockCoarse * CoarseBlockSize;
 
-            uint pixelY = bg.VerticalOffset + vcount;
-            if (bg.EnableMosaic)
-            {
-                pixelY -= BgMosaicYCounter;
-            }
-            uint pixelYWrapped = pixelY & 255;
+//            uint pixelY = bg.VerticalOffset + vcount;
+//            if (bg.EnableMosaic)
+//            {
+//                pixelY -= BgMosaicYCounter;
+//            }
+//            uint pixelYWrapped = pixelY & 255;
 
-            uint screenSizeBase = bg.ScreenSize * 2;
-            uint verticalOffsetBlocks = CharBlockHeightTable[screenSizeBase + ((pixelY & 511) >> 8)];
-            uint mapVertOffset = MapBlockSize * verticalOffsetBlocks;
+//            uint screenSizeBase = bg.ScreenSize * 2;
+//            uint verticalOffsetBlocks = CharBlockHeightTable[screenSizeBase + ((pixelY & 511) >> 8)];
+//            uint mapVertOffset = MapBlockSize * verticalOffsetBlocks;
 
-            uint tileY = pixelYWrapped >> 3;
-            uint intraTileY = pixelYWrapped & 7;
+//            uint tileY = pixelYWrapped >> 3;
+//            uint intraTileY = pixelYWrapped & 7;
 
-            uint pixelX = bg.HorizontalOffset;
-            uint intraTileX = bg.HorizontalOffset & 7;
-            uint lineIndex = 8 - intraTileX;
+//            uint pixelX = bg.HorizontalOffset;
+//            uint intraTileX = bg.HorizontalOffset & 7;
+//            uint lineIndex = 8 - intraTileX;
 
-            uint tilesToRender = (uint)(Width / 8);
-            if (lineIndex < 8) tilesToRender++;
+//            uint tilesToRender = (uint)(Width / 8);
+//            if (lineIndex < 8) tilesToRender++;
 
-            uint mosaicXCounter = BgMosaicX;
+//            uint mosaicXCounter = BgMosaicX;
 
-            // Every byte of these vectors are filled
-            v256 metaVec = new v256((int)((bg.Priority << 8) | (1 << bg.Id)));
+//            // Every byte of these vectors are filled
+//            v256 metaVec = new v256((int)((bg.Priority << 8) | (1 << bg.Id)));
 
-            for (uint tile = 0; tile < tilesToRender; tile++)
-            {
-                uint pixelXWrapped = pixelX & 255;
+//            for (uint tile = 0; tile < tilesToRender; tile++)
+//            {
+//                uint pixelXWrapped = pixelX & 255;
 
-                // 2 bytes per tile
-                uint tileX = pixelXWrapped >> 3;
-                uint horizontalOffsetBlocks = CharBlockWidthTable[screenSizeBase + ((pixelX & 511) >> 8)];
-                uint mapHoriOffset = MapBlockSize * horizontalOffsetBlocks;
-                uint mapEntryIndex = mapBase + mapVertOffset + mapHoriOffset + tileY * 64 + tileX * 2;
-                uint mapEntry = (uint)(*(ushort*)(vram + mapEntryIndex));
+//                // 2 bytes per tile
+//                uint tileX = pixelXWrapped >> 3;
+//                uint horizontalOffsetBlocks = CharBlockWidthTable[screenSizeBase + ((pixelX & 511) >> 8)];
+//                uint mapHoriOffset = MapBlockSize * horizontalOffsetBlocks;
+//                uint mapEntryIndex = mapBase + mapVertOffset + mapHoriOffset + tileY * 64 + tileX * 2;
+//                uint mapEntry = (uint)(*(ushort*)(vram + mapEntryIndex));
 
-                uint tileNumber = mapEntry & 1023u; // 10 bits
-                bool xFlip = ((mapEntry >> 10) & 1u) != 0u;
-                bool yFlip = ((mapEntry >> 11) & 1u) != 0u;
+//                uint tileNumber = mapEntry & 1023u; // 10 bits
+//                bool xFlip = ((mapEntry >> 10) & 1u) != 0u;
+//                bool yFlip = ((mapEntry >> 11) & 1u) != 0u;
 
-                uint effectiveIntraTileY = intraTileY;
-                if (yFlip)
-                {
-                    effectiveIntraTileY ^= 7;
-                }
+//                uint effectiveIntraTileY = intraTileY;
+//                if (yFlip)
+//                {
+//                    effectiveIntraTileY ^= 7;
+//                }
 
-                v256 clearMaskVec;
-                v256 indicesVec;
-                uint paletteRow = 0;
+//                v256 clearMaskVec;
+//                v256 indicesVec;
+//                uint paletteRow = 0;
 
-                if (bg.Use8BitColor)
-                {
-                    clearMaskVec = new v256(0xFFU);
+//                if (bg.Use8BitColor)
+//                {
+//                    clearMaskVec = new v256(0xFFU);
 
-                    uint vramTileAddr = charBase + tileNumber * 64 + effectiveIntraTileY * 8;
-                    ulong data = *(ulong*)(vram + vramTileAddr);
+//                    uint vramTileAddr = charBase + tileNumber * 64 + effectiveIntraTileY * 8;
+//                    ulong data = *(ulong*)(vram + vramTileAddr);
 
-                    if (data != 0)
-                    {
-                        indicesVec = Avx2.mm256_cvtepu8_epi32(new v128(data));
-                        if (xFlip)
-                        {
-                            // First, reverse within 128-bit lanes
-                            indicesVec = Avx2.mm256_shuffle_epi32(indicesVec, 0b00_01_10_11);
-                            // Then, swap upper and lower halves
-                            indicesVec = Avx2.mm256_permute2x128_si256(indicesVec, indicesVec, 1);
-                        }
-                        indicesVec = Avx2.mm256_and_si256(indicesVec, clearMaskVec);
-                    }
-                    else
-                    {
-                        pixelX += 8;
-                        lineIndex += 8;
-                        continue;
-                    }
-                }
-                else
-                {
-                    clearMaskVec = new v256(0xFU);
+//                    if (data != 0)
+//                    {
+//                        indicesVec = Avx2.mm256_cvtepu8_epi32(new v128(data));
+//                        if (xFlip)
+//                        {
+//                            // First, reverse within 128-bit lanes
+//                            indicesVec = Avx2.mm256_shuffle_epi32(indicesVec, 0b00_01_10_11);
+//                            // Then, swap upper and lower halves
+//                            indicesVec = Avx2.mm256_permute2x128_si256(indicesVec, indicesVec, 1);
+//                        }
+//                        indicesVec = Avx2.mm256_and_si256(indicesVec, clearMaskVec);
+//                    }
+//                    else
+//                    {
+//                        pixelX += 8;
+//                        lineIndex += 8;
+//                        continue;
+//                    }
+//                }
+//                else
+//                {
+//                    clearMaskVec = new v256(0xFU);
 
-                    paletteRow = (mapEntry >> 12) & 0xF;
-                    uint vramTileAddr = charBase + tileNumber * 32 + effectiveIntraTileY * 4;
+//                    paletteRow = (mapEntry >> 12) & 0xF;
+//                    uint vramTileAddr = charBase + tileNumber * 32 + effectiveIntraTileY * 4;
 
-                    uint data = *(uint*)(vram + vramTileAddr);
+//                    uint data = *(uint*)(vram + vramTileAddr);
 
-                    if (data != 0)
-                    {
-                        v256 shifts;
-                        if (xFlip)
-                        {
-                            shifts = new v256(28U, 24U, 20U, 16U, 12U, 8U, 4U, 0U);
-                        }
-                        else
-                        {
-                            shifts = new v256(0U, 4U, 8U, 12U, 16U, 20U, 24U, 28U);
-                        }
-                        indicesVec = new v256(data);
-                        indicesVec = Avx2.mm256_srlv_epi32(indicesVec, shifts);
-                        indicesVec = Avx2.mm256_and_si256(indicesVec, clearMaskVec);
-                    }
-                    else
-                    {
-                        pixelX += 8;
-                        lineIndex += 8;
-                        continue;
-                    }
-                }
+//                    if (data != 0)
+//                    {
+//                        v256 shifts;
+//                        if (xFlip)
+//                        {
+//                            shifts = new v256(28U, 24U, 20U, 16U, 12U, 8U, 4U, 0U);
+//                        }
+//                        else
+//                        {
+//                            shifts = new v256(0U, 4U, 8U, 12U, 16U, 20U, 24U, 28U);
+//                        }
+//                        indicesVec = new v256(data);
+//                        indicesVec = Avx2.mm256_srlv_epi32(indicesVec, shifts);
+//                        indicesVec = Avx2.mm256_and_si256(indicesVec, clearMaskVec);
+//                    }
+//                    else
+//                    {
+//                        pixelX += 8;
+//                        lineIndex += 8;
+//                        continue;
+//                    }
+//                }
 
-                v256 color = Avx2.mm256_i32gather_epi32((int*)((ushort*)palettes + paletteRow * 16), indicesVec, sizeof(ushort));
-                color = Avx2.mm256_and_si256(color, new v256(0xFFFF));
-                // Weave metadata (priority, ID) into color data
-                color = Avx2.mm256_or_si256(color, Avx2.mm256_slli_epi32(metaVec, 16));
+//                v256 color = Avx2.mm256_i32gather_epi32((int*)((ushort*)palettes + paletteRow * 16), indicesVec, sizeof(ushort));
+//                color = Avx2.mm256_and_si256(color, new v256(0xFFFF));
+//                // Weave metadata (priority, ID) into color data
+//                color = Avx2.mm256_or_si256(color, Avx2.mm256_slli_epi32(metaVec, 16));
 
-                ulong addr = GetUlong(winMasks, lineIndex);
-                v256 winMask = Avx2.mm256_cvtepi8_epi32(new v128(addr));
-                winMask = Avx2.mm256_and_si256(winMask, metaVec);
-                winMask = Avx2.mm256_cmpeq_epi32(winMask, new v256((byte)0));
-                // Get important color bits
-                v256 clear = Avx2.mm256_and_si256(indicesVec, clearMaskVec);
-                // Are those bits clear? 
-                clear = Avx2.mm256_cmpeq_epi32(clear, new v256(0));
-                // Merge with window mask
-                winMask = Avx2.mm256_or_si256(winMask, clear);
-                winMask = Avx2.mm256_xor_si256(winMask, new v256(int.MinValue));
+//                ulong addr = GetUlong(winMasks, lineIndex);
+//                v256 winMask = Avx2.mm256_cvtepi8_epi32(new v128(addr));
+//                winMask = Avx2.mm256_and_si256(winMask, metaVec);
+//                winMask = Avx2.mm256_cmpeq_epi32(winMask, new v256((byte)0));
+//                // Get important color bits
+//                v256 clear = Avx2.mm256_and_si256(indicesVec, clearMaskVec);
+//                // Are those bits clear? 
+//                clear = Avx2.mm256_cmpeq_epi32(clear, new v256(0));
+//                // Merge with window mask
+//                winMask = Avx2.mm256_or_si256(winMask, clear);
+//                winMask = Avx2.mm256_xor_si256(winMask, new v256(int.MinValue));
 
-                // Push back covered pixels from hi to lo
-                // This render the front image
-                Avx2.mm256_maskstore_epi32((void*)(lo + lineIndex), winMask, Avx2.mm256_stream_load_si256((void*)(hi + lineIndex)));
-                // This render the background, has some bugs
-                Avx2.mm256_maskstore_epi32((void*)(hi + lineIndex), winMask, color);
+//                // Push back covered pixels from hi to lo
+//                // This render the front image
+//                Avx2.mm256_maskstore_epi32((void*)(lo + lineIndex), winMask, Avx2.mm256_stream_load_si256((void*)(hi + lineIndex)));
+//                // This render the background, has some bugs
+//                Avx2.mm256_maskstore_epi32((void*)(hi + lineIndex), winMask, color);
 
-                pixelX += 8;
-                lineIndex += 8;
-            }
-        }
+//                pixelX += 8;
+//                lineIndex += 8;
+//            }
+//        }
         #endregion
 
         #region 不使用AVX burst的 RenderCharBackground
@@ -859,6 +939,63 @@ namespace OptimeGBA
         public readonly static uint[] AffineTileSizeTable = { 16, 32, 64, 128 };
         public readonly static uint[] AffineSizeMask = { 127, 255, 511, 1023 };
 
+        //public void RenderAffineBackground(uint vcount, byte* vram, Background bg)
+        //{
+        //    uint charBase = bg.CharBaseBlock * CharBlockSize;
+        //    uint mapBase = bg.MapBaseBlock * MapBlockSize;
+
+        //    ushort meta = bg.GetMeta();
+
+        //    int posX = bg.AffinePosX;
+        //    int posY = bg.AffinePosY;
+
+        //    uint size = AffineSizeTable[bg.ScreenSize];
+        //    uint sizeMask = AffineSizeMask[bg.ScreenSize];
+        //    uint tileSize = AffineTileSizeTable[bg.ScreenSize];
+
+        //    for (uint p = 0; p < Width; p++)
+        //    {
+        //        uint pixelX = (uint)((posX >> 8) & 0x7FFFF);
+        //        uint pixelY = (uint)((posY >> 8) & 0x7FFFF);
+
+        //        posX += bg.AffineA;
+        //        posY += bg.AffineC;
+
+        //        if (!bg.OverflowWrap && (pixelX >= size || pixelY >= size))
+        //        {
+        //            continue;
+        //        }
+
+        //        pixelX &= sizeMask;
+        //        pixelY &= sizeMask;
+
+        //        uint tileX = pixelX >> 3;
+        //        uint intraTileX = pixelX & 7;
+
+        //        uint tileY = pixelY >> 3;
+        //        uint intraTileY = pixelY & 7;
+
+        //        // 1 byte per tile
+        //        uint mapEntryIndex = mapBase + (tileY * tileSize) + (tileX * 1);
+        //        uint tileNumber = vram[mapEntryIndex];
+
+        //        // Always 256color
+        //        // 256 color, 64 bytes per tile, 8 bytes per row
+        //        uint vramAddr = charBase + (tileNumber * 64) + (intraTileY * 8) + (intraTileX / 1);
+        //        byte vramValue = vram[vramAddr];
+
+        //        if (vramValue != 0)
+        //        {
+        //            PlaceBgPixel(p + 8, LookupPalette(vramValue), meta);
+        //        }
+        //    }
+
+        //    bg.AffinePosX += bg.AffineB;
+        //    bg.AffinePosY += bg.AffineD;
+        //}
+
+
+        //手动内联
         public void RenderAffineBackground(uint vcount, byte* vram, Background bg)
         {
             uint charBase = bg.CharBaseBlock * CharBlockSize;
@@ -906,7 +1043,14 @@ namespace OptimeGBA
 
                 if (vramValue != 0)
                 {
-                    PlaceBgPixel(p + 8, LookupPalette(vramValue), meta);
+                    //PlaceBgPixel(p + 8, LookupPalette(vramValue), meta);
+
+                    int idx_x_2 = vramValue * 2;
+                    var tmpval = (ushort)(
+                            (Palettes[idx_x_2] << 0) |
+                            (Palettes[idx_x_2 + 1] << 8)
+                        );
+                    PlaceBgPixel(p + 8, tmpval, meta);
                 }
             }
 
@@ -1112,6 +1256,70 @@ namespace OptimeGBA
 
         public readonly ushort[] NdsCharObjBoundary = new ushort[] { 32, 64, 128, 256 };
 
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public void RenderObjPixel(byte* vram, int objX, int objY, uint tile, uint width, bool use8BitColor, uint x, uint palette, byte priority, ObjMode mode)
+        //{
+        //    uint intraTileX = (uint)(objX & 7);
+        //    uint intraTileY = (uint)(objY & 7);
+
+        //    uint tileX = (uint)(objX / 8);
+        //    uint tileY = (uint)(objY / 8);
+
+        //    uint charBase = false ? 0U : 0x10000U;
+
+        //    tile <<= (int)TileObj1DBoundary;
+        //    uint effectiveTileNumber = (uint)(tile + tileX);
+
+
+        //    if (ObjCharOneDimensional)
+        //    {
+        //        effectiveTileNumber += tileY * (width / 8);
+        //    }
+        //    else
+        //    {
+        //        if (use8BitColor)
+        //        {
+        //            effectiveTileNumber += 16 * tileY;
+        //        }
+        //        else
+        //        {
+        //            effectiveTileNumber += 32 * tileY;
+        //        }
+        //    }
+
+        //    if (use8BitColor)
+        //    {
+        //        // 256 color, 64 bytes per tile, 8 bytes per row
+        //        uint vramAddr = charBase + (effectiveTileNumber * 64) + (intraTileY * 8) + (intraTileX / 1);
+        //        uint vramValue = vram[vramAddr];
+
+        //        byte finalColor = (byte)vramValue;
+
+        //        if (finalColor != 0)
+        //        {
+        //            PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // 16 color, 32 bytes per tile, 4 bytes per row
+        //        uint vramAddr = charBase + (effectiveTileNumber * 32) + (intraTileY * 4) + (intraTileX / 2);
+        //        uint vramValue = vram[vramAddr];
+        //        // Lower 4 bits is left pixel, upper 4 bits is right pixel
+        //        uint color = (vramValue >> (int)((intraTileX & 1) * 4)) & 0xF;
+        //        byte finalColor = (byte)(palette * 16 + color);
+
+        //        if (color != 0)
+        //        {
+        //            PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+        //        }
+
+        //    }
+        //}
+
+
+
+        //手动内联
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RenderObjPixel(byte* vram, int objX, int objY, uint tile, uint width, bool use8BitColor, uint x, uint palette, byte priority, ObjMode mode)
         {
@@ -1153,7 +1361,14 @@ namespace OptimeGBA
 
                 if (finalColor != 0)
                 {
-                    PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                    //PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                    int idx_x_2 = finalColor * 2;
+                    ushort tmpColor = (ushort)(
+                            (Palettes[idx_x_2] << 0) |
+                            (Palettes[idx_x_2 + 1] << 8)
+                        );
+
+                    PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
                 }
             }
             else
@@ -1167,7 +1382,13 @@ namespace OptimeGBA
 
                 if (color != 0)
                 {
-                    PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                    //PlaceObjPixel(x, LookupPalette(finalColor), finalColor, priority, mode);
+                    int idx_x_2 = finalColor * 2;
+                    ushort tmpColor = (ushort)(
+                            (Palettes[idx_x_2] << 0) |
+                            (Palettes[idx_x_2 + 1] << 8)
+                        );
+                    PlaceObjPixel(x, tmpColor, finalColor, priority, mode);
                 }
 
             }
@@ -1200,6 +1421,111 @@ namespace OptimeGBA
             }
         }
 
+        //public void Composite(uint vcount)
+        //{
+        //    uint screenBase = (uint)(vcount * Width);
+
+        //    for (int i = 0; i < Width; i++)
+        //    {
+        //        uint winMask = WinMasks[i + 8];
+        //        ObjPixel objPixel = ObjBuffer[i];
+
+        //        uint hi = BgHi[i + 8];
+        //        uint lo = BgLo[i + 8];
+        //        ushort hiColor = (ushort)hi;
+        //        ushort loColor = (ushort)lo;
+        //        BlendFlag hiPixelFlag = (BlendFlag)((byte)(hi >> 16));
+        //        BlendFlag loPixelFlag = (BlendFlag)((byte)(lo >> 16));
+        //        uint objPaletteIndex = objPixel.PaletteIndex + 256U;
+
+        //        uint effectiveTarget1Flags = Target1Flags;
+        //        BlendEffect effectiveBlendEffect = BlendEffect;
+
+        //        if (objPaletteIndex != 256 && (winMask & (uint)WindowFlag.Obj) != 0)
+        //        {
+        //            byte hiPrio = (byte)(hi >> 24);
+        //            byte loPrio = (byte)(lo >> 24);
+
+        //            if (objPixel.Priority <= hiPrio)
+        //            {
+        //                loColor = hiColor;
+        //                loPixelFlag = hiPixelFlag;
+
+        //                hiColor = LookupPalette(objPaletteIndex);
+        //                hiPixelFlag = BlendFlag.Obj;
+        //            }
+        //            else if (objPixel.Priority <= loPrio)
+        //            {
+        //                loColor = LookupPalette(objPaletteIndex);
+        //                loPixelFlag = BlendFlag.Obj;
+        //            }
+
+        //            if (objPixel.Mode == ObjMode.Translucent)
+        //            {
+        //                effectiveTarget1Flags |= (uint)BlendFlag.Obj;
+        //                effectiveBlendEffect = BlendEffect.Blend;
+        //                winMask |= (uint)WindowFlag.ColorMath;
+        //            }
+        //        }
+
+        //        if (
+        //            effectiveBlendEffect != BlendEffect.None &&
+        //            (effectiveTarget1Flags & (uint)hiPixelFlag) != 0 &&
+        //            (winMask & (uint)WindowFlag.ColorMath) != 0
+        //        )
+        //        {
+        //            byte r1 = (byte)((hiColor >> 0) & 0x1F);
+        //            byte g1 = (byte)((hiColor >> 5) & 0x1F);
+        //            byte b1 = (byte)((hiColor >> 10) & 0x1F);
+
+        //            byte fr = r1;
+        //            byte fg = g1;
+        //            byte fb = b1;
+        //            switch (BlendEffect)
+        //            {
+        //                case BlendEffect.Blend:
+        //                    if ((Target2Flags & (uint)loPixelFlag) != 0)
+        //                    {
+        //                        byte r2 = (byte)((loColor >> 0) & 0x1F);
+        //                        byte g2 = (byte)((loColor >> 5) & 0x1F);
+        //                        byte b2 = (byte)((loColor >> 10) & 0x1F);
+
+        //                        fr = (byte)((Math.Min(511U, r1 * BlendACoeff + r2 * BlendBCoeff) >> 4) & 0x1FU);
+        //                        fg = (byte)((Math.Min(511U, g1 * BlendACoeff + g2 * BlendBCoeff) >> 4) & 0x1FU);
+        //                        fb = (byte)((Math.Min(511U, b1 * BlendACoeff + b2 * BlendBCoeff) >> 4) & 0x1FU);
+        //                    }
+        //                    break;
+        //                case BlendEffect.Lighten:
+        //                    fr = (byte)((r1 + (((31 - r1) * BlendBrightness) >> 4)) & 0x1FU);
+        //                    fg = (byte)((g1 + (((31 - g1) * BlendBrightness) >> 4)) & 0x1FU);
+        //                    fb = (byte)((b1 + (((31 - b1) * BlendBrightness) >> 4)) & 0x1FU);
+        //                    break;
+        //                case BlendEffect.Darken:
+        //                    fr = (byte)((r1 - ((r1 * BlendBrightness) >> 4)) & 0x1FU);
+        //                    fg = (byte)((g1 - ((g1 * BlendBrightness) >> 4)) & 0x1FU);
+        //                    fb = (byte)((b1 - ((b1 * BlendBrightness) >> 4)) & 0x1FU);
+        //                    break;
+        //            }
+
+        //            ScreenBack[screenBase++] = (ushort)((fb << 10) | (fg << 5) | fr);
+        //        }
+        //        else
+        //        {
+        //            ScreenBack[screenBase++] = hiColor;
+        //        }
+
+        //        // It's the frontend's responsibility to convert rgb555 to rgb888
+
+        //        // Use this loop as an opportunity to clear the sprite buffer
+        //        ObjBuffer[i].Color = 0;
+        //        ObjBuffer[i].PaletteIndex = 0;
+        //        ObjBuffer[i].Priority = 4;
+        //        ObjWindowBuffer[i] = 0;
+        //    }
+        //}
+
+
+        //手动内联
         public void Composite(uint vcount)
         {
             uint screenBase = (uint)(vcount * Width);
@@ -1230,12 +1556,23 @@ namespace OptimeGBA
                         loColor = hiColor;
                         loPixelFlag = hiPixelFlag;
 
-                        hiColor = LookupPalette(objPaletteIndex);
+                        //hiColor = LookupPalette(objPaletteIndex);
+                        uint idx_x_2 = objPaletteIndex * 2;
+                        hiColor = (ushort)(
+                                (Palettes[idx_x_2] << 0) |
+                                (Palettes[idx_x_2 + 1] << 8)
+                            );
+
                         hiPixelFlag = BlendFlag.Obj;
                     }
                     else if (objPixel.Priority <= loPrio)
                     {
-                        loColor = LookupPalette(objPaletteIndex);
+                        //loColor = LookupPalette(objPaletteIndex);
+                        uint idx_x_2 = objPaletteIndex * 2;
+                        loColor = (ushort)(
+                                (Palettes[idx_x_2] << 0) |
+                                (Palettes[idx_x_2 + 1] << 8)
+                            );
                         loPixelFlag = BlendFlag.Obj;
                     }
 
@@ -1368,6 +1705,23 @@ namespace OptimeGBA
             }
         }
 
+        //public void RenderMode4(uint vcount, byte* vram)
+        //{
+        //    uint screenBase = (uint)(vcount * Width);
+        //    uint vramBase = (uint)(0x0 + vcount * Width);
+
+        //    for (uint p = 0; p < Width; p++)
+        //    {
+        //        uint vramVal = vram[vramBase];
+
+        //        ScreenBack[screenBase] = LookupPalette(vramVal);
+
+        //        vramBase++;
+        //        screenBase++;
+        //    }
+        //}
+
+        //手动内联
         public void RenderMode4(uint vcount, byte* vram)
         {
             uint screenBase = (uint)(vcount * Width);
@@ -1377,7 +1731,12 @@ namespace OptimeGBA
             {
                 uint vramVal = vram[vramBase];
 
-                ScreenBack[screenBase] = LookupPalette(vramVal);
+                //ScreenBack[screenBase] = LookupPalette(vramVal);
+                uint idx_x_2 = vramVal * 2;
+                ScreenBack[screenBase] = (ushort)(
+                        (Palettes[idx_x_2] << 0) |
+                        (Palettes[idx_x_2 + 1] << 8)
+                    );
 
                 vramBase++;
                 screenBase++;
