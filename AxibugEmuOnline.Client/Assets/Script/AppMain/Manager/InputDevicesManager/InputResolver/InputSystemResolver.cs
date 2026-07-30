@@ -413,10 +413,10 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                     $" isRightConnected{ipdevice_joycon.isRightConnected} "+
                     $" isLeftWired{ipdevice_joycon.isLeftWired} " +
                     $" isRightConnected{ipdevice_joycon.isRightWired} ");
-                mapper[joycon_d.LeftSL] = ipdevice_joycon.leftSL;
-                mapper[joycon_d.LeftSR] = ipdevice_joycon.leftSR;
-                mapper[joycon_d.RightSL] = ipdevice_joycon.rightSL;
-                mapper[joycon_d.RightSR] = ipdevice_joycon.rightSR;
+                mapper[joycon_d.LeftSL] = ipdevice_joycon.leftTrigger;
+                mapper[joycon_d.LeftSR] = ipdevice_joycon.leftShoulder;
+                mapper[joycon_d.RightSL] = ipdevice_joycon.rightTrigger;
+                mapper[joycon_d.RightSR] = ipdevice_joycon.rightShoulder;
                 mapper[joycon_d.B] = ipdevice_joycon.bButton;
                 mapper[joycon_d.A] = ipdevice_joycon.aButton;
                 mapper[joycon_d.Y] = ipdevice_joycon.yButton;

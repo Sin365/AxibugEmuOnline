@@ -151,7 +151,7 @@ namespace AxibugEmuOnline.Client.Manager
                 App.settings.debugHub.RefreshForSetting();//进行一个重复刷新
                 yield return null;
                 App.log.Debug("waiting...");
-                if (romFile.Platform.IsMamePlatform())
+                if (romFile.Platform.IsNeedSwitchHotStorage())
                 {
                     yield return App.SwitchHotstorage();//被动式触发NS初始化
                 }

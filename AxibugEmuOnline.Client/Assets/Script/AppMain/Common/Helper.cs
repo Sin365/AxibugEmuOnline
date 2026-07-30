@@ -141,5 +141,10 @@ namespace AxibugEmuOnline.Client.Common
                 || type == RomPlatformType.Igs 
                 || type == RomPlatformType.ArcadeOld;
         }
+
+        public static bool IsNeedSwitchHotStorage(this RomPlatformType type)
+        {
+            return IsMamePlatform(type) || type == RomPlatformType.GameBoyAdvance;
+        }
     }
 }
