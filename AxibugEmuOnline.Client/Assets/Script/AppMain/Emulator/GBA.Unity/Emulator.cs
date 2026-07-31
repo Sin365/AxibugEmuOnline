@@ -138,7 +138,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         protected override void AfterPushFrame()
         {
-            
+
         }
 
         public override void GetAudioParams(out int frequency, out int channels)
@@ -175,7 +175,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         }
         void Start()
         {
-            
+
         }
 
         private void OnEnable()
@@ -195,6 +195,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         private void OnDisable()
         {
             //EmulationThread.Abort();
+            Update_CheckSave(true);
         }
 
         // Update is called once per frame
@@ -343,24 +344,46 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
             if (gba.Mem.SaveProvider.Dirty)
             {
-                DumpSav();
+                DumpSavReady();
                 //清理脏标记，否则一直保存
                 gba.Mem.SaveProvider.Dirty = false;
             }
+            Update_CheckSave();
             mCurrFrame++;
         }
 
-        public void DumpSav()
+        public void DumpSavReady()
         {
+            bNeedWriteSav = true;
+            writeSavTargetPath = gba.Provider.SavPath;
+            writeSavData = gba.Mem.SaveProvider.GetSave();
+            setWriteReadyTime = Time.time;
+        }
+
+        #region
+        bool bNeedWriteSav = false;
+        float setWriteReadyTime = 0;
+        string writeSavTargetPath = string.Empty;
+        byte[] writeSavData = null;
+
+        void Update_CheckSave(bool withouttime = false)
+        {
+            if (!bNeedWriteSav)
+                return;
+            if (!withouttime && Time.time - setWriteReadyTime < 0.5f)
+                return;
             try
             {
-                AxiIO.File.WriteAllBytes(gba.Provider.SavPath, gba.Mem.SaveProvider.GetSave());
+                AxiIO.File.WriteAllBytes(writeSavTargetPath, writeSavData, true);
+                OverlayManager.PopTip("GBA存档写入");
             }
             catch
             {
                 Debug.Log("Failed to write .sav file!");
             }
+            bNeedWriteSav = false;
         }
+        #endregion
         private static byte[] GetBytesZippedFile(string filename)
         {
             byte[] bytes = AxiIO.File.ReadAllBytes(filename);

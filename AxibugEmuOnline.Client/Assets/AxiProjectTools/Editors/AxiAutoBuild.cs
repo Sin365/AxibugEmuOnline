@@ -136,7 +136,7 @@ public static partial class AxiAutoBuild
         {
             BuildReport report = BuildPipeline.BuildPlayer(options);
 
-            System.Diagnostics.Process.Start("explorer", "/select,\"" + _locationPathName.Trim() + "\"");
+            System.Diagnostics.Process.Start("explorer", "/select,\"" + FullPath.Trim() + "\"");
         }
         catch (Exception ex)
         {
