@@ -90,7 +90,9 @@ namespace AxibugEmuOnline.Client
             {
                 if (m_romFile.Platform == RomPlatformType.WonderSwan
                     ||
-                    m_romFile.Platform == RomPlatformType.WonderSwanColor)
+                    m_romFile.Platform == RomPlatformType.WonderSwanColor
+                    ||
+                    m_romFile.Platform == RomPlatformType.GameBoyAdvance)
                 {
                     OverlayManager.PopTip(m_romFile.Platform + "平台，当前版本暂不支持进入房间");
                     return false;

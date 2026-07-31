@@ -4,10 +4,10 @@ namespace AxibugEmuOnline.Client.InputDevices
 {
     public class StandaloneSwitchProController_D : InputDevice_D
     {
-        public Button_C LeftSL;
-        public Button_C LeftSR;
-        public Button_C RightSL;
-        public Button_C RightSR;
+        public Button_C leftTrigger;
+        public Button_C leftShoulder;
+        public Button_C rightTrigger;
+        public Button_C rightShoulder;
 
         public Button_C B;
         public Button_C A;

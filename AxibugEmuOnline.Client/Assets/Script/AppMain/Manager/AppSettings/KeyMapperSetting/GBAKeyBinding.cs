@@ -124,8 +124,8 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(GBAKeyCode.Right, device.Right, 0);
             controller.SetBinding(GBAKeyCode.B, device.B, 0);
             controller.SetBinding(GBAKeyCode.A, device.A, 0);
-            controller.SetBinding(GBAKeyCode.L, device.LeftSL, 0);
-            controller.SetBinding(GBAKeyCode.R, device.RightSL, 0);
+            controller.SetBinding(GBAKeyCode.L, device.leftTrigger, 0);
+            controller.SetBinding(GBAKeyCode.R, device.leftShoulder, 0);
             controller.SetBinding(GBAKeyCode.Up, device.LeftStick.Up, 1);
             controller.SetBinding(GBAKeyCode.Down, device.LeftStick.Down, 1);
             controller.SetBinding(GBAKeyCode.Left, device.LeftStick.Left, 1);
@@ -141,10 +141,10 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(GBAKeyCode.Right, device.Right, 0);
             controller.SetBinding(GBAKeyCode.B, device.B, 0);
             controller.SetBinding(GBAKeyCode.A, device.A, 0);
-            controller.SetBinding(GBAKeyCode.L, device.LeftSL, 0);
-            controller.SetBinding(GBAKeyCode.R, device.RightSL, 0);
-            controller.SetBinding(GBAKeyCode.L, device.LeftSR, 0);
-            controller.SetBinding(GBAKeyCode.R, device.RightSR, 0);
+            controller.SetBinding(GBAKeyCode.L, device.leftTrigger, 0);
+            controller.SetBinding(GBAKeyCode.L, device.leftShoulder, 0);
+            controller.SetBinding(GBAKeyCode.R, device.rightTrigger, 0);
+            controller.SetBinding(GBAKeyCode.R, device.rightShoulder, 0);
             controller.SetBinding(GBAKeyCode.Up, device.LeftStick.Up, 1);
             controller.SetBinding(GBAKeyCode.Down, device.LeftStick.Down, 1);
             controller.SetBinding(GBAKeyCode.Left, device.LeftStick.Left, 1);

@@ -132,7 +132,7 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EnumButtonType.B, device.B, 0);
             controller.SetBinding(EnumButtonType.SELECT, device.Minus, 0);
             controller.SetBinding(EnumButtonType.START, device.Plus, 0);
-            controller.SetBinding(EnumButtonType.MIC, device.RightSL, 0);
+            controller.SetBinding(EnumButtonType.MIC, device.rightTrigger, 0);
 
             controller.SetBinding(EnumButtonType.LEFT, device.LeftStick.Left, 1);
             controller.SetBinding(EnumButtonType.RIGHT, device.LeftStick.Right, 1);
@@ -150,7 +150,7 @@ namespace AxibugEmuOnline.Client.Settings
             controller.SetBinding(EnumButtonType.B, device.B, 0);
             controller.SetBinding(EnumButtonType.SELECT, device.Minus, 0);
             controller.SetBinding(EnumButtonType.START, device.Plus, 0);
-            controller.SetBinding(EnumButtonType.MIC, device.RightSL, 0);
+            controller.SetBinding(EnumButtonType.MIC, device.rightTrigger, 0);
 
             controller.SetBinding(EnumButtonType.LEFT, device.LeftStick.Left, 1);
             controller.SetBinding(EnumButtonType.RIGHT, device.LeftStick.Right, 1);
