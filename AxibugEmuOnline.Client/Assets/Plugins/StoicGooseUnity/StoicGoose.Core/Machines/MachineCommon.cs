@@ -15,7 +15,7 @@ using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.Machines
 {
-    public abstract class MachineCommon : IMachine, IMemoryAccessComponent, IPortAccessComponent
+    public abstract class MachineCommon :/* IMachine,*/ IMemoryAccessComponent, IPortAccessComponent
     {
         // http://daifukkat.su/docs/wsman/
 

@@ -1,5 +1,5 @@
 ﻿using StoicGoose.Core.Interfaces;
-
+using StoicGoose.Core.Machines;
 using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.DMA
@@ -8,7 +8,7 @@ namespace StoicGoose.Core.DMA
 	{
 		// TODO: verify behavior!
 
-		readonly IMachine machine = default;
+		readonly MachineCommon machine = default;
 
 		/* REG_DMA_SRC(_HI) */
 		uint dmaSource;
@@ -19,11 +19,18 @@ namespace StoicGoose.Core.DMA
 		/* REG_DMA_CTRL */
 		byte dmaControl;
 
-		public bool IsActive => IsBitSet(dmaControl, 7);
+        //public bool IsActive => IsBitSet(dmaControl, 7);
+        //bool isDecrementMode => IsBitSet(dmaControl, 6);
+        public bool IsActive;
+        bool isDecrementMode;
+        public byte axi_set_dmaControl { set { 
+				dmaControl = value; 
+				IsActive = IsBitSet(value, 7);
+                isDecrementMode = IsBitSet(value, 6);
+            } }
 
-		bool isDecrementMode => IsBitSet(dmaControl, 6);
 
-		public SphinxGeneralDMAController(IMachine machine)
+		public SphinxGeneralDMAController(MachineCommon machine)
 		{
 			this.machine = machine;
 		}
@@ -37,8 +44,9 @@ namespace StoicGoose.Core.DMA
 
 		private void ResetRegisters()
 		{
-			dmaSource = dmaDestination = dmaLength = dmaControl = 0;
-		}
+            //dmaSource = dmaDestination = dmaLength = dmaControl = 0;
+            dmaSource = dmaDestination = dmaLength = axi_set_dmaControl = 0;
+        }
 
 		public void Shutdown()
 		{
@@ -50,8 +58,19 @@ namespace StoicGoose.Core.DMA
 			if (dmaLength == 0 || ((dmaSource >> 16) & 0x0F) == 0x01)
 			{
 				/* Disable DMA if length is zero OR source is SRAM */
-				ChangeBit(ref dmaControl, 7, false);
-				return 5;
+				//ChangeBit(ref dmaControl, 7, false);
+
+				//内联
+                //if (false)
+                //	dmaControl |= (byte)(1 << 7);
+                //else
+                //{ 
+                //                dmaControl &= (byte)~(1 << 7);
+                //}
+
+				//简化内联
+                dmaControl &= 0x7F;
+                return 5;
 			}
 			else
 			{
@@ -159,9 +178,10 @@ namespace StoicGoose.Core.DMA
 					break;
 
 				case 0x48:
-					/* REG_DMA_CTRL */
-					dmaControl = (byte)(value & 0b11000000);
-					break;
+                    /* REG_DMA_CTRL */
+                    //dmaControl = (byte)(value & 0b11000000);
+                    axi_set_dmaControl = (byte)(value & 0b11000000);
+                    break;
 			}
 		}
 	}

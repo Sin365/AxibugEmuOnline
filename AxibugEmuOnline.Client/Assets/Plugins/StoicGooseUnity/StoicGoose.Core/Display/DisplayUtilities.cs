@@ -1,4 +1,5 @@
 ﻿using StoicGoose.Core.Interfaces;
+using StoicGoose.Core.Machines;
 using System;
 
 namespace StoicGoose.Core.Display
@@ -52,10 +53,10 @@ WonderSwan 某些寄存器里颜色是 9-bit index
         // TODO: WSC high contrast mode
         #endregion
 
-        private static ushort ReadMemory16(IMachine machine, uint address) => (ushort)(machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
-        private static uint ReadMemory32(IMachine machine, uint address) => (uint)(machine.ReadMemory(address + 3) << 24 | machine.ReadMemory(address + 2) << 16 | machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
+        private static ushort ReadMemory16(MachineCommon machine, uint address) => (ushort)(machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
+        private static uint ReadMemory32(MachineCommon machine, uint address) => (uint)(machine.ReadMemory(address + 3) << 24 | machine.ReadMemory(address + 2) << 16 | machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));
 
-        public static byte ReadPixel(IMachine machine, ushort tile, int y, int x, bool isPacked, bool is4bpp, bool isColor)
+        public static byte ReadPixel(MachineCommon machine, ushort tile, int y, int x, bool isPacked, bool is4bpp, bool isColor)
         {
             /* http://perfectkiosk.net/stsws.html#color_mode */
 
@@ -87,7 +88,7 @@ WonderSwan 某些寄存器里颜色是 9-bit index
             throw new Exception("Invalid display controller configuration");
         }
 
-        public static ushort ReadColor(IMachine machine, byte paletteIdx, byte colorIdx)
+        public static ushort ReadColor(MachineCommon machine, byte paletteIdx, byte colorIdx)
         {
             var address = (uint)(0x0FE00 + (paletteIdx << 5) + (colorIdx << 1));
             return (ushort)(machine.ReadMemory(address + 1) << 8 | machine.ReadMemory(address));

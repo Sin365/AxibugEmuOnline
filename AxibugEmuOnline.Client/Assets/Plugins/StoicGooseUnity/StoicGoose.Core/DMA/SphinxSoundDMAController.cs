@@ -1,5 +1,5 @@
 ﻿using StoicGoose.Core.Interfaces;
-
+using StoicGoose.Core.Machines;
 using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.DMA
@@ -11,7 +11,7 @@ namespace StoicGoose.Core.DMA
 		readonly static ushort destinationPortChannel2Volume = 0x089;
 		readonly static ushort destinationPortHyperVoice = 0x095;
 
-		readonly IMachine machine = default;
+		readonly MachineCommon machine = default;
 
 		/* REG_DMA_SRC(_HI) */
 		uint dmaSource;
@@ -20,18 +20,35 @@ namespace StoicGoose.Core.DMA
 		/* REG_DMA_CTRL */
 		byte dmaControl;
 
-		public bool IsActive => IsBitSet(dmaControl, 7);
+        //public bool IsActive => IsBitSet(dmaControl, 7);
+        //bool isDecrementMode => IsBitSet(dmaControl, 6);
+        //bool isDestinationHyperVoice => IsBitSet(dmaControl, 4);
+        //bool isLoopingMode => IsBitSet(dmaControl, 3);
+        //int dmaRate => dmaControl & 0b11;
+        public bool IsActive;
+        bool isDecrementMode;
+        bool isDestinationHyperVoice;
+        bool isLoopingMode;
+		int dmaRate;
+        public byte axi_set_dmaControl
+        {
+            set
+            {
+                dmaControl = value;
+                IsActive = IsBitSet(value, 7);
+                isDecrementMode = IsBitSet(value, 6);
+                isDestinationHyperVoice = IsBitSet(value, 4);
+                isLoopingMode = IsBitSet(value, 3);
+				dmaRate = dmaControl & 0b11;
+            }
+        }
 
-		bool isDecrementMode => IsBitSet(dmaControl, 6);
-		bool isDestinationHyperVoice => IsBitSet(dmaControl, 4);
-		bool isLoopingMode => IsBitSet(dmaControl, 3);
-		int dmaRate => dmaControl & 0b11;
 
 		uint initialSource, initialLength;
 
 		int cycleCount;
 
-		public SphinxSoundDMAController(IMachine machine)
+		public SphinxSoundDMAController(MachineCommon machine)
 		{
 			this.machine = machine;
 		}
@@ -47,7 +64,8 @@ namespace StoicGoose.Core.DMA
 
 		private void ResetRegisters()
 		{
-			dmaSource = dmaLength = dmaControl = 0;
+			//dmaSource = dmaLength = dmaControl = 0;
+			dmaSource = dmaLength = axi_set_dmaControl = 0;
 		}
 
 		public void Shutdown()
@@ -165,7 +183,8 @@ namespace StoicGoose.Core.DMA
 						initialSource = dmaSource;
 						initialLength = dmaLength;
 					}
-					dmaControl = (byte)(value & 0b11011111);
+					//dmaControl = (byte)(value & 0b11011111);
+                    axi_set_dmaControl = (byte)(value & 0b11011111);
 					break;
 			}
 		}

@@ -73,7 +73,7 @@ namespace StoicGoose.Core.Display
         //public Action<byte[]> SendFramebuffer { get; set; } = default;
         //public Action<IntPtr, long> SendFramebuffer { get; set; } = default;
         public Action<IntPtr, long> SendFramebuffer = default;
-        protected readonly IMachine machine = default;
+        protected readonly MachineCommon machine = default;
 
         /* REG_DISP_CTRL */
         protected bool scr1Enable, scr2Enable, sprEnable, sprWindowEnable, scr2WindowDisplayOutside, scr2WindowEnable;
@@ -104,7 +104,7 @@ namespace StoicGoose.Core.Display
         /* REG_xTMR_xxx */
         protected readonly DisplayTimer hBlankTimer = new(), vBlankTimer = new();
 
-        public DisplayControllerCommon(IMachine machine)
+        public DisplayControllerCommon(MachineCommon machine)
         {
             this.machine = machine;
 

@@ -80,7 +80,7 @@ namespace StoicGoose.Core.Sound
         readonly int samplesPerFrame, cyclesPerFrame, cyclesPerSample;
         int cycleCount;
 
-        protected readonly IMachine machine = default;
+        protected readonly MachineCommon machine = default;
 
         /* REG_SND_WAVE_BASE */
         protected byte waveTableBase;
@@ -90,7 +90,7 @@ namespace StoicGoose.Core.Sound
         /* REG_SND_VOLUME */
         protected byte masterVolume;
 
-        public SoundControllerCommon(IMachine machine, int rate, int outChannels,byte maxMasterVolume, byte numChannels)
+        public SoundControllerCommon(MachineCommon machine, int rate, int outChannels,byte maxMasterVolume, byte numChannels)
         {
             MaxMasterVolume = maxMasterVolume;
             NumChannels = numChannels;

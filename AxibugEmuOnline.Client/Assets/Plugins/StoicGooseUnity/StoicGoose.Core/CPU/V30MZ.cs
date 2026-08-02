@@ -1,4 +1,5 @@
 ﻿using StoicGoose.Core.Interfaces;
+using StoicGoose.Core.Machines;
 
 namespace StoicGoose.Core.CPU
 {
@@ -7,7 +8,7 @@ namespace StoicGoose.Core.CPU
 		// TODO: attempt prefetch emulation (Meitantei Conan - Nishi no Meitantei Saidai no Kiki; cart changes banks on startup, can no longer execute jump, execs garbage)
 
 		/* Parent machine instance */
-		readonly IMachine machine = default;
+		readonly MachineCommon machine = default;
 
 		/* General registers */
 		Register16 ax, bx, cx, dx;
@@ -38,7 +39,7 @@ namespace StoicGoose.Core.CPU
 
 		public bool IsHalted { get => halted; set => halted = value; }
 
-		public V30MZ(IMachine machine)
+		public V30MZ(MachineCommon machine)
 		{
 			this.machine = machine;
 

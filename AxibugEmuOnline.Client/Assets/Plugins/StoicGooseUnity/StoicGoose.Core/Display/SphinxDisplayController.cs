@@ -1,6 +1,6 @@
 ﻿using StoicGoose.Common.Attributes;
 using StoicGoose.Core.Interfaces;
-
+using StoicGoose.Core.Machines;
 using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.Display
@@ -16,7 +16,7 @@ namespace StoicGoose.Core.Display
 		/* REG_DISP_MODE */
 		bool displayPackedFormatSet, display4bppFlagSet, displayColorFlagSet;
 
-		public SphinxDisplayController(IMachine machine) : base(machine) { }
+		public SphinxDisplayController(MachineCommon machine) : base(machine) { }
 
 		protected override void ResetRegisters()
 		{

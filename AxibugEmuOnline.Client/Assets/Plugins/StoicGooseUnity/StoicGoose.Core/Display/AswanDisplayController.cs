@@ -1,12 +1,12 @@
 ﻿using StoicGoose.Core.Interfaces;
-
+using StoicGoose.Core.Machines;
 using static StoicGoose.Common.Utilities.BitHandling;
 
 namespace StoicGoose.Core.Display
 {
 	public sealed unsafe class AswanDisplayController : DisplayControllerCommon
 	{
-		public AswanDisplayController(IMachine machine) : base(machine) { }
+		public AswanDisplayController(MachineCommon machine) : base(machine) { }
 
 		protected override void RenderSleep(int y, int x)
 		{
