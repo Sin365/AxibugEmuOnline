@@ -4,7 +4,6 @@ using AxiReplay;
 using ICSharpCode.SharpZipLib.Zip;
 using OptimeGBA;
 using System;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,10 +39,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override RomPlatformType Platform => RomPlatformType.GameBoyAdvance;
 
-        uint mCurrFrame;
-        public override uint PushFrame => mCurrFrame;//???
+        public override uint PushFrame => AxiEmuRunFrame;//???
 
-        public override uint PhysicsFrame => mCurrFrame;
+        public override uint PhysicsFrame => AxiVirtualFrame;
 
         public override Texture OutputPixel => videoProvider.wrapTex;
 
@@ -148,30 +146,15 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         }
         #endregion
 
-        //private int _samplesAvailable;
-        //private PipeStream _pipeStream;
-        //private byte[] _buffer;
-        public float audioGain = 1.0f;
-
-        //public Button btnStart;
         private void Awake()
         {
             instance = this;
             var mCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
             mCanvas.worldCamera = Camera.main;
-            // must set it to 60 or it won't sync with audio or run too fast.
             App.tick.SetFrameRate();
-            // Get Unity Buffer size
-            //AudioSettings.GetDSPBufferSize(out int bufferLength, out _);
-            //_samplesAvailable = bufferLength;
-            // Must be set to 32768
             var audioConfig = AudioSettings.GetConfiguration();
             audioConfig.sampleRate = GbaAudio.SampleRate;
             AudioSettings.Reset(audioConfig);
-            // Prepare our buffer
-            //_pipeStream = new PipeStream();
-            //_pipeStream.MaxBufferLength = _samplesAvailable * 2 * sizeof(float);
-            //_buffer = new byte[_samplesAvailable * 2 * sizeof(float)];
         }
         void Start()
         {
@@ -205,7 +188,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             {
                 videoProvider.OnRenderFrame();
             }
-            OnUpdateFrame();
+            Frame_UpdateByCpuTime();
         }
 
         public void LoadRom(byte[] rom, string name)
@@ -321,16 +304,58 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
         }
 
+        #region 插帧处理
 
-        public void OnUpdateFrame()
+
+        long accumulatedUs = 0;
+        long unityFrameUs = 16_666; // 60Hz = 16.6667ms
+
+        public uint AxiEmuRunFrame;
+        public uint AxiVirtualFrame;
+        /// <summary>
+        /// 当前当前虚拟帧是否快速掠过
+        /// </summary>
+        public bool CurrVirtualFrameIsSkim = false;
+        public static class GBAConstants
         {
-            SyncToAudio = !(Input.GetKey(KeyCode.Tab) || Input.GetKey(KeyCode.Space));
+            // 16.78MHz
+            public const int MASTER_CLOCK = 16_780_000;
+            // 16.743ms = 13259us
+            public const long FRAME_TIME_US = 16_743;
+        }
+        public void Frame_UpdateByCpuTime()
+        {
+            accumulatedUs += unityFrameUs;
 
-            //if (RunEmulator)
-            //{
-            //    ThreadSync.Set();
-            //}
+            int runStep = 0;
 
+            while (accumulatedUs >= GBAConstants.FRAME_TIME_US)
+            {
+                accumulatedUs -= GBAConstants.FRAME_TIME_US;
+                runStep++;
+            }
+
+            for (int i = 0; i < runStep; i++)
+            {
+                CurrVirtualFrameIsSkim = i != runStep - 1;
+                RunSingleFrame();
+                AxiVirtualFrame++;
+            }
+            AxiEmuRunFrame++;
+        }
+        #endregion
+
+
+        public void UpdateFrameOneByOne()
+        {
+            //SyncToAudio = !(Input.GetKey(KeyCode.Tab) || Input.GetKey(KeyCode.Space));
+            RunSingleFrame();
+            AxiVirtualFrame++;
+            AxiEmuRunFrame++;
+        }
+
+        void RunSingleFrame()
+        {
             int cyclesLeft = 70224 * 4;
             while (cyclesLeft > 0 && !gba.Cpu.Errored)
             {
@@ -349,8 +374,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 gba.Mem.SaveProvider.Dirty = false;
             }
             Update_CheckSave();
-            mCurrFrame++;
         }
+
+
 
         public void DumpSavReady()
         {

@@ -7,8 +7,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
     public class AudioProvider : MonoBehaviour, AxiAudioPull
     {
         // 大幅加大缓冲 + 预留安全余量
-        private RingBuffer<float> _buffer = new RingBuffer<float>(sampleRate * 4);//4幀音頻數據為最大緩衝
-        private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(sampleRate);
+        private RingBuffer<float> _buffer = new RingBuffer<float>(sampleRate * 2);//4幀音頻數據為最大緩衝
+        private RingBuffer<float> _buffer_2nd = new RingBuffer<float>(1024);
         private TimeSpan lastElapsed;
         public int SampleRate => sampleRate;
         public int Channels => channels;
@@ -90,10 +90,14 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             float lastdata = 0;
             for (int i = 0; i < data.Length; i += step)
             {
-                if (_buffer.TryRead(out float rawData))
-                    lastdata = rawData;
+                //if (_buffer.TryRead(out float rawData))
+                //    lastdata = rawData;
 
-                data[i] = lastdata;
+                //data[i] = lastdata;
+                if (_buffer.TryRead(out float rawData))
+                    data[i] = rawData;
+                else
+                    break;
             }
         }
 #endif
