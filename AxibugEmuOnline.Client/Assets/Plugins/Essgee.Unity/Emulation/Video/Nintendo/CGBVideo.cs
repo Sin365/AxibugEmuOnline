@@ -149,7 +149,27 @@ namespace Essgee.Emulation.Video.Nintendo
 
         //
 
-        protected override void RenderPixel(int y, int x)
+        //protected override void RenderPixel(int y, int x)
+        //{
+        //    if (x < 0 || x >= displayActiveWidth || y < 0 || y >= displayActiveHeight) return;
+
+        //    if (skipFrames > 0)
+        //    {
+        //        SetPixel(y, x, 0xFF, 0xFF, 0xFF);
+        //        return;
+        //    }
+
+        //    screenUsageFlags[x, y] = screenUsageEmpty;
+
+        //    RenderBackground(y, x);
+
+        //    if (wndEnable) RenderWindow(y, x);
+        //    if (objEnable) RenderSprites(y, x);
+        //}
+
+
+        //手动内联
+        protected override unsafe void RenderPixel(int y, int x)
         {
             if (x < 0 || x >= displayActiveWidth || y < 0 || y >= displayActiveHeight) return;
 
@@ -161,13 +181,183 @@ namespace Essgee.Emulation.Video.Nintendo
 
             screenUsageFlags[x, y] = screenUsageEmpty;
 
-            RenderBackground(y, x);
+            //RenderBackground(y, x);
+            //内联RenderBackground
+            {
+                // Get base addresses
+                var tileBase = (ushort)(bgWndTileSelect ? 0x0000 : 0x0800);
+                var mapBase = (ushort)(bgMapSelect ? 0x1C00 : 0x1800);
+
+                // Calculate tilemap address & get tile
+                var yTransformed = (byte)(scrollY + y);
+                var xTransformed = (byte)(scrollX + x);
+                var mapAddress = mapBase + ((yTransformed >> 3) << 5) + (xTransformed >> 3);
+                var tileNumber = vram[0, mapAddress];
+                if (!bgWndTileSelect)
+                    tileNumber = (byte)(tileNumber ^ 0x80);
+
+                // Get & extract tile attributes
+                var tileAttribs = vram[1, mapAddress];
+                var tileBgPalette = tileAttribs & 0b111;
+                var tileVramBank = (tileAttribs >> 3) & 0b1;
+                var tileHorizontalFlip = ((tileAttribs >> 5) & 0b1) == 0b1;
+                var tileVerticalFlip = ((tileAttribs >> 6) & 0b1) == 0b1;
+                var tileBgHasPriority = ((tileAttribs >> 7) & 0b1) == 0b1;
+
+                // Calculate tile address & get pixel color index
+                var xShift = tileHorizontalFlip ? (xTransformed % 8) : (7 - (xTransformed % 8));
+                var yShift = tileVerticalFlip ? (7 - (yTransformed & 7)) : (yTransformed & 7);
+                var tileAddress = tileBase + (tileNumber << 4) + (yShift << 1);
+                var ba = (vram[tileVramBank, tileAddress + 0] >> xShift) & 0b1;
+                var bb = (vram[tileVramBank, tileAddress + 1] >> xShift) & 0b1;
+                var c = (byte)((bb << 1) | ba);
+
+                // If color is not 0, note that a BG pixel (normal or high-priority) exists here
+                if (c != 0)
+                    screenUsageFlags[x, y] |= tileBgHasPriority ? screenUsageBackgroundHighPriority : screenUsageBackground;
+
+                // Calculate color address in palette & draw pixel
+                if (layerBackgroundForceEnable)
+                {
+                    var paletteAddress = (tileBgPalette << 3) + ((c & 0b11) << 1);
+                    //SetPixel(y, x, (ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0]));
+
+                    //RGBCGBtoBGRA8888((ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0]), ref outputFramebuffer, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+
+                    *(uint*)(outputFramebuffer + (((y * displayActiveWidth) + (x % displayActiveWidth)) * 4)) = RGBCGBtoBGRA8888Cache[(ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0])];
+                }
+                else
+                {
+                    //SetPixel(y, x, (ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]));
+
+                    //RGBCGBtoBGRA8888((ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]), ref outputFramebuffer, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+
+                    *(uint*)(outputFramebuffer + (((y * displayActiveWidth) + (x % displayActiveWidth)) * 4)) = RGBCGBtoBGRA8888Cache[(ushort)((bgPaletteData[1] << 8) | bgPaletteData[0])];
+                }
+            }
 
             if (wndEnable) RenderWindow(y, x);
-            if (objEnable) RenderSprites(y, x);
+            //if (objEnable) RenderSprites(y, x);
+            if (objEnable)
+            {
+                {
+                    var objHeight = objSize ? 16 : 8;
+
+                    // Iterate over sprite on line backwards
+                    for (var s = numSpritesOnLine - 1; s >= 0; s--)
+                    {
+                        var i = spritesOnLine[s];
+
+                        // Get sprite Y coord & if sprite is not on current scanline, continue to next slot
+                        var objY = (short)(oam[(i * 4) + 0] - 16);
+                        if (y < objY || y >= (objY + objHeight)) continue;
+
+                        // Get sprite X coord, tile number & attributes
+                        var objX = (byte)(oam[(i * 4) + 1] - 8);
+                        var objTileNumber = oam[(i * 4) + 2];
+                        var objAttributes = oam[(i * 4) + 3];
+
+                        // Extract attributes
+                        var objFlipY = ((objAttributes >> 6) & 0b1) == 0b1;
+                        var objFlipX = ((objAttributes >> 5) & 0b1) == 0b1;
+                        var objVramBank = (objAttributes >> 3) & 0b1;
+                        var objPalNumber = (objAttributes >> 0) & 0b111;
+
+                        // Iterate over pixels
+                        for (var px = 0; px < 8; px++)
+                        {
+                            // If sprite pixel X coord does not equal current rendering X coord, continue to next pixel
+                            if (x != (byte)(objX + px)) continue;
+
+                            // Calculate tile address
+                            var xShift = objFlipX ? (px % 8) : (7 - (px % 8));
+                            var yShift = objFlipY ? (7 - ((y - objY) % 8)) : ((y - objY) % 8);
+                            if (objSize)
+                            {
+                                objTileNumber &= 0xFE;
+                                if ((objFlipY && y < (objY + 8)) || (!objFlipY && y >= (objY + 8)))
+                                    objTileNumber |= 0x01;
+                            }
+                            var tileAddress = (objTileNumber << 4) + (yShift << 1);
+
+                            // Get palette & bitplanes
+                            var ba = (vram[objVramBank, tileAddress + 0] >> xShift) & 0b1;
+                            var bb = (vram[objVramBank, tileAddress + 1] >> xShift) & 0b1;
+
+                            // Combine to color index, continue drawing if color is not 0
+                            var c = (byte)((bb << 1) | ba);
+                            if (c != 0)
+                            {
+                                // If sprite does not have priority i.e. if sprite should not be drawn, continue to next pixel
+                                if (!HasSpritePriority(y, x, i)) continue;
+
+                                screenUsageFlags[x, y] |= screenUsageSprite;
+                                screenUsageSpriteSlots[x, y] = (byte)i;
+                                screenUsageSpriteXCoords[x, y] = objX;
+
+                                // Calculate color address in palette & draw pixel
+                                if (layerSpritesForceEnable)
+                                {
+                                    var paletteAddress = (objPalNumber << 3) + ((c & 0b11) << 1);
+                                    //SetPixel(y, x, (ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0]));
+
+                                    //RGBCGBtoBGRA8888((ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0]), ref outputFramebuffer, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+
+                                    *(uint*)(outputFramebuffer + ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4) = RGBCGBtoBGRA8888Cache[(ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0])];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        protected override void RenderBackground(int y, int x)
+        //protected override void RenderBackground(int y, int x)
+        //{
+        //    // Get base addresses
+        //    var tileBase = (ushort)(bgWndTileSelect ? 0x0000 : 0x0800);
+        //    var mapBase = (ushort)(bgMapSelect ? 0x1C00 : 0x1800);
+
+        //    // Calculate tilemap address & get tile
+        //    var yTransformed = (byte)(scrollY + y);
+        //    var xTransformed = (byte)(scrollX + x);
+        //    var mapAddress = mapBase + ((yTransformed >> 3) << 5) + (xTransformed >> 3);
+        //    var tileNumber = vram[0, mapAddress];
+        //    if (!bgWndTileSelect)
+        //        tileNumber = (byte)(tileNumber ^ 0x80);
+
+        //    // Get & extract tile attributes
+        //    var tileAttribs = vram[1, mapAddress];
+        //    var tileBgPalette = tileAttribs & 0b111;
+        //    var tileVramBank = (tileAttribs >> 3) & 0b1;
+        //    var tileHorizontalFlip = ((tileAttribs >> 5) & 0b1) == 0b1;
+        //    var tileVerticalFlip = ((tileAttribs >> 6) & 0b1) == 0b1;
+        //    var tileBgHasPriority = ((tileAttribs >> 7) & 0b1) == 0b1;
+
+        //    // Calculate tile address & get pixel color index
+        //    var xShift = tileHorizontalFlip ? (xTransformed % 8) : (7 - (xTransformed % 8));
+        //    var yShift = tileVerticalFlip ? (7 - (yTransformed & 7)) : (yTransformed & 7);
+        //    var tileAddress = tileBase + (tileNumber << 4) + (yShift << 1);
+        //    var ba = (vram[tileVramBank, tileAddress + 0] >> xShift) & 0b1;
+        //    var bb = (vram[tileVramBank, tileAddress + 1] >> xShift) & 0b1;
+        //    var c = (byte)((bb << 1) | ba);
+
+        //    // If color is not 0, note that a BG pixel (normal or high-priority) exists here
+        //    if (c != 0)
+        //        screenUsageFlags[x, y] |= tileBgHasPriority ? screenUsageBackgroundHighPriority : screenUsageBackground;
+
+        //    // Calculate color address in palette & draw pixel
+        //    if (layerBackgroundForceEnable)
+        //    {
+        //        var paletteAddress = (tileBgPalette << 3) + ((c & 0b11) << 1);
+        //        SetPixel(y, x, (ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0]));
+        //    }
+        //    else
+        //        SetPixel(y, x, (ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]));
+        //}
+
+        //手动内联
+        protected unsafe override void RenderBackground(int y, int x)
         {
             // Get base addresses
             var tileBase = (ushort)(bgWndTileSelect ? 0x0000 : 0x0800);
@@ -205,10 +395,20 @@ namespace Essgee.Emulation.Video.Nintendo
             if (layerBackgroundForceEnable)
             {
                 var paletteAddress = (tileBgPalette << 3) + ((c & 0b11) << 1);
-                SetPixel(y, x, (ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0]));
+                //SetPixel(y, x, (ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0]));
+
+                //RGBCGBtoBGRA8888((ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0]), ref outputFramebuffer, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+
+                *(uint*)(outputFramebuffer + (((y * displayActiveWidth) + (x % displayActiveWidth)) * 4)) = RGBCGBtoBGRA8888Cache[(ushort)((bgPaletteData[paletteAddress + 1] << 8) | bgPaletteData[paletteAddress + 0])];
             }
             else
-                SetPixel(y, x, (ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]));
+            {
+                //SetPixel(y, x, (ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]));
+
+                //RGBCGBtoBGRA8888((ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]), ref outputFramebuffer, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+
+                *(uint*)(outputFramebuffer + (((y * displayActiveWidth) + (x % displayActiveWidth)) * 4)) = RGBCGBtoBGRA8888Cache[(ushort)((bgPaletteData[1] << 8) | bgPaletteData[0])];
+            }
         }
 
         protected override void RenderWindow(int y, int x)
@@ -259,7 +459,75 @@ namespace Essgee.Emulation.Video.Nintendo
                 SetPixel(y, x, (ushort)((bgPaletteData[1] << 8) | bgPaletteData[0]));
         }
 
-        protected override void RenderSprites(int y, int x)
+        //protected override void RenderSprites(int y, int x)
+        //{
+        //    var objHeight = objSize ? 16 : 8;
+
+        //    // Iterate over sprite on line backwards
+        //    for (var s = numSpritesOnLine - 1; s >= 0; s--)
+        //    {
+        //        var i = spritesOnLine[s];
+
+        //        // Get sprite Y coord & if sprite is not on current scanline, continue to next slot
+        //        var objY = (short)(oam[(i * 4) + 0] - 16);
+        //        if (y < objY || y >= (objY + objHeight)) continue;
+
+        //        // Get sprite X coord, tile number & attributes
+        //        var objX = (byte)(oam[(i * 4) + 1] - 8);
+        //        var objTileNumber = oam[(i * 4) + 2];
+        //        var objAttributes = oam[(i * 4) + 3];
+
+        //        // Extract attributes
+        //        var objFlipY = ((objAttributes >> 6) & 0b1) == 0b1;
+        //        var objFlipX = ((objAttributes >> 5) & 0b1) == 0b1;
+        //        var objVramBank = (objAttributes >> 3) & 0b1;
+        //        var objPalNumber = (objAttributes >> 0) & 0b111;
+
+        //        // Iterate over pixels
+        //        for (var px = 0; px < 8; px++)
+        //        {
+        //            // If sprite pixel X coord does not equal current rendering X coord, continue to next pixel
+        //            if (x != (byte)(objX + px)) continue;
+
+        //            // Calculate tile address
+        //            var xShift = objFlipX ? (px % 8) : (7 - (px % 8));
+        //            var yShift = objFlipY ? (7 - ((y - objY) % 8)) : ((y - objY) % 8);
+        //            if (objSize)
+        //            {
+        //                objTileNumber &= 0xFE;
+        //                if ((objFlipY && y < (objY + 8)) || (!objFlipY && y >= (objY + 8)))
+        //                    objTileNumber |= 0x01;
+        //            }
+        //            var tileAddress = (objTileNumber << 4) + (yShift << 1);
+
+        //            // Get palette & bitplanes
+        //            var ba = (vram[objVramBank, tileAddress + 0] >> xShift) & 0b1;
+        //            var bb = (vram[objVramBank, tileAddress + 1] >> xShift) & 0b1;
+
+        //            // Combine to color index, continue drawing if color is not 0
+        //            var c = (byte)((bb << 1) | ba);
+        //            if (c != 0)
+        //            {
+        //                // If sprite does not have priority i.e. if sprite should not be drawn, continue to next pixel
+        //                if (!HasSpritePriority(y, x, i)) continue;
+
+        //                screenUsageFlags[x, y] |= screenUsageSprite;
+        //                screenUsageSpriteSlots[x, y] = (byte)i;
+        //                screenUsageSpriteXCoords[x, y] = objX;
+
+        //                // Calculate color address in palette & draw pixel
+        //                if (layerSpritesForceEnable)
+        //                {
+        //                    var paletteAddress = (objPalNumber << 3) + ((c & 0b11) << 1);
+        //                    SetPixel(y, x, (ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0]));
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //手动内联
+        protected override unsafe void RenderSprites(int y, int x)
         {
             var objHeight = objSize ? 16 : 8;
 
@@ -319,7 +587,11 @@ namespace Essgee.Emulation.Video.Nintendo
                         if (layerSpritesForceEnable)
                         {
                             var paletteAddress = (objPalNumber << 3) + ((c & 0b11) << 1);
-                            SetPixel(y, x, (ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0]));
+                            //SetPixel(y, x, (ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0]));
+
+                            //RGBCGBtoBGRA8888((ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0]), ref outputFramebuffer, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+
+                            *(uint*)(outputFramebuffer + ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4) = RGBCGBtoBGRA8888Cache[(ushort)((objPaletteData[paletteAddress + 1] << 8) | objPaletteData[paletteAddress + 0])];
                         }
                     }
                 }
@@ -343,9 +615,15 @@ namespace Essgee.Emulation.Video.Nintendo
             return true;
         }
 
-        protected void SetPixel(int y, int x, ushort c)
+        //protected void SetPixel(int y, int x, ushort c)
+        //{
+        //    WriteColorToFramebuffer(c, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+        //}
+
+        //手动内联
+        protected unsafe void SetPixel(int y, int x, ushort c)
         {
-            WriteColorToFramebuffer(c, ((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
+            RGBCGBtoBGRA8888(c, ref outputFramebuffer,((y * displayActiveWidth) + (x % displayActiveWidth)) * 4);
         }
 
         private unsafe void WriteColorToFramebuffer(ushort c, int address)

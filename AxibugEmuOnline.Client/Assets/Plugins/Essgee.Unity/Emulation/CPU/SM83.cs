@@ -1,6 +1,9 @@
-﻿using Essgee.Utilities;
+﻿using Essgee.Emulation.Video;
+using Essgee.Utilities;
 using System;
+using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using static Essgee.Emulation.Utilities;
 
 namespace Essgee.Emulation.CPU
@@ -73,7 +76,9 @@ namespace Essgee.Emulation.CPU
         //        //logEntries = new string[2000];
         //    }
         //}
-
+        bool axi_bIsGameBoyColor = false;
+        Machines.GameBoyColor axi_Cache_GBC = null;
+        Machines.GameBoy axi_Cache_GB = null;
         public SM83(IAxiEssgeeMemIO axism38io)
         {
             af = bc = de = hl = new Register();
@@ -82,6 +87,21 @@ namespace Essgee.Emulation.CPU
             //memoryWriteDelegate = memoryWrite;
             axiEMem = axism38io;
 
+
+            #region 缓存起来
+            axi_bIsGameBoyColor = false;
+            axi_Cache_GBC = null;
+            if (axiEMem is Machines.GameBoyColor)
+            {
+                axi_bIsGameBoyColor = true;
+                axi_Cache_GBC = (Machines.GameBoyColor)axiEMem;
+            }
+            else
+            {
+                axi_Cache_GB = (Machines.GameBoy)axiEMem;
+            }
+            #endregion
+
             if (AppEnvironment.EnableSuperSlowCPULogger)
             {
                 //logFile = @"D:\Temp\Essgee\log-lr35902.txt";
@@ -89,6 +109,14 @@ namespace Essgee.Emulation.CPU
                 //logEntries = new string[2000];
             }
         }
+
+        #region 释放缓存
+        ~SM83()
+        {
+            axi_Cache_GBC = null;
+            axi_Cache_GB = null;
+        }
+        #endregion
 
         #region AxiState
 
@@ -301,12 +329,61 @@ namespace Essgee.Emulation.CPU
             axiEMem.WriteMemory(0xFF0F, (byte)(axiEMem.ReadMemory(0xFF0F) | (byte)(1 << (byte)source)));
         }
 
+        //private void HandleInterrupts()
+        //{
+        //    //var intEnable = memoryReadDelegate(0xFFFF);
+        //    //var intFlags = memoryReadDelegate(0xFF0F);
+        //    var intEnable = axiEMem.ReadMemory(0xFFFF);
+        //    var intFlags = axiEMem.ReadMemory(0xFF0F);
+
+        //    if ((intEnable & intFlags) != 0)
+        //    {
+        //        LeaveHaltState();
+
+        //        if (ime)
+        //        {
+        //            if (ServiceInterrupt(InterruptSource.VBlank, intEnable, intFlags)) return;
+        //            if (ServiceInterrupt(InterruptSource.LCDCStatus, intEnable, intFlags)) return;
+        //            if (ServiceInterrupt(InterruptSource.TimerOverflow, intEnable, intFlags)) return;
+        //            if (ServiceInterrupt(InterruptSource.SerialIO, intEnable, intFlags)) return;
+        //            if (ServiceInterrupt(InterruptSource.Keypad, intEnable, intFlags)) return;
+        //        }
+        //    }
+        //}
+
+        //手动内联到底
         private void HandleInterrupts()
         {
-            //var intEnable = memoryReadDelegate(0xFFFF);
-            //var intFlags = memoryReadDelegate(0xFF0F);
-            var intEnable = axiEMem.ReadMemory(0xFFFF);
-            var intFlags = axiEMem.ReadMemory(0xFF0F);
+            //var intEnable = axiEMem.ReadMemory(0xFFFF);
+
+            byte intEnable;
+            if (axi_bIsGameBoyColor)
+                intEnable = axi_Cache_GBC.ie;
+            else
+                intEnable = axi_Cache_GB.ie;
+
+            //var intFlags = axiEMem.ReadMemory(0xFF0F);
+            byte intFlags;
+            if (axi_bIsGameBoyColor)
+            {
+                intFlags = (byte)(
+                    0xE0 |
+                    (axi_Cache_GBC.irqVBlank ? (1 << 0) : 0) |
+                    (axi_Cache_GBC.irqLCDCStatus ? (1 << 1) : 0) |
+                    (axi_Cache_GBC.irqTimerOverflow ? (1 << 2) : 0) |
+                    (axi_Cache_GBC.irqSerialIO ? (1 << 3) : 0) |
+                    (axi_Cache_GBC.irqKeypad ? (1 << 4) : 0));
+            }
+            else
+            {
+                intFlags = (byte)(
+                    0xE0 |
+                    (axi_Cache_GB.irqVBlank ? (1 << 0) : 0) |
+                    (axi_Cache_GB.irqLCDCStatus ? (1 << 1) : 0) |
+                    (axi_Cache_GB.irqTimerOverflow ? (1 << 2) : 0) |
+                    (axi_Cache_GB.irqSerialIO ? (1 << 3) : 0) |
+                    (axi_Cache_GB.irqKeypad ? (1 << 4) : 0));
+            }
 
             if ((intEnable & intFlags) != 0)
             {

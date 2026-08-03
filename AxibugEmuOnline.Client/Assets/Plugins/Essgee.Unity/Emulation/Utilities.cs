@@ -69,7 +69,7 @@ namespace Essgee.Emulation
         }
 
         // RGBCGB
-        private static readonly uint[] RGBCGBtoBGRA8888Cache = new uint[32768];
+        public static readonly uint[] RGBCGBtoBGRA8888Cache = new uint[32768];
 
         static void InitRGBCGBtoBGRA8888Cache()
         {

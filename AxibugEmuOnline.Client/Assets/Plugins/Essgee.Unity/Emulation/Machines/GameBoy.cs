@@ -72,7 +72,7 @@ namespace Essgee.Emulation.Machines
         byte[] bootstrap;
         IGameBoyCartridge cartridge;
         byte[] wram, hram;
-        byte ie;
+        public byte ie;
         SM83 cpu;
         DMGVideo video;
         DMGAudio audio;
@@ -103,7 +103,7 @@ namespace Essgee.Emulation.Machines
         bool timerOverflow, timerLoading;
 
         // FF0F - IF
-        bool irqVBlank, irqLCDCStatus, irqTimerOverflow, irqSerialIO, irqKeypad;
+        public bool irqVBlank, irqLCDCStatus, irqTimerOverflow, irqSerialIO, irqKeypad;
 
         // FF50
         bool bootstrapDisabled;

@@ -75,7 +75,7 @@ namespace Essgee.Emulation.Machines
         IGameBoyCartridge cartridge;
         byte[,] wram;
         byte[] hram;
-        byte ie;
+        public byte ie;
         SM83CGB cpu;
         CGBVideo video;
         CGBAudio audio;
@@ -106,7 +106,7 @@ namespace Essgee.Emulation.Machines
         bool timerOverflow, timerLoading;
 
         // FF0F - IF
-        bool irqVBlank, irqLCDCStatus, irqTimerOverflow, irqSerialIO, irqKeypad;
+        public bool irqVBlank, irqLCDCStatus, irqTimerOverflow, irqSerialIO, irqKeypad;
 
         // FF4C
 
