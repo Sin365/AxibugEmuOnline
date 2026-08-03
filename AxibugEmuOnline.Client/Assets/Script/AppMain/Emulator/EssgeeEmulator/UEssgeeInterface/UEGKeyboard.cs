@@ -157,8 +157,8 @@ public class UEGKeyboard : MonoBehaviour
             dictKey2Motion.Add(EssgeeUnityKey.P1_DOWN, machine.configuration.ControlsDown);
             dictKey2Motion.Add(EssgeeUnityKey.P1_LEFT, machine.configuration.ControlsLeft);
             dictKey2Motion.Add(EssgeeUnityKey.P1_RIGHT, machine.configuration.ControlsRight);
-            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_1, machine.configuration.ControlsA);
-            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_2, machine.configuration.ControlsB);
+            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_1, machine.configuration.ControlsB);
+            dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_2, machine.configuration.ControlsA);
             dictKey2Motion.Add(EssgeeUnityKey.P1_BTN_3, machine.configuration.ControlsSendIR);
             dictKey2Motion.Add(EssgeeUnityKey.P1_POTION_1, machine.configuration.ControlsStart);
             dictKey2Motion.Add(EssgeeUnityKey.P1_POTION_2, machine.configuration.ControlsSelect);
