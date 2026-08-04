@@ -20,7 +20,7 @@ namespace AxibugProtobuf
         {
 			NickName = string.Empty;
 			ChatMsg = string.Empty;
-			Date = new System.Int64();
+			Date = 0;
         }
     }
 }
@@ -56,8 +56,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			LoginType = (LoginType)0;
-			DeviceType = (DeviceType)0;
+			LoginType = 0;
+			DeviceType = 0;
 			DeviceStr = string.Empty;
 			Account = string.Empty;
 			Password = string.Empty;
@@ -76,8 +76,8 @@ namespace AxibugProtobuf
 			Token = string.Empty;
 			LastLoginDate = string.Empty;
 			RegDate = string.Empty;
-			Status = (LoginResultStatus)0;
-			UID = new System.Int64();
+			Status = 0;
+			UID = 0;
         }
     }
 }
@@ -89,9 +89,10 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = new System.Int64();
-			TokenGenDate = new System.Int64();
-			Seed = new System.Int64();
+			UID = 0;
+			TokenGenDate = 0;
+			Seed = 0;
+			ParentUID = 0;
         }
     }
 }
@@ -139,7 +140,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = new System.Int64();
+			UID = 0;
         }
     }
 }
@@ -151,7 +152,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = new System.Int64();
+			UID = 0;
 			State = 0;
         }
     }
@@ -164,9 +165,9 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = new System.Int64();
+			UID = 0;
 			NickName = string.Empty;
-			DeviceType = (DeviceType)0;
+			DeviceType = 0;
         }
     }
 }
@@ -213,7 +214,7 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			UID = new System.Int64();
+			UID = 0;
 			UserInfo?.Reset();
         }
     }
@@ -252,11 +253,11 @@ namespace AxibugProtobuf
 			RoomID = 0;
 			GameRomID = 0;
 			GameRomHash = string.Empty;
-			GamePlatformType = (RomPlatformType)0;
-			HostPlayerUID = new System.Int64();
-			GameState = (RoomGameState)0;
+			GamePlatformType = 0;
+			HostPlayerUID = 0;
+			GameState = 0;
 			ObsUserCount = 0;
-			ScreenProviderUID = new System.Int64();
+			ScreenProviderUID = 0;
 			GamePlaySlotList?.Clear();
         }
     }
@@ -269,11 +270,11 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			PlayerUID = new System.Int64();
+			PlayerUID = 0;
 			PlayerNickName = string.Empty;
-			DeviceType = (DeviceType)0;
+			DeviceType = 0;
 			PlayerLocalJoyIdx = 0;
-			PlayerLocalGamePadType = (GamePadType)0;
+			PlayerLocalGamePadType = 0;
         }
     }
 }
@@ -312,8 +313,8 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			FrameID = new System.UInt32();
-			InputData = new System.UInt64();
+			FrameID = 0;
+			InputData = 0;
         }
     }
 }
@@ -325,10 +326,10 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
-			FrameID = new System.UInt32();
-			InputData = new System.UInt64();
-			ServerFrameID = new System.UInt32();
-			ServerForwardCount = new System.UInt32();
+			FrameID = 0;
+			InputData = 0;
+			ServerFrameID = 0;
+			ServerForwardCount = 0;
         }
     }
 }
@@ -439,7 +440,7 @@ namespace AxibugProtobuf
         {
 			PlayerSlotIdx = 0;
 			PlayerLocalJoyIdx = 0;
-			PlayerLocalGamePadType = (GamePadType)0;
+			PlayerLocalGamePadType = 0;
         }
     }
 }
@@ -592,11 +593,11 @@ namespace AxibugProtobuf
         public void Reset()
         {
 			BHadSaveData = false;
-			SavID = new System.Int64();
-			Uid = new System.Int64();
+			SavID = 0;
+			Uid = 0;
 			SavDataIdx = 0;
 			RomID = 0;
-			GamePlatformType = (RomPlatformType)0;
+			GamePlatformType = 0;
 			SavDate = string.Empty;
 			SavName = string.Empty;
 			Note = string.Empty;
@@ -740,6 +741,33 @@ namespace AxibugProtobuf
         {
 			KeyName = string.Empty;
 			ClassData?.Reset();
+        }
+    }
+}
+
+
+namespace AxibugProtobuf
+{
+    public sealed partial class Protobuf_Bind : IResetable
+    {
+        public void Reset()
+        {
+			BindCode = string.Empty;
+        }
+    }
+}
+
+
+namespace AxibugProtobuf
+{
+    public sealed partial class Protobuf_Bind_RESP : IResetable
+    {
+        public void Reset()
+        {
+			MoveStarCount = 0;
+			MoveSavCount = 0;
+			MoveToNickName = string.Empty;
+			ParentUID = 0;
         }
     }
 }
