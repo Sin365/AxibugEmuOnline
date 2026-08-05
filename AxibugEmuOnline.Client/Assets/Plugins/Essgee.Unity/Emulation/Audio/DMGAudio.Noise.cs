@@ -40,8 +40,8 @@ namespace Essgee.Emulation.Audio
             bool envelopeAddMode;
 
             // NR43
-            byte clockShift, divisorCode;
-            bool lfsrWidthMode;
+            public byte clockShift, divisorCode;
+            public bool lfsrWidthMode;
 
             // NR44
             public bool trigger, lengthEnable;
@@ -49,11 +49,11 @@ namespace Essgee.Emulation.Audio
             //
 
             // Noise
-            int noiseCounter;
-            ushort lfsr;
+            public int noiseCounter;
+            public ushort lfsr;
 
             // Envelope
-            int volume, envelopeCounter;
+            public int volume, envelopeCounter;
             bool isEnvelopeUpdateEnabled;
 
             // Misc

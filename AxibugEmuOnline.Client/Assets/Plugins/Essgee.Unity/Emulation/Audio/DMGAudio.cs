@@ -649,6 +649,9 @@ namespace Essgee.Emulation.Audio
                     }
                     channel2.OutputVolume = channel2.isDacEnabled && *(channel2._dutyCycleTable1D + (channel2.dutyCycle * Square.Cols + channel2.dutyCounter)) ? channel2.volume : 0;
                 }
+
+
+
                 channel3.Step();
                 channel4.Step();
             }

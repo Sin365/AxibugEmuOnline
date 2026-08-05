@@ -9,20 +9,20 @@ namespace Essgee.Emulation.Audio
         public class Wave : IDMGAudioChannel
         {
             // NR30
-            bool isDacEnabled;
+            public bool isDacEnabled;
 
             // NR31
             byte lengthLoad;
 
             // NR32
-            byte volumeCode;
+            public byte volumeCode;
 
             // NR33
-            byte frequencyLSB;
+            public byte frequencyLSB;
 
             // NR34
             public bool trigger, lengthEnable;
-            byte frequencyMSB;
+            public byte frequencyMSB;
 
             // Wave
             //protected byte[] sampleBuffer;
@@ -45,7 +45,7 @@ namespace Essgee.Emulation.Audio
             }
             #endregion
 
-            int frequencyCounter, positionCounter, volume;
+            public int frequencyCounter, positionCounter, volume;
 
             // Misc
             public bool isChannelEnabled;
