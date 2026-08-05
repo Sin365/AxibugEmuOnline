@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Collections.Concurrent;
-using static OptimeGBA.Bits;
-using System.Runtime.InteropServices;
-using System.IO;
 using static OptimeGBA.MemoryUtil;
 
 namespace OptimeGBA
@@ -72,32 +66,34 @@ namespace OptimeGBA
             {
                 case 0: SaveProvider = new NullSaveProvider(); break;
                 case 1:
-                {
-                    EepromSize eepromSize = EepromSize.Eeprom64k;
-                    if (!string.IsNullOrEmpty(provider.SavPath) && File.Exists(provider.SavPath))
                     {
-                        long length = new FileInfo(provider.SavPath).Length;
-                        if (length == 512)
+                        EepromSize eepromSize = EepromSize.Eeprom64k;
+                        //if (!string.IsNullOrEmpty(provider.SavPath) && File.Exists(provider.SavPath))
+                        if (!string.IsNullOrEmpty(provider.SavPath) && gba.Provider.axiio.File_Exists(provider.SavPath))
                         {
-                            eepromSize = EepromSize.Eeprom4k;
+                            //long length = new FileInfo(provider.SavPath).Length;
+                            long length = gba.Provider.axiio.File_GetLength(provider.SavPath);
+                            if (length == 512)
+                            {
+                                eepromSize = EepromSize.Eeprom4k;
+                            }
+                            else if (length == 8192)
+                            {
+                                eepromSize = EepromSize.Eeprom64k;
+                            }
                         }
-                        else if (length == 8192)
+                        SaveProvider = new Eeprom(Gba, eepromSize);
+                        if (RomSize < 16777216)
                         {
-                            eepromSize = EepromSize.Eeprom64k;
+                            EepromThreshold = 0x1000000;
                         }
+                        else
+                        {
+                            EepromThreshold = 0x1FFFF00;
+                        }
+                        //Debug.Log("EEPROM Threshold: " + Util.Hex(EepromThreshold, 8));
+                        break;
                     }
-                    SaveProvider = new Eeprom(Gba, eepromSize);
-                    if (RomSize < 16777216)
-                    {
-                        EepromThreshold = 0x1000000;
-                    }
-                    else
-                    {
-                        EepromThreshold = 0x1FFFF00;
-                    }
-                    //Debug.Log("EEPROM Threshold: " + Util.Hex(EepromThreshold, 8));
-                    break;
-                }
                 case 2: SaveProvider = new Sram(); break;
                 case 3: SaveProvider = new Flash(Gba, FlashSize.Flash512k); break;
                 case 4: SaveProvider = new Flash(Gba, FlashSize.Flash512k); break;
@@ -397,7 +393,8 @@ namespace OptimeGBA
             }
             else if (addr >= 0x4000134 && addr <= 0x400015A) // Serial Communications
             {
-                switch (addr) {
+                switch (addr)
+                {
                     case 0x4000135: return 0x80;
                 }
             }

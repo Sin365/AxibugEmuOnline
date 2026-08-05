@@ -1,4 +1,3 @@
-using System;
 using static OptimeGBA.Bits;
 namespace OptimeGBA
 {

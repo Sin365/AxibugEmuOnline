@@ -3,6 +3,11 @@ using System.Text;
 
 namespace OptimeGBA
 {
+    public interface AxiGbaIO
+    {
+        public bool File_Exists(string path);
+        public long File_GetLength(string path);
+    }
     public sealed class ProviderGba : Provider
     {
         public bool BootBios = false;
@@ -11,9 +16,11 @@ namespace OptimeGBA
         public byte[] Rom;
         public string RomName;
         public string RomId;
+        public AxiGbaIO axiio;
 
-        public ProviderGba(byte[] bios, byte[] rom, string savPath, AudioCallback audioCallback)
+        public ProviderGba(byte[] bios, byte[] rom, string savPath, AudioCallback audioCallback,AxiGbaIO io)
         {
+            axiio = io;
             Bios = bios;
             Rom = rom;
             AudioCallback = audioCallback;
