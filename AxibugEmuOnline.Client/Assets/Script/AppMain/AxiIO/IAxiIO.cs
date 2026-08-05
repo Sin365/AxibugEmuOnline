@@ -24,5 +24,6 @@ namespace AxiIO
         string[] dir_GetDirectories(string path);
         string[] dir_GetFiles(string path);
 		void Ping();
-	};
+        long Axi_GetFileLength(string path);
+    };
 }

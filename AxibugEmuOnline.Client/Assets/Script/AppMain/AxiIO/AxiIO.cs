@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace AxiIO
@@ -110,6 +111,13 @@ namespace AxiIO
         {
             if (AxiIO.m_bDebugStepBreak && !AxiIO.CheckCanStep(path, System.Reflection.MethodBase.GetCurrentMethod().Name)) return;
             AxiIO.io.file_WriteAllBytes(path, ms);
+        }
+
+
+        internal static long Axi_GetFileLength(string path)
+        {
+            if (AxiIO.m_bDebugStepBreak && !AxiIO.CheckCanStep(path, System.Reflection.MethodBase.GetCurrentMethod().Name)) return default;
+            return AxiIO.io.Axi_GetFileLength(path);
         }
     }
 

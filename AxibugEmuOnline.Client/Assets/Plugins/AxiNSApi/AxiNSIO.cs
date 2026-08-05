@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using nn.fs;
 
 public class AxiNSIO
 {
@@ -242,6 +243,21 @@ public class AxiNSIO
     {
         string lengthFilePath = filePath + ".ameta";
         return lengthFilePath;
+    }
+    public bool GetFileLength(string filePath,out long length)
+    {
+        string ametaPath = GetFileLengthMetaPath(filePath);
+        UnityEngine.Debug.Log($"准备进行amete文件读取:{ametaPath}");
+        if (!DoLoadSwitchDataFile(ametaPath, null, out byte[] ametedata))
+        {
+            UnityEngine.Debug.Log($"amete文件读取失败:{ametaPath}");
+            length = -1;
+            return false;
+        }
+        int realLength = BitConverter.ToInt32(ametedata);
+        UnityEngine.Debug.Log($"amete得到真实大小:{realLength}");
+        length = realLength;
+        return true;
     }
 
     /// <summary>

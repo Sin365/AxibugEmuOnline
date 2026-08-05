@@ -122,5 +122,12 @@ namespace AxiIO
             filePath = SetSafePath(filePath);
             AxiNS.instance.io.FileToSaveWithCreate(filePath, ms);
         }
+
+        public long Axi_GetFileLength(string filePath)
+        {
+            filePath = SetSafePath(filePath);
+            AxiNS.instance.io.GetFileLength(filePath,out long len);
+            return len;
+        }
     }
 }

@@ -92,5 +92,9 @@ namespace AxiIO
             return System.IO.Directory.GetFiles(path);
         }
 
-	}
+        public long Axi_GetFileLength(string path)
+        {
+            return new FileInfo(path).Length;
+        }
+    }
 }

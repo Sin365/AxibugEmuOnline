@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
-    public class GBAEmulator : EmuCore<GBAKeyCode>
+    public class GBAEmulator : EmuCore<GBAKeyCode>, AxiGbaIO
     {
         public static GBAEmulator instance;
         const int FrameCycles = 70224 * 4;
@@ -224,7 +224,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             byte[] bios = Resources.Load<TextAsset>("GBA.Unity/gba_bios.bin").bytes;
             //byte[] bios = BetterStreamingAssets.ReadAllBytes("gba_bios.bin");
             App.log.Debug(bios.Length.ToString());
-            gba = new Gba(new ProviderGba(bios, rom, savPath, audioProvider.AudioReady) { BootBios = BootBIOS });
+            gba = new Gba(new ProviderGba(bios, rom, savPath, audioProvider.AudioReady, this) { BootBios = BootBIOS });
             gba.Mem.SaveProvider.LoadSave(sav);
 
         }
@@ -441,6 +441,16 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 return data;
             }
             throw new Exception("[GetBytesZippedFile] 没有合法entry");
+        }
+
+        public bool File_Exists(string path)
+        {
+            return AxiIO.File.Exists(path);
+        }
+
+        public long File_GetLength(string path)
+        {
+            return AxiIO.File.Axi_GetFileLength(path);
         }
     }
 
