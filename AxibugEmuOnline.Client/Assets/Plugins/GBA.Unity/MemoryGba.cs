@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using static OptimeGBA.Bits;
 using System.Runtime.InteropServices;
+using System.IO;
 using static OptimeGBA.MemoryUtil;
 
 namespace OptimeGBA
@@ -71,7 +72,21 @@ namespace OptimeGBA
             {
                 case 0: SaveProvider = new NullSaveProvider(); break;
                 case 1:
-                    SaveProvider = new Eeprom(Gba, EepromSize.Eeprom64k);
+                {
+                    EepromSize eepromSize = EepromSize.Eeprom64k;
+                    if (!string.IsNullOrEmpty(provider.SavPath) && File.Exists(provider.SavPath))
+                    {
+                        long length = new FileInfo(provider.SavPath).Length;
+                        if (length == 512)
+                        {
+                            eepromSize = EepromSize.Eeprom4k;
+                        }
+                        else if (length == 8192)
+                        {
+                            eepromSize = EepromSize.Eeprom64k;
+                        }
+                    }
+                    SaveProvider = new Eeprom(Gba, eepromSize);
                     if (RomSize < 16777216)
                     {
                         EepromThreshold = 0x1000000;
@@ -82,6 +97,7 @@ namespace OptimeGBA
                     }
                     //Debug.Log("EEPROM Threshold: " + Util.Hex(EepromThreshold, 8));
                     break;
+                }
                 case 2: SaveProvider = new Sram(); break;
                 case 3: SaveProvider = new Flash(Gba, FlashSize.Flash512k); break;
                 case 4: SaveProvider = new Flash(Gba, FlashSize.Flash512k); break;
