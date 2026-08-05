@@ -192,7 +192,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvGetRoomListUpdate(Protobuf_Room_Update_RESP msg)
         {
-            App.log.Debug("单个房间状态更新");
+            App.log.Info("单个房间状态更新");
             if (msg.UpdateType == 0)
             {
                 if (AddOrUpdateRoomList(msg.RoomMiniInfo))
@@ -227,7 +227,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvRoomGetScreen(Protobuf_Room_Get_Screen_RESP msg)
         {
-            App.log.Debug("单个房间状态更新");
+            App.log.Info("单个房间状态更新");
             //解压
             byte[] data = Helper.DecompressByteArray(msg.RawBitmap.ToArray());
             Eventer.Instance.PostEvent(EEvent.OnRoomGetRoomScreen, msg.RoomID, data);
@@ -253,7 +253,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvCreateRoom(Protobuf_Room_Create_RESP msg)
         {
-            App.log.Debug("创建房间成功");
+            App.log.Info("创建房间成功");
             SetNetRoomInfo(msg.RoomMiniInfo);
             Eventer.Instance.PostEvent(EEvent.OnMineRoomCreated);
             OverlayManager.PopTip($"房间创建成功");
@@ -279,7 +279,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvJoinRoom(Protobuf_Room_Join_RESP msg)
         {
-            App.log.Debug("加入房间成功");
+            App.log.Info("加入房间成功");
             SetNetRoomInfo(msg.RoomMiniInfo);
             {
                 Eventer.Instance.PostEvent(EEvent.OnMineJoinRoom);
@@ -306,7 +306,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="reqData"></param>
         void RecvLeavnRoom(Protobuf_Room_Leave_RESP msg)
         {
-            App.log.Debug("离开房间成功");
+            App.log.Info("离开房间成功");
             ClearNetRoomInfo();
             Eventer.Instance.PostEvent(EEvent.OnMineLeavnRoom);
             OverlayManager.PopTip($"你已经离开房间");
@@ -505,7 +505,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="AudioFramePlayNeedTimeUs">音频处理一帧所需时间（微秒）</param>
         public void SendRoomPlayerReady(float PushFrameNeedTimeUs, float LoadStateNeedTimeUs, float VideoFrameShowNeedTimeUs, float AudioFramePlayNeedTimeUs)
         {
-            App.log.Debug("上报准备完毕");
+            App.log.Info("上报准备完毕");
             _Protobuf_Room_Player_Ready.PushFrameNeedTimeUs = PushFrameNeedTimeUs;
             _Protobuf_Room_Player_Ready.LoadStateNeedTimeUs = LoadStateNeedTimeUs;
             _Protobuf_Room_Player_Ready.VideoFrameShowNeedTimeUs = VideoFrameShowNeedTimeUs;

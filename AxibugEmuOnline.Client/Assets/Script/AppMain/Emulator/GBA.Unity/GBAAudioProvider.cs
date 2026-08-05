@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
-    public class AudioProvider : MonoBehaviour, AxiAudioPull
+    public class GBAAudioProvider : MonoBehaviour, AxiAudioPull
     {
         // 大幅加大缓冲 + 预留安全余量
         private RingBuffer<float> _buffer = new RingBuffer<float>(sampleRate * 2);//4幀音頻數據為最大緩衝
@@ -106,12 +106,12 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         }
         private void OnEnable()
         {
-            App.audioMgr.RegisterStream(nameof(AudioProvider), sampleRate, this);
+            App.audioMgr.RegisterStream(nameof(GBAAudioProvider), sampleRate, this);
         }
 
         private void OnDisable()
         {
-            App.audioMgr.ClearAudioData(nameof(AudioProvider));
+            App.audioMgr.ClearAudioData(nameof(GBAAudioProvider));
         }
         public void Initialize()
         {
@@ -119,9 +119,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public void AudioReady(float[] data)
         {
-            if (!Emulator.instance.EnableAudio) return;
+            if (!GBAEmulator.instance.EnableAudio) return;
 
-            var current = Emulator.sw.Elapsed;
+            var current = GBAEmulator.sw.Elapsed;
             var delta = current - lastElapsed;
             lastElapsed = current;
             audioFPS = 1d / delta.TotalSeconds;

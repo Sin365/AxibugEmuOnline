@@ -267,7 +267,7 @@ namespace MAME.Core
             //if (File.Exists(path))
             if (MameMainMotion.IoSupport.File_Exists(path))
             {
-                EmuLogger.Log($"Had File => {path}");
+                EmuLogger.Info($"Had File => {path}");
                 //return File.ReadAllBytes(path);
                 return MameMainMotion.IoSupport.File_ReadAllBytes(path);
                 //FileStream fs1 = new FileStream(path, FileMode.Open);
@@ -278,7 +278,7 @@ namespace MAME.Core
             }
             else
             {
-                EmuLogger.Log($"Miss File => {path}");
+                EmuLogger.Info($"Miss File => {path}");
                 bb1 = null;
             }
             return bb1;
@@ -292,18 +292,18 @@ namespace MAME.Core
                     string path = System.IO.Path.Combine(Mame.RomRoot, s1, sFile);
                     if (MameMainMotion.IoSupport.File_Exists(path))
                     {
-                        EmuLogger.Log($"Had File => {path}");
+                        EmuLogger.Info($"Had File => {path}");
                         return MameMainMotion.IoSupport.File_ReadAllBytes(path);
                     }
                     else
                     {
-                        EmuLogger.Log($"Miss File => {path}");
+                        EmuLogger.Info($"Miss File => {path}");
                     }
                 }
             }
             catch (System.Exception ex)
             {
-                EmuLogger.Log($"GetRom 异常{sFile}： => {ex.ToString()}");
+                EmuLogger.Err($"GetRom 异常{sFile}： => {ex.ToString()}");
             }
             //if (result == null)
             //{

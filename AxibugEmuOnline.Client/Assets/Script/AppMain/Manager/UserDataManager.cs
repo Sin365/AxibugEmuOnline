@@ -60,7 +60,7 @@ namespace AxibugEmuOnline.Client.Manager
             userdata.UID = UID;
             userdata.Token = token;
 #if UNITY_EDITOR
-            App.log.Debug($"收到登录token:{token}");
+            App.log.Info($"收到登录token:{token}");
 #endif
             //以及其他数据初始化
             //...

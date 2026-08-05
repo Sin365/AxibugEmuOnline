@@ -4,10 +4,9 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
-    public class VideoProvider : MonoBehaviour
+    public class GBAVideoProvider : MonoBehaviour
     {
         public RawImage m_drawCanvas;
         private RectTransform m_drawCanvasrect;
@@ -17,7 +16,6 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         private int TexBufferSize;
 
         uint[] wrapTexBuffer = new uint[240 * 160];
-        //Color32[] DisplayColorBuffer = new Color32[240 * 160];
         internal Vector3 srcCanvasLocalEulerAngles;
 
         private void Awake()
@@ -26,8 +24,6 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             {
                 wrapTex = new Texture2D(240, 160, TextureFormat.RGBA32, false);
                 wrapTex.filterMode = FilterMode.Point;
-                //wrapTexBuffer = screenData;
-
                 // 固定数组，防止垃圾回收器移动它  
                 GCHandle handle = GCHandle.Alloc(wrapTexBuffer, GCHandleType.Pinned);
                 // 获取数组的指针  
@@ -45,22 +41,16 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public unsafe void OnRenderFrame()
         {
-            var buf = Emulator.instance.ShowBackBuf ? Emulator.instance.gba.Ppu.Renderer.ScreenBack : Emulator.instance.gba.Ppu.Renderer.ScreenFront;
+            var buf = GBAEmulator.instance.ShowBackBuf ? GBAEmulator.instance.gba.Ppu.Renderer.ScreenBack : GBAEmulator.instance.gba.Ppu.Renderer.ScreenFront;
             unsafe
             {
                 for (uint i = 0; i < 240 * 160; i++)
                 {
                     wrapTexBuffer[i] = PpuRenderer.ColorLutCorrected[buf[i] & 0x7FFF];
-                    //fixed (uint* p = &wrapTexBuffer[i])
-                    //{
-                    //    byte* bp = (byte*)p;
-                    //    DisplayColorBuffer[i] = new Color32(*(bp++), *(bp++), *(bp++), *(bp++));
-                    //}
                 }
             }
 
             wrapTex.LoadRawTextureData(wrapTexBufferPointer, TexBufferSize);
-            //wrapTex.SetPixels32(DisplayColorBuffer, 0);
             wrapTex.Apply();
         }
     }

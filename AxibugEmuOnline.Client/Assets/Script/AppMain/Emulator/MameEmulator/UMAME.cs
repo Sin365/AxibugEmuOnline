@@ -178,7 +178,7 @@ public class UMAME : EmuCore<ulong>
         }
         else
         {
-            App.log.Debug($"ROM加载失败");
+            App.log.Error($"ROM加载失败");
             return false;
         }
     }

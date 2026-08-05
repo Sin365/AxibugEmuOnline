@@ -160,7 +160,7 @@ namespace MAME.Core
             }
             else if (result.Key != function)
             {
-                EmuLogger.Log(
+                EmuLogger.Debug(
                     $"{nameof(GetCachedResult)}<{typeof(T).Name}>" +
                     $" was previously called on {method.Name} with a different target." +
                     " This likely means that a new delegate is being passed into every call" +

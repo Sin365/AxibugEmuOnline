@@ -138,7 +138,7 @@ namespace AxiReplay
 
             if (!mustblag)
             {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && DEBUG
                 Debug.Log("推帧规则怪谈|无");
 #endif
                 radicalUseCounter = 0;
@@ -148,7 +148,7 @@ namespace AxiReplay
             //队列还有余量
             if (queueLeftCount > 1)
             {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && DEBUG
                 Debug.Log("推帧规则怪谈|冗余使用");
 #endif
                 radicalUseCounter = 0;
@@ -159,7 +159,7 @@ namespace AxiReplay
                 //超过连续激进使用的频次
                 if (radicalUseCounter > radicalMaxCount)
                 {
-#if UNITY_EDITOR
+#if UNITY_EDITOR && DEBUG
                     Debug.Log("推帧规则怪谈|当前停止激进");
 #endif
                     radicalUseCounter = 0;
@@ -168,7 +168,7 @@ namespace AxiReplay
                 else//上一帧
                 {
                     radicalUseCounter++;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && DEBUG
                     Debug.Log($"推帧规则怪谈|激进使用{radicalUseCounter}");
 #endif
                     return true;

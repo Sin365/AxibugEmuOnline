@@ -275,7 +275,7 @@ namespace cpu.z80
                     PendingCycles/*pendingCycles*/ = int.Parse(args[1]);
 
                 else
-                    EmuLogger.Log("Skipping unrecognized identifier " + args[0]);
+                    EmuLogger.Info("Skipping unrecognized identifier " + args[0]);
             }
         }
     }

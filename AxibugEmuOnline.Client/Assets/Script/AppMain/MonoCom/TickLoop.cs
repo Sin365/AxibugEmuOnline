@@ -74,7 +74,7 @@ namespace AxibugEmuOnline.Client
 
         void OnApplicationQuit()
         {
-            App.log.Debug("OnApplicationQuit");
+            App.log.Info("OnApplicationQuit");
             App.network.bAutoReConnect = false;
 
             if (App.network.isConnected)

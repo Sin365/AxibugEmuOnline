@@ -18,7 +18,7 @@ namespace AxibugEmuOnline.Client.Manager
 
         public void Login()
         {
-            App.log.Debug("-->Login");
+            App.log.Info("-->Login");
             if (string.IsNullOrEmpty(LastLoginGuid))
                 LastLoginGuid = Guid.NewGuid().ToString();
 

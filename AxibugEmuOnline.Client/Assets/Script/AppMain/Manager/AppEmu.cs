@@ -36,7 +36,7 @@ namespace AxibugEmuOnline.Client.Manager
                 if (value != m_LoadStep)
                 {
                     m_LoadStep = value;
-                    App.log.Debug("LoadStep->" + value);
+                    App.log.Info("LoadStep->" + value);
                 }
             }
         }

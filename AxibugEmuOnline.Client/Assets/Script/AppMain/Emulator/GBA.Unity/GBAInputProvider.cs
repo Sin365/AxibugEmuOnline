@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
-    public class InputProvider : MonoBehaviour
+    public class GBAInputProvider : MonoBehaviour
     {
         public GBAControllerMapper ControllerMapper { get; private set; } = new GBAControllerMapper();
 
@@ -37,16 +37,16 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 bool press = (inputData & key) > 0;
                 switch (key)
                 {
-                    case GBAKeyCode.Start: Emulator.instance.gba.Keypad.Start = press; break;
-                    case GBAKeyCode.Select: Emulator.instance.gba.Keypad.Select = press; break;
-                    case GBAKeyCode.Left: Emulator.instance.gba.Keypad.Left = press; break;
-                    case GBAKeyCode.Right: Emulator.instance.gba.Keypad.Right = press; break;
-                    case GBAKeyCode.Up: Emulator.instance.gba.Keypad.Up = press; break;
-                    case GBAKeyCode.Down: Emulator.instance.gba.Keypad.Down = press; break;
-                    case GBAKeyCode.A: Emulator.instance.gba.Keypad.A = press; break;
-                    case GBAKeyCode.B: Emulator.instance.gba.Keypad.B = press; break;
-                    case GBAKeyCode.L: Emulator.instance.gba.Keypad.L = press; break;
-                    case GBAKeyCode.R: Emulator.instance.gba.Keypad.R = press; break;
+                    case GBAKeyCode.Start: GBAEmulator.instance.gba.Keypad.Start = press; break;
+                    case GBAKeyCode.Select: GBAEmulator.instance.gba.Keypad.Select = press; break;
+                    case GBAKeyCode.Left: GBAEmulator.instance.gba.Keypad.Left = press; break;
+                    case GBAKeyCode.Right: GBAEmulator.instance.gba.Keypad.Right = press; break;
+                    case GBAKeyCode.Up: GBAEmulator.instance.gba.Keypad.Up = press; break;
+                    case GBAKeyCode.Down: GBAEmulator.instance.gba.Keypad.Down = press; break;
+                    case GBAKeyCode.A: GBAEmulator.instance.gba.Keypad.A = press; break;
+                    case GBAKeyCode.B: GBAEmulator.instance.gba.Keypad.B = press; break;
+                    case GBAKeyCode.L: GBAEmulator.instance.gba.Keypad.L = press; break;
+                    case GBAKeyCode.R: GBAEmulator.instance.gba.Keypad.R = press; break;
                 }
                 if (press)
                     temp.Add(key);

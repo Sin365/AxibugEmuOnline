@@ -1,4 +1,10 @@
-﻿namespace AxibugEmuOnline.Client.Manager
+﻿#if UNITY_EDITOR || DEBUG || UNITY_SWITCH
+#define ENABLE_AXIBUG_DEBUG_LOG
+#endif
+
+using System.Diagnostics;
+
+namespace AxibugEmuOnline.Client.Manager
 {
     public class LogManager
     {
@@ -30,6 +36,7 @@
             Log(E_LogType.Info, str);
         }
 
+        [Conditional("ENABLE_AXIBUG_DEBUG_LOG")]
         public void Debug(string str)
         {
             Log(E_LogType.Debug, str);

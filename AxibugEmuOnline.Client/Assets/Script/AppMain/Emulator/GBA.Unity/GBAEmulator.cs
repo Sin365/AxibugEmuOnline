@@ -9,18 +9,18 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
-    public class Emulator : EmuCore<GBAKeyCode>
+    public class GBAEmulator : EmuCore<GBAKeyCode>
     {
-        public static Emulator instance;
+        public static GBAEmulator instance;
         const int FrameCycles = 70224 * 4;
         const int ScanlineCycles = 1232;
         const float FrameRate = 59.7275f;
         static bool SyncToAudio = true;
 
         //public Renderer screenRenderer;
-        public VideoProvider videoProvider;
-        public AudioProvider audioProvider;
-        public InputProvider inputProvider;
+        public GBAVideoProvider videoProvider;
+        public GBAAudioProvider audioProvider;
+        public GBAInputProvider inputProvider;
         public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
         public bool ShowBackBuf = false;
@@ -39,7 +39,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override RomPlatformType Platform => RomPlatformType.GameBoyAdvance;
 
-        public override uint PushFrame => AxiEmuRunFrame;//???
+        public override uint PushFrame => AxiEmuRunFrame;
 
         public override uint PhysicsFrame => AxiVirtualFrame;
 
@@ -197,23 +197,23 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             byte[] sav = new byte[0];
             if (AxiIO.File.Exists(savPath))
             {
-                Debug.Log($"{savPath} exists, loading");
+                App.log.Info($"{savPath} exists, loading");
                 try
                 {
                     sav = AxiIO.File.ReadAllBytes(savPath);
                 }
                 catch
                 {
-                    Debug.Log("Failed to load .sav file!");
+                    App.log.Error("Failed to load .sav file!");
                 }
             }
             else
             {
-                Debug.Log(".sav not available");
+                App.log.Info(".sav not available");
             }
 
             LoadRomAndSave(rom, sav, savPath);
-            Debug.Log("Load Rom Success");
+            App.log.Info("Load Rom Success");
             audioProvider.Initialize();
             RomLoaded = true;
             //RunEmulator = true;
@@ -223,7 +223,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             byte[] bios = Resources.Load<TextAsset>("GBA.Unity/gba_bios.bin").bytes;
             //byte[] bios = BetterStreamingAssets.ReadAllBytes("gba_bios.bin");
-            Debug.Log(bios.Length);
+            App.log.Debug(bios.Length.ToString());
             gba = new Gba(new ProviderGba(bios, rom, savPath, audioProvider.AudioReady) { BootBios = BootBIOS });
             gba.Mem.SaveProvider.LoadSave(sav);
 
@@ -392,20 +392,20 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         string writeSavTargetPath = string.Empty;
         byte[] writeSavData = null;
 
-        void Update_CheckSave(bool withouttime = false)
+        void Update_CheckSave(bool mustsave = false)
         {
             if (!bNeedWriteSav)
                 return;
-            if (!withouttime && Time.time - setWriteReadyTime < 0.5f)
+            if (!mustsave && Time.time - setWriteReadyTime < 5f)
                 return;
             try
             {
-                AxiIO.File.WriteAllBytes(writeSavTargetPath, writeSavData, true);
+                AxiIO.File.WriteAllBytes(writeSavTargetPath, writeSavData, mustsave);
                 OverlayManager.PopTip("GBA存档写入");
             }
             catch
             {
-                Debug.Log("Failed to write .sav file!");
+                App.log.Error("Failed to write .sav file!");
             }
             bNeedWriteSav = false;
         }
@@ -417,7 +417,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             {
                 throw new Exception("[GetBytesZippedFile]中断 data == null");
             }
-            UnityEngine.Debug.Log("[GetBytesZippedFile] zip大小：" + bytes.Length);
+            App.log.Debug("[GetBytesZippedFile] zip大小：" + bytes.Length);
             var zip = new ZipInputStream(new System.IO.MemoryStream(bytes));
             while (true)
             {

@@ -95,7 +95,7 @@ namespace AxibugEmuOnline.Client.InputDevices.ForInputSystem
                 }
             }
 #endif
-            App.log.Debug($"加入输入设备：{log}");
+            App.log.Info($"加入输入设备：{log}");
 
             InputDevice_D newDevice = null;
             if (ipdev is Keyboard) newDevice = new Keyboard_D(this);

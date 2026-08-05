@@ -32,7 +32,7 @@ namespace MAME.Core
         {
             m_bDebugStepBreak = true;
             m_StepBreakIdx = step;
-            EmuLogger.Log("[MAME]设置 步进中断数" + step);
+            EmuLogger.Debug("[MAME]设置 步进中断数" + step);
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -43,19 +43,19 @@ namespace MAME.Core
             string temp = $"调用 {method} do->{note}";
             if (stepIdx >= m_StepBreakIdx)
             {
-                EmuLogger.Log("[MAME]步进中断[" + stepIdx + "]" + ":" + temp + "");
+                EmuLogger.Debug("[MAME]步进中断[" + stepIdx + "]" + ":" + temp + "");
                 Machine.bRom = false;
                 throw new Exception("[MAME]步进中断[" + stepIdx + "]" + ":" + temp + "");
                 return;
             }
-            EmuLogger.Log("[MAME]步进进行[" + stepIdx + "]" + ":" + temp + "");
+            EmuLogger.Debug("[MAME]步进进行[" + stepIdx + "]" + ":" + temp + "");
             return;
         }
 
         public static void ClearDbgStep()
         {
             m_bDebugStepBreak = false;
-            EmuLogger.Log("[MAME]步进清理所有");
+            EmuLogger.Debug("[MAME]步进清理所有");
         }
 
         #endregion
@@ -82,6 +82,7 @@ namespace MAME.Core
             IMAMEIOSupport io
             )
         {
+            EmuLogger.BindFunc(ilog);
             MameMainMotion.CheckCanStep(-799, System.Reflection.MethodBase.GetCurrentMethod().Name);
             AxiMemoryEx.Init();
             MameMainMotion.CheckCanStep(-789, System.Reflection.MethodBase.GetCurrentMethod().Name);
@@ -89,7 +90,6 @@ namespace MAME.Core
             MameMainMotion.CheckCanStep(-770, System.Reflection.MethodBase.GetCurrentMethod().Name);
 
             Mame.RomRoot = RomDir;
-            EmuLogger.BindFunc(ilog);
             MameMainMotion.CheckCanStep(-760, System.Reflection.MethodBase.GetCurrentMethod().Name);
             Video.BindFunc(ivp);
             MameMainMotion.CheckCanStep(-750, System.Reflection.MethodBase.GetCurrentMethod().Name);
@@ -140,7 +140,7 @@ namespace MAME.Core
             MameMainMotion.CheckCanStep(3, System.Reflection.MethodBase.GetCurrentMethod().Name);
             if (RomInfo.Rom == null)
             {
-                EmuLogger.Log("Not Found");
+                EmuLogger.Debug("Not Found");
                 return;
             }
             //EmuTimer.lt = new List<EmuTimer.emu_timer>();
@@ -258,7 +258,7 @@ namespace MAME.Core
             if (Machine.bRom)
             {
                 MameMainMotion.CheckCanStep(2001, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                EmuLogger.Log("MAME.NET: " + Machine.sDescription + " [" + Machine.sName + "]");
+                EmuLogger.Debug("MAME.NET: " + Machine.sDescription + " [" + Machine.sName + "]");
                 Mame.init_machine();
                 MameMainMotion.CheckCanStep(2100, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 Generic.nvram_load();
@@ -267,7 +267,7 @@ namespace MAME.Core
             else
             {
                 MameMainMotion.CheckCanStep(3000, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                EmuLogger.Log("error rom");
+                EmuLogger.Debug("error rom");
             }
         }
 

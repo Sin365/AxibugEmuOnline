@@ -221,7 +221,7 @@ namespace MAME.Core
         {
             if (paused == pause)
                 return;
-            EmuLogger.Log($"mame_pause->{pause}");
+            EmuLogger.Info($"mame_pause->{pause}");
             paused = pause;
             Window.wininput_pause(paused);
             Sound.sound_pause(paused);

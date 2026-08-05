@@ -257,7 +257,7 @@ namespace AxibugEmuOnline.Client.ClientCore
                 else
                 {
                     yield return new WaitForSeconds(1);
-                    App.log.Debug("请求失败，重试请求API...");
+                    App.log.Error("请求失败，重试请求API...");
                 }
             }
 
