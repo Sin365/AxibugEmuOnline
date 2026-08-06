@@ -65,35 +65,57 @@ namespace OptimeGBA
             switch (matchedIndex)
             {
                 case 0: SaveProvider = new NullSaveProvider(); break;
-                case 1:
+                case 1: // EEPROM_
                     {
-                        EepromSize eepromSize = EepromSize.Eeprom64k;
-                        //if (!string.IsNullOrEmpty(provider.SavPath) && File.Exists(provider.SavPath))
-                        if (!string.IsNullOrEmpty(provider.SavPath) && gba.Provider.axiio.File_Exists(provider.SavPath))
+                        EepromSize eepromSize = EepromSize.Eeprom4k;
+
+                        if (!string.IsNullOrEmpty(provider.SavPath) &&
+                            gba.Provider.axiio.File_Exists(provider.SavPath))
                         {
-                            //long length = new FileInfo(provider.SavPath).Length;
                             long length = gba.Provider.axiio.File_GetLength(provider.SavPath);
-                            if (length == 512)
-                            {
-                                eepromSize = EepromSize.Eeprom4k;
-                            }
-                            else if (length == 8192)
-                            {
+                            if (length >= 8192)
                                 eepromSize = EepromSize.Eeprom64k;
-                            }
+                            else if (length == 512)
+                                eepromSize = EepromSize.Eeprom4k;
                         }
+
                         SaveProvider = new Eeprom(Gba, eepromSize);
+
                         if (RomSize < 16777216)
-                        {
                             EepromThreshold = 0x1000000;
-                        }
                         else
-                        {
                             EepromThreshold = 0x1FFFF00;
-                        }
-                        //Debug.Log("EEPROM Threshold: " + Util.Hex(EepromThreshold, 8));
                         break;
                     }
+                // case 1:
+                //     {
+                //         EepromSize eepromSize = EepromSize.Eeprom64k;
+                //         //if (!string.IsNullOrEmpty(provider.SavPath) && File.Exists(provider.SavPath))
+                //         if (!string.IsNullOrEmpty(provider.SavPath) && gba.Provider.axiio.File_Exists(provider.SavPath))
+                //         {
+                //             //long length = new FileInfo(provider.SavPath).Length;
+                //             long length = gba.Provider.axiio.File_GetLength(provider.SavPath);
+                //             if (length == 512)
+                //             {
+                //                 eepromSize = EepromSize.Eeprom4k;
+                //             }
+                //             else if (length == 8192)
+                //             {
+                //                 eepromSize = EepromSize.Eeprom64k;
+                //             }
+                //         }
+                //         SaveProvider = new Eeprom(Gba, eepromSize);
+                //         if (RomSize < 16777216)
+                //         {
+                //             EepromThreshold = 0x1000000;
+                //         }
+                //         else
+                //         {
+                //             EepromThreshold = 0x1FFFF00;
+                //         }
+                //         //Debug.Log("EEPROM Threshold: " + Util.Hex(EepromThreshold, 8));
+                //         break;
+                //     }
                 case 2: SaveProvider = new Sram(); break;
                 case 3: SaveProvider = new Flash(Gba, FlashSize.Flash512k); break;
                 case 4: SaveProvider = new Flash(Gba, FlashSize.Flash512k); break;

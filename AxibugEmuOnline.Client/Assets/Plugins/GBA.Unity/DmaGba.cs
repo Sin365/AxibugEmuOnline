@@ -208,6 +208,116 @@ namespace OptimeGBA
             throw new Exception("This shouldn't happen.");
         }
 
+        //public void ExecuteDma(DmaChannelGba c, uint ci)
+        //{
+        //    DmaLock = true;
+
+        //    // Least significant 28 (or 27????) bits
+        //    c.DmaSource &= DmaSourceMask[ci];
+        //    c.DmaDest &= DmaDestMask[ci];
+
+        //    if (ci == 3)
+        //    {
+        //        // DMA 3 is 16-bit length
+        //        c.DmaLength &= 0b1111111111111111;
+        //        // Value of zero is treated as maximum length
+        //        if (c.DmaLength == 0) c.DmaLength = 0x10000;
+        //    }
+        //    else
+        //    {
+        //        // DMA 0-2 are 14-bit length
+        //        c.DmaLength &= 0b11111111111111;
+        //        // Value of zero is treated as maximum length
+        //        if (c.DmaLength == 0) c.DmaLength = 0x4000;
+        //    }
+
+        //    // Debug.Log($"Starting DMA {ci}");
+        //    // Debug.Log($"SRC: {Util.HexN(srcAddr, 7)}");
+        //    // Debug.Log($"DEST: {Util.HexN(destAddr, 7)}");
+        //    // Debug.Log($"LENGTH: {Util.HexN(c.DmaLength, 4)}");
+
+        //    int destOffsPerUnit;
+        //    int sourceOffsPerUnit;
+        //    if (c.TransferType)
+        //    {
+        //        switch (c.DestAddrCtrl)
+        //        {
+        //            case DmaDestAddrCtrl.Increment: destOffsPerUnit = +4; break;
+        //            case DmaDestAddrCtrl.Decrement: destOffsPerUnit = -4; break;
+        //            case DmaDestAddrCtrl.IncrementReload: destOffsPerUnit = +4; break;
+        //            default: destOffsPerUnit = 0; break;
+        //        }
+        //        switch (c.SrcAddrCtrl)
+        //        {
+        //            case DmaSrcAddrCtrl.Increment: sourceOffsPerUnit = +4; break;
+        //            case DmaSrcAddrCtrl.Decrement: sourceOffsPerUnit = -4; break;
+        //            default: sourceOffsPerUnit = 0; break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        switch (c.DestAddrCtrl)
+        //        {
+        //            case DmaDestAddrCtrl.Increment: destOffsPerUnit = +2; break;
+        //            case DmaDestAddrCtrl.Decrement: destOffsPerUnit = -2; break;
+        //            case DmaDestAddrCtrl.IncrementReload: destOffsPerUnit = +2; break;
+        //            default: destOffsPerUnit = 0; break;
+        //        }
+        //        switch (c.SrcAddrCtrl)
+        //        {
+        //            case DmaSrcAddrCtrl.Increment: sourceOffsPerUnit = +2; break;
+        //            case DmaSrcAddrCtrl.Decrement: sourceOffsPerUnit = -2; break;
+        //            default: sourceOffsPerUnit = 0; break;
+        //        }
+        //    }
+
+        //    uint origLength = c.DmaLength;
+
+
+        //    if (c.TransferType)
+        //    {
+        //        for (; c.DmaLength > 0; c.DmaLength--)
+        //        {
+        //            Gba.Mem.Write32(c.DmaDest & ~3u, Gba.Mem.Read32(c.DmaSource & ~3u));
+        //            Gba.Tick(Gba.Cpu.Timing32[(c.DmaSource >> 24) & 0xF]);
+        //            Gba.Tick(Gba.Cpu.Timing32[(c.DmaDest >> 24) & 0xF]);
+
+        //            c.DmaDest = (uint)(long)(destOffsPerUnit + c.DmaDest);
+        //            c.DmaSource = (uint)(long)(sourceOffsPerUnit + c.DmaSource);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (; c.DmaLength > 0; c.DmaLength--)
+        //        {
+        //            Gba.Mem.Write16(c.DmaDest & ~1u, Gba.Mem.Read16(c.DmaSource & ~1u));
+        //            Gba.Tick(Gba.Cpu.Timing8And16[(c.DmaSource >> 24) & 0xF]);
+        //            Gba.Tick(Gba.Cpu.Timing8And16[(c.DmaDest >> 24) & 0xF]);
+
+        //            c.DmaDest = (uint)(long)(destOffsPerUnit + c.DmaDest);
+        //            c.DmaSource = (uint)(long)(sourceOffsPerUnit + c.DmaSource);
+        //        }
+        //    }
+
+        //    if (c.DestAddrCtrl == DmaDestAddrCtrl.IncrementReload)
+        //    {
+        //        c.DmaLength = origLength;
+
+        //        if (c.Repeat)
+        //        {
+        //            c.DmaDest = c.DMADAD;
+        //        }
+        //    }
+
+        //    if (c.FinishedIRQ)
+        //    {
+        //        Gba.HwControl.FlagInterrupt((uint)InterruptGba.Dma0 + ci);
+        //    }
+
+        //    DmaLock = false;
+        //}
+
+
         public void ExecuteDma(DmaChannelGba c, uint ci)
         {
             DmaLock = true;
@@ -216,6 +326,47 @@ namespace OptimeGBA
             c.DmaSource &= DmaSourceMask[ci];
             c.DmaDest &= DmaDestMask[ci];
 
+            // ===== EEPROM：只处理目标在 0x0D 的 16-bit DMA =====
+            uint srcRegion = c.DmaSource >> 24;
+
+            if (ci == 3)
+            {
+                c.DmaLength &= 0xFFFF;
+                if (c.DmaLength == 0) c.DmaLength = 0x10000;
+            }
+            else
+            {
+                c.DmaLength &= 0x3FFF;
+                if (c.DmaLength == 0) c.DmaLength = 0x4000;
+            }
+
+            // 只在这里检测一次
+            uint destRegion = c.DmaDest >> 24;
+            if (destRegion == 0xD && !c.TransferType &&
+                Gba.Mem.SaveProvider is Eeprom eeprom)
+            {
+                eeprom.DetectSizeFromDmaLength(c.DmaLength);
+            }
+
+#if DEBUG
+            // 日志：源或目标在 0x0D 才打印（不再打印 0300xxxx）
+            if (destRegion == 0xD || srcRegion == 0xD)
+            {
+                string sz = "?";
+                string lk = "?";
+                if (Gba.Mem.SaveProvider is Eeprom ee)
+                {
+                    sz = ee.Size == EepromSize.Eeprom64k ? "64k" : "4k";
+                    lk = ee.SizeLocked ? "Y" : "N";
+                }
+
+                UnityEngine.Debug.Log(
+                    $"[DMA{ci}] EEPROM src={c.DmaSource:X8} dest={c.DmaDest:X8} " +
+                    $"len={c.DmaLength} 16bit={!c.TransferType} Size={sz} locked={lk}"
+                );
+            }
+#endif
+            // ====================================
             if (ci == 3)
             {
                 // DMA 3 is 16-bit length
