@@ -1,8 +1,7 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using static OptimeGBA.Bits;
-using static Util;
 using static OptimeGBA.MemoryUtil;
 
 namespace OptimeGBA

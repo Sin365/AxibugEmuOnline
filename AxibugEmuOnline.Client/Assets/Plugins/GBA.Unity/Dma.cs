@@ -1,6 +1,3 @@
-using static OptimeGBA.Bits;
-using System;
-
 namespace OptimeGBA
 {
     public enum DmaStartTiming

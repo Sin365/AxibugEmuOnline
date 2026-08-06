@@ -1,5 +1,3 @@
-using System;
-using static Util;
 namespace OptimeGBA
 {
     public enum FlashState
