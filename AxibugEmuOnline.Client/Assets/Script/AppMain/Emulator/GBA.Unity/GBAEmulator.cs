@@ -58,7 +58,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         protected override GBAKeyCode ConvertInputDataFromNet(ReplayStep step)
         {
-            throw new NotImplementedException();
+            return (GBAKeyCode)step.InPut;
         }
 
         protected override ulong InputDataToNet(GBAKeyCode inputData)
@@ -77,22 +77,24 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override object GetState()
         {
+            OverlayManager.PopTip("暂不支持，即时存档");
             throw new NotImplementedException();
         }
 
         public override byte[] GetStateBytes()
         {
+            OverlayManager.PopTip("暂不支持，即时存档");
             throw new NotImplementedException();
         }
 
         public override void LoadState(object state)
         {
-            throw new NotImplementedException();
+            OverlayManager.PopTip("暂不支持，即时存档");
         }
 
         public override void LoadStateFromBytes(byte[] data)
         {
-            throw new NotImplementedException();
+            OverlayManager.PopTip("暂不支持，即时存档");
         }
 
         public override void Pause()
@@ -179,6 +181,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             //EmulationThread.Abort();
             Update_CheckSave(true);
+            ReleaseCache();
         }
 
         // Update is called once per frame
@@ -194,23 +197,35 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public void LoadRom(byte[] rom, string name)
         {
             string savPath = App.PersistentDataPath(this.Platform) + "/" + name.Substring(0, name.Length - 3) + "sav";
-            byte[] sav = new byte[0];
-            if (AxiIO.File.Exists(savPath))
+            LoadSaveFileToCache(savPath);
+            byte[] sav;
+            if (cache_had_savedata)
             {
-                App.log.Info($"{savPath} exists, loading");
-                try
-                {
-                    sav = AxiIO.File.ReadAllBytes(savPath);
-                }
-                catch
-                {
-                    App.log.Error("Failed to load .sav file!");
-                }
+                sav = cache_savdata;
+                App.log.Info($"{savPath} exists, loaded");
             }
             else
             {
+                sav = new byte[0];
                 App.log.Info(".sav not available");
             }
+            //byte[] sav = new byte[0];
+            //if (AxiIO.File.Exists(savPath))
+            //{
+            //    App.log.Info($"{savPath} exists, loading");
+            //    try
+            //    {
+            //        sav = AxiIO.File.ReadAllBytes(savPath);
+            //    }
+            //    catch
+            //    {
+            //        App.log.Error("Failed to load .sav file!");
+            //    }
+            //}
+            //else
+            //{
+            //    App.log.Info(".sav not available");
+            //}
 
             LoadRomAndSave(rom, sav, savPath);
             App.log.Info("Load Rom Success");
@@ -369,47 +384,13 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
             if (gba.Mem.SaveProvider.Dirty)
             {
-                DumpSavReady();
+                DumpSavDataToReady();
                 //清理脏标记，否则一直保存
                 gba.Mem.SaveProvider.Dirty = false;
             }
             Update_CheckSave();
         }
 
-
-
-        public void DumpSavReady()
-        {
-            bNeedWriteSav = true;
-            writeSavTargetPath = gba.Provider.SavPath;
-            writeSavData = gba.Mem.SaveProvider.GetSave();
-            setWriteReadyTime = Time.time;
-        }
-
-        #region
-        bool bNeedWriteSav = false;
-        float setWriteReadyTime = 0;
-        string writeSavTargetPath = string.Empty;
-        byte[] writeSavData = null;
-
-        void Update_CheckSave(bool mustsave = false)
-        {
-            if (!bNeedWriteSav)
-                return;
-            if (!mustsave && Time.time - setWriteReadyTime < 5f)
-                return;
-            try
-            {
-                AxiIO.File.WriteAllBytes(writeSavTargetPath, writeSavData, mustsave);
-                OverlayManager.PopTip("GBA存档写入");
-            }
-            catch
-            {
-                App.log.Error("Failed to write .sav file!");
-            }
-            bNeedWriteSav = false;
-        }
-        #endregion
         private static byte[] GetBytesZippedFile(string filename)
         {
             byte[] bytes = AxiIO.File.ReadAllBytes(filename);
@@ -443,15 +424,71 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             throw new Exception("[GetBytesZippedFile] 没有合法entry");
         }
 
-        public bool File_Exists(string path)
+
+        #region SaveDataCache
+
+        bool cache_bNeedWriteSav = false;
+        string cache_targetpath;
+        byte[] cache_savdata;
+        float cache_writereadytime = 0;
+        bool cache_had_savedata => cache_savdata == null;
+
+        void LoadSaveFileToCache(string savpath)
         {
-            return AxiIO.File.Exists(path);
+            cache_bNeedWriteSav = false;
+            cache_savdata = null;
+            cache_targetpath = savpath;
+            if (!AxiIO.File.Exists(savpath))
+                return;
+            cache_bNeedWriteSav = true;
+            cache_savdata = AxiIO.File.ReadAllBytes(savpath);
+        }
+        void DumpSavDataToReady()
+        {
+            cache_bNeedWriteSav = true;
+            cache_targetpath = gba.Provider.SavPath;
+            cache_savdata = gba.Mem.SaveProvider.GetSave();
+            cache_writereadytime = Time.time;
         }
 
-        public long File_GetLength(string path)
+        void ReleaseCache()
         {
-            return AxiIO.File.Axi_GetFileLength(path);
+            cache_bNeedWriteSav = false;
+            cache_targetpath = string.Empty;
+            cache_savdata = null;
+            cache_writereadytime = 0;
         }
+
+
+        void Update_CheckSave(bool mustsave = false)
+        {
+            if (!cache_bNeedWriteSav)
+                return;
+            if (!mustsave && Time.time - cache_writereadytime < 5f)
+                return;
+            try
+            {
+                AxiIO.File.WriteAllBytes(cache_targetpath, cache_savdata, mustsave);
+                OverlayManager.PopTip("GBA存档写入");
+            }
+            catch
+            {
+                App.log.Error("Failed to write .sav file!");
+            }
+            cache_bNeedWriteSav = false;
+        }
+
+        public bool SavFileExists()
+        {
+            return cache_had_savedata;
+        }
+
+        public long GetSavFileLength()
+        {
+            if (!cache_had_savedata)
+                return -1;
+            return cache_savdata.LongLength;
+        }
+        #endregion
     }
-
 }

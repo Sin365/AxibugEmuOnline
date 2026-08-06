@@ -5,9 +5,10 @@ namespace OptimeGBA
 {
     public interface AxiGbaIO
     {
-        public bool File_Exists(string path);
-        public long File_GetLength(string path);
+        public bool SavFileExists();
+        public long GetSavFileLength();
     }
+
     public sealed class ProviderGba : Provider
     {
         public bool BootBios = false;
