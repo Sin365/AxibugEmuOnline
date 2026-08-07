@@ -285,13 +285,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 515e71167c74b044984b170a2a141f10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoProvider: {fileID: 8947135404630788973}
-  audioProvider: {fileID: 8947135405373124069}
-  inputProvider: {fileID: 1605899811809750416}
+  main_videoProvider: {fileID: 8947135404630788973}
+  main_audioProvider: {fileID: 8947135405373124069}
+  main_inputProvider: {fileID: 1605899811809750416}
   ShowBackBuf: 0
   EnableAudio: 1
   BootBIOS: 0
-  audioGain: 1
+  AxiEmuRunFrame: 0
+  AxiVirtualFrame: 0
+  CurrVirtualFrameIsSkim: 0
 --- !u!114 &1605899811809750416
 MonoBehaviour:
   m_ObjectHideFlags: 0

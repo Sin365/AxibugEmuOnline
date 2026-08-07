@@ -4,6 +4,7 @@ using AxiReplay;
 using ICSharpCode.SharpZipLib.Zip;
 using OptimeGBA;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,9 +19,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         static bool SyncToAudio = true;
 
         //public Renderer screenRenderer;
-        public GBAVideoProvider videoProvider;
-        public GBAAudioProvider audioProvider;
-        public GBAInputProvider inputProvider;
+        public GBAVideoProvider main_videoProvider;
+        public GBAAudioProvider main_audioProvider;
+        public GBAInputProvider main_inputProvider;
         public static System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
         public bool ShowBackBuf = false;
@@ -28,7 +29,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public bool EnableAudio;
         public bool BootBIOS = false;
 
-        public Gba gba;
+        public Gba main_gba;
+        public List<GBAEmuLiteProcess> other_process;
         public static bool bLogicUpdatePause { get; private set; }
         //Thread EmulationThread;
         //AutoResetEvent ThreadSync = new AutoResetEvent(false);
@@ -43,17 +45,17 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override uint PhysicsFrame => AxiVirtualFrame;
 
-        public override Texture OutputPixel => videoProvider.wrapTex;
+        public override Texture OutputPixel => main_videoProvider.wrapTex;
 
-        public override RawImage DrawCanvas => videoProvider.m_drawCanvas;
+        public override RawImage DrawCanvas => main_videoProvider.m_drawCanvas;
 
-        public override Vector3 DrawCanvas_SrcRot => videoProvider.srcCanvasLocalEulerAngles;
+        public override Vector3 DrawCanvas_SrcRot => main_videoProvider.srcCanvasLocalEulerAngles;
 
         public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
 
         protected override GBAKeyCode GetLocalInput()
         {
-            return (GBAKeyCode)inputProvider.DoLocalPressedKeys();
+            return (GBAKeyCode)main_inputProvider.DoLocalPressedKeys();
         }
 
         protected override GBAKeyCode ConvertInputDataFromNet(ReplayStep step)
@@ -69,7 +71,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         protected override bool OnPushEmulatorFrame(GBAKeyCode InputData)
         {
             if (!bLogicUpdatePause) return false;
-            inputProvider.SetCurrKeyArr(InputData);
+            main_inputProvider.SetCurrKeyArr(InputData);
 
             DoUpdate();
             return true;
@@ -133,7 +135,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override IControllerSetuper GetControllerSetuper()
         {
-            return inputProvider.ControllerMapper;
+            return main_inputProvider.ControllerMapper;
         }
 
         protected override void AfterPushFrame()
@@ -143,8 +145,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override void GetAudioParams(out int frequency, out int channels)
         {
-            frequency = audioProvider.SampleRate;
-            channels = audioProvider.Channels;
+            frequency = main_audioProvider.SampleRate;
+            channels = main_audioProvider.Channels;
         }
         #endregion
 
@@ -189,7 +191,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             if (RomLoaded)
             {
-                videoProvider.OnRenderFrame();
+                main_videoProvider.OnRenderFrame();
             }
             Frame_UpdateByCpuTime();
         }
@@ -229,7 +231,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
             LoadRomAndSave(rom, sav, savPath);
             App.log.Info("Load Rom Success");
-            audioProvider.Initialize();
+            main_audioProvider.Initialize();
             RomLoaded = true;
             //RunEmulator = true;
         }
@@ -239,17 +241,17 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             byte[] bios = Resources.Load<TextAsset>("GBA.Unity/gba_bios.bin").bytes;
             //byte[] bios = BetterStreamingAssets.ReadAllBytes("gba_bios.bin");
             App.log.Debug(bios.Length.ToString());
-            gba = new Gba(new ProviderGba(bios, rom, savPath, audioProvider.AudioReady, this) { BootBios = BootBIOS });
-            gba.Mem.SaveProvider.LoadSave(sav);
+            main_gba = new Gba(new ProviderGba(bios, rom, savPath, main_audioProvider.AudioReady, this) { BootBios = BootBIOS });
+            main_gba.Mem.SaveProvider.LoadSave(sav);
 
         }
 
         public void ResetGba()
         {
-            byte[] save = gba.Mem.SaveProvider.GetSave();
-            ProviderGba p = gba.Provider;
-            gba = new Gba(p);
-            gba.Mem.SaveProvider.LoadSave(save);
+            byte[] save = main_gba.Mem.SaveProvider.GetSave();
+            ProviderGba p = main_gba.Provider;
+            main_gba = new Gba(p);
+            main_gba.Mem.SaveProvider.LoadSave(save);
         }
 
         //public void EmulationThreadHandler()
@@ -304,18 +306,18 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public void RunFrame()
         {
             CyclesLeft += FrameCycles;
-            while (CyclesLeft > 0 && !gba.Cpu.Errored)
+            while (CyclesLeft > 0 && !main_gba.Cpu.Errored)
             {
-                CyclesLeft -= (int)gba.Step();
+                CyclesLeft -= (int)main_gba.Step();
             }
         }
 
         public void RunScanline()
         {
             CyclesLeft += ScanlineCycles;
-            while (CyclesLeft > 0 && !gba.Cpu.Errored)
+            while (CyclesLeft > 0 && !main_gba.Cpu.Errored)
             {
-                CyclesLeft -= (int)gba.Step();
+                CyclesLeft -= (int)main_gba.Step();
             }
         }
 
@@ -372,21 +374,21 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         void RunSingleFrame()
         {
             int cyclesLeft = 70224 * 4;
-            while (cyclesLeft > 0 && !gba.Cpu.Errored)
+            while (cyclesLeft > 0 && !main_gba.Cpu.Errored)
             {
-                cyclesLeft -= (int)gba.Step();
+                cyclesLeft -= (int)main_gba.Step();
             }
 
-            while (!SyncToAudio && !gba.Cpu.Errored /*&& RunEmulator*/)
+            while (!SyncToAudio && !main_gba.Cpu.Errored /*&& RunEmulator*/)
             {
-                gba.Step();
+                main_gba.Step();
             }
 
-            if (gba.Mem.SaveProvider.Dirty)
+            if (main_gba.Mem.SaveProvider.Dirty)
             {
                 DumpSavDataToReady();
                 //清理脏标记，否则一直保存
-                gba.Mem.SaveProvider.Dirty = false;
+                main_gba.Mem.SaveProvider.Dirty = false;
             }
             Update_CheckSave();
         }
@@ -446,8 +448,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         void DumpSavDataToReady()
         {
             cache_bNeedWriteSav = true;
-            cache_targetpath = gba.Provider.SavPath;
-            cache_savdata = gba.Mem.SaveProvider.GetSave();
+            cache_targetpath = main_gba.Provider.SavPath;
+            cache_savdata = main_gba.Mem.SaveProvider.GetSave();
             cache_writereadytime = Time.time;
         }
 

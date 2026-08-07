@@ -41,7 +41,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public unsafe void OnRenderFrame()
         {
-            var buf = GBAEmulator.instance.ShowBackBuf ? GBAEmulator.instance.gba.Ppu.Renderer.ScreenBack : GBAEmulator.instance.gba.Ppu.Renderer.ScreenFront;
+            var buf = GBAEmulator.instance.ShowBackBuf ? GBAEmulator.instance.main_gba.Ppu.Renderer.ScreenBack : GBAEmulator.instance.main_gba.Ppu.Renderer.ScreenFront;
             unsafe
             {
                 for (uint i = 0; i < 240 * 160; i++)

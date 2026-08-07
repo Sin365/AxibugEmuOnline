@@ -37,16 +37,16 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 bool press = (inputData & key) > 0;
                 switch (key)
                 {
-                    case GBAKeyCode.Start: GBAEmulator.instance.gba.Keypad.Start = press; break;
-                    case GBAKeyCode.Select: GBAEmulator.instance.gba.Keypad.Select = press; break;
-                    case GBAKeyCode.Left: GBAEmulator.instance.gba.Keypad.Left = press; break;
-                    case GBAKeyCode.Right: GBAEmulator.instance.gba.Keypad.Right = press; break;
-                    case GBAKeyCode.Up: GBAEmulator.instance.gba.Keypad.Up = press; break;
-                    case GBAKeyCode.Down: GBAEmulator.instance.gba.Keypad.Down = press; break;
-                    case GBAKeyCode.A: GBAEmulator.instance.gba.Keypad.A = press; break;
-                    case GBAKeyCode.B: GBAEmulator.instance.gba.Keypad.B = press; break;
-                    case GBAKeyCode.L: GBAEmulator.instance.gba.Keypad.L = press; break;
-                    case GBAKeyCode.R: GBAEmulator.instance.gba.Keypad.R = press; break;
+                    case GBAKeyCode.Start: GBAEmulator.instance.main_gba.Keypad.Start = press; break;
+                    case GBAKeyCode.Select: GBAEmulator.instance.main_gba.Keypad.Select = press; break;
+                    case GBAKeyCode.Left: GBAEmulator.instance.main_gba.Keypad.Left = press; break;
+                    case GBAKeyCode.Right: GBAEmulator.instance.main_gba.Keypad.Right = press; break;
+                    case GBAKeyCode.Up: GBAEmulator.instance.main_gba.Keypad.Up = press; break;
+                    case GBAKeyCode.Down: GBAEmulator.instance.main_gba.Keypad.Down = press; break;
+                    case GBAKeyCode.A: GBAEmulator.instance.main_gba.Keypad.A = press; break;
+                    case GBAKeyCode.B: GBAEmulator.instance.main_gba.Keypad.B = press; break;
+                    case GBAKeyCode.L: GBAEmulator.instance.main_gba.Keypad.L = press; break;
+                    case GBAKeyCode.R: GBAEmulator.instance.main_gba.Keypad.R = press; break;
                 }
                 if (press)
                     temp.Add(key);
