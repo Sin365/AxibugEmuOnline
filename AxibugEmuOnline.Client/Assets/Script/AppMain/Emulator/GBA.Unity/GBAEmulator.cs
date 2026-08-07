@@ -431,7 +431,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         string cache_targetpath;
         byte[] cache_savdata;
         float cache_writereadytime = 0;
-        bool cache_had_savedata => cache_savdata == null;
+        bool cache_had_savedata => cache_savdata != null;
 
         void LoadSaveFileToCache(string savpath)
         {

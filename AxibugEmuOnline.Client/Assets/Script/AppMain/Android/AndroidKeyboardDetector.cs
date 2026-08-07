@@ -108,12 +108,12 @@ public class InputDeviceManager : MonoBehaviour
                 
                 if (isPhysical)
                 {
-                    Debug.Log($"✅ 物理键盘已连接: ID={device.deviceId}");
+                    Debug.Log($"物理键盘已连接: ID={device.deviceId}");
                     // 启用物理键盘控制
                 }
                 else
                 {
-                    Debug.Log($"❌ 虚拟键盘已过滤: ID={device.deviceId}");
+                    Debug.Log($"虚拟键盘已过滤: ID={device.deviceId}");
                     // 禁用或忽略
                 }
             }
