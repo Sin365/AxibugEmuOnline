@@ -17,6 +17,7 @@ namespace OptimeGBA
         public HwControlGba HwControl;
         public DmaGba Dma;
         public Timers Timers;
+        public SerialGba Serial;
 
         public Gba(ProviderGba provider)
         {
@@ -32,6 +33,7 @@ namespace OptimeGBA
             HwControl = new HwControlGba(this);
             Timers = new Timers(GbaAudio, HwControl, Scheduler, false, true);
             Cpu = new Arm7(StateChange, Mem, false, false, null);
+            Serial = new SerialGba(this);
 
             Cpu.SetTimingsTable(
                 Cpu.Timing8And16,

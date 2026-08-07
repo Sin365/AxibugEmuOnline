@@ -16,7 +16,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         const int FrameCycles = 70224 * 4;
         const int ScanlineCycles = 1232;
         const float FrameRate = 59.7275f;
-        static bool SyncToAudio = true;
+        //static bool SyncToAudio = true;
 
         //public Renderer screenRenderer;
         public GBAVideoProvider main_videoProvider;
@@ -30,7 +30,10 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public bool BootBIOS = false;
 
         public Gba main_gba;
-        public List<GBAEmuLiteProcess> other_process;
+        public GbaLink gbaLink;
+        public List<GBAEmuLiteProcess> other_process = new List<GBAEmuLiteProcess>();
+
+        public RawImage[] OtherGbaSreen;
         public static bool bLogicUpdatePause { get; private set; }
         //Thread EmulationThread;
         //AutoResetEvent ThreadSync = new AutoResetEvent(false);
@@ -71,7 +74,11 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         protected override bool OnPushEmulatorFrame(GBAKeyCode InputData)
         {
             if (!bLogicUpdatePause) return false;
+            //TODO联机时区分
             main_inputProvider.SetCurrKeyArr(InputData);
+
+            for (int i = 0; i < other_process.Count; i++)
+                other_process[i].SetCurrKeyArr(other_process[i].DoLocalInputToTest());
 
             DoUpdate();
             return true;
@@ -109,11 +116,20 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         }
         public override MsgBool StartGame(RomFile romFile)
         {
+
+            other_process.Clear();
+            other_process.Add(new GBAEmuLiteProcess());
             string path = romFile.LocalProxyPath;
             byte[] romdata = GetBytesZippedFile(path);
             try
             {
                 LoadRom(romdata, romFile.LocalProxyFileName);
+                for (int i = 0; i < other_process.Count; i++)
+                {
+                    other_process[i].VideoInit(OtherGbaSreen[i]);
+                    other_process[i].LoadRom(romdata, cache_savdata);
+                }
+                gbaLink = new GbaLink(main_gba, other_process[0].gba);
                 bLogicUpdatePause = true;
                 return true;
             }
@@ -122,6 +138,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 bLogicUpdatePause = false;
                 return "失败";
             }
+
         }
 
         public override void Dispose()
@@ -192,6 +209,10 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             if (RomLoaded)
             {
                 main_videoProvider.OnRenderFrame();
+                for (int i = 0; i < other_process.Count; i++)
+                {
+                    other_process[i].OnRenderFrame();
+                }
             }
             Frame_UpdateByCpuTime();
         }
@@ -373,16 +394,49 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         void RunSingleFrame()
         {
-            int cyclesLeft = 70224 * 4;
-            while (cyclesLeft > 0 && !main_gba.Cpu.Errored)
+            //int cyclesLeft = 70224 * 4;
+            //while (cyclesLeft > 0 && !main_gba.Cpu.Errored)
+            //{
+            //    cyclesLeft -= (int)main_gba.Step();
+            //}
+
+            //while (!SyncToAudio && !main_gba.Cpu.Errored /*&& RunEmulator*/)
+            //{
+            //    main_gba.Step();
+            //}
+
+            //if (main_gba.Mem.SaveProvider.Dirty)
+            //{
+            //    DumpSavDataToReady();
+            //    //清理脏标记，否则一直保存
+            //    main_gba.Mem.SaveProvider.Dirty = false;
+            //}
+            //Update_CheckSave();
+
+            int cyclesLeft_main = 70224 * 4;
+            int cyclesLeft_gba_2 = other_process.Count >= 1 ? 70224 * 4 : 0;
+            int cyclesLeft_gba_3 = other_process.Count >= 2 ? 70224 * 4 : 0;
+            int cyclesLeft_gba_4 = other_process.Count >= 3 ? 70224 * 4 : 0;
+
+            while (cyclesLeft_main > 0 ||
+                cyclesLeft_gba_2 > 0 ||
+                cyclesLeft_gba_3 > 0 ||
+                cyclesLeft_gba_4 > 0)
             {
-                cyclesLeft -= (int)main_gba.Step();
+                if(cyclesLeft_main > 0 && !main_gba.Cpu.Errored)
+                    cyclesLeft_main -= (int)main_gba.Step();
+                if (cyclesLeft_gba_2 > 0 && !other_process[0].gba.Cpu.Errored)
+                    cyclesLeft_gba_2 -= (int)other_process[0].gba.Step();
+                if (cyclesLeft_gba_3 > 0 && !other_process[1].gba.Cpu.Errored)
+                    cyclesLeft_gba_3 -= (int)other_process[1].gba.Step();
+                if (cyclesLeft_gba_4 > 0 && !other_process[2].gba.Cpu.Errored)
+                    cyclesLeft_gba_4 -= (int)other_process[2].gba.Step();
             }
 
-            while (!SyncToAudio && !main_gba.Cpu.Errored /*&& RunEmulator*/)
-            {
-                main_gba.Step();
-            }
+            //while (!SyncToAudio && !main_gba.Cpu.Errored /*&& RunEmulator*/)
+            //{
+            //    main_gba.Step();
+            //}
 
             if (main_gba.Mem.SaveProvider.Dirty)
             {
@@ -390,6 +444,17 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 //清理脏标记，否则一直保存
                 main_gba.Mem.SaveProvider.Dirty = false;
             }
+
+            for (int i = 0; i < other_process.Count; i++)
+            {
+                if (other_process[i].gba.Mem.SaveProvider.Dirty)
+                {
+                    other_process[i].DumpSavDataToReady();
+                    //清理脏标记，否则一直保存
+                    other_process[i].gba.Mem.SaveProvider.Dirty = false;
+                }
+            }
+
             Update_CheckSave();
         }
 

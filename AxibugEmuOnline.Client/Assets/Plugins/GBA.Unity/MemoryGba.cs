@@ -404,21 +404,35 @@ namespace OptimeGBA
             {
                 return Gba.Timers.ReadHwio8(addr);
             }
+            //else if (addr >= 0x4000120 && addr <= 0x400012C) // Serial
+            //{
+
+            //}
+            //else if (addr >= 0x4000130 && addr <= 0x4000132) // Keypad
+            //{
+            //    return Gba.Keypad.ReadHwio8(addr);
+            //}
+            //else if (addr >= 0x4000134 && addr <= 0x400015A) // Serial Communications
+            //{
+            //    switch (addr)
+            //    {
+            //        case 0x4000135: return 0x80;
+            //    }
+            //}
+
             else if (addr >= 0x4000120 && addr <= 0x400012C) // Serial
             {
-
+                return Gba.Serial.ReadHwio8(addr);
             }
             else if (addr >= 0x4000130 && addr <= 0x4000132) // Keypad
             {
                 return Gba.Keypad.ReadHwio8(addr);
             }
-            else if (addr >= 0x4000134 && addr <= 0x400015A) // Serial Communications
+            else if (addr >= 0x4000134 && addr <= 0x400015A) // Serial RCNT µÈ
             {
-                switch (addr)
-                {
-                    case 0x4000135: return 0x80;
-                }
+                return Gba.Serial.ReadHwio8(addr);
             }
+
             else if (addr >= 0x4000200 && addr <= 0x4FF0800) // Interrupt, Waitstate, and Power-Down Control
             {
                 return Gba.HwControl.ReadHwio8(addr);
@@ -451,18 +465,32 @@ namespace OptimeGBA
             {
                 Gba.Timers.WriteHwio8(addr, val);
             }
+            //else if (addr >= 0x4000120 && addr <= 0x400012C) // Serial
+            //{
+
+            //}
+            //else if (addr >= 0x4000130 && addr <= 0x4000132) // Keypad
+            //{
+
+            //}
+            //else if (addr >= 0x4000134 && addr <= 0x400015A) // Serial Communications
+            //{
+
+            //}
+
             else if (addr >= 0x4000120 && addr <= 0x400012C) // Serial
             {
-
+                Gba.Serial.WriteHwio8(addr, val);
             }
             else if (addr >= 0x4000130 && addr <= 0x4000132) // Keypad
             {
-
+                // ÈôÄãÓĞ Keypad Ğ´ÔÙ²¹
             }
-            else if (addr >= 0x4000134 && addr <= 0x400015A) // Serial Communications
+            else if (addr >= 0x4000134 && addr <= 0x400015A)
             {
-
+                Gba.Serial.WriteHwio8(addr, val);
             }
+
             else if (addr >= 0x4000200 && addr <= 0x4FF0800) // Interrupt, Waitstate, and Power-Down Control
             {
                 Gba.HwControl.WriteHwio8(addr, val);

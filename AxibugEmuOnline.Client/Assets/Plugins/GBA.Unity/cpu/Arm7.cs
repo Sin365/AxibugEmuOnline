@@ -119,8 +119,8 @@ namespace OptimeGBA
 
         public bool Errored = false;
 
-        public static uint[] ThumbExecutorProfile = new uint[1024];
-        public static uint[] ArmExecutorProfile = new uint[4096];
+        //public static uint[] ThumbExecutorProfile = new uint[1024];
+        //public static uint[] ArmExecutorProfile = new uint[4096];
 
         public bool FlagInterrupt;
 

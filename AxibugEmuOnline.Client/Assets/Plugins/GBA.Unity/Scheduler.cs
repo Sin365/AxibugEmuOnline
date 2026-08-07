@@ -20,6 +20,7 @@ namespace OptimeGBA
         Timer72 = 13,
         Timer73 = 14,
         GxFifo = 15,
+        Sio = 16,   // 新增：SIO 传输完成
     }
 
     public class SchedulerEvent
@@ -95,6 +96,7 @@ namespace OptimeGBA
                 case SchedulerId.Timer92: return "Timer9 2 Overflow";
                 case SchedulerId.Timer93: return "Timer9 3 Overflow";
                 case SchedulerId.RootNode: return "<root node>";
+                case SchedulerId.Sio: return "SIO Complete";
                 default:
                     return "<SchedulerId not found>";
             }
