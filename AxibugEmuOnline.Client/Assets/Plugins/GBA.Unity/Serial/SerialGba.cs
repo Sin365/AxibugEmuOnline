@@ -3,7 +3,7 @@
 namespace OptimeGBA
 {
     /// <summary>
-    /// GBA Serial I/O。行为对齐 mGBA src/gba/sio.c（Multi 优先）。
+    /// GBA Serial I/O。行为对齐 mGBA src/gba/sio.c（Multi 优先，Normal 次之）。
     /// </summary>
     public sealed class SerialGba
     {
@@ -31,20 +31,20 @@ namespace OptimeGBA
         readonly Gba _gba;
         readonly SchedulerCallback _onComplete;
 
-        public GbaLink Link; // 本机联机线，可 null
+        public GbaLink Link;
 
         public SioMode Mode = (SioMode)(-1);
-        public ushort Rcnt = unchecked((ushort)0x8000); // mGBA RCNT_INITIAL
+        public ushort Rcnt = unchecked((ushort)0x8000);
         public ushort Siocnt;
 
-        /// <summary>SIOMULTI0..3，各 16bit，按字节存低在前。</summary>
+        /// <summary>SIOMULTI0..3 / SIODATA32 低 4 字节，小端。</summary>
         public byte[] MultiData = new byte[8];
 
-        /// <summary>SIOMLT_SEND / SIODATA8 低 16bit。</summary>
+        /// <summary>SIOMLT_SEND / SIODATA8。</summary>
         public ushort MultiSend = 0xFFFF;
 
-        public int PlayerId;   // 由 GbaLink 设置，0=Parent
-        public bool IsChild;   // PlayerId != 0
+        public int PlayerId;
+        public bool IsChild;
 
         bool _completeScheduled;
 
@@ -74,26 +74,20 @@ namespace OptimeGBA
                 int n = Link.AttachedCount;
                 if (n <= 1) return 0;
                 if (n > 4) n = 4;
-                return n - 1; // mGBA: connected 作表下标 0..3
+                return n - 1;
             }
         }
 
         public void RefreshMode()
         {
-            // mGBA: ((rcnt & 0xC000) | (siocnt & 0x3000)) >> 12
             uint bits = (uint)(((Rcnt & 0xC000) | (Siocnt & 0x3000)) >> 12);
-            SioMode neu;
-            if (bits < 8)
-                neu = (SioMode)(bits & 0x3);
-            else
-                neu = (SioMode)(bits & 0xC);
+            SioMode neu = bits < 8 ? (SioMode)(bits & 0x3) : (SioMode)(bits & 0xC);
 
             if (neu != Mode)
             {
                 Mode = neu;
                 if (Mode == SioMode.Multi)
                 {
-                    // SI = child
                     if (IsChild)
                         Rcnt = (ushort)(Rcnt | (1 << 2));
                     else
@@ -143,28 +137,59 @@ namespace OptimeGBA
             _gba.Scheduler.AddEventRelative(SchedulerId.Sio, cycles, _onComplete);
         }
 
+        /// <summary>由 GbaLink 在 Parent Start 时调用：全员进入 Busy。</summary>
+        public void BeginMultiTransferFromLink()
+        {
+            for (int i = 0; i < 8; i++) MultiData[i] = 0xFF;
+            Siocnt = (ushort)(Siocnt | (1 << 7));
+            Rcnt = (ushort)(Rcnt & ~1);
+            // Child 不 Schedule，等 Parent OnTransferComplete → FinishAll
+        }
+
         void OnTransferComplete(long cyclesLate)
         {
             _completeScheduled = false;
-            if (Mode != SioMode.Multi)
-                return;
 
-            var words = new ushort[4];
-            for (int i = 0; i < 4; i++) words[i] = 0xFFFF;
+            switch (Mode)
+            {
+                case SioMode.Multi:
+                    {
+                        var words = new ushort[4];
+                        for (int i = 0; i < 4; i++) words[i] = 0xFFFF;
 
-            if (Link != null)
-                Link.CollectMultiplayerWords(words);
-            else
-                words[0] = MultiSend; // 未接线：仅本机
-
-            // 本机 + 链上其它核一并完成（本机同步）
-            if (Link != null)
-                Link.FinishAllMultiplayer(words);
-            else
-                FinishMultiplayerTransfer(words);
+                        if (Link != null)
+                        {
+                            Link.CollectMultiplayerWords(words);
+                            Link.FinishAllMultiplayer(words);
+                        }
+                        else
+                        {
+                            words[0] = MultiSend;
+                            FinishMultiplayerTransfer(words);
+                        }
+                        break;
+                    }
+                case SioMode.Normal8:
+                    {
+                        byte send = (byte)(MultiSend & 0xFF);
+                        byte recv = Link != null
+                            ? Link.ExchangeNormal8(send, PlayerId)
+                            : send;
+                        FinishNormal8(recv);
+                        break;
+                    }
+                case SioMode.Normal32:
+                    {
+                        uint send = GetNormal32();
+                        uint recv = Link != null
+                            ? Link.ExchangeNormal32(send, PlayerId)
+                            : send;
+                        FinishNormal32(recv);
+                        break;
+                    }
+            }
         }
 
-        /// <summary>对齐 mGBA GBASIOMultiplayerFinishTransfer。</summary>
         public void FinishMultiplayerTransfer(ushort[] data)
         {
             if (data == null || data.Length < 4) return;
@@ -174,15 +199,38 @@ namespace OptimeGBA
             WriteMultiWord(2, data[2]);
             WriteMultiWord(3, data[3]);
 
-            // Clear Busy bit7
-            Siocnt = (ushort)(Siocnt & ~(1 << 7));
-            // Id bits 4-5
+            Siocnt = (ushort)(Siocnt & ~(1 << 7));          // Busy clear
+            Siocnt = (ushort)(Siocnt & ~(1 << 6));          // Error clear
             Siocnt = (ushort)((Siocnt & ~0x30) | ((PlayerId & 3) << 4));
-            // SC high
             Rcnt = (ushort)(Rcnt | 1);
 
             if ((Siocnt & (1 << 14)) != 0)
                 _gba.HwControl.FlagInterrupt((uint)InterruptGba.Serial);
+        }
+
+        public void FinishNormal8(byte data)
+        {
+            Siocnt = (ushort)(Siocnt & ~(1 << 7));
+            MultiSend = (ushort)((MultiSend & 0xFF00) | data);
+            if ((Siocnt & (1 << 14)) != 0)
+                _gba.HwControl.FlagInterrupt((uint)InterruptGba.Serial);
+        }
+
+        public void FinishNormal32(uint data)
+        {
+            Siocnt = (ushort)(Siocnt & ~(1 << 7));
+            MultiData[0] = (byte)(data);
+            MultiData[1] = (byte)(data >> 8);
+            MultiData[2] = (byte)(data >> 16);
+            MultiData[3] = (byte)(data >> 24);
+            if ((Siocnt & (1 << 14)) != 0)
+                _gba.HwControl.FlagInterrupt((uint)InterruptGba.Serial);
+        }
+
+        public uint GetNormal32()
+        {
+            return (uint)(MultiData[0] | (MultiData[1] << 8) |
+                          (MultiData[2] << 16) | (MultiData[3] << 24));
         }
 
         void WriteMultiWord(int index, ushort w)
@@ -271,16 +319,16 @@ namespace OptimeGBA
             ushort v = Siocnt;
             if (Mode == SioMode.Multi)
             {
-                int connected = Link != null ? Link.AttachedCount : 0;
-                // Slave bit2：非 Parent 或未连接
-                if (IsChild || connected == 0)
+                // Slave(SI)：只由本机是否为 Child 决定，不要用 connected==0 强行当 Slave
+                if (IsChild)
                     v = (ushort)(v | (1 << 2));
                 else
                     v = (ushort)(v & ~(1 << 2));
 
                 v = (ushort)((v & ~0x30) | ((PlayerId & 3) << 4));
 
-                // Ready bit3：有线或单机 dummy 都置 1，避免菜单死等
+                // Ready(SD)：有 GbaLink 就视为线已接好（双实例本机联机）
+                // 无 Link 时也置 1，避免单机菜单死等（与改前行为一致）
                 v = (ushort)(v | (1 << 3));
             }
             return v;
@@ -302,9 +350,8 @@ namespace OptimeGBA
             {
                 case SioMode.Multi:
                     {
-                        // mGBA: value &= 0xFF83; 再并上旧 0x00FC 等
                         value = (ushort)(value & 0xFF83);
-                        if (IsChild || connected == 0)
+                        if (IsChild)
                             value = (ushort)(value | (1 << 2));
                         else
                             value = (ushort)(value & ~(1 << 2));
@@ -319,9 +366,9 @@ namespace OptimeGBA
 
                         if (newBusy && !oldBusy && !IsChild)
                         {
-                            // Parent 启动
                             for (int i = 0; i < 8; i++) MultiData[i] = 0xFF;
                             Rcnt = (ushort)(Rcnt & ~1);
+                            Link?.NotifyParentStartedTransfer();
                             StartTransfer();
                         }
                         break;
@@ -333,7 +380,11 @@ namespace OptimeGBA
                         bool newStart = (value & (1 << 7)) != 0;
                         bool oldStart = (old & (1 << 7)) != 0;
                         if (newStart && !oldStart)
-                            StartTransfer(); // Normal 完成第二阶段再补
+                        {
+                            if (Link != null)
+                                Link.NotifyNormalStart(this);
+                            StartTransfer();
+                        }
                         break;
                     }
                 default:
@@ -344,7 +395,6 @@ namespace OptimeGBA
 
         void ApplyRcntWrite(ushort value)
         {
-            // mGBA WriteRCNT 简化
             Rcnt = (ushort)((Rcnt & 0x1FF) | (value & 0xC000));
             RefreshMode();
             if (Mode == SioMode.Gpio)

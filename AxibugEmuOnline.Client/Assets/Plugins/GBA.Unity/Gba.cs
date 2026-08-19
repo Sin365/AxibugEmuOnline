@@ -18,6 +18,8 @@ namespace OptimeGBA
         public DmaGba Dma;
         public Timers Timers;
         public SerialGba Serial;
+        /// <summary>多核对齐：StateStepUntil / HaltSkip 不超过此 tick。默认不限制。</summary>
+        public long TickLimit = long.MaxValue;
 
         public Gba(ProviderGba provider)
         {
@@ -196,6 +198,40 @@ namespace OptimeGBA
             // Return cycles executed
             return (uint)(Scheduler.CurrentTicks - beforeTicks);
         }
+        /// <summary>
+        /// 推进到 NextEvent 或 TickLimit（先到为准），用于多实例锁步。
+        /// </summary>
+        public uint StateStepUntil()
+        {
+            Cpu.CheckInterrupts();
+
+            long beforeTicks = Scheduler.CurrentTicks;
+            if (!Cpu.ThumbState)
+            {
+                while (Scheduler.CurrentTicks < TickLimit &&
+                       Scheduler.CurrentTicks < Scheduler.NextEventTicks)
+                {
+                    Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                }
+            }
+            else
+            {
+                while (Scheduler.CurrentTicks < TickLimit &&
+                       Scheduler.CurrentTicks < Scheduler.NextEventTicks)
+                {
+                    Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                }
+            }
+
+            while (Scheduler.CurrentTicks >= Scheduler.NextEventTicks)
+            {
+                long current = Scheduler.CurrentTicks;
+                long next = Scheduler.NextEventTicks;
+                Scheduler.PopFirstEvent().Callback(current - next);
+            }
+
+            return (uint)(Scheduler.CurrentTicks - beforeTicks);
+        }
 
         public void Tick(uint cycles)
         {
@@ -204,12 +240,14 @@ namespace OptimeGBA
 
         public void HaltSkip(long cyclesLate)
         {
-            long before = Scheduler.CurrentTicks;
-            while (!HwControl.Available)
+            while (!HwControl.Available && Scheduler.CurrentTicks < TickLimit)
             {
-                long ticksPassed = Scheduler.NextEventTicks - Scheduler.CurrentTicks;
-                Scheduler.CurrentTicks = Scheduler.NextEventTicks;
-                Scheduler.PopFirstEvent().Callback(0);
+                long next = Scheduler.NextEventTicks;
+                if (next > TickLimit)
+                    next = TickLimit;
+                Scheduler.CurrentTicks = next;
+                if (Scheduler.CurrentTicks >= Scheduler.NextEventTicks)
+                    Scheduler.PopFirstEvent().Callback(0);
             }
         }
     }

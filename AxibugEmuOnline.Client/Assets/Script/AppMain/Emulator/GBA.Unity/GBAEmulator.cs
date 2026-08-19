@@ -392,69 +392,145 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             AxiEmuRunFrame++;
         }
 
+        //void RunSingleFrame()
+        //{
+        //    int cyclesLeft_main = 70224 * 4;
+        //    int cyclesLeft_gba_2 = other_process.Count >= 1 ? 70224 * 4 : 0;
+        //    int cyclesLeft_gba_3 = other_process.Count >= 2 ? 70224 * 4 : 0;
+        //    int cyclesLeft_gba_4 = other_process.Count >= 3 ? 70224 * 4 : 0;
+
+        //    while (cyclesLeft_main > 0 ||
+        //        cyclesLeft_gba_2 > 0 ||
+        //        cyclesLeft_gba_3 > 0 ||
+        //        cyclesLeft_gba_4 > 0)
+        //    {
+        //        if(cyclesLeft_main > 0 && !main_gba.Cpu.Errored)
+        //            cyclesLeft_main -= (int)main_gba.Step();
+        //        if (cyclesLeft_gba_2 > 0 && !other_process[0].gba.Cpu.Errored)
+        //            cyclesLeft_gba_2 -= (int)other_process[0].gba.Step();
+        //        if (cyclesLeft_gba_3 > 0 && !other_process[1].gba.Cpu.Errored)
+        //            cyclesLeft_gba_3 -= (int)other_process[1].gba.Step();
+        //        if (cyclesLeft_gba_4 > 0 && !other_process[2].gba.Cpu.Errored)
+        //            cyclesLeft_gba_4 -= (int)other_process[2].gba.Step();
+        //    }
+
+        //    if (main_gba.Mem.SaveProvider.Dirty)
+        //    {
+        //        DumpSavDataToReady();
+        //        //清理脏标记，否则一直保存
+        //        main_gba.Mem.SaveProvider.Dirty = false;
+        //    }
+
+        //    for (int i = 0; i < other_process.Count; i++)
+        //    {
+        //        if (other_process[i].gba.Mem.SaveProvider.Dirty)
+        //        {
+        //            other_process[i].DumpSavDataToReady();
+        //            //清理脏标记，否则一直保存
+        //            other_process[i].gba.Mem.SaveProvider.Dirty = false;
+        //        }
+        //    }
+
+        //    Update_CheckSave();
+        //}
+
+        const int CyclesPerFrame = 70224 * 4;
+        const int Slice = 64; // 可试 32~256
+
         void RunSingleFrame()
         {
-            //int cyclesLeft = 70224 * 4;
-            //while (cyclesLeft > 0 && !main_gba.Cpu.Errored)
-            //{
-            //    cyclesLeft -= (int)main_gba.Step();
-            //}
+            // 收集本帧要跑的核心
+            // index0 = main，其余 other_process
+            int coreCount = 1 + other_process.Count;
+            Gba[] cores = new Gba[coreCount];
+            cores[0] = main_gba;
+            for (int i = 0; i < other_process.Count; i++)
+                cores[i + 1] = other_process[i].gba;
 
-            //while (!SyncToAudio && !main_gba.Cpu.Errored /*&& RunEmulator*/)
-            //{
-            //    main_gba.Step();
-            //}
-
-            //if (main_gba.Mem.SaveProvider.Dirty)
-            //{
-            //    DumpSavDataToReady();
-            //    //清理脏标记，否则一直保存
-            //    main_gba.Mem.SaveProvider.Dirty = false;
-            //}
-            //Update_CheckSave();
-
-            int cyclesLeft_main = 70224 * 4;
-            int cyclesLeft_gba_2 = other_process.Count >= 1 ? 70224 * 4 : 0;
-            int cyclesLeft_gba_3 = other_process.Count >= 2 ? 70224 * 4 : 0;
-            int cyclesLeft_gba_4 = other_process.Count >= 3 ? 70224 * 4 : 0;
-
-            while (cyclesLeft_main > 0 ||
-                cyclesLeft_gba_2 > 0 ||
-                cyclesLeft_gba_3 > 0 ||
-                cyclesLeft_gba_4 > 0)
+            // 以当前最慢核为基准，对齐到同一绝对时间轴
+            long baseTick = cores[0].Scheduler.CurrentTicks;
+            for (int i = 1; i < coreCount; i++)
             {
-                if(cyclesLeft_main > 0 && !main_gba.Cpu.Errored)
-                    cyclesLeft_main -= (int)main_gba.Step();
-                if (cyclesLeft_gba_2 > 0 && !other_process[0].gba.Cpu.Errored)
-                    cyclesLeft_gba_2 -= (int)other_process[0].gba.Step();
-                if (cyclesLeft_gba_3 > 0 && !other_process[1].gba.Cpu.Errored)
-                    cyclesLeft_gba_3 -= (int)other_process[1].gba.Step();
-                if (cyclesLeft_gba_4 > 0 && !other_process[2].gba.Cpu.Errored)
-                    cyclesLeft_gba_4 -= (int)other_process[2].gba.Step();
+                if (cores[i].Scheduler.CurrentTicks < baseTick)
+                    baseTick = cores[i].Scheduler.CurrentTicks;
             }
 
-            //while (!SyncToAudio && !main_gba.Cpu.Errored /*&& RunEmulator*/)
-            //{
-            //    main_gba.Step();
-            //}
+            long frameEnd = baseTick + CyclesPerFrame;
 
+            while (true)
+            {
+                // 是否都已到达 frameEnd
+                bool allDone = true;
+                for (int i = 0; i < coreCount; i++)
+                {
+                    if (!cores[i].Cpu.Errored && cores[i].Scheduler.CurrentTicks < frameEnd)
+                    {
+                        allDone = false;
+                        break;
+                    }
+                }
+                if (allDone) break;
+
+                // 目标：全体推到 min(当前最小 + Slice, frameEnd)
+                long minTick = long.MaxValue;
+                for (int i = 0; i < coreCount; i++)
+                {
+                    if (cores[i].Cpu.Errored) continue;
+                    long t = cores[i].Scheduler.CurrentTicks;
+                    if (t < minTick) minTick = t;
+                }
+
+                long target = minTick + Slice;
+                if (target > frameEnd) target = frameEnd;
+
+                for (int i = 0; i < coreCount; i++)
+                {
+                    var gba = cores[i];
+                    if (gba.Cpu.Errored) continue;
+                    if (gba.Scheduler.CurrentTicks >= frameEnd) continue;
+
+                    gba.TickLimit = target;
+                    // 可能需多次 StateStepUntil 才能到 target（中间有 event）
+                    int guard = 0;
+                    while (gba.Scheduler.CurrentTicks < target && !gba.Cpu.Errored && guard++ < 100000)
+                    {
+                        gba.TickLimit = target;
+                        uint advanced = gba.StateStepUntil();
+                        if (advanced == 0 && gba.Scheduler.CurrentTicks < target)
+                        {
+                            // 卡在 NextEvent == Current 等边界时，强制走一步
+                            gba.Step();
+                        }
+                    }
+                }
+            }
+
+            // 恢复不限制
+            for (int i = 0; i < coreCount; i++)
+                cores[i].TickLimit = long.MaxValue;
+
+            // 两边都应：Link!=null，AttachedCount==2
+            // main: PlayerId=0 IsChild=false
+            // other: PlayerId=1 IsChild=true
+            UnityEngine.Debug.Log(
+              $"P0 id={main_gba.Serial.PlayerId} child={main_gba.Serial.IsChild} mode={main_gba.Serial.Mode} siocnt={main_gba.Serial.Siocnt:X4}");
+            UnityEngine.Debug.Log(
+              $"P1 id={other_process[0].gba.Serial.PlayerId} child={other_process[0].gba.Serial.IsChild} mode={other_process[0].gba.Serial.Mode} siocnt={other_process[0].gba.Serial.Siocnt:X4}");
+
+            // ----- 存档（保持你原逻辑）-----
             if (main_gba.Mem.SaveProvider.Dirty)
             {
                 DumpSavDataToReady();
-                //清理脏标记，否则一直保存
                 main_gba.Mem.SaveProvider.Dirty = false;
             }
-
             for (int i = 0; i < other_process.Count; i++)
             {
                 if (other_process[i].gba.Mem.SaveProvider.Dirty)
                 {
                     other_process[i].DumpSavDataToReady();
-                    //清理脏标记，否则一直保存
                     other_process[i].gba.Mem.SaveProvider.Dirty = false;
                 }
             }
-
             Update_CheckSave();
         }
 
