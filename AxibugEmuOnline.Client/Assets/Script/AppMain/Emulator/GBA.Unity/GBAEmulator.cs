@@ -2,6 +2,7 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using AxiReplay;
 using ICSharpCode.SharpZipLib.Zip;
+using nn.friends;
 using OptimeGBA;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public bool BootBIOS = false;
 
         public Gba main_gba;
-        public GbaLink gbaLink;
         public List<GBAEmuLiteProcess> other_process = new List<GBAEmuLiteProcess>();
+        public GbaLink gbaLink;
+        public Gba[] GbaInstSlot;
 
         public RawImage[] OtherGbaSreen;
         public static bool bLogicUpdatePause { get; private set; }
@@ -114,22 +116,35 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             bLogicUpdatePause = true;
         }
-        public override MsgBool StartGame(RomFile romFile)
+        public override MsgBool StartGame(GameStartInfo startInfo)
         {
-
+            GBAGameStartInfo gbastartInfo = (GBAGameStartInfo)startInfo;
+            RomFile romFile = startInfo.romFile;
             other_process.Clear();
             other_process.Add(new GBAEmuLiteProcess());
             string path = romFile.LocalProxyPath;
             byte[] romdata = GetBytesZippedFile(path);
+            string savpath = GetGameSavPath(romFile.LocalProxyFileName);
+            byte[] savdata = null;
+            if (AxiIO.File.Exists(savpath))
+                savdata = AxiIO.File.ReadAllBytes(savpath);
             try
             {
-                LoadRom(romdata, romFile.LocalProxyFileName);
-                for (int i = 0; i < other_process.Count; i++)
-                {
-                    other_process[i].VideoInit(OtherGbaSreen[i]);
-                    other_process[i].LoadRom(romdata, cache_savdata);
-                }
-                gbaLink = new GbaLink(main_gba, other_process[0].gba);
+                //LoadRom(romdata, romFile.LocalProxyFileName);
+                //for (int i = 0; i < other_process.Count; i++)
+                //{
+                //    other_process[i].VideoInit(OtherGbaSreen[i]);
+                //    other_process[i].LoadRom(romdata, cache_savdata);
+                //}
+                //gbaLink = new GbaLink(main_gba, other_process[0].gba);
+
+
+                //单人启动
+                //SetGBALink(gbastartInfo, 1, 0, new List<byte[]> { savdata });
+
+                //测试多人
+                SetGBALink(gbastartInfo, 2, 0, new List<byte[]> { savdata, savdata });
+
                 bLogicUpdatePause = true;
                 return true;
             }
@@ -138,7 +153,46 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 bLogicUpdatePause = false;
                 return "失败";
             }
+        }
 
+        void SetGBALink(GameStartInfo startInfo, int playerCount, int mineIdx, List<byte[]> otherSavDataList)
+        {
+            GbaInstSlot = new Gba[playerCount];
+            gbaLink = null;
+            other_process.Clear();
+            RomFile romFile = startInfo.romFile;
+            string path = romFile.LocalProxyPath;
+            byte[] romdata = GetBytesZippedFile(path);
+            if (playerCount == 1)//单人
+            {
+                LoadRom(romdata, otherSavDataList[0], romFile.LocalProxyFileName);
+                GbaInstSlot[0] = main_gba;
+            }
+            else//多人，对号入座
+            {
+                for (int i = 0; i < playerCount; i++)
+                {
+                    if (mineIdx == i)
+                    {
+                        LoadRom(romdata, otherSavDataList[0], romFile.LocalProxyFileName);
+                        GbaInstSlot[i] = main_gba;
+                    }
+                    else
+                    {
+                        GBAEmuLiteProcess otherGba = new GBAEmuLiteProcess();
+                        other_process.Add(otherGba);
+                        otherGba.VideoInit(OtherGbaSreen[other_process.Count - 1]);
+                        otherGba.LoadRom(romdata, otherSavDataList[0]);
+                        GbaInstSlot[i] = otherGba.gba;
+                    }
+                }
+                gbaLink = new GbaLink(
+                    GbaInstSlot[0],
+                    GbaInstSlot[1],
+                    GbaInstSlot.Length >= 3 ? GbaInstSlot[2] : null,
+                    GbaInstSlot.Length == 4 ? GbaInstSlot[3] : null);
+            }
+            bLogicUpdatePause = true;
         }
 
         public override void Dispose()
@@ -217,38 +271,27 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             Frame_UpdateByCpuTime();
         }
 
-        public void LoadRom(byte[] rom, string name)
+        string GetGameSavPath(string name)
         {
             string savPath = App.PersistentDataPath(this.Platform) + "/" + name.Substring(0, name.Length - 3) + "sav";
-            LoadSaveFileToCache(savPath);
+            return savPath;
+        }
+
+        public void LoadRom(byte[] rom, byte[] savdata, string name)
+        {
+            string savPath = GetGameSavPath(name);
+            LoadSaveFileToCache(savdata, savPath);
             byte[] sav;
             if (cache_had_savedata)
             {
                 sav = cache_savdata;
-                App.log.Info($"{savPath} exists, loaded");
+                App.log.Info($"savdata exists, loaded");
             }
             else
             {
                 sav = new byte[0];
                 App.log.Info(".sav not available");
             }
-            //byte[] sav = new byte[0];
-            //if (AxiIO.File.Exists(savPath))
-            //{
-            //    App.log.Info($"{savPath} exists, loading");
-            //    try
-            //    {
-            //        sav = AxiIO.File.ReadAllBytes(savPath);
-            //    }
-            //    catch
-            //    {
-            //        App.log.Error("Failed to load .sav file!");
-            //    }
-            //}
-            //else
-            //{
-            //    App.log.Info(".sav not available");
-            //}
 
             LoadRomAndSave(rom, sav, savPath);
             App.log.Info("Load Rom Success");
@@ -441,11 +484,15 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             // 收集本帧要跑的核心
             // index0 = main，其余 other_process
-            int coreCount = 1 + other_process.Count;
-            Gba[] cores = new Gba[coreCount];
-            cores[0] = main_gba;
-            for (int i = 0; i < other_process.Count; i++)
-                cores[i + 1] = other_process[i].gba;
+            //int coreCount = 1 + other_process.Count;
+            //Gba[] cores = new Gba[coreCount];
+            //cores[0] = main_gba;
+            //for (int i = 0; i < other_process.Count; i++)
+            //    cores[i + 1] = other_process[i].gba;
+
+            // 使用现在的实例数组，作为要跑的核心
+            Gba[] cores = GbaInstSlot;
+            int coreCount = GbaInstSlot.Length;
 
             // 以当前最慢核为基准，对齐到同一绝对时间轴
             long baseTick = cores[0].Scheduler.CurrentTicks;
@@ -512,10 +559,10 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             // 两边都应：Link!=null，AttachedCount==2
             // main: PlayerId=0 IsChild=false
             // other: PlayerId=1 IsChild=true
-            UnityEngine.Debug.Log(
-              $"P0 id={main_gba.Serial.PlayerId} child={main_gba.Serial.IsChild} mode={main_gba.Serial.Mode} siocnt={main_gba.Serial.Siocnt:X4}");
-            UnityEngine.Debug.Log(
-              $"P1 id={other_process[0].gba.Serial.PlayerId} child={other_process[0].gba.Serial.IsChild} mode={other_process[0].gba.Serial.Mode} siocnt={other_process[0].gba.Serial.Siocnt:X4}");
+            //UnityEngine.Debug.Log(
+            //  $"P0 id={main_gba.Serial.PlayerId} child={main_gba.Serial.IsChild} mode={main_gba.Serial.Mode} siocnt={main_gba.Serial.Siocnt:X4}");
+            //UnityEngine.Debug.Log(
+            //  $"P1 id={other_process[0].gba.Serial.PlayerId} child={other_process[0].gba.Serial.IsChild} mode={other_process[0].gba.Serial.Mode} siocnt={other_process[0].gba.Serial.Siocnt:X4}");
 
             // ----- 存档（保持你原逻辑）-----
             if (main_gba.Mem.SaveProvider.Dirty)
@@ -576,15 +623,26 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         float cache_writereadytime = 0;
         bool cache_had_savedata => cache_savdata != null;
 
-        void LoadSaveFileToCache(string savpath)
+        //void LoadSaveFileToCache(string savpath)
+        //{
+        //    cache_bNeedWriteSav = false;
+        //    cache_savdata = null;
+        //    cache_targetpath = savpath;
+        //    if (!AxiIO.File.Exists(savpath))
+        //        return;
+        //    cache_bNeedWriteSav = true;
+        //    cache_savdata = AxiIO.File.ReadAllBytes(savpath);
+        //}
+
+        void LoadSaveFileToCache(byte[] savdata, string savpath)
         {
             cache_bNeedWriteSav = false;
             cache_savdata = null;
             cache_targetpath = savpath;
-            if (!AxiIO.File.Exists(savpath))
+            if (savdata == null || savdata.Length < 1)
                 return;
             cache_bNeedWriteSav = true;
-            cache_savdata = AxiIO.File.ReadAllBytes(savpath);
+            cache_savdata = savdata;
         }
         void DumpSavDataToReady()
         {

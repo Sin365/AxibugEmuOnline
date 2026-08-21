@@ -24,7 +24,7 @@ namespace AxibugEmuOnline.Client
         /// <summary> 恢复核心推帧(从Pause状态恢复) </summary>
         public abstract void Resume();
         /// <summary> 启动模拟器逻辑 </summary>
-        public abstract MsgBool StartGame(RomFile romFile);
+        public abstract MsgBool StartGame(GameStartInfo startInfo);
         /// <summary> 释放模拟器核心 </summary>
         public abstract void Dispose();
         /// <summary> 重置核心,通常由模拟器核心提供的功能 </summary>

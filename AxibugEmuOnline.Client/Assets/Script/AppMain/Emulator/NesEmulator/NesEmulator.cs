@@ -41,8 +41,9 @@ namespace AxibugEmuOnline.Client
         /// <summary>
         /// 指定ROM开始游戏
         /// </summary>
-        public override MsgBool StartGame(RomFile rom)
+        public override MsgBool StartGame(GameStartInfo startInfo)
         {
+            RomFile rom = startInfo.romFile;
             StopGame();
 
             m_coreSupporter = new CoreSupporter();

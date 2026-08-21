@@ -112,8 +112,9 @@ public class UStoicGoose : EmuCore<ulong>
         bLogicUpdatePause = true;
     }
 
-    public override MsgBool StartGame(RomFile romFile)
+    public override MsgBool StartGame(GameStartInfo startInfo)
     {
+        RomFile romFile = startInfo.romFile;
         mPlatform = romFile.Platform;
 
         CheckCanStep(1, System.Reflection.MethodBase.GetCurrentMethod().Name);

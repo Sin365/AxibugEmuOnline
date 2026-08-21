@@ -240,7 +240,17 @@ namespace AxibugEmuOnline.Client.Manager
                             throw new Exception("模拟器核心未准备好");
                         }
                     }
-                    result = m_emuCore.StartGame(romFile);
+                    GameStartInfo startinfo;
+                    switch (romFile.Platform)
+                    {
+                        case RomPlatformType.GameBoyAdvance:
+                            startinfo = new GBAGameStartInfo(romFile);
+                            break;
+                        default:
+                            startinfo = new GameStartInfo(romFile);
+                            break;
+                    }
+                    result = m_emuCore.StartGame(startinfo);
                 }
                 catch (Exception ex)
                 {

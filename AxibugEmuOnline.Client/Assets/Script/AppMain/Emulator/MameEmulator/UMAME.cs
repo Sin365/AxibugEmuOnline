@@ -109,8 +109,9 @@ public class UMAME : EmuCore<ulong>
     {
         bLogicUpdatePause = true;
     }
-    public override MsgBool StartGame(RomFile romFile)
+    public override MsgBool StartGame(GameStartInfo startInfo)
     {
+        RomFile romFile = startInfo.romFile;
         MameMainMotion.CheckCanStep(-30, System.Reflection.MethodBase.GetCurrentMethod().Name);
         mPlatform = romFile.Platform;
         MameMainMotion.CheckCanStep(-20, System.Reflection.MethodBase.GetCurrentMethod().Name);

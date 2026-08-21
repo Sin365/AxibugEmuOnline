@@ -107,8 +107,9 @@ public class UEssgee : EmuCore<ulong>
         bLogicUpdatePause = true;
     }
 
-    public override MsgBool StartGame(RomFile romFile)
+    public override MsgBool StartGame(GameStartInfo startInfo)
     {
+        RomFile romFile = startInfo.romFile;
         mPlatform = romFile.Platform;
 
         InitAll(uegResources, uegIO, App.PersistentDataPath(mPlatform));
