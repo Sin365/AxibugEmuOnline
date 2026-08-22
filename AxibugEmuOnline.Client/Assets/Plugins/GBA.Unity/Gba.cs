@@ -20,6 +20,37 @@ namespace OptimeGBA
         public SerialGba Serial;
         /// <summary>多核对齐：StateStepUntil / HaltSkip 不超过此 tick。默认不限制。</summary>
         public long TickLimit = long.MaxValue;
+        bool _enablePpuRender = true;
+        bool _enableApuOutput = true;
+        /// <summary>
+        /// 是否执行像素渲染并 SwapBuffers。false 时仍跑扫描线时序、IRQ、H/VBlank DMA。
+        /// </summary>
+        public bool EnablePpuRender
+        {
+            get => _enablePpuRender;
+            set
+            {
+                _enablePpuRender = value;
+                if (Ppu?.Renderer != null)
+                    Ppu.Renderer.DebugEnableRendering = value;
+            }
+        }
+
+        /// <summary>
+        /// 是否混音并调用 AudioCallback。false 时仍跑 FIFO 弹出与 FIFO DMA。
+        /// </summary>
+        public bool EnableApuOutput
+        {
+            get => _enableApuOutput;
+            set => _enableApuOutput = value;
+        }
+
+        /// <summary>副核常用：关渲染+关出声，保留联机相关时序。</summary>
+        public void SetLiteMode(bool lite)
+        {
+            EnablePpuRender = !lite;
+            EnableApuOutput = !lite;
+        }
 
         public Gba(ProviderGba provider)
         {
@@ -30,6 +61,9 @@ namespace OptimeGBA
             Mem = new MemoryGba(this, provider);
             GbaAudio = new GbaAudio(this, Scheduler);
             Ppu = new PpuGba(this, Scheduler);
+            // 保证 Renderer 与开关一致（默认全开）
+            Ppu.Renderer.DebugEnableRendering = _enablePpuRender;
+
             Keypad = new Keypad();
             Dma = new DmaGba(this);
             HwControl = new HwControlGba(this);

@@ -2,7 +2,6 @@ using AxibugEmuOnline.Client.ClientCore;
 using AxibugProtobuf;
 using AxiReplay;
 using ICSharpCode.SharpZipLib.Zip;
-using nn.friends;
 using OptimeGBA;
 using System;
 using System.Collections.Generic;
@@ -160,6 +159,12 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             GbaInstSlot = new Gba[playerCount];
             gbaLink = null;
             other_process.Clear();
+
+            for (int i = 0; i < OtherGbaSreen.Length; i++)
+            {
+                OtherGbaSreen[i]?.gameObject.SetActive(false);
+            }
+
             RomFile romFile = startInfo.romFile;
             string path = romFile.LocalProxyPath;
             byte[] romdata = GetBytesZippedFile(path);
@@ -167,6 +172,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             {
                 LoadRom(romdata, otherSavDataList[0], romFile.LocalProxyFileName);
                 GbaInstSlot[0] = main_gba;
+                main_gba.SetLiteMode(false);
             }
             else//多人，对号入座
             {
@@ -176,13 +182,16 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                     {
                         LoadRom(romdata, otherSavDataList[0], romFile.LocalProxyFileName);
                         GbaInstSlot[i] = main_gba;
+                        main_gba.SetLiteMode(false);
                     }
                     else
                     {
                         GBAEmuLiteProcess otherGba = new GBAEmuLiteProcess();
                         other_process.Add(otherGba);
                         otherGba.VideoInit(OtherGbaSreen[other_process.Count - 1]);
+                        OtherGbaSreen[other_process.Count - 1]?.gameObject.SetActive(true);
                         otherGba.LoadRom(romdata, otherSavDataList[0]);
+                        otherGba.gba.SetLiteMode(false);
                         GbaInstSlot[i] = otherGba.gba;
                     }
                 }
@@ -268,6 +277,14 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                     other_process[i].OnRenderFrame();
                 }
             }
+
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.Keypad8))
+            { 
+                App.log.Info("SetLiteMode => "+ main_gba.EnablePpuRender);
+                main_gba.SetLiteMode(main_gba.EnablePpuRender);
+            }
+#endif
             Frame_UpdateByCpuTime();
         }
 

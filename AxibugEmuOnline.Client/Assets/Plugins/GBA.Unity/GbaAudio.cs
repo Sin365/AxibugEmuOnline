@@ -330,6 +330,13 @@ namespace OptimeGBA
 
         public void Sample(long cyclesLate)
         {
+            // 关出声：不做混音/回调/可视化，仍续订采样事件（调度链不断）
+            if (!Gba.EnableApuOutput)
+            {
+                Scheduler.AddEventRelative(SchedulerId.ApuSample, CyclesPerSample - cyclesLate, actCahce_Sample);
+                return;
+            }
+
             GbAudio.Tick(CyclesPerSample / 4); // convert to GB sample rate
 
             BlipBuf.ReadOutSample();
@@ -433,7 +440,11 @@ namespace OptimeGBA
 
             CurrentValueA = (short)((sbyte)A.Pop() << DmaSoundAVolume);
 
-            BlipBuf.SetValue(0, (float)LastSampleTimeA / CyclesPerSample, (float)CurrentValueA, 0);
+            //BlipBuf.SetValue(0, (float)LastSampleTimeA / CyclesPerSample, (float)CurrentValueA, 0);
+
+            // 仅出声时写入重采样缓冲；FIFO 水位与 DMA 始终处理
+            if (Gba.EnableApuOutput)
+                BlipBuf.SetValue(0, (float)LastSampleTimeA / CyclesPerSample, (float)CurrentValueA, 0);
 
             if (A.Entries <= 16)
             {
@@ -448,7 +459,9 @@ namespace OptimeGBA
 
             CurrentValueB = (short)((sbyte)B.Pop() << DmaSoundBVolume);
 
-            BlipBuf.SetValue(1, (float)LastSampleTimeB / CyclesPerSample, 0, (float)CurrentValueB);
+            //BlipBuf.SetValue(1, (float)LastSampleTimeB / CyclesPerSample, 0, (float)CurrentValueB);
+            if (Gba.EnableApuOutput)
+                BlipBuf.SetValue(1, (float)LastSampleTimeB / CyclesPerSample, 0, (float)CurrentValueB);
 
             if (B.Entries <= 16)
             {

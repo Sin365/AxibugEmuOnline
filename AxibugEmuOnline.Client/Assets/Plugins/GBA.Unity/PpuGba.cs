@@ -286,10 +286,21 @@ namespace OptimeGBA
                 }
                 Scheduler.AddEventRelative(SchedulerId.Ppu, 960 - cyclesLate, actCache_EndDrawingToHblank);
 
-                // Pre-render sprites for line zero
-                fixed (byte* vram = Vram)
+                //原版
+                //// Pre-render sprites for line zero
+                //fixed (byte* vram = Vram)
+                //{
+                //    if (Renderer.DebugEnableObj && Renderer.ScreenDisplayObj) Renderer.RenderObjs(0, vram);
+                //}
+
+                // Pre-render sprites for line zero（仅出画时需要）
+                if (Renderer.DebugEnableRendering)
                 {
-                    if (Renderer.DebugEnableObj && Renderer.ScreenDisplayObj) Renderer.RenderObjs(0, vram);
+                    fixed (byte* vram = Vram)
+                    {
+                        if (Renderer.DebugEnableObj && Renderer.ScreenDisplayObj)
+                            Renderer.RenderObjs(0, vram);
+                    }
                 }
             }
 
