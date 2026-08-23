@@ -1,18 +1,109 @@
 ﻿using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Settings;
+using OptimeGBA;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct GBAInputState : IEquatable<GBAInputState>
+    {
+        // 64 位整体值，用于位运算 / 网络同步 / 序列化
+        [FieldOffset(0)]
+        public ulong Value;
+
+        // 四个玩家各自的 16 位按键掩码
+        [FieldOffset(0)] public ushort P1;
+        [FieldOffset(2)] public ushort P2;
+        [FieldOffset(4)] public ushort P3;
+        [FieldOffset(6)] public ushort P4;
+
+        // ─── 构造 ───────────────────────────────────
+        public GBAInputState(ulong value)
+        {
+            P1 = 0; P2 = 0; P3 = 0; P4 = 0;
+            Value = value;
+        }
+
+        public GBAInputState(ushort p1, ushort p2 = 0, ushort p3 = 0, ushort p4 = 0)
+        {
+            Value = 0;
+            P1 = p1;
+            P2 = p2;
+            P3 = p3;
+            P4 = p4;
+        }
+
+        // ─── 拆分：取出指定玩家的 GBAKeyCode ────────
+        public GBAKeyCode GetPlayerKeys(int playerIndex)
+        {
+            ushort raw = playerIndex switch
+            {
+                0 => P1,
+                1 => P2,
+                2 => P3,
+                3 => P4,
+                _ => 0,
+            };
+            return (GBAKeyCode)raw;
+        }
+
+        // ─── 合并：将单个玩家的按键写入 ─────────────
+        public void SetPlayerKeys(int playerIndex, GBAKeyCode keys)
+        {
+            ushort raw = (ushort)keys;
+            switch (playerIndex)
+            {
+                case 0: P1 = raw; break;
+                case 1: P2 = raw; break;
+                case 2: P3 = raw; break;
+                case 3: P4 = raw; break;
+            }
+        }
+
+        // ─── 索引器（语法糖） ───────────────────────
+        public GBAKeyCode this[int playerIndex]
+        {
+            get => GetPlayerKeys(playerIndex);
+            set => SetPlayerKeys(playerIndex, value);
+        }
+
+        // ─── 便捷方法 ───────────────────────────────
+        public void Clear()
+        {
+            Value = 0;
+        }
+
+        public bool HasAnyInput()
+        {
+            return Value != 0;
+        }
+
+        // ─── 比较 ───────────────────────────────────
+        public bool Equals(GBAInputState other) => Value == other.Value;
+        public override bool Equals(object obj) => obj is GBAInputState other && Equals(other);
+        public override int GetHashCode() => Value.GetHashCode();
+
+        public static bool operator ==(GBAInputState a, GBAInputState b) => a.Value == b.Value;
+        public static bool operator !=(GBAInputState a, GBAInputState b) => a.Value != b.Value;
+
+        public static implicit operator ulong(GBAInputState state) => state.Value;
+        public static implicit operator GBAInputState(ulong value) => new GBAInputState(value);
+    }
+
+
     public class GBAInputProvider : MonoBehaviour
     {
         public GBAControllerMapper ControllerMapper { get; private set; } = new GBAControllerMapper();
 
-        List<GBAKeyCode> temp = new List<GBAKeyCode>();
-        private GBAKeyCode[] mCurrKey;
+        //List<GBAKeyCode> temp = new List<GBAKeyCode>();
+        //private GBAKeyCode[] mCurrKey;
         public static ushort[] CheckList = new ushort[]
             {
                     (ushort)GBAKeyCode.Start,
@@ -28,30 +119,48 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             };
         public ulong CurrLocalInpuAllData { get; private set; }
 
-        internal void SetCurrKeyArr(GBAKeyCode inputData)
+        //internal void SetCurrKeyArr(GBAKeyCode inputData)
+        //{
+        //    for (int i = 0; i < CheckList.Length; i++)
+        //    {
+        //        GBAKeyCode key = (GBAKeyCode)CheckList[i];
+        //        bool press = (inputData & key) > 0;
+        //        switch (key)
+        //        {
+        //            case GBAKeyCode.Start: GBAEmulator.instance.main_gba.Keypad.Start = press; break;
+        //            case GBAKeyCode.Select: GBAEmulator.instance.main_gba.Keypad.Select = press; break;
+        //            case GBAKeyCode.Left: GBAEmulator.instance.main_gba.Keypad.Left = press; break;
+        //            case GBAKeyCode.Right: GBAEmulator.instance.main_gba.Keypad.Right = press; break;
+        //            case GBAKeyCode.Up: GBAEmulator.instance.main_gba.Keypad.Up = press; break;
+        //            case GBAKeyCode.Down: GBAEmulator.instance.main_gba.Keypad.Down = press; break;
+        //            case GBAKeyCode.A: GBAEmulator.instance.main_gba.Keypad.A = press; break;
+        //            case GBAKeyCode.B: GBAEmulator.instance.main_gba.Keypad.B = press; break;
+        //            case GBAKeyCode.L: GBAEmulator.instance.main_gba.Keypad.L = press; break;
+        //            case GBAKeyCode.R: GBAEmulator.instance.main_gba.Keypad.R = press; break;
+        //        }
+        //    }
+        //}
+
+        public void SetCurrKeyArr(Gba gba, GBAKeyCode inputData)
         {
-            temp.Clear();
             for (int i = 0; i < CheckList.Length; i++)
             {
                 GBAKeyCode key = (GBAKeyCode)CheckList[i];
                 bool press = (inputData & key) > 0;
                 switch (key)
                 {
-                    case GBAKeyCode.Start: GBAEmulator.instance.main_gba.Keypad.Start = press; break;
-                    case GBAKeyCode.Select: GBAEmulator.instance.main_gba.Keypad.Select = press; break;
-                    case GBAKeyCode.Left: GBAEmulator.instance.main_gba.Keypad.Left = press; break;
-                    case GBAKeyCode.Right: GBAEmulator.instance.main_gba.Keypad.Right = press; break;
-                    case GBAKeyCode.Up: GBAEmulator.instance.main_gba.Keypad.Up = press; break;
-                    case GBAKeyCode.Down: GBAEmulator.instance.main_gba.Keypad.Down = press; break;
-                    case GBAKeyCode.A: GBAEmulator.instance.main_gba.Keypad.A = press; break;
-                    case GBAKeyCode.B: GBAEmulator.instance.main_gba.Keypad.B = press; break;
-                    case GBAKeyCode.L: GBAEmulator.instance.main_gba.Keypad.L = press; break;
-                    case GBAKeyCode.R: GBAEmulator.instance.main_gba.Keypad.R = press; break;
+                    case GBAKeyCode.Start: gba.Keypad.Start = press; break;
+                    case GBAKeyCode.Select: gba.Keypad.Select = press; break;
+                    case GBAKeyCode.Left: gba.Keypad.Left = press; break;
+                    case GBAKeyCode.Right: gba.Keypad.Right = press; break;
+                    case GBAKeyCode.Up: gba.Keypad.Up = press; break;
+                    case GBAKeyCode.Down: gba.Keypad.Down = press; break;
+                    case GBAKeyCode.A: gba.Keypad.A = press; break;
+                    case GBAKeyCode.B: gba.Keypad.B = press; break;
+                    case GBAKeyCode.L: gba.Keypad.L = press; break;
+                    case GBAKeyCode.R: gba.Keypad.R = press; break;
                 }
-                if (press)
-                    temp.Add(key);
             }
-            mCurrKey = temp.ToArray();
         }
 
         public ulong DoLocalPressedKeys()

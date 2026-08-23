@@ -17,10 +17,13 @@ namespace AxibugEmuOnline.Client.Manager
         public Protobuf_Room_MiniInfo mineRoomMiniInfo { get; private set; }
         public bool InRoom => App.user.IsLoggedIn && bHadNetRoomInfo;
         public bool IsHost => bHadNetRoomInfo ? mineRoomMiniInfo.HostPlayerUID == App.user.userdata.UID : false;
+        public SyncModeType SyncMode => bHadNetRoomInfo ? mineRoomMiniInfo.SyncMode : SyncModeType.GbaLinkMode;
         public bool IsScreenProviderUID => bHadNetRoomInfo ? mineRoomMiniInfo.ScreenProviderUID == App.user.userdata.UID : false;
         public RoomGameState RoomState => bHadNetRoomInfo ? mineRoomMiniInfo.GameState : RoomGameState.OnlyHost;
         public int WaitStep { get; private set; } = -1;
         public byte[] RawData { get; private set; } = null;
+        public List<byte[]> GbaLinkModeSavDataRawList { get; private set; } = new List<byte[]>();
+
         public NetReplay netReplay { get; private set; }
 
         Dictionary<int, Protobuf_Room_MiniInfo> dictRoomListID2Info = new Dictionary<int, Protobuf_Room_MiniInfo>();
@@ -41,6 +44,7 @@ namespace AxibugEmuOnline.Client.Manager
         Protobuf_Room_SinglePlayerInputData _Protobuf_Room_SinglePlayerInputData = new Protobuf_Room_SinglePlayerInputData();
         Protobuf_Screnn_Frame _Protobuf_Screnn_Frame = new Protobuf_Screnn_Frame();
         Protobuf_Room_HostPlayer_UpdateStateRaw _Protobuf_Room_HostPlayer_UpdateStateRaw = new Protobuf_Room_HostPlayer_UpdateStateRaw();
+        Protobuf_Room_AllPlayer_UpdateSavData _Protobuf_Room_AllPlayer_UpdateSavData = new Protobuf_Room_AllPlayer_UpdateSavData();
         public AppRoom()
         {
             mineRoomMiniInfo = new Protobuf_Room_MiniInfo();
@@ -55,9 +59,12 @@ namespace AxibugEmuOnline.Client.Manager
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_MyRoom_State_Change>((int)CommandID.CmdRoomMyRoomStateChanged, RecvRoomMyRoomStateChange);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_WaitStep_RESP>((int)CommandID.CmdRoomWaitStep, RecvRoom_WaitStep);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP>((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, RecvHostPlayer_UpdateStateRaw);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_AllPlayer_UpdateSavData_RESP>((int)CommandID.CmdRoomAllPlayerUpdateSavData, RecvAllPlayer_UpdateSavData);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Syn_RoomFrameAllInputData>((int)CommandID.CmdRoomSynPlayerInput, RecvHostSyn_RoomFrameAllInputData);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Screnn_Frame>((int)CommandID.CmdScreen, OnScreen);
         }
+
+
         internal void SetNetRoomInfo(Protobuf_Room_MiniInfo room, bool bReInitRePlay = true)
         {
             mineRoomMiniInfo.Reset();
@@ -82,7 +89,11 @@ namespace AxibugEmuOnline.Client.Manager
         bool AddOrUpdateRoomList(Protobuf_Room_MiniInfo roomInfo)
         {
             bool bNew = !dictRoomListID2Info.ContainsKey(roomInfo.RoomID);
-            dictRoomListID2Info[roomInfo.RoomID] = roomInfo;
+            //dictRoomListID2Info[roomInfo.RoomID] = roomInfo;
+            if (bNew)
+                dictRoomListID2Info[roomInfo.RoomID] = new Protobuf_Room_MiniInfo();
+            dictRoomListID2Info[roomInfo.RoomID].Reset();
+            dictRoomListID2Info[roomInfo.RoomID].MergeFrom(roomInfo);
             return bNew;
         }
         bool RemoveRoomList(int roomId)
@@ -134,11 +145,31 @@ namespace AxibugEmuOnline.Client.Manager
         #endregion
 
         #region 房间管理
-        List<Protobuf_Room_GamePlaySlot> GetMinePlayerSlotInfo()
+        public List<Protobuf_Room_GamePlaySlot> GetMinePlayerSlotInfo()
         {
             if (!bHadNetRoomInfo)
                 return null;
             return mineRoomMiniInfo.GamePlaySlotList.Where(w => w.PlayerUID == App.user.userdata.UID).ToList();
+        }
+
+        public int GetMinePlayerSlotCount()
+        {
+            if (!bHadNetRoomInfo)
+                return 0;
+            return mineRoomMiniInfo.GamePlaySlotList.Where(w => w.PlayerUID == App.user.userdata.UID).Count();
+        }
+
+        public int GetMinePlayerNetSlotIdx()
+        {
+            if (!bHadNetRoomInfo)
+                return -1;
+
+            for (int i = 0; i < mineRoomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                if (mineRoomMiniInfo.GamePlaySlotList[i].PlayerUID == App.user.userdata.UID)
+                    return i;
+            }
+            return -1;
         }
 
         long[] GetRoom4PlayerUIDs()
@@ -152,6 +183,16 @@ namespace AxibugEmuOnline.Client.Manager
                     result[i] = mineRoomMiniInfo.GamePlaySlotList[i].PlayerUID;
             }
             return result;
+        }
+        public int GetRoomPlayerCount()
+        {
+            int ret = 0;
+            for (int i = 0; i < mineRoomMiniInfo.GamePlaySlotList.Count; i++)
+            {
+                if (mineRoomMiniInfo.GamePlaySlotList[i].PlayerUID > 0)
+                    ret++;
+            }
+            return ret;
         }
 
         Protobuf_Room_GamePlaySlot[] GetRoom4GameSlotMiniInfos()
@@ -237,13 +278,14 @@ namespace AxibugEmuOnline.Client.Manager
         /// 创建房间
         /// </summary>
         /// <param name="GameRomID"></param>
-        /// <param name="JoinPlayerIdx"></param>
+        /// <param name="SyncMode"></param>
         /// <param name="GameRomHash"></param>
-        public void SendCreateRoom(int GameRomID, string GameRomHash = null)
+        public void SendCreateRoom(int GameRomID,SyncModeType SyncMode, string GameRomHash = null)
         {
             _Protobuf_Room_Create.GameRomID = GameRomID;
             _Protobuf_Room_Create.GameRomHash = GameRomHash;
-            App.log.Info($"创建房间");
+            _Protobuf_Room_Create.SyncMode = SyncMode;
+            App.log.Info($"创建房间RomID:{GameRomID} SyncMode:{SyncMode}");
             App.network.SendToServer((int)CommandID.CmdRoomCreate, _Protobuf_Room_Create);
         }
 
@@ -475,6 +517,20 @@ namespace AxibugEmuOnline.Client.Manager
             _Protobuf_Room_HostPlayer_UpdateStateRaw.Reset();
         }
 
+        /// <summary>
+        /// 上报游戏存档
+        /// </summary>
+        /// <param name="RoomID"></param>
+        public void SendSavDataRaw(byte[] RawData)
+        {
+            //压缩
+            byte[] compressRawData = Helper.CompressByteArray(RawData);
+            _Protobuf_Room_AllPlayer_UpdateSavData.SavDataRaw = Google.Protobuf.ByteString.CopyFrom(compressRawData);
+            App.log.Info($"上报即时存档数据 原数据大小:{RawData.Length},压缩后;{compressRawData.Length}");
+            App.network.SendToServer((int)CommandID.CmdRoomAllPlayerUpdateSavData, _Protobuf_Room_AllPlayer_UpdateSavData);
+            //_Protobuf_Room_AllPlayer_UpdateSavData.Reset();
+        }
+
         void RecvRoom_WaitStep(Protobuf_Room_WaitStep_RESP msg)
         {
             if (WaitStep != msg.WaitStep)
@@ -482,9 +538,34 @@ namespace AxibugEmuOnline.Client.Manager
                 WaitStep = msg.WaitStep;
                 if (WaitStep == 1)
                 {
-                    byte[] decompressRawData = Helper.DecompressByteArray(msg.LoadStateRaw.ToByteArray());
-                    App.log.Info($"收到即时存档数据 解压后;{decompressRawData.Length}");
-                    RawData = decompressRawData;
+                    if (App.roomMgr.SyncMode == SyncModeType.NormalMode)
+                    {
+                        byte[] decompressRawData = Helper.DecompressByteArray(msg.LoadStateRaw.ToByteArray());
+                        App.log.Info($"收到即时存档数据 解压后;{decompressRawData.Length}");
+                        RawData = decompressRawData;
+                    }
+                    else if (App.roomMgr.SyncMode == SyncModeType.GbaLinkMode)
+                    {
+                        GbaLinkModeSavDataRawList.Clear();
+                        for (int i = 0; i < msg.GbaLinkModeSevDataArr.Count; i++)
+                        {
+                            byte[] decompressRawData;
+                            if (msg.GbaLinkModeSevDataArrHadValueStatus[i] && msg.GbaLinkModeSevDataArr[i] != null)
+                            {
+                                byte[] singleSrcData = msg.GbaLinkModeSevDataArr[i].ToByteArray();
+                                decompressRawData = Helper.DecompressByteArray(singleSrcData);
+                            }
+                            else
+                                decompressRawData = null;
+                            App.log.Info($"收到即时存档数据 解压后;{decompressRawData?.Length}");
+                            GbaLinkModeSavDataRawList.Add(decompressRawData);
+                        }
+                    }
+                    else
+                    {
+                        App.log.Error("严重错误 ，联机类型错误");
+                        OverlayManager.PopTip("严重错误 ，联机类型错误");
+                    }
                     ReleaseRePlay();
                 }
                 Eventer.Instance.PostEvent(EEvent.OnRoomWaitStepChange, WaitStep);
@@ -496,6 +577,10 @@ namespace AxibugEmuOnline.Client.Manager
             App.log.Info($"即时存档上报成功");
         }
 
+        private void RecvAllPlayer_UpdateSavData(Protobuf_Room_AllPlayer_UpdateSavData_RESP rESP)
+        {
+            App.log.Info($"游戏存档上报成功");
+        }
         /// <summary>
         /// 即时存档加载完毕
         /// </summary>

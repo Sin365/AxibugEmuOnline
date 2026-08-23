@@ -2,7 +2,6 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Manager;
-using AxibugProtobuf;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +20,22 @@ public class ControllerInfoPanel : MonoBehaviour
     static List<int> s_freeSlots = new List<int>(4);
     private void OnLocalJoyDesireInvert(int joyIndex)
     {
+        //如果是GBA禁止动态插入第二个插槽
+        if (App.emu.Core != null && InGameUI.Instance.RomFile.Platform == AxibugProtobuf.RomPlatformType.GameBoyAdvance)
+        {
+            if (App.roomMgr.InRoom && App.roomMgr.GetMinePlayerSlotCount() >= 1)
+            {
+#if UNITY_EDITOR
+                App.log.Debug("GBA禁止动态插入第二个手柄插槽");
+#endif
+                return;
+            }
+            else
+            {
+                //TODO 单机也应该禁用
+            }
+        }
+
         if (App.roomMgr.InRoom)
         {
             if (!App.roomMgr.mineRoomMiniInfo.GetFreeSlot(ref s_freeSlots)) return;

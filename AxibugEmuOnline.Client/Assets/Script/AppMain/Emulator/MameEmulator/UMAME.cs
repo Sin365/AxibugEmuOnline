@@ -101,6 +101,11 @@ public class UMAME : EmuCore<ulong>
     {
         LoadState(data);
     }
+    public override byte[] GetGameSaveDataBytes()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void Pause()
     {
         bLogicUpdatePause = false;

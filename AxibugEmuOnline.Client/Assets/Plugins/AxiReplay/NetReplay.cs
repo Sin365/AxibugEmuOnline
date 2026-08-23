@@ -139,7 +139,7 @@ namespace AxiReplay
             if (!mustblag)
             {
 #if UNITY_EDITOR && DEBUG
-                Debug.Log("推帧规则怪谈|无");
+                //Debug.Log("推帧规则怪谈|无");
 #endif
                 radicalUseCounter = 0;
                 return false;
@@ -149,7 +149,7 @@ namespace AxiReplay
             if (queueLeftCount > 1)
             {
 #if UNITY_EDITOR && DEBUG
-                Debug.Log("推帧规则怪谈|冗余使用");
+                //Debug.Log("推帧规则怪谈|冗余使用");
 #endif
                 radicalUseCounter = 0;
                 return true;
@@ -160,7 +160,7 @@ namespace AxiReplay
                 if (radicalUseCounter > radicalMaxCount)
                 {
 #if UNITY_EDITOR && DEBUG
-                    Debug.Log("推帧规则怪谈|当前停止激进");
+                    //Debug.Log("推帧规则怪谈|当前停止激进");
 #endif
                     radicalUseCounter = 0;
                     return false;
@@ -169,7 +169,7 @@ namespace AxiReplay
                 {
                     radicalUseCounter++;
 #if UNITY_EDITOR && DEBUG
-                    Debug.Log($"推帧规则怪谈|激进使用{radicalUseCounter}");
+                    //Debug.Log($"推帧规则怪谈|激进使用{radicalUseCounter}");
 #endif
                     return true;
                 }

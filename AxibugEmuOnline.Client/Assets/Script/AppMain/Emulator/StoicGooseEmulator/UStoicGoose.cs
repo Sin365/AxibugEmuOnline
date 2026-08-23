@@ -92,6 +92,11 @@ public class UStoicGoose : EmuCore<ulong>
     {
         OverlayManager.PopTip(Platform + "当前版本不支持即时存档");
     }
+    public override byte[] GetGameSaveDataBytes()
+    {
+        throw new NotImplementedException();
+    }
+
 
     //public override void Pause()
     //{

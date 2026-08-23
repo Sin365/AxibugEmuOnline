@@ -19,6 +19,8 @@ namespace AxibugEmuOnline.Client
         /// <summary> 加载状态快照 </summary>
         /// <param name="data">该对象应该来自核心的<see cref="GetStateBytes"/>返回的byte数组</param>
         public abstract void LoadStateFromBytes(byte[] data);
+        /// <summary> 获得当前游戏的游戏存档（非即时存档快照） </summary>
+        public abstract byte[] GetGameSaveDataBytes();
         /// <summary> 暂停核心推帧 </summary>
         public abstract void Pause();
         /// <summary> 恢复核心推帧(从Pause状态恢复) </summary>

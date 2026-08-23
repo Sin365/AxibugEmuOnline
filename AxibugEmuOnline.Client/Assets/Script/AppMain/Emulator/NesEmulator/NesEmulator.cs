@@ -114,6 +114,11 @@ namespace AxibugEmuOnline.Client
             NesCore.LoadState(st);
         }
 
+        public override byte[] GetGameSaveDataBytes()
+        {
+            throw new NotImplementedException();
+        }
+
         public override uint PushFrame => NesCore.FrameCount;
 
         public override uint PhysicsFrame => PushFrame;

@@ -98,6 +98,11 @@ public class UEssgee : EmuCore<ulong>
         emulatorHandler.SetStateData(data);
     }
 
+    public override byte[] GetGameSaveDataBytes()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void Pause()
     {
         bLogicUpdatePause = false;

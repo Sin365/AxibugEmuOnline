@@ -22,8 +22,8 @@
 
         public GBAGameStartInfo(RomFile romFile,byte mineIdx, byte playerCount) : base(romFile)
         {
-            MineIdx = 0;
-            PlayerCount = 1;
+            MineIdx = mineIdx;
+            PlayerCount = playerCount;
         }
     }
 }

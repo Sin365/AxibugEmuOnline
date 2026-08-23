@@ -2,9 +2,7 @@
 using AxibugEmuOnline.Client.ClientCore;
 using AxibugEmuOnline.Client.Event;
 using AxibugEmuOnline.Client.Settings;
-using AxiReplay;
 using MAME.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

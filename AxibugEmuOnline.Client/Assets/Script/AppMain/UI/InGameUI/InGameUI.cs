@@ -48,7 +48,7 @@ namespace AxibugEmuOnline.Client
             base.Update();
             PushCoreFrame();
             App.settings.Filter.ExecuteFilterRender(Core.OutputPixel, Core.DrawCanvas);
-            App.settings.ScreenScaler.CalcScale(Core.DrawCanvas,Core.DrawCanvas_SrcRot, Core.Platform, App.emu.RomID);
+            App.settings.ScreenScaler.CalcScale(Core.DrawCanvas, Core.DrawCanvas_SrcRot, Core.Platform, App.emu.RomID);
         }
 
         void PushCoreFrame()
@@ -94,7 +94,7 @@ namespace AxibugEmuOnline.Client
             {
                 if (App.user.IsLoggedIn)
                 {
-                    App.roomMgr.SendCreateRoom(RomFile.ID, RomFile.Hash);
+                    App.roomMgr.SendCreateRoom(RomFile.ID, GetSyncModeTypeByPlatform(RomFile.Platform), RomFile.Hash);
                 }
                 else
                 {
@@ -120,6 +120,17 @@ namespace AxibugEmuOnline.Client
             }
         }
 
+        SyncModeType GetSyncModeTypeByPlatform(RomPlatformType platform)
+        {
+            switch (platform)
+            {
+                case RomPlatformType.GameBoyAdvance:
+                    return SyncModeType.GbaLinkMode;
+                default:
+                    return SyncModeType.NormalMode;
+            }
+        }
+
         private void OnRoomCreated()
         {
             if (m_delayCreateRoom)
@@ -140,7 +151,7 @@ namespace AxibugEmuOnline.Client
 
         private void OnLoggedIn()
         {
-            if (m_delayCreateRoom) App.roomMgr.SendCreateRoom(RomFile.ID, RomFile.Hash);
+            if (m_delayCreateRoom) App.roomMgr.SendCreateRoom(RomFile.ID, GetSyncModeTypeByPlatform(RomFile.Platform), RomFile.Hash);
         }
 
         private void OnServerStepUpdate(int step)

@@ -121,9 +121,6 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         #region Input
 
-        List<GBAKeyCode> temp = new List<GBAKeyCode>();
-        private GBAKeyCode[] mCurrKey;
-
         public GBAKeyCode DoLocalInputToTest()
         {
             GBAKeyCode tmpCurr = GBAKeyCode.None;
@@ -146,32 +143,6 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 }
             }
             return tmpCurr;
-        }
-
-        public void SetCurrKeyArr(GBAKeyCode inputData)
-        {
-            temp.Clear();
-            for (int i = 0; i < GBAInputProvider.CheckList.Length; i++)
-            {
-                GBAKeyCode key = (GBAKeyCode)GBAInputProvider.CheckList[i];
-                bool press = (inputData & key) > 0;
-                switch (key)
-                {
-                    case GBAKeyCode.Start: gba.Keypad.Start = press; break;
-                    case GBAKeyCode.Select: gba.Keypad.Select = press; break;
-                    case GBAKeyCode.Left: gba.Keypad.Left = press; break;
-                    case GBAKeyCode.Right: gba.Keypad.Right = press; break;
-                    case GBAKeyCode.Up: gba.Keypad.Up = press; break;
-                    case GBAKeyCode.Down: gba.Keypad.Down = press; break;
-                    case GBAKeyCode.A: gba.Keypad.A = press; break;
-                    case GBAKeyCode.B: gba.Keypad.B = press; break;
-                    case GBAKeyCode.L: gba.Keypad.L = press; break;
-                    case GBAKeyCode.R: gba.Keypad.R = press; break;
-                }
-                if (press)
-                    temp.Add(key);
-            }
-            mCurrKey = temp.ToArray();
         }
         #endregion
     }

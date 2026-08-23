@@ -259,6 +259,7 @@ namespace AxibugProtobuf
 			ObsUserCount = 0;
 			ScreenProviderUID = 0;
 			GamePlaySlotList?.Clear();
+			SyncMode = 0;
         }
     }
 }
@@ -343,6 +344,7 @@ namespace AxibugProtobuf
         {
 			GameRomID = 0;
 			GameRomHash = string.Empty;
+			SyncMode = 0;
         }
     }
 }
@@ -465,6 +467,7 @@ namespace AxibugProtobuf
         {
 			WaitStep = 0;
 			LoadStateRaw = Google.Protobuf.ByteString.Empty;
+			GbaLinkModeSevDataArr?.Clear();
         }
     }
 }
@@ -768,6 +771,29 @@ namespace AxibugProtobuf
 			MoveSavCount = 0;
 			MoveToNickName = string.Empty;
 			ParentUID = 0;
+        }
+    }
+}
+
+
+namespace AxibugProtobuf
+{
+    public sealed partial class Protobuf_Room_AllPlayer_UpdateSavData : IResetable
+    {
+        public void Reset()
+        {
+			SavDataRaw = Google.Protobuf.ByteString.Empty;
+        }
+    }
+}
+
+
+namespace AxibugProtobuf
+{
+    public sealed partial class Protobuf_Room_AllPlayer_UpdateSavData_RESP : IResetable
+    {
+        public void Reset()
+        {
         }
     }
 }

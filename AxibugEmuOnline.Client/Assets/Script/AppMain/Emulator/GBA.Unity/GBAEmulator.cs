@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace AxibugEmuOnline.Client.GBA.Unity
 {
-    public class GBAEmulator : EmuCore<GBAKeyCode>, AxiGbaIO
+    public class GBAEmulator : EmuCore<GBAInputState>, AxiGbaIO
     {
         public static GBAEmulator instance;
         const int FrameCycles = 70224 * 4;
@@ -33,8 +33,12 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public List<GBAEmuLiteProcess> other_process = new List<GBAEmuLiteProcess>();
         public GbaLink gbaLink;
         public Gba[] GbaInstSlot;
+        public int MainGbaIdx;
 
         public RawImage[] OtherGbaSreen;
+#if UNITY_EDITOR
+        private bool EditorTestP2 = false;
+#endif
         public static bool bLogicUpdatePause { get; private set; }
         //Thread EmulationThread;
         //AutoResetEvent ThreadSync = new AutoResetEvent(false);
@@ -57,29 +61,58 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override Vector3 DrawLocalScale => new Vector3(1, -1, 1);
 
-        protected override GBAKeyCode GetLocalInput()
+        protected override GBAInputState GetLocalInput()
         {
-            return (GBAKeyCode)main_inputProvider.DoLocalPressedKeys();
+            switch (MainGbaIdx)
+            {
+                case 0: return new GBAInputState((ushort)main_inputProvider.DoLocalPressedKeys(), 0, 0, 0);
+                case 1: return new GBAInputState(0, (ushort)main_inputProvider.DoLocalPressedKeys(), 0, 0);
+                case 2: return new GBAInputState(0, 0, (ushort)main_inputProvider.DoLocalPressedKeys(), 0);
+                case 3: return new GBAInputState(0, 0, 0, (ushort)main_inputProvider.DoLocalPressedKeys());
+                default: return new GBAInputState(0);
+            }
         }
 
-        protected override GBAKeyCode ConvertInputDataFromNet(ReplayStep step)
+        protected override GBAInputState ConvertInputDataFromNet(ReplayStep step)
         {
-            return (GBAKeyCode)step.InPut;
+            return new GBAInputState(step.InPut);
         }
 
-        protected override ulong InputDataToNet(GBAKeyCode inputData)
+        protected override ulong InputDataToNet(GBAInputState inputData)
         {
-            return (ushort)inputData;
+            return inputData.Value;
         }
 
-        protected override bool OnPushEmulatorFrame(GBAKeyCode InputData)
+        protected override bool OnPushEmulatorFrame(GBAInputState InputData)
         {
             if (!bLogicUpdatePause) return false;
-            //TODO联机时区分
-            main_inputProvider.SetCurrKeyArr(InputData);
 
-            for (int i = 0; i < other_process.Count; i++)
-                other_process[i].SetCurrKeyArr(other_process[i].DoLocalInputToTest());
+            ////TODO联机时区分
+            //main_inputProvider.SetCurrKeyArr(InputData);
+            //for (int i = 0; i < other_process.Count; i++)
+            //    other_process[i].SetCurrKeyArr(other_process[i].DoLocalInputToTest());
+
+
+            for (int i = 0; i < GbaInstSlot.Length; i++)
+            {
+                switch (i)
+                {
+                    case 0: main_inputProvider.SetCurrKeyArr(GbaInstSlot[i], (GBAKeyCode)InputData.P1); break;
+                    case 1: main_inputProvider.SetCurrKeyArr(GbaInstSlot[i], (GBAKeyCode)InputData.P2); break;
+                    case 2: main_inputProvider.SetCurrKeyArr(GbaInstSlot[i], (GBAKeyCode)InputData.P3); break;
+                    case 3: main_inputProvider.SetCurrKeyArr(GbaInstSlot[i], (GBAKeyCode)InputData.P4); break;
+                }
+            }
+
+#if UNITY_EDITOR
+            if (EditorTestP2)
+            {
+                foreach (var ogba in other_process)
+                {
+                    main_inputProvider.SetCurrKeyArr(ogba.gba, ogba.DoLocalInputToTest()); break;
+                }
+            }
+#endif
 
             DoUpdate();
             return true;
@@ -107,6 +140,35 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             OverlayManager.PopTip("暂不支持，即时存档");
         }
 
+        static byte[] emptyArr = new byte[0];
+        public override byte[] GetGameSaveDataBytes()
+        {
+            byte[] result;
+            if (cache_had_savedata)
+            {
+                result = cache_savdata;
+            }
+            else
+            {
+                if (!AxiIO.File.Exists(cache_targetpath))
+                    result = null;
+                else
+                {
+                    result = AxiIO.File.ReadAllBytes(cache_targetpath);
+                }
+            }
+            if (result == null)
+                return emptyArr;
+            else
+                return result;
+        }
+
+        public void LoadGameSavDataForMulti(GBAGameStartInfo startInfo, List<byte[]> savDataList)
+        {
+            RomFile romFile = startInfo.romFile;
+            SetGBALink(romFile, startInfo.PlayerCount, startInfo.MineIdx, savDataList);
+        }
+
         public override void Pause()
         {
             bLogicUpdatePause = false;
@@ -129,21 +191,17 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 savdata = AxiIO.File.ReadAllBytes(savpath);
             try
             {
-                //LoadRom(romdata, romFile.LocalProxyFileName);
-                //for (int i = 0; i < other_process.Count; i++)
-                //{
-                //    other_process[i].VideoInit(OtherGbaSreen[i]);
-                //    other_process[i].LoadRom(romdata, cache_savdata);
-                //}
-                //gbaLink = new GbaLink(main_gba, other_process[0].gba);
-
-
+#if UNITY_EDITOR
+                if (EditorTestP2)
+                {
+                    //测试多人
+                    SetGBALink(romFile, 2, 0, new List<byte[]> { savdata, savdata });
+                    bLogicUpdatePause = true;
+                    return true;
+                }
+#endif
                 //单人启动
-                //SetGBALink(gbastartInfo, 1, 0, new List<byte[]> { savdata });
-
-                //测试多人
-                SetGBALink(gbastartInfo, 2, 0, new List<byte[]> { savdata, savdata });
-
+                SetGBALink(romFile, 1, 0, new List<byte[]> { savdata });
                 bLogicUpdatePause = true;
                 return true;
             }
@@ -152,56 +210,6 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 bLogicUpdatePause = false;
                 return "失败";
             }
-        }
-
-        void SetGBALink(GameStartInfo startInfo, int playerCount, int mineIdx, List<byte[]> otherSavDataList)
-        {
-            GbaInstSlot = new Gba[playerCount];
-            gbaLink = null;
-            other_process.Clear();
-
-            for (int i = 0; i < OtherGbaSreen.Length; i++)
-            {
-                OtherGbaSreen[i]?.gameObject.SetActive(false);
-            }
-
-            RomFile romFile = startInfo.romFile;
-            string path = romFile.LocalProxyPath;
-            byte[] romdata = GetBytesZippedFile(path);
-            if (playerCount == 1)//单人
-            {
-                LoadRom(romdata, otherSavDataList[0], romFile.LocalProxyFileName);
-                GbaInstSlot[0] = main_gba;
-                main_gba.SetLiteMode(false);
-            }
-            else//多人，对号入座
-            {
-                for (int i = 0; i < playerCount; i++)
-                {
-                    if (mineIdx == i)
-                    {
-                        LoadRom(romdata, otherSavDataList[0], romFile.LocalProxyFileName);
-                        GbaInstSlot[i] = main_gba;
-                        main_gba.SetLiteMode(false);
-                    }
-                    else
-                    {
-                        GBAEmuLiteProcess otherGba = new GBAEmuLiteProcess();
-                        other_process.Add(otherGba);
-                        otherGba.VideoInit(OtherGbaSreen[other_process.Count - 1]);
-                        OtherGbaSreen[other_process.Count - 1]?.gameObject.SetActive(true);
-                        otherGba.LoadRom(romdata, otherSavDataList[0]);
-                        otherGba.gba.SetLiteMode(false);
-                        GbaInstSlot[i] = otherGba.gba;
-                    }
-                }
-                gbaLink = new GbaLink(
-                    GbaInstSlot[0],
-                    GbaInstSlot[1],
-                    GbaInstSlot.Length >= 3 ? GbaInstSlot[2] : null,
-                    GbaInstSlot.Length == 4 ? GbaInstSlot[3] : null);
-            }
-            bLogicUpdatePause = true;
         }
 
         public override void Dispose()
@@ -265,6 +273,61 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             Update_CheckSave(true);
             ReleaseCache();
         }
+        void SetGBALink(RomFile romFile, int playerCount, int mineIdx, List<byte[]> savDataList)
+        {
+            GbaInstSlot = new Gba[playerCount];
+            gbaLink = null;
+            MainGbaIdx = mineIdx;
+            other_process.Clear();
+
+            for (int i = 0; i < OtherGbaSreen.Length; i++)
+            {
+                OtherGbaSreen[i]?.gameObject.SetActive(false);
+            }
+
+            string path = romFile.LocalProxyPath;
+            byte[] romdata = GetBytesZippedFile(path);
+            if (playerCount == 1)//单人
+            {
+                LoadRom(romdata, savDataList[0], romFile.LocalProxyFileName);
+                GbaInstSlot[0] = main_gba;
+                main_gba.SetLiteMode(false);
+            }
+            else//多人，对号入座
+            {
+                for (int i = 0; i < playerCount; i++)
+                {
+                    if (mineIdx == i)
+                    {
+                        LoadRom(romdata, savDataList[0], romFile.LocalProxyFileName);
+                        GbaInstSlot[i] = main_gba;
+                        main_gba.SetLiteMode(false);
+                        App.log.Info($"[GBA]多实例槽位[{i}],本地玩家");
+                    }
+                    else
+                    {
+                        GBAEmuLiteProcess otherGba = new GBAEmuLiteProcess();
+                        other_process.Add(otherGba);
+                        otherGba.VideoInit(OtherGbaSreen[other_process.Count - 1]);
+                        OtherGbaSreen[other_process.Count - 1]?.gameObject.SetActive(true);
+                        otherGba.LoadRom(romdata, savDataList[0]);
+                        otherGba.gba.SetLiteMode(false);
+                        GbaInstSlot[i] = otherGba.gba;
+                        App.log.Info($"[GBA]多实例槽位[{i}],虚拟玩家");
+                    }
+                }
+                gbaLink = new GbaLink(
+                    GbaInstSlot[0],
+                    GbaInstSlot[1],
+                    GbaInstSlot.Length >= 3 ? GbaInstSlot[2] : null,
+                    GbaInstSlot.Length == 4 ? GbaInstSlot[3] : null);
+            }
+
+            AxiEmuRunFrame = 0;
+            AxiVirtualFrame = 0;
+            bLogicUpdatePause = true;
+        }
+
 
         // Update is called once per frame
         void DoUpdate()
@@ -280,8 +343,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
 #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Keypad8))
-            { 
-                App.log.Info("SetLiteMode => "+ main_gba.EnablePpuRender);
+            {
+                App.log.Info("SetLiteMode => " + main_gba.EnablePpuRender);
                 main_gba.SetLiteMode(main_gba.EnablePpuRender);
             }
 #endif
@@ -464,7 +527,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         //        cyclesLeft_gba_3 > 0 ||
         //        cyclesLeft_gba_4 > 0)
         //    {
-        //        if(cyclesLeft_main > 0 && !main_gba.Cpu.Errored)
+        //        if (cyclesLeft_main > 0 && !main_gba.Cpu.Errored)
         //            cyclesLeft_main -= (int)main_gba.Step();
         //        if (cyclesLeft_gba_2 > 0 && !other_process[0].gba.Cpu.Errored)
         //            cyclesLeft_gba_2 -= (int)other_process[0].gba.Step();
@@ -494,9 +557,52 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         //    Update_CheckSave();
         //}
 
+        //void RunSingleFrame()
+        //{
+        //    Gba[] cores = GbaInstSlot;
+        //    int cyclesLeft_1 = 70224 * 4;
+        //    int cyclesLeft_2 = cores.Length > 1 ? 70224 * 4 : 0;
+        //    int cyclesLeft_3 = cores.Length > 2 ? 70224 * 4 : 0;
+        //    int cyclesLeft_4 = cores.Length > 3 ? 70224 * 4 : 0;
+
+        //    while (cyclesLeft_1 > 0 ||
+        //        cyclesLeft_2 > 0 ||
+        //        cyclesLeft_3 > 0 ||
+        //        cyclesLeft_4 > 0)
+        //    {
+        //        if (cyclesLeft_1 > 0 && !cores[0].Cpu.Errored)
+        //            cyclesLeft_1 -= (int)cores[0].StateStepUntil();
+        //        if (cyclesLeft_2 > 0 && !cores[1].Cpu.Errored)
+        //            cyclesLeft_2 -= (int)cores[1].StateStepUntil();
+        //        if (cyclesLeft_3 > 0 && !cores[2].Cpu.Errored)
+        //            cyclesLeft_3 -= (int)cores[2].StateStepUntil();
+        //        if (cyclesLeft_4 > 0 && !cores[3].Cpu.Errored)
+        //            cyclesLeft_4 -= (int)cores[3].StateStepUntil();
+        //    }
+
+        //    if (main_gba.Mem.SaveProvider.Dirty)
+        //    {
+        //        DumpSavDataToReady();
+        //        //清理脏标记，否则一直保存
+        //        main_gba.Mem.SaveProvider.Dirty = false;
+        //    }
+
+        //    for (int i = 0; i < other_process.Count; i++)
+        //    {
+        //        if (other_process[i].gba.Mem.SaveProvider.Dirty)
+        //        {
+        //            other_process[i].DumpSavDataToReady();
+        //            //清理脏标记，否则一直保存
+        //            other_process[i].gba.Mem.SaveProvider.Dirty = false;
+        //        }
+        //    }
+
+        //    Update_CheckSave();
+        //}
+
         const int CyclesPerFrame = 70224 * 4;
         const int Slice = 64; // 可试 32~256
-
+        
         void RunSingleFrame()
         {
             // 收集本帧要跑的核心
@@ -597,7 +703,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
             Update_CheckSave();
         }
-
+        
         private static byte[] GetBytesZippedFile(string filename)
         {
             byte[] bytes = AxiIO.File.ReadAllBytes(filename);
@@ -639,17 +745,6 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         byte[] cache_savdata;
         float cache_writereadytime = 0;
         bool cache_had_savedata => cache_savdata != null;
-
-        //void LoadSaveFileToCache(string savpath)
-        //{
-        //    cache_bNeedWriteSav = false;
-        //    cache_savdata = null;
-        //    cache_targetpath = savpath;
-        //    if (!AxiIO.File.Exists(savpath))
-        //        return;
-        //    cache_bNeedWriteSav = true;
-        //    cache_savdata = AxiIO.File.ReadAllBytes(savpath);
-        //}
 
         void LoadSaveFileToCache(byte[] savdata, string savpath)
         {
