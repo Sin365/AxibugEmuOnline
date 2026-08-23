@@ -299,7 +299,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 {
                     if (mineIdx == i)
                     {
-                        LoadRom(romdata, savDataList[0], romFile.LocalProxyFileName);
+                        LoadRom(romdata, savDataList[i], romFile.LocalProxyFileName);
                         GbaInstSlot[i] = main_gba;
                         main_gba.SetLiteMode(false);
                         App.log.Info($"[GBA]多实例槽位[{i}],本地玩家");
@@ -310,7 +310,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                         other_process.Add(otherGba);
                         otherGba.VideoInit(OtherGbaSreen[other_process.Count - 1]);
                         OtherGbaSreen[other_process.Count - 1]?.gameObject.SetActive(true);
-                        otherGba.LoadRom(romdata, savDataList[0]);
+                        otherGba.LoadRom(romdata, savDataList[i]);
                         otherGba.gba.SetLiteMode(false);
                         GbaInstSlot[i] = otherGba.gba;
                         App.log.Info($"[GBA]多实例槽位[{i}],虚拟玩家");
@@ -325,6 +325,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
             AxiEmuRunFrame = 0;
             AxiVirtualFrame = 0;
+            accumulatedUs = 0;
+            CurrVirtualFrameIsSkim = false;
+
             bLogicUpdatePause = true;
         }
 
@@ -349,6 +352,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
 #endif
             Frame_UpdateByCpuTime();
+            //UpdateFrameOneByOne();
         }
 
         string GetGameSavPath(string name)

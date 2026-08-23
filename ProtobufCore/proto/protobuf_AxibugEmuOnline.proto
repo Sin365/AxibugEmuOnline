@@ -61,6 +61,9 @@ enum CommandID
 	CMD_Room_HostPlayer_UpdateStateRaw = 5204;  //主机玩家上传即时存档 上行 | 下行 对应 Protobuf_Room_HostPlayer_UpdateStateRaw | Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
 	CMD_Room_Player_Ready = 5208;  //玩家准备完毕 上行 Protobuf_Room_Player_Ready
 	
+	//↓↓↓GBA等线缆通讯游戏的专用协议
+	CMD_Room_AllPlayer_UpdateSavData = 5230;  //所有玩家玩家上传游戏存档 上行 | 下行 对应 Protobuf_Room_AllPlayer_UpdateSavData | Protobuf_Room_AllPlayer_UpdateSavData_RESP
+	
 	//游戏同步
 	CMD_Room_Singel_PlayerInput = 6010; //单个玩家操作同步上行 对应 Protobuf_Room_SinglePlayerInputData
 	CMD_ROOM_SYN_PlayerInput = 6015; //所有玩家操作同步下行  对应 Protobuf_Room_Syn_RoomFrameAllInputData
@@ -131,6 +134,12 @@ enum DeviceType //设备类型
 	WiiU = 9;
 	Nintendo3DS = 10;
 	AndroidCarApp = 11;//汽车Android车机
+}
+
+enum SyncModeType
+{
+	Normal_Mode = 0;//普通模式（开始广播即时存档 + Input输入设备同步模式）
+	GBA_LINK_MODE = 1;//有线传输模式（开始广播多台游戏存档+Input映射多实例模式）
 }
 
 enum GamePadType //手柄类型
@@ -351,6 +360,7 @@ message Protobuf_Room_MiniInfo
 	int32 ObsUserCount = 7;//观战用户数量
 	int64 ScreenProviderUID = 8;//屏幕数据供应者
 	repeated Protobuf_Room_GamePlaySlot GamePlaySlotList = 9;//游玩槽位信息P1~P4 固定4个
+	SyncModeType Sync_Mode = 10;//同步模式
 }
 
 message Protobuf_Room_GamePlaySlot
@@ -393,6 +403,7 @@ message Protobuf_Room_Create
 {
 	int32 GameRomID = 1;
 	string GameRomHash = 2;
+	SyncModeType SyncMode = 3;//联机模式
 }
 
 message Protobuf_Room_Create_RESP
@@ -447,6 +458,11 @@ message Protobuf_Room_WaitStep_RESP
 	
 	//如下是 WaitStep = 1 时，才有值。广播即时存档
     bytes LoadStateRaw = 2;//即时存档byte数据
+	
+	// GBA等线缆通讯游戏的专用的方式
+	//（GBA类线缆通讯 即GbaLinkMode，才使用的）如下是 WaitStep = 1 时，才有值。每一个玩家槽位的游戏存档（而非即时存档）
+    repeated bytes GbaLinkMode_SevDataArr = 3;//游戏存档数组
+	repeated bool GbaLinkMode_SevDataArr_HadValueStatus = 4;//游戏存档状态数组，标记是否有数据
 }
 
 message Protobuf_Room_HostPlayer_UpdateStateRaw
@@ -455,6 +471,15 @@ message Protobuf_Room_HostPlayer_UpdateStateRaw
 }
 
 message Protobuf_Room_HostPlayer_UpdateStateRaw_RESP
+{
+}
+
+message Protobuf_Room_AllPlayer_UpdateSavData
+{
+    bytes SavDataRaw = 1;//游戏存档byte数据
+}
+
+message Protobuf_Room_AllPlayer_UpdateSavData_RESP
 {
 }
 

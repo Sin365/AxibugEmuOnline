@@ -6,6 +6,7 @@ using AxibugEmuOnline.Server.Manager.Room;
 using AxibugEmuOnline.Server.NetWork;
 using AxibugProtobuf;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Ocsp;
 using System.Net.Sockets;
 
 namespace AxibugEmuOnline.Server
@@ -27,6 +28,7 @@ namespace AxibugEmuOnline.Server
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomLeave, OnCmdRoomLeave);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomChangePlayerWithJoy, OnCmdRoomChangePlayerWithJoy);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, OnHostPlayerUpdateStateRaw);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomAllPlayerUpdateSavData, OnllPlayerUpdateSavData);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomPlayerReady, OnRoomPlayerReady);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomSingelPlayerInput, OnSingelPlayerInput);
 
@@ -42,6 +44,7 @@ namespace AxibugEmuOnline.Server
             //mTimer16ms.Enabled = true;//是否执行System.Timers.Timer.Elapsed事件；
             //mTimer16ms.Start();
         }
+
 
         #region 房间管理
 
@@ -139,6 +142,7 @@ namespace AxibugEmuOnline.Server
                 GameRomHash = room.RomHash,
                 ScreenProviderUID = room.ScreenProviderUID,
                 HostPlayerUID = room.HostUID,
+                SyncMode = room.SyncMode,
                 GameState = room.GameState,
                 ObsUserCount = 0,//TODO
                 GamePlatformType = room.GameRomPlatformType
@@ -229,7 +233,7 @@ namespace AxibugEmuOnline.Server
             GameRoom newRoom = new GameRoom();
 
             RomPlatformType ptype = AppSrv.g_GameShareMgr.GetRomPlatformType(msg.GameRomID);
-            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash, _c.UID, false, ptype);
+            newRoom.Init(GetNewRoomID(), msg.GameRomID, msg.GameRomHash, _c.UID, ptype, msg.SyncMode);
             AddRoom(newRoom);
             ErrorCode joinErrcode = ErrorCode.ErrorOk;
             //加入
@@ -424,6 +428,30 @@ namespace AxibugEmuOnline.Server
             }
         }
 
+        private void OnllPlayerUpdateSavData(Socket sk, byte[] reqData)
+        {
+            ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
+            AppSrv.g_Log.DebugCmd($"OnllPlayerUpdateSavData 上报游戏存档 UID->{_c.UID}");
+            Protobuf_Room_AllPlayer_UpdateSavData msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_AllPlayer_UpdateSavData>(reqData);
+            Protobuf_Room_AllPlayer_UpdateSavData_RESP resp = new Protobuf_Room_AllPlayer_UpdateSavData_RESP();
+            ErrorCode errcode = ErrorCode.ErrorOk;
+            GameRoom room = GetRoomData(_c.RoomState.RoomID);
+            if (room == null)
+                errcode = ErrorCode.ErrorRoomNotFound;
+            else if (room.GameState != RoomGameState.WaitRawUpdate)
+                errcode = ErrorCode.ErrorRoomCantDoCurrState;
+
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomAllPlayerUpdateSavData, (int)errcode, ProtoBufHelper.Serizlize(resp));
+
+            if (errcode == ErrorCode.ErrorOk)
+            {
+                room.GetPlayerIdxByUID(_c.UID, out uint idx);
+                room.SetSingleLocalSavData(msg.SavDataRaw, (int)idx, out bool bHadRoomStateChange);
+                if (bHadRoomStateChange)
+                    SendRoomStepChange(room);
+            }
+        }
+
         public void OnRoomPlayerReady(Socket sk, byte[] reqData)
         {
             ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
@@ -556,11 +584,33 @@ namespace AxibugEmuOnline.Server
                     break;
                 case RoomGameState.WaitReady:
                     {
-                        Protobuf_Room_WaitStep_RESP resp = new Protobuf_Room_WaitStep_RESP()
+                        Protobuf_Room_WaitStep_RESP resp;
+                        resp = new Protobuf_Room_WaitStep_RESP()
                         {
                             WaitStep = 1,
-                            LoadStateRaw = room.NextStateRaw
                         };
+
+                        if (room.SyncMode == SyncModeType.NormalMode)
+                        {
+                            resp.LoadStateRaw = room.NextStateRaw;
+                        }
+                        else if (room.SyncMode == SyncModeType.GbaLinkMode)
+                        {
+                            for (int i = 0; i < room.GbaLinkNextSaveDataRawArr.Length; i++)
+                            {
+                                var temp = room.GbaLinkNextSaveDataRawArr[i];
+                                bool hadSavData = temp != null;
+                                resp.GbaLinkModeSevDataArrHadValueStatus.Add(hadSavData);
+                                if (hadSavData)
+                                    resp.GbaLinkModeSevDataArr.Add(room.GbaLinkNextSaveDataRawArr[i]);
+                                else
+                                    resp.GbaLinkModeSevDataArr.Add(Google.Protobuf.ByteString.Empty);
+                            }
+                        }
+                        else
+                        {
+                            AppSrv.g_Log.Error("严重错误，联机类型错误");
+                        }
                         AppSrv.g_Log.DebugCmd($"Step:1 WaitReady 广播即时存档");
                         AppSrv.g_ClientMgr.ClientSend(roomClient, (int)CommandID.CmdRoomWaitStep, (int)ErrorCode.ErrorOk, ProtoBufHelper.Serizlize(resp));
                     }

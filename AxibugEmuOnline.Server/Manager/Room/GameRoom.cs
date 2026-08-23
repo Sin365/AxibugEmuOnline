@@ -13,12 +13,19 @@ namespace AxibugEmuOnline.Server.Manager.Room
         public string RomHash { get; private set; }
         public long HostUID { get; private set; }
         public long ScreenProviderUID { get; private set; }
+
+        public SyncModeType SyncMode;
+
         public GameRoomSlot[] PlayerSlot { get; private set; }
         public long Player1_UID => PlayerSlot[0].UID;
         public long Player2_UID => PlayerSlot[1].UID;
         public long Player3_UID => PlayerSlot[2].UID;
         public long Player4_UID => PlayerSlot[3].UID;
         public Google.Protobuf.ByteString? NextStateRaw { get; private set; }
+        #region GBALinkMode
+        public Google.Protobuf.ByteString?[] GbaLinkNextSaveDataRawArr { get; private set; } = new Google.Protobuf.ByteString?[4];
+        public bool[] GbaLinkNextSaveDataRawArr_UpdateState { get; private set; } = new bool[4];
+        #endregion
         public Google.Protobuf.ByteString? ScreenRaw { get; private set; }
         //public bool[] PlayerReadyState { get; private set; }
         public List<long> SynUIDs;
@@ -46,6 +53,10 @@ namespace AxibugEmuOnline.Server.Manager.Room
                     {
                         case RoomGameState.WaitRawUpdate:
                             NextStateRaw = null;
+                            #region GBALinkMode
+                            Array.Clear(GbaLinkNextSaveDataRawArr, 0, 4);
+                            Array.Clear(GbaLinkNextSaveDataRawArr_UpdateState, 0, 4);
+                            #endregion
                             break;
                         case RoomGameState.WaitReady:
                             ClearAllSlotReadyState();//清理玩家所有准备状态
@@ -59,7 +70,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
         /// </summary>
         public uint SrvForwardFrames { get; set; }
 
-        public void Init(int roomID, int gameRomID, string roomHash, long hostUId, bool bloadState = false, RomPlatformType ptype = default)
+        public void Init(int roomID, int gameRomID, string roomHash, long hostUId, RomPlatformType ptype, SyncModeType syncMode)
         {
             Dispose();
             RoomID = roomID;
@@ -68,6 +79,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
             RomHash = roomHash;
             HostUID = hostUId;
             ScreenProviderUID = hostUId;
+            SyncMode = syncMode;
 
             if (PlayerSlot == null)
             {
@@ -135,22 +147,24 @@ namespace AxibugEmuOnline.Server.Manager.Room
                 case RomPlatformType.Neogeo:
                 case RomPlatformType.Igs:
                 case RomPlatformType.ArcadeOld:
+                case RomPlatformType.WonderSwan:
+                case RomPlatformType.WonderSwanColor:
+                case RomPlatformType.GameBoyAdvance:
                     {
                         switch (slotIdx)
                         {
                             case 0: val = data.p1_ushort; break;
                             case 1: val = data.p2_ushort; break;
                             case 2: val = data.p3_ushort; break;
-                            case 4: val = data.p4_ushort; break;
+                            case 3: val = data.p4_ushort; break;
                         }
-
                         //ushort 类型作为单个玩家操作
                         switch (slotIdx)
                         {
                             case 0: mCurrInputData.p1_ushort = val; break;
                             case 1: mCurrInputData.p2_ushort = val; break;
                             case 2: mCurrInputData.p3_ushort = val; break;
-                            case 4: mCurrInputData.p3_ushort = val; break;
+                            case 3: mCurrInputData.p4_ushort = val; break;
                         }
                     }
                     break;
@@ -161,7 +175,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
                             case 0: val = data.p1_byte; break;
                             case 1: val = data.p2_byte; break;
                             case 2: val = data.p3_byte; break;
-                            case 4: val = data.p4_byte; break;
+                            case 3: val = data.p4_byte; break;
                         }
                         //byte 类型作为单个玩家操作
                         switch (slotIdx)
@@ -169,7 +183,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
                             case 0: mCurrInputData.p1_byte = (byte)val; break;
                             case 1: mCurrInputData.p2_byte = (byte)val; break;
                             case 2: mCurrInputData.p3_byte = (byte)val; break;
-                            case 4: mCurrInputData.p3_byte = (byte)val; break;
+                            case 3: mCurrInputData.p4_byte = (byte)val; break;
                         }
                     }
                     break;
@@ -365,6 +379,15 @@ namespace AxibugEmuOnline.Server.Manager.Room
                 default: UID = -1; break;
             }
             return UID > 0;
+        }
+        public bool GetPlayerIdxByUID(long UID, out uint Idx)
+        {
+            if (Player1_UID > 0 && Player1_UID == UID) { Idx = 0; return true; }
+            if (Player2_UID > 0 && Player2_UID == UID) { Idx = 1; return true; }
+            if (Player3_UID > 0 && Player3_UID == UID) { Idx = 2; return true; }
+            if (Player4_UID > 0 && Player4_UID == UID) { Idx = 3; return true; }
+            Idx = 0;
+            return false;
         }
         public bool GetFreeSlot(out uint SlotIdx)
         {
@@ -588,11 +611,30 @@ namespace AxibugEmuOnline.Server.Manager.Room
                         bChanged = true;
                         break;
                     }
-                    if (NextStateRaw != null)//已经上传即时存档
+
+                    if (SyncMode == SyncModeType.NormalMode)
                     {
-                        this.GameState = RoomGameState.WaitReady;
-                        bChanged = true;
-                        break;
+                        if (NextStateRaw != null)//已经上传即时存档
+                        {
+                            this.GameState = RoomGameState.WaitReady;
+                            bChanged = true;
+                            break;
+                        }
+                    }
+                    else if (SyncMode == SyncModeType.GbaLinkMode)
+                    {
+                        //如果所有人完成了存档上传
+                        if (GbaLinkNextSaveDataRawArr_UpdateState.Where(w => w == true).Count() == GetPlayerCount())
+                        {
+                            AppSrv.g_Log.Info("接收到所有玩家的存档，开始");
+                            this.GameState = RoomGameState.WaitReady;
+                            bChanged = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        AppSrv.g_Log.Error("严重错误，联机类型错误");
                     }
                     break;
                 case RoomGameState.WaitReady:
@@ -731,6 +773,15 @@ namespace AxibugEmuOnline.Server.Manager.Room
             int oldPlayerCount = GetPlayerCount();
             AppSrv.g_Log.Debug($"SetLoadRaw proto Lenght->{NextStateRaw.Length}");
             this.NextStateRaw = NextStateRaw;
+            int newPlayerCount = GetPlayerCount();
+            bHadRoomStateChange = CheckRoomStateChange(oldPlayerCount, newPlayerCount);
+        }
+        public void SetSingleLocalSavData(Google.Protobuf.ByteString NextSavDataRaw, int SlotIdx, out bool bHadRoomStateChange)
+        {
+            int oldPlayerCount = GetPlayerCount();
+            AppSrv.g_Log.Debug($"SetSingleLocalSavData 接收每个客户端单个游戏存档 SlotIdx:{SlotIdx} Lenght->{NextSavDataRaw.Length}");
+            this.GbaLinkNextSaveDataRawArr[SlotIdx] = NextSavDataRaw;
+            this.GbaLinkNextSaveDataRawArr_UpdateState[SlotIdx] = true;
             int newPlayerCount = GetPlayerCount();
             bHadRoomStateChange = CheckRoomStateChange(oldPlayerCount, newPlayerCount);
         }

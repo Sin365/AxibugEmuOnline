@@ -31,6 +31,7 @@ namespace AxibugEmuOnline.Server
                                 AppSrv.g_Log.Info($"-----    RoomID:{room.RoomID}   -----");
                                 AppSrv.g_Log.Info($"GameRomID:{room.GameRomID}");
                                 AppSrv.g_Log.Info($"RomPlatformType:{room.GameRomPlatformType}");
+                                AppSrv.g_Log.Info($"SyncMode:{room.SyncMode}");
                                 AppSrv.g_Log.Info($"GameState:{room.GameState}");
                                 AppSrv.g_Log.Info($"HostUID:{room.HostUID}");
                                 AppSrv.g_Log.Info($"mCurrFrameId:{room.mCurrServerFrameId}");
