@@ -37,7 +37,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public RawImage[] OtherGbaSreen;
 #if UNITY_EDITOR
-        private bool EditorTestP2 = false;
+        private bool IsEditorTestOther = true;
+        private int EditorTestOtherCount = 3;
 #endif
         public static bool bLogicUpdatePause { get; private set; }
         //Thread EmulationThread;
@@ -105,11 +106,11 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
 
 #if UNITY_EDITOR
-            if (EditorTestP2)
+            if (IsEditorTestOther)
             {
                 foreach (var ogba in other_process)
                 {
-                    main_inputProvider.SetCurrKeyArr(ogba.gba, ogba.DoLocalInputToTest()); break;
+                    main_inputProvider.SetCurrKeyArr(ogba.gba, ogba.DoLocalInputToTest());
                 }
             }
 #endif
@@ -181,10 +182,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             GBAGameStartInfo gbastartInfo = (GBAGameStartInfo)startInfo;
             RomFile romFile = startInfo.romFile;
-            other_process.Clear();
-            other_process.Add(new GBAEmuLiteProcess());
             string path = romFile.LocalProxyPath;
-            byte[] romdata = GetBytesZippedFile(path);
             string savpath = GetGameSavPath(romFile.LocalProxyFileName);
             byte[] savdata = null;
             if (AxiIO.File.Exists(savpath))
@@ -192,10 +190,16 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             try
             {
 #if UNITY_EDITOR
-                if (EditorTestP2)
+                if (IsEditorTestOther)
                 {
+
+                    var testsavlist = new List<byte[]>();
+                    for (int i = 0; i < EditorTestOtherCount + 1; i++)
+                    {
+                        testsavlist.Add(savdata);
+                    }
                     //测试多人
-                    SetGBALink(romFile, 2, 0, new List<byte[]> { savdata, savdata });
+                    SetGBALink(romFile, EditorTestOtherCount + 1, 0, testsavlist);
                     bLogicUpdatePause = true;
                     return true;
                 }
@@ -357,7 +361,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         string GetGameSavPath(string name)
         {
-            string savPath = App.PersistentDataPath(this.Platform) + "/" + name.Substring(0, name.Length - 3) + "sav";
+            string savPath = App.PersistentDataPath(this.Platform) + "/SavSata/" + name.Substring(0, name.Length - 3) + "sav";
             return savPath;
         }
 
@@ -561,52 +565,55 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         //    Update_CheckSave();
         //}
 
-        //void RunSingleFrame()
-        //{
-        //    Gba[] cores = GbaInstSlot;
-        //    int cyclesLeft_1 = 70224 * 4;
-        //    int cyclesLeft_2 = cores.Length > 1 ? 70224 * 4 : 0;
-        //    int cyclesLeft_3 = cores.Length > 2 ? 70224 * 4 : 0;
-        //    int cyclesLeft_4 = cores.Length > 3 ? 70224 * 4 : 0;
+#if UNITY_SWITCH //暂时Switch只有用这个模式，才能慢60帧，但是这样高要求的联机游戏会有问题（如，马里奥水管工附赠游戏没问题，但是马里奥赛车，星之卡比梦之泉不行）
+        void RunSingleFrame()
+        {
+            Gba[] cores = GbaInstSlot;
+            int cyclesLeft_1 = 70224 * 4;
+            int cyclesLeft_2 = cores.Length > 1 ? 70224 * 4 : 0;
+            int cyclesLeft_3 = cores.Length > 2 ? 70224 * 4 : 0;
+            int cyclesLeft_4 = cores.Length > 3 ? 70224 * 4 : 0;
 
-        //    while (cyclesLeft_1 > 0 ||
-        //        cyclesLeft_2 > 0 ||
-        //        cyclesLeft_3 > 0 ||
-        //        cyclesLeft_4 > 0)
-        //    {
-        //        if (cyclesLeft_1 > 0 && !cores[0].Cpu.Errored)
-        //            cyclesLeft_1 -= (int)cores[0].StateStepUntil();
-        //        if (cyclesLeft_2 > 0 && !cores[1].Cpu.Errored)
-        //            cyclesLeft_2 -= (int)cores[1].StateStepUntil();
-        //        if (cyclesLeft_3 > 0 && !cores[2].Cpu.Errored)
-        //            cyclesLeft_3 -= (int)cores[2].StateStepUntil();
-        //        if (cyclesLeft_4 > 0 && !cores[3].Cpu.Errored)
-        //            cyclesLeft_4 -= (int)cores[3].StateStepUntil();
-        //    }
+            while (cyclesLeft_1 > 0 ||
+                cyclesLeft_2 > 0 ||
+                cyclesLeft_3 > 0 ||
+                cyclesLeft_4 > 0)
+            {
+                if (cyclesLeft_1 > 0 && !cores[0].Cpu.Errored)
+                    cyclesLeft_1 -= (int)cores[0].StateStepUntil();
+                if (cyclesLeft_2 > 0 && !cores[1].Cpu.Errored)
+                    cyclesLeft_2 -= (int)cores[1].StateStepUntil();
+                if (cyclesLeft_3 > 0 && !cores[2].Cpu.Errored)
+                    cyclesLeft_3 -= (int)cores[2].StateStepUntil();
+                if (cyclesLeft_4 > 0 && !cores[3].Cpu.Errored)
+                    cyclesLeft_4 -= (int)cores[3].StateStepUntil();
+            }
 
-        //    if (main_gba.Mem.SaveProvider.Dirty)
-        //    {
-        //        DumpSavDataToReady();
-        //        //清理脏标记，否则一直保存
-        //        main_gba.Mem.SaveProvider.Dirty = false;
-        //    }
+            if (main_gba.Mem.SaveProvider.Dirty)
+            {
+                DumpSavDataToReady();
+                //清理脏标记，否则一直保存
+                main_gba.Mem.SaveProvider.Dirty = false;
+            }
 
-        //    for (int i = 0; i < other_process.Count; i++)
-        //    {
-        //        if (other_process[i].gba.Mem.SaveProvider.Dirty)
-        //        {
-        //            other_process[i].DumpSavDataToReady();
-        //            //清理脏标记，否则一直保存
-        //            other_process[i].gba.Mem.SaveProvider.Dirty = false;
-        //        }
-        //    }
+            for (int i = 0; i < other_process.Count; i++)
+            {
+                if (other_process[i].gba.Mem.SaveProvider.Dirty)
+                {
+                    other_process[i].DumpSavDataToReady();
+                    //清理脏标记，否则一直保存
+                    other_process[i].gba.Mem.SaveProvider.Dirty = false;
+                }
+            }
 
-        //    Update_CheckSave();
-        //}
-
+            Update_CheckSave();
+        }
+#elif FALSE
         const int CyclesPerFrame = 70224 * 4;
-        const int Slice = 64; // 可试 32~256
-        
+        //const int Slice = 64; // 可试 32~256
+        const int Slice = 4096 * 2; // 可试 32~256
+        //4096 * 4 XX
+
         void RunSingleFrame()
         {
             // 收集本帧要跑的核心
@@ -707,7 +714,264 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
             Update_CheckSave();
         }
-        
+#elif FALSE
+        const int CyclesPerFrame = 70224 * 4;
+
+        /// <summary>平时允许的最大领先（cycle）。越大越接近写法1性能。</summary>
+        const int MaxSkewNormal = 65536;   // 可试 32768~131072；单机/非传输期
+
+        /// <summary>SIO 需要收紧时的最大领先。你侧镜之迷宫/赛车安全上限约 8192。</summary>
+        const int MaxSkewTight = 4096;     // 必要时刻才用；可改 4096 更稳、更慢
+
+        /// <summary>内层防死循环</summary>
+        const int StepGuard = 100000;
+
+        static bool CoreNeedsTightSync(Gba gba)
+        {
+            var s = gba.Serial;
+            if (s == null) return false;
+
+            // SIOCNT bit7 = Start/Busy（传输中）
+            if ((s.Siocnt & 0x80) != 0)
+                return true;
+
+            // 已进 Multi 且挂了 Link：比完全不管略紧一点（可选）
+            // 若只想「真正 Busy 才收紧」，删掉下面两行即可，性能更好
+            if (s.Link != null && s.Link.AttachedCount > 1 && s.Mode == SerialGba.SioMode.Multi)
+                return true;
+
+
+            return false;
+        }
+
+        static bool AnyCoreNeedsTightSync(Gba[] cores)
+        {
+            for (int i = 0; i < cores.Length; i++)
+            {
+                if (cores[i] != null && !cores[i].Cpu.Errored && CoreNeedsTightSync(cores[i]))
+                    return true;
+            }
+            return false;
+        }
+
+        void RunSingleFrame()
+        {
+            Gba[] cores = GbaInstSlot;
+            int coreCount = cores.Length;
+            if (coreCount <= 0) return;
+
+            // 本帧终点：以当前最慢核为时间轴原点
+            long baseTick = cores[0].Scheduler.CurrentTicks;
+            for (int i = 1; i < coreCount; i++)
+            {
+                long t = cores[i].Scheduler.CurrentTicks;
+                if (t < baseTick) baseTick = t;
+            }
+            long frameEnd = baseTick + CyclesPerFrame;
+
+            int guardOuter = 0;
+            while (guardOuter++ < StepGuard)
+            {
+                // 是否都已到达 frameEnd
+                bool allDone = true;
+                long minTick = long.MaxValue;
+                for (int i = 0; i < coreCount; i++)
+                {
+                    var g = cores[i];
+                    if (g == null || g.Cpu.Errored) continue;
+                    long t = g.Scheduler.CurrentTicks;
+                    if (t < frameEnd) allDone = false;
+                    if (t < minTick) minTick = t;
+                }
+                if (allDone) break;
+                if (minTick == long.MaxValue) break;
+
+                // ---- 动态收紧：仅必要时用 MaxSkewTight ----
+                int skew = AnyCoreNeedsTightSync(cores) ? MaxSkewTight : MaxSkewNormal;
+                long limitCeil = minTick + skew;
+                if (limitCeil > frameEnd) limitCeil = frameEnd;
+
+                // 每核推进：TickLimit = min(自身可跑到的上限, limitCeil)
+                // StateStepUntil 在 TickLimit=较大时会一次跑到 NextEvent，接近写法1
+                for (int i = 0; i < coreCount; i++)
+                {
+                    var gba = cores[i];
+                    if (gba == null || gba.Cpu.Errored) continue;
+                    if (gba.Scheduler.CurrentTicks >= frameEnd) continue;
+
+                    long target = limitCeil;
+                    // 已领先到 limit 的核本轮跳过，等别人跟上
+                    if (gba.Scheduler.CurrentTicks >= target) continue;
+
+                    int guard = 0;
+                    while (gba.Scheduler.CurrentTicks < target && !gba.Cpu.Errored && guard++ < StepGuard)
+                    {
+                        gba.TickLimit = target;
+                        uint advanced = gba.StateStepUntil();
+                        if (advanced == 0 && gba.Scheduler.CurrentTicks < target)
+                            gba.Step();
+                    }
+                }
+            }
+
+            for (int i = 0; i < coreCount; i++)
+            {
+                if (cores[i] != null)
+                    cores[i].TickLimit = long.MaxValue;
+            }
+
+            // ----- 存档（保持原逻辑）-----
+            if (main_gba.Mem.SaveProvider.Dirty)
+            {
+                DumpSavDataToReady();
+                main_gba.Mem.SaveProvider.Dirty = false;
+            }
+            for (int i = 0; i < other_process.Count; i++)
+            {
+                if (other_process[i].gba.Mem.SaveProvider.Dirty)
+                {
+                    other_process[i].DumpSavDataToReady();
+                    other_process[i].gba.Mem.SaveProvider.Dirty = false;
+                }
+            }
+            Update_CheckSave();
+        }
+#else
+
+        const int CyclesPerFrame = 70224 * 4;
+
+        /// <summary>SIO 需要收紧时的最大领先。你侧镜之迷宫/赛车安全上限约 8192。</summary>
+        //const int MaxSkewTight = 4096;     // 必要时刻才用；可改 4096 更稳、更慢
+
+        /// <summary>内层防死循环</summary>
+        const int StepGuard = 100000;
+
+        const int MaxSkewSolo = 131072; // 无 Link
+        const int MaxSkewLinked = 16384;  // 有 Link 但未在传输（可调 8192~32768）
+        const int MaxSkewTight = 4096;   // 传输中 / 粘滞期（你已验证）
+        const int TightHoldCycles = 24576;  // Busy 消失后仍保持 Tight 的时间（约数条扫描线~几帧可调）
+
+        static int GetMaxSkew(Gba[] cores)
+        {
+            bool anyLink = false;
+            bool anyBusy = false;
+            bool inHold = false;
+
+            if (cores.Length <= 1)
+                return MaxSkewSolo;
+
+            for (int i = 0; i < cores.Length; i++)
+            {
+                var g = cores[i];
+                if (g == null || g.Cpu.Errored) continue;
+                var s = g.Serial;
+                if (s == null) continue;
+
+                if (s.Link != null && s.Link.AttachedCount > 1)
+                    anyLink = true;
+
+                if ((s.Siocnt & 0x80) != 0)
+                    anyBusy = true;
+
+                // 粘滞：最近传过
+                long dt = g.Scheduler.CurrentTicks - s.LastTransferActivityTick;
+                if (dt >= 0 && dt < TightHoldCycles)
+                    inHold = true;
+            }
+
+            if (anyBusy || inHold)
+                return MaxSkewTight;    // 真正需要传输对齐
+
+            if (anyLink)
+                return MaxSkewLinked; // 有线但标题/菜单：轻度限制，省性能
+
+            return MaxSkewSolo;
+        }
+
+        void RunSingleFrame()
+        {
+            Gba[] cores = GbaInstSlot;
+            int coreCount = cores.Length;
+            if (coreCount <= 0) return;
+
+            // 本帧终点：以当前最慢核为时间轴原点
+            long baseTick = cores[0].Scheduler.CurrentTicks;
+            for (int i = 1; i < coreCount; i++)
+            {
+                long t = cores[i].Scheduler.CurrentTicks;
+                if (t < baseTick) baseTick = t;
+            }
+            long frameEnd = baseTick + CyclesPerFrame;
+
+            int guardOuter = 0;
+            while (guardOuter++ < StepGuard)
+            {
+                // 是否都已到达 frameEnd
+                bool allDone = true;
+                long minTick = long.MaxValue;
+                for (int i = 0; i < coreCount; i++)
+                {
+                    var g = cores[i];
+                    if (g == null || g.Cpu.Errored) continue;
+                    long t = g.Scheduler.CurrentTicks;
+                    if (t < frameEnd) allDone = false;
+                    if (t < minTick) minTick = t;
+                }
+                if (allDone) break;
+                if (minTick == long.MaxValue) break;
+
+                // ---- 动态收紧：仅必要时用 MaxSkewTight ----
+                int skew = GetMaxSkew(cores);
+                long limitCeil = minTick + skew;
+                if (limitCeil > frameEnd) limitCeil = frameEnd;
+
+                // 每核推进：TickLimit = min(自身可跑到的上限, limitCeil)
+                // StateStepUntil 在 TickLimit=较大时会一次跑到 NextEvent，接近写法1
+                for (int i = 0; i < coreCount; i++)
+                {
+                    var gba = cores[i];
+                    if (gba == null || gba.Cpu.Errored) continue;
+                    if (gba.Scheduler.CurrentTicks >= frameEnd) continue;
+
+                    long target = limitCeil;
+                    // 已领先到 limit 的核本轮跳过，等别人跟上
+                    if (gba.Scheduler.CurrentTicks >= target) continue;
+
+                    int guard = 0;
+                    while (gba.Scheduler.CurrentTicks < target && !gba.Cpu.Errored && guard++ < StepGuard)
+                    {
+                        gba.TickLimit = target;
+                        uint advanced = gba.StateStepUntil();
+                        if (advanced == 0 && gba.Scheduler.CurrentTicks < target)
+                            gba.Step();
+                    }
+                }
+            }
+
+            for (int i = 0; i < coreCount; i++)
+            {
+                if (cores[i] != null)
+                    cores[i].TickLimit = long.MaxValue;
+            }
+
+            // ----- 存档（保持原逻辑）-----
+            if (main_gba.Mem.SaveProvider.Dirty)
+            {
+                DumpSavDataToReady();
+                main_gba.Mem.SaveProvider.Dirty = false;
+            }
+            for (int i = 0; i < other_process.Count; i++)
+            {
+                if (other_process[i].gba.Mem.SaveProvider.Dirty)
+                {
+                    other_process[i].DumpSavDataToReady();
+                    other_process[i].gba.Mem.SaveProvider.Dirty = false;
+                }
+            }
+            Update_CheckSave();
+        }
+#endif
+
         private static byte[] GetBytesZippedFile(string filename)
         {
             byte[] bytes = AxiIO.File.ReadAllBytes(filename);
@@ -785,6 +1049,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 return;
             try
             {
+                string dirpath = System.IO.Path.GetDirectoryName(cache_targetpath);
+                if(!AxiIO.Directory.Exists(dirpath))
+                    AxiIO.Directory.CreateDirectory(dirpath);
                 AxiIO.File.WriteAllBytes(cache_targetpath, cache_savdata, mustsave);
                 OverlayManager.PopTip("GBA存档写入");
             }

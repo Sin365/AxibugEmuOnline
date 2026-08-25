@@ -47,6 +47,8 @@ namespace OptimeGBA
         public bool IsChild;
 
         bool _completeScheduled;
+        // SerialGba 内
+        public long LastTransferActivityTick = long.MinValue / 2;
 
         public SerialGba(Gba gba)
         {
@@ -144,10 +146,14 @@ namespace OptimeGBA
             Siocnt = (ushort)(Siocnt | (1 << 7));
             Rcnt = (ushort)(Rcnt & ~1);
             // Child 不 Schedule，等 Parent OnTransferComplete → FinishAll
+
+            LastTransferActivityTick = _gba.Scheduler.CurrentTicks;
         }
 
         void OnTransferComplete(long cyclesLate)
         {
+            LastTransferActivityTick = _gba.Scheduler.CurrentTicks;
+
             _completeScheduled = false;
 
             switch (Mode)
