@@ -260,6 +260,7 @@ namespace AxibugProtobuf
 			ScreenProviderUID = 0;
 			GamePlaySlotList?.Clear();
 			SyncMode = 0;
+			LockState = 0;
         }
     }
 }
@@ -468,6 +469,7 @@ namespace AxibugProtobuf
 			WaitStep = 0;
 			LoadStateRaw = Google.Protobuf.ByteString.Empty;
 			GbaLinkModeSevDataArr?.Clear();
+			GbaLinkModeSevDataArrHadValueStatus?.Clear();
         }
     }
 }
@@ -794,6 +796,30 @@ namespace AxibugProtobuf
     {
         public void Reset()
         {
+        }
+    }
+}
+
+
+namespace AxibugProtobuf
+{
+    public sealed partial class Protobuf_Room_CloseStatus_Change : IResetable
+    {
+        public void Reset()
+        {
+			LockState = 0;
+        }
+    }
+}
+
+
+namespace AxibugProtobuf
+{
+    public sealed partial class Protobuf_Room_CloseStatus_Change_RESP : IResetable
+    {
+        public void Reset()
+        {
+			LockState = 0;
         }
     }
 }

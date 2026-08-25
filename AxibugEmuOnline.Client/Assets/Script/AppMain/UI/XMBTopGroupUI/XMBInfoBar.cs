@@ -15,6 +15,7 @@ public class XMBInfoBar : MonoBehaviour
     public Text DelayValue;
     public Text OnlinePlayerCount;
     public Text FPS;
+    public Transform RoomLockState;
     public GameObject ControlSlotInfoNode;
 
     void OnEnable()
@@ -40,6 +41,12 @@ public class XMBInfoBar : MonoBehaviour
         RefreshPower();
         RefreshDelay();
         RefreshFps();
+        RefreshRoomState();
+    }
+
+    private void RefreshRoomState()
+    {
+        RoomLockState.gameObject.SetActiveEx(App.roomMgr.RoomLockStatue > AxibugProtobuf.RoomLockType.RoomOpening);
     }
 
     /// <summary>

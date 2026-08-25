@@ -15,6 +15,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
         public long ScreenProviderUID { get; private set; }
 
         public SyncModeType SyncMode;
+        public RoomLockType LockState;
 
         public GameRoomSlot[] PlayerSlot { get; private set; }
         public long Player1_UID => PlayerSlot[0].UID;
@@ -80,6 +81,7 @@ namespace AxibugEmuOnline.Server.Manager.Room
             HostUID = hostUId;
             ScreenProviderUID = hostUId;
             SyncMode = syncMode;
+            LockState = 0;
 
             if (PlayerSlot == null)
             {

@@ -16,6 +16,7 @@ namespace AxibugEmuOnline.Client
         [SerializeField] Slider m_downloadProgress;
         [SerializeField] GameObject m_downloadingFlag;
         [SerializeField] GameObject m_romReadyFlag;
+        [SerializeField] GameObject m_roomLockFlag;
         [SerializeField]
         UIShiny DownloadComplete;
 
@@ -124,6 +125,8 @@ namespace AxibugEmuOnline.Client
             SetBaseInfo("--", $"<b>{hostNick}</b>的房间", $"{cur}/{max}");
             SetIcon(null);
 
+
+            m_roomLockFlag.SetActiveEx(roomInfo.LockState != RoomLockType.RoomOpening);
             roomInfo.FetchRomFileInRoomInfo((room, romFile) =>
             {
                 if (room.RoomID != RoomID) return;

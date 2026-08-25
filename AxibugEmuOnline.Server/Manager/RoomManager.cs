@@ -27,6 +27,7 @@ namespace AxibugEmuOnline.Server
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomJoin, OnCmdRoomJoin);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomLeave, OnCmdRoomLeave);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomChangePlayerWithJoy, OnCmdRoomChangePlayerWithJoy);
+            NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomCloseStatusChange, OnCmdRoomCloseStatusChange);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, OnHostPlayerUpdateStateRaw);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomAllPlayerUpdateSavData, OnllPlayerUpdateSavData);
             NetMsg.Instance.RegNetMsgEvent((int)CommandID.CmdRoomPlayerReady, OnRoomPlayerReady);
@@ -143,6 +144,7 @@ namespace AxibugEmuOnline.Server
                 ScreenProviderUID = room.ScreenProviderUID,
                 HostPlayerUID = room.HostUID,
                 SyncMode = room.SyncMode,
+                LockState = room.LockState,
                 GameState = room.GameState,
                 ObsUserCount = 0,//TODO
                 GamePlatformType = room.GameRomPlatformType
@@ -155,7 +157,7 @@ namespace AxibugEmuOnline.Server
                 if (slot.UID > 0)
                 {
                     pbSlot.PlayerUID = slot.UID;
-                    pbSlot.PlayerLocalJoyIdx = (int)slot.LocalJoyIdx;
+                    pbSlot.PlayerLocalJoyIdx = (int)slot.LocalJoyIdx;//TODO 可能需要检查这个值 是否正确
                     pbSlot.PlayerLocalGamePadType = slot.LocalGamePadType;
                     if (AppSrv.g_ClientMgr.GetClientByUID(pbSlot.PlayerUID, out ClientInfo _client))
                     {
@@ -274,9 +276,16 @@ namespace AxibugEmuOnline.Server
             long UID = _c.UID;
             lock (room)
             {
+                if (room.LockState > 0)
+                {
+                    joinErrcode = ErrorCode.ErrorRoomStateIsLock;
+                    AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
+                    return;
+                }
+
                 if (!room.GetFreeSlot(out uint SlotIdx))
                 {
-                    joinErrcode = ErrorCode.ErrorRoomSlotAlreadlyHadPlayer;
+                    joinErrcode = ErrorCode.ErrorRoomYouIsNotHost; ;
                     AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomJoin, (int)joinErrcode, ProtoBufHelper.Serizlize(resp));
                     return;
                 }
@@ -403,6 +412,37 @@ namespace AxibugEmuOnline.Server
             AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomChangePlayerWithJoy, (int)errcode, ProtoBufHelper.Serizlize(resp));
 
             Protobuf_Room_MyRoom_State_Change(room.RoomID);
+        }
+
+        private void OnCmdRoomCloseStatusChange(Socket sk, byte[] reqData)
+        {
+            AppSrv.g_Log.DebugCmd($"OnCmdRoomCloseStatusChange");
+            ClientInfo _c = AppSrv.g_ClientMgr.GetClientForSocket(sk);
+            Protobuf_Room_CloseStatus_Change msg = ProtoBufHelper.DeSerizlize<Protobuf_Room_CloseStatus_Change>(reqData);
+            Protobuf_Room_CloseStatus_Change_RESP resp = new Protobuf_Room_CloseStatus_Change_RESP();
+            ErrorCode errcode = ErrorCode.ErrorOk;
+            GameRoom room = GetRoomData(_c.RoomState.RoomID);
+            if (room == null)
+            {
+                errcode = ErrorCode.ErrorRoomNotFound;
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomCloseStatusChange, (int)errcode, ProtoBufHelper.Serizlize(resp));
+                return;
+            }
+            if (room.HostUID != _c.UID)
+            {
+                errcode = ErrorCode.ErrorRoomYouIsNotHost;
+                AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomCloseStatusChange, (int)errcode, ProtoBufHelper.Serizlize(resp));
+                return;
+            }
+
+            AppSrv.g_Log.DebugCmd($"更换房间开放状态{msg.LockState}");
+            room.LockState = msg.LockState;
+            resp.LockState = msg.LockState;
+            AppSrv.g_ClientMgr.ClientSend(_c, (int)CommandID.CmdRoomCloseStatusChange, (int)errcode, ProtoBufHelper.Serizlize(resp));
+            //房间状态更新
+            Protobuf_Room_MyRoom_State_Change(room.RoomID);
+            //列表更新给所有玩家
+            SendRoomUpdateToAll(room, 0);
         }
 
         public void OnHostPlayerUpdateStateRaw(Socket sk, byte[] reqData)

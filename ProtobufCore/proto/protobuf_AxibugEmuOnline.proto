@@ -36,6 +36,7 @@ enum CommandID
 	CMD_Room_Leave = 5106;  //房间离开 对应 Protobuf_Room_Leave | Protobuf_Room_Leave_RESP
 	CMD_Room_MyRoom_State_Changed = 5110;  //我所在的房间内状态发生变化 对应 Protobuf_Room_MyRoom_State_Change
 	CMD_Room_ChangePlayerWithJoy = 5130;  //更换操作槽位 对应 Protobuf_Room_Change_PlaySlotWithJoy | Protobuf_Room_Change_PlaySlotWithJoy_RESP
+	CMD_Room_CloseStatus_Change = 5141;  //房间开启状态切换 对应 Protobuf_Room_CloseStatus_Change | Protobuf_Room_CloseStatus_Change_RESP
 	
 		//准备和开始流程（5201 ~ 5204 ~ 5208）
 		//
@@ -89,8 +90,11 @@ enum ErrorCode
 	
 	ERROR_ROOM_NOT_FOUND = 10;//房间不存在
 	ERROR_ROOM_SLOT_ALREADLY_HAD_PLAYER=11;//加入目标位置已经有人
+	ERROR_ROOM_STATE_IS_LOCK =12;//房间当前已锁定，无法加入
 	
 	ERROR_ROOM_CANT_DO_CURR_STATE =50;//当前房间状态不允许本操作
+	
+	ERROR_ROOM_YOU_IS_NOT_HOST =52;//无法操作，需要房主
 	
 	ERROR_ROM_DONT_HAD_SAVEDATA = 80;//即时存档不存在
 	ERROR_ROM_FAIL_SAVEDATA = 81;//处理即时存档失败
@@ -142,6 +146,11 @@ enum SyncModeType
 	GBA_LINK_MODE = 1;//有线传输模式（开始广播多台游戏存档+Input映射多实例模式）
 }
 
+enum RoomLockType
+{
+	ROOM_OPENING = 0;//开放状态
+	ROOM_LOCKED = 1;//房间当前状态
+}
 enum GamePadType //手柄类型
 {
     Keyboard = 0;//键盘
@@ -361,6 +370,7 @@ message Protobuf_Room_MiniInfo
 	int64 ScreenProviderUID = 8;//屏幕数据供应者
 	repeated Protobuf_Room_GamePlaySlot GamePlaySlotList = 9;//游玩槽位信息P1~P4 固定4个
 	SyncModeType Sync_Mode = 10;//同步模式
+	RoomLockType LockState = 11;//是否锁定
 }
 
 message Protobuf_Room_GamePlaySlot
@@ -450,6 +460,16 @@ message Protobuf_PlaySlotIdxWithJoyIdx
 
 message Protobuf_Room_Change_PlaySlotWithJoy_RESP
 {
+}
+
+message Protobuf_Room_CloseStatus_Change
+{
+	RoomLockType LockState = 1;//是否锁定 [0]未锁定 [1]已锁定
+}
+
+message Protobuf_Room_CloseStatus_Change_RESP
+{
+	RoomLockType LockState = 1;//提示用：是否锁定 [0]未锁定 [1]已锁定   （实际数据以房间数据为准）
 }
 
 message Protobuf_Room_WaitStep_RESP

@@ -206,6 +206,12 @@ namespace AxibugEmuOnline.Client.Network
                     case ErrorCode.ErrorBindCodeAccountAlreadyHasParent:
                         errMsg = "该设备已有绑定账户";
                         break;
+                    case ErrorCode.ErrorRoomStateIsLock:
+                        errMsg = "无法进入：该房间房主已锁定";
+                        break;
+                    case ErrorCode.ErrorRoomYouIsNotHost:
+                        errMsg = "操作失败：需要房主方可操作";
+                        break;
                     case ErrorCode.ErrorDefaul:
                     case ErrorCode.ErrorOk:
                     default:
@@ -217,7 +223,7 @@ namespace AxibugEmuOnline.Client.Network
 
 #if UNITY_EDITOR
             //if (cmd > (int)CommandID.CmdPong)
-            //App.log.Info("[NET]<color=yellow>" + cmd + "|" + (CommandID)cmd + "| ERRCODE:" + ERRCODE + "| length:" + arg.Length + "</color>");
+                //App.log.Info("[NET]<color=yellow>" + cmd + "|" + (CommandID)cmd + "| ERRCODE:" + ERRCODE + "| length:" + arg.Length + "</color>");
 #endif
             if (err > ErrorCode.ErrorOk)
                 return;

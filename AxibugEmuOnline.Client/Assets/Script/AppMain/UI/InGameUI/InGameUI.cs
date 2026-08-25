@@ -37,6 +37,7 @@ namespace AxibugEmuOnline.Client
             menus.Add(new InGameUI_SaveStateMenu(this));
             menus.Add(new InGameUI_OpenOrHideScreenJoyStrick(this));
             menus.Add(new InGameUI_UploadGameCoverImg(this));
+            menus.Add(new InGameUI_RoomLock(this));
             //menus.Add(new InGameUI_SendChat(this));
             menus.Add(new InGameUI_QuitGame(this));
 

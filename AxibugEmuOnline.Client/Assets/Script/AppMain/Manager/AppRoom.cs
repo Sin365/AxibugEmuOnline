@@ -18,6 +18,7 @@ namespace AxibugEmuOnline.Client.Manager
         public bool InRoom => App.user.IsLoggedIn && bHadNetRoomInfo;
         public bool IsHost => bHadNetRoomInfo ? mineRoomMiniInfo.HostPlayerUID == App.user.userdata.UID : false;
         public SyncModeType SyncMode => bHadNetRoomInfo ? mineRoomMiniInfo.SyncMode : SyncModeType.GbaLinkMode;
+        public RoomLockType RoomLockStatue => bHadNetRoomInfo ? mineRoomMiniInfo.LockState : RoomLockType.RoomOpening;
         public bool IsScreenProviderUID => bHadNetRoomInfo ? mineRoomMiniInfo.ScreenProviderUID == App.user.userdata.UID : false;
         public RoomGameState RoomState => bHadNetRoomInfo ? mineRoomMiniInfo.GameState : RoomGameState.OnlyHost;
         public int WaitStep { get; private set; } = -1;
@@ -40,6 +41,7 @@ namespace AxibugEmuOnline.Client.Manager
         Protobuf_Room_Join _Protobuf_Room_Join = new Protobuf_Room_Join();
         Protobuf_Room_Leave _Protobuf_Room_Leave = new Protobuf_Room_Leave();
         Protobuf_Room_Change_PlaySlotWithJoy _Protobuf_Room_Change_PlaySlotWithJoy = new Protobuf_Room_Change_PlaySlotWithJoy();
+        Protobuf_Room_CloseStatus_Change_RESP _Protobuf_Room_CloseStatus_Change = new Protobuf_Room_CloseStatus_Change_RESP();
         Protobuf_Room_Player_Ready _Protobuf_Room_Player_Ready = new Protobuf_Room_Player_Ready();
         Protobuf_Room_SinglePlayerInputData _Protobuf_Room_SinglePlayerInputData = new Protobuf_Room_SinglePlayerInputData();
         Protobuf_Screnn_Frame _Protobuf_Screnn_Frame = new Protobuf_Screnn_Frame();
@@ -57,6 +59,8 @@ namespace AxibugEmuOnline.Client.Manager
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Join_RESP>((int)CommandID.CmdRoomJoin, RecvJoinRoom);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Leave_RESP>((int)CommandID.CmdRoomLeave, RecvLeavnRoom);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_MyRoom_State_Change>((int)CommandID.CmdRoomMyRoomStateChanged, RecvRoomMyRoomStateChange);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_Change_PlaySlotWithJoy_RESP>((int)CommandID.CmdRoomChangePlayerWithJoy, RecvRoomChangePlayerWithJoy);
+            NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_CloseStatus_Change_RESP>((int)CommandID.CmdRoomCloseStatusChange, RecvRoomCloseStatusChange);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_WaitStep_RESP>((int)CommandID.CmdRoomWaitStep, RecvRoom_WaitStep);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_HostPlayer_UpdateStateRaw_RESP>((int)CommandID.CmdRoomHostPlayerUpdateStateRaw, RecvHostPlayer_UpdateStateRaw);
             NetMsg.Instance.RegNetMsgEvent<Protobuf_Room_AllPlayer_UpdateSavData_RESP>((int)CommandID.CmdRoomAllPlayerUpdateSavData, RecvAllPlayer_UpdateSavData);
@@ -280,7 +284,7 @@ namespace AxibugEmuOnline.Client.Manager
         /// <param name="GameRomID"></param>
         /// <param name="SyncMode"></param>
         /// <param name="GameRomHash"></param>
-        public void SendCreateRoom(int GameRomID,SyncModeType SyncMode, string GameRomHash = null)
+        public void SendCreateRoom(int GameRomID, SyncModeType SyncMode, string GameRomHash = null)
         {
             _Protobuf_Room_Create.GameRomID = GameRomID;
             _Protobuf_Room_Create.GameRomHash = GameRomHash;
@@ -459,6 +463,7 @@ namespace AxibugEmuOnline.Client.Manager
             //}
         }
 
+
         /// <summary>
         /// 发送修改玩家槽位,但是增量
         /// </summary>
@@ -502,6 +507,44 @@ namespace AxibugEmuOnline.Client.Manager
 
             App.log.Info($"SendChangePlaySlotIdxWithJoyIdx");
             App.network.SendToServer((int)CommandID.CmdRoomChangePlayerWithJoy, _Protobuf_Room_Change_PlaySlotWithJoy);
+        }
+
+        private void RecvRoomChangePlayerWithJoy(Protobuf_Room_Change_PlaySlotWithJoy_RESP msg)
+        {
+            OverlayManager.PopTip("已变更您的网络手柄位");
+        }
+
+        /// <summary>
+        /// 发送修改房间开放状态
+        /// </summary>
+        /// <param name="lockstate">是否锁定 [0]未锁定 [1]已锁定</param>
+        public void SendRoomCloseStatusChange(RoomLockType lockstate)
+        {
+            if (!App.user.IsLoggedIn)
+            {
+                OverlayManager.PopTip("无法设置，需要处于在线状态");
+                return;
+            }
+
+            if (!InRoom)
+                return;
+
+            if (!IsHost)
+            {
+                OverlayManager.PopTip("需要房主才能设置开放状态");
+                return;
+            }
+
+            _Protobuf_Room_CloseStatus_Change.LockState = lockstate;
+
+            App.log.Info($"SendRoomCloseStatusChange");
+            App.network.SendToServer((int)CommandID.CmdRoomCloseStatusChange, _Protobuf_Room_CloseStatus_Change);
+        }
+
+
+        private void RecvRoomCloseStatusChange(Protobuf_Room_CloseStatus_Change_RESP msg)
+        {
+            OverlayManager.PopTip($"切换房间状态：[{(msg.LockState == 0 ? "开放" : "锁定")}]");
         }
         /// <summary>
         /// 上报即时存档
