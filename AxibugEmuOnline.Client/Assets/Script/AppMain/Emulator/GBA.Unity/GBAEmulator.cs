@@ -46,6 +46,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
 
         public bool RomLoaded { get; private set; } = false;
+
+        GBAGameStartInfo _single_start_gbastartInfo;
         #region 子类实现
 
         public override RomPlatformType Platform => RomPlatformType.GameBoyAdvance;
@@ -180,7 +182,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         }
         public override MsgBool StartGame(GameStartInfo startInfo)
         {
-            GBAGameStartInfo gbastartInfo = (GBAGameStartInfo)startInfo;
+            _single_start_gbastartInfo = (GBAGameStartInfo)startInfo;
             RomFile romFile = startInfo.romFile;
             string path = romFile.LocalProxyPath;
             string savpath = GetGameSavPath(romFile.LocalProxyFileName);
@@ -218,6 +220,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public override void Dispose()
         {
+            _single_start_gbastartInfo = null;
         }
 
         public override void DoReset()
@@ -400,10 +403,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public void ResetGba()
         {
-            byte[] save = main_gba.Mem.SaveProvider.GetSave();
-            ProviderGba p = main_gba.Provider;
-            main_gba = new Gba(p);
-            main_gba.Mem.SaveProvider.LoadSave(save);
+            DumpSavDataToReady();
+            Update_CheckSave(true);
+            StartGame(_single_start_gbastartInfo);
         }
 
         //public void EmulationThreadHandler()
