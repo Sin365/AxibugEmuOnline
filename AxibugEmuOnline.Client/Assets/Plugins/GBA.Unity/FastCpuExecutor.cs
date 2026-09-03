@@ -17,7 +17,7 @@ namespace OptimeGBA
     public unsafe sealed class FastCpuExecutor
     {
         private readonly Arm7 arm7;
-        private Memory Mem => arm7.Mem;
+        //private Memory Mem => arm7.Mem;// 去掉了Mem访问器，造成高频调度
 
         // 缓存常用字段，避免每次解引用 this
         public uint* R;
@@ -178,59 +178,59 @@ namespace OptimeGBA
             uint addr_12 = addr >> 12;
             uint addr_24 = addr >> 24;
             arm7.InstructionCycles += arm7.Timing32InstrFetch[(addr_24) & 0xF];
-            var page = Mem.PageTableRead[addr_12];
+            var page = arm7.Mem.PageTableRead[addr_12];
             if (page != null)
-                return *(uint*)(page + (addr & Mem.MemoryRegionMasks[addr_12]));
-            return Mem.Read32Unregistered(false, addr);
+                return *(uint*)(page + (addr & arm7.Mem.MemoryRegionMasks[addr_12]));
+            return arm7.Mem.Read32Unregistered(false, addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private ushort Read16InstrFetch(uint addr)
         {
             arm7.InstructionCycles += arm7.Timing8And16InstrFetch[(addr >> 24) & 0xF];
-            return Mem.Read16(addr);
+            return arm7.Mem.Read16(addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint Read32(uint addr)
         {
             arm7.InstructionCycles += arm7.Timing32[(addr >> 24) & 0xF];
-            return Mem.Read32(addr);
+            return arm7.Mem.Read32(addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private ushort Read16(uint addr)
         {
             arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            return Mem.Read16(addr);
+            return arm7.Mem.Read16(addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private byte Read8(uint addr)
         {
             arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            return Mem.Read8(addr);
+            return arm7.Mem.Read8(addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void Write32(uint addr, uint val)
         {
             arm7.InstructionCycles += arm7.Timing32[(addr >> 24) & 0xF];
-            Mem.Write32(addr, val);
+            arm7.Mem.Write32(addr, val);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void Write16(uint addr, ushort val)
         {
             arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            Mem.Write16(addr, val);
+            arm7.Mem.Write16(addr, val);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void Write8(uint addr, byte val)
         {
             arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            Mem.Write8(addr, val);
+            arm7.Mem.Write8(addr, val);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
