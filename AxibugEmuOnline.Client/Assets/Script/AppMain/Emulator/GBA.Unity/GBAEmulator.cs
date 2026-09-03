@@ -37,8 +37,8 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
         public RawImage[] OtherGbaSreen;
 #if UNITY_EDITOR
-        private bool IsEditorTestOther = true;
-        private int EditorTestOtherCount = 3;
+        private bool IsEditorTestOther = false;
+        private int EditorTestOtherCount = 1;
 #endif
         public static bool bLogicUpdatePause { get; private set; }
         //Thread EmulationThread;

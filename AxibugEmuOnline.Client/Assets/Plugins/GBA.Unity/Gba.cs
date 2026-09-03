@@ -11,6 +11,13 @@ namespace OptimeGBA
 
         public MemoryGba Mem;
         public Arm7 Cpu;
+        FastCpuExecutor _fastCpuExecutor;
+        /// <summary>
+        /// æ˜¯å¦å¯ç”¨å·¨å‹ switch è§£é‡Šå™¨ï¼ˆFastCpuExecutorï¼‰ã€‚
+        /// const ä½¿ IL2CPP åœ¨ç¼–è¯‘æœŸæŠ˜å  ExecArm/ExecThumb ä¸­çš„ä¸‰å…ƒåˆ¤æ–­ï¼Œé›¶æ¯æŒ‡ä»¤åˆ†æ”¯å¼€é”€ã€‚
+        /// true æ—¶èµ° FastCpuExecutorï¼Œfalse æ—¶èµ°åŸ Arm7 delegate åˆ†å‘è·¯å¾„ï¼›åˆ‡æ¢éœ€é‡æ–°æ„å»ºã€‚
+        /// </summary>
+        public const bool FastCpu = true;
         public GbaAudio GbaAudio;
         public Keypad Keypad;
         public PpuGba Ppu;
@@ -18,12 +25,12 @@ namespace OptimeGBA
         public DmaGba Dma;
         public Timers Timers;
         public SerialGba Serial;
-        /// <summary>¶àºË¶ÔÆë£ºStateStepUntil / HaltSkip ²»³¬¹ı´Ë tick¡£Ä¬ÈÏ²»ÏŞÖÆ¡£</summary>
+        /// <summary>ï¿½ï¿½Ë¶ï¿½ï¿½ë£ºStateStepUntil / HaltSkip ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ tickï¿½ï¿½Ä¬ï¿½Ï²ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½</summary>
         public long TickLimit = long.MaxValue;
         bool _enablePpuRender = true;
         bool _enableApuOutput = true;
         /// <summary>
-        /// ÊÇ·ñÖ´ĞĞÏñËØäÖÈ¾²¢ SwapBuffers¡£false Ê±ÈÔÅÜÉ¨ÃèÏßÊ±Ğò¡¢IRQ¡¢H/VBlank DMA¡£
+        /// ï¿½Ç·ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ SwapBuffersï¿½ï¿½false Ê±ï¿½ï¿½ï¿½ï¿½É¨ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½IRQï¿½ï¿½H/VBlank DMAï¿½ï¿½
         /// </summary>
         public bool EnablePpuRender
         {
@@ -37,7 +44,7 @@ namespace OptimeGBA
         }
 
         /// <summary>
-        /// ÊÇ·ñ»ìÒô²¢µ÷ÓÃ AudioCallback¡£false Ê±ÈÔÅÜ FIFO µ¯³öÓë FIFO DMA¡£
+        /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ AudioCallbackï¿½ï¿½false Ê±ï¿½ï¿½ï¿½ï¿½ FIFO ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ FIFO DMAï¿½ï¿½
         /// </summary>
         public bool EnableApuOutput
         {
@@ -45,7 +52,7 @@ namespace OptimeGBA
             set => _enableApuOutput = value;
         }
 
-        /// <summary>¸±ºË³£ÓÃ£º¹ØäÖÈ¾+¹Ø³öÉù£¬±£ÁôÁª»úÏà¹ØÊ±Ğò¡£</summary>
+        /// <summary>ï¿½ï¿½ï¿½Ë³ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½È¾+ï¿½Ø³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½</summary>
         public void SetLiteMode(bool lite)
         {
             EnablePpuRender = !lite;
@@ -61,7 +68,7 @@ namespace OptimeGBA
             Mem = new MemoryGba(this, provider);
             GbaAudio = new GbaAudio(this, Scheduler);
             Ppu = new PpuGba(this, Scheduler);
-            // ±£Ö¤ Renderer Óë¿ª¹ØÒ»ÖÂ£¨Ä¬ÈÏÈ«¿ª£©
+            // ï¿½ï¿½Ö¤ Renderer ï¿½ë¿ªï¿½ï¿½Ò»ï¿½Â£ï¿½Ä¬ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½
             Ppu.Renderer.DebugEnableRendering = _enablePpuRender;
 
             Keypad = new Keypad();
@@ -69,6 +76,7 @@ namespace OptimeGBA
             HwControl = new HwControlGba(this);
             Timers = new Timers(GbaAudio, HwControl, Scheduler, false, true);
             Cpu = new Arm7(StateChange, Mem, false, false, null);
+            _fastCpuExecutor = new FastCpuExecutor(Cpu);
             Serial = new SerialGba(this);
 
             Cpu.SetTimingsTable(
@@ -173,17 +181,35 @@ namespace OptimeGBA
 
         private readonly SchedulerCallback actCahce_DoNothing;
 
+        /// <summary>
+        /// è½¬å‘åˆ° Cpu.ExecuteArmï¼ŒFastCpu å¼€å¯æ—¶èµ° FastCpuExecutor çš„å·¨å‹ switch è§£é‡Šå™¨ã€‚
+        /// </summary>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private uint ExecArm()
+        {
+            return FastCpu ? _fastCpuExecutor.Execute() : Cpu.ExecuteArm();
+        }
+
+        /// <summary>
+        /// è½¬å‘åˆ° Cpu.ExecuteThumbï¼ŒFastCpu å¼€å¯æ—¶èµ° FastCpuExecutor çš„å·¨å‹ switch è§£é‡Šå™¨ã€‚
+        /// </summary>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private uint ExecThumb()
+        {
+            return FastCpu ? _fastCpuExecutor.Execute() : Cpu.ExecuteThumb();
+        }
+
         public uint Step()
         {
             Cpu.CheckInterrupts();
             long beforeTicks = Scheduler.CurrentTicks;
             if (!Cpu.ThumbState)
             {
-                Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                Scheduler.CurrentTicks += ExecArm();
             }
             else
             {
-                Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                Scheduler.CurrentTicks += ExecThumb();
             }
             while (Scheduler.CurrentTicks >= Scheduler.NextEventTicks)
             {
@@ -211,14 +237,14 @@ namespace OptimeGBA
             {
                 while (Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                    Scheduler.CurrentTicks += ExecArm();
                 }
             }
             else
             {
                 while (Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                    Scheduler.CurrentTicks += ExecThumb();
                 }
             }
 
@@ -233,7 +259,7 @@ namespace OptimeGBA
             return (uint)(Scheduler.CurrentTicks - beforeTicks);
         }
         /// <summary>
-        /// ÍÆ½øµ½ NextEvent »ò TickLimit£¨ÏÈµ½Îª×¼£©£¬ÓÃÓÚ¶àÊµÀıËø²½¡£
+        /// ï¿½Æ½ï¿½ï¿½ï¿½ NextEvent ï¿½ï¿½ TickLimitï¿½ï¿½ï¿½Èµï¿½Îª×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public uint StateStepUntil()
         {
@@ -245,7 +271,7 @@ namespace OptimeGBA
                 while (Scheduler.CurrentTicks < TickLimit &&
                        Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                    Scheduler.CurrentTicks += ExecArm();
                 }
             }
             else
@@ -253,7 +279,7 @@ namespace OptimeGBA
                 while (Scheduler.CurrentTicks < TickLimit &&
                        Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                    Scheduler.CurrentTicks += ExecThumb();
                 }
             }
 
