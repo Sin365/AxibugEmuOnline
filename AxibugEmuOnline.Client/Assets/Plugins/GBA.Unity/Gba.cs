@@ -182,50 +182,35 @@ namespace OptimeGBA
 
         private readonly SchedulerCallback actCahce_DoNothing;
 
-        /// <summary>
-        /// 转发到 FastCpuExecutor 的 ExecuteArm/ExecuteThumb（FastCpu=true 时），
-        /// 或原 Arm7 delegate 分发路径。
-        /// 注意：FastCpuExecutor 不内联 ExecuteArm/ExecuteThumb（函数体过大），
-        /// 但此处通过直接调用子函数而非 Execute() 中转，消除了一个函数调用层级。
-        /// </summary>
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private uint ExecArm()
-        {
-            if (FastCpu)
-            {
-                _fastCpuExecutor.arm7.InstructionsRan++;
-                _fastCpuExecutor.arm7.InstructionCycles = 0;
-                return _fastCpuExecutor.ExecuteArm();
-            }
-            return Cpu.ExecuteArm();
-        }
-
-        /// <summary>
-        /// 转发到 FastCpuExecutor 的 ExecuteThumb。
-        /// </summary>
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private uint ExecThumb()
-        {
-            if (FastCpu)
-            {
-                _fastCpuExecutor.arm7.InstructionsRan++;
-                _fastCpuExecutor.arm7.InstructionCycles = 0;
-                return _fastCpuExecutor.ExecuteThumb();
-            }
-            return Cpu.ExecuteThumb();
-        }
-
         public uint Step()
         {
             Cpu.CheckInterrupts();
             long beforeTicks = Scheduler.CurrentTicks;
             if (!Cpu.ThumbState)
             {
-                Scheduler.CurrentTicks += ExecArm();
+                if (FastCpu)
+                {
+                    _fastCpuExecutor.arm7.InstructionsRan++;
+                    _fastCpuExecutor.arm7.InstructionCycles = 0;
+                    Scheduler.CurrentTicks += _fastCpuExecutor.ExecuteArm();
+                }
+                else
+                {
+                    Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                }
             }
             else
             {
-                Scheduler.CurrentTicks += ExecThumb();
+                if (FastCpu)
+                {
+                    _fastCpuExecutor.arm7.InstructionsRan++;
+                    _fastCpuExecutor.arm7.InstructionCycles = 0;
+                    Scheduler.CurrentTicks += _fastCpuExecutor.ExecuteThumb();
+                }
+                else
+                {
+                    Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                }
             }
             while (Scheduler.CurrentTicks >= Scheduler.NextEventTicks)
             {
@@ -253,14 +238,32 @@ namespace OptimeGBA
             {
                 while (Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += ExecArm();
+                    if (FastCpu)
+                    {
+                        _fastCpuExecutor.arm7.InstructionsRan++;
+                        _fastCpuExecutor.arm7.InstructionCycles = 0;
+                        Scheduler.CurrentTicks += _fastCpuExecutor.ExecuteArm();
+                    }
+                    else
+                    {
+                        Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                    }
                 }
             }
             else
             {
                 while (Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += ExecThumb();
+                    if (FastCpu)
+                    {
+                        _fastCpuExecutor.arm7.InstructionsRan++;
+                        _fastCpuExecutor.arm7.InstructionCycles = 0;
+                        Scheduler.CurrentTicks += _fastCpuExecutor.ExecuteThumb();
+                    }
+                    else
+                    {
+                        Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                    }
                 }
             }
 
@@ -287,7 +290,16 @@ namespace OptimeGBA
                 while (Scheduler.CurrentTicks < TickLimit &&
                        Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += ExecArm();
+                    if (FastCpu)
+                    {
+                        _fastCpuExecutor.arm7.InstructionsRan++;
+                        _fastCpuExecutor.arm7.InstructionCycles = 0;
+                        Scheduler.CurrentTicks += _fastCpuExecutor.ExecuteArm();
+                    }
+                    else
+                    {
+                        Scheduler.CurrentTicks += Cpu.ExecuteArm();
+                    }
                 }
             }
             else
@@ -295,7 +307,16 @@ namespace OptimeGBA
                 while (Scheduler.CurrentTicks < TickLimit &&
                        Scheduler.CurrentTicks < Scheduler.NextEventTicks)
                 {
-                    Scheduler.CurrentTicks += ExecThumb();
+                    if (FastCpu)
+                    {
+                        _fastCpuExecutor.arm7.InstructionsRan++;
+                        _fastCpuExecutor.arm7.InstructionCycles = 0;
+                        Scheduler.CurrentTicks += _fastCpuExecutor.ExecuteThumb();
+                    }
+                    else
+                    {
+                        Scheduler.CurrentTicks += Cpu.ExecuteThumb();
+                    }
                 }
             }
 
