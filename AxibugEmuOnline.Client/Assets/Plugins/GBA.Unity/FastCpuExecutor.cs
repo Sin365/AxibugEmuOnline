@@ -22,10 +22,32 @@ namespace OptimeGBA
         // 缓存常用字段，避免每次解引用 this
         public uint* R;
 
+        // ===== 访存热路径缓存 =====
+        // 把 Memory 子系统的页表/掩码/时序表在构造时一次性解引用为本地字段，
+        // 取指与访存的手动内联快速路径不再经过 arm7.Mem.Read16() 那条多层方法调用链。
+        // 页表数组本身只在 Memory 构造时分配一次（之后只填条目、不换对象），引用可安全缓存。
+        private readonly Memory mem;
+        private readonly byte*[] pageTableRead;
+        private readonly byte*[] pageTableWrite;
+        private readonly uint[] regionMasks;
+        // Timing 表是 byte*（固定内存），缓存指针避免每次 arm7.Xxx 解引用
+        private readonly byte* timing8And16;
+        private readonly byte* timing32;
+        private readonly byte* timing8And16InstrFetch;
+        private readonly byte* timing32InstrFetch;
+
         public FastCpuExecutor(Arm7 arm7)
         {
             this.arm7 = arm7;
             R = arm7.R;
+            mem = arm7.Mem;
+            pageTableRead = mem.PageTableRead;
+            pageTableWrite = mem.PageTableWrite;
+            regionMasks = mem.MemoryRegionMasks;
+            timing8And16 = arm7.Timing8And16;
+            timing32 = arm7.Timing32;
+            timing8And16InstrFetch = arm7.Timing8And16InstrFetch;
+            timing32InstrFetch = arm7.Timing32InstrFetch;
         }
 
         // 转发到 Arm7 的辅助方法（这些是冷路径，内联与否无所谓）
@@ -171,66 +193,104 @@ namespace OptimeGBA
             return false;
         }
 
-        // 内存读取（与 Arm7 中手内联版本一致：页表快速路径）
+        // 取指/访存：手动内联 Memory 的页表快速路径。
+        // 命中页表时直接 *(T*)(page + masked) 零方法调用；未命中（I/O、ROM、EEPROM 等未登记页）才回退到 Memory.XxxUnregistered。
+        // 注意：快速路径跳过了 Memory.Read16/32 的 #if DEBUG 对齐断言，与 Read32InstrFetch 原有做法一致——发布构建本就无断言。
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint Read32InstrFetch(uint addr)
         {
             uint addr_12 = addr >> 12;
-            uint addr_24 = addr >> 24;
-            arm7.InstructionCycles += arm7.Timing32InstrFetch[(addr_24) & 0xF];
-            var page = arm7.Mem.PageTableRead[addr_12];
+            arm7.InstructionCycles += timing32InstrFetch[(addr >> 24) & 0xF];
+            var page = pageTableRead[addr_12];
             if (page != null)
-                return *(uint*)(page + (addr & arm7.Mem.MemoryRegionMasks[addr_12]));
-            return arm7.Mem.Read32Unregistered(false, addr);
+                return *(uint*)(page + (addr & regionMasks[addr_12]));
+            return mem.Read32Unregistered(false, addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private ushort Read16InstrFetch(uint addr)
         {
-            arm7.InstructionCycles += arm7.Timing8And16InstrFetch[(addr >> 24) & 0xF];
-            return arm7.Mem.Read16(addr);
+            arm7.InstructionCycles += timing8And16InstrFetch[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableRead[addr_12];
+            if (page != null)
+                return *(ushort*)(page + (addr & regionMasks[addr_12]));
+            return mem.Read16Unregistered(false, addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint Read32(uint addr)
         {
-            arm7.InstructionCycles += arm7.Timing32[(addr >> 24) & 0xF];
-            return arm7.Mem.Read32(addr);
+            arm7.InstructionCycles += timing32[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableRead[addr_12];
+            if (page != null)
+                return *(uint*)(page + (addr & regionMasks[addr_12]));
+            return mem.Read32Unregistered(false, addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private ushort Read16(uint addr)
         {
-            arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            return arm7.Mem.Read16(addr);
+            arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableRead[addr_12];
+            if (page != null)
+                return *(ushort*)(page + (addr & regionMasks[addr_12]));
+            return mem.Read16Unregistered(false, addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private byte Read8(uint addr)
         {
-            arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            return arm7.Mem.Read8(addr);
+            arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableRead[addr_12];
+            if (page != null)
+                return *(byte*)(page + (addr & regionMasks[addr_12]));
+            return mem.Read8Unregistered(false, addr);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void Write32(uint addr, uint val)
         {
-            arm7.InstructionCycles += arm7.Timing32[(addr >> 24) & 0xF];
-            arm7.Mem.Write32(addr, val);
+            arm7.InstructionCycles += timing32[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableWrite[addr_12];
+            if (page != null)
+            {
+                *(uint*)(page + (addr & regionMasks[addr_12])) = val;
+                return;
+            }
+            mem.Write32Unregistered(false, addr, val);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void Write16(uint addr, ushort val)
         {
-            arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            arm7.Mem.Write16(addr, val);
+            arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableWrite[addr_12];
+            if (page != null)
+            {
+                *(ushort*)(page + (addr & regionMasks[addr_12])) = val;
+                return;
+            }
+            mem.Write16Unregistered(false, addr, val);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void Write8(uint addr, byte val)
         {
-            arm7.InstructionCycles += arm7.Timing8And16[(addr >> 24) & 0xF];
-            arm7.Mem.Write8(addr, val);
+            arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
+            uint addr_12 = addr >> 12;
+            var page = pageTableWrite[addr_12];
+            if (page != null)
+            {
+                *(byte*)(page + (addr & regionMasks[addr_12])) = val;
+                return;
+            }
+            mem.Write8Unregistered(false, addr, val);
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -246,12 +306,12 @@ namespace OptimeGBA
             if (arm7.ThumbState)
             {
                 R[15] += 4;
-                arm7.InstructionCycles += arm7.Timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
             }
             else
             {
                 R[15] += 8;
-                arm7.InstructionCycles += arm7.Timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
             }
         }
 
@@ -262,13 +322,13 @@ namespace OptimeGBA
             {
                 R[15] &= ~1U;
                 R[15] += 2;
-                arm7.InstructionCycles += arm7.Timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
             }
             else
             {
                 R[15] &= ~3U;
                 R[15] += 4;
-                arm7.InstructionCycles += arm7.Timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
             }
         }
 
