@@ -16,7 +16,7 @@ namespace OptimeGBA
 {
     public unsafe sealed class FastCpuExecutor
     {
-        private readonly Arm7 arm7;
+        internal Arm7 arm7;
         //private Memory Mem => arm7.Mem;// 去掉了Mem访问器，造成高频调度
 
         // 缓存常用字段，避免每次解引用 this
@@ -70,14 +70,14 @@ namespace OptimeGBA
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void SetCPSR(uint val)
         {
-            arm7.Negative = BitTest(val, 31);
-            arm7.Zero = BitTest(val, 30);
-            arm7.Carry = BitTest(val, 29);
-            arm7.Overflow = BitTest(val, 28);
-            arm7.Sticky = BitTest(val, 27);
-            arm7.IRQDisable = BitTest(val, 7);
-            arm7.FIQDisable = BitTest(val, 6);
-            bool newThumbState = BitTest(val, 5);
+            arm7.Negative = ((val & (1 << 31)) != 0);
+            arm7.Zero = ((val & (1 << 30)) != 0);
+            arm7.Carry = ((val & (1 << 29)) != 0);
+            arm7.Overflow = ((val & (1 << 28)) != 0);
+            arm7.Sticky = ((val & (1 << 27)) != 0);
+            arm7.IRQDisable = ((val & (1 << 7)) != 0);
+            arm7.FIQDisable = ((val & (1 << 6)) != 0);
+            bool newThumbState = ((val & (1 << 5)) != 0);
             if (newThumbState != arm7.ThumbState)
             {
                 arm7.StateChange();
@@ -193,30 +193,9 @@ namespace OptimeGBA
             return false;
         }
 
-        // 取指/访存：手动内联 Memory 的页表快速路径。
-        // 命中页表时直接 *(T*)(page + masked) 零方法调用；未命中（I/O、ROM、EEPROM 等未登记页）才回退到 Memory.XxxUnregistered。
-        // 注意：快速路径跳过了 Memory.Read16/32 的 #if DEBUG 对齐断言，与 Read32InstrFetch 原有做法一致——发布构建本就无断言。
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private uint Read32InstrFetch(uint addr)
-        {
-            uint addr_12 = addr >> 12;
-            arm7.InstructionCycles += timing32InstrFetch[(addr >> 24) & 0xF];
-            var page = pageTableRead[addr_12];
-            if (page != null)
-                return *(uint*)(page + (addr & regionMasks[addr_12]));
-            return mem.Read32Unregistered(false, addr);
-        }
-
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private ushort Read16InstrFetch(uint addr)
-        {
-            arm7.InstructionCycles += timing8And16InstrFetch[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableRead[addr_12];
-            if (page != null)
-                return *(ushort*)(page + (addr & regionMasks[addr_12]));
-            return mem.Read16Unregistered(false, addr);
-        }
+        // 取指/访存：已全部手动内联到 ExecuteThumb/ExecuteArm 入口。
+        // 以下方法保留为回退/调试备用，编译器会将其剥离（无调用者）。
+        // Read32InstrFetch / Read16InstrFetch
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint Read32(uint addr)
@@ -293,13 +272,14 @@ namespace OptimeGBA
             mem.Write8Unregistered(false, addr, val);
         }
 
+        /// <summary>不再内联调用，保留为回退/调试备用。</summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void ICycle()
         {
             arm7.InstructionCycles += 1;
         }
 
-        // 分支/流水线（与 Arm7 一致）
+        // 分支/流水线：已全部手动内联，以下保留为回退/调试备用。
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void InitFlushPipeline()
         {
@@ -361,29 +341,24 @@ namespace OptimeGBA
         }
 
         // ============ 主循环：一次执行一条指令（返回消耗周期） ============
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        public uint Execute()
-        {
-            arm7.InstructionsRan++;
-            arm7.InstructionCycles = 0;
-
-            if (!arm7.ThumbState)
-            {
-                ExecuteArmInlined();
-            }
-            else
-            {
-                ExecuteThumbInlined();
-            }
-
-            return arm7.InstructionCycles;
-        }
+        // 注意：Execute() 已消除，InstructionsRan++ / InstructionCycles = 0 移至 Gba.cs 的调用点。
+        // 外部通过 ExecuteArm() / ExecuteThumb() 调用，直接分发到子函数。
 
         // ============ THUMB ============
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private void ExecuteThumbInlined()
+        public uint ExecuteThumb()
         {
-            ushort ins = (ushort)Read16InstrFetch(R[15] - 4);
+            // 手动内联 Read16InstrFetch：直接页表快速路径，消除方法调用帧
+            uint fetchAddr = R[15] - 4;
+            uint fetchAddr_12 = fetchAddr >> 12;
+            arm7.InstructionCycles += timing8And16InstrFetch[(fetchAddr >> 24) & 0xF];
+            var fetchPage = pageTableRead[fetchAddr_12];
+            ushort ins;
+            if (fetchPage != null)
+                ins = *(ushort*)(fetchPage + (fetchAddr & regionMasks[fetchAddr_12]));
+            else
+                ins = (ushort)mem.Read16Unregistered(false, fetchAddr);
+            // 原调用：ushort ins = (ushort)Read16InstrFetch(R[15] - 4);
             int decodeBits = ins >> 6;
 
             // Thumb: decodeBits = ins>>6（0-1023），按 top-3-bits（(ins>>13)&0b111）分 8 组，
@@ -406,10 +381,10 @@ namespace OptimeGBA
                                     }
                                     else
                                     {
-                                        arm7.Carry = BitTest(rmValue, (byte)(32 - immed5));
+                                        arm7.Carry = ((rmValue & (1 << (32 - (int)immed5))) != 0);
                                         R[rd] = LogicalShiftLeft32(rmValue, (byte)immed5);
                                     }
-                                    arm7.Negative = BitTest(R[rd], 31);
+                                    arm7.Negative = ((R[rd] & (1 << 31)) != 0);
                                     arm7.Zero = R[rd] == 0;
                                 }
                                 break;
@@ -422,16 +397,16 @@ namespace OptimeGBA
                                     uint final;
                                     if (immed5 == 0)
                                     {
-                                        arm7.Carry = BitTest(rmVal, 31);
+                                        arm7.Carry = ((rmVal & (1 << 31)) != 0);
                                         final = 0;
                                     }
                                     else
                                     {
-                                        arm7.Carry = BitTest(rmVal, (byte)(immed5 - 1));
+                                        arm7.Carry = ((rmVal & (1 << ((int)immed5 - 1))) != 0);
                                         final = LogicalShiftRight32(rmVal, (byte)immed5);
                                     }
                                     R[rd] = final;
-                                    arm7.Negative = BitTest(final, 31);
+                                    arm7.Negative = ((final & (1 << 31)) != 0);
                                     arm7.Zero = final == 0;
                                 }
                                 break;
@@ -442,8 +417,8 @@ namespace OptimeGBA
                                     uint immed5 = (uint)((ins >> 6) & 0b11111);
                                     if (immed5 == 0)
                                     {
-                                        arm7.Carry = BitTest(rmValue, 31);
-                                        if (BitTest(rmValue, 31))
+                                        arm7.Carry = ((rmValue & (1 << 31)) != 0);
+                                        if (((rmValue & (1 << 31)) != 0))
                                         {
                                             R[rd] = 0xFFFFFFFF;
                                         }
@@ -454,10 +429,10 @@ namespace OptimeGBA
                                     }
                                     else
                                     {
-                                        arm7.Carry = BitTest(rmValue, (byte)(immed5 - 1));
+                                        arm7.Carry = ((rmValue & (1 << ((int)immed5 - 1))) != 0);
                                         R[rd] = ArithmeticShiftRight32(rmValue, (byte)immed5);
                                     }
-                                    arm7.Negative = BitTest(R[rd], 31);
+                                    arm7.Negative = ((R[rd] & (1 << 31)) != 0);
                                     arm7.Zero = R[rd] == 0;
                                 }
                                 break;
@@ -472,10 +447,10 @@ namespace OptimeGBA
                                                 uint rmVal = R[(uint)((ins >> 6) & 0b111)];
                                                 uint final = rnVal + rmVal;
                                                 R[rd] = final;
-                                                arm7.Negative = BitTest(final, 31);
+                                                arm7.Negative = ((final & (1 << 31)) != 0);
                                                 arm7.Zero = final == 0;
                                                 arm7.Carry = (long)rnVal + (long)rmVal > 0xFFFFFFFF;
-                                                arm7.Overflow = CheckOverflowAdd(rnVal, rmVal, final);
+                                                arm7.Overflow = ((~(rnVal ^ rmVal) & (rnVal ^ final) & 0x80000000) != 0);
                                             }
                                             break;
                                         case 0b01: // SUB (3)
@@ -485,10 +460,10 @@ namespace OptimeGBA
                                                 uint rmValue = R[(uint)((ins >> 6) & 0b111)];
                                                 uint final = rnValue - rmValue;
                                                 R[rd] = final;
-                                                arm7.Negative = BitTest(final, 31);
+                                                arm7.Negative = ((final & (1 << 31)) != 0);
                                                 arm7.Zero = final == 0;
                                                 arm7.Carry = !(rmValue > rnValue);
-                                                arm7.Overflow = CheckOverflowSub(rnValue, rmValue, final);
+                                                arm7.Overflow = (((rnValue ^ rmValue) & (rnValue ^ final) & 0x80000000) != 0);
                                             }
                                             break;
                                         case 0b10: // ADD (1)
@@ -498,11 +473,22 @@ namespace OptimeGBA
                                                 uint immed3 = (uint)((ins >> 6) & 0b111);
                                                 uint final = rnVal + immed3;
                                                 R[rd] = final;
-                                                arm7.Negative = BitTest(final, 31);
+                                                arm7.Negative = ((final & (1 << 31)) != 0);
                                                 arm7.Zero = final == 0;
                                                 arm7.Carry = (long)rnVal + (long)immed3 > 0xFFFFFFFF;
-                                                arm7.Overflow = CheckOverflowAdd(rnVal, immed3, final);
-                                                if (rd == 15) FlushPipeline();
+                                                arm7.Overflow = ((~(rnVal ^ immed3) & (rnVal ^ final) & 0x80000000) != 0);
+                                                if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                             }
                                             break;
                                         case 0b11: // SUB (1)
@@ -514,10 +500,10 @@ namespace OptimeGBA
                                                 uint rnVal = R[rn];
                                                 uint final = rnVal - immed3;
                                                 R[rd] = final;
-                                                arm7.Negative = BitTest(final, 31);
+                                                arm7.Negative = ((final & (1 << 31)) != 0);
                                                 arm7.Zero = final == 0;
                                                 arm7.Carry = !(immed3 > rnVal);
-                                                arm7.Overflow = CheckOverflowSub(rnVal, immed3, final);
+                                                arm7.Overflow = (((rnVal ^ immed3) & (rnVal ^ final) & 0x80000000) != 0);
                                             }
                                             break;
                                     }
@@ -547,10 +533,10 @@ namespace OptimeGBA
                                     uint immed8 = ins & 0xFFu;
                                     uint rnVal = R[rd];
                                     uint alu_out = rnVal - immed8;
-                                    arm7.Negative = BitTest(alu_out, 31);
+                                    arm7.Negative = ((alu_out & (1 << 31)) != 0);
                                     arm7.Zero = alu_out == 0;
                                     arm7.Carry = !(immed8 > rnVal);
-                                    arm7.Overflow = CheckOverflowSub(rnVal, immed8, alu_out);
+                                    arm7.Overflow = (((rnVal ^ immed8) & (rnVal ^ alu_out) & 0x80000000) != 0);
                                 }
                                 break;
                             case 0b10: // ADD (2)
@@ -560,10 +546,10 @@ namespace OptimeGBA
                                     uint rdVal = R[rd];
                                     uint final = rdVal + immed8;
                                     R[rd] = final;
-                                    arm7.Negative = BitTest(final, 31);
+                                    arm7.Negative = ((final & (1 << 31)) != 0);
                                     arm7.Zero = final == 0;
                                     arm7.Carry = (long)rdVal + (long)immed8 > 0xFFFFFFFF;
-                                    arm7.Overflow = CheckOverflowAdd(rdVal, immed8, final);
+                                    arm7.Overflow = ((~(rdVal ^ immed8) & (rdVal ^ final) & 0x80000000) != 0);
                                 }
                                 break;
                             case 0b11: // SUB (2)
@@ -573,10 +559,10 @@ namespace OptimeGBA
                                     uint rdVal = R[rd];
                                     uint final = rdVal - immed8;
                                     R[rd] = final;
-                                    arm7.Negative = BitTest(final, 31);
+                                    arm7.Negative = ((final & (1 << 31)) != 0);
                                     arm7.Zero = final == 0;
                                     arm7.Carry = !(immed8 > rdVal);
-                                    arm7.Overflow = CheckOverflowSub(rdVal, immed8, final);
+                                    arm7.Overflow = (((rdVal ^ immed8) & (rdVal ^ final) & 0x80000000) != 0);
                                 }
                                 break;
                         }
@@ -599,7 +585,7 @@ namespace OptimeGBA
                                     {
                                         uint final = rdVal & rmVal;
                                         R[rd] = final;
-                                        arm7.Negative = BitTest(final, 31);
+                                        arm7.Negative = ((final & (1 << 31)) != 0);
                                         arm7.Zero = final == 0;
                                     }
                                     break;
@@ -607,7 +593,7 @@ namespace OptimeGBA
                                     {
                                         rdVal = rdVal ^ rmVal;
                                         R[rd] = rdVal;
-                                        arm7.Negative = BitTest(rdVal, 31);
+                                        arm7.Negative = ((rdVal & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                     }
                                     break;
@@ -619,12 +605,12 @@ namespace OptimeGBA
                                         }
                                         else if ((rsValue & 0xFF) < 32)
                                         {
-                                            arm7.Carry = BitTest(rdVal, (byte)(32 - (rsValue & 0xFF)));
+                                            arm7.Carry = ((rdVal & (1 << (32 - (int)(rsValue & 0xFF)))) != 0);
                                             rdVal = LogicalShiftLeft32(rdVal, (byte)(rsValue & 0xFF));
                                         }
                                         else if ((rsValue & 0xFF) == 32)
                                         {
-                                            arm7.Carry = BitTest(rdVal, 0);
+                                            arm7.Carry = ((rdVal & (1 << 0)) != 0);
                                             rdVal = 0;
                                         }
                                         else
@@ -633,7 +619,7 @@ namespace OptimeGBA
                                             rdVal = 0;
                                         }
                                         R[rd] = rdVal;
-                                        arm7.Negative = BitTest(rdVal, 31);
+                                        arm7.Negative = ((rdVal & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                     }
                                     break;
@@ -645,12 +631,12 @@ namespace OptimeGBA
                                         }
                                         else if ((rsVal & 0xFF) < 32)
                                         {
-                                            arm7.Carry = BitTest(rdVal, (byte)((rsVal & 0xFF) - 1));
+                                            arm7.Carry = ((rdVal & (1 << ((int)(rsVal & 0xFF) - 1))) != 0);
                                             R[rd] = LogicalShiftRight32(rdVal, (byte)(rsVal & 0xFF));
                                         }
                                         else if ((rsVal & 0xFF) == 32)
                                         {
-                                            arm7.Carry = BitTest(rdVal, 31);
+                                            arm7.Carry = ((rdVal & (1 << 31)) != 0);
                                             R[rd] = 0;
                                         }
                                         else
@@ -659,7 +645,7 @@ namespace OptimeGBA
                                             R[rd] = 0;
                                         }
                                         rdVal = R[rd];
-                                        arm7.Negative = BitTest(rdVal, 31);
+                                        arm7.Negative = ((rdVal & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                     }
                                     break;
@@ -671,12 +657,12 @@ namespace OptimeGBA
                                         }
                                         else if ((rsVal & 0xFF) < 32)
                                         {
-                                            arm7.Carry = BitTest(rdVal, (byte)((rsVal & 0xFF) - 1));
+                                            arm7.Carry = ((rdVal & (1 << ((int)(rsVal & 0xFF) - 1))) != 0);
                                             rdVal = ArithmeticShiftRight32(rdVal, (byte)(rsVal & 0xFF));
                                         }
                                         else
                                         {
-                                            arm7.Carry = BitTest(rdVal, 31);
+                                            arm7.Carry = ((rdVal & (1 << 31)) != 0);
                                             if (!arm7.Carry)
                                             {
                                                 rdVal = 0;
@@ -687,7 +673,7 @@ namespace OptimeGBA
                                             }
                                         }
                                         R[rd] = rdVal;
-                                        arm7.Negative = BitTest(rdVal, 31);
+                                        arm7.Negative = ((rdVal & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                     }
                                     break;
@@ -695,20 +681,20 @@ namespace OptimeGBA
                                     {
                                         uint final = rdVal + rmVal + (arm7.Carry ? 1U : 0);
                                         R[rd] = final;
-                                        arm7.Negative = BitTest(final, 31);
+                                        arm7.Negative = ((final & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                         arm7.Carry = (long)rdVal + (long)rmVal + (arm7.Carry ? 1U : 0) > 0xFFFFFFFF;
-                                        arm7.Overflow = CheckOverflowAdd(rdVal, rmVal, final);
+                                        arm7.Overflow = ((~(rdVal ^ rmVal) & (rdVal ^ final) & 0x80000000) != 0);
                                     }
                                     break;
                                 case 0x6: // SBC
                                     {
                                         uint final = rdVal - rmVal - (!arm7.Carry ? 1U : 0);
                                         R[rd] = final;
-                                        arm7.Negative = BitTest(final, 31);
+                                        arm7.Negative = ((final & (1 << 31)) != 0);
                                         arm7.Zero = final == 0;
                                         arm7.Carry = !((long)rmVal + (!arm7.Carry ? 1U : 0) > rdVal);
-                                        arm7.Overflow = CheckOverflowSub(rdVal, rmVal, final);
+                                        arm7.Overflow = (((rdVal ^ rmVal) & (rdVal ^ final) & 0x80000000) != 0);
                                     }
                                     break;
                                 case 0x7: // ROR
@@ -719,22 +705,22 @@ namespace OptimeGBA
                                         }
                                         else if ((rsVal & 0b11111) == 0)
                                         {
-                                            arm7.Carry = BitTest(rdVal, 31);
+                                            arm7.Carry = ((rdVal & (1 << 31)) != 0);
                                         }
                                         else
                                         {
-                                            arm7.Carry = BitTest(rdVal, (byte)((rsVal & 0b11111) - 1));
+                                            arm7.Carry = ((rdVal & (1 << ((int)(rsVal & 0b11111) - 1))) != 0);
                                             rdVal = RotateRight32(rdVal, (byte)(rsVal & 0b11111));
                                             R[rd] = rdVal;
                                         }
-                                        arm7.Negative = BitTest(rdVal, 31);
+                                        arm7.Negative = ((rdVal & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                     }
                                     break;
                                 case 0x8: // TST
                                     {
                                         uint final = rdVal & rmVal;
-                                        arm7.Negative = BitTest(final, 31);
+                                        arm7.Negative = ((final & (1 << 31)) != 0);
                                         arm7.Zero = final == 0;
                                     }
                                     break;
@@ -742,34 +728,34 @@ namespace OptimeGBA
                                     {
                                         uint final = 0 - rmVal;
                                         R[rd] = final;
-                                        arm7.Negative = BitTest(final, 31);
+                                        arm7.Negative = ((final & (1 << 31)) != 0);
                                         arm7.Zero = final == 0;
                                         arm7.Carry = !(rmVal > 0);
-                                        arm7.Overflow = CheckOverflowSub(0, rmVal, final);
+                                        arm7.Overflow = (((0 ^ rmVal) & (0 ^ final) & 0x80000000) != 0);
                                     }
                                     break;
                                 case 0xA: // CMP (2)
                                     {
                                         uint alu_out = rdVal - rmVal;
-                                        arm7.Negative = BitTest(alu_out, 31);
+                                        arm7.Negative = ((alu_out & (1 << 31)) != 0);
                                         arm7.Zero = alu_out == 0;
                                         arm7.Carry = !(rmVal > rdVal);
-                                        arm7.Overflow = CheckOverflowSub(rdVal, rmVal, alu_out);
+                                        arm7.Overflow = (((rdVal ^ rmVal) & (rdVal ^ alu_out) & 0x80000000) != 0);
                                     }
                                     break;
                                 case 0xB: // CMN
                                     {
                                         uint alu_out = rdVal + rmVal;
-                                        arm7.Negative = BitTest(alu_out, 31);
+                                        arm7.Negative = ((alu_out & (1 << 31)) != 0);
                                         arm7.Zero = alu_out == 0;
                                         arm7.Carry = (long)rmVal + (long)rdVal > 0xFFFFFFFF;
-                                        arm7.Overflow = CheckOverflowAdd(rdVal, rmVal, alu_out);
+                                        arm7.Overflow = ((~(rdVal ^ rmVal) & (rdVal ^ alu_out) & 0x80000000) != 0);
                                     }
                                     break;
                                 case 0xC: // ORR
                                     {
                                         R[rd] = R[rd] | R[rm];
-                                        arm7.Negative = BitTest(R[rd], 31);
+                                        arm7.Negative = ((R[rd] & (1 << 31)) != 0);
                                         arm7.Zero = R[rd] == 0;
                                     }
                                     break;
@@ -777,7 +763,7 @@ namespace OptimeGBA
                                     {
                                         rdVal = (rmVal * rdVal);
                                         R[rd] = rdVal;
-                                        arm7.Negative = BitTest(rdVal, 31);
+                                        arm7.Negative = ((rdVal & (1 << 31)) != 0);
                                         arm7.Zero = rdVal == 0;
                                     }
                                     break;
@@ -785,14 +771,14 @@ namespace OptimeGBA
                                     {
                                         uint final = rdVal & (~rmVal);
                                         R[rd] = final;
-                                        arm7.Negative = BitTest(final, 31);
+                                        arm7.Negative = ((final & (1 << 31)) != 0);
                                         arm7.Zero = final == 0;
                                     }
                                     break;
                                 case 0xF: // MVN
                                     {
                                         R[rd] = ~R[rm];
-                                        arm7.Negative = BitTest(R[rd], 31);
+                                        arm7.Negative = ((R[rd] & (1 << 31)) != 0);
                                         arm7.Zero = R[rd] == 0;
                                     }
                                     break;
@@ -812,7 +798,18 @@ namespace OptimeGBA
                                         R[rd] = final;
                                         if (rd == 15)
                                         {
-                                            FlushPipeline();
+                                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                         }
                                     }
                                     break;
@@ -823,10 +820,10 @@ namespace OptimeGBA
                                         uint rnVal = R[rn];
                                         uint rmVal = R[rm];
                                         uint alu_out = rnVal - rmVal;
-                                        arm7.Negative = BitTest(alu_out, 31);
+                                        arm7.Negative = ((alu_out & (1 << 31)) != 0);
                                         arm7.Zero = alu_out == 0;
                                         arm7.Carry = !(rmVal > rnVal);
-                                        arm7.Overflow = CheckOverflowSub(rnVal, rmVal, alu_out);
+                                        arm7.Overflow = (((rnVal ^ rmVal) & (rnVal ^ alu_out) & 0x80000000) != 0);
                                     }
                                     break;
                                 case 0b10: // MOV (3)
@@ -837,7 +834,18 @@ namespace OptimeGBA
                                         if (rd == 15)
                                         {
                                             R[15] &= 0xFFFFFFFE;
-                                            FlushPipeline();
+                                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                         }
                                     }
                                     break;
@@ -845,13 +853,24 @@ namespace OptimeGBA
                                     {
                                         uint rm = (uint)((ins >> 3) & 0xF);
                                         uint val = R[rm];
-                                        if (BitTest(ins, 7))
+                                        if (((ins & (1 << 7)) != 0))
                                         {
                                             R[14] = (R[15] - 2) | 1;
                                         }
-                                        arm7.ThumbState = BitTest(val, 0);
+                                        arm7.ThumbState = ((val & (1 << 0)) != 0);
                                         R[15] = val & 0xFFFFFFFE;
-                                        FlushPipeline();
+                                        if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                         if (!arm7.ThumbState)
                                         {
                                             arm7.StateChange();
@@ -892,7 +911,7 @@ namespace OptimeGBA
                                     {
                                         int readVal = (sbyte)Read8(addr);
                                         R[rd] = (uint)readVal;
-                                        ICycle();
+                                        arm7.InstructionCycles += 1;
                                     }
                                     break;
                                 case 0b100: // LDR (2)
@@ -900,19 +919,19 @@ namespace OptimeGBA
                                         uint readAddr = addr & ~0b11U;
                                         uint readVal = Read32(readAddr);
                                         R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
-                                        ICycle();
+                                        arm7.InstructionCycles += 1;
                                     }
                                     break;
                                 case 0b101: // LDRH (2)
                                     {
                                         R[rd] = RotateRight32(Read16(addr & ~1u), (byte)(8 * (addr & 1)));
-                                        ICycle();
+                                        arm7.InstructionCycles += 1;
                                     }
                                     break;
                                 case 0b110: // LDRB (2)
                                     {
                                         R[rd] = Read8(addr);
-                                        ICycle();
+                                        arm7.InstructionCycles += 1;
                                     }
                                     break;
                                 case 0b111: // LDRSH
@@ -927,7 +946,7 @@ namespace OptimeGBA
                                             readVal = (short)Read16(addr);
                                         }
                                         R[rd] = (uint)readVal;
-                                        ICycle();
+                                        arm7.InstructionCycles += 1;
                                     }
                                     break;
                             }
@@ -949,7 +968,7 @@ namespace OptimeGBA
                                     uint readAddr = addr & ~0b11U;
                                     uint readVal = Read32(readAddr);
                                     R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
-                                    ICycle();
+                                    arm7.InstructionCycles += 1;
                                 }
                                 break;
                             case 0b00: // STR (1)
@@ -980,7 +999,7 @@ namespace OptimeGBA
                                     uint immed5 = (uint)((ins >> 6) & 0b11111);
                                     uint addr = rnVal + immed5;
                                     R[rd] = Read8(addr);
-                                    ICycle();
+                                    arm7.InstructionCycles += 1;
                                 }
                                 break;
                         }
@@ -992,7 +1011,7 @@ namespace OptimeGBA
                     {
                         if ((ins & 0b1111000000000000) == 0b1000000000000000) // STRH (1) / LDRH (1)
                         {
-                            bool load = BitTest(ins, 11);
+                            bool load = ((ins & (1 << 11)) != 0);
                             uint rd = (uint)((ins >> 0) & 0b111);
                             uint rn = (uint)((ins >> 3) & 0b111);
                             uint rnVal = R[rn];
@@ -1001,7 +1020,7 @@ namespace OptimeGBA
                             if (load)
                             {
                                 R[rd] = RotateRight32(Read16(addr & ~1u), (byte)(8 * (addr & 1)));
-                                ICycle();
+                                arm7.InstructionCycles += 1;
                             }
                             else
                             {
@@ -1016,7 +1035,7 @@ namespace OptimeGBA
                             uint readAddr = addr & ~0b11U;
                             uint readVal = Read32(readAddr);
                             R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
-                            ICycle();
+                            arm7.InstructionCycles += 1;
                         }
                         else if ((ins & 0b1111100000000000) == 0b1001000000000000) // STR (3) - Store to stack
                         {
@@ -1024,7 +1043,7 @@ namespace OptimeGBA
                             uint rd = (uint)((ins >> 8) & 0b111);
                             uint addr = R[13] + (immed8 * 4);
                             Write32(addr & ~3U, R[rd]);
-                            ICycle();
+                            arm7.InstructionCycles += 1;
                         }
                     }
                     break;
@@ -1036,50 +1055,72 @@ namespace OptimeGBA
                         {
                             if ((ins & 0b1111011000000000) == 0b1011010000000000) // POP & PUSH
                             {
-                                if (BitTest(ins, 11))
+                                if (((ins & (1 << 11)) != 0))
                                 {
                                     // POP
                                     uint addr = R[13];
                                     uint registerCount = popcount_8(ins & 0x1FFU);
                                     R[13] = addr + registerCount * 4;
-                                    if (BitTest(ins, 0)) { R[0] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 1)) { R[1] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 2)) { R[2] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 3)) { R[3] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 4)) { R[4] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 5)) { R[5] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 6)) { R[6] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 7)) { R[7] = Read32(addr & ~3u); addr += 4; }
-                                    if (BitTest(ins, 8))
+                                    if (((ins & (1 << 0)) != 0)) { R[0] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 1)) != 0)) { R[1] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 2)) != 0)) { R[2] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 3)) != 0)) { R[3] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 4)) != 0)) { R[4] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 5)) != 0)) { R[5] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 6)) != 0)) { R[6] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 7)) != 0)) { R[7] = Read32(addr & ~3u); addr += 4; }
+                                    if (((ins & (1 << 8)) != 0))
                                     {
                                         R[15] = Read32(addr);
                                         // GBA: armv5=false, 不做 ThumbState 切换
-                                        FlushPipeline();
+                                        if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                         addr += 4;
                                     }
                                     if ((ins & 0x1FF) == 0)
                                     {
                                         // GBA: armv5=false
                                         R[15] = Read32(addr & ~3u);
-                                        FlushPipeline();
+                                        if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                         R[13] += 0x40;
                                     }
-                                    ICycle();
+                                    arm7.InstructionCycles += 1;
                                 }
                                 else
                                 {
                                     // PUSH
                                     uint addr = R[13];
                                     addr -= 4 * popcount_8((uint)ins & 0x1FF);
-                                    if (BitTest(ins, 0)) { Write32(addr & ~3u, R[0]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 1)) { Write32(addr & ~3u, R[1]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 2)) { Write32(addr & ~3u, R[2]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 3)) { Write32(addr & ~3u, R[3]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 4)) { Write32(addr & ~3u, R[4]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 5)) { Write32(addr & ~3u, R[5]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 6)) { Write32(addr & ~3u, R[6]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 7)) { Write32(addr & ~3u, R[7]); addr += 4; R[13] -= 4; }
-                                    if (BitTest(ins, 8))
+                                    if (((ins & (1 << 0)) != 0)) { Write32(addr & ~3u, R[0]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 1)) != 0)) { Write32(addr & ~3u, R[1]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 2)) != 0)) { Write32(addr & ~3u, R[2]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 3)) != 0)) { Write32(addr & ~3u, R[3]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 4)) != 0)) { Write32(addr & ~3u, R[4]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 5)) != 0)) { Write32(addr & ~3u, R[5]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 6)) != 0)) { Write32(addr & ~3u, R[6]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 7)) != 0)) { Write32(addr & ~3u, R[7]); addr += 4; R[13] -= 4; }
+                                    if (((ins & (1 << 8)) != 0))
                                     {
                                         Write32(addr, R[14]);
                                         addr += 4;
@@ -1114,7 +1155,7 @@ namespace OptimeGBA
                                 rdVal &= 0xFFFF0000;
                                 rdVal |= (rnValHalfUpper << 0);
                                 rdVal |= (rnValHalfLower << 8);
-                                if (BitTest(rn, 7))
+                                if (((rn & (1 << 7)) != 0))
                                 {
                                     rdVal |= 0xFFFF0000;
                                 }
@@ -1145,7 +1186,7 @@ namespace OptimeGBA
                     {
                         if ((ins & 0b1111000000000000) == 0b1100000000000000) // LDMIA, STMIA
                         {
-                            if (BitTest(ins, 11))
+                            if (((ins & (1 << 11)) != 0))
                             {
                                 // LDMIA
                                 uint rn = (uint)((ins >> 8) & 0b111);
@@ -1157,7 +1198,7 @@ namespace OptimeGBA
                                 uint register = 0;
                                 for (; registerList != 0; registerList >>= 1)
                                 {
-                                    if (BitTest(registerList, 0))
+                                    if (((registerList & (1 << 0)) != 0))
                                     {
                                         R[register] = Read32(addr & ~3u);
                                         addr += 4;
@@ -1168,10 +1209,21 @@ namespace OptimeGBA
                                 {
                                     // GBA: armv5=false
                                     R[15] = Read32(addr & ~3u);
-                                    FlushPipeline();
+                                    if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                     R[rn] += 0x40;
                                 }
-                                ICycle();
+                                arm7.InstructionCycles += 1;
                             }
                             else
                             {
@@ -1185,7 +1237,7 @@ namespace OptimeGBA
                                 uint register = 0;
                                 for (; registerList != 0; registerList >>= 1)
                                 {
-                                    if (BitTest(registerList, 0))
+                                    if (((registerList & (1 << 0)) != 0))
                                     {
                                         Write32(addr & ~3u, R[register]);
                                         addr += 4;
@@ -1211,7 +1263,18 @@ namespace OptimeGBA
                             arm7.ThumbState = false;
                             arm7.IRQDisable = true;
                             R[15] = arm7.VectorSoftwareInterrupt;
-                            FlushPipeline();
+                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             arm7.StateChange();
                         }
                         else if ((ins & 0b1111000000000000) == 0b1101000000000000) // B (1) - Conditional
@@ -1223,7 +1286,18 @@ namespace OptimeGBA
                                 int offset = (int)(ins & 0xFF) << 1;
                                 offset = (offset << 23) >> 23;
                                 R[15] = (uint)(R[15] + offset);
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                     }
@@ -1237,7 +1311,18 @@ namespace OptimeGBA
                             int signedImmed11 = (int)(ins & 0b11111111111) << 1;
                             signedImmed11 = (signedImmed11 << 20) >> 20;
                             R[15] = (uint)(R[15] + signedImmed11);
-                            FlushPipeline();
+                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                         else if ((ins & 0b1110000000000000) == 0b1110000000000000) // BL, BLX
                         {
@@ -1259,7 +1344,18 @@ namespace OptimeGBA
                                         R[14] = (R[15] - 2) | 1;
                                         R[15] = (uint)(oldR14 + (offset11 << 1));
                                         R[15] &= 0xFFFFFFFE;
-                                        FlushPipeline();
+                                        if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                     }
                                     break;
                                 case 0b01: // BLToArm
@@ -1269,7 +1365,18 @@ namespace OptimeGBA
                                         R[14] = (R[15] - 2) | 1;
                                         R[15] = (uint)((oldR14 + (offset11 << 1)) & ~3);
                                         arm7.ThumbState = false;
-                                        FlushPipeline();
+                                        if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                                         arm7.StateChange();
                                     }
                                     break;
@@ -1287,6 +1394,7 @@ namespace OptimeGBA
             {
                 R[15] += 4;
             }
+            return arm7.InstructionCycles;
         }
 
         // ============ ARM 辅助：DataDecode / LDRSTR / LDMSTM ============
@@ -1491,18 +1599,40 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1512,18 +1642,40 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1533,19 +1685,41 @@ namespace OptimeGBA
                         R[rd] = aluOut;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(aluOut, 31);
+                            arm7.Negative = ((aluOut & (1 << 31)) != 0);
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = shifterOperand <= rnValue;
-                            arm7.Overflow = CheckOverflowSub(rnValue, shifterOperand, aluOut);
+                            arm7.Overflow = (((rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1555,19 +1729,41 @@ namespace OptimeGBA
                         R[rd] = aluOut;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(aluOut, 31);
+                            arm7.Negative = ((aluOut & (1 << 31)) != 0);
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = rnValue <= shifterOperand;
-                            arm7.Overflow = CheckOverflowSub(shifterOperand, rnValue, aluOut);
+                            arm7.Overflow = (((shifterOperand ^ rnValue) & (shifterOperand ^ aluOut) & 0x80000000) != 0);
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1577,19 +1773,41 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = (long)rnValue + (long)shifterOperand > 0xFFFFFFFFL;
-                            arm7.Overflow = CheckOverflowAdd(rnValue, shifterOperand, final);
+                            arm7.Overflow = ((~(rnValue ^ shifterOperand) & (rnValue ^ final) & 0x80000000) != 0);
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1599,19 +1817,41 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = (long)rnValue + (long)shifterOperand + (arm7.Carry ? 1U : 0) > 0xFFFFFFFFL;
-                            arm7.Overflow = CheckOverflowAdd(rnValue, shifterOperand, final);
+                            arm7.Overflow = ((~(rnValue ^ shifterOperand) & (rnValue ^ final) & 0x80000000) != 0);
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1621,19 +1861,41 @@ namespace OptimeGBA
                         R[rd] = aluOut;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(aluOut, 31);
+                            arm7.Negative = ((aluOut & (1 << 31)) != 0);
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = (long)shifterOperand + (arm7.Carry ? 0 : 1L) <= rnValue;
-                            arm7.Overflow = CheckOverflowSub(rnValue, shifterOperand, aluOut);
+                            arm7.Overflow = (((rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1643,26 +1905,48 @@ namespace OptimeGBA
                         R[rd] = aluOut;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(aluOut, 31);
+                            arm7.Negative = ((aluOut & (1 << 31)) != 0);
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = (long)rnValue + (long)(!arm7.Carry ? 1U : 0) <= shifterOperand;
-                            arm7.Overflow = CheckOverflowSub(shifterOperand, rnValue, aluOut);
+                            arm7.Overflow = (((shifterOperand ^ rnValue) & (shifterOperand ^ aluOut) & 0x80000000) != 0);
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
                 case 0x8: // TST
                     {
                         uint final = rnValue & shifterOperand;
-                        arm7.Negative = BitTest(final, 31);
+                        arm7.Negative = ((final & (1 << 31)) != 0);
                         arm7.Zero = final == 0;
                         arm7.Carry = shifterCarryOut;
                     }
@@ -1670,7 +1954,7 @@ namespace OptimeGBA
                 case 0x9: // TEQ
                     {
                         uint aluOut = rnValue ^ shifterOperand;
-                        arm7.Negative = BitTest(aluOut, 31);
+                        arm7.Negative = ((aluOut & (1 << 31)) != 0);
                         arm7.Zero = aluOut == 0;
                         arm7.Carry = shifterCarryOut;
                     }
@@ -1678,19 +1962,19 @@ namespace OptimeGBA
                 case 0xA: // CMP
                     {
                         uint aluOut = rnValue - shifterOperand;
-                        arm7.Negative = BitTest(aluOut, 31);
+                        arm7.Negative = ((aluOut & (1 << 31)) != 0);
                         arm7.Zero = aluOut == 0;
                         arm7.Carry = rnValue >= shifterOperand;
-                        arm7.Overflow = CheckOverflowSub(rnValue, shifterOperand, aluOut);
+                        arm7.Overflow = (((rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
                     }
                     break;
                 case 0xB: // CMN
                     {
                         uint aluOut = rnValue + shifterOperand;
-                        arm7.Negative = BitTest(aluOut, 31);
+                        arm7.Negative = ((aluOut & (1 << 31)) != 0);
                         arm7.Zero = aluOut == 0;
                         arm7.Carry = (long)rnValue + (long)shifterOperand > 0xFFFFFFFF;
-                        arm7.Overflow = CheckOverflowAdd(rnValue, shifterOperand, aluOut);
+                        arm7.Overflow = ((~(rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
                     }
                     break;
                 case 0xC: // ORR
@@ -1699,18 +1983,40 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1719,18 +2025,40 @@ namespace OptimeGBA
                         R[rd] = shifterOperand;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(shifterOperand, 31);
+                            arm7.Negative = ((shifterOperand & (1 << 31)) != 0);
                             arm7.Zero = shifterOperand == 0;
                             arm7.Carry = shifterCarryOut;
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1740,18 +2068,40 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1760,18 +2110,40 @@ namespace OptimeGBA
                         R[rd] = ~shifterOperand;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(~shifterOperand, 31);
+                            arm7.Negative = ((~shifterOperand & (1 << 31)) != 0);
                             arm7.Zero = ~shifterOperand == 0;
                             arm7.Carry = shifterCarryOut;
                             if (rd == 15)
                             {
                                 SetCPSR(GetSPSR());
-                                FlushPipeline();
+                                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                             }
                         }
                         else
                         {
-                            if (rd == 15) FlushPipeline();
+                            if (rd == 15) if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                     }
                     break;
@@ -1784,10 +2156,10 @@ namespace OptimeGBA
             uint rn = (ins >> 16) & 0xF;
             uint rd = (ins >> 12) & 0xF;
             uint rnValue = R[rn];
-            bool P = BitTest(ins, 24);
-            bool U = BitTest(ins, 23);
-            bool B = BitTest(ins, 22);
-            bool W = BitTest(ins, 21);
+            bool P = ((ins & (1 << 24)) != 0);
+            bool U = ((ins & (1 << 23)) != 0);
+            bool B = ((ins & (1 << 22)) != 0);
+            bool W = ((ins & (1 << 21)) != 0);
             uint offset = 0;
 
             if (useRegister)
@@ -1899,9 +2271,20 @@ namespace OptimeGBA
                 if (rd == 15)
                 {
                     // GBA armv5=false，不做 ThumbState 切换
-                    FlushPipeline();
+                    if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
                 }
-                ICycle();
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                }
+                arm7.InstructionCycles += 1;
             }
             else
             {
@@ -1939,10 +2322,10 @@ namespace OptimeGBA
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void _SpecialLDRSTR(uint ins, bool L, bool S, bool H)
         {
-            bool W = BitTest(ins, 21);
-            bool immediateOffset = BitTest(ins, 22);
-            bool U = BitTest(ins, 23);
-            bool P = BitTest(ins, 24);
+            bool W = ((ins & (1 << 21)) != 0);
+            bool immediateOffset = ((ins & (1 << 22)) != 0);
+            bool U = ((ins & (1 << 23)) != 0);
+            bool P = ((ins & (1 << 24)) != 0);
             uint rd = (ins >> 12) & 0xF;
             uint rn = (ins >> 16) & 0xF;
             uint baseAddr = R[rn];
@@ -2044,18 +2427,18 @@ namespace OptimeGBA
             if (L)
             {
                 R[rd] = loadVal;
-                ICycle();
+                arm7.InstructionCycles += 1;
             }
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void _LDMSTM(uint ins, bool L)
         {
-            bool P = BitTest(ins, 24);
-            bool U = BitTest(ins, 23);
-            bool S = BitTest(ins, 22);
-            bool W = BitTest(ins, 21);
-            bool loadsPc = BitTest(ins, 15);
+            bool P = ((ins & (1 << 24)) != 0);
+            bool U = ((ins & (1 << 23)) != 0);
+            bool S = ((ins & (1 << 22)) != 0);
+            bool W = ((ins & (1 << 21)) != 0);
+            bool loadsPc = ((ins & (1 << 15)) != 0);
 
             uint oldMode = 0;
             if (S && (!L || !loadsPc))
@@ -2113,7 +2496,7 @@ namespace OptimeGBA
 
             for (byte r = 0; r < 16; r++)
             {
-                if (BitTest(ins, r))
+                if ((ins & (1 << r)) != 0)
                 {
                     if (L)
                     {
@@ -2125,7 +2508,18 @@ namespace OptimeGBA
                         else
                         {
                             R[15] = Read32(addr & ~3U) & ~3U;
-                            FlushPipeline();
+                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                         if (!P) addr += 4;
                     }
@@ -2145,7 +2539,18 @@ namespace OptimeGBA
                 if (L)
                 {
                     R[15] = Read32(addr & ~3U);
-                    FlushPipeline();
+                    if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                     if (U)
                     {
                         R[rn] += 0x40;
@@ -2203,14 +2608,25 @@ namespace OptimeGBA
                 }
             }
 
-            ICycle();
+            arm7.InstructionCycles += 1;
         }
 
         // ============ ARM ============
+        /// <summary>供应给 Gba.cs 的 ExecArm 调用，直接执行 ARM 指令。</summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private void ExecuteArmInlined()
+        public uint ExecuteArm()
         {
-            uint ins = Read32InstrFetch(R[15] - 8);
+            // 手动内联 Read32InstrFetch
+            uint fetchAddr = R[15] - 8;
+            uint fetchAddr_12 = fetchAddr >> 12;
+            arm7.InstructionCycles += timing32InstrFetch[(fetchAddr >> 24) & 0xF];
+            var fetchPage = pageTableRead[fetchAddr_12];
+            uint ins;
+            if (fetchPage != null)
+                ins = *(uint*)(fetchPage + (fetchAddr & regionMasks[fetchAddr_12]));
+            else
+                ins = mem.Read32Unregistered(false, fetchAddr);
+            // 原调用：uint ins = Read32InstrFetch(R[15] - 8);
             uint condition = (ins >> 28) & 0xF;
 
             if (CheckCondition(condition))
@@ -2234,7 +2650,18 @@ namespace OptimeGBA
                             R[14] = R[15] - 4;
                             arm7.IRQDisable = true;
                             R[15] = arm7.VectorSoftwareInterrupt;
-                            FlushPipeline();
+                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                         break;
 
@@ -2244,7 +2671,18 @@ namespace OptimeGBA
                             offset = (offset << 6) >> 6;
                             R[14] = R[15] - 4;
                             R[15] = (uint)(R[15] + offset);
-                            FlushPipeline();
+                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                         break;
 
@@ -2253,21 +2691,32 @@ namespace OptimeGBA
                             int offset = (int)(ins & 0b111111111111111111111111) << 2;
                             offset = (offset << 6) >> 6;
                             R[15] = (uint)(R[15] + offset);
-                            FlushPipeline();
+                            if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                         }
                         break;
 
                     case >= 0x0800 and <= 0x09FF: // LDM / STM
                         {
-                            bool L = BitTest(ins, 20);
+                            bool L = ((ins & (1 << 20)) != 0);
                             _LDMSTM(ins, L);
                         }
                         break;
 
                     case >= 0x0400 and <= 0x07FF: // LDR / STR
                         {
-                            bool L = BitTest(ins, 20);
-                            bool useRegister = BitTest(ins, 25);
+                            bool L = ((ins & (1 << 20)) != 0);
+                            bool useRegister = ((ins & (1 << 25)) != 0);
                             _RegularLDRSTR(ins, L, useRegister);
                         }
                         break;
@@ -2295,6 +2744,7 @@ namespace OptimeGBA
             {
                 R[15] += 4;
             }
+            return arm7.InstructionCycles;
         }
 
         // Data Processing 内部子分类：BX / CLZ / SWP / MRS / MSR / MUL / MULL / HLF / 纯 ALU
@@ -2311,7 +2761,7 @@ namespace OptimeGBA
                     {
                         uint rm = ins & 0xF;
                         uint rmValue = R[rm];
-                        arm7.ThumbState = BitTest(rmValue, 0);
+                        arm7.ThumbState = ((rmValue & (1 << 0)) != 0);
                         if (arm7.ThumbState)
                         {
                             arm7.StateChange();
@@ -2322,7 +2772,18 @@ namespace OptimeGBA
                             R[14] = R[15] - 4;
                         }
                         R[15] = rmValue & ~1U;
-                        FlushPipeline();
+                        if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
                     }
                     break;
 
@@ -2345,7 +2806,7 @@ namespace OptimeGBA
                 case 0x0109:
                 case 0x0149: // SWP / SWPB（armv5 无 gate，GBA 可用）
                     {
-                        bool useByte = BitTest(ins, 22);
+                        bool useByte = ((ins & (1 << 22)) != 0);
                         uint rm = ins & 0xF;
                         uint rd = (ins >> 12) & 0xF;
                         uint rn = (ins >> 16) & 0xF;
@@ -2361,14 +2822,14 @@ namespace OptimeGBA
                             R[rd] = RotateRight32(Read32(addr & ~3u), (byte)((addr & 3u) * 8));
                             Write32(addr & ~3u, storeValue);
                         }
-                        ICycle();
+                        arm7.InstructionCycles += 1;
                     }
                     break;
 
                 case 0x0100:
                 case 0x0140: // MRS
                     {
-                        bool useSPSR = BitTest(ins, 22);
+                        bool useSPSR = ((ins & (1 << 22)) != 0);
                         uint rd = (ins >> 12) & 0xF;
                         R[rd] = useSPSR ? GetSPSR() : GetCPSR();
                     }
@@ -2379,13 +2840,13 @@ namespace OptimeGBA
                 case >= 0x0320 and <= 0x032F:
                 case >= 0x0360 and <= 0x036F: // MSR（寄存器 + 立即数）
                     {
-                        bool useSPSR = BitTest(ins, 22);
-                        bool setControl = BitTest(ins, 16);
-                        bool setExtension = BitTest(ins, 17);
-                        bool setStatus = BitTest(ins, 18);
-                        bool setFlags = BitTest(ins, 19);
+                        bool useSPSR = ((ins & (1 << 22)) != 0);
+                        bool setControl = ((ins & (1 << 16)) != 0);
+                        bool setExtension = ((ins & (1 << 17)) != 0);
+                        bool setStatus = ((ins & (1 << 18)) != 0);
+                        bool setFlags = ((ins & (1 << 19)) != 0);
                         uint operand;
-                        if (BitTest(ins, 25))
+                        if (((ins & (1 << 25)) != 0))
                         {
                             uint rotateBits = ((ins >> 8) & 0xF) * 2;
                             operand = RotateRight32(ins & 0xFF, (byte)rotateBits);
@@ -2438,7 +2899,7 @@ namespace OptimeGBA
                         R[rd] = final;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest(final, 31);
+                            arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                         }
                     }
@@ -2453,9 +2914,9 @@ namespace OptimeGBA
                 case 0x00E9:
                 case 0x00F9: // MULL
                     {
-                        bool signed = BitTest(ins, 22);
-                        bool accumulate = BitTest(ins, 21);
-                        bool setFlags = BitTest(ins, 20);
+                        bool signed = ((ins & (1 << 22)) != 0);
+                        bool accumulate = ((ins & (1 << 21)) != 0);
+                        bool setFlags = ((ins & (1 << 20)) != 0);
                         uint rdHi = (ins >> 16) & 0xF;
                         uint rdLo = (ins >> 12) & 0xF;
                         uint rs = (ins >> 8) & 0xF;
@@ -2498,7 +2959,7 @@ namespace OptimeGBA
                         R[rdHi] = (uint)longHi;
                         if (setFlags)
                         {
-                            arm7.Negative = BitTest((uint)longHi, 31);
+                            arm7.Negative = (((uint)longHi & (1 << 31)) != 0);
                             arm7.Zero = R[rdLo] == 0 && R[rdHi] == 0;
                         }
                     }
@@ -2516,9 +2977,9 @@ namespace OptimeGBA
                         if ((ins & 0b1110000000000000000010010000) == 0b0000000000000000000010010000)
                         {
                             // Halfword, Signed Byte Loads and Stores
-                            bool L = BitTest(ins, 20);
-                            bool S = BitTest(ins, 6);
-                            bool H = BitTest(ins, 5);
+                            bool L = ((ins & (1 << 20)) != 0);
+                            bool S = ((ins & (1 << 6)) != 0);
+                            bool H = ((ins & (1 << 5)) != 0);
                             if (!L && !S && H) { _SpecialLDRSTR(ins, false, false, true); }
                             else if (L && !S && H) { _SpecialLDRSTR(ins, true, false, true); }
                             else if (L && S && !H) { _SpecialLDRSTR(ins, true, true, false); }

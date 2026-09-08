@@ -25,12 +25,12 @@ namespace OptimeGBA
         public DmaGba Dma;
         public Timers Timers;
         public SerialGba Serial;
-        /// <summary>��˶��룺StateStepUntil / HaltSkip �������� tick��Ĭ�ϲ����ơ�</summary>
+        /// <summary>多核对齐：StateStepUntil / HaltSkip 不超过此 tick。默认不限制。</summary>
         public long TickLimit = long.MaxValue;
         bool _enablePpuRender = true;
         bool _enableApuOutput = true;
         /// <summary>
-        /// �Ƿ�ִ��������Ⱦ�� SwapBuffers��false ʱ����ɨ����ʱ��IRQ��H/VBlank DMA��
+        /// 是否执行像素渲染并 SwapBuffers。false 时仍跑扫描线时序、IRQ、H/VBlank DMA。
         /// </summary>
         public bool EnablePpuRender
         {
@@ -43,8 +43,9 @@ namespace OptimeGBA
             }
         }
 
+
         /// <summary>
-        /// �Ƿ���������� AudioCallback��false ʱ���� FIFO ������ FIFO DMA��
+        /// 是否混音并调用 AudioCallback。false 时仍跑 FIFO 弹出与 FIFO DMA。
         /// </summary>
         public bool EnableApuOutput
         {
@@ -52,7 +53,7 @@ namespace OptimeGBA
             set => _enableApuOutput = value;
         }
 
-        /// <summary>���˳��ã�����Ⱦ+�س����������������ʱ��</summary>
+        /// <summary>副核常用：关渲染+关出声，保留联机相关时序。</summary>
         public void SetLiteMode(bool lite)
         {
             EnablePpuRender = !lite;
@@ -68,7 +69,7 @@ namespace OptimeGBA
             Mem = new MemoryGba(this, provider);
             GbaAudio = new GbaAudio(this, Scheduler);
             Ppu = new PpuGba(this, Scheduler);
-            // ��֤ Renderer �뿪��һ�£�Ĭ��ȫ����
+            // 保证 Renderer 与开关一致（默认全开）
             Ppu.Renderer.DebugEnableRendering = _enablePpuRender;
 
             Keypad = new Keypad();
@@ -182,21 +183,36 @@ namespace OptimeGBA
         private readonly SchedulerCallback actCahce_DoNothing;
 
         /// <summary>
-        /// 转发到 Cpu.ExecuteArm，FastCpu 开启时走 FastCpuExecutor 的巨型 switch 解释器。
+        /// 转发到 FastCpuExecutor 的 ExecuteArm/ExecuteThumb（FastCpu=true 时），
+        /// 或原 Arm7 delegate 分发路径。
+        /// 注意：FastCpuExecutor 不内联 ExecuteArm/ExecuteThumb（函数体过大），
+        /// 但此处通过直接调用子函数而非 Execute() 中转，消除了一个函数调用层级。
         /// </summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint ExecArm()
         {
-            return FastCpu ? _fastCpuExecutor.Execute() : Cpu.ExecuteArm();
+            if (FastCpu)
+            {
+                _fastCpuExecutor.arm7.InstructionsRan++;
+                _fastCpuExecutor.arm7.InstructionCycles = 0;
+                return _fastCpuExecutor.ExecuteArm();
+            }
+            return Cpu.ExecuteArm();
         }
 
         /// <summary>
-        /// 转发到 Cpu.ExecuteThumb，FastCpu 开启时走 FastCpuExecutor 的巨型 switch 解释器。
+        /// 转发到 FastCpuExecutor 的 ExecuteThumb。
         /// </summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint ExecThumb()
         {
-            return FastCpu ? _fastCpuExecutor.Execute() : Cpu.ExecuteThumb();
+            if (FastCpu)
+            {
+                _fastCpuExecutor.arm7.InstructionsRan++;
+                _fastCpuExecutor.arm7.InstructionCycles = 0;
+                return _fastCpuExecutor.ExecuteThumb();
+            }
+            return Cpu.ExecuteThumb();
         }
 
         public uint Step()
@@ -259,7 +275,7 @@ namespace OptimeGBA
             return (uint)(Scheduler.CurrentTicks - beforeTicks);
         }
         /// <summary>
-        /// �ƽ��� NextEvent �� TickLimit���ȵ�Ϊ׼�������ڶ�ʵ��������
+        /// 推进到 NextEvent 或 TickLimit（先到为准），用于多实例锁步。
         /// </summary>
         public uint StateStepUntil()
         {
