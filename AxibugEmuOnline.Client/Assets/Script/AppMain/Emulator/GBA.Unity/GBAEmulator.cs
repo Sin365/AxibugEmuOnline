@@ -33,6 +33,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public List<GBAEmuLiteProcess> other_process = new List<GBAEmuLiteProcess>();
         public GbaLink gbaLink;
         public Gba[] GbaInstSlot;
+        bool[] GbaInstSlot_LiteMode;
         public int MainGbaIdx;
 
         public RawImage[] OtherGbaSreen;
@@ -86,7 +87,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             return inputData.Value;
         }
 
-        protected override bool OnPushEmulatorFrame(GBAInputState InputData)
+        protected override bool OnPushEmulatorFrame(GBAInputState InputData, bool isSkipFrame)
         {
             if (!bLogicUpdatePause) return false;
 
@@ -117,7 +118,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             }
 #endif
 
-            DoUpdate();
+            DoUpdate(isSkipFrame);
             return true;
         }
 
@@ -283,6 +284,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         void SetGBALink(RomFile romFile, int playerCount, int mineIdx, List<byte[]> savDataList)
         {
             GbaInstSlot = new Gba[playerCount];
+            GbaInstSlot_LiteMode = new bool[playerCount];
             gbaLink = null;
             MainGbaIdx = mineIdx;
             other_process.Clear();
@@ -299,6 +301,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 LoadRom(romdata, savDataList[0], romFile.LocalProxyFileName);
                 GbaInstSlot[0] = main_gba;
                 main_gba.SetLiteMode(false);
+                GbaInstSlot_LiteMode[0] = false;
             }
             else//多人，对号入座
             {
@@ -309,6 +312,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                         LoadRom(romdata, savDataList[i], romFile.LocalProxyFileName);
                         GbaInstSlot[i] = main_gba;
                         main_gba.SetLiteMode(false);
+                        GbaInstSlot_LiteMode[i] = false;
                         App.log.Info($"[GBA]多实例槽位[{i}],本地玩家");
                     }
                     else
@@ -316,9 +320,10 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                         GBAEmuLiteProcess otherGba = new GBAEmuLiteProcess();
                         other_process.Add(otherGba);
                         otherGba.VideoInit(OtherGbaSreen[other_process.Count - 1]);
-                        OtherGbaSreen[other_process.Count - 1]?.gameObject.SetActive(true);
                         otherGba.LoadRom(romdata, savDataList[i]);
-                        otherGba.gba.SetLiteMode(false);
+                        otherGba.gba.SetLiteMode(true);
+                        GbaInstSlot_LiteMode[i] = true;
+                        OtherGbaSreen[other_process.Count - 1]?.gameObject.SetActive(otherGba.gba.EnablePpuRender);
                         GbaInstSlot[i] = otherGba.gba;
                         App.log.Info($"[GBA]多实例槽位[{i}],虚拟玩家");
                     }
@@ -340,9 +345,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
 
 
         // Update is called once per frame
-        void DoUpdate()
+        void DoUpdate(bool isSkipFrame)
         {
-            if (RomLoaded)
+            if (RomLoaded && !isSkipFrame)
             {
                 main_videoProvider.OnRenderFrame();
                 for (int i = 0; i < other_process.Count; i++)
@@ -358,6 +363,17 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                 main_gba.SetLiteMode(main_gba.EnablePpuRender);
             }
 #endif
+
+            //根据跳帧，如果是跳帧的帧，则用轻量级运行
+            for (int i = 0; i < GbaInstSlot_LiteMode.Length; i++)
+            {
+                if (isSkipFrame)
+                    GbaInstSlot[i].SetLiteMode(true);
+                else
+                    GbaInstSlot[i].SetLiteMode(GbaInstSlot_LiteMode[i]);
+            }
+
+
             Frame_UpdateByCpuTime();
             //UpdateFrameOneByOne();
         }
@@ -567,7 +583,7 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         //    Update_CheckSave();
         //}
 
-#if UNITY_SWITCH //暂时Switch只有用这个模式，才能慢60帧，但是这样高要求的联机游戏会有问题（如，马里奥水管工附赠游戏没问题，但是马里奥赛车，星之卡比梦之泉不行）
+#if FALSE && UNITY_SWITCH //暂时Switch只有用这个模式，才能慢60帧，但是这样高要求的联机游戏会有问题（如，马里奥水管工附赠游戏没问题，但是马里奥赛车，星之卡比梦之泉不行）
         void RunSingleFrame()
         {
             Gba[] cores = GbaInstSlot;

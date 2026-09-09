@@ -133,7 +133,7 @@ namespace AxibugEmuOnline.Client
         }
 
         //推进帧
-        protected override bool OnPushEmulatorFrame(ControllerState inputData)
+        protected override bool OnPushEmulatorFrame(ControllerState inputData, bool isSkipFrame)
         {
             if (NesCore == null || IsPause) return false;
 

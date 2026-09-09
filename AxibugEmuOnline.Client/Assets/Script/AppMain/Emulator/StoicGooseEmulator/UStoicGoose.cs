@@ -160,7 +160,7 @@ public class UStoicGoose : EmuCore<ulong>
     {
         return inputHandler.ControllerMapper;
     }
-    protected override bool OnPushEmulatorFrame(ulong InputData)
+    protected override bool OnPushEmulatorFrame(ulong InputData, bool isSkipFrame)
     {
         if (!emulatorHandler.IsRunning) return false;
         if (!bLogicUpdatePause) return false;

@@ -83,7 +83,7 @@ namespace AxibugEmuOnline.Client
 
         public sealed override void PushEmulatorFrame()
         {
-            if (!TryPushEmulatorFrame()) return;
+            if (!TryPushEmulatorFrame(false)) return;
 
             if (IsNetPlay) //skip frame handle
             {
@@ -91,21 +91,21 @@ namespace AxibugEmuOnline.Client
                 if (skipFrameCount > 0) App.log.Debug($"SKIP FRAME : {skipFrameCount} ,CF:{App.roomMgr.netReplay.mCurrClientFrameIdx},RFIdx:{App.roomMgr.netReplay.mRemoteFrameIdx},RForward:{App.roomMgr.netReplay.mRemoteForwardCount} ,queue:{App.roomMgr.netReplay.mNetReplayQueue.Count}");
                 for (var i = 0; i < skipFrameCount; i++)
                 {
-                    if (!TryPushEmulatorFrame()) break;
+                    if (!TryPushEmulatorFrame(true)) break;
                 }
             }
 
             AfterPushFrame();
         }
 
-        bool TryPushEmulatorFrame()
+        bool TryPushEmulatorFrame(bool isSkipFrame)
         {
             INPUTDATA inputData;
             if (SampleInputData(out inputData))
             {
                 if (IsNetPlay) SendLocalInput();
 
-                return OnPushEmulatorFrame(inputData);
+                return OnPushEmulatorFrame(inputData, isSkipFrame);
             }
 
             return false;
@@ -165,6 +165,6 @@ namespace AxibugEmuOnline.Client
         protected abstract INPUTDATA ConvertInputDataFromNet(ReplayStep step);
         protected abstract ulong InputDataToNet(INPUTDATA inputData);
         /// <summary> 模拟器核心推帧 </summary>
-        protected abstract bool OnPushEmulatorFrame(INPUTDATA InputData);
+        protected abstract bool OnPushEmulatorFrame(INPUTDATA InputData, bool isSkipFrame);
     }
 }

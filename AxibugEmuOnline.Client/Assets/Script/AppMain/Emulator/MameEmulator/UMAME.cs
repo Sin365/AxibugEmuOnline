@@ -188,7 +188,7 @@ public class UMAME : EmuCore<ulong>
             return false;
         }
     }
-    protected override bool OnPushEmulatorFrame(ulong InputData)
+    protected override bool OnPushEmulatorFrame(ulong InputData, bool isSkipFrame)
     {
         if (!bInGame) return false;
         if (!bLogicUpdatePause) return false;
