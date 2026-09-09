@@ -1,3 +1,4 @@
+#define ScreenBufferRGBA
 using OptimeGBA;
 using System;
 using System.Runtime.InteropServices;
@@ -24,9 +25,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
             {
                 wrapTex = new Texture2D(240, 160, TextureFormat.RGBA32, false);
                 wrapTex.filterMode = FilterMode.Point;
-                // ¹Ì¶¨Êı×é£¬·ÀÖ¹À¬»ø»ØÊÕÆ÷ÒÆ¶¯Ëü  
+                // å›ºå®šæ•°ç»„ï¼Œé˜²æ­¢åƒåœ¾å›æ”¶å™¨ç§»åŠ¨å®ƒ
                 GCHandle handle = GCHandle.Alloc(wrapTexBuffer, GCHandleType.Pinned);
-                // »ñÈ¡Êı×éµÄÖ¸Õë  
+                // è·å–æ•°ç»„çš„æŒ‡é’ˆ
                 wrapTexBufferPointer = handle.AddrOfPinnedObject();
                 m_drawCanvas.texture = wrapTex;
                 TexBufferSize = wrapTexBuffer.Length * 4;
@@ -42,6 +43,11 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         public unsafe void OnRenderFrame()
         {
             var buf = GBAEmulator.instance.ShowBackBuf ? GBAEmulator.instance.main_gba.Ppu.Renderer.ScreenBack : GBAEmulator.instance.main_gba.Ppu.Renderer.ScreenFront;
+#if ScreenBufferRGBA
+            // ScreenBufferRGBA æ¨¡å¼ä¸‹æ ¸å¿ƒå·²ç›´æ¥äº§å‡º RGBA32ï¼Œç›´æ¥æŠŠæŒ‡é’ˆäº¤ç»™ LoadRawTextureDataï¼Œé›¶éå†
+            wrapTex.LoadRawTextureData(new IntPtr(buf), TexBufferSize);
+            wrapTex.Apply();
+#else
             unsafe
             {
                 for (uint i = 0; i < 240 * 160; i++)
@@ -49,9 +55,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                     wrapTexBuffer[i] = PpuRenderer.ColorLutCorrected[buf[i] & 0x7FFF];
                 }
             }
-
             wrapTex.LoadRawTextureData(wrapTexBufferPointer, TexBufferSize);
             wrapTex.Apply();
+#endif
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿
+#define ScreenBufferRGBA
 using AxibugEmuOnline.Client.ClientCore;
 using OptimeGBA;
 using System;
@@ -106,6 +106,11 @@ namespace AxibugEmuOnline.Client.GBA.Unity
         {
             if (!gba.EnablePpuRender) return;
             var buf = GBAEmulator.instance.ShowBackBuf ? gba.Ppu.Renderer.ScreenBack : gba.Ppu.Renderer.ScreenFront;
+#if ScreenBufferRGBA
+            // ScreenBufferRGBA 模式下核心已直接产出 RGBA32，直接把指针交给 LoadRawTextureData，零遍历
+            wrapTex.LoadRawTextureData(new IntPtr(buf), TexBufferSize);
+            wrapTex.Apply();
+#else
             unsafe
             {
                 for (uint i = 0; i < 240 * 160; i++)
@@ -113,9 +118,9 @@ namespace AxibugEmuOnline.Client.GBA.Unity
                     wrapTexBuffer[i] = PpuRenderer.ColorLutCorrected[buf[i] & 0x7FFF];
                 }
             }
-
             wrapTex.LoadRawTextureData(wrapTexBufferPointer, TexBufferSize);
             wrapTex.Apply();
+#endif
         }
         #endregion
 

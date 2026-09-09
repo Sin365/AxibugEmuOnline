@@ -1,4 +1,7 @@
+//#define UNSAFE
 #define UNSAFE
+
+#define ScreenBufferRGBA
 
 using System;
 using System.Runtime.CompilerServices;
@@ -28,9 +31,16 @@ namespace OptimeGBA
             Array.Fill(DebugEnableBg, true);
 
             int ScreenBufferSize = Width * Height;
-#if UNSAFE
+#if ScreenBufferRGBA
+            ScreenFront = MemoryUtil.AllocateUnmanagedArray32(ScreenBufferSize);
+            ScreenBack = MemoryUtil.AllocateUnmanagedArray32(ScreenBufferSize);
+#elif UNSAFE
             ScreenFront = MemoryUtil.AllocateUnmanagedArray16(ScreenBufferSize);
             ScreenBack = MemoryUtil.AllocateUnmanagedArray16(ScreenBufferSize);
+#else
+            ScreenFront = new ushort[ScreenBufferSize];
+            ScreenBack = new ushort[ScreenBufferSize];
+#endif
 
             // 16 wide to allow tiles to poke out on each side for efficiency
             WinMasks = MemoryUtil.AllocateUnmanagedArray(Width + 16);
@@ -38,21 +48,18 @@ namespace OptimeGBA
             BgHi = MemoryUtil.AllocateUnmanagedArray32(width + 16);
 
             bNeedReleaseMem = true;
-#else 
-            ScreenFront = new ushort[ScreenBufferSize];
-            ScreenBack = new ushort[ScreenBufferSize];
-
-            WinMasks = new byte[width + 16];
-            BgLo = new uint[width + 16];
-            BgHi = new uint[width + 16];
-#endif
             ObjBuffer = new ObjPixel[Width];
             ObjWindowBuffer = new byte[Width];
 
             for (uint i = 0; i < ScreenBufferSize; i++)
             {
+#if ScreenBufferRGBA
+                ScreenFront[i] = ColorLutCorrected[0x7FFF];
+                ScreenBack[i] = ColorLutCorrected[0x7FFF];
+#else
                 ScreenFront[i] = 0x7FFF;
                 ScreenBack[i] = 0x7FFF;
+#endif
             }
 
             //if (nds == null)
@@ -102,8 +109,35 @@ namespace OptimeGBA
         public bool DebugForce3DLayer = false;
         public bool RenderingDone = false;
 
-        // RGB, 24-bit
-#if UNSAFE
+        // RGB555 / RGBA32
+#if ScreenBufferRGBA
+        public uint* ScreenFront;
+        public uint* ScreenBack;
+
+        public byte* WinMasks;
+
+        public uint* BgLo;
+        public uint* BgHi;
+
+        bool bNeedReleaseMem = false;
+
+        void releaseMem()
+        {
+            if (!bNeedReleaseMem)
+                return;
+            MemoryUtil.FreeUnmanagedArray(ScreenFront);
+            MemoryUtil.FreeUnmanagedArray(ScreenBack);
+            MemoryUtil.FreeUnmanagedArray(WinMasks);
+            MemoryUtil.FreeUnmanagedArray(BgLo);
+            MemoryUtil.FreeUnmanagedArray(BgHi);
+            bNeedReleaseMem = false;
+        }
+
+        ~PpuRenderer()
+        {
+            releaseMem();
+        }
+#elif UNSAFE
         public ushort* ScreenFront;
         public ushort* ScreenBack;
 
@@ -424,7 +458,7 @@ namespace OptimeGBA
         //    }
         //}
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         public void PrepareBackgroundAndWindow(uint vcount)
         {
             if (BackgroundSettingsDirty)
@@ -577,7 +611,7 @@ namespace OptimeGBA
         //    return GetUshort(Palettes, index * 2);
         //}
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ushort LookupPalette(uint index)
         {
@@ -604,7 +638,7 @@ namespace OptimeGBA
 
         public readonly static uint[] CharWidthTable = { 256, 512, 256, 512 };
         public readonly static uint[] CharHeightTable = { 256, 256, 512, 512 };
-        #region AVX burstµÄ RenderCharBackground
+        #region AVX burstï¿½ï¿½ RenderCharBackground
 //        public void RenderCharBackground(uint vcount, byte* vram, Background bg)
 //        {
 //            bool enableMosaicX = bg.EnableMosaic && BgMosaicX != 0;
@@ -788,7 +822,7 @@ namespace OptimeGBA
 //        }
         #endregion
 
-        #region ²»Ê¹ÓÃAVX burstµÄ RenderCharBackground
+        #region ï¿½ï¿½Ê¹ï¿½ï¿½AVX burstï¿½ï¿½ RenderCharBackground
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RenderCharBackgroundNoBurst(uint vcount, byte* vram, Background bg)
         {
@@ -994,7 +1028,7 @@ namespace OptimeGBA
         //}
 
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         public void RenderAffineBackground(uint vcount, byte* vram, Background bg)
         {
             uint charBase = bg.CharBaseBlock * CharBlockSize;
@@ -1253,7 +1287,7 @@ namespace OptimeGBA
         //    }
         //}
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         public void RenderObjs(uint vcount, byte* vram)
         {
             // OAM address for the last sprite
@@ -1342,7 +1376,7 @@ namespace OptimeGBA
                                 }
 
                                 //RenderObjPixel(vram, objPixelX, objPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
-                                #region ÄÚÁªRenderObjPixel
+                                #region ï¿½ï¿½ï¿½ï¿½RenderObjPixel
                                 int objX = objPixelX;
                                 int objY = objPixelY;
                                 uint tile = tileNumber;
@@ -1551,7 +1585,7 @@ namespace OptimeGBA
                                 if (lerpedObjPixelX < xSize && lerpedObjPixelY < ySize)
                                 {
                                     //RenderObjPixel(vram, (int)lerpedObjPixelX, (int)lerpedObjPixelY, tileNumber, xSize, use8BitColor, screenLineBase, palette, priority, mode);
-                                    #region ÄÚÁªRenderObjPixel
+                                    #region ï¿½ï¿½ï¿½ï¿½RenderObjPixel
                                     int objX = (int)lerpedObjPixelX;
                                     int objY = (int)lerpedObjPixelY;
                                     uint tile = tileNumber;
@@ -1769,7 +1803,7 @@ namespace OptimeGBA
 
 
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RenderObjPixel(byte* vram, int objX, int objY, uint tile, uint width, bool use8BitColor, uint x, uint palette, byte priority, ObjMode mode)
         {
@@ -1935,7 +1969,7 @@ namespace OptimeGBA
         //    }
         //}
 
-        //¸Éµô½á¹¹Ìå¹¹Ôìº¯Êý
+        //ï¿½Éµï¿½ï¿½á¹¹ï¿½å¹¹ï¿½ìº¯ï¿½ï¿½
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void PlaceObjPixel(uint x, ushort color, byte paletteIndex, byte priority, ObjMode mode)
         {
@@ -2077,7 +2111,7 @@ namespace OptimeGBA
         //}
 
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         public void Composite(uint vcount)
         {
             uint screenBase = (uint)(vcount * Width);
@@ -2175,13 +2209,21 @@ namespace OptimeGBA
                             break;
                     }
 
+#if ScreenBufferRGBA
+                    ScreenBack[screenBase++] = ColorLutCorrected[((fb << 10) | (fg << 5) | fr) & 0x7FFF];
+                }
+                else
+                {
+                    ScreenBack[screenBase++] = ColorLutCorrected[hiColor & 0x7FFF];
+                }
+#else
                     ScreenBack[screenBase++] = (ushort)((fb << 10) | (fg << 5) | fr);
                 }
                 else
                 {
                     ScreenBack[screenBase++] = hiColor;
                 }
-
+#endif
                 // It's the frontend's responsibility to convert rgb555 to rgb888
 
                 // Use this loop as an opportunity to clear the sprite buffer
@@ -2273,7 +2315,7 @@ namespace OptimeGBA
         //    }
         //}
 
-        //ÊÖ¶¯ÄÚÁª
+        //ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         public void RenderMode4(uint vcount, byte* vram)
         {
             uint screenBase = (uint)(vcount * Width);
@@ -2285,10 +2327,15 @@ namespace OptimeGBA
 
                 //ScreenBack[screenBase] = LookupPalette(vramVal);
                 uint idx_x_2 = vramVal * 2;
-                ScreenBack[screenBase] = (ushort)(
+                ushort color555 = (ushort)(
                         (Palettes[idx_x_2] << 0) |
                         (Palettes[idx_x_2 + 1] << 8)
                     );
+#if ScreenBufferRGBA
+                ScreenBack[screenBase] = ColorLutCorrected[color555 & 0x7FFF];
+#else
+                ScreenBack[screenBase] = color555;
+#endif
 
                 vramBase++;
                 screenBase++;
@@ -2307,7 +2354,11 @@ namespace OptimeGBA
 
                 ushort data = (ushort)((b1 << 8) | b0);
 
+#if ScreenBufferRGBA
+                ScreenBack[screenBase] = ColorLutCorrected[data & 0x7FFF];
+#else
                 ScreenBack[screenBase] = data;
+#endif
 
                 screenBase++;
                 vramBase += 2;
@@ -2321,7 +2372,11 @@ namespace OptimeGBA
 
             for (uint p = 0; p < Width; p++)
             {
+                #if ScreenBufferRGBA
+                ScreenBack[screenBase] = ColorLutCorrected[0x7FFF];
+#else
                 ScreenBack[screenBase] = 0x7FFF;
+#endif
                 screenBase++;
             }
         }
