@@ -36,6 +36,27 @@ namespace OptimeGBA
         private readonly byte* timing8And16InstrFetch;
         private readonly byte* timing32InstrFetch;
 
+        // ===== 缓存页快速路径 =====
+        // 把"页表数组 + regionMasks 数组"的两次带边界检查的下标访问，
+        // 换成只读一次的"当前页"缓存字段；同一页（4KB）内后续访问零数组解引用。
+        // 取指 / Read32/16/8 / Write32/16/8 共用这套三缓存（页面号 + 页基址 + 掩码）。
+        // ===== 小容量直接映射页缓存（8 槽：4 个 IWRAM 页 + 4 个其他区） =====
+        // 单槽缓存在 ROM/内存/IO 页间乒乓时每访问都 miss（profilr 里 Read16Unregistered 高 miss 率、
+        // WriteHwio8 1728 次即此病根）。改为 8 槽直接映射：槽 = (page>>12)==3 ? 4+(page&3) : page&7
+        // 3xxx IWRAM 的前 4 页 (addr>>12)==3 -> 槽 4..7 恒定驻留；其余区（ROM/IO/VRAM/OAM/EWRAM/其余 IWRAM 页）共享 0..3。
+        // 行为与单槽完全等价：仅改共享缓存槽号，RAM 内容不变，锁步结果逐位不变。
+        private uint[] m_cachePage = new uint[8] { uint.MaxValue, uint.MaxValue, uint.MaxValue, uint.MaxValue, uint.MaxValue, uint.MaxValue, uint.MaxValue, uint.MaxValue };
+        private byte*[] m_cacheRead = new byte*[8];
+        private byte*[] m_cacheWrite = new byte*[8];
+        private uint[] m_cacheMask = new uint[8];
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private void InvalidateCachedPage()
+        {
+            m_cachePage[0] = m_cachePage[1] = m_cachePage[2] = m_cachePage[3] =
+            m_cachePage[4] = m_cachePage[5] = m_cachePage[6] = m_cachePage[7] = uint.MaxValue;
+        }
+
         public FastCpuExecutor(Arm7 arm7)
         {
             this.arm7 = arm7;
@@ -54,19 +75,14 @@ namespace OptimeGBA
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private uint GetCPSR()
         {
-            uint val = 0;
-            if (arm7.Negative) val = BitSet(val, 31);
-            if (arm7.Zero) val = BitSet(val, 30);
-            if (arm7.Carry) val = BitSet(val, 29);
-            if (arm7.Overflow) val = BitSet(val, 28);
-            if (arm7.Sticky) val = BitSet(val, 27);
-            if (arm7.IRQDisable) val = BitSet(val, 7);
-            if (arm7.FIQDisable) val = BitSet(val, 6);
-            if (arm7.ThumbState) val = BitSet(val, 5);
-            val |= (uint)arm7.Mode;
-            return val;
+            return ((arm7.Negative ? 0x80000000u : 0u) | (arm7.Zero ? 0x40000000u : 0u)
+                | (arm7.Carry ? 0x20000000u : 0u) | (arm7.Overflow ? 0x10000000u : 0u)
+                | (arm7.Sticky ? 0x08000000u : 0u) | (arm7.IRQDisable ? 0x80u : 0u)
+                | (arm7.FIQDisable ? 0x40u : 0u) | (arm7.ThumbState ? 0x20u : 0u)
+                | (uint)arm7.Mode);
         }
 
+        // 手动内联_DataOp 弹布分支/数据写 / MSR 的 flags 写点用 SetCPSR。定义保留（冷路径 MSR/SPSR 回退引用它）。
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void SetCPSR(uint val)
         {
@@ -84,6 +100,68 @@ namespace OptimeGBA
             }
             arm7.ThumbState = newThumbState;
             SetMode((Arm7Mode)(val & 0b01111));
+        }
+
+        // _DataOpFlushBranches（setFlags && rd==15）恢复 SPSR→CPSR&SPSR 的专用内联。
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private void RestoreCPSRFromSPSR()
+        {
+            uint s;
+            Arm7Mode m = arm7.Mode;
+            if (m == Arm7Mode.FIQ || m == Arm7Mode.OldFIQ) s = arm7.SPSR_fiq;
+            else if (m == Arm7Mode.SVC || m == Arm7Mode.OldSVC) s = arm7.SPSR_svc;
+            else if (m == Arm7Mode.ABT) s = arm7.SPSR_abt;
+            else if (m == Arm7Mode.IRQ || m == Arm7Mode.OldIRQ) s = arm7.SPSR_irq;
+            else if (m == Arm7Mode.UND) s = arm7.SPSR_und;
+            else { // USR/SYS 回到 GetCPSR
+                s = ((arm7.Negative ? 0x80000000u : 0u) | (arm7.Zero ? 0x40000000u : 0u)
+                    | (arm7.Carry ? 0x20000000u : 0u) | (arm7.Overflow ? 0x10000000u : 0u)
+                    | (arm7.Sticky ? 0x08000000u : 0u) | (arm7.IRQDisable ? 0x80u : 0u)
+                    | (arm7.FIQDisable ? 0x40u : 0u) | (arm7.ThumbState ? 0x20u : 0u)
+                    | (uint)arm7.Mode);
+            }
+            arm7.Negative = ((s & 0x80000000u) != 0);
+            arm7.Zero = ((s & 0x40000000u) != 0);
+            arm7.Carry = ((s & 0x20000000u) != 0);
+            arm7.Overflow = ((s & 0x10000000u) != 0);
+            arm7.Sticky = ((s & 0x08000000u) != 0);
+            arm7.IRQDisable = ((s & 0x80u) != 0);
+            arm7.FIQDisable = ((s & 0x40u) != 0);
+            bool newThumbState = ((s & 0x20u) != 0);
+            if (newThumbState != arm7.ThumbState)
+                arm7.StateChange();
+            arm7.ThumbState = newThumbState;
+            SetModeFast((Arm7Mode)(s & 0b01111));
+        }
+
+        // SetMode 的分支不变版本（flags/MSR-case 内联用），恢复 SPSR 分支内部再套一层 switch 不变。
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private void SetModeFast(Arm7Mode mode)
+        {
+            mode |= (Arm7Mode)0b10000;
+            switch (arm7.Mode)
+            {
+                case Arm7Mode.USR:
+                case Arm7Mode.SYS: for (uint i = 0; i < 7; i++) arm7.Rusr[i] = R[8 + i]; break;
+                case Arm7Mode.FIQ: for (uint i = 0; i < 7; i++) arm7.Rfiq[i] = R[8 + i]; break;
+                case Arm7Mode.SVC: for (uint i = 0; i < 2; i++) arm7.Rsvc[i] = R[13 + i]; break;
+                case Arm7Mode.ABT: for (uint i = 0; i < 2; i++) arm7.Rabt[i] = R[13 + i]; break;
+                case Arm7Mode.IRQ: for (uint i = 0; i < 2; i++) arm7.Rirq[i] = R[13 + i]; break;
+                case Arm7Mode.UND: for (uint i = 0; i < 2; i++) arm7.Rund[i] = R[13 + i]; break;
+            }
+            switch (mode)
+            {
+                case Arm7Mode.USR:
+                case Arm7Mode.SYS: for (uint i = 5; i < 7; i++) R[8 + i] = arm7.Rusr[i]; break;
+                case Arm7Mode.FIQ: for (uint i = 0; i < 7; i++) R[8 + i] = arm7.Rfiq[i]; break;
+                case Arm7Mode.SVC: for (uint i = 0; i < 2; i++) R[13 + i] = arm7.Rsvc[i]; break;
+                case Arm7Mode.ABT: for (uint i = 0; i < 2; i++) R[13 + i] = arm7.Rabt[i]; break;
+                case Arm7Mode.IRQ: for (uint i = 0; i < 2; i++) R[13 + i] = arm7.Rirq[i]; break;
+                case Arm7Mode.UND: for (uint i = 0; i < 2; i++) R[13 + i] = arm7.Rund[i]; break;
+            }
+            if (arm7.Mode == Arm7Mode.FIQ)
+                for (uint i = 0; i < 5; i++) R[8 + i] = arm7.Rusr[i];
+            arm7.Mode = mode;
         }
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -164,33 +242,21 @@ namespace OptimeGBA
             arm7.Mode = mode;
         }
 
+        // ARM 条件码真值表：CondTable[c] 第 n 位（n = N*8|Z*4|C*2|V）为 1 表示
+        // 该条件在标志组合 n 下成立。0xE/0xF（AL/NV）恒真。
+        // 用查表替换原来的 switch 判定链，消除分支预测失败，命中 IL2CPP 热路径。
+        private static readonly ushort[] CondTable = new ushort[]
+        {
+            0xF0F0, 0x0F0F, 0xCCCC, 0x3333, // EQ NE CS CC
+            0xFF00, 0x00FF, 0xAAAA, 0x5555, // MI PL VS VC
+            0x0C0C, 0xF3F3, 0xAA55, 0x55AA, // HI LS GE LT
+            0x0A05, 0xF5FA, 0xFFFF, 0xFFFF, // GT LE AL NV
+        };
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private bool CheckCondition(uint code)
         {
-            if (code == 0xE)
-            {
-                return true;
-            }
-            switch (code)
-            {
-                case 0x0: return arm7.Zero;
-                case 0x1: return !arm7.Zero;
-                case 0x2: return arm7.Carry;
-                case 0x3: return !arm7.Carry;
-                case 0x4: return arm7.Negative;
-                case 0x5: return !arm7.Negative;
-                case 0x6: return arm7.Overflow;
-                case 0x7: return !arm7.Overflow;
-                case 0x8: return arm7.Carry && !arm7.Zero;
-                case 0x9: return !arm7.Carry || arm7.Zero;
-                case 0xA: return arm7.Negative == arm7.Overflow;
-                case 0xB: return arm7.Negative != arm7.Overflow;
-                case 0xC: return !arm7.Zero && arm7.Negative == arm7.Overflow;
-                case 0xD: return arm7.Zero || (arm7.Negative != arm7.Overflow);
-                case 0xE: return true;
-                case 0xF: return true;
-            }
-            return false;
+            uint n = (arm7.Negative ? 8U : 0U) | (arm7.Zero ? 4U : 0U) | (arm7.Carry ? 2U : 0U) | (arm7.Overflow ? 1U : 0U);
+            return ((CondTable[code & 0xF] >> (int)n) & 1U) != 0U;
         }
 
         // 取指/访存：已全部手动内联到 ExecuteThumb/ExecuteArm 入口。
@@ -201,10 +267,16 @@ namespace OptimeGBA
         private uint Read32(uint addr)
         {
             arm7.InstructionCycles += timing32[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableRead[addr_12];
-            if (page != null)
-                return *(uint*)(page + (addr & regionMasks[addr_12]));
+            uint page = addr >> 12;
+            int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
+            if (m_cachePage[s] == page && m_cacheRead[s] != null)
+                return *(uint*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
+            m_cachePage[s] = page;
+            m_cacheRead[s] = pageTableRead[page];
+            m_cacheWrite[s] = pageTableWrite[page];
+            m_cacheMask[s] = regionMasks[page];
+            if (m_cacheRead[s] != null)
+                return *(uint*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
             return mem.Read32Unregistered(false, addr);
         }
 
@@ -212,10 +284,16 @@ namespace OptimeGBA
         private ushort Read16(uint addr)
         {
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableRead[addr_12];
-            if (page != null)
-                return *(ushort*)(page + (addr & regionMasks[addr_12]));
+            uint page = addr >> 12;
+            int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
+            if (m_cachePage[s] == page && m_cacheRead[s] != null)
+                return *(ushort*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
+            m_cachePage[s] = page;
+            m_cacheRead[s] = pageTableRead[page];
+            m_cacheWrite[s] = pageTableWrite[page];
+            m_cacheMask[s] = regionMasks[page];
+            if (m_cacheRead[s] != null)
+                return *(ushort*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
             return mem.Read16Unregistered(false, addr);
         }
 
@@ -223,10 +301,16 @@ namespace OptimeGBA
         private byte Read8(uint addr)
         {
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableRead[addr_12];
-            if (page != null)
-                return *(byte*)(page + (addr & regionMasks[addr_12]));
+            uint page = addr >> 12;
+            int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
+            if (m_cachePage[s] == page && m_cacheRead[s] != null)
+                return *(byte*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
+            m_cachePage[s] = page;
+            m_cacheRead[s] = pageTableRead[page];
+            m_cacheWrite[s] = pageTableWrite[page];
+            m_cacheMask[s] = regionMasks[page];
+            if (m_cacheRead[s] != null)
+                return *(byte*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
             return mem.Read8Unregistered(false, addr);
         }
 
@@ -234,12 +318,27 @@ namespace OptimeGBA
         private void Write32(uint addr, uint val)
         {
             arm7.InstructionCycles += timing32[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableWrite[addr_12];
-            if (page != null)
+            uint page = addr >> 12;
+            int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
+            if (m_cachePage[s] == page)
             {
-                *(uint*)(page + (addr & regionMasks[addr_12])) = val;
-                return;
+                if (m_cacheWrite[s] != null)
+                {
+                    *(uint*)(m_cacheWrite[s] + (addr & m_cacheMask[s])) = val;
+                    return;
+                }
+            }
+            else
+            {
+                m_cachePage[s] = page;
+                m_cacheRead[s] = pageTableRead[page];
+                m_cacheWrite[s] = pageTableWrite[page];
+                m_cacheMask[s] = regionMasks[page];
+                if (m_cacheWrite[s] != null)
+                {
+                    *(uint*)(m_cacheWrite[s] + (addr & m_cacheMask[s])) = val;
+                    return;
+                }
             }
             mem.Write32Unregistered(false, addr, val);
         }
@@ -248,12 +347,27 @@ namespace OptimeGBA
         private void Write16(uint addr, ushort val)
         {
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableWrite[addr_12];
-            if (page != null)
+            uint page = addr >> 12;
+            int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
+            if (m_cachePage[s] == page)
             {
-                *(ushort*)(page + (addr & regionMasks[addr_12])) = val;
-                return;
+                if (m_cacheWrite[s] != null)
+                {
+                    *(ushort*)(m_cacheWrite[s] + (addr & m_cacheMask[s])) = val;
+                    return;
+                }
+            }
+            else
+            {
+                m_cachePage[s] = page;
+                m_cacheRead[s] = pageTableRead[page];
+                m_cacheWrite[s] = pageTableWrite[page];
+                m_cacheMask[s] = regionMasks[page];
+                if (m_cacheWrite[s] != null)
+                {
+                    *(ushort*)(m_cacheWrite[s] + (addr & m_cacheMask[s])) = val;
+                    return;
+                }
             }
             mem.Write16Unregistered(false, addr, val);
         }
@@ -262,12 +376,27 @@ namespace OptimeGBA
         private void Write8(uint addr, byte val)
         {
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
-            uint addr_12 = addr >> 12;
-            var page = pageTableWrite[addr_12];
-            if (page != null)
+            uint page = addr >> 12;
+            int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
+            if (m_cachePage[s] == page)
             {
-                *(byte*)(page + (addr & regionMasks[addr_12])) = val;
-                return;
+                if (m_cacheWrite[s] != null)
+                {
+                    *(byte*)(m_cacheWrite[s] + (addr & m_cacheMask[s])) = val;
+                    return;
+                }
+            }
+            else
+            {
+                m_cachePage[s] = page;
+                m_cacheRead[s] = pageTableRead[page];
+                m_cacheWrite[s] = pageTableWrite[page];
+                m_cacheMask[s] = regionMasks[page];
+                if (m_cacheWrite[s] != null)
+                {
+                    *(byte*)(m_cacheWrite[s] + (addr & m_cacheMask[s])) = val;
+                    return;
+                }
             }
             mem.Write8Unregistered(false, addr, val);
         }
@@ -283,6 +412,7 @@ namespace OptimeGBA
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void InitFlushPipeline()
         {
+            InvalidateCachedPage();  // PC 可能已跳转/复位，缓存页作废
             if (arm7.ThumbState)
             {
                 R[15] += 4;
@@ -348,16 +478,27 @@ namespace OptimeGBA
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public uint ExecuteThumb()
         {
-            // 手动内联 Read16InstrFetch：直接页表快速路径，消除方法调用帧
+            // 手动内联 Read16InstrFetch：缓存页快速路径，同一页内零数组解引用
             uint fetchAddr = R[15] - 4;
-            uint fetchAddr_12 = fetchAddr >> 12;
+            uint fetchPage = fetchAddr >> 12;
             arm7.InstructionCycles += timing8And16InstrFetch[(fetchAddr >> 24) & 0xF];
-            var fetchPage = pageTableRead[fetchAddr_12];
             ushort ins;
-            if (fetchPage != null)
-                ins = *(ushort*)(fetchPage + (fetchAddr & regionMasks[fetchAddr_12]));
+            int fs = (int)(((fetchPage >> 12) == 3 ? 4 + (int)(fetchPage & 3) : (int)(fetchPage & 7)));
+            if (m_cachePage[fs] == fetchPage && m_cacheRead[fs] != null)
+            {
+                ins = *(ushort*)(m_cacheRead[fs] + (fetchAddr & m_cacheMask[fs]));
+            }
             else
-                ins = (ushort)mem.Read16Unregistered(false, fetchAddr);
+            {
+                m_cachePage[fs] = fetchPage;
+                m_cacheRead[fs] = pageTableRead[fetchPage];
+                m_cacheWrite[fs] = pageTableWrite[fetchPage];
+                m_cacheMask[fs] = regionMasks[fetchPage];
+                if (m_cacheRead[fs] != null)
+                    ins = *(ushort*)(m_cacheRead[fs] + (fetchAddr & m_cacheMask[fs]));
+                else
+                    ins = (ushort)mem.Read16Unregistered(false, fetchAddr);
+            }
             // 原调用：ushort ins = (ushort)Read16InstrFetch(R[15] - 4);
             int decodeBits = ins >> 6;
 
@@ -858,6 +999,7 @@ namespace OptimeGBA
                                             R[14] = (R[15] - 2) | 1;
                                         }
                                         arm7.ThumbState = ((val & (1 << 0)) != 0);
+                                        InvalidateCachedPage();
                                         R[15] = val & 0xFFFFFFFE;
                                         if (arm7.ThumbState)
                 {
@@ -1071,6 +1213,7 @@ namespace OptimeGBA
                                     if (((ins & (1 << 7)) != 0)) { R[7] = Read32(addr & ~3u); addr += 4; }
                                     if (((ins & (1 << 8)) != 0))
                                     {
+                                        InvalidateCachedPage();
                                         R[15] = Read32(addr);
                                         // GBA: armv5=false, 不做 ThumbState 切换
                                         if (arm7.ThumbState)
@@ -1090,6 +1233,7 @@ namespace OptimeGBA
                                     if ((ins & 0x1FF) == 0)
                                     {
                                         // GBA: armv5=false
+                                        InvalidateCachedPage();
                                         R[15] = Read32(addr & ~3u);
                                         if (arm7.ThumbState)
                 {
@@ -1208,6 +1352,7 @@ namespace OptimeGBA
                                 if ((ins & 0xFF) == 0)
                                 {
                                     // GBA: armv5=false
+                                    InvalidateCachedPage();
                                     R[15] = Read32(addr & ~3u);
                                     if (arm7.ThumbState)
                 {
@@ -1262,6 +1407,7 @@ namespace OptimeGBA
                             R[14] = R[15] - 2;
                             arm7.ThumbState = false;
                             arm7.IRQDisable = true;
+                            InvalidateCachedPage();
                             R[15] = arm7.VectorSoftwareInterrupt;
                             if (arm7.ThumbState)
                 {
@@ -1285,6 +1431,7 @@ namespace OptimeGBA
                             {
                                 int offset = (int)(ins & 0xFF) << 1;
                                 offset = (offset << 23) >> 23;
+                                InvalidateCachedPage();
                                 R[15] = (uint)(R[15] + offset);
                                 if (arm7.ThumbState)
                 {
@@ -1310,6 +1457,7 @@ namespace OptimeGBA
                         {
                             int signedImmed11 = (int)(ins & 0b11111111111) << 1;
                             signedImmed11 = (signedImmed11 << 20) >> 20;
+                            InvalidateCachedPage();
                             R[15] = (uint)(R[15] + signedImmed11);
                             if (arm7.ThumbState)
                 {
@@ -1342,6 +1490,7 @@ namespace OptimeGBA
                                         int offset11 = ins & 0b11111111111;
                                         uint oldR14 = R[14];
                                         R[14] = (R[15] - 2) | 1;
+                                        InvalidateCachedPage();
                                         R[15] = (uint)(oldR14 + (offset11 << 1));
                                         R[15] &= 0xFFFFFFFE;
                                         if (arm7.ThumbState)
@@ -1425,167 +1574,203 @@ namespace OptimeGBA
             }
             else
             {
-                bool regShift = (ins & BIT_4) != 0;
-                byte shiftBits;
-                uint shiftType = (ins >> 5) & 0b11;
-
-                if (!regShift)
-                {
-                    shiftBits = (byte)((ins >> 7) & 0b11111);
-                    uint rn = (ins >> 16) & 0xF;
-                    uint rm = ins & 0xF;
-                    rnVal = R[rn];
-                    uint rmVal = R[rm];
-
-                    switch (shiftType)
-                    {
-                        case 0b00: // LSL
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = rmVal;
-                                shifterCarryOut = arm7.Carry;
-                            }
-                            else
-                            {
-                                shifterOperand = rmVal << shiftBits;
-                                shifterCarryOut = (rmVal & (1 << (32 - shiftBits))) != 0;
-                            }
-                            break;
-                        case 0b01: // LSR
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = 0;
-                                shifterCarryOut = (rmVal & (1 << 31)) != 0;
-                            }
-                            else
-                            {
-                                shifterOperand = rmVal >> shiftBits;
-                                shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
-                            }
-                            break;
-                        case 0b10: // ASR
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = (uint)((int)rmVal >> 31);
-                                shifterCarryOut = (rmVal & (1 << 31)) != 0;
-                            }
-                            else
-                            {
-                                shifterOperand = (uint)((int)rmVal >> shiftBits);
-                                shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
-                            }
-                            break;
-                        case 0b11: // ROR
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = (arm7.Carry ? 1U : 0) << (31) | rmVal >> 1;
-                                shifterCarryOut = (rmVal & (1 << 0)) != 0;
-                            }
-                            else
-                            {
-                                shifterOperand = (rmVal >> shiftBits) | (rmVal << -shiftBits);
-                                shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
-                            }
-                            break;
-                    }
-                    return;
-                }
-                else
-                {
-                    // Register shift
-                    uint rn = (ins >> 16) & 0xF;
-                    uint rs = (ins >> 8) & 0xF;
-                    uint rm = ins & 0xF;
-                    arm7.InstructionCycles += 1;
-                    R[15] += 4;
-                    rnVal = R[rn];
-                    uint rsVal = R[rs];
-                    uint rmVal = R[rm];
-                    R[15] -= 4;
-                    shiftBits = (byte)rsVal;
-
-                    switch (shiftType)
-                    {
-                        case 0b00:
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = rmVal;
-                                shifterCarryOut = arm7.Carry;
-                                break;
-                            }
-                            if (shiftBits >= 32)
-                            {
-                                if (shiftBits > 32)
-                                {
-                                    shifterCarryOut = false;
-                                }
-                                else
-                                {
-                                    shifterCarryOut = (rmVal & (1 << 0)) != 0;
-                                }
-                                shifterOperand = 0;
-                                break;
-                            }
-                            shifterOperand = rmVal << shiftBits;
-                            shifterCarryOut = (rmVal & (1 << (byte)(32 - shiftBits))) != 0;
-                            break;
-                        case 0b01:
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = rmVal;
-                                shifterCarryOut = arm7.Carry;
-                            }
-                            else if (shiftBits < 32)
-                            {
-                                shifterOperand = rmVal >> shiftBits;
-                                shifterCarryOut = (rmVal & (1 << (byte)(shiftBits - 1))) != 0;
-                            }
-                            else if (shiftBits == 32)
-                            {
-                                shifterOperand = 0;
-                                shifterCarryOut = (rmVal & (1 << 31)) != 0;
-                            }
-                            else
-                            {
-                                shifterOperand = 0;
-                                shifterCarryOut = false;
-                            }
-                            break;
-                        case 0b10:
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = rmVal;
-                                shifterCarryOut = arm7.Carry;
-                            }
-                            else if (shiftBits < 32)
-                            {
-                                shifterOperand = (uint)((int)rmVal >> shiftBits);
-                                shifterCarryOut = (rmVal & (1 << (byte)(shiftBits - 1))) != 0;
-                            }
-                            else if (shiftBits >= 32)
-                            {
-                                shifterOperand = (uint)((int)rmVal >> 31);
-                                shifterCarryOut = (rmVal & (1 << 31)) != 0;
-                            }
-                            break;
-                        case 0b11:
-                            if (shiftBits == 0)
-                            {
-                                shifterOperand = rmVal;
-                                shifterCarryOut = arm7.Carry;
-                            }
-                            else
-                            {
-                                shifterOperand = (rmVal >> (byte)(shiftBits & 0b11111)) | (rmVal << -(byte)(shiftBits & 0b11111));
-                                shifterCarryOut = (rmVal & (1 << (byte)((shiftBits & 0b11111) - 1))) != 0;
-                            }
-                            break;
-                    }
-                    return;
-                }
+                // 冷路径：寄存器移位。ARM 数据运算中大多数是立即数或固定移位，寄存器移位较罕见，
+                // 单独剥离到此（编译期仍内联，但避免把 ReturnInZero 等热字段读入立即数路径寄存器）。
+                _DataDecodeRegShift(ins, out shifterOperand, out shifterCarryOut, out rnVal);
             }
         }
 
+        // 冷路径：寄存器移位（含固定移位）。ARM 数据运算中立即数占绝大多数，寄存器移位较罕见，
+        // 单独成方法以便立即数路径获得更紧凑的 IL2CPP 内联。
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private void _DataDecodeRegShift(uint ins, out uint shifterOperand, out bool shifterCarryOut, out uint rnVal)
+        {
+            shifterOperand = 0;
+            shifterCarryOut = false;
+            bool regShift = (ins & BIT_4) != 0;
+            byte shiftBits;
+            uint shiftType = (ins >> 5) & 0b11;
+
+            if (!regShift)
+            {
+                shiftBits = (byte)((ins >> 7) & 0b11111);
+                uint rn = (ins >> 16) & 0xF;
+                uint rm = ins & 0xF;
+                rnVal = R[rn];
+                uint rmVal = R[rm];
+
+                switch (shiftType)
+                {
+                    case 0b00: // LSL
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = rmVal;
+                            shifterCarryOut = arm7.Carry;
+                        }
+                        else
+                        {
+                            shifterOperand = rmVal << shiftBits;
+                            shifterCarryOut = (rmVal & (1 << (32 - shiftBits))) != 0;
+                        }
+                        break;
+                    case 0b01: // LSR
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = 0;
+                            shifterCarryOut = (rmVal & (1 << 31)) != 0;
+                        }
+                        else
+                        {
+                            shifterOperand = rmVal >> shiftBits;
+                            shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
+                        }
+                        break;
+                    case 0b10: // ASR
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = (uint)((int)rmVal >> 31);
+                            shifterCarryOut = (rmVal & (1 << 31)) != 0;
+                        }
+                        else
+                        {
+                            shifterOperand = (uint)((int)rmVal >> shiftBits);
+                            shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
+                        }
+                        break;
+                    case 0b11: // ROR
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = (arm7.Carry ? 1U : 0) << (31) | rmVal >> 1;
+                            shifterCarryOut = (rmVal & (1 << 0)) != 0;
+                        }
+                        else
+                        {
+                            shifterOperand = (rmVal >> shiftBits) | (rmVal << -shiftBits);
+                            shifterCarryOut = (rmVal & (1 << (shiftBits - 1))) != 0;
+                        }
+                        break;
+                }
+                return;
+            }
+            else
+            {
+                // Register shift
+                uint rn = (ins >> 16) & 0xF;
+                uint rs = (ins >> 8) & 0xF;
+                uint rm = ins & 0xF;
+                arm7.InstructionCycles += 1;
+                R[15] += 4;
+                rnVal = R[rn];
+                uint rsVal = R[rs];
+                uint rmVal = R[rm];
+                R[15] -= 4;
+                shiftBits = (byte)rsVal;
+
+                switch (shiftType)
+                {
+                    case 0b00:
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = rmVal;
+                            shifterCarryOut = arm7.Carry;
+                            break;
+                        }
+                        if (shiftBits >= 32)
+                        {
+                            if (shiftBits > 32)
+                            {
+                                shifterCarryOut = false;
+                            }
+                            else
+                            {
+                                shifterCarryOut = (rmVal & (1 << 0)) != 0;
+                            }
+                            shifterOperand = 0;
+                            break;
+                        }
+                        shifterOperand = rmVal << shiftBits;
+                        shifterCarryOut = (rmVal & (1 << (byte)(32 - shiftBits))) != 0;
+                        break;
+                    case 0b01:
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = rmVal;
+                            shifterCarryOut = arm7.Carry;
+                        }
+                        else if (shiftBits < 32)
+                        {
+                            shifterOperand = rmVal >> shiftBits;
+                            shifterCarryOut = (rmVal & (1 << (byte)(shiftBits - 1))) != 0;
+                        }
+                        else if (shiftBits == 32)
+                        {
+                            shifterOperand = 0;
+                            shifterCarryOut = (rmVal & (1 << 31)) != 0;
+                        }
+                        else
+                        {
+                            shifterOperand = 0;
+                            shifterCarryOut = false;
+                        }
+                        break;
+                    case 0b10:
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = rmVal;
+                            shifterCarryOut = arm7.Carry;
+                        }
+                        else if (shiftBits < 32)
+                        {
+                            shifterOperand = (uint)((int)rmVal >> shiftBits);
+                            shifterCarryOut = (rmVal & (1 << (byte)(shiftBits - 1))) != 0;
+                        }
+                        else if (shiftBits >= 32)
+                        {
+                            shifterOperand = (uint)((int)rmVal >> 31);
+                            shifterCarryOut = (rmVal & (1 << 31)) != 0;
+                        }
+                        break;
+                    case 0b11:
+                        if (shiftBits == 0)
+                        {
+                            shifterOperand = rmVal;
+                            shifterCarryOut = arm7.Carry;
+                        }
+                        else
+                        {
+                            shifterOperand = (rmVal >> (byte)(shiftBits & 0b11111)) | (rmVal << -(byte)(shiftBits & 0b11111));
+                            shifterCarryOut = (rmVal & (1 << (byte)((shiftBits & 0b11111) - 1))) != 0;
+                        }
+                        break;
+                }
+                return;
+            }
+        }
+
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private void _DataOpFlushBranches(uint rd, bool setFlags)
+        {
+            // 原 13 个 ALU case 尾部的 rd==15/SetCPSR/Flush 重复段收口到此（见 _DataOp）。
+            // 语义与原代码逐字一致：仅当 rd==15 时恢复 SPSR→CPSR 并做分支刷新。
+            if (rd == 15)
+            {
+                if (setFlags)
+                    RestoreCPSRFromSPSR();  // SetCPSR(GetSPSR()) 手动内联
+                InvalidateCachedPage();
+                if (arm7.ThumbState)
+                {
+                    R[15] &= ~1U;
+                    R[15] += 2;
+                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+                else
+                {
+                    R[15] &= ~3U;
+                    R[15] += 4;
+                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
+                }
+            }
+        }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void _DataOp(uint ins, uint opcode, bool useImmediate32, bool setFlags)
         {
@@ -1602,38 +1787,8 @@ namespace OptimeGBA
                             arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x1: // EOR
@@ -1645,38 +1800,8 @@ namespace OptimeGBA
                             arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x2: // SUB
@@ -1689,38 +1814,8 @@ namespace OptimeGBA
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = shifterOperand <= rnValue;
                             arm7.Overflow = (((rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x3: // RSB
@@ -1733,38 +1828,8 @@ namespace OptimeGBA
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = rnValue <= shifterOperand;
                             arm7.Overflow = (((shifterOperand ^ rnValue) & (shifterOperand ^ aluOut) & 0x80000000) != 0);
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x4: // ADD
@@ -1777,38 +1842,8 @@ namespace OptimeGBA
                             arm7.Zero = final == 0;
                             arm7.Carry = (long)rnValue + (long)shifterOperand > 0xFFFFFFFFL;
                             arm7.Overflow = ((~(rnValue ^ shifterOperand) & (rnValue ^ final) & 0x80000000) != 0);
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x5: // ADC
@@ -1821,38 +1856,8 @@ namespace OptimeGBA
                             arm7.Zero = final == 0;
                             arm7.Carry = (long)rnValue + (long)shifterOperand + (arm7.Carry ? 1U : 0) > 0xFFFFFFFFL;
                             arm7.Overflow = ((~(rnValue ^ shifterOperand) & (rnValue ^ final) & 0x80000000) != 0);
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x6: // SBC
@@ -1865,38 +1870,8 @@ namespace OptimeGBA
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = (long)shifterOperand + (arm7.Carry ? 0 : 1L) <= rnValue;
                             arm7.Overflow = (((rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x7: // RSC
@@ -1909,38 +1884,8 @@ namespace OptimeGBA
                             arm7.Zero = aluOut == 0;
                             arm7.Carry = (long)rnValue + (long)(!arm7.Carry ? 1U : 0) <= shifterOperand;
                             arm7.Overflow = (((shifterOperand ^ rnValue) & (shifterOperand ^ aluOut) & 0x80000000) != 0);
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0x8: // TST
@@ -1966,6 +1911,7 @@ namespace OptimeGBA
                         arm7.Zero = aluOut == 0;
                         arm7.Carry = rnValue >= shifterOperand;
                         arm7.Overflow = (((rnValue ^ shifterOperand) & (rnValue ^ aluOut) & 0x80000000) != 0);
+                        _DataOpFlushBranches(rd, setFlags);  // <-- added for CMP
                     }
                     break;
                 case 0xB: // CMN
@@ -1986,38 +1932,8 @@ namespace OptimeGBA
                             arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0xD: // MOV
@@ -2028,38 +1944,8 @@ namespace OptimeGBA
                             arm7.Negative = ((shifterOperand & (1 << 31)) != 0);
                             arm7.Zero = shifterOperand == 0;
                             arm7.Carry = shifterCarryOut;
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0xE: // BIC
@@ -2071,38 +1957,8 @@ namespace OptimeGBA
                             arm7.Negative = ((final & (1 << 31)) != 0);
                             arm7.Zero = final == 0;
                             arm7.Carry = shifterCarryOut;
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
                 case 0xF: // MVN
@@ -2113,38 +1969,8 @@ namespace OptimeGBA
                             arm7.Negative = ((~shifterOperand & (1 << 31)) != 0);
                             arm7.Zero = ~shifterOperand == 0;
                             arm7.Carry = shifterCarryOut;
-                            if (rd == 15)
-                            {
-                                SetCPSR(GetSPSR());
-                                if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                            }
                         }
-                        else
-                        {
-                            if (rd == 15) if (arm7.ThumbState)
-                {
-                    R[15] &= ~1U;
-                    R[15] += 2;
-                    arm7.InstructionCycles += timing8And16InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                else
-                {
-                    R[15] &= ~3U;
-                    R[15] += 4;
-                    arm7.InstructionCycles += timing32InstrFetch[(R[15] >> 24) & 0xF] * 2U;
-                }
-                        }
+                        _DataOpFlushBranches(rd, setFlags);
                     }
                     break;
             }
@@ -2507,6 +2333,7 @@ namespace OptimeGBA
                         }
                         else
                         {
+                            InvalidateCachedPage();
                             R[15] = Read32(addr & ~3U) & ~3U;
                             if (arm7.ThumbState)
                 {
@@ -2538,6 +2365,7 @@ namespace OptimeGBA
             {
                 if (L)
                 {
+                    InvalidateCachedPage();
                     R[15] = Read32(addr & ~3U);
                     if (arm7.ThumbState)
                 {
@@ -2616,16 +2444,27 @@ namespace OptimeGBA
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         public uint ExecuteArm()
         {
-            // 手动内联 Read32InstrFetch
+            // 手动内联 Read32InstrFetch：缓存页快速路径，同一页内零数组解引用
             uint fetchAddr = R[15] - 8;
-            uint fetchAddr_12 = fetchAddr >> 12;
+            uint fetchPage = fetchAddr >> 12;
             arm7.InstructionCycles += timing32InstrFetch[(fetchAddr >> 24) & 0xF];
-            var fetchPage = pageTableRead[fetchAddr_12];
             uint ins;
-            if (fetchPage != null)
-                ins = *(uint*)(fetchPage + (fetchAddr & regionMasks[fetchAddr_12]));
+            int fs = (int)(((fetchPage >> 12) == 3 ? 4 + (int)(fetchPage & 3) : (int)(fetchPage & 7)));
+            if (m_cachePage[fs] == fetchPage && m_cacheRead[fs] != null)
+            {
+                ins = *(uint*)(m_cacheRead[fs] + (fetchAddr & m_cacheMask[fs]));
+            }
             else
-                ins = mem.Read32Unregistered(false, fetchAddr);
+            {
+                m_cachePage[fs] = fetchPage;
+                m_cacheRead[fs] = pageTableRead[fetchPage];
+                m_cacheWrite[fs] = pageTableWrite[fetchPage];
+                m_cacheMask[fs] = regionMasks[fetchPage];
+                if (m_cacheRead[fs] != null)
+                    ins = *(uint*)(m_cacheRead[fs] + (fetchAddr & m_cacheMask[fs]));
+                else
+                    ins = mem.Read32Unregistered(false, fetchAddr);
+            }
             // 原调用：uint ins = Read32InstrFetch(R[15] - 8);
             uint condition = (ins >> 28) & 0xF;
 
@@ -2649,6 +2488,7 @@ namespace OptimeGBA
                             SetMode(Arm7Mode.SVC);
                             R[14] = R[15] - 4;
                             arm7.IRQDisable = true;
+                            InvalidateCachedPage();
                             R[15] = arm7.VectorSoftwareInterrupt;
                             if (arm7.ThumbState)
                 {
@@ -2670,6 +2510,7 @@ namespace OptimeGBA
                             int offset = (int)(ins & 0b111111111111111111111111) << 2;
                             offset = (offset << 6) >> 6;
                             R[14] = R[15] - 4;
+                            InvalidateCachedPage();
                             R[15] = (uint)(R[15] + offset);
                             if (arm7.ThumbState)
                 {
@@ -2690,6 +2531,7 @@ namespace OptimeGBA
                         {
                             int offset = (int)(ins & 0b111111111111111111111111) << 2;
                             offset = (offset << 6) >> 6;
+                            InvalidateCachedPage();
                             R[15] = (uint)(R[15] + offset);
                             if (arm7.ThumbState)
                 {
@@ -2856,22 +2698,39 @@ namespace OptimeGBA
                             operand = R[ins & 0xF];
                         }
                         uint byteMask =
-                            (setControl ? 0x000000FFu : 0) |
-                            (setExtension ? 0x0000FF00u : 0) |
-                            (setStatus ? 0x00FF0000u : 0) |
-                            (setFlags ? 0xFF000000u : 0);
-                        if (!useSPSR)
+                        (setControl ? 0x000000FFu : 0u) |
+                        (setExtension ? 0x0000FF00u : 0u) |
+                        (setStatus ? 0x00FF0000u : 0u) |
+                        (setFlags ? 0xFF000000u : 0u);
+                    if (!useSPSR)
+                    {
+                        if (arm7.Mode == Arm7Mode.USR)
                         {
-                            if (arm7.Mode == Arm7Mode.USR)
-                            {
-                                byteMask &= 0xFF000000;
-                            }
-                            SetCPSR((GetCPSR() & ~byteMask) | (operand & byteMask));
+                            byteMask &= 0xFF000000u;
                         }
-                        else
-                        {
-                            SetSPSR((GetSPSR() & ~byteMask) | (operand & byteMask));
-                        }
+                        // SetCPSR(merged) 手动内联：合并直接算好 val 再走 SetCPSR 语义
+                        uint val = ((((arm7.Negative ? 0x80000000u : 0u) | (arm7.Zero ? 0x40000000u : 0u)
+                            | (arm7.Carry ? 0x20000000u : 0u) | (arm7.Overflow ? 0x10000000u : 0u)
+                            | (arm7.Sticky ? 0x08000000u : 0u) | (arm7.IRQDisable ? 0x80u : 0u)
+                            | (arm7.FIQDisable ? 0x40u : 0u) | (arm7.ThumbState ? 0x20u : 0u)
+                            | (uint)arm7.Mode) & ~byteMask) | (operand & byteMask));
+                        arm7.Negative = ((val & 0x80000000u) != 0);
+                        arm7.Zero = ((val & 0x40000000u) != 0);
+                        arm7.Carry = ((val & 0x20000000u) != 0);
+                        arm7.Overflow = ((val & 0x10000000u) != 0);
+                        arm7.Sticky = ((val & 0x08000000u) != 0);
+                        arm7.IRQDisable = ((val & 0x80u) != 0);
+                        arm7.FIQDisable = ((val & 0x40u) != 0);
+                        bool nts = ((val & 0x20u) != 0);
+                        if (nts != arm7.ThumbState)
+                            arm7.StateChange();
+                        arm7.ThumbState = nts;
+                        SetModeFast((Arm7Mode)(val & 0b01111));
+                    }
+                    else
+                    {
+                        SetSPSR((GetSPSR() & ~byteMask) | (operand & byteMask));
+                    }
                     }
                     break;
 
