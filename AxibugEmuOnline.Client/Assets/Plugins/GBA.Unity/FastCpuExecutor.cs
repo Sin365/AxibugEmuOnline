@@ -49,12 +49,25 @@ namespace OptimeGBA
         private byte*[] m_cacheRead = new byte*[8];
         private byte*[] m_cacheWrite = new byte*[8];
         private uint[] m_cacheMask = new uint[8];
+        // ===== 代际失效（epoch-based invalidation）=====
+        // InvalidateCachedPage() 每帧被调 ~5K 次，每次都要对全部 8 槽写 uint.MaxValue（>41K 次数组写/帧）。
+        // 改为：只把全局代际 +1，缓存槽带"命中代际"。失效后所有旧代际槽都判为 miss -> 走 refill，语义与清空逐位等价。
+        // 唯一副作用是这对字面 8 槽的"全清"变为"下一次访问逐个失效"，对执行结果零影响（缓存只决定快慢，不决定值）。
+        private int _cacheEpoch = 1;
+        private int[] m_cacheEpochSlot = new int[8];
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
         private void InvalidateCachedPage()
         {
-            m_cachePage[0] = m_cachePage[1] = m_cachePage[2] = m_cachePage[3] =
-            m_cachePage[4] = m_cachePage[5] = m_cachePage[6] = m_cachePage[7] = uint.MaxValue;
+            if (++_cacheEpoch == int.MaxValue)
+            {
+                // 代际回绕：真清空并复位，保证代际永不相同
+                m_cachePage[0] = m_cachePage[1] = m_cachePage[2] = m_cachePage[3] =
+                m_cachePage[4] = m_cachePage[5] = m_cachePage[6] = m_cachePage[7] = uint.MaxValue;
+                m_cacheEpochSlot[0] = m_cacheEpochSlot[1] = m_cacheEpochSlot[2] = m_cacheEpochSlot[3] =
+                m_cacheEpochSlot[4] = m_cacheEpochSlot[5] = m_cacheEpochSlot[6] = m_cacheEpochSlot[7] = 0;
+                _cacheEpoch = 1;
+            }
         }
 
         public FastCpuExecutor(Arm7 arm7)
@@ -269,9 +282,10 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing32[(addr >> 24) & 0xF];
             uint page = addr >> 12;
             int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
-            if (m_cachePage[s] == page && m_cacheRead[s] != null)
+            if (m_cacheEpochSlot[s] == _cacheEpoch && m_cachePage[s] == page && m_cacheRead[s] != null)
                 return *(uint*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
             m_cachePage[s] = page;
+            m_cacheEpochSlot[s] = _cacheEpoch;
             m_cacheRead[s] = pageTableRead[page];
             m_cacheWrite[s] = pageTableWrite[page];
             m_cacheMask[s] = regionMasks[page];
@@ -286,9 +300,10 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
             uint page = addr >> 12;
             int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
-            if (m_cachePage[s] == page && m_cacheRead[s] != null)
+            if (m_cacheEpochSlot[s] == _cacheEpoch && m_cachePage[s] == page && m_cacheRead[s] != null)
                 return *(ushort*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
             m_cachePage[s] = page;
+            m_cacheEpochSlot[s] = _cacheEpoch;
             m_cacheRead[s] = pageTableRead[page];
             m_cacheWrite[s] = pageTableWrite[page];
             m_cacheMask[s] = regionMasks[page];
@@ -303,9 +318,10 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
             uint page = addr >> 12;
             int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
-            if (m_cachePage[s] == page && m_cacheRead[s] != null)
+            if (m_cacheEpochSlot[s] == _cacheEpoch && m_cachePage[s] == page && m_cacheRead[s] != null)
                 return *(byte*)(m_cacheRead[s] + (addr & m_cacheMask[s]));
             m_cachePage[s] = page;
+            m_cacheEpochSlot[s] = _cacheEpoch;
             m_cacheRead[s] = pageTableRead[page];
             m_cacheWrite[s] = pageTableWrite[page];
             m_cacheMask[s] = regionMasks[page];
@@ -320,7 +336,7 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing32[(addr >> 24) & 0xF];
             uint page = addr >> 12;
             int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
-            if (m_cachePage[s] == page)
+            if (m_cacheEpochSlot[s] == _cacheEpoch && m_cachePage[s] == page)
             {
                 if (m_cacheWrite[s] != null)
                 {
@@ -331,6 +347,7 @@ namespace OptimeGBA
             else
             {
                 m_cachePage[s] = page;
+                m_cacheEpochSlot[s] = _cacheEpoch;
                 m_cacheRead[s] = pageTableRead[page];
                 m_cacheWrite[s] = pageTableWrite[page];
                 m_cacheMask[s] = regionMasks[page];
@@ -349,7 +366,7 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
             uint page = addr >> 12;
             int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
-            if (m_cachePage[s] == page)
+            if (m_cacheEpochSlot[s] == _cacheEpoch && m_cachePage[s] == page)
             {
                 if (m_cacheWrite[s] != null)
                 {
@@ -360,6 +377,7 @@ namespace OptimeGBA
             else
             {
                 m_cachePage[s] = page;
+                m_cacheEpochSlot[s] = _cacheEpoch;
                 m_cacheRead[s] = pageTableRead[page];
                 m_cacheWrite[s] = pageTableWrite[page];
                 m_cacheMask[s] = regionMasks[page];
@@ -378,7 +396,7 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing8And16[(addr >> 24) & 0xF];
             uint page = addr >> 12;
             int s = (int)(((page >> 12) == 3 ? 4 + (int)(page & 3) : (int)(page & 7)));
-            if (m_cachePage[s] == page)
+            if (m_cacheEpochSlot[s] == _cacheEpoch && m_cachePage[s] == page)
             {
                 if (m_cacheWrite[s] != null)
                 {
@@ -389,6 +407,7 @@ namespace OptimeGBA
             else
             {
                 m_cachePage[s] = page;
+                m_cacheEpochSlot[s] = _cacheEpoch;
                 m_cacheRead[s] = pageTableRead[page];
                 m_cacheWrite[s] = pageTableWrite[page];
                 m_cacheMask[s] = regionMasks[page];
@@ -484,13 +503,14 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing8And16InstrFetch[(fetchAddr >> 24) & 0xF];
             ushort ins;
             int fs = (int)(((fetchPage >> 12) == 3 ? 4 + (int)(fetchPage & 3) : (int)(fetchPage & 7)));
-            if (m_cachePage[fs] == fetchPage && m_cacheRead[fs] != null)
+            if (m_cacheEpochSlot[fs] == _cacheEpoch && m_cachePage[fs] == fetchPage && m_cacheRead[fs] != null)
             {
                 ins = *(ushort*)(m_cacheRead[fs] + (fetchAddr & m_cacheMask[fs]));
             }
             else
             {
                 m_cachePage[fs] = fetchPage;
+                m_cacheEpochSlot[fs] = _cacheEpoch;
                 m_cacheRead[fs] = pageTableRead[fetchPage];
                 m_cacheWrite[fs] = pageTableWrite[fetchPage];
                 m_cacheMask[fs] = regionMasks[fetchPage];
@@ -851,7 +871,7 @@ namespace OptimeGBA
                                         else
                                         {
                                             arm7.Carry = ((rdVal & (1 << ((int)(rsVal & 0b11111) - 1))) != 0);
-                                            rdVal = RotateRight32(rdVal, (byte)(rsVal & 0b11111));
+                                            rdVal = (rdVal >> (int)(rsVal & 0b11111)) | (rdVal << (int)-(rsVal & 0b11111));
                                             R[rd] = rdVal;
                                         }
                                         arm7.Negative = ((rdVal & (1 << 31)) != 0);
@@ -1027,8 +1047,26 @@ namespace OptimeGBA
                             uint immed8 = (uint)((ins >> 0) & 0xFF);
                             uint addr = (R[15] & 0xFFFFFFFC) + (immed8 * 4);
                             uint readAddr = addr & ~0b11U;
-                            uint readVal = Read32(readAddr);
-                            R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
+                            // 手动内联 Read32：与 GetUint(page, MaskAddress) 逐位等价，JIT 避让大方法不再内联 Read32，此内联去掉方法边界
+                            arm7.InstructionCycles += timing32[(readAddr >> 24) & 0xF];
+                            uint _pg = readAddr >> 12;
+                            int _si = (int)(((_pg >> 12) == 3 ? 4 + (int)(_pg & 3) : (int)(_pg & 7)));
+                            uint readVal;
+                            if (m_cacheEpochSlot[_si] == _cacheEpoch && m_cachePage[_si] == _pg && m_cacheRead[_si] != null)
+                                readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                            else
+                            {
+                                m_cachePage[_si] = _pg;
+                                m_cacheEpochSlot[_si] = _cacheEpoch;
+                                m_cacheRead[_si] = pageTableRead[_pg];
+                                m_cacheWrite[_si] = pageTableWrite[_pg];
+                                m_cacheMask[_si] = regionMasks[_pg];
+                                if (m_cacheRead[_si] != null)
+                                    readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                                else
+                                    readVal = mem.Read32Unregistered(false, readAddr);
+                            }
+                            R[rd] = (readVal >> (int)((addr & 0b11) * 8)) | (readVal << (int)((32 - (addr & 0b11) * 8) & 0x1F));
                         }
                         else if ((ins & 0b1111000000000000) == 0b0101000000000000) // Load/store register offset
                         {
@@ -1059,14 +1097,33 @@ namespace OptimeGBA
                                 case 0b100: // LDR (2)
                                     {
                                         uint readAddr = addr & ~0b11U;
-                                        uint readVal = Read32(readAddr);
-                                        R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
+                                        // 手动内联 Read32：与 GetUint(page, MaskAddress) 逐位等价，JIT 避让大方法不再内联 Read32，此内联去掉方法边界
+                                        arm7.InstructionCycles += timing32[(readAddr >> 24) & 0xF];
+                                        uint _pg = readAddr >> 12;
+                                        int _si = (int)(((_pg >> 12) == 3 ? 4 + (int)(_pg & 3) : (int)(_pg & 7)));
+                                        uint readVal;
+                                        if (m_cacheEpochSlot[_si] == _cacheEpoch && m_cachePage[_si] == _pg && m_cacheRead[_si] != null)
+                                            readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                                        else
+                                        {
+                                            m_cachePage[_si] = _pg;
+                                            m_cacheEpochSlot[_si] = _cacheEpoch;
+                                            m_cacheRead[_si] = pageTableRead[_pg];
+                                            m_cacheWrite[_si] = pageTableWrite[_pg];
+                                            m_cacheMask[_si] = regionMasks[_pg];
+                                            if (m_cacheRead[_si] != null)
+                                                readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                                            else
+                                                readVal = mem.Read32Unregistered(false, readAddr);
+                                        }
+                                        R[rd] = (readVal >> (int)((addr & 0b11) * 8)) | (readVal << (int)((32 - (addr & 0b11) * 8) & 0x1F));
                                         arm7.InstructionCycles += 1;
                                     }
                                     break;
                                 case 0b101: // LDRH (2)
                                     {
-                                        R[rd] = RotateRight32(Read16(addr & ~1u), (byte)(8 * (addr & 1)));
+                                        uint data16 = Read16(addr & ~1u);
+                                        R[rd] = (data16 >> (int)(8 * (addr & 1))) | (data16 << (int)((32 - 8 * (addr & 1)) & 0x1F));
                                         arm7.InstructionCycles += 1;
                                     }
                                     break;
@@ -1108,8 +1165,26 @@ namespace OptimeGBA
                                     uint immed5 = (uint)((ins >> 6) & 0b11111);
                                     uint addr = rnValue + (immed5 * 4);
                                     uint readAddr = addr & ~0b11U;
-                                    uint readVal = Read32(readAddr);
-                                    R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
+                                    // 手动内联 Read32：与 GetUint(page, MaskAddress) 逐位等价，JIT 避让大方法不再内联 Read32，此内联去掉方法边界
+                                    arm7.InstructionCycles += timing32[(readAddr >> 24) & 0xF];
+                                    uint _pg = readAddr >> 12;
+                                    int _si = (int)(((_pg >> 12) == 3 ? 4 + (int)(_pg & 3) : (int)(_pg & 7)));
+                                    uint readVal;
+                                    if (m_cacheEpochSlot[_si] == _cacheEpoch && m_cachePage[_si] == _pg && m_cacheRead[_si] != null)
+                                        readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                                    else
+                                    {
+                                        m_cachePage[_si] = _pg;
+                                        m_cacheEpochSlot[_si] = _cacheEpoch;
+                                        m_cacheRead[_si] = pageTableRead[_pg];
+                                        m_cacheWrite[_si] = pageTableWrite[_pg];
+                                        m_cacheMask[_si] = regionMasks[_pg];
+                                        if (m_cacheRead[_si] != null)
+                                            readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                                        else
+                                            readVal = mem.Read32Unregistered(false, readAddr);
+                                    }
+                                    R[rd] = (readVal >> (int)((addr & 0b11) * 8)) | (readVal << (int)((32 - (addr & 0b11) * 8) & 0x1F));
                                     arm7.InstructionCycles += 1;
                                 }
                                 break;
@@ -1161,7 +1236,8 @@ namespace OptimeGBA
                             uint addr = rnVal + (immed5 * 2);
                             if (load)
                             {
-                                R[rd] = RotateRight32(Read16(addr & ~1u), (byte)(8 * (addr & 1)));
+                                uint data16 = Read16(addr & ~1u);
+                                R[rd] = (data16 >> (int)(8 * (addr & 1))) | (data16 << (int)((32 - 8 * (addr & 1)) & 0x1F));
                                 arm7.InstructionCycles += 1;
                             }
                             else
@@ -1175,8 +1251,26 @@ namespace OptimeGBA
                             uint rd = (uint)((ins >> 8) & 0b111);
                             uint addr = R[13] + (immed8 * 4);
                             uint readAddr = addr & ~0b11U;
-                            uint readVal = Read32(readAddr);
-                            R[rd] = RotateRight32(readVal, (byte)((addr & 0b11) * 8));
+                            // 手动内联 Read32：与 GetUint(page, MaskAddress) 逐位等价，JIT 避让大方法不再内联 Read32，此内联去掉方法边界
+                            arm7.InstructionCycles += timing32[(readAddr >> 24) & 0xF];
+                            uint _pg = readAddr >> 12;
+                            int _si = (int)(((_pg >> 12) == 3 ? 4 + (int)(_pg & 3) : (int)(_pg & 7)));
+                            uint readVal;
+                            if (m_cacheEpochSlot[_si] == _cacheEpoch && m_cachePage[_si] == _pg && m_cacheRead[_si] != null)
+                                readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                            else
+                            {
+                                m_cachePage[_si] = _pg;
+                                m_cacheEpochSlot[_si] = _cacheEpoch;
+                                m_cacheRead[_si] = pageTableRead[_pg];
+                                m_cacheWrite[_si] = pageTableWrite[_pg];
+                                m_cacheMask[_si] = regionMasks[_pg];
+                                if (m_cacheRead[_si] != null)
+                                    readVal = *(uint*)(m_cacheRead[_si] + (readAddr & m_cacheMask[_si]));
+                                else
+                                    readVal = mem.Read32Unregistered(false, readAddr);
+                            }
+                            R[rd] = (readVal >> (int)((addr & 0b11) * 8)) | (readVal << (int)((32 - (addr & 0b11) * 8) & 0x1F));
                             arm7.InstructionCycles += 1;
                         }
                         else if ((ins & 0b1111100000000000) == 0b1001000000000000) // STR (3) - Store to stack
@@ -2032,7 +2126,7 @@ namespace OptimeGBA
                             }
                             else
                             {
-                                offset = RotateRight32(rmVal, shiftBits);
+                                offset = (rmVal >> (int)shiftBits) | (rmVal << (int)-shiftBits);
                             }
                             break;
                     }
@@ -2067,12 +2161,49 @@ namespace OptimeGBA
                 {
                     if ((addr & 0b11) != 0)
                     {
-                        uint data = Read32(addr & ~3U);
-                        loadVal = RotateRight32(data, (byte)(8 * (addr & 0b11)));
+                        uint dataAddr = addr & ~3U;
+                        // 手动内联 Read32
+                        arm7.InstructionCycles += timing32[(dataAddr >> 24) & 0xF];
+                        uint _pgD = dataAddr >> 12;
+                        int _siD = (int)(((_pgD >> 12) == 3 ? 4 + (int)(_pgD & 3) : (int)(_pgD & 7)));
+                        uint data;
+                        if (m_cacheEpochSlot[_siD] == _cacheEpoch && m_cachePage[_siD] == _pgD && m_cacheRead[_siD] != null)
+                            data = *(uint*)(m_cacheRead[_siD] + (dataAddr & m_cacheMask[_siD]));
+                        else
+                        {
+                            m_cachePage[_siD] = _pgD;
+                            m_cacheEpochSlot[_siD] = _cacheEpoch;
+                            m_cacheRead[_siD] = pageTableRead[_pgD];
+                            m_cacheWrite[_siD] = pageTableWrite[_pgD];
+                            m_cacheMask[_siD] = regionMasks[_pgD];
+                            if (m_cacheRead[_siD] != null)
+                                data = *(uint*)(m_cacheRead[_siD] + (dataAddr & m_cacheMask[_siD]));
+                            else
+                                data = mem.Read32Unregistered(false, dataAddr);
+                        }
+                        loadVal = (data >> (int)(8 * (addr & 0b11))) | (data << (int)((32 - 8 * (addr & 0b11)) & 0x3F));
                     }
                     else
                     {
-                        loadVal = Read32(addr);
+                        uint dataAddr = addr;
+                        // 手动内联 Read32
+                        arm7.InstructionCycles += timing32[(dataAddr >> 24) & 0xF];
+                        uint _pgD = dataAddr >> 12;
+                        int _siD = (int)(((_pgD >> 12) == 3 ? 4 + (int)(_pgD & 3) : (int)(_pgD & 7)));
+                        if (m_cacheEpochSlot[_siD] == _cacheEpoch && m_cachePage[_siD] == _pgD && m_cacheRead[_siD] != null)
+                            loadVal = *(uint*)(m_cacheRead[_siD] + (dataAddr & m_cacheMask[_siD]));
+                        else
+                        {
+                            m_cachePage[_siD] = _pgD;
+                            m_cacheEpochSlot[_siD] = _cacheEpoch;
+                            m_cacheRead[_siD] = pageTableRead[_pgD];
+                            m_cacheWrite[_siD] = pageTableWrite[_pgD];
+                            m_cacheMask[_siD] = regionMasks[_pgD];
+                            if (m_cacheRead[_siD] != null)
+                                loadVal = *(uint*)(m_cacheRead[_siD] + (dataAddr & m_cacheMask[_siD]));
+                            else
+                                loadVal = mem.Read32Unregistered(false, dataAddr);
+                        }
                     }
                 }
 
@@ -2212,7 +2343,8 @@ namespace OptimeGBA
                     if (H)
                     {
                         // LDRH
-                        loadVal = RotateRight32(Read16(addr & ~1u), (byte)((addr & 1) * 8));
+                        uint data16 = Read16(addr & ~1u);
+                        loadVal = (data16 >> (int)(8 * (addr & 1))) | (data16 << (int)((32 - 8 * (addr & 1)) & 0x1F));
                     }
                 }
             }
@@ -2450,13 +2582,14 @@ namespace OptimeGBA
             arm7.InstructionCycles += timing32InstrFetch[(fetchAddr >> 24) & 0xF];
             uint ins;
             int fs = (int)(((fetchPage >> 12) == 3 ? 4 + (int)(fetchPage & 3) : (int)(fetchPage & 7)));
-            if (m_cachePage[fs] == fetchPage && m_cacheRead[fs] != null)
+            if (m_cacheEpochSlot[fs] == _cacheEpoch && m_cachePage[fs] == fetchPage && m_cacheRead[fs] != null)
             {
                 ins = *(uint*)(m_cacheRead[fs] + (fetchAddr & m_cacheMask[fs]));
             }
             else
             {
                 m_cachePage[fs] = fetchPage;
+                m_cacheEpochSlot[fs] = _cacheEpoch;
                 m_cacheRead[fs] = pageTableRead[fetchPage];
                 m_cacheWrite[fs] = pageTableWrite[fetchPage];
                 m_cacheMask[fs] = regionMasks[fetchPage];
@@ -2467,8 +2600,9 @@ namespace OptimeGBA
             }
             // 原调用：uint ins = Read32InstrFetch(R[15] - 8);
             uint condition = (ins >> 28) & 0xF;
-
-            if (CheckCondition(condition))
+            // 手动内联 CheckCondition：CondTable 查表 + NZCV 位拼装（JIT 避让大方法不再内联）
+            uint _nzcv = (arm7.Negative ? 8U : 0U) | (arm7.Zero ? 4U : 0U) | (arm7.Carry ? 2U : 0U) | (arm7.Overflow ? 1U : 0U);
+            if (((CondTable[condition & 0xF] >> (int)_nzcv) & 1U) != 0U)
             {
                 uint decodeBits = ((ins >> 16) & 0xFF0) | ((ins >> 4) & 0xF);
 
@@ -2661,7 +2795,8 @@ namespace OptimeGBA
                         }
                         else
                         {
-                            R[rd] = RotateRight32(Read32(addr & ~3u), (byte)((addr & 3u) * 8));
+                            uint rotValIn = Read32(addr & ~3u);
+                            R[rd] = (rotValIn >> (int)((addr & 3u) * 8)) | (rotValIn << (int)((32 - (addr & 3u) * 8) & 0x1F));
                             Write32(addr & ~3u, storeValue);
                         }
                         arm7.InstructionCycles += 1;
@@ -2691,7 +2826,8 @@ namespace OptimeGBA
                         if (((ins & (1 << 25)) != 0))
                         {
                             uint rotateBits = ((ins >> 8) & 0xF) * 2;
-                            operand = RotateRight32(ins & 0xFF, (byte)rotateBits);
+                            uint immByte = ins & 0xFF;
+                            operand = (immByte >> (int)rotateBits) | (immByte << (int)((32 - rotateBits) & 0x3F));
                         }
                         else
                         {

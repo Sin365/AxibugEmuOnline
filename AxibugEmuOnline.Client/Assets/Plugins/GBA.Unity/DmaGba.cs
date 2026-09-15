@@ -326,7 +326,7 @@ namespace OptimeGBA
             c.DmaSource &= DmaSourceMask[ci];
             c.DmaDest &= DmaDestMask[ci];
 
-            // ===== EEPROM��ֻ����Ŀ���� 0x0D �� 16-bit DMA =====
+            // ===== EEPROM��ֻ����Ŀ���� 0x0D �� 16-bit DMA =====
             uint srcRegion = c.DmaSource >> 24;
 
             if (ci == 3)
@@ -340,7 +340,7 @@ namespace OptimeGBA
                 if (c.DmaLength == 0) c.DmaLength = 0x4000;
             }
 
-            // ֻ��������һ��
+            // ֻ��������һ��
             uint destRegion = c.DmaDest >> 24;
             if (destRegion == 0xD && !c.TransferType &&
                 Gba.Mem.SaveProvider is Eeprom eeprom)
@@ -349,7 +349,7 @@ namespace OptimeGBA
             }
 
 #if DEBUG
-            // ��־��Դ��Ŀ���� 0x0D �Ŵ�ӡ�����ٴ�ӡ 0300xxxx��
+            // ��־��Դ��Ŀ���� 0x0D �Ŵ�ӡ�����ٴ�ӡ 0300xxxx��
             if (destRegion == 0xD || srcRegion == 0xD)
             {
                 string sz = "?";
@@ -427,11 +427,45 @@ namespace OptimeGBA
 
             if (c.TransferType)
             {
+                // ===== 页表直通内联：与 Gba.Mem.Read/Write32 逐位等价（同样先查页、落空走 Unregistered），
+                // 但把 byte* 解引用 + CurrentTicks 累加内联进循环，省去每次的 PageTable[page] 边界下标调用。
+                // 地址/掩码/顺序/回退/周期数与原路径完全一致，锁步结果逐位不变。
+                var pageTableRead = Gba.Mem.PageTableRead;
+                var pageTableWrite = Gba.Mem.PageTableWrite;
+                var regionMasks = Gba.Mem.MemoryRegionMasks;
+                var timing32 = Gba.Cpu.Timing32;
                 for (; c.DmaLength > 0; c.DmaLength--)
                 {
-                    Gba.Mem.Write32(c.DmaDest & ~3u, Gba.Mem.Read32(c.DmaSource & ~3u));
-                    Gba.Tick(Gba.Cpu.Timing32[(c.DmaSource >> 24) & 0xF]);
-                    Gba.Tick(Gba.Cpu.Timing32[(c.DmaDest >> 24) & 0xF]);
+                    uint src = c.DmaSource & ~3u;
+                    uint dst = c.DmaDest & ~3u;
+                    ushort lo;
+                    ushort hi;
+                    byte* spage = pageTableRead[src >> 12];
+                    if (spage != null)
+                    {
+                        lo = *(ushort*)(spage + (src & regionMasks[src >> 12]));
+                        hi = *(ushort*)(spage + ((src & regionMasks[src >> 12]) + 2));
+                    }
+                    else
+                    {
+                        uint v = Gba.Mem.Read32Unregistered(false, src);
+                        lo = (ushort)(v & 0xFFFF);
+                        hi = (ushort)(v >> 16);
+                    }
+                    uint val = ((uint)hi << 16) | lo;
+                    byte* wpage = pageTableWrite[dst >> 12];
+                    if (wpage != null)
+                    {
+                        uint off = dst & regionMasks[dst >> 12];
+                        *(uint*)(wpage + off) = val;
+                    }
+                    else
+                    {
+                        Gba.Mem.Write32Unregistered(false, dst, val);
+                    }
+
+                    Gba.Scheduler.CurrentTicks += timing32[(c.DmaSource >> 24) & 0xF];
+                    Gba.Scheduler.CurrentTicks += timing32[(c.DmaDest >> 24) & 0xF];
 
                     c.DmaDest = (uint)(long)(destOffsPerUnit + c.DmaDest);
                     c.DmaSource = (uint)(long)(sourceOffsPerUnit + c.DmaSource);
@@ -439,11 +473,36 @@ namespace OptimeGBA
             }
             else
             {
+                var pageTableRead = Gba.Mem.PageTableRead;
+                var pageTableWrite = Gba.Mem.PageTableWrite;
+                var regionMasks = Gba.Mem.MemoryRegionMasks;
+                var timing8And16 = Gba.Cpu.Timing8And16;
                 for (; c.DmaLength > 0; c.DmaLength--)
                 {
-                    Gba.Mem.Write16(c.DmaDest & ~1u, Gba.Mem.Read16(c.DmaSource & ~1u));
-                    Gba.Tick(Gba.Cpu.Timing8And16[(c.DmaSource >> 24) & 0xF]);
-                    Gba.Tick(Gba.Cpu.Timing8And16[(c.DmaDest >> 24) & 0xF]);
+                    uint src = c.DmaSource & ~1u;
+                    uint dst = c.DmaDest & ~1u;
+                    ushort val;
+                    byte* spage = pageTableRead[src >> 12];
+                    if (spage != null)
+                    {
+                        val = *(ushort*)(spage + (src & regionMasks[src >> 12]));
+                    }
+                    else
+                    {
+                        val = Gba.Mem.Read16Unregistered(false, src);
+                    }
+                    byte* wpage = pageTableWrite[dst >> 12];
+                    if (wpage != null)
+                    {
+                        *(ushort*)(wpage + (dst & regionMasks[dst >> 12])) = val;
+                    }
+                    else
+                    {
+                        Gba.Mem.Write16Unregistered(false, dst, val);
+                    }
+
+                    Gba.Scheduler.CurrentTicks += timing8And16[(c.DmaSource >> 24) & 0xF];
+                    Gba.Scheduler.CurrentTicks += timing8And16[(c.DmaDest >> 24) & 0xF];
 
                     c.DmaDest = (uint)(long)(destOffsPerUnit + c.DmaDest);
                     c.DmaSource = (uint)(long)(sourceOffsPerUnit + c.DmaSource);

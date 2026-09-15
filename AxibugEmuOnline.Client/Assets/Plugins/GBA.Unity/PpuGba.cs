@@ -109,7 +109,7 @@ namespace OptimeGBA
                     // Vblank flag is set in scanlines 160-226, not including 227 for some reason
                     if (VCount >= 160 && VCount <= 226) val = BitSet(val, 0);
                     // Hblank flag is set at cycle 1006, not cycle 960
-                    if (GetScanlineCycles() >= 1006) val = BitSet(val, 1);
+                    if (Scheduler.CurrentTicks - ScanlineStartCycles >= 1006) val = BitSet(val, 1);
                     if (VCounterMatch) val = BitSet(val, 2);
                     if (VBlankIrqEnable) val = BitSet(val, 3);
                     if (HBlankIrqEnable) val = BitSet(val, 4);
